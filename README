@@ -15,3 +15,9 @@ In the api directory, run the following command to create the API JAR:
 
 
 
+The documentation can be found at http://www.gpudb.com/docs/index.html.  The
+Java specific documentation can be found at:
+
+* http://www.gpudb.com/docs/user/java_guide.html
+* http://www.gpudb.com/docs/api/java/index.html
+
