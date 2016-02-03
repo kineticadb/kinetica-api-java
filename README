@@ -1,0 +1,11 @@
+There are two projects in this repository: the GPUdb Java API and an example project.
+
+api
+---
+
+In the api directory, run the following command to create the API JAR:
+
+> mvn clean package
+
+
+
