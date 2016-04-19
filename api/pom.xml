@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.gisfederal.gpudb</groupId>
+    <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.2.0</version>
     <packaging>jar</packaging>
+    <name>GPUdb Java API</name>
     <distributionManagement>
        <repository>
           <id>releases</id>
@@ -13,6 +14,7 @@
        </repository>
        <snapshotRepository>
           <id>snapshots</id>
+          <name>Snapshots</name>
           <url>http://gpudb.com/nexus/content/repositories/snapshots</url>
        </snapshotRepository>
     </distributionManagement>
@@ -20,7 +22,7 @@
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
-            <version>1.7.7</version>
+            <version>1.8.0</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -29,9 +31,9 @@
         </dependency>
     </dependencies>
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <profiles>
         <profile>
@@ -44,24 +46,55 @@
             </properties>
         </profile>
     </profiles>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>clojars.org</id>
+            <url>http://clojars.org/repo</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>sonatype-releases</id>
+            <url>http://oss.sonatype.org/content/repositories/releases</url>
+        </pluginRepository>
+    </pluginRepositories>
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.code54.mojo</groupId>
+                <artifactId>buildversion-plugin</artifactId>
+                <version>1.0.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>set-properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.10.3</version>
+                <configuration>
+                    <additionalparam>${javadoc.opts}</additionalparam>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
                         <goals>
                             <goal>jar</goal>
                         </goals>
-                        <configuration>
-                           <additionalparam>${javadoc.opts}</additionalparam>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/gpudb-api-build.properties</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 </project>
