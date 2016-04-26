@@ -37,6 +37,46 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * A map of server configuration parameters and version information.
+     * A set of string constants for the parameter {@code propertyMap}.
+     */
+    public static final class PropertyMap {
+
+        /**
+         * Boolean value indicating whether the GPUdb server is configured for
+         * multi-head ingestion.
+         */
+        public static final String CONF_ENABLE_WORKER_HTTP_SERVERS = "conf.enable_worker_http_servers";
+
+        /**
+         * Indicates that the GPUdb server is configured for multi-head
+         * ingestion.
+         */
+        public static final String TRUE = "TRUE";
+
+        /**
+         * Indicates that the GPUdb server is NOT configured for multi-head
+         * ingestion.
+         */
+        public static final String FALSE = "FALSE";
+
+        /**
+         * Semicolon (';') separated string of IP addresses of all the
+         * ingestion-enabled worker heads of the GPUdb server.
+         */
+        public static final String CONF_WORKER_HTTP_SERVER_IPS = "conf.worker_http_server_ips";
+
+        /**
+         * Semicolon (';') separated string of the port numbers of all the
+         * ingestion-enabled worker ranks of the GPUdb server.
+         */
+        public static final String CONF_WORKER_HTTP_SERVER_PORTS = "conf.worker_http_server_ports";
+
+        private PropertyMap() {  }
+    }
+
     private Map<String, String> propertyMap;
 
 

@@ -5,8 +5,8 @@
  */
 package com.gpudb.protocol;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -14,19 +14,16 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#adminOffline(AdminOfflineRequest)}.
- * <p>
- * Take the system offline. When the system is offline, no user operations can
- * be performed with the exception of a system shutdown.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#adminRebalance(AdminRebalanceRequest)}.
  */
-public class AdminOfflineRequest implements IndexedRecord {
+public class AdminRebalanceResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("AdminOfflineRequest")
+            .record("AdminRebalanceResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("offline").type().booleanType().noDefault()
-                .name("options").type().map().values().stringType().noDefault()
+                .name("tableNames").type().array().items().stringType().noDefault()
+                .name("message").type().array().items().stringType().noDefault()
             .endRecord();
 
 
@@ -41,80 +38,55 @@ public class AdminOfflineRequest implements IndexedRecord {
         return schema$;
     }
 
-
-    /**
-     * Set to true if desired state is offline.
-     * A set of string constants for the parameter {@code offline}.
-     */
-    public static final class Offline {
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
-
-        private Offline() {  }
-    }
-
-    private boolean offline;
-    private Map<String, String> options;
+    private List<String> tableNames;
+    private List<String> message;
 
 
     /**
-     * Constructs an AdminOfflineRequest object with default parameters.
+     * Constructs an AdminRebalanceResponse object with default parameters.
      */
-    public AdminOfflineRequest() {
-        options = new LinkedHashMap<>();
-    }
-
-    /**
-     * Constructs an AdminOfflineRequest object with the specified parameters.
-     * 
-     * @param offline  Set to true if desired state is offline.
-     * @param options  Optional parameters.
-     * 
-     */
-    public AdminOfflineRequest(boolean offline, Map<String, String> options) {
-        this.offline = offline;
-        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
+    public AdminRebalanceResponse() {
     }
 
     /**
      * 
-     * @return Set to true if desired state is offline.
+     * @return Names of the rebalanced tables.
      * 
      */
-    public boolean getOffline() {
-        return offline;
+    public List<String> getTableNames() {
+        return tableNames;
     }
 
     /**
      * 
-     * @param offline  Set to true if desired state is offline.
+     * @param tableNames  Names of the rebalanced tables.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminOfflineRequest setOffline(boolean offline) {
-        this.offline = offline;
+    public AdminRebalanceResponse setTableNames(List<String> tableNames) {
+        this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
         return this;
     }
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Error Messages from rebalancing the tables.
      * 
      */
-    public Map<String, String> getOptions() {
-        return options;
+    public List<String> getMessage() {
+        return message;
     }
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param message  Error Messages from rebalancing the tables.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminOfflineRequest setOptions(Map<String, String> options) {
-        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
+    public AdminRebalanceResponse setMessage(List<String> message) {
+        this.message = (message == null) ? new ArrayList<String>() : message;
         return this;
     }
 
@@ -145,10 +117,10 @@ public class AdminOfflineRequest implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.offline;
+                return this.tableNames;
 
             case 1:
-                return this.options;
+                return this.message;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -170,11 +142,11 @@ public class AdminOfflineRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.offline = (Boolean)value;
+                this.tableNames = (List<String>)value;
                 break;
 
             case 1:
-                this.options = (Map<String, String>)value;
+                this.message = (List<String>)value;
                 break;
 
             default:
@@ -192,10 +164,10 @@ public class AdminOfflineRequest implements IndexedRecord {
             return false;
         }
 
-        AdminOfflineRequest that = (AdminOfflineRequest)obj;
+        AdminRebalanceResponse that = (AdminRebalanceResponse)obj;
 
-        return ( ( this.offline == that.offline )
-                 && this.options.equals( that.options ) );
+        return ( this.tableNames.equals( that.tableNames )
+                 && this.message.equals( that.message ) );
     }
 
     @Override
@@ -203,13 +175,13 @@ public class AdminOfflineRequest implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "offline" ) );
+        builder.append( gd.toString( "tableNames" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.offline ) );
+        builder.append( gd.toString( this.tableNames ) );
         builder.append( ", " );
-        builder.append( gd.toString( "options" ) );
+        builder.append( gd.toString( "message" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.options ) );
+        builder.append( gd.toString( this.message ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -218,8 +190,8 @@ public class AdminOfflineRequest implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + ((Boolean)this.offline).hashCode();
-        hashCode = (31 * hashCode) + this.options.hashCode();
+        hashCode = (31 * hashCode) + this.tableNames.hashCode();
+        hashCode = (31 * hashCode) + this.message.hashCode();
         return hashCode;
     }
 

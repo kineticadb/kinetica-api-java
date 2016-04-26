@@ -93,6 +93,12 @@ public class CreateTableRequest implements IndexedRecord {
          */
         public static final String IS_REPLICATED = "is_replicated";
 
+        /**
+         * Semicolon-separated list of foreign key constraints, of the format
+         * 'my_field references primary_table(primary_key_field)'.
+         */
+        public static final String FOREIGN_KEYS = "foreign_keys";
+
         private Options() {  }
     }
 

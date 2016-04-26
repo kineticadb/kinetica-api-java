@@ -108,6 +108,12 @@ public class RawInsertRecordsRequest implements IndexedRecord {
          */
         public static final String RETURN_RECORD_IDS = "return_record_ids";
 
+        /**
+         * Route to a specific rank/tom. Option not suitable for tables using
+         * primary/shard keys
+         */
+        public static final String ROUTE_TO_ADDRESS = "route_to_address";
+
         private Options() {  }
     }
 

@@ -1,5 +1,6 @@
 package com.gpudb;
 
+import com.gpudb.protocol.AdminGetShardAssignmentsRequest;
 import com.gpudb.protocol.InsertRecordsRequest;
 import com.gpudb.protocol.InsertRecordsResponse;
 import com.gpudb.protocol.RawInsertRecordsRequest;
@@ -754,7 +755,7 @@ public class BulkInserter<T> {
             numRanks = workers.size();
 
             if (primaryKeyBuilder != null || shardKeyBuilder != null) {
-                routingTable = gpudb.adminGetShardAssignments( (String)null ).getShardAssignmentsRank();
+                routingTable = gpudb.adminGetShardAssignments( new AdminGetShardAssignmentsRequest() ).getShardAssignmentsRank();
             } else {
                 routingTable = null;
             }

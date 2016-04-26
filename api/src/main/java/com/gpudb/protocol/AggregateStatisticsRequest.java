@@ -58,13 +58,67 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      * A set of string constants for the parameter {@code stats}.
      */
     public static final class Stats {
+
+        /**
+         * Number of objects (independent of the given column).
+         */
+        public static final String COUNT = "count";
+
+        /**
+         * Arithmetic mean (average), equivalent to sum/count.
+         */
         public static final String MEAN = "mean";
+
+        /**
+         * Sample standard deviation (denominator is count-1).
+         */
         public static final String STDV = "stdv";
+
+        /**
+         * Unbiased sample variance (denominator is count-1).
+         */
         public static final String VARIANCE = "variance";
+
+        /**
+         * Skewness (third standardized moment).
+         */
         public static final String SKEW = "skew";
+
+        /**
+         * Kurtosis (fourth standardized moment).
+         */
         public static final String KURTOSIS = "kurtosis";
+
+        /**
+         * Sum of all values in the column.
+         */
         public static final String SUM = "sum";
+
+        /**
+         * Minimum value of the column.
+         */
+        public static final String MIN = "min";
+
+        /**
+         * Maximum value of the column.
+         */
+        public static final String MAX = "max";
+
+        /**
+         * Weighted arithmetic mean (using the option 'weight_column_name' as
+         * the weighting column).
+         */
+        public static final String WEIGHTED_AVERAGE = "weighted_average";
+
+        /**
+         * Number of unique values in the column.
+         */
         public static final String CARDINALITY = "cardinality";
+
+        /**
+         * Estimate (via hyperloglog technique) of the number of unique values
+         * in the column.
+         */
         public static final String ESTIMATED_CARDINALITY = "estimated_cardinality";
 
         private Stats() {  }

@@ -50,13 +50,19 @@ public class AdminGetShardAssignmentsResponse implements IndexedRecord {
      */
     public AdminGetShardAssignmentsResponse() {
     }
+
+    /**
+     * 
+     * @return Number identifying the shard assignments.
+     * 
+     */
     public long getVersion() {
         return version;
     }
 
     /**
      * 
-     * @param version
+     * @param version  Number identifying the shard assignments.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -65,13 +71,19 @@ public class AdminGetShardAssignmentsResponse implements IndexedRecord {
         this.version = version;
         return this;
     }
+
+    /**
+     * 
+     * @return Array of ranks indexed by the shard number.
+     * 
+     */
     public List<Integer> getShardAssignmentsRank() {
         return shardAssignmentsRank;
     }
 
     /**
      * 
-     * @param shardAssignmentsRank
+     * @param shardAssignmentsRank  Array of ranks indexed by the shard number.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -80,13 +92,22 @@ public class AdminGetShardAssignmentsResponse implements IndexedRecord {
         this.shardAssignmentsRank = (shardAssignmentsRank == null) ? new ArrayList<Integer>() : shardAssignmentsRank;
         return this;
     }
+
+    /**
+     * 
+     * @return Array of toms (within the rank identified above) to which the
+     *         corresponding shard belongs.
+     * 
+     */
     public List<Integer> getShardAssignmentsTom() {
         return shardAssignmentsTom;
     }
 
     /**
      * 
-     * @param shardAssignmentsTom
+     * @param shardAssignmentsTom  Array of toms (within the rank identified
+     *                             above) to which the corresponding shard
+     *                             belongs.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

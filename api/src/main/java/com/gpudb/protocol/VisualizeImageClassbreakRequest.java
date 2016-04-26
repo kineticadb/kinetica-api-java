@@ -31,8 +31,6 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * All color values must be in the format RRGGBB or AARRGGBB (to specify the
  * alpha value).
- * <p>
-
  * The image is contained in the {@code imageData} field.
  */
 public class VisualizeImageClassbreakRequest implements IndexedRecord {

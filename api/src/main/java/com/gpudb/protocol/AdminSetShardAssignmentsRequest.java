@@ -6,7 +6,9 @@
 package com.gpudb.protocol;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -27,6 +29,7 @@ public class AdminSetShardAssignmentsRequest implements IndexedRecord {
                 .name("shardAssignmentsRank").type().array().items().intType().noDefault()
                 .name("shardAssignmentsTom").type().array().items().intType().noDefault()
                 .name("assignmentIndex").type().array().items().intType().noDefault()
+                .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -46,6 +49,7 @@ public class AdminSetShardAssignmentsRequest implements IndexedRecord {
     private List<Integer> shardAssignmentsRank;
     private List<Integer> shardAssignmentsTom;
     private List<Integer> assignmentIndex;
+    private Map<String, String> options;
 
 
     /**
@@ -56,6 +60,7 @@ public class AdminSetShardAssignmentsRequest implements IndexedRecord {
         shardAssignmentsRank = new ArrayList<>();
         shardAssignmentsTom = new ArrayList<>();
         assignmentIndex = new ArrayList<>();
+        options = new LinkedHashMap<>();
     }
 
     /**
@@ -67,14 +72,16 @@ public class AdminSetShardAssignmentsRequest implements IndexedRecord {
      * @param shardAssignmentsRank
      * @param shardAssignmentsTom
      * @param assignmentIndex
+     * @param options  Optional parameters.
      * 
      */
-    public AdminSetShardAssignmentsRequest(long version, boolean partialReassignment, List<Integer> shardAssignmentsRank, List<Integer> shardAssignmentsTom, List<Integer> assignmentIndex) {
+    public AdminSetShardAssignmentsRequest(long version, boolean partialReassignment, List<Integer> shardAssignmentsRank, List<Integer> shardAssignmentsTom, List<Integer> assignmentIndex, Map<String, String> options) {
         this.version = version;
         this.partialReassignment = partialReassignment;
         this.shardAssignmentsRank = (shardAssignmentsRank == null) ? new ArrayList<Integer>() : shardAssignmentsRank;
         this.shardAssignmentsTom = (shardAssignmentsTom == null) ? new ArrayList<Integer>() : shardAssignmentsTom;
         this.assignmentIndex = (assignmentIndex == null) ? new ArrayList<Integer>() : assignmentIndex;
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
     public long getVersion() {
         return version;
@@ -153,6 +160,27 @@ public class AdminSetShardAssignmentsRequest implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Optional parameters.
+     * 
+     */
+    public Map<String, String> getOptions() {
+        return options;
+    }
+
+    /**
+     * 
+     * @param options  Optional parameters.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AdminSetShardAssignmentsRequest setOptions(Map<String, String> options) {
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -193,6 +221,9 @@ public class AdminSetShardAssignmentsRequest implements IndexedRecord {
             case 4:
                 return this.assignmentIndex;
 
+            case 5:
+                return this.options;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -232,6 +263,10 @@ public class AdminSetShardAssignmentsRequest implements IndexedRecord {
                 this.assignmentIndex = (List<Integer>)value;
                 break;
 
+            case 5:
+                this.options = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -253,7 +288,8 @@ public class AdminSetShardAssignmentsRequest implements IndexedRecord {
                  && ( this.partialReassignment == that.partialReassignment )
                  && this.shardAssignmentsRank.equals( that.shardAssignmentsRank )
                  && this.shardAssignmentsTom.equals( that.shardAssignmentsTom )
-                 && this.assignmentIndex.equals( that.assignmentIndex ) );
+                 && this.assignmentIndex.equals( that.assignmentIndex )
+                 && this.options.equals( that.options ) );
     }
 
     @Override
@@ -280,6 +316,10 @@ public class AdminSetShardAssignmentsRequest implements IndexedRecord {
         builder.append( gd.toString( "assignmentIndex" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.assignmentIndex ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "options" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.options ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -293,6 +333,7 @@ public class AdminSetShardAssignmentsRequest implements IndexedRecord {
         hashCode = (31 * hashCode) + this.shardAssignmentsRank.hashCode();
         hashCode = (31 * hashCode) + this.shardAssignmentsTom.hashCode();
         hashCode = (31 * hashCode) + this.assignmentIndex.hashCode();
+        hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }
 

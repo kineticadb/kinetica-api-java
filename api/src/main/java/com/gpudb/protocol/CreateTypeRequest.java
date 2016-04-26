@@ -82,6 +82,11 @@ public class CreateTypeRequest implements IndexedRecord {
 
 
     /**
+     * Each key-value pair specifies the properties to use for a given column
+     * where the key is the column name.  All keys used must be relevant column
+     * names for the given table.  Specifying any property overrides the
+     * default properties for that column (which is based on the column's data
+     * type).
      * A set of string constants for the parameter {@code properties}.
      */
     public static final class Properties {
@@ -230,7 +235,12 @@ public class CreateTypeRequest implements IndexedRecord {
      * @param label  A user-defined description string which can be used to
      *               differentiate between tables and types with otherwise
      *               identical schemas.
-     * @param properties
+     * @param properties  Each key-value pair specifies the properties to use
+     *                    for a given column where the key is the column name.
+     *                    All keys used must be relevant column names for the
+     *                    given table.  Specifying any property overrides the
+     *                    default properties for that column (which is based on
+     *                    the column's data type).
      * @param options  Optional parameters.
      * 
      */
@@ -288,13 +298,28 @@ public class CreateTypeRequest implements IndexedRecord {
         this.label = (label == null) ? "" : label;
         return this;
     }
+
+    /**
+     * 
+     * @return Each key-value pair specifies the properties to use for a given
+     *         column where the key is the column name.  All keys used must be
+     *         relevant column names for the given table.  Specifying any
+     *         property overrides the default properties for that column (which
+     *         is based on the column's data type).
+     * 
+     */
     public Map<String, List<String>> getProperties() {
         return properties;
     }
 
     /**
      * 
-     * @param properties
+     * @param properties  Each key-value pair specifies the properties to use
+     *                    for a given column where the key is the column name.
+     *                    All keys used must be relevant column names for the
+     *                    given table.  Specifying any property overrides the
+     *                    default properties for that column (which is based on
+     *                    the column's data type).
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

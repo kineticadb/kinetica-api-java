@@ -15,17 +15,19 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of parameters for {@link
- * com.gpudb.GPUdb#adminOffline(AdminOfflineRequest)}.
+ * com.gpudb.GPUdb#adminDeleteNode(AdminDeleteNodeRequest)}.
  * <p>
- * Take the system offline. When the system is offline, no user operations can
- * be performed with the exception of a system shutdown.
+ * Delete a node from the system.  To delete a node, the data is first
+ * distributed from the deleted node to all the other nodes.  Then the node is
+ * taken out of service.
  */
-public class AdminOfflineRequest implements IndexedRecord {
+public class AdminDeleteNodeRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("AdminOfflineRequest")
+            .record("AdminDeleteNodeRequest")
             .namespace("com.gpudb")
             .fields()
-                .name("offline").type().booleanType().noDefault()
+                .name("rank").type().intType().noDefault()
+                .name("authorization").type().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -41,59 +43,78 @@ public class AdminOfflineRequest implements IndexedRecord {
         return schema$;
     }
 
-
-    /**
-     * Set to true if desired state is offline.
-     * A set of string constants for the parameter {@code offline}.
-     */
-    public static final class Offline {
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
-
-        private Offline() {  }
-    }
-
-    private boolean offline;
+    private int rank;
+    private String authorization;
     private Map<String, String> options;
 
 
     /**
-     * Constructs an AdminOfflineRequest object with default parameters.
+     * Constructs an AdminDeleteNodeRequest object with default parameters.
      */
-    public AdminOfflineRequest() {
+    public AdminDeleteNodeRequest() {
+        authorization = "";
         options = new LinkedHashMap<>();
     }
 
     /**
-     * Constructs an AdminOfflineRequest object with the specified parameters.
+     * Constructs an AdminDeleteNodeRequest object with the specified
+     * parameters.
      * 
-     * @param offline  Set to true if desired state is offline.
+     * @param rank  Rank number of the node being removed from the system.
+     * @param authorization  The password that GPUdb is configured with during
+     *                       startup. Incorrect or missing authorization code
+     *                       will result in an error.
      * @param options  Optional parameters.
      * 
      */
-    public AdminOfflineRequest(boolean offline, Map<String, String> options) {
-        this.offline = offline;
+    public AdminDeleteNodeRequest(int rank, String authorization, Map<String, String> options) {
+        this.rank = rank;
+        this.authorization = (authorization == null) ? "" : authorization;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
      * 
-     * @return Set to true if desired state is offline.
+     * @return Rank number of the node being removed from the system.
      * 
      */
-    public boolean getOffline() {
-        return offline;
+    public int getRank() {
+        return rank;
     }
 
     /**
      * 
-     * @param offline  Set to true if desired state is offline.
+     * @param rank  Rank number of the node being removed from the system.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminOfflineRequest setOffline(boolean offline) {
-        this.offline = offline;
+    public AdminDeleteNodeRequest setRank(int rank) {
+        this.rank = rank;
+        return this;
+    }
+
+    /**
+     * 
+     * @return The password that GPUdb is configured with during startup.
+     *         Incorrect or missing authorization code will result in an error.
+     * 
+     */
+    public String getAuthorization() {
+        return authorization;
+    }
+
+    /**
+     * 
+     * @param authorization  The password that GPUdb is configured with during
+     *                       startup. Incorrect or missing authorization code
+     *                       will result in an error.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AdminDeleteNodeRequest setAuthorization(String authorization) {
+        this.authorization = (authorization == null) ? "" : authorization;
         return this;
     }
 
@@ -113,7 +134,7 @@ public class AdminOfflineRequest implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminOfflineRequest setOptions(Map<String, String> options) {
+    public AdminDeleteNodeRequest setOptions(Map<String, String> options) {
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
@@ -145,9 +166,12 @@ public class AdminOfflineRequest implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.offline;
+                return this.rank;
 
             case 1:
+                return this.authorization;
+
+            case 2:
                 return this.options;
 
             default:
@@ -170,10 +194,14 @@ public class AdminOfflineRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.offline = (Boolean)value;
+                this.rank = (Integer)value;
                 break;
 
             case 1:
+                this.authorization = (String)value;
+                break;
+
+            case 2:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -192,9 +220,10 @@ public class AdminOfflineRequest implements IndexedRecord {
             return false;
         }
 
-        AdminOfflineRequest that = (AdminOfflineRequest)obj;
+        AdminDeleteNodeRequest that = (AdminDeleteNodeRequest)obj;
 
-        return ( ( this.offline == that.offline )
+        return ( ( this.rank == that.rank )
+                 && this.authorization.equals( that.authorization )
                  && this.options.equals( that.options ) );
     }
 
@@ -203,9 +232,13 @@ public class AdminOfflineRequest implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "offline" ) );
+        builder.append( gd.toString( "rank" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.offline ) );
+        builder.append( gd.toString( this.rank ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "authorization" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.authorization ) );
         builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
@@ -218,7 +251,8 @@ public class AdminOfflineRequest implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + ((Boolean)this.offline).hashCode();
+        hashCode = (31 * hashCode) + this.rank;
+        hashCode = (31 * hashCode) + this.authorization.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

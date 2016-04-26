@@ -15,17 +15,17 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of parameters for {@link
- * com.gpudb.GPUdb#adminOffline(AdminOfflineRequest)}.
+ * com.gpudb.GPUdb#adminVerifyDb(AdminVerifyDbRequest)}.
  * <p>
- * Take the system offline. When the system is offline, no user operations can
- * be performed with the exception of a system shutdown.
+ * Verify database is in a consistent state.  When inconsistencies or errors
+ * are found, the verified_ok flag in the response is set to false and the list
+ * of errors found is provided in the error_list.
  */
-public class AdminOfflineRequest implements IndexedRecord {
+public class AdminVerifyDbRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("AdminOfflineRequest")
+            .record("AdminVerifyDbRequest")
             .namespace("com.gpudb")
             .fields()
-                .name("offline").type().booleanType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -41,60 +41,24 @@ public class AdminOfflineRequest implements IndexedRecord {
         return schema$;
     }
 
-
-    /**
-     * Set to true if desired state is offline.
-     * A set of string constants for the parameter {@code offline}.
-     */
-    public static final class Offline {
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
-
-        private Offline() {  }
-    }
-
-    private boolean offline;
     private Map<String, String> options;
 
 
     /**
-     * Constructs an AdminOfflineRequest object with default parameters.
+     * Constructs an AdminVerifyDbRequest object with default parameters.
      */
-    public AdminOfflineRequest() {
+    public AdminVerifyDbRequest() {
         options = new LinkedHashMap<>();
     }
 
     /**
-     * Constructs an AdminOfflineRequest object with the specified parameters.
+     * Constructs an AdminVerifyDbRequest object with the specified parameters.
      * 
-     * @param offline  Set to true if desired state is offline.
      * @param options  Optional parameters.
      * 
      */
-    public AdminOfflineRequest(boolean offline, Map<String, String> options) {
-        this.offline = offline;
+    public AdminVerifyDbRequest(Map<String, String> options) {
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
-    }
-
-    /**
-     * 
-     * @return Set to true if desired state is offline.
-     * 
-     */
-    public boolean getOffline() {
-        return offline;
-    }
-
-    /**
-     * 
-     * @param offline  Set to true if desired state is offline.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public AdminOfflineRequest setOffline(boolean offline) {
-        this.offline = offline;
-        return this;
     }
 
     /**
@@ -113,7 +77,7 @@ public class AdminOfflineRequest implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminOfflineRequest setOptions(Map<String, String> options) {
+    public AdminVerifyDbRequest setOptions(Map<String, String> options) {
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
@@ -145,9 +109,6 @@ public class AdminOfflineRequest implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.offline;
-
-            case 1:
                 return this.options;
 
             default:
@@ -170,10 +131,6 @@ public class AdminOfflineRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.offline = (Boolean)value;
-                break;
-
-            case 1:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -192,10 +149,9 @@ public class AdminOfflineRequest implements IndexedRecord {
             return false;
         }
 
-        AdminOfflineRequest that = (AdminOfflineRequest)obj;
+        AdminVerifyDbRequest that = (AdminVerifyDbRequest)obj;
 
-        return ( ( this.offline == that.offline )
-                 && this.options.equals( that.options ) );
+        return ( this.options.equals( that.options ) );
     }
 
     @Override
@@ -203,10 +159,6 @@ public class AdminOfflineRequest implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "offline" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.offline ) );
-        builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.options ) );
@@ -218,7 +170,6 @@ public class AdminOfflineRequest implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + ((Boolean)this.offline).hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

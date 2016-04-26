@@ -20,7 +20,6 @@ public class ClearTableResponse implements IndexedRecord {
             .record("ClearTableResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("status").type().stringType().noDefault()
                 .name("tableName").type().stringType().noDefault()
             .endRecord();
 
@@ -36,7 +35,6 @@ public class ClearTableResponse implements IndexedRecord {
         return schema$;
     }
 
-    private String status;
     private String tableName;
 
 
@@ -48,39 +46,8 @@ public class ClearTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Returns ``TABLE CLEARED`` along with the table name if the table
-     *         or all tables were cleared successfully.  This field is not
-     *         present if an error is encountered while clearing the table such
-     *         as the table is not found or the table or the collection is
-     *         protected in which case the *status* in the *status_info* is set
-     *         to 'ERROR'
-     * 
-     */
-    public String getStatus() {
-        return status;
-    }
-
-    /**
-     * 
-     * @param status  Returns ``TABLE CLEARED`` along with the table name if
-     *                the table or all tables were cleared successfully.  This
-     *                field is not present if an error is encountered while
-     *                clearing the table such as the table is not found or the
-     *                table or the collection is protected in which case the
-     *                *status* in the *status_info* is set to 'ERROR'
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public ClearTableResponse setStatus(String status) {
-        this.status = (status == null) ? "" : status;
-        return this;
-    }
-
-    /**
-     * 
-     * @return Value of {@code tableName} prefixed with 'TABLE_NAME CLEARED:',
-     *         or 'ALL CLEARED' in case of clearing all tables.
+     * @return Value of {@code tableName} for a given table, or 'ALL CLEARED'
+     *         in case of clearing all tables.
      * 
      */
     public String getTableName() {
@@ -89,9 +56,8 @@ public class ClearTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Value of {@code tableName} prefixed with 'TABLE_NAME
-     *                   CLEARED:', or 'ALL CLEARED' in case of clearing all
-     *                   tables.
+     * @param tableName  Value of {@code tableName} for a given table, or 'ALL
+     *                   CLEARED' in case of clearing all tables.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -128,9 +94,6 @@ public class ClearTableResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.status;
-
-            case 1:
                 return this.tableName;
 
             default:
@@ -153,10 +116,6 @@ public class ClearTableResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.status = (String)value;
-                break;
-
-            case 1:
                 this.tableName = (String)value;
                 break;
 
@@ -177,8 +136,7 @@ public class ClearTableResponse implements IndexedRecord {
 
         ClearTableResponse that = (ClearTableResponse)obj;
 
-        return ( this.status.equals( that.status )
-                 && this.tableName.equals( that.tableName ) );
+        return ( this.tableName.equals( that.tableName ) );
     }
 
     @Override
@@ -186,10 +144,6 @@ public class ClearTableResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "status" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.status ) );
-        builder.append( ", " );
         builder.append( gd.toString( "tableName" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.tableName ) );
@@ -201,7 +155,6 @@ public class ClearTableResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.status.hashCode();
         hashCode = (31 * hashCode) + this.tableName.hashCode();
         return hashCode;
     }

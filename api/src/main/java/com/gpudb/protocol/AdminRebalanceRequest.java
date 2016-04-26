@@ -5,7 +5,9 @@
  */
 package com.gpudb.protocol;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -15,17 +17,17 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of parameters for {@link
- * com.gpudb.GPUdb#adminOffline(AdminOfflineRequest)}.
+ * com.gpudb.GPUdb#adminRebalance(AdminRebalanceRequest)}.
  * <p>
- * Take the system offline. When the system is offline, no user operations can
- * be performed with the exception of a system shutdown.
+ * Rebalance the database such that all the nodes contain approximately equal
+ * number of records.
  */
-public class AdminOfflineRequest implements IndexedRecord {
+public class AdminRebalanceRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("AdminOfflineRequest")
+            .record("AdminRebalanceRequest")
             .namespace("com.gpudb")
             .fields()
-                .name("offline").type().booleanType().noDefault()
+                .name("tableNames").type().array().items().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -41,59 +43,52 @@ public class AdminOfflineRequest implements IndexedRecord {
         return schema$;
     }
 
-
-    /**
-     * Set to true if desired state is offline.
-     * A set of string constants for the parameter {@code offline}.
-     */
-    public static final class Offline {
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
-
-        private Offline() {  }
-    }
-
-    private boolean offline;
+    private List<String> tableNames;
     private Map<String, String> options;
 
 
     /**
-     * Constructs an AdminOfflineRequest object with default parameters.
+     * Constructs an AdminRebalanceRequest object with default parameters.
      */
-    public AdminOfflineRequest() {
+    public AdminRebalanceRequest() {
+        tableNames = new ArrayList<>();
         options = new LinkedHashMap<>();
     }
 
     /**
-     * Constructs an AdminOfflineRequest object with the specified parameters.
+     * Constructs an AdminRebalanceRequest object with the specified
+     * parameters.
      * 
-     * @param offline  Set to true if desired state is offline.
+     * @param tableNames  Names of the tables to be rebalanced.  If array is
+     *                    empty, all tables will be rebalanced.
      * @param options  Optional parameters.
      * 
      */
-    public AdminOfflineRequest(boolean offline, Map<String, String> options) {
-        this.offline = offline;
+    public AdminRebalanceRequest(List<String> tableNames, Map<String, String> options) {
+        this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
      * 
-     * @return Set to true if desired state is offline.
+     * @return Names of the tables to be rebalanced.  If array is empty, all
+     *         tables will be rebalanced.
      * 
      */
-    public boolean getOffline() {
-        return offline;
+    public List<String> getTableNames() {
+        return tableNames;
     }
 
     /**
      * 
-     * @param offline  Set to true if desired state is offline.
+     * @param tableNames  Names of the tables to be rebalanced.  If array is
+     *                    empty, all tables will be rebalanced.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminOfflineRequest setOffline(boolean offline) {
-        this.offline = offline;
+    public AdminRebalanceRequest setTableNames(List<String> tableNames) {
+        this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
         return this;
     }
 
@@ -113,7 +108,7 @@ public class AdminOfflineRequest implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminOfflineRequest setOptions(Map<String, String> options) {
+    public AdminRebalanceRequest setOptions(Map<String, String> options) {
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
@@ -145,7 +140,7 @@ public class AdminOfflineRequest implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.offline;
+                return this.tableNames;
 
             case 1:
                 return this.options;
@@ -170,7 +165,7 @@ public class AdminOfflineRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.offline = (Boolean)value;
+                this.tableNames = (List<String>)value;
                 break;
 
             case 1:
@@ -192,9 +187,9 @@ public class AdminOfflineRequest implements IndexedRecord {
             return false;
         }
 
-        AdminOfflineRequest that = (AdminOfflineRequest)obj;
+        AdminRebalanceRequest that = (AdminRebalanceRequest)obj;
 
-        return ( ( this.offline == that.offline )
+        return ( this.tableNames.equals( that.tableNames )
                  && this.options.equals( that.options ) );
     }
 
@@ -203,9 +198,9 @@ public class AdminOfflineRequest implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "offline" ) );
+        builder.append( gd.toString( "tableNames" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.offline ) );
+        builder.append( gd.toString( this.tableNames ) );
         builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
@@ -218,7 +213,7 @@ public class AdminOfflineRequest implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + ((Boolean)this.offline).hashCode();
+        hashCode = (31 * hashCode) + this.tableNames.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

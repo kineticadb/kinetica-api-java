@@ -5,6 +5,8 @@
  */
 package com.gpudb.protocol;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -14,13 +16,17 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link
  * com.gpudb.GPUdb#adminGetShardAssignments(AdminGetShardAssignmentsRequest)}.
+ * <p>
+ * Returns the list of shards and the corresponding rank and tom containing the
+ * shard.  The response message contains arrays of 16384 (total number of
+ * shards in the system) rank and tom numbers corresponding to each shard.
  */
 public class AdminGetShardAssignmentsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
             .record("AdminGetShardAssignmentsRequest")
             .namespace("com.gpudb")
             .fields()
-                .name("dummy").type().stringType().noDefault()
+                .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -35,7 +41,7 @@ public class AdminGetShardAssignmentsRequest implements IndexedRecord {
         return schema$;
     }
 
-    private String dummy;
+    private Map<String, String> options;
 
 
     /**
@@ -43,32 +49,38 @@ public class AdminGetShardAssignmentsRequest implements IndexedRecord {
      * parameters.
      */
     public AdminGetShardAssignmentsRequest() {
-        dummy = "";
+        options = new LinkedHashMap<>();
     }
 
     /**
      * Constructs an AdminGetShardAssignmentsRequest object with the specified
      * parameters.
      * 
-     * @param dummy
+     * @param options  Optional parameters.
      * 
      */
-    public AdminGetShardAssignmentsRequest(String dummy) {
-        this.dummy = (dummy == null) ? "" : dummy;
-    }
-    public String getDummy() {
-        return dummy;
+    public AdminGetShardAssignmentsRequest(Map<String, String> options) {
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
      * 
-     * @param dummy
+     * @return Optional parameters.
+     * 
+     */
+    public Map<String, String> getOptions() {
+        return options;
+    }
+
+    /**
+     * 
+     * @param options  Optional parameters.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminGetShardAssignmentsRequest setDummy(String dummy) {
-        this.dummy = (dummy == null) ? "" : dummy;
+    public AdminGetShardAssignmentsRequest setOptions(Map<String, String> options) {
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
 
@@ -99,7 +111,7 @@ public class AdminGetShardAssignmentsRequest implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.dummy;
+                return this.options;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -121,7 +133,7 @@ public class AdminGetShardAssignmentsRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.dummy = (String)value;
+                this.options = (Map<String, String>)value;
                 break;
 
             default:
@@ -141,7 +153,7 @@ public class AdminGetShardAssignmentsRequest implements IndexedRecord {
 
         AdminGetShardAssignmentsRequest that = (AdminGetShardAssignmentsRequest)obj;
 
-        return ( this.dummy.equals( that.dummy ) );
+        return ( this.options.equals( that.options ) );
     }
 
     @Override
@@ -149,9 +161,9 @@ public class AdminGetShardAssignmentsRequest implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "dummy" ) );
+        builder.append( gd.toString( "options" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.dummy ) );
+        builder.append( gd.toString( this.options ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -160,7 +172,7 @@ public class AdminGetShardAssignmentsRequest implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.dummy.hashCode();
+        hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }
 

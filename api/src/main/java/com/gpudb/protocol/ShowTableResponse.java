@@ -27,6 +27,7 @@ public class ShowTableResponse implements IndexedRecord {
                 .name("tableNames").type().array().items().stringType().noDefault()
                 .name("isCollection").type().array().items().booleanType().noDefault()
                 .name("isView").type().array().items().booleanType().noDefault()
+                .name("isJoin").type().array().items().booleanType().noDefault()
                 .name("typeIds").type().array().items().stringType().noDefault()
                 .name("typeSchemas").type().array().items().stringType().noDefault()
                 .name("typeLabels").type().array().items().stringType().noDefault()
@@ -34,6 +35,7 @@ public class ShowTableResponse implements IndexedRecord {
                 .name("ttls").type().array().items().intType().noDefault()
                 .name("sizes").type().array().items().longType().noDefault()
                 .name("fullSizes").type().array().items().longType().noDefault()
+                .name("joinSizes").type().array().items().doubleType().noDefault()
                 .name("totalSize").type().longType().noDefault()
                 .name("totalFullSize").type().longType().noDefault()
             .endRecord();
@@ -54,6 +56,7 @@ public class ShowTableResponse implements IndexedRecord {
     private List<String> tableNames;
     private List<Boolean> isCollection;
     private List<Boolean> isView;
+    private List<Boolean> isJoin;
     private List<String> typeIds;
     private List<String> typeSchemas;
     private List<String> typeLabels;
@@ -61,6 +64,7 @@ public class ShowTableResponse implements IndexedRecord {
     private List<Integer> ttls;
     private List<Long> sizes;
     private List<Long> fullSizes;
+    private List<Double> joinSizes;
     private long totalSize;
     private long totalFullSize;
 
@@ -168,6 +172,29 @@ public class ShowTableResponse implements IndexedRecord {
      */
     public ShowTableResponse setIsView(List<Boolean> isView) {
         this.isView = (isView == null) ? new ArrayList<Boolean>() : isView;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Boolean values corresponding to whether the respective tables in
+     *         {@code tableNames} are joined tables or not.
+     * 
+     */
+    public List<Boolean> getIsJoin() {
+        return isJoin;
+    }
+
+    /**
+     * 
+     * @param isJoin  Boolean values corresponding to whether the respective
+     *                tables in {@code tableNames} are joined tables or not.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowTableResponse setIsJoin(List<Boolean> isJoin) {
+        this.isJoin = (isJoin == null) ? new ArrayList<Boolean>() : isJoin;
         return this;
     }
 
@@ -356,6 +383,40 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
+     * @return Empty array if the 'get_sizes' option is 'false'. Otherwise,
+     *         number of unfiltered objects in the cross product of the sub-
+     *         tables in the joined-tables represented in {@code tableNames}.
+     *         For simple tables this number will be the same as size.  For
+     *         join-tables this value gives the number of joined-table rows
+     *         that must be processed by any aggregate functions operating on
+     *         the table.
+     * 
+     */
+    public List<Double> getJoinSizes() {
+        return joinSizes;
+    }
+
+    /**
+     * 
+     * @param joinSizes  Empty array if the 'get_sizes' option is 'false'.
+     *                   Otherwise, number of unfiltered objects in the cross
+     *                   product of the sub-tables in the joined-tables
+     *                   represented in {@code tableNames}. For simple tables
+     *                   this number will be the same as size.  For join-tables
+     *                   this value gives the number of joined-table rows that
+     *                   must be processed by any aggregate functions operating
+     *                   on the table.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowTableResponse setJoinSizes(List<Double> joinSizes) {
+        this.joinSizes = (joinSizes == null) ? new ArrayList<Double>() : joinSizes;
+        return this;
+    }
+
+    /**
+     * 
      * @return -1 if the 'get_sizes' option is 'false'. Otherwise, the sum of
      *         the elements of {@code sizes}.
      * 
@@ -439,30 +500,36 @@ public class ShowTableResponse implements IndexedRecord {
                 return this.isView;
 
             case 4:
-                return this.typeIds;
+                return this.isJoin;
 
             case 5:
-                return this.typeSchemas;
+                return this.typeIds;
 
             case 6:
-                return this.typeLabels;
+                return this.typeSchemas;
 
             case 7:
-                return this.properties;
+                return this.typeLabels;
 
             case 8:
-                return this.ttls;
+                return this.properties;
 
             case 9:
-                return this.sizes;
+                return this.ttls;
 
             case 10:
-                return this.fullSizes;
+                return this.sizes;
 
             case 11:
-                return this.totalSize;
+                return this.fullSizes;
 
             case 12:
+                return this.joinSizes;
+
+            case 13:
+                return this.totalSize;
+
+            case 14:
                 return this.totalFullSize;
 
             default:
@@ -501,38 +568,46 @@ public class ShowTableResponse implements IndexedRecord {
                 break;
 
             case 4:
-                this.typeIds = (List<String>)value;
+                this.isJoin = (List<Boolean>)value;
                 break;
 
             case 5:
-                this.typeSchemas = (List<String>)value;
+                this.typeIds = (List<String>)value;
                 break;
 
             case 6:
-                this.typeLabels = (List<String>)value;
+                this.typeSchemas = (List<String>)value;
                 break;
 
             case 7:
-                this.properties = (List<Map<String, List<String>>>)value;
+                this.typeLabels = (List<String>)value;
                 break;
 
             case 8:
-                this.ttls = (List<Integer>)value;
+                this.properties = (List<Map<String, List<String>>>)value;
                 break;
 
             case 9:
-                this.sizes = (List<Long>)value;
+                this.ttls = (List<Integer>)value;
                 break;
 
             case 10:
-                this.fullSizes = (List<Long>)value;
+                this.sizes = (List<Long>)value;
                 break;
 
             case 11:
-                this.totalSize = (Long)value;
+                this.fullSizes = (List<Long>)value;
                 break;
 
             case 12:
+                this.joinSizes = (List<Double>)value;
+                break;
+
+            case 13:
+                this.totalSize = (Long)value;
+                break;
+
+            case 14:
                 this.totalFullSize = (Long)value;
                 break;
 
@@ -557,6 +632,7 @@ public class ShowTableResponse implements IndexedRecord {
                  && this.tableNames.equals( that.tableNames )
                  && this.isCollection.equals( that.isCollection )
                  && this.isView.equals( that.isView )
+                 && this.isJoin.equals( that.isJoin )
                  && this.typeIds.equals( that.typeIds )
                  && this.typeSchemas.equals( that.typeSchemas )
                  && this.typeLabels.equals( that.typeLabels )
@@ -564,6 +640,7 @@ public class ShowTableResponse implements IndexedRecord {
                  && this.ttls.equals( that.ttls )
                  && this.sizes.equals( that.sizes )
                  && this.fullSizes.equals( that.fullSizes )
+                 && this.joinSizes.equals( that.joinSizes )
                  && ( this.totalSize == that.totalSize )
                  && ( this.totalFullSize == that.totalFullSize ) );
     }
@@ -588,6 +665,10 @@ public class ShowTableResponse implements IndexedRecord {
         builder.append( gd.toString( "isView" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.isView ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "isJoin" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.isJoin ) );
         builder.append( ", " );
         builder.append( gd.toString( "typeIds" ) );
         builder.append( ": " );
@@ -617,6 +698,10 @@ public class ShowTableResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.fullSizes ) );
         builder.append( ", " );
+        builder.append( gd.toString( "joinSizes" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.joinSizes ) );
+        builder.append( ", " );
         builder.append( gd.toString( "totalSize" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.totalSize ) );
@@ -636,6 +721,7 @@ public class ShowTableResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.tableNames.hashCode();
         hashCode = (31 * hashCode) + this.isCollection.hashCode();
         hashCode = (31 * hashCode) + this.isView.hashCode();
+        hashCode = (31 * hashCode) + this.isJoin.hashCode();
         hashCode = (31 * hashCode) + this.typeIds.hashCode();
         hashCode = (31 * hashCode) + this.typeSchemas.hashCode();
         hashCode = (31 * hashCode) + this.typeLabels.hashCode();
@@ -643,6 +729,7 @@ public class ShowTableResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.ttls.hashCode();
         hashCode = (31 * hashCode) + this.sizes.hashCode();
         hashCode = (31 * hashCode) + this.fullSizes.hashCode();
+        hashCode = (31 * hashCode) + this.joinSizes.hashCode();
         hashCode = (31 * hashCode) + ((Long)this.totalSize).hashCode();
         hashCode = (31 * hashCode) + ((Long)this.totalFullSize).hashCode();
         return hashCode;

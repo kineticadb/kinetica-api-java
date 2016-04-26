@@ -78,6 +78,60 @@ public class GPUdb extends GPUdbBase {
     }
 
     /**
+     * Delete a node from the system.  To delete a node, the data is first
+     * distributed from the deleted node to all the other nodes.  Then the node
+     * is taken out of service.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminDeleteNodeResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminDeleteNodeResponse adminDeleteNode(AdminDeleteNodeRequest request) throws GPUdbException {
+        AdminDeleteNodeResponse actualResponse_ = new AdminDeleteNodeResponse();
+        submitRequest("/admin/delete/node", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Delete a node from the system.  To delete a node, the data is first
+     * distributed from the deleted node to all the other nodes.  Then the node
+     * is taken out of service.
+     * 
+     * @param rank  Rank number of the node being removed from the system.
+     * @param authorization  The password that GPUdb is configured with during
+     *                       startup. Incorrect or missing authorization code
+     *                       will result in an error.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminDeleteNodeResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminDeleteNodeResponse adminDeleteNode(int rank, String authorization, Map<String, String> options) throws GPUdbException {
+        AdminDeleteNodeRequest actualRequest_ = new AdminDeleteNodeRequest(rank, authorization, options);
+        AdminDeleteNodeResponse actualResponse_ = new AdminDeleteNodeResponse();
+        submitRequest("/admin/delete/node", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Returns the list of shards and the corresponding rank and tom containing
+     * the shard.  The response message contains arrays of 16384 (total number
+     * of shards in the system) rank and tom numbers corresponding to each
+     * shard.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -98,8 +152,12 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Returns the list of shards and the corresponding rank and tom containing
+     * the shard.  The response message contains arrays of 16384 (total number
+     * of shards in the system) rank and tom numbers corresponding to each
+     * shard.
      * 
-     * @param dummy
+     * @param options  Optional parameters.
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -108,8 +166,8 @@ public class GPUdb extends GPUdbBase {
      * @throws GPUdbException  if an error occurs during the operation.
      * 
      */
-    public AdminGetShardAssignmentsResponse adminGetShardAssignments(String dummy) throws GPUdbException {
-        AdminGetShardAssignmentsRequest actualRequest_ = new AdminGetShardAssignmentsRequest(dummy);
+    public AdminGetShardAssignmentsResponse adminGetShardAssignments(Map<String, String> options) throws GPUdbException {
+        AdminGetShardAssignmentsRequest actualRequest_ = new AdminGetShardAssignmentsRequest(options);
         AdminGetShardAssignmentsResponse actualResponse_ = new AdminGetShardAssignmentsResponse();
         submitRequest("/admin/getshardassignments", actualRequest_, actualResponse_, false);
         return actualResponse_;
@@ -143,7 +201,7 @@ public class GPUdb extends GPUdbBase {
      * Take the system offline. When the system is offline, no user operations
      * can be performed with the exception of a system shutdown.
      * 
-     * @param offline  desired offline state
+     * @param offline  Set to true if desired state is offline.
      * @param options  Optional parameters.
      * 
      * @return Response object containing the results of the operation.
@@ -157,6 +215,52 @@ public class GPUdb extends GPUdbBase {
         AdminOfflineRequest actualRequest_ = new AdminOfflineRequest(offline, options);
         AdminOfflineResponse actualResponse_ = new AdminOfflineResponse();
         submitRequest("/admin/offline", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Rebalance the database such that all the nodes contain approximately
+     * equal number of records.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminRebalanceResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminRebalanceResponse adminRebalance(AdminRebalanceRequest request) throws GPUdbException {
+        AdminRebalanceResponse actualResponse_ = new AdminRebalanceResponse();
+        submitRequest("/admin/rebalance", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Rebalance the database such that all the nodes contain approximately
+     * equal number of records.
+     * 
+     * @param tableNames  Names of the tables to be rebalanced.  If array is
+     *                    empty, all tables will be rebalanced.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminRebalanceResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminRebalanceResponse adminRebalance(List<String> tableNames, Map<String, String> options) throws GPUdbException {
+        AdminRebalanceRequest actualRequest_ = new AdminRebalanceRequest(tableNames, options);
+        AdminRebalanceResponse actualResponse_ = new AdminRebalanceResponse();
+        submitRequest("/admin/rebalance", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -189,6 +293,7 @@ public class GPUdb extends GPUdbBase {
      * @param shardAssignmentsRank
      * @param shardAssignmentsTom
      * @param assignmentIndex
+     * @param options  Optional parameters.
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -197,8 +302,8 @@ public class GPUdb extends GPUdbBase {
      * @throws GPUdbException  if an error occurs during the operation.
      * 
      */
-    public AdminSetShardAssignmentsResponse adminSetShardAssignments(long version, boolean partialReassignment, List<Integer> shardAssignmentsRank, List<Integer> shardAssignmentsTom, List<Integer> assignmentIndex) throws GPUdbException {
-        AdminSetShardAssignmentsRequest actualRequest_ = new AdminSetShardAssignmentsRequest(version, partialReassignment, shardAssignmentsRank, shardAssignmentsTom, assignmentIndex);
+    public AdminSetShardAssignmentsResponse adminSetShardAssignments(long version, boolean partialReassignment, List<Integer> shardAssignmentsRank, List<Integer> shardAssignmentsTom, List<Integer> assignmentIndex, Map<String, String> options) throws GPUdbException {
+        AdminSetShardAssignmentsRequest actualRequest_ = new AdminSetShardAssignmentsRequest(version, partialReassignment, shardAssignmentsRank, shardAssignmentsTom, assignmentIndex, options);
         AdminSetShardAssignmentsResponse actualResponse_ = new AdminSetShardAssignmentsResponse();
         submitRequest("/admin/setshardassignments", actualRequest_, actualResponse_, false);
         return actualResponse_;
@@ -251,6 +356,52 @@ public class GPUdb extends GPUdbBase {
         AdminShutdownRequest actualRequest_ = new AdminShutdownRequest(exitType, authorization, options);
         AdminShutdownResponse actualResponse_ = new AdminShutdownResponse();
         submitRequest("/admin/shutdown", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Verify database is in a consistent state.  When inconsistencies or
+     * errors are found, the verified_ok flag in the response is set to false
+     * and the list of errors found is provided in the error_list.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminVerifyDbResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminVerifyDbResponse adminVerifyDb(AdminVerifyDbRequest request) throws GPUdbException {
+        AdminVerifyDbResponse actualResponse_ = new AdminVerifyDbResponse();
+        submitRequest("/admin/verifydb", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Verify database is in a consistent state.  When inconsistencies or
+     * errors are found, the verified_ok flag in the response is set to false
+     * and the list of errors found is provided in the error_list.
+     * 
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminVerifyDbResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminVerifyDbResponse adminVerifyDb(Map<String, String> options) throws GPUdbException {
+        AdminVerifyDbRequest actualRequest_ = new AdminVerifyDbRequest(options);
+        AdminVerifyDbResponse actualResponse_ = new AdminVerifyDbResponse();
+        submitRequest("/admin/verifydb", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -1744,7 +1895,12 @@ public class GPUdb extends GPUdbBase {
      * @param label  A user-defined description string which can be used to
      *               differentiate between tables and types with otherwise
      *               identical schemas.
-     * @param properties
+     * @param properties  Each key-value pair specifies the properties to use
+     *                    for a given column where the key is the column name.
+     *                    All keys used must be relevant column names for the
+     *                    given table.  Specifying any property overrides the
+     *                    default properties for that column (which is based on
+     *                    the column's data type).
      * @param options  Optional parameters.
      * 
      * @return Response object containing the results of the operation.
@@ -3775,7 +3931,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Generates a specified number of random records and adds them to the
-     * given table. There is an optional parameter that allows the user to
+     * given tble. There is an optional parameter that allows the user to
      * customize the ranges of the column values. It also allows the user to
      * specify linear profiles for some or all columns in which case linear
      * values are generated rather than random ones. Only individual tables are
@@ -3804,7 +3960,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Generates a specified number of random records and adds them to the
-     * given table. There is an optional parameter that allows the user to
+     * given tble. There is an optional parameter that allows the user to
      * customize the ranges of the column values. It also allows the user to
      * specify linear profiles for some or all columns in which case linear
      * values are generated rather than random ones. Only individual tables are
@@ -4838,8 +4994,6 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * All color values must be in the format RRGGBB or AARRGGBB (to specify
      * the alpha value).
-     * <p>
-
      * The image is contained in the {@code imageData} field.
      * 
      * @param request  Request object containing the parameters for the
@@ -4873,8 +5027,6 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * All color values must be in the format RRGGBB or AARRGGBB (to specify
      * the alpha value).
-     * <p>
-
      * The image is contained in the {@code imageData} field.
      * 
      * @param tableNames  Name of the table containing the data for the various
@@ -5156,7 +5308,7 @@ public class GPUdb extends GPUdbBase {
      * Creates raster images of data in the given table based on provided input
      * parameters. Numerous parameters are required to call this function. Some
      * of the important parameters are the attributes of the generated images
-     * ({@code bgColor}, {@code width}, @{input height{), the collection of
+     * ({@code bgColor}, {@code width}, {@code height}), the collection of
      * GPUdb table names on which this function is to be applied, for which
      * shapes (point, polygon, tracks) the images are to be created and a user
      * specified session key. This session key is later used to fetch the
@@ -5182,10 +5334,6 @@ public class GPUdb extends GPUdbBase {
      * <p>
      *     http://gpudb-ip-address:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS
      * =MY-SESSION-KEY&FRAME=19
-     * <p>
-
-     * <p>
-
      * The response payload provides, among other things, the number of frames
      * which were created by GPUdb.
      * 
@@ -5211,7 +5359,7 @@ public class GPUdb extends GPUdbBase {
      * Creates raster images of data in the given table based on provided input
      * parameters. Numerous parameters are required to call this function. Some
      * of the important parameters are the attributes of the generated images
-     * ({@code bgColor}, {@code width}, @{input height{), the collection of
+     * ({@code bgColor}, {@code width}, {@code height}), the collection of
      * GPUdb table names on which this function is to be applied, for which
      * shapes (point, polygon, tracks) the images are to be created and a user
      * specified session key. This session key is later used to fetch the
@@ -5237,10 +5385,6 @@ public class GPUdb extends GPUdbBase {
      * <p>
      *     http://gpudb-ip-address:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS
      * =MY-SESSION-KEY&FRAME=19
-     * <p>
-
-     * <p>
-
      * The response payload provides, among other things, the number of frames
      * which were created by GPUdb.
      * 
