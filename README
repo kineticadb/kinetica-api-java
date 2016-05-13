@@ -1,10 +1,12 @@
-==================
-|                |
-| GPUdb Java API |
-|                |
-==================
+=========================
+|                       |
+| GPUdb Java API v4.2.0 |
+|                       |
+=========================
 
 There are two projects in this repository: the GPUdb Java API and an example project.
+
+
 
 api
 ---
