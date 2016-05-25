@@ -16,7 +16,7 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#hasTable(HasTableRequest)}.
  * <p>
- * Checks the existance of a table with the given name in GPUdb.
+ * Checks the existence of a table with the given name in GPUdb.
  */
 public class HasTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -54,7 +54,7 @@ public class HasTableRequest implements IndexedRecord {
     /**
      * Constructs a HasTableRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to check for existance.
+     * @param tableName  Name of the table to check for existence.
      * @param options  Optional parameters.
      * 
      */
@@ -65,7 +65,7 @@ public class HasTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to check for existance.
+     * @return Name of the table to check for existence.
      * 
      */
     public String getTableName() {
@@ -74,7 +74,7 @@ public class HasTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to check for existance.
+     * @param tableName  Name of the table to check for existence.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

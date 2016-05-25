@@ -18,7 +18,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
  * <p>
- * Exectues a proc in the GPUdb Node.js proc server.
+ * Executes a proc in the GPUdb Node.js proc server.
  */
 public class ExecuteProcRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

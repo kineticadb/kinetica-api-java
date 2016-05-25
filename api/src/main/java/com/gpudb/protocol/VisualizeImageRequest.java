@@ -19,8 +19,8 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#visualizeImage(VisualizeImageRequest)}.
  * <p>
- * Generates 'class break' rasterized image tiles for an area of interest using
- * the given tables and the provided parameters.
+ * Generates rasterized image tiles for an area of interest using the given
+ * tables and the provided parameters.
  * <p>
  * All color values must be in the format RRGGBB or AARRGGBB (to specify the
  * alpha value).

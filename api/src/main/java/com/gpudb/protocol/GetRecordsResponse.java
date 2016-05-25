@@ -22,6 +22,8 @@ public class GetRecordsResponse<T> {
     private String typeName;
     private String typeSchema;
     private List<T> data;
+    private long totalNumberOfRecords;
+    private boolean hasMoreRecords;
 
 
     /**
@@ -112,6 +114,48 @@ public class GetRecordsResponse<T> {
         this.data = (data == null) ? new ArrayList<T>() : data;
         return this;
     }
+
+    /**
+     * 
+     * @return Total/Filtered number of records.
+     * 
+     */
+    public long getTotalNumberOfRecords() {
+        return totalNumberOfRecords;
+    }
+
+    /**
+     * 
+     * @param totalNumberOfRecords  Total/Filtered number of records.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public GetRecordsResponse<T> setTotalNumberOfRecords(long totalNumberOfRecords) {
+        this.totalNumberOfRecords = totalNumberOfRecords;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Too many records. Returned a partial set.
+     * 
+     */
+    public boolean getHasMoreRecords() {
+        return hasMoreRecords;
+    }
+
+    /**
+     * 
+     * @param hasMoreRecords  Too many records. Returned a partial set.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public GetRecordsResponse<T> setHasMoreRecords(boolean hasMoreRecords) {
+        this.hasMoreRecords = hasMoreRecords;
+        return this;
+    }
     @Override
     public boolean equals(Object obj) {
         if( obj == this ) {
@@ -127,7 +171,9 @@ public class GetRecordsResponse<T> {
         return ( this.tableName.equals( that.tableName )
                  && this.typeName.equals( that.typeName )
                  && this.typeSchema.equals( that.typeSchema )
-                 && this.data.equals( that.data ) );
+                 && this.data.equals( that.data )
+                 && ( this.totalNumberOfRecords == that.totalNumberOfRecords )
+                 && ( this.hasMoreRecords == that.hasMoreRecords ) );
     }
 
     @Override
@@ -150,6 +196,14 @@ public class GetRecordsResponse<T> {
         builder.append( gd.toString( "data" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.data ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "totalNumberOfRecords" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.totalNumberOfRecords ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "hasMoreRecords" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.hasMoreRecords ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -162,6 +216,8 @@ public class GetRecordsResponse<T> {
         hashCode = (31 * hashCode) + this.typeName.hashCode();
         hashCode = (31 * hashCode) + this.typeSchema.hashCode();
         hashCode = (31 * hashCode) + this.data.hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.totalNumberOfRecords).hashCode();
+        hashCode = (31 * hashCode) + ((Boolean)this.hasMoreRecords).hashCode();
         return hashCode;
     }
 

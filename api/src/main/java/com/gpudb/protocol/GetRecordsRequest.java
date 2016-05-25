@@ -27,6 +27,9 @@ import org.apache.avro.generic.IndexedRecord;
  * table (or the underlying table in case of a view) is updated (records are
  * inserted, deleted or modified) the records retrieved may differ between
  * calls based on the updates applied.
+ * <p>
+ * Note that when using the Java API, it is not possible to retrieve records
+ * from join tables using this operation.
  */
 public class GetRecordsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

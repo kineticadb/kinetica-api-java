@@ -136,7 +136,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      *                          expression is true.
      * @param columnName  Name of the binning-column used to divide the set
      *                    samples into bins.
-     * @param valueColumnName  Optional Name of the column for which statistics
+     * @param valueColumnName  Name of the value-column for which statistics
      *                         are to be computed.
      * @param stats  A string of comma separated list of the statistics to
      *               calculate, e.g. 'sum,mean'. Available statistics: mean,
@@ -233,7 +233,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional Name of the column for which statistics are to be
+     * @return Name of the value-column for which statistics are to be
      *         computed.
      * 
      */
@@ -243,7 +243,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param valueColumnName  Optional Name of the column for which statistics
+     * @param valueColumnName  Name of the value-column for which statistics
      *                         are to be computed.
      * 
      * @return {@code this} to mimic the builder pattern.

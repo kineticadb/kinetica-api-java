@@ -23,6 +23,9 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * This operation supports paging through the data via the {@code offset} and
  * {@code limit} parameters.
+ * <p>
+ * Note that when using the Java API, it is not possible to retrieve records
+ * from join tables using this operation.
  */
 public class GetRecordsFromCollectionRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

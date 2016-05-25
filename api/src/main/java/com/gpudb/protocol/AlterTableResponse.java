@@ -20,7 +20,9 @@ public class AlterTableResponse implements IndexedRecord {
             .record("AlterTableResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("status").type().stringType().noDefault()
+                .name("tableName").type().stringType().noDefault()
+                .name("action").type().stringType().noDefault()
+                .name("value").type().stringType().noDefault()
             .endRecord();
 
 
@@ -35,7 +37,9 @@ public class AlterTableResponse implements IndexedRecord {
         return schema$;
     }
 
-    private String status;
+    private String tableName;
+    private String action;
+    private String value;
 
 
     /**
@@ -46,28 +50,64 @@ public class AlterTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Response string; either 'Index created: <column_name>', 'Index
-     *         deleted: <column_name>', or a comma separated list of indexed
-     *         column_names for the given table (if {@code action} = {@code
-     *         list}).
+     * @return Table on which the operation was performed.
      * 
      */
-    public String getStatus() {
-        return status;
+    public String getTableName() {
+        return tableName;
     }
 
     /**
      * 
-     * @param status  Response string; either 'Index created: <column_name>',
-     *                'Index deleted: <column_name>', or a comma separated list
-     *                of indexed column_names for the given table (if {@code
-     *                action} = {@code list}).
+     * @param tableName  Table on which the operation was performed.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AlterTableResponse setStatus(String status) {
-        this.status = (status == null) ? "" : status;
+    public AlterTableResponse setTableName(String tableName) {
+        this.tableName = (tableName == null) ? "" : tableName;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Modification operation that was performed.
+     * 
+     */
+    public String getAction() {
+        return action;
+    }
+
+    /**
+     * 
+     * @param action  Modification operation that was performed.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AlterTableResponse setAction(String action) {
+        this.action = (action == null) ? "" : action;
+        return this;
+    }
+
+    /**
+     * 
+     * @return The value of the modification that was performed.
+     * 
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * 
+     * @param value  The value of the modification that was performed.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AlterTableResponse setValue(String value) {
+        this.value = (value == null) ? "" : value;
         return this;
     }
 
@@ -98,7 +138,13 @@ public class AlterTableResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.status;
+                return this.tableName;
+
+            case 1:
+                return this.action;
+
+            case 2:
+                return this.value;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -120,7 +166,15 @@ public class AlterTableResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.status = (String)value;
+                this.tableName = (String)value;
+                break;
+
+            case 1:
+                this.action = (String)value;
+                break;
+
+            case 2:
+                this.value = (String)value;
                 break;
 
             default:
@@ -140,7 +194,9 @@ public class AlterTableResponse implements IndexedRecord {
 
         AlterTableResponse that = (AlterTableResponse)obj;
 
-        return ( this.status.equals( that.status ) );
+        return ( this.tableName.equals( that.tableName )
+                 && this.action.equals( that.action )
+                 && this.value.equals( that.value ) );
     }
 
     @Override
@@ -148,9 +204,17 @@ public class AlterTableResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "status" ) );
+        builder.append( gd.toString( "tableName" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.status ) );
+        builder.append( gd.toString( this.tableName ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "action" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.action ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "value" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.value ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -159,7 +223,9 @@ public class AlterTableResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.status.hashCode();
+        hashCode = (31 * hashCode) + this.tableName.hashCode();
+        hashCode = (31 * hashCode) + this.action.hashCode();
+        hashCode = (31 * hashCode) + this.value.hashCode();
         return hashCode;
     }
 

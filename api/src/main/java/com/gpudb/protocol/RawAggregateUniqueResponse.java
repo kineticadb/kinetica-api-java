@@ -25,6 +25,7 @@ public class RawAggregateUniqueResponse implements IndexedRecord {
                 .name("responseSchemaStr").type().stringType().noDefault()
                 .name("binaryEncodedResponse").type().bytesType().noDefault()
                 .name("jsonEncodedResponse").type().stringType().noDefault()
+                .name("hasMoreRecords").type().booleanType().noDefault()
             .endRecord();
 
 
@@ -43,6 +44,7 @@ public class RawAggregateUniqueResponse implements IndexedRecord {
     private String responseSchemaStr;
     private ByteBuffer binaryEncodedResponse;
     private String jsonEncodedResponse;
+    private boolean hasMoreRecords;
 
 
     /**
@@ -139,6 +141,27 @@ public class RawAggregateUniqueResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Too many records. Returned a partial set.
+     * 
+     */
+    public boolean getHasMoreRecords() {
+        return hasMoreRecords;
+    }
+
+    /**
+     * 
+     * @param hasMoreRecords  Too many records. Returned a partial set.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public RawAggregateUniqueResponse setHasMoreRecords(boolean hasMoreRecords) {
+        this.hasMoreRecords = hasMoreRecords;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -176,6 +199,9 @@ public class RawAggregateUniqueResponse implements IndexedRecord {
             case 3:
                 return this.jsonEncodedResponse;
 
+            case 4:
+                return this.hasMoreRecords;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -211,6 +237,10 @@ public class RawAggregateUniqueResponse implements IndexedRecord {
                 this.jsonEncodedResponse = (String)value;
                 break;
 
+            case 4:
+                this.hasMoreRecords = (Boolean)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -231,7 +261,8 @@ public class RawAggregateUniqueResponse implements IndexedRecord {
         return ( this.tableName.equals( that.tableName )
                  && this.responseSchemaStr.equals( that.responseSchemaStr )
                  && this.binaryEncodedResponse.equals( that.binaryEncodedResponse )
-                 && this.jsonEncodedResponse.equals( that.jsonEncodedResponse ) );
+                 && this.jsonEncodedResponse.equals( that.jsonEncodedResponse )
+                 && ( this.hasMoreRecords == that.hasMoreRecords ) );
     }
 
     @Override
@@ -254,6 +285,10 @@ public class RawAggregateUniqueResponse implements IndexedRecord {
         builder.append( gd.toString( "jsonEncodedResponse" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.jsonEncodedResponse ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "hasMoreRecords" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.hasMoreRecords ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -266,6 +301,7 @@ public class RawAggregateUniqueResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.responseSchemaStr.hashCode();
         hashCode = (31 * hashCode) + this.binaryEncodedResponse.hashCode();
         hashCode = (31 * hashCode) + this.jsonEncodedResponse.hashCode();
+        hashCode = (31 * hashCode) + ((Boolean)this.hasMoreRecords).hashCode();
         return hashCode;
     }
 

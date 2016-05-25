@@ -124,7 +124,10 @@ public class CreateTableRequest implements IndexedRecord {
      *                   type.  Error for requests with existing table of the
      *                   same name and type id may be suppressed by using the
      *                   {@code no_error_if_exists} option.  Cannot be an empty
-     *                   string.
+     *                   string.  Valid characters are 'A-Za-z0-9_-(){}[] .:'
+     *                   (excluding the single quote), with the first character
+     *                   being one of 'A-Za-z0-9_'.  The maximum length is 256
+     *                   characters.
      * @param typeId  ID of a currently registered type in GPUdb. All objects
      *                added to the newly created table will be of this type.
      *                Must be an empty string if the *is_collection* is 'true'.
@@ -143,7 +146,10 @@ public class CreateTableRequest implements IndexedRecord {
      *         currently existing GPUdb table of a different type.  Error for
      *         requests with existing table of the same name and type id may be
      *         suppressed by using the {@code no_error_if_exists} option.
-     *         Cannot be an empty string.
+     *         Cannot be an empty string.  Valid characters are
+     *         'A-Za-z0-9_-(){}[] .:' (excluding the single quote), with the
+     *         first character being one of 'A-Za-z0-9_'.  The maximum length
+     *         is 256 characters.
      * 
      */
     public String getTableName() {
@@ -157,7 +163,10 @@ public class CreateTableRequest implements IndexedRecord {
      *                   type.  Error for requests with existing table of the
      *                   same name and type id may be suppressed by using the
      *                   {@code no_error_if_exists} option.  Cannot be an empty
-     *                   string.
+     *                   string.  Valid characters are 'A-Za-z0-9_-(){}[] .:'
+     *                   (excluding the single quote), with the first character
+     *                   being one of 'A-Za-z0-9_'.  The maximum length is 256
+     *                   characters.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

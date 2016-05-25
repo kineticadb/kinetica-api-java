@@ -19,15 +19,29 @@ import org.apache.avro.generic.IndexedRecord;
  * Retrieves detailed information about a particular GPUdb table, specified in
  * {@code tableName}. If the supplied {@code tableName} is a collection, the
  * call returns a list of tables contained in the collection, and for each
- * table it returns the type ids, type schemas, type labels, semantic types,
- * and ttls. If the option 'get_sizes' is set to 'true' then  the sizes
- * (objects and elements) of each table are returned (in {@code sizes} and
- * {@code fullSizes}), along with the total number of objects in the requested
- * table (in {@code totalSize} and {@code totalFullSize}).
+ * table it returns the description, type id, schema, type label, type
+ * propertiess, and additional information including TTL. If {@code tableName}
+ * is empty it will return all top-level tables including all collections and
+ * top-level child tables (i.e. tables with no parent).
+ * <p>
+ *     If the option 'get_sizes' is set to 'true' then the sizes (objects and
+ * elements) of each table are returned (in {@code sizes} and {@code
+ * fullSizes}), along with the total number of objects in the requested table
+ * (in {@code totalSize} and {@code totalFullSize}).
+ * <p>
+ *     If the option 'show_children' is set to 'false' then for a collection it
+ * only returns information about the collection itself, not about the child
+ * tables. If 'show_children' is set to 'true' then it will return information
+ * about each of the children.
+ * <p>
+ *     Running with 'show_children' = 'true' on a child table will return an
+ * error.
+ * <p>
+ *     Running with 'show_children' = 'false' with {@code tableName} empty will
+ * return an error.
  * <p>
  * If the requested table is blank, then information is returned about all top-
- * level tables including collections. In this case {@code isCollection}
- * indicates which of the returned table names are collections.
+ * level tables including collections.
  */
 public class ShowTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -58,12 +72,21 @@ public class ShowTableRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * If true then the table sizes will be returned; otherwise they will
+         * If 'true' then the table sizes will be returned; otherwise they will
          * be returned blank.
          */
         public static final String GET_SIZES = "get_sizes";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * If {@code tableName} is a collection, then 'true' will return
+         * information about the children of the collection, and 'false' will
+         * return information about the collection itself. If {@code tableName}
+         * is a child table, 'show_children' must be 'false'. If {@code
+         * tableName} is empty then 'show_children' must be 'true'.
+         */
+        public static final String SHOW_CHILDREN = "show_children";
 
         private Options() {  }
     }

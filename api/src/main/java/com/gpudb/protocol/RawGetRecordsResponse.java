@@ -28,6 +28,8 @@ public class RawGetRecordsResponse implements IndexedRecord {
                 .name("typeSchema").type().stringType().noDefault()
                 .name("recordsBinary").type().array().items().bytesType().noDefault()
                 .name("recordsJson").type().array().items().stringType().noDefault()
+                .name("totalNumberOfRecords").type().longType().noDefault()
+                .name("hasMoreRecords").type().booleanType().noDefault()
             .endRecord();
 
 
@@ -47,6 +49,8 @@ public class RawGetRecordsResponse implements IndexedRecord {
     private String typeSchema;
     private List<ByteBuffer> recordsBinary;
     private List<String> recordsJson;
+    private long totalNumberOfRecords;
+    private boolean hasMoreRecords;
 
 
     /**
@@ -164,6 +168,48 @@ public class RawGetRecordsResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Total/Filtered number of records.
+     * 
+     */
+    public long getTotalNumberOfRecords() {
+        return totalNumberOfRecords;
+    }
+
+    /**
+     * 
+     * @param totalNumberOfRecords  Total/Filtered number of records.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public RawGetRecordsResponse setTotalNumberOfRecords(long totalNumberOfRecords) {
+        this.totalNumberOfRecords = totalNumberOfRecords;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Too many records. Returned a partial set.
+     * 
+     */
+    public boolean getHasMoreRecords() {
+        return hasMoreRecords;
+    }
+
+    /**
+     * 
+     * @param hasMoreRecords  Too many records. Returned a partial set.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public RawGetRecordsResponse setHasMoreRecords(boolean hasMoreRecords) {
+        this.hasMoreRecords = hasMoreRecords;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -204,6 +250,12 @@ public class RawGetRecordsResponse implements IndexedRecord {
             case 4:
                 return this.recordsJson;
 
+            case 5:
+                return this.totalNumberOfRecords;
+
+            case 6:
+                return this.hasMoreRecords;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -243,6 +295,14 @@ public class RawGetRecordsResponse implements IndexedRecord {
                 this.recordsJson = (List<String>)value;
                 break;
 
+            case 5:
+                this.totalNumberOfRecords = (Long)value;
+                break;
+
+            case 6:
+                this.hasMoreRecords = (Boolean)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -264,7 +324,9 @@ public class RawGetRecordsResponse implements IndexedRecord {
                  && this.typeName.equals( that.typeName )
                  && this.typeSchema.equals( that.typeSchema )
                  && this.recordsBinary.equals( that.recordsBinary )
-                 && this.recordsJson.equals( that.recordsJson ) );
+                 && this.recordsJson.equals( that.recordsJson )
+                 && ( this.totalNumberOfRecords == that.totalNumberOfRecords )
+                 && ( this.hasMoreRecords == that.hasMoreRecords ) );
     }
 
     @Override
@@ -291,6 +353,14 @@ public class RawGetRecordsResponse implements IndexedRecord {
         builder.append( gd.toString( "recordsJson" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.recordsJson ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "totalNumberOfRecords" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.totalNumberOfRecords ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "hasMoreRecords" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.hasMoreRecords ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -304,6 +374,8 @@ public class RawGetRecordsResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.typeSchema.hashCode();
         hashCode = (31 * hashCode) + this.recordsBinary.hashCode();
         hashCode = (31 * hashCode) + this.recordsJson.hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.totalNumberOfRecords).hashCode();
+        hashCode = (31 * hashCode) + ((Boolean)this.hasMoreRecords).hashCode();
         return hashCode;
     }
 

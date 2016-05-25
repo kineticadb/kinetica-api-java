@@ -128,6 +128,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          */
         public static final String REQUEST_TIMEOUT = "request_timeout";
 
+        /**
+         * set max_get_records_size. default 20000
+         */
+        public static final String MAX_GET_RECORDS_SIZE = "max_get_records_size";
+
         private PropertyUpdatesMap() {  }
     }
 

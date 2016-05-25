@@ -21,6 +21,7 @@ public class CreateJoinTableResponse implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("joinTableName").type().stringType().noDefault()
+                .name("count").type().longType().noDefault()
             .endRecord();
 
 
@@ -36,6 +37,7 @@ public class CreateJoinTableResponse implements IndexedRecord {
     }
 
     private String joinTableName;
+    private long count;
 
 
     /**
@@ -62,6 +64,29 @@ public class CreateJoinTableResponse implements IndexedRecord {
      */
     public CreateJoinTableResponse setJoinTableName(String joinTableName) {
         this.joinTableName = (joinTableName == null) ? "" : joinTableName;
+        return this;
+    }
+
+    /**
+     * 
+     * @return The number of records in the join table filtered by the given
+     *         select expression.
+     * 
+     */
+    public long getCount() {
+        return count;
+    }
+
+    /**
+     * 
+     * @param count  The number of records in the join table filtered by the
+     *               given select expression.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public CreateJoinTableResponse setCount(long count) {
+        this.count = count;
         return this;
     }
 
@@ -94,6 +119,9 @@ public class CreateJoinTableResponse implements IndexedRecord {
             case 0:
                 return this.joinTableName;
 
+            case 1:
+                return this.count;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -117,6 +145,10 @@ public class CreateJoinTableResponse implements IndexedRecord {
                 this.joinTableName = (String)value;
                 break;
 
+            case 1:
+                this.count = (Long)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -134,7 +166,8 @@ public class CreateJoinTableResponse implements IndexedRecord {
 
         CreateJoinTableResponse that = (CreateJoinTableResponse)obj;
 
-        return ( this.joinTableName.equals( that.joinTableName ) );
+        return ( this.joinTableName.equals( that.joinTableName )
+                 && ( this.count == that.count ) );
     }
 
     @Override
@@ -145,6 +178,10 @@ public class CreateJoinTableResponse implements IndexedRecord {
         builder.append( gd.toString( "joinTableName" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.joinTableName ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "count" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.count ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -154,6 +191,7 @@ public class CreateJoinTableResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.joinTableName.hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.count).hashCode();
         return hashCode;
     }
 

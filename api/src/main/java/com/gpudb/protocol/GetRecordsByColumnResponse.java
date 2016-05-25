@@ -18,6 +18,8 @@ import org.apache.avro.generic.GenericData;
 public class GetRecordsByColumnResponse {
     private String tableName;
     private List<Record> data;
+    private long totalNumberOfRecords;
+    private boolean hasMoreRecords;
 
 
     /**
@@ -68,6 +70,48 @@ public class GetRecordsByColumnResponse {
         this.data = (data == null) ? new ArrayList<Record>() : data;
         return this;
     }
+
+    /**
+     * 
+     * @return Total/Filtered number of records.
+     * 
+     */
+    public long getTotalNumberOfRecords() {
+        return totalNumberOfRecords;
+    }
+
+    /**
+     * 
+     * @param totalNumberOfRecords  Total/Filtered number of records.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public GetRecordsByColumnResponse setTotalNumberOfRecords(long totalNumberOfRecords) {
+        this.totalNumberOfRecords = totalNumberOfRecords;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Too many records. Returned a partial set.
+     * 
+     */
+    public boolean getHasMoreRecords() {
+        return hasMoreRecords;
+    }
+
+    /**
+     * 
+     * @param hasMoreRecords  Too many records. Returned a partial set.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public GetRecordsByColumnResponse setHasMoreRecords(boolean hasMoreRecords) {
+        this.hasMoreRecords = hasMoreRecords;
+        return this;
+    }
     @Override
     public boolean equals(Object obj) {
         if( obj == this ) {
@@ -81,7 +125,9 @@ public class GetRecordsByColumnResponse {
         GetRecordsByColumnResponse that = (GetRecordsByColumnResponse)obj;
 
         return ( this.tableName.equals( that.tableName )
-                 && this.data.equals( that.data ) );
+                 && this.data.equals( that.data )
+                 && ( this.totalNumberOfRecords == that.totalNumberOfRecords )
+                 && ( this.hasMoreRecords == that.hasMoreRecords ) );
     }
 
     @Override
@@ -96,6 +142,14 @@ public class GetRecordsByColumnResponse {
         builder.append( gd.toString( "data" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.data ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "totalNumberOfRecords" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.totalNumberOfRecords ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "hasMoreRecords" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.hasMoreRecords ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -106,6 +160,8 @@ public class GetRecordsByColumnResponse {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.tableName.hashCode();
         hashCode = (31 * hashCode) + this.data.hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.totalNumberOfRecords).hashCode();
+        hashCode = (31 * hashCode) + ((Boolean)this.hasMoreRecords).hashCode();
         return hashCode;
     }
 

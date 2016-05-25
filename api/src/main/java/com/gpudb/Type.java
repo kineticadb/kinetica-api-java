@@ -159,12 +159,13 @@ public final class Type {
 
     /**
      * Creates a {@link Type} object containing metadata for the GPUdb type of
-     * an existing table in GPUdb. Note that this method makes a request to
-     * GPUdb to obtain the metadata.
+     * an existing table (excluding join tables) in GPUdb. Note that this method
+     * makes a request to GPUdb to obtain the metadata.
      *
      * @param gpudb      the {@link GPUdb} instance from which to obtain the
      *                   metadata
-     * @param tableName  the name of the table in GPUdb
+     * @param tableName  the name of the table in GPUdb (must not be a join
+     *                   table)
      * @return           the created {@link Type} object
      *
      * @throws GPUdbException if the table does not exist or is not homogeneous,
@@ -191,13 +192,14 @@ public final class Type {
     }
 
     /**
-     * Creates a {@link Type} object containing metadata for an existing type in
-     * GPUdb. Note that this method makes a request to GPUdb to obtain the
-     * metadata.
+     * Creates a {@link Type} object containing metadata for an existing type
+     * (excluding types of join tables) in GPUdb. Note that this method makes a
+     * request to GPUdb to obtain the metadata.
      *
      * @param gpudb   the {@link GPUdb} instance from which to obtain the
      *                metadata
-     * @param typeId  the type ID of the type in GPUdb
+     * @param typeId  the type ID of the type in GPUdb (must not be the type of
+     *                a join table)
      * @return        the created {@link Type} object
      *
      * @throws GPUdbException if the type does not exist or if an error occurs

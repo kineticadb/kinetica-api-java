@@ -16,7 +16,7 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#hasType(HasTypeRequest)}.
  * <p>
- * Check the existance of a type in GPUdb.
+ * Check the existence of a type in GPUdb.
  */
 public class HasTypeRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

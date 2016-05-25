@@ -17,12 +17,26 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#alterTable(AlterTableRequest)}.
  * <p>
- * Creates or deletes an index on a particular column in a given table.
- * Creating an index can speed up certain search queries (such as {@link
+ * Apply various modifications to a table or collection. Available
+ * modifications include:
+ * <p>
+ *      Cereating or deleting an index on a particular column. This can speed
+ * up certain search queries (such as {@link
  * com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link
  * com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}, {@link
  * com.gpudb.GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}) when using
  * expressions containing equality or relational operators on indexed columns.
+ * This only applies to child tables.
+ * <p>
+ *      Making a table protected or not. Protected tables need the admin
+ * password to be sent in a {@link
+ * com.gpudb.GPUdb#clearTable(ClearTableRequest)} to delete the table. This can
+ * be applied to child tables or collections or views.
+ * <p>
+ *      Setting the ttl (time-to-live). This can be applied to child tables or
+ * collections or views.
+ * <p>
+ *      Allowing homogeneous child tables. This only applies to collections.
  */
 public class AlterTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -30,8 +44,8 @@ public class AlterTableRequest implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("tableName").type().stringType().noDefault()
-                .name("columnName").type().stringType().noDefault()
                 .name("action").type().stringType().noDefault()
+                .name("value").type().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -49,35 +63,49 @@ public class AlterTableRequest implements IndexedRecord {
 
 
     /**
-     * Kind of index operation being performed on the table
+     * Modification operation to be applied to the table or collection
      * A set of string constants for the parameter {@code action}.
      */
     public static final class Action {
 
         /**
-         * Creates an index on {@code columnName}.  If this column is already
-         * indexed, then GPUdb throws an error.
+         * Creates an index on the column name specified in {@code value}. If
+         * this column is already indexed, GPUdb will return an error.
          */
-        public static final String CREATE = "create";
+        public static final String CREATE_INDEX = "create_index";
 
         /**
-         * Deletes the existing index on {@code columnName}.  If this column
-         * does not have indexing turned on, then GPUdb throws an error.
+         * Deletes an existing index on the column name specified in {@code
+         * value}. If this column does not have indexing turned on, GPUdb will
+         * return an error.
          */
-        public static final String DELETE = "delete";
+        public static final String DELETE_INDEX = "delete_index";
 
         /**
-         * Lists names of all the columns in this table that have indexing
-         * turned on.
+         * Sets whether homogeneous child tables are allowed in the given
+         * collection. This action is only valid if {@code tableName} is a
+         * collection. {@code value} must be either 'true' or 'false'.
          */
-        public static final String LIST = "list";
+        public static final String ALLOW_HOMOGENEOUS_TABLES = "allow_homogeneous_tables";
+
+        /**
+         * Sets whether the given {@code tableName} should be protected or not.
+         * {@code value} must be either 'true' or 'false'.
+         */
+        public static final String PROTECTED = "protected";
+
+        /**
+         * Sets the ttl (time-to-live) of the table or collection specified in
+         * {@code tableName}. {@code value} must be the desired ttl in minutes.
+         */
+        public static final String TTL = "ttl";
 
         private Action() {  }
     }
 
     private String tableName;
-    private String columnName;
     private String action;
+    private String value;
     private Map<String, String> options;
 
 
@@ -86,8 +114,8 @@ public class AlterTableRequest implements IndexedRecord {
      */
     public AlterTableRequest() {
         tableName = "";
-        columnName = "";
         action = "";
+        value = "";
         options = new LinkedHashMap<>();
     }
 
@@ -95,26 +123,26 @@ public class AlterTableRequest implements IndexedRecord {
      * Constructs an AlterTableRequest object with the specified parameters.
      * 
      * @param tableName  Table on which the operation will be performed. Must
-     *                   be a valid table in GPUdb.  This can not be a
-     *                   collection.
-     * @param columnName  Name of the column on which the index will be created
-     *                    or deleted (can be empty when {@code action} = {@code
-     *                    list}).
-     * @param action  Kind of index operation being performed on the table
+     *                   be a valid table or collection in GPUdb.
+     * @param action  Modification operation to be applied to the table or
+     *                collection
+     * @param value  The value of the modification. May be a column name,
+     *               'true' or 'false', or a time-to-live depending on {@code
+     *               action}.
      * @param options  Optional parameters.
      * 
      */
-    public AlterTableRequest(String tableName, String columnName, String action, Map<String, String> options) {
+    public AlterTableRequest(String tableName, String action, String value, Map<String, String> options) {
         this.tableName = (tableName == null) ? "" : tableName;
-        this.columnName = (columnName == null) ? "" : columnName;
         this.action = (action == null) ? "" : action;
+        this.value = (value == null) ? "" : value;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
      * 
      * @return Table on which the operation will be performed. Must be a valid
-     *         table in GPUdb.  This can not be a collection.
+     *         table or collection in GPUdb.
      * 
      */
     public String getTableName() {
@@ -124,8 +152,7 @@ public class AlterTableRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Table on which the operation will be performed. Must
-     *                   be a valid table in GPUdb.  This can not be a
-     *                   collection.
+     *                   be a valid table or collection in GPUdb.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -137,31 +164,7 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the column on which the index will be created or deleted
-     *         (can be empty when {@code action} = {@code list}).
-     * 
-     */
-    public String getColumnName() {
-        return columnName;
-    }
-
-    /**
-     * 
-     * @param columnName  Name of the column on which the index will be created
-     *                    or deleted (can be empty when {@code action} = {@code
-     *                    list}).
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public AlterTableRequest setColumnName(String columnName) {
-        this.columnName = (columnName == null) ? "" : columnName;
-        return this;
-    }
-
-    /**
-     * 
-     * @return Kind of index operation being performed on the table
+     * @return Modification operation to be applied to the table or collection
      * 
      */
     public String getAction() {
@@ -170,13 +173,38 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param action  Kind of index operation being performed on the table
+     * @param action  Modification operation to be applied to the table or
+     *                collection
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
     public AlterTableRequest setAction(String action) {
         this.action = (action == null) ? "" : action;
+        return this;
+    }
+
+    /**
+     * 
+     * @return The value of the modification. May be a column name, 'true' or
+     *         'false', or a time-to-live depending on {@code action}.
+     * 
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * 
+     * @param value  The value of the modification. May be a column name,
+     *               'true' or 'false', or a time-to-live depending on {@code
+     *               action}.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AlterTableRequest setValue(String value) {
+        this.value = (value == null) ? "" : value;
         return this;
     }
 
@@ -231,10 +259,10 @@ public class AlterTableRequest implements IndexedRecord {
                 return this.tableName;
 
             case 1:
-                return this.columnName;
+                return this.action;
 
             case 2:
-                return this.action;
+                return this.value;
 
             case 3:
                 return this.options;
@@ -263,11 +291,11 @@ public class AlterTableRequest implements IndexedRecord {
                 break;
 
             case 1:
-                this.columnName = (String)value;
+                this.action = (String)value;
                 break;
 
             case 2:
-                this.action = (String)value;
+                this.value = (String)value;
                 break;
 
             case 3:
@@ -292,8 +320,8 @@ public class AlterTableRequest implements IndexedRecord {
         AlterTableRequest that = (AlterTableRequest)obj;
 
         return ( this.tableName.equals( that.tableName )
-                 && this.columnName.equals( that.columnName )
                  && this.action.equals( that.action )
+                 && this.value.equals( that.value )
                  && this.options.equals( that.options ) );
     }
 
@@ -306,13 +334,13 @@ public class AlterTableRequest implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.tableName ) );
         builder.append( ", " );
-        builder.append( gd.toString( "columnName" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.columnName ) );
-        builder.append( ", " );
         builder.append( gd.toString( "action" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.action ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "value" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.value ) );
         builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
@@ -326,8 +354,8 @@ public class AlterTableRequest implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.tableName.hashCode();
-        hashCode = (31 * hashCode) + this.columnName.hashCode();
         hashCode = (31 * hashCode) + this.action.hashCode();
+        hashCode = (31 * hashCode) + this.value.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

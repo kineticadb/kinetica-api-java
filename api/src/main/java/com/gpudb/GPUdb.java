@@ -545,6 +545,8 @@ public class GPUdb extends GPUdbBase {
         submitRequest("/aggregate/groupby", request, actualResponse_, false);
         AggregateGroupByResponse response_ = new AggregateGroupByResponse();
         response_.setData( DynamicTableRecord.transpose( actualResponse_.getResponseSchemaStr(), actualResponse_.getBinaryEncodedResponse() ) );
+        response_.setTotalNumberOfRecords(actualResponse_.getTotalNumberOfRecords());
+        response_.setHasMoreRecords(actualResponse_.getHasMoreRecords());
         return response_;
     }
 
@@ -606,6 +608,8 @@ public class GPUdb extends GPUdbBase {
         submitRequest("/aggregate/groupby", actualRequest_, actualResponse_, false);
         AggregateGroupByResponse response_ = new AggregateGroupByResponse();
         response_.setData( DynamicTableRecord.transpose( actualResponse_.getResponseSchemaStr(), actualResponse_.getBinaryEncodedResponse() ) );
+        response_.setTotalNumberOfRecords(actualResponse_.getTotalNumberOfRecords());
+        response_.setHasMoreRecords(actualResponse_.getHasMoreRecords());
         return response_;
     }
 
@@ -797,14 +801,26 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Calculates the requested statistics of a given column in a given table.
+     * <p>
      * The available statistics are count (number of total objects), mean, stdv
      * (standard deviation), variance, skew, kurtosis, sum, min, max,
-     * weighted_average, cardinality (unique count) and estimated cardinality.
+     * weighted_average, cardinality (unique count), estimated cardinality,
+     * percentile and percentile_rank.
+     * <p>
      * Estimated cardinality is calculated by using the hyperloglog
-     * approximation technique. The weighted average statistic requires a
-     * weight_attribute to be specified in {@code options}. The weighted
-     * average is then defined as the sum of the products of {@code columnName}
-     * times the weight attribute divided by the sum of the weight attribute.
+     * approximation technique.
+     * <p>
+     * Percentiles and percentile_ranks are approximate and are calculated
+     * using the t-digest algorithm. They must include the desired
+     * percentile/percentile_rank. To compute multiple percentiles each value
+     * must be specified separately (i.e.
+     * 'percentile(75.0),percentile(99.0),percentile_rank(1234.56),percentile_rank(-5)').
+     * <p>
+     * The weighted average statistic requires a weight_attribute to be
+     * specified in {@code options}. The weighted average is then defined as
+     * the sum of the products of {@code columnName} times the weight attribute
+     * divided by the sum of the weight attribute.
+     * <p>
      * The response includes a list of the statistics requested along with the
      * count of the number of items in the given set.
      * 
@@ -828,14 +844,26 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Calculates the requested statistics of a given column in a given table.
+     * <p>
      * The available statistics are count (number of total objects), mean, stdv
      * (standard deviation), variance, skew, kurtosis, sum, min, max,
-     * weighted_average, cardinality (unique count) and estimated cardinality.
+     * weighted_average, cardinality (unique count), estimated cardinality,
+     * percentile and percentile_rank.
+     * <p>
      * Estimated cardinality is calculated by using the hyperloglog
-     * approximation technique. The weighted average statistic requires a
-     * weight_attribute to be specified in {@code options}. The weighted
-     * average is then defined as the sum of the products of {@code columnName}
-     * times the weight attribute divided by the sum of the weight attribute.
+     * approximation technique.
+     * <p>
+     * Percentiles and percentile_ranks are approximate and are calculated
+     * using the t-digest algorithm. They must include the desired
+     * percentile/percentile_rank. To compute multiple percentiles each value
+     * must be specified separately (i.e.
+     * 'percentile(75.0),percentile(99.0),percentile_rank(1234.56),percentile_rank(-5)').
+     * <p>
+     * The weighted average statistic requires a weight_attribute to be
+     * specified in {@code options}. The weighted average is then defined as
+     * the sum of the products of {@code columnName} times the weight attribute
+     * divided by the sum of the weight attribute.
+     * <p>
      * The response includes a list of the statistics requested along with the
      * count of the number of items in the given set.
      * 
@@ -936,7 +964,7 @@ public class GPUdb extends GPUdbBase {
      *                          expression is true.
      * @param columnName  Name of the binning-column used to divide the set
      *                    samples into bins.
-     * @param valueColumnName  Optional Name of the column for which statistics
+     * @param valueColumnName  Name of the value-column for which statistics
      *                         are to be computed.
      * @param stats  A string of comma separated list of the statistics to
      *               calculate, e.g. 'sum,mean'. Available statistics: mean,
@@ -1030,6 +1058,7 @@ public class GPUdb extends GPUdbBase {
         AggregateUniqueResponse response_ = new AggregateUniqueResponse();
         response_.setTableName(actualResponse_.getTableName());
         response_.setData( DynamicTableRecord.transpose( actualResponse_.getResponseSchemaStr(), actualResponse_.getBinaryEncodedResponse() ) );
+        response_.setHasMoreRecords(actualResponse_.getHasMoreRecords());
         return response_;
     }
 
@@ -1079,6 +1108,7 @@ public class GPUdb extends GPUdbBase {
         AggregateUniqueResponse response_ = new AggregateUniqueResponse();
         response_.setTableName(actualResponse_.getTableName());
         response_.setData( DynamicTableRecord.transpose( actualResponse_.getResponseSchemaStr(), actualResponse_.getBinaryEncodedResponse() ) );
+        response_.setHasMoreRecords(actualResponse_.getHasMoreRecords());
         return response_;
     }
 
@@ -1137,12 +1167,27 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates or deletes an index on a particular column in a given table.
-     * Creating an index can speed up certain search queries (such as {@link
+     * Apply various modifications to a table or collection. Available
+     * modifications include:
+     * <p>
+     *      Cereating or deleting an index on a particular column. This can
+     * speed up certain search queries (such as {@link
      * GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link
      * GPUdb#deleteRecords(DeleteRecordsRequest)}, {@link
      * GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}) when using expressions
-     * containing equality or relational operators on indexed columns.
+     * containing equality or relational operators on indexed columns. This
+     * only applies to child tables.
+     * <p>
+     *      Making a table protected or not. Protected tables need the admin
+     * password to be sent in a {@link GPUdb#clearTable(ClearTableRequest)} to
+     * delete the table. This can be applied to child tables or collections or
+     * views.
+     * <p>
+     *      Setting the ttl (time-to-live). This can be applied to child tables
+     * or collections or views.
+     * <p>
+     *      Allowing homogeneous child tables. This only applies to
+     * collections.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -1163,20 +1208,35 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates or deletes an index on a particular column in a given table.
-     * Creating an index can speed up certain search queries (such as {@link
+     * Apply various modifications to a table or collection. Available
+     * modifications include:
+     * <p>
+     *      Cereating or deleting an index on a particular column. This can
+     * speed up certain search queries (such as {@link
      * GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link
      * GPUdb#deleteRecords(String, List, Map)}, {@link
      * GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}) when using expressions
-     * containing equality or relational operators on indexed columns.
+     * containing equality or relational operators on indexed columns. This
+     * only applies to child tables.
+     * <p>
+     *      Making a table protected or not. Protected tables need the admin
+     * password to be sent in a {@link GPUdb#clearTable(String, String, Map)}
+     * to delete the table. This can be applied to child tables or collections
+     * or views.
+     * <p>
+     *      Setting the ttl (time-to-live). This can be applied to child tables
+     * or collections or views.
+     * <p>
+     *      Allowing homogeneous child tables. This only applies to
+     * collections.
      * 
      * @param tableName  Table on which the operation will be performed. Must
-     *                   be a valid table in GPUdb.  This can not be a
-     *                   collection.
-     * @param columnName  Name of the column on which the index will be created
-     *                    or deleted (can be empty when {@code action} = {@code
-     *                    list}).
-     * @param action  Kind of index operation being performed on the table
+     *                   be a valid table or collection in GPUdb.
+     * @param action  Modification operation to be applied to the table or
+     *                collection
+     * @param value  The value of the modification. May be a column name,
+     *               'true' or 'false', or a time-to-live depending on {@code
+     *               action}.
      * @param options  Optional parameters.
      * 
      * @return Response object containing the results of the operation.
@@ -1186,8 +1246,8 @@ public class GPUdb extends GPUdbBase {
      * @throws GPUdbException  if an error occurs during the operation.
      * 
      */
-    public AlterTableResponse alterTable(String tableName, String columnName, String action, Map<String, String> options) throws GPUdbException {
-        AlterTableRequest actualRequest_ = new AlterTableRequest(tableName, columnName, action, options);
+    public AlterTableResponse alterTable(String tableName, String action, String value, Map<String, String> options) throws GPUdbException {
+        AlterTableRequest actualRequest_ = new AlterTableRequest(tableName, action, value, options);
         AlterTableResponse actualResponse_ = new AlterTableResponse();
         submitRequest("/alter/table", actualRequest_, actualResponse_, false);
         return actualResponse_;
@@ -1247,59 +1307,6 @@ public class GPUdb extends GPUdbBase {
         AlterTableMetadataRequest actualRequest_ = new AlterTableMetadataRequest(tableNames, metadataMap, options);
         AlterTableMetadataResponse actualResponse_ = new AlterTableMetadataResponse();
         submitRequest("/alter/table/metadata", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Updates properties for a group of specified tables. The user can change
-     * the protected-ness of the tables and allow or disallow duplicate child
-     * tables if they are all collections.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AlterTablePropertiesResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AlterTablePropertiesResponse alterTableProperties(AlterTablePropertiesRequest request) throws GPUdbException {
-        AlterTablePropertiesResponse actualResponse_ = new AlterTablePropertiesResponse();
-        submitRequest("/alter/table/properties", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Updates properties for a group of specified tables. The user can change
-     * the protected-ness of the tables and allow or disallow duplicate child
-     * tables if they are all collections.
-     * 
-     * @param tableNames  Names of the tables whose properties will be updated.
-     *                    All provided must exist in GPUdb or an error will be
-     *                    returned.
-     * @param propertiesMap  Map containing the properties of the tables to be
-     *                       updated. Only one map can be specified per
-     *                       function call so the changes to the tables will be
-     *                       identical.
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AlterTablePropertiesResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AlterTablePropertiesResponse alterTableProperties(List<String> tableNames, Map<String, String> propertiesMap, Map<String, String> options) throws GPUdbException {
-        AlterTablePropertiesRequest actualRequest_ = new AlterTablePropertiesRequest(tableNames, propertiesMap, options);
-        AlterTablePropertiesResponse actualResponse_ = new AlterTablePropertiesResponse();
-        submitRequest("/alter/table/properties", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -1485,9 +1492,15 @@ public class GPUdb extends GPUdbBase {
      * @param joinTableName  Name of the join_table to be created. Must not be
      *                       the name of a currently existing GPUdb table or
      *                       join_table. Cannot be an empty string.
-     * @param tableNames  The list of table names making up the joined set
+     * @param tableNames  The list of table names making up the joined set.
+     *                    Corresponds to SQL statement from clause
      * @param aliases  The list of aliases for each of the corresponding
      *                 tables.
+     * @param expression  An optional expression GPUdb uses to filter the join-
+     *                    table being created.  Corresponds to SQL select
+     *                    statement where clause. For details see <a
+     *                    href="../../../../../concepts/index.html#expressions"
+     *                    target="_top">concepts</a>.
      * @param options  Optional parameters.
      * 
      * @return Response object containing the results of the operation.
@@ -1497,8 +1510,8 @@ public class GPUdb extends GPUdbBase {
      * @throws GPUdbException  if an error occurs during the operation.
      * 
      */
-    public CreateJoinTableResponse createJoinTable(String joinTableName, List<String> tableNames, List<String> aliases, Map<String, String> options) throws GPUdbException {
-        CreateJoinTableRequest actualRequest_ = new CreateJoinTableRequest(joinTableName, tableNames, aliases, options);
+    public CreateJoinTableResponse createJoinTable(String joinTableName, List<String> tableNames, List<String> aliases, String expression, Map<String, String> options) throws GPUdbException {
+        CreateJoinTableRequest actualRequest_ = new CreateJoinTableRequest(joinTableName, tableNames, aliases, expression, options);
         CreateJoinTableResponse actualResponse_ = new CreateJoinTableResponse();
         submitRequest("/create/jointable", actualRequest_, actualResponse_, false);
         return actualResponse_;
@@ -1551,7 +1564,10 @@ public class GPUdb extends GPUdbBase {
      *                   type.  Error for requests with existing table of the
      *                   same name and type id may be suppressed by using the
      *                   {@code no_error_if_exists} option.  Cannot be an empty
-     *                   string.
+     *                   string.  Valid characters are 'A-Za-z0-9_-(){}[] .:'
+     *                   (excluding the single quote), with the first character
+     *                   being one of 'A-Za-z0-9_'.  The maximum length is 256
+     *                   characters.
      * @param typeId  ID of a currently registered type in GPUdb. All objects
      *                added to the newly created table will be of this type.
      *                Must be an empty string if the *is_collection* is 'true'.
@@ -1636,7 +1652,7 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Sets up an area  trigger mechanism for two column_names for one or more
+     * Sets up an area trigger mechanism for two column_names for one or more
      * tables. (This function is essentially the two-dimensional version of
      * {@link GPUdb#createTriggerByRange(CreateTriggerByRangeRequest)}.) Once
      * the trigger has been activated, any record added to the listed tables(s)
@@ -1671,7 +1687,7 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Sets up an area  trigger mechanism for two column_names for one or more
+     * Sets up an area trigger mechanism for two column_names for one or more
      * tables. (This function is essentially the two-dimensional version of
      * {@link GPUdb#createTriggerByRange(String, List, String, double, double,
      * Map)}.) Once the trigger has been activated, any record added to the
@@ -1986,7 +2002,7 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Exectues a proc in the GPUdb Node.js proc server.
+     * Executes a proc in the GPUdb Node.js proc server.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -2007,7 +2023,7 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Exectues a proc in the GPUdb Node.js proc server.
+     * Executes a proc in the GPUdb Node.js proc server.
      * 
      * @param name  Name of the proc to execute.
      * @param params  A map containing string parameters to pass to the proc.
@@ -2856,6 +2872,9 @@ public class GPUdb extends GPUdbBase {
      * the table (or the underlying table in case of a view) is updated
      * (records are inserted, deleted or modified) the records retrieved may
      * differ between calls based on the updates applied.
+     * <p>
+     * Note that when using the Java API, it is not possible to retrieve
+     * records from join tables using this operation.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -2887,6 +2906,9 @@ public class GPUdb extends GPUdbBase {
      * the table (or the underlying table in case of a view) is updated
      * (records are inserted, deleted or modified) the records retrieved may
      * differ between calls based on the updates applied.
+     * <p>
+     * Note that when using the Java API, it is not possible to retrieve
+     * records from join tables using this operation.
      * 
      * @param <TResponse>  The type of object being retrieved.
      * @param typeDescriptor  Type descriptor used for decoding returned
@@ -2915,6 +2937,8 @@ public class GPUdb extends GPUdbBase {
         response_.setTypeName(actualResponse_.getTypeName());
         response_.setTypeSchema(actualResponse_.getTypeSchema());
         response_.setData(this.<TResponse>decode(typeDescriptor, actualResponse_.getRecordsBinary()));
+        response_.setTotalNumberOfRecords(actualResponse_.getTotalNumberOfRecords());
+        response_.setHasMoreRecords(actualResponse_.getHasMoreRecords());
         return response_;
     }
 
@@ -2932,6 +2956,9 @@ public class GPUdb extends GPUdbBase {
      * the table (or the underlying table in case of a view) is updated
      * (records are inserted, deleted or modified) the records retrieved may
      * differ between calls based on the updates applied.
+     * <p>
+     * Note that when using the Java API, it is not possible to retrieve
+     * records from join tables using this operation.
      * 
      * @param <TResponse>  The type of object being retrieved.
      * @param typeDescriptor  Type descriptor used for decoding returned
@@ -2970,6 +2997,8 @@ public class GPUdb extends GPUdbBase {
         response_.setTypeName(actualResponse_.getTypeName());
         response_.setTypeSchema(actualResponse_.getTypeSchema());
         response_.setData(this.<TResponse>decode(typeDescriptor, actualResponse_.getRecordsBinary()));
+        response_.setTotalNumberOfRecords(actualResponse_.getTotalNumberOfRecords());
+        response_.setHasMoreRecords(actualResponse_.getHasMoreRecords());
         return response_;
     }
 
@@ -2987,6 +3016,9 @@ public class GPUdb extends GPUdbBase {
      * the table (or the underlying table in case of a view) is updated
      * (records are inserted, deleted or modified) the records retrieved may
      * differ between calls based on the updates applied.
+     * <p>
+     * Note that when using the Java API, it is not possible to retrieve
+     * records from join tables using this operation.
      * 
      * @param <TResponse>  The type of object being retrieved.
      * @param request  Request object containing the parameters for the
@@ -3007,6 +3039,8 @@ public class GPUdb extends GPUdbBase {
         response_.setTypeName(actualResponse_.getTypeName());
         response_.setTypeSchema(actualResponse_.getTypeSchema());
         response_.setData(this.<TResponse>decode(actualResponse_.getTypeName(), actualResponse_.getRecordsBinary()));
+        response_.setTotalNumberOfRecords(actualResponse_.getTotalNumberOfRecords());
+        response_.setHasMoreRecords(actualResponse_.getHasMoreRecords());
         return response_;
     }
 
@@ -3024,6 +3058,9 @@ public class GPUdb extends GPUdbBase {
      * the table (or the underlying table in case of a view) is updated
      * (records are inserted, deleted or modified) the records retrieved may
      * differ between calls based on the updates applied.
+     * <p>
+     * Note that when using the Java API, it is not possible to retrieve
+     * records from join tables using this operation.
      * 
      * @param <TResponse>  The type of object being retrieved.
      * @param tableName  Name of the table from which the records will be
@@ -3054,6 +3091,8 @@ public class GPUdb extends GPUdbBase {
         response_.setTypeName(actualResponse_.getTypeName());
         response_.setTypeSchema(actualResponse_.getTypeSchema());
         response_.setData(this.<TResponse>decode(actualResponse_.getTypeName(), actualResponse_.getRecordsBinary()));
+        response_.setTotalNumberOfRecords(actualResponse_.getTotalNumberOfRecords());
+        response_.setHasMoreRecords(actualResponse_.getHasMoreRecords());
         return response_;
     }
 
@@ -3131,6 +3170,8 @@ public class GPUdb extends GPUdbBase {
         GetRecordsByColumnResponse response_ = new GetRecordsByColumnResponse();
         response_.setTableName(actualResponse_.getTableName());
         response_.setData( DynamicTableRecord.transpose( actualResponse_.getResponseSchemaStr(), actualResponse_.getBinaryEncodedResponse() ) );
+        response_.setTotalNumberOfRecords(actualResponse_.getTotalNumberOfRecords());
+        response_.setHasMoreRecords(actualResponse_.getHasMoreRecords());
         return response_;
     }
 
@@ -3183,6 +3224,8 @@ public class GPUdb extends GPUdbBase {
         GetRecordsByColumnResponse response_ = new GetRecordsByColumnResponse();
         response_.setTableName(actualResponse_.getTableName());
         response_.setData( DynamicTableRecord.transpose( actualResponse_.getResponseSchemaStr(), actualResponse_.getBinaryEncodedResponse() ) );
+        response_.setTotalNumberOfRecords(actualResponse_.getTotalNumberOfRecords());
+        response_.setHasMoreRecords(actualResponse_.getHasMoreRecords());
         return response_;
     }
 
@@ -3429,6 +3472,9 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * This operation supports paging through the data via the {@code offset}
      * and {@code limit} parameters.
+     * <p>
+     * Note that when using the Java API, it is not possible to retrieve
+     * records from join tables using this operation.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -3455,6 +3501,9 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * This operation supports paging through the data via the {@code offset}
      * and {@code limit} parameters.
+     * <p>
+     * Note that when using the Java API, it is not possible to retrieve
+     * records from join tables using this operation.
      * 
      * @param <TResponse>  The type of object being retrieved.
      * @param typeDescriptor  Type descriptor used for decoding returned
@@ -3495,6 +3544,9 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * This operation supports paging through the data via the {@code offset}
      * and {@code limit} parameters.
+     * <p>
+     * Note that when using the Java API, it is not possible to retrieve
+     * records from join tables using this operation.
      * 
      * @param <TResponse>  The type of object being retrieved.
      * @param typeDescriptor  Type descriptor used for decoding returned
@@ -3545,6 +3597,9 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * This operation supports paging through the data via the {@code offset}
      * and {@code limit} parameters.
+     * <p>
+     * Note that when using the Java API, it is not possible to retrieve
+     * records from join tables using this operation.
      * 
      * @param <TResponse>  The type of object being retrieved.
      * @param request  Request object containing the parameters for the
@@ -3577,6 +3632,9 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * This operation supports paging through the data via the {@code offset}
      * and {@code limit} parameters.
+     * <p>
+     * Note that when using the Java API, it is not possible to retrieve
+     * records from join tables using this operation.
      * 
      * @param <TResponse>  The type of object being retrieved.
      * @param tableName  Name of the collection or table from which records are
@@ -3613,7 +3671,7 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Checks the existance of a table with the given name in GPUdb.
+     * Checks the existence of a table with the given name in GPUdb.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -3634,9 +3692,9 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Checks the existance of a table with the given name in GPUdb.
+     * Checks the existence of a table with the given name in GPUdb.
      * 
-     * @param tableName  Name of the table to check for existance.
+     * @param tableName  Name of the table to check for existence.
      * @param options  Optional parameters.
      * 
      * @return Response object containing the results of the operation.
@@ -3656,7 +3714,7 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Check the existance of a type in GPUdb.
+     * Check the existence of a type in GPUdb.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -3677,7 +3735,7 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Check the existance of a type in GPUdb.
+     * Check the existence of a type in GPUdb.
      * 
      * @param typeId  Id of the type returned by GPUdb in response to {@link
      *                GPUdb#createType(String, String, Map, Map)} request.
@@ -3931,7 +3989,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Generates a specified number of random records and adds them to the
-     * given tble. There is an optional parameter that allows the user to
+     * given table. There is an optional parameter that allows the user to
      * customize the ranges of the column values. It also allows the user to
      * specify linear profiles for some or all columns in which case linear
      * values are generated rather than random ones. Only individual tables are
@@ -3960,7 +4018,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Generates a specified number of random records and adds them to the
-     * given tble. There is an optional parameter that allows the user to
+     * given table. There is an optional parameter that allows the user to
      * customize the ranges of the column values. It also allows the user to
      * specify linear profiles for some or all columns in which case linear
      * values are generated rather than random ones. Only individual tables are
@@ -4160,7 +4218,7 @@ public class GPUdb extends GPUdbBase {
      * caller. The GPUdb Admin tool uses it to present server related
      * information to the user.
      * 
-     * @param options  Optional parameters, currently unused.
+     * @param options  Optional parameters.
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -4274,16 +4332,29 @@ public class GPUdb extends GPUdbBase {
      * Retrieves detailed information about a particular GPUdb table, specified
      * in {@code tableName}. If the supplied {@code tableName} is a collection,
      * the call returns a list of tables contained in the collection, and for
-     * each table it returns the type ids, type schemas, type labels, semantic
-     * types, and ttls. If the option 'get_sizes' is set to 'true' then  the
-     * sizes (objects and elements) of each table are returned (in {@code
-     * sizes} and {@code fullSizes}), along with the total number of objects in
-     * the requested table (in {@code totalSize} and {@code totalFullSize}).
+     * each table it returns the description, type id, schema, type label, type
+     * propertiess, and additional information including TTL. If {@code
+     * tableName} is empty it will return all top-level tables including all
+     * collections and top-level child tables (i.e. tables with no parent).
+     * <p>
+     *     If the option 'get_sizes' is set to 'true' then the sizes (objects
+     * and elements) of each table are returned (in {@code sizes} and {@code
+     * fullSizes}), along with the total number of objects in the requested
+     * table (in {@code totalSize} and {@code totalFullSize}).
+     * <p>
+     *     If the option 'show_children' is set to 'false' then for a
+     * collection it only returns information about the collection itself, not
+     * about the child tables. If 'show_children' is set to 'true' then it will
+     * return information about each of the children.
+     * <p>
+     *     Running with 'show_children' = 'true' on a child table will return
+     * an error.
+     * <p>
+     *     Running with 'show_children' = 'false' with {@code tableName} empty
+     * will return an error.
      * <p>
      * If the requested table is blank, then information is returned about all
-     * top-level tables including collections. In this case {@code
-     * isCollection} indicates which of the returned table names are
-     * collections.
+     * top-level tables including collections.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -4312,16 +4383,29 @@ public class GPUdb extends GPUdbBase {
      * Retrieves detailed information about a particular GPUdb table, specified
      * in {@code tableName}. If the supplied {@code tableName} is a collection,
      * the call returns a list of tables contained in the collection, and for
-     * each table it returns the type ids, type schemas, type labels, semantic
-     * types, and ttls. If the option 'get_sizes' is set to 'true' then  the
-     * sizes (objects and elements) of each table are returned (in {@code
-     * sizes} and {@code fullSizes}), along with the total number of objects in
-     * the requested table (in {@code totalSize} and {@code totalFullSize}).
+     * each table it returns the description, type id, schema, type label, type
+     * propertiess, and additional information including TTL. If {@code
+     * tableName} is empty it will return all top-level tables including all
+     * collections and top-level child tables (i.e. tables with no parent).
+     * <p>
+     *     If the option 'get_sizes' is set to 'true' then the sizes (objects
+     * and elements) of each table are returned (in {@code sizes} and {@code
+     * fullSizes}), along with the total number of objects in the requested
+     * table (in {@code totalSize} and {@code totalFullSize}).
+     * <p>
+     *     If the option 'show_children' is set to 'false' then for a
+     * collection it only returns information about the collection itself, not
+     * about the child tables. If 'show_children' is set to 'true' then it will
+     * return information about each of the children.
+     * <p>
+     *     Running with 'show_children' = 'true' on a child table will return
+     * an error.
+     * <p>
+     *     Running with 'show_children' = 'false' with {@code tableName} empty
+     * will return an error.
      * <p>
      * If the requested table is blank, then information is returned about all
-     * top-level tables including collections. In this case {@code
-     * isCollection} indicates which of the returned table names are
-     * collections.
+     * top-level tables including collections.
      * 
      * @param tableName  Name of the table for which to retrieve the
      *                   information. If blank then information about all
@@ -4389,55 +4473,6 @@ public class GPUdb extends GPUdbBase {
         ShowTableMetadataRequest actualRequest_ = new ShowTableMetadataRequest(tableNames, options);
         ShowTableMetadataResponse actualResponse_ = new ShowTableMetadataResponse();
         submitRequest("/show/table/metadata", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Retrieves some table properties for each of the specified tables. For
-     * each valid table, it returns whether it is a protected table and also if
-     * it allows duplicate child tables if it happens to be a collection.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  ShowTablePropertiesResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public ShowTablePropertiesResponse showTableProperties(ShowTablePropertiesRequest request) throws GPUdbException {
-        ShowTablePropertiesResponse actualResponse_ = new ShowTablePropertiesResponse();
-        submitRequest("/show/table/properties", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Retrieves some table properties for each of the specified tables. For
-     * each valid table, it returns whether it is a protected table and also if
-     * it allows duplicate child tables if it happens to be a collection.
-     * 
-     * @param tableNames  Tables whose properties will be fetched. All provided
-     *                    tables must exist in GPUdb, or GPUdb returns an
-     *                    error.
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  ShowTablePropertiesResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public ShowTablePropertiesResponse showTableProperties(List<String> tableNames, Map<String, String> options) throws GPUdbException {
-        ShowTablePropertiesRequest actualRequest_ = new ShowTablePropertiesRequest(tableNames, options);
-        ShowTablePropertiesResponse actualResponse_ = new ShowTablePropertiesResponse();
-        submitRequest("/show/table/properties", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -4914,8 +4949,8 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Generates 'class break' rasterized image tiles for an area of interest
-     * using the given tables and the provided parameters.
+     * Generates rasterized image tiles for an area of interest using the given
+     * tables and the provided parameters.
      * <p>
      * All color values must be in the format RRGGBB or AARRGGBB (to specify
      * the alpha value).
@@ -4939,8 +4974,8 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Generates 'class break' rasterized image tiles for an area of interest
-     * using the given tables and the provided parameters.
+     * Generates rasterized image tiles for an area of interest using the given
+     * tables and the provided parameters.
      * <p>
      * All color values must be in the format RRGGBB or AARRGGBB (to specify
      * the alpha value).

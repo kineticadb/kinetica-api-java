@@ -558,12 +558,14 @@ public abstract class GPUdbBase {
     // Type Management
 
     /**
-     * Adds a type descriptor for a GPUdb type, identified by a type ID, to the
-     * known type list. If that type is subsequently encountered in results
-     * from a GPUdb request for which an explicit type descriptor is not
-     * provided, the specified type descriptor will be used for decoding.
+     * Adds a type descriptor for a GPUdb type (excluding types of join tables),
+     * identified by a type ID, to the known type list. If that type is
+     * subsequently encountered in results from a GPUdb request for which an
+     * explicit type descriptor is not provided, the specified type descriptor
+     * will be used for decoding.
      *
-     * @param typeId          the type ID of the type in GPUdb
+     * @param typeId          the type ID of the type in GPUdb (must not be the
+     *                        type of a join table)
      * @param typeDescriptor  the type descriptor to be used for decoding the
      *                        type
      *

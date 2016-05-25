@@ -19,7 +19,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createTriggerByArea(CreateTriggerByAreaRequest)}.
  * <p>
- * Sets up an area  trigger mechanism for two column_names for one or more
+ * Sets up an area trigger mechanism for two column_names for one or more
  * tables. (This function is essentially the two-dimensional version of {@link
  * com.gpudb.GPUdb#createTriggerByRange(CreateTriggerByRangeRequest)}.) Once
  * the trigger has been activated, any record added to the listed tables(s) via

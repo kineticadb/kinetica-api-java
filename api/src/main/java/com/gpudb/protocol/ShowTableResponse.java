@@ -25,14 +25,12 @@ public class ShowTableResponse implements IndexedRecord {
             .fields()
                 .name("tableName").type().stringType().noDefault()
                 .name("tableNames").type().array().items().stringType().noDefault()
-                .name("isCollection").type().array().items().booleanType().noDefault()
-                .name("isView").type().array().items().booleanType().noDefault()
-                .name("isJoin").type().array().items().booleanType().noDefault()
+                .name("tableDescriptions").type().array().items().array().items().stringType().noDefault()
                 .name("typeIds").type().array().items().stringType().noDefault()
                 .name("typeSchemas").type().array().items().stringType().noDefault()
                 .name("typeLabels").type().array().items().stringType().noDefault()
                 .name("properties").type().array().items().map().values().array().items().stringType().noDefault()
-                .name("ttls").type().array().items().intType().noDefault()
+                .name("additionalInfo").type().array().items().map().values().stringType().noDefault()
                 .name("sizes").type().array().items().longType().noDefault()
                 .name("fullSizes").type().array().items().longType().noDefault()
                 .name("joinSizes").type().array().items().doubleType().noDefault()
@@ -52,16 +50,80 @@ public class ShowTableResponse implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * List of descriptions for the respective tables in {@code tableNames}.
+     * Values include: 'COLLECTION','VIEW','REPLICATED','JOIN'
+     * A set of string constants for the parameter {@code tableDescriptions}.
+     */
+    public static final class TableDescriptions {
+        public static final String COLLECTION = "COLLECTION";
+        public static final String VIEW = "VIEW";
+        public static final String REPLICATED = "REPLICATED";
+        public static final String JOIN = "JOIN";
+
+        private TableDescriptions() {  }
+    }
+
+
+    /**
+     * Additional information about the respective tables in {@code
+     * tableNames}.
+     * A set of string constants for the parameter {@code additionalInfo}.
+     */
+    public static final class AdditionalInfo {
+
+        /**
+         * Only present if the respective table is a collection. The value
+         * indicates whether the table allows duplicate children or not.
+         */
+        public static final String ALLOW_HOMOGENOUS_TABLES = "allow_homogenous_tables";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
+         * Indicates whether the respective table is protected or not.
+         */
+        public static final String PROTECTED = "protected";
+
+        /**
+         * The value of TTL setting, in minutes, for the respective table (-1
+         * if it will never expire).  This is not the remaining amount of time
+         * before the table expires.
+         */
+        public static final String TABLE_TTL = "table_ttl";
+
+        /**
+         * The remaining amount of minutes before the respective table expires
+         * (-1 if it will never expire).  This value may be different from the
+         * table's TTL setting.
+         */
+        public static final String REMAINING_TABLE_TTL = "remaining_table_ttl";
+
+        /**
+         * Semicolon-separated list of foreign key constraints, of the format
+         * 'my_field references primary_table(primary_key_field)'. Not present
+         * for collections.
+         */
+        public static final String FOREIGN_KEYS = "foreign_keys";
+
+        /**
+         * Semicolon-separated list of columns that have attribute indexes. Not
+         * present for collections.
+         */
+        public static final String ATTRIBUTE_INDEXES = "attribute_indexes";
+
+        private AdditionalInfo() {  }
+    }
+
     private String tableName;
     private List<String> tableNames;
-    private List<Boolean> isCollection;
-    private List<Boolean> isView;
-    private List<Boolean> isJoin;
+    private List<List<String>> tableDescriptions;
     private List<String> typeIds;
     private List<String> typeSchemas;
     private List<String> typeLabels;
     private List<Map<String, List<String>>> properties;
-    private List<Integer> ttls;
+    private List<Map<String, String>> additionalInfo;
     private List<Long> sizes;
     private List<Long> fullSizes;
     private List<Double> joinSizes;
@@ -99,9 +161,11 @@ public class ShowTableResponse implements IndexedRecord {
     /**
      * 
      * @return If the table is a child-type table, then the single element of
-     *         the array is {@code tableName}. If the table is a parent table,
-     *         then this array is populated with the names of all child tables
-     *         of the given table. If {@code tableName} is an empty string,
+     *         the array is {@code tableName}. If the table is a collection and
+     *         'show_children' is set to 'true', then this array is populated
+     *         with the names of all child tables of the given collection. If
+     *         'show_children' is 'false' then this array will only include the
+     *         collection itself. . If {@code tableName} is an empty string,
      *         then the array contains the names of all top-level tables in
      *         GPUdb.
      * 
@@ -114,11 +178,13 @@ public class ShowTableResponse implements IndexedRecord {
      * 
      * @param tableNames  If the table is a child-type table, then the single
      *                    element of the array is {@code tableName}. If the
-     *                    table is a parent table, then this array is populated
-     *                    with the names of all child tables of the given
-     *                    table. If {@code tableName} is an empty string, then
-     *                    the array contains the names of all top-level tables
-     *                    in GPUdb.
+     *                    table is a collection and 'show_children' is set to
+     *                    'true', then this array is populated with the names
+     *                    of all child tables of the given collection. If
+     *                    'show_children' is 'false' then this array will only
+     *                    include the collection itself. . If {@code tableName}
+     *                    is an empty string, then the array contains the names
+     *                    of all top-level tables in GPUdb.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -130,78 +196,32 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Boolean values corresponding to whether the respective tables in
-     *         {@code tableNames} are collections of tables or not.
+     * @return List of descriptions for the respective tables in {@code
+     *         tableNames}. Values include:
+     *         'COLLECTION','VIEW','REPLICATED','JOIN'
      * 
      */
-    public List<Boolean> getIsCollection() {
-        return isCollection;
+    public List<List<String>> getTableDescriptions() {
+        return tableDescriptions;
     }
 
     /**
      * 
-     * @param isCollection  Boolean values corresponding to whether the
-     *                      respective tables in {@code tableNames} are
-     *                      collections of tables or not.
+     * @param tableDescriptions  List of descriptions for the respective tables
+     *                           in {@code tableNames}. Values include:
+     *                           'COLLECTION','VIEW','REPLICATED','JOIN'
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowTableResponse setIsCollection(List<Boolean> isCollection) {
-        this.isCollection = (isCollection == null) ? new ArrayList<Boolean>() : isCollection;
+    public ShowTableResponse setTableDescriptions(List<List<String>> tableDescriptions) {
+        this.tableDescriptions = (tableDescriptions == null) ? new ArrayList<List<String>>() : tableDescriptions;
         return this;
     }
 
     /**
      * 
-     * @return Boolean values corresponding to whether the respective tables in
-     *         {@code tableNames} are views of tables or not.
-     * 
-     */
-    public List<Boolean> getIsView() {
-        return isView;
-    }
-
-    /**
-     * 
-     * @param isView  Boolean values corresponding to whether the respective
-     *                tables in {@code tableNames} are views of tables or not.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public ShowTableResponse setIsView(List<Boolean> isView) {
-        this.isView = (isView == null) ? new ArrayList<Boolean>() : isView;
-        return this;
-    }
-
-    /**
-     * 
-     * @return Boolean values corresponding to whether the respective tables in
-     *         {@code tableNames} are joined tables or not.
-     * 
-     */
-    public List<Boolean> getIsJoin() {
-        return isJoin;
-    }
-
-    /**
-     * 
-     * @param isJoin  Boolean values corresponding to whether the respective
-     *                tables in {@code tableNames} are joined tables or not.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public ShowTableResponse setIsJoin(List<Boolean> isJoin) {
-        this.isJoin = (isJoin == null) ? new ArrayList<Boolean>() : isJoin;
-        return this;
-    }
-
-    /**
-     * 
-     * @return Type ids of the respective tables represented in {@code
-     *         tableNames}.
+     * @return Type ids of the respective tables in {@code tableNames}.
      * 
      */
     public List<String> getTypeIds() {
@@ -210,8 +230,7 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param typeIds  Type ids of the respective tables represented in {@code
-     *                 tableNames}.
+     * @param typeIds  Type ids of the respective tables in {@code tableNames}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -223,8 +242,7 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Type schemas of the respective tables represented in {@code
-     *         tableNames}.
+     * @return Type schemas of the respective tables in {@code tableNames}.
      * 
      */
     public List<String> getTypeSchemas() {
@@ -233,8 +251,8 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param typeSchemas  Type schemas of the respective tables represented in
-     *                     {@code tableNames}.
+     * @param typeSchemas  Type schemas of the respective tables in {@code
+     *                     tableNames}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -246,8 +264,7 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Type labels of the respective tables represented in {@code
-     *         tableNames}.
+     * @return Type labels of the respective tables in {@code tableNames}.
      * 
      */
     public List<String> getTypeLabels() {
@@ -256,8 +273,8 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param typeLabels  Type labels of the respective tables represented in
-     *                    {@code tableNames}.
+     * @param typeLabels  Type labels of the respective tables in {@code
+     *                    tableNames}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -269,8 +286,7 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Property maps that correspond, one for one, with the returned
-     *         table names.
+     * @return Property maps of the respective tables in {@code tableNames}.
      * 
      */
     public List<Map<String, List<String>>> getProperties() {
@@ -279,8 +295,8 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param properties  Property maps that correspond, one for one, with the
-     *                    returned table names.
+     * @param properties  Property maps of the respective tables in {@code
+     *                    tableNames}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -292,26 +308,24 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return TTLs (time-to-live), in minutes, of the respective tables
-     *         represented in {@code tableNames}. Will be -1 for parent tables
-     *         and non-result tables.
+     * @return Additional information about the respective tables in {@code
+     *         tableNames}.
      * 
      */
-    public List<Integer> getTtls() {
-        return ttls;
+    public List<Map<String, String>> getAdditionalInfo() {
+        return additionalInfo;
     }
 
     /**
      * 
-     * @param ttls  TTLs (time-to-live), in minutes, of the respective tables
-     *              represented in {@code tableNames}. Will be -1 for parent
-     *              tables and non-result tables.
+     * @param additionalInfo  Additional information about the respective
+     *                        tables in {@code tableNames}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowTableResponse setTtls(List<Integer> ttls) {
-        this.ttls = (ttls == null) ? new ArrayList<Integer>() : ttls;
+    public ShowTableResponse setAdditionalInfo(List<Map<String, String>> additionalInfo) {
+        this.additionalInfo = (additionalInfo == null) ? new ArrayList<Map<String, String>>() : additionalInfo;
         return this;
     }
 
@@ -494,42 +508,36 @@ public class ShowTableResponse implements IndexedRecord {
                 return this.tableNames;
 
             case 2:
-                return this.isCollection;
+                return this.tableDescriptions;
 
             case 3:
-                return this.isView;
-
-            case 4:
-                return this.isJoin;
-
-            case 5:
                 return this.typeIds;
 
-            case 6:
+            case 4:
                 return this.typeSchemas;
 
-            case 7:
+            case 5:
                 return this.typeLabels;
 
-            case 8:
+            case 6:
                 return this.properties;
 
-            case 9:
-                return this.ttls;
+            case 7:
+                return this.additionalInfo;
 
-            case 10:
+            case 8:
                 return this.sizes;
 
-            case 11:
+            case 9:
                 return this.fullSizes;
 
-            case 12:
+            case 10:
                 return this.joinSizes;
 
-            case 13:
+            case 11:
                 return this.totalSize;
 
-            case 14:
+            case 12:
                 return this.totalFullSize;
 
             default:
@@ -560,54 +568,46 @@ public class ShowTableResponse implements IndexedRecord {
                 break;
 
             case 2:
-                this.isCollection = (List<Boolean>)value;
+                this.tableDescriptions = (List<List<String>>)value;
                 break;
 
             case 3:
-                this.isView = (List<Boolean>)value;
-                break;
-
-            case 4:
-                this.isJoin = (List<Boolean>)value;
-                break;
-
-            case 5:
                 this.typeIds = (List<String>)value;
                 break;
 
-            case 6:
+            case 4:
                 this.typeSchemas = (List<String>)value;
                 break;
 
-            case 7:
+            case 5:
                 this.typeLabels = (List<String>)value;
                 break;
 
-            case 8:
+            case 6:
                 this.properties = (List<Map<String, List<String>>>)value;
                 break;
 
-            case 9:
-                this.ttls = (List<Integer>)value;
+            case 7:
+                this.additionalInfo = (List<Map<String, String>>)value;
                 break;
 
-            case 10:
+            case 8:
                 this.sizes = (List<Long>)value;
                 break;
 
-            case 11:
+            case 9:
                 this.fullSizes = (List<Long>)value;
                 break;
 
-            case 12:
+            case 10:
                 this.joinSizes = (List<Double>)value;
                 break;
 
-            case 13:
+            case 11:
                 this.totalSize = (Long)value;
                 break;
 
-            case 14:
+            case 12:
                 this.totalFullSize = (Long)value;
                 break;
 
@@ -630,14 +630,12 @@ public class ShowTableResponse implements IndexedRecord {
 
         return ( this.tableName.equals( that.tableName )
                  && this.tableNames.equals( that.tableNames )
-                 && this.isCollection.equals( that.isCollection )
-                 && this.isView.equals( that.isView )
-                 && this.isJoin.equals( that.isJoin )
+                 && this.tableDescriptions.equals( that.tableDescriptions )
                  && this.typeIds.equals( that.typeIds )
                  && this.typeSchemas.equals( that.typeSchemas )
                  && this.typeLabels.equals( that.typeLabels )
                  && this.properties.equals( that.properties )
-                 && this.ttls.equals( that.ttls )
+                 && this.additionalInfo.equals( that.additionalInfo )
                  && this.sizes.equals( that.sizes )
                  && this.fullSizes.equals( that.fullSizes )
                  && this.joinSizes.equals( that.joinSizes )
@@ -658,17 +656,9 @@ public class ShowTableResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.tableNames ) );
         builder.append( ", " );
-        builder.append( gd.toString( "isCollection" ) );
+        builder.append( gd.toString( "tableDescriptions" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.isCollection ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "isView" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.isView ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "isJoin" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.isJoin ) );
+        builder.append( gd.toString( this.tableDescriptions ) );
         builder.append( ", " );
         builder.append( gd.toString( "typeIds" ) );
         builder.append( ": " );
@@ -686,9 +676,9 @@ public class ShowTableResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.properties ) );
         builder.append( ", " );
-        builder.append( gd.toString( "ttls" ) );
+        builder.append( gd.toString( "additionalInfo" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.ttls ) );
+        builder.append( gd.toString( this.additionalInfo ) );
         builder.append( ", " );
         builder.append( gd.toString( "sizes" ) );
         builder.append( ": " );
@@ -719,14 +709,12 @@ public class ShowTableResponse implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.tableName.hashCode();
         hashCode = (31 * hashCode) + this.tableNames.hashCode();
-        hashCode = (31 * hashCode) + this.isCollection.hashCode();
-        hashCode = (31 * hashCode) + this.isView.hashCode();
-        hashCode = (31 * hashCode) + this.isJoin.hashCode();
+        hashCode = (31 * hashCode) + this.tableDescriptions.hashCode();
         hashCode = (31 * hashCode) + this.typeIds.hashCode();
         hashCode = (31 * hashCode) + this.typeSchemas.hashCode();
         hashCode = (31 * hashCode) + this.typeLabels.hashCode();
         hashCode = (31 * hashCode) + this.properties.hashCode();
-        hashCode = (31 * hashCode) + this.ttls.hashCode();
+        hashCode = (31 * hashCode) + this.additionalInfo.hashCode();
         hashCode = (31 * hashCode) + this.sizes.hashCode();
         hashCode = (31 * hashCode) + this.fullSizes.hashCode();
         hashCode = (31 * hashCode) + this.joinSizes.hashCode();

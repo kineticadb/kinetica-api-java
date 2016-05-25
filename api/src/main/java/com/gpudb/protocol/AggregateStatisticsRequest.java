@@ -17,17 +17,29 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#aggregateStatistics(AggregateStatisticsRequest)}.
  * <p>
- * Calculates the requested statistics of a given column in a given table. The
- * available statistics are count (number of total objects), mean, stdv
+ * Calculates the requested statistics of a given column in a given table.
+ * <p>
+ * The available statistics are count (number of total objects), mean, stdv
  * (standard deviation), variance, skew, kurtosis, sum, min, max,
- * weighted_average, cardinality (unique count) and estimated cardinality.
+ * weighted_average, cardinality (unique count), estimated cardinality,
+ * percentile and percentile_rank.
+ * <p>
  * Estimated cardinality is calculated by using the hyperloglog approximation
- * technique. The weighted average statistic requires a weight_attribute to be
- * specified in {@code options}. The weighted average is then defined as the
- * sum of the products of {@code columnName} times the weight attribute divided
- * by the sum of the weight attribute. The response includes a list of the
- * statistics requested along with the count of the number of items in the
- * given set.
+ * technique.
+ * <p>
+ * Percentiles and percentile_ranks are approximate and are calculated using
+ * the t-digest algorithm. They must include the desired
+ * percentile/percentile_rank. To compute multiple percentiles each value must
+ * be specified separately (i.e.
+ * 'percentile(75.0),percentile(99.0),percentile_rank(1234.56),percentile_rank(-5)').
+ * <p>
+ * The weighted average statistic requires a weight_attribute to be specified
+ * in {@code options}. The weighted average is then defined as the sum of the
+ * products of {@code columnName} times the weight attribute divided by the sum
+ * of the weight attribute.
+ * <p>
+ * The response includes a list of the statistics requested along with the
+ * count of the number of items in the given set.
  */
 public class AggregateStatisticsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -120,6 +132,19 @@ public class AggregateStatisticsRequest implements IndexedRecord {
          * in the column.
          */
         public static final String ESTIMATED_CARDINALITY = "estimated_cardinality";
+
+        /**
+         * Estimate (via t-digest) of the given percentile of the column
+         * (percentile(50.0) will be an approximation of the median).
+         */
+        public static final String PERCENTILE = "percentile";
+
+        /**
+         * Estimate (via t-digest) of the percentile rank of the given value in
+         * the column (if the given value is the median of the column,
+         * percentile_rank(<median>) will return approximately 50.0).
+         */
+        public static final String PERCENTILE_RANK = "percentile_rank";
 
         private Stats() {  }
     }

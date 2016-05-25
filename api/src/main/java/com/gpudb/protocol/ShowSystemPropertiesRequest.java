@@ -41,6 +41,22 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Optional parameters.
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * A list of comma separated names of properties requested. If not
+         * specified, all properties will be returned.
+         */
+        public static final String PROPERTIES = "properties";
+
+        private Options() {  }
+    }
+
     private Map<String, String> options;
 
 
@@ -55,7 +71,7 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
      * Constructs a ShowSystemPropertiesRequest object with the specified
      * parameters.
      * 
-     * @param options  Optional parameters, currently unused.
+     * @param options  Optional parameters.
      * 
      */
     public ShowSystemPropertiesRequest(Map<String, String> options) {
@@ -64,7 +80,7 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters, currently unused.
+     * @return Optional parameters.
      * 
      */
     public Map<String, String> getOptions() {
@@ -73,7 +89,7 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters, currently unused.
+     * @param options  Optional parameters.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

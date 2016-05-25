@@ -18,6 +18,7 @@ import org.apache.avro.generic.GenericData;
 public class AggregateUniqueResponse {
     private String tableName;
     private List<Record> data;
+    private boolean hasMoreRecords;
 
 
     /**
@@ -68,6 +69,27 @@ public class AggregateUniqueResponse {
         this.data = (data == null) ? new ArrayList<Record>() : data;
         return this;
     }
+
+    /**
+     * 
+     * @return Too many records. Returned a partial set.
+     * 
+     */
+    public boolean getHasMoreRecords() {
+        return hasMoreRecords;
+    }
+
+    /**
+     * 
+     * @param hasMoreRecords  Too many records. Returned a partial set.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AggregateUniqueResponse setHasMoreRecords(boolean hasMoreRecords) {
+        this.hasMoreRecords = hasMoreRecords;
+        return this;
+    }
     @Override
     public boolean equals(Object obj) {
         if( obj == this ) {
@@ -81,7 +103,8 @@ public class AggregateUniqueResponse {
         AggregateUniqueResponse that = (AggregateUniqueResponse)obj;
 
         return ( this.tableName.equals( that.tableName )
-                 && this.data.equals( that.data ) );
+                 && this.data.equals( that.data )
+                 && ( this.hasMoreRecords == that.hasMoreRecords ) );
     }
 
     @Override
@@ -96,6 +119,10 @@ public class AggregateUniqueResponse {
         builder.append( gd.toString( "data" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.data ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "hasMoreRecords" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.hasMoreRecords ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -106,6 +133,7 @@ public class AggregateUniqueResponse {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.tableName.hashCode();
         hashCode = (31 * hashCode) + this.data.hashCode();
+        hashCode = (31 * hashCode) + ((Boolean)this.hasMoreRecords).hashCode();
         return hashCode;
     }
 
