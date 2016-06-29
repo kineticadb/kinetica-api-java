@@ -3,10 +3,11 @@ package com.gpudb;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.avro.AvroRuntimeException;
+import java.util.Objects;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.IndexedRecord;
 
 final class DynamicTableRecord implements Record {
     @SuppressWarnings("unchecked")
@@ -16,106 +17,92 @@ final class DynamicTableRecord implements Record {
         try {
             schema = new Schema.Parser().parse(schemaString);
         } catch (Exception ex) {
-            throw new GPUdbException("Unable to parse schema.", ex);
+            throw new GPUdbException("Schema is invalid.", ex);
         }
 
         if (schema.getType() != Schema.Type.RECORD) {
-            throw new GPUdbException("Schema must be of type RECORD.");
+            throw new GPUdbException("Schema must be of type record.");
         }
 
-        Record data = Avro.decode(schema, encodedData);
-        Schema newSchema = Schema.createRecord(schema.getName(), schema.getDoc(), schema.getNamespace(), false);
+        IndexedRecord data = Avro.decode(schema, encodedData);
         int fieldCount = schema.getFields().size() - 1;
-        List<String> expressions = (List<String>)data.get(fieldCount);
-        List<String> names = new ArrayList<>();
-
-        for (int i = 0; i < fieldCount; i++) {
-            String name = expressions.get(i);
-            boolean valid = true;
-
-            for (int j = 0; j < name.length(); j++) {
-                char c = name.charAt(j);
-
-                if (!(j > 0 && c >= '0' && c <= '9')
-                        && !(c >= 'A' && c <= 'Z')
-                        && !(c >= 'a' && c <= 'z')
-                        && c != '_') {
-                    valid = false;
-                    break;
-                }
-            }
-
-            if (!valid) {
-                name = "column_" + i;
-
-                if (expressions.contains(name)) {
-                    int j = 2;
-
-                    do {
-                        name = "column_" + i + "_" + j;
-                        j++;
-                    } while (expressions.contains(name));
-                }
-            }
-
-            names.add(name);
-        }
-
-        List<Field> fields = new ArrayList<>();
         int recordCount = ((List<?>)data.get(0)).size();
+        List<String> expressions = (List<String>)data.get(fieldCount);
+        List<Type.Column> columns = new ArrayList<>();
 
         for (int i = 0; i < fieldCount; i++) {
             Field field = schema.getFields().get(i);
 
             if (field.schema().getType() != Schema.Type.ARRAY) {
-                throw new GPUdbException("Field " + field.name() + " must be of type ARRAY.");
+                throw new GPUdbException("Field " + field.name() + " must be of type array.");
             }
+
+            Class<?> columnType;
 
             switch (field.schema().getElementType().getType()) {
                 case BYTES:
+                    columnType = ByteBuffer.class;
+                    break;
+
                 case DOUBLE:
+                    columnType = Double.class;
+                    break;
+
                 case FLOAT:
+                    columnType = Float.class;
+                    break;
+
                 case INT:
+                    columnType = Integer.class;
+                    break;
+
                 case LONG:
+                    columnType = Long.class;
+                    break;
+
                 case STRING:
+                    columnType = String.class;
                     break;
 
                 default:
-                    throw new GPUdbException("Field " + field.name() + " must be of type BYTES, DOUBLE, FLOAT, INT, LONG or STRING.");
+                    throw new GPUdbException("Field " + field.name() + " must be of type bytes, double, float, int, long or string.");
             }
 
-            if (((List<?>)data.get(fields.size())).size() != recordCount) {
-                throw new GPUdbException("Fields must all have the same number of entries.");
+            if (((List<?>)data.get(i)).size() != recordCount) {
+                throw new GPUdbException("Fields must all have the same number of elements.");
             }
 
-            Field newField = new Field(names.get(i), field.schema().getElementType(), field.doc(), field.defaultValue(), field.order());
-            newField.addProp("expression", expressions.get(field.pos()));
-            fields.add(newField);
+            columns.add(new Type.Column(expressions.get(i), columnType));
         }
 
-        newSchema.setFields(fields);
+        Type type = new Type("", columns);
         List<Record> result = new ArrayList<>();
 
         for (int i = 0; i < recordCount; i++) {
-            result.add(new DynamicTableRecord(newSchema, data, i));
+            result.add(new DynamicTableRecord(type, data, i));
         }
 
         return result;
     }
 
-    private final Schema schema;
-    private final Record data;
+    private final Type type;
+    private final IndexedRecord data;
     private final int recordIndex;
 
-    private DynamicTableRecord(Schema schema, Record data, int recordIndex) {
-        this.schema = schema;
+    private DynamicTableRecord(Type type, IndexedRecord data, int recordIndex) {
+        this.type = type;
         this.data = data;
         this.recordIndex = recordIndex;
     }
 
     @Override
+    public Type getType() {
+        return type;
+    }
+
+    @Override
     public Schema getSchema() {
-        return schema;
+        return type.getSchema();
     }
 
     @Override
@@ -125,13 +112,13 @@ final class DynamicTableRecord implements Record {
 
     @Override
     public Object get(String name) {
-        Field field = schema.getField(name);
+        int columnIndex = type.getColumnIndex(name);
 
-        if (field == null) {
+        if (columnIndex == -1) {
             return null;
         }
 
-        return ((List<?>)data.get(field.pos())).get(recordIndex);
+        return ((List<?>)data.get(columnIndex)).get(recordIndex);
     }
 
     @Override
@@ -215,17 +202,77 @@ final class DynamicTableRecord implements Record {
     @Override
     @SuppressWarnings("unchecked")
     public void put(String name, Object value) {
-        Field field = schema.getField(name);
+        int index = type.getColumnIndex(name);
 
-        if (field == null) {
-            throw new AvroRuntimeException("Not a valid schema field: " + name);
+        if (index == -1) {
+            throw new GPUdbRuntimeException("Field " + name + " does not exist.");
         }
 
-        ((List)data.get(field.pos())).set(recordIndex, value);
+        ((List)data.get(index)).set(recordIndex, value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        DynamicTableRecord that = (DynamicTableRecord)obj;
+
+        if (!that.type.equals(this.type)) {
+            return false;
+        }
+
+        int columnCount = this.type.getColumnCount();
+
+        for (int i = 0; i < columnCount; i++) {
+            if (!Objects.equals(that.get(i), this.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = 1;
+        int columnCount = type.getColumnCount();
+
+        for (int i = 0; i < columnCount; i++) {
+            hashCode = 31 * hashCode;
+            Object value = get(i);
+
+            if (value != null) {
+                hashCode += value.hashCode();
+            }
+        }
+
+        return hashCode;
     }
 
     @Override
     public String toString() {
-        return GenericData.get().toString(this);
+        GenericData gd = GenericData.get();
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        int columnCount = type.getColumnCount();
+
+        for (int i = 0; i < columnCount; i++) {
+            if (i > 0) {
+                builder.append(",");
+            }
+
+            builder.append(gd.toString(type.getColumn(i).getName()));
+            builder.append(":");
+            builder.append(gd.toString(get(i)));
+        }
+
+        builder.append("}");
+        return builder.toString();
     }
 }

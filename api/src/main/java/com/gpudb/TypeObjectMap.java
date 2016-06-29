@@ -966,7 +966,6 @@ public final class TypeObjectMap<T> {
 
     private final Type type;
     private final Class<T> objectClass;
-    private final Schema schema;
     private final Factory<T> factory;
     private final Accessor[] accessors;
     private final Mutator[] mutators;
@@ -988,7 +987,6 @@ public final class TypeObjectMap<T> {
     public TypeObjectMap(Type type, Class<T> objectClass, Factory<T> factory, List<Accessor> accessors, List<Mutator> mutators) {
         this.type = type;
         this.objectClass = objectClass;
-        this.schema = type.getSchema();
         this.factory = factory;
         this.accessors = accessors.toArray(new Accessor[0]);
         this.mutators = mutators.toArray(new Mutator[0]);
@@ -1014,12 +1012,12 @@ public final class TypeObjectMap<T> {
     }
 
     /**
-     * Returns the Avro {@link Schema} of the type object map.
+     * Returns the Avro record schema of the type object map.
      *
-     * @return  the schema
+     * @return  the Avro record schema of the type object map
      */
     public Schema getSchema() {
-        return schema;
+        return type.getSchema();
     }
 
     /**

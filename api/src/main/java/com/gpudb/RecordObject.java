@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -65,7 +66,6 @@ public abstract class RecordObject implements Record {
 
     private static class Index {
         public final com.gpudb.Type type;
-        public final Schema schema;
         public final Field[] fields;
         public final HashMap<String, Field> fieldMap;
 
@@ -162,35 +162,23 @@ public abstract class RecordObject implements Record {
                 throw new GPUdbRuntimeException(ex.getMessage());
             }
 
-            schema = type.getSchema();
             fields = new Field[fieldList.size()];
             fieldList.toArray(fields);
         }
     }
 
-    private static final Map<Class<?>, Index> indexes = new ConcurrentHashMap<>(16, 0.75f, 1);
+    private static final Map<Class<?>, Index> INDEXES = new ConcurrentHashMap<>(16, 0.75f, 1);
 
     private static Index getIndex(Class<? extends RecordObject> type) {
-        Index index = indexes.get(type);
+        Index index = INDEXES.get(type);
 
         if (index != null) {
             return index;
         }
 
         index = new Index(type);
-        indexes.put(type, index);
+        INDEXES.put(type, index);
         return index;
-    }
-
-    /**
-     * Gets the Avro {@link Schema} corresponding to the metadata in the
-     * specified {@link RecordObject} class.
-     *
-     * @param type  the {@link RecordObject} class from which to obtain metadata
-     * @return      the corresponding Avro {@link Schema}
-     */
-    public static Schema getSchema(Class<? extends RecordObject> type) {
-        return getIndex(type).schema;
     }
 
     /**
@@ -202,6 +190,17 @@ public abstract class RecordObject implements Record {
      */
     public static com.gpudb.Type getType(Class<? extends RecordObject> type) {
         return getIndex(type).type;
+    }
+
+    /**
+     * Gets the Avro record schema corresponding to the metadata in the
+     * specified {@link RecordObject} class.
+     *
+     * @param type  the {@link RecordObject} class from which to obtain metadata
+     * @return      the corresponding Avro record schema
+     */
+    public static Schema getSchema(Class<? extends RecordObject> type) {
+        return getIndex(type).type.getSchema();
     }
 
     /**
@@ -235,22 +234,23 @@ public abstract class RecordObject implements Record {
     }
 
     /**
-     * Returns the Avro schema of the object.
-     *
-     * @return  the Avro schema
-     */
-    @Override
-    public Schema getSchema() {
-        return index.schema;
-    }
-
-    /**
-     * Returns the GPUdb type of the object.
+     * Returns the GPUdb {@link Type} of the object.
      *
      * @return  the GPUdb type
      */
+    @Override
     public com.gpudb.Type getType() {
         return index.type;
+    }
+
+    /**
+     * Returns the Avro record schema of the object.
+     *
+     * @return  the Avro record schema
+     */
+    @Override
+    public Schema getSchema() {
+        return index.type.getSchema();
     }
 
     /**
@@ -274,16 +274,15 @@ public abstract class RecordObject implements Record {
      * Returns the value of the specified field.
      *
      * @param name  the name of the field
-     * @return      the value of the field
-     *
-     * @throws GPUdbRuntimeException if no field exists with the specified name
+     * @return      the value of the field, or {@code null} if no field with the
+     *              specified name exists
      */
     @Override
     public Object get(String name) {
         Field field = index.fieldMap.get(name);
 
         if (field == null) {
-            throw new GPUdbRuntimeException("Field " + name + " does not exist.");
+            return null;
         }
 
         try {
@@ -541,13 +540,6 @@ public abstract class RecordObject implements Record {
         }
     }
 
-    /**
-     * Indicates whether some other object is "equal to" this one.
-     *
-     * @param obj  the reference object with which to compare
-     * @return     {@code true} if this object is the same as {@code obj};
-     *             {@code false} otherwise
-     */
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -560,8 +552,14 @@ public abstract class RecordObject implements Record {
 
         RecordObject that = (RecordObject)obj;
 
-        for (int i = index.type.getColumns().size() - 1; i >= 0; i--) {
-            if (!this.get(i).equals(that.get(i))) {
+        if (!that.index.type.equals(this.index.type)) {
+            return false;
+        }
+
+        int columnCount = this.index.type.getColumnCount();
+
+        for (int i = 0; i < columnCount; i++) {
+            if (!Objects.equals(that.get(i), this.get(i))) {
                 return false;
             }
         }
@@ -569,23 +567,41 @@ public abstract class RecordObject implements Record {
         return true;
     }
 
-    /**
-     * Returns a hash code value for the object.
-     *
-     * @return  the hash code value
-     */
     @Override
     public int hashCode() {
-        return GenericData.get().hashCode(this, index.schema);
+        int hashCode = 1;
+        int columnCount = index.type.getColumnCount();
+
+        for (int i = 0; i < columnCount; i++) {
+            hashCode = 31 * hashCode;
+            Object value = get(i);
+
+            if (value != null) {
+                hashCode += value.hashCode();
+            }
+        }
+
+        return hashCode;
     }
 
-    /**
-     * Returns a string representation of the object.
-     *
-     * @return  the string representation
-     */
     @Override
     public String toString() {
-        return GenericData.get().toString(this);
+        GenericData gd = GenericData.get();
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        int columnCount = index.type.getColumnCount();
+
+        for (int i = 0; i < columnCount; i++) {
+            if (i > 0) {
+                builder.append(",");
+            }
+
+            builder.append(gd.toString(index.type.getColumn(i).getName()));
+            builder.append(":");
+            builder.append(gd.toString(get(i)));
+        }
+
+        builder.append("}");
+        return builder.toString();
     }
 }

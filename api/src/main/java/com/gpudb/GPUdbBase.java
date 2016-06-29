@@ -750,7 +750,7 @@ public abstract class GPUdbBase {
 
     @SuppressWarnings("unchecked")
     protected <T> List<ByteBuffer> encode(List<T> data) throws GPUdbException {
-        if (data.isEmpty()) {
+        if (data == null || data.isEmpty()) {
             return new ArrayList<>();
         }
 
@@ -764,7 +764,7 @@ public abstract class GPUdbBase {
     }
 
     protected <T> List<ByteBuffer> encode(TypeObjectMap<T> typeObjectMap, List<T> data) throws GPUdbException {
-        return Avro.encode(typeObjectMap, data, threadCount, executor);
+        return Avro.encode(typeObjectMap, data == null ? new ArrayList<T>() : data, threadCount, executor);
     }
 
     protected Object getTypeDescriptor(String typeId) throws GPUdbException {
@@ -797,6 +797,13 @@ public abstract class GPUdbBase {
     }
 
     protected void setTypeDescriptorIfMissing(String typeId, String label, String typeSchema, Map<String, List<String>> properties) throws GPUdbException {
+        // If the table is a collection, it does not have a proper type so
+        // ignore it
+
+        if (typeId.equals("<collection>")) {
+            return;
+        }
+
         // Check first to avoid creating a Type object unnecessarily
 
         if (!knownTypes.containsKey(typeId)) {

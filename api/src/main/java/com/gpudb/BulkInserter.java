@@ -36,11 +36,23 @@ public class BulkInserter<T> {
     public static final class InsertException extends GPUdbException {
         private static final long serialVersionUID = 1L;
 
+        private final URL url;
         private final transient List<?> records;
 
-        private InsertException(List<?> records, String message, Throwable cause) {
+        private InsertException(URL url, List<?> records, String message, Throwable cause) {
             super(message, cause);
+            this.url = url;
             this.records = records;
+        }
+
+        /**
+         * Gets the URL that records were being inserted into when the exception
+         * occurred.
+         *
+         * @return  the URL
+         */
+        public URL getURL() {
+            return url;
         }
 
         /**
@@ -874,7 +886,7 @@ public class BulkInserter<T> {
             countInserted.addAndGet(response.getCountInserted());
             countUpdated.addAndGet(response.getCountUpdated());
         } catch (GPUdbException ex) {
-            throw new InsertException(queue, ex.getMessage(), ex);
+            throw new InsertException(url, queue, ex.getMessage(), ex);
         }
     }
 
