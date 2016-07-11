@@ -17,6 +17,8 @@ import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericData;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
 
 /**
  * Immutable collection of metadata about a GPUdb type.
@@ -502,7 +504,6 @@ public final class Type {
             }
 
             Field field = new Field(fieldName, fieldSchema, null, (Object)null);
-            field.addProp("expression", columnName);
             fields.add(field);
         }
 
@@ -603,17 +604,45 @@ public final class Type {
      * @throws GPUdbException if an error occurs while creating the type
      */
     public String create(GPUdb gpudb) throws GPUdbException {
+        ObjectNode root = MAPPER.createObjectNode();
+        root.put("type", "record");
+        root.put("name", "type_name");
+        ArrayNode fields = MAPPER.createArrayNode();
         LinkedHashMap<String, List<String>> properties = new LinkedHashMap<>();
 
         for (Column column : columns) {
+            ObjectNode field = MAPPER.createObjectNode();
+            String columnName = column.getName();
+            field.put("name", columnName);
+            Class<?> columnType = column.getType();
+
+            if (columnType == ByteBuffer.class) {
+                field.put("type", "bytes");
+            } else if (columnType == Double.class) {
+                field.put("type", "double");
+            } else if (columnType == Float.class) {
+                field.put("type", "float");
+            } else if (columnType == Integer.class) {
+                field.put("type", "int");
+            } else if (columnType == Long.class) {
+                field.put("type", "long");
+            } else if (columnType == String.class) {
+                field.put("type", "string");
+            } else {
+                throw new IllegalArgumentException("Column " + columnName + " must be of type ByteBuffer, Double, Float, Integer, Long or String.");
+            }
+
+            fields.add(field);
+
             List<String> columnProperties = column.getProperties();
 
             if (!columnProperties.isEmpty()) {
-                properties.put(column.getName(), columnProperties);
+                properties.put(columnName, columnProperties);
             }
         }
 
-        return gpudb.createType(schema.toString(), label, properties, null).getTypeId();
+        root.put("fields", fields);
+        return gpudb.createType(root.toString(), label, properties, null).getTypeId();
     }
 
     @Override
