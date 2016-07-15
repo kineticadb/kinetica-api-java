@@ -20,8 +20,8 @@ import org.apache.avro.generic.IndexedRecord;
  * Apply various modifications to a table or collection. Available
  * modifications include:
  * <p>
- *      Cereating or deleting an index on a particular column. This can speed
- * up certain search queries (such as {@link
+ *      Creating or deleting an index on a particular column. This can speed up
+ * certain search queries (such as {@link
  * com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link
  * com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}, {@link
  * com.gpudb.GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}) when using

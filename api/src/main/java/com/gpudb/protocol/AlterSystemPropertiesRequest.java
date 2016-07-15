@@ -18,7 +18,7 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#alterSystemProperties(AlterSystemPropertiesRequest)}.
  * <p>
  * The alter_system_properties endpoint is primarily used to simplify the
- * testing of gpudb and is not expected to be used during normal execution.
+ * testing of GPUdb and is not expected to be used during normal execution.
  * Commands are given through the properties_update_map whose keys are commands
  * and values are strings representing integer values (for example '8000') or
  * boolean values ('true' or 'false').

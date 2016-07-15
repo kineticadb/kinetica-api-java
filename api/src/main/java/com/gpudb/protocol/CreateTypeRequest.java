@@ -211,6 +211,16 @@ public class CreateTypeRequest implements IndexedRecord {
         private Properties() {  }
     }
 
+
+    /**
+     * Optional parameters.
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        private Options() {  }
+    }
+
     private String typeDefinition;
     private String label;
     private Map<String, List<String>> properties;

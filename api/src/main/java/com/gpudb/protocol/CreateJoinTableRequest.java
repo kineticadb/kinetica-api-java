@@ -31,6 +31,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
                 .name("tableNames").type().array().items().stringType().noDefault()
                 .name("aliases").type().array().items().stringType().noDefault()
                 .name("expression").type().stringType().noDefault()
+                .name("expressions").type().array().items().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -60,6 +61,51 @@ public class CreateJoinTableRequest implements IndexedRecord {
          */
         public static final String MAX_QUERY_DIMENSIONS = "max_query_dimensions";
 
+        /**
+         * Use the applied filters to precalculate the lookup table to get data
+         * from the primary key sets
+         */
+        public static final String OPTIMIZE_LOOKUPS = "optimize_lookups";
+
+        /**
+         * Method by which the join table can be refreshed when underlying sets
+         * have changed.
+         */
+        public static final String REFRESH_METHOD = "refresh_method";
+
+        /**
+         * refresh only occurs when manually requested by calling
+         * create_join_table with refresh option set to true
+         */
+        public static final String MANUAL = "manual";
+
+        /**
+         * refresh occurs whenever a new query is issued
+         */
+        public static final String ON_QUERY = "on_query";
+
+        /**
+         * refresh occurs whenever new data is inserted into fact set - if
+         * inserted into other sets refreshes whenever a new query is issued
+         */
+        public static final String ON_INSERT = "on_insert";
+
+        /**
+         * refresh if needed - will do incremental refresh if possible
+         */
+        public static final String REFRESH = "refresh";
+
+        /**
+         * don't refresh
+         */
+        public static final String NO_REFRESH = "no_refresh";
+
+        /**
+         * refresh if needed - alwasy does a full refresh - mainly used for
+         * testing
+         */
+        public static final String FULL_REFRESH = "full_refresh";
+
         private Options() {  }
     }
 
@@ -67,6 +113,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
     private List<String> tableNames;
     private List<String> aliases;
     private String expression;
+    private List<String> expressions;
     private Map<String, String> options;
 
 
@@ -78,6 +125,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
         tableNames = new ArrayList<>();
         aliases = new ArrayList<>();
         expression = "";
+        expressions = new ArrayList<>();
         options = new LinkedHashMap<>();
     }
 
@@ -97,14 +145,20 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                    statement where clause. For details see <a
      *                    href="../../../../../../concepts/index.html#expressions"
      *                    target="_top">concepts</a>.
+     * @param expressions  An optional list of expression GPUdb uses to filter
+     *                     the join-table being created.  Corresponds to SQL
+     *                     select statement where clause. For details see <a
+     *                     href="../../../../../../concepts/index.html#expressions"
+     *                     target="_top">concepts</a>.
      * @param options  Optional parameters.
      * 
      */
-    public CreateJoinTableRequest(String joinTableName, List<String> tableNames, List<String> aliases, String expression, Map<String, String> options) {
+    public CreateJoinTableRequest(String joinTableName, List<String> tableNames, List<String> aliases, String expression, List<String> expressions, Map<String, String> options) {
         this.joinTableName = (joinTableName == null) ? "" : joinTableName;
         this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
         this.aliases = (aliases == null) ? new ArrayList<String>() : aliases;
         this.expression = (expression == null) ? "" : expression;
+        this.expressions = (expressions == null) ? new ArrayList<String>() : expressions;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
@@ -209,6 +263,35 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
+     * @return An optional list of expression GPUdb uses to filter the join-
+     *         table being created.  Corresponds to SQL select statement where
+     *         clause. For details see <a
+     *         href="../../../../../../concepts/index.html#expressions"
+     *         target="_top">concepts</a>.
+     * 
+     */
+    public List<String> getExpressions() {
+        return expressions;
+    }
+
+    /**
+     * 
+     * @param expressions  An optional list of expression GPUdb uses to filter
+     *                     the join-table being created.  Corresponds to SQL
+     *                     select statement where clause. For details see <a
+     *                     href="../../../../../../concepts/index.html#expressions"
+     *                     target="_top">concepts</a>.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public CreateJoinTableRequest setExpressions(List<String> expressions) {
+        this.expressions = (expressions == null) ? new ArrayList<String>() : expressions;
+        return this;
+    }
+
+    /**
+     * 
      * @return Optional parameters.
      * 
      */
@@ -267,6 +350,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
                 return this.expression;
 
             case 4:
+                return this.expressions;
+
+            case 5:
                 return this.options;
 
             default:
@@ -305,6 +391,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
                 break;
 
             case 4:
+                this.expressions = (List<String>)value;
+                break;
+
+            case 5:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -329,6 +419,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
                  && this.tableNames.equals( that.tableNames )
                  && this.aliases.equals( that.aliases )
                  && this.expression.equals( that.expression )
+                 && this.expressions.equals( that.expressions )
                  && this.options.equals( that.options ) );
     }
 
@@ -353,6 +444,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.expression ) );
         builder.append( ", " );
+        builder.append( gd.toString( "expressions" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.expressions ) );
+        builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.options ) );
@@ -368,6 +463,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
         hashCode = (31 * hashCode) + this.tableNames.hashCode();
         hashCode = (31 * hashCode) + this.aliases.hashCode();
         hashCode = (31 * hashCode) + this.expression.hashCode();
+        hashCode = (31 * hashCode) + this.expressions.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

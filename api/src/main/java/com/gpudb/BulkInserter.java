@@ -282,6 +282,7 @@ public class BulkInserter<T> {
             MurmurHash3.murmurhash3_x64_128(buffer.array(), 0, buffer.capacity(), 10, murmur);
             routingHash = murmur.val1;
             hashCode = (int)(routingHash ^ (routingHash >>> 32));
+            buffer.rewind();
         }
 
         @Override

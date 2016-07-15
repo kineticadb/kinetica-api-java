@@ -459,29 +459,22 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Calculates unique combinations (i.e. groups) of values for the given
-     * columns in a given table/view/collection and computes aggregates on each
-     * unique combination. This is somewhat analogous to an SQL-style
-     * SELECT...GROUP BY. Any column(s) can be grouped on, but only non-string
-     * (i.e. numeric) columns may be used for computing aggregates.
-     * <p>
-     * The results can be paged via the {@code offset} and {@code limit}
-     * parameters. For example, to get 10 groups with the largest counts the
-     * inputs would be: limit=10, options={"sort_order":"descending",
-     * "sort_by":"value"}.
-     * <p>
-     * {@code options} can be used to customize behavior of this call e.g.
-     * filtering or sorting the results.
-     * <p>
-     * To group by 'x' and 'y' and compute the number of objects within each
-     * group, use column_names=['x','y','count(*)'].  To also compute the sum
-     * of 'z' over each group, use column_names=['x','y','count(*)','sum(z)'].
-     * <p>
-     * Available aggregation functions are: 'count(*)', 'sum', 'min', 'max',
-     * 'avg', 'mean', 'stddev', 'stddev_pop', 'stddev_samp', 'var', 'var_pop'
-     * and 'var_samp'.
-     * <p>
-     * The response is returned as a dynamic schema. For details see: <a
+     * Calculates unique combinations (groups) of values for the given columns
+     * in a given table/view/collection and computes aggregates on each unique
+     * combination. This is somewhat analogous to an SQL-style SELECT...GROUP
+     * BY. Any column(s) can be grouped on, but only non-string (i.e. numeric)
+     * columns may be used for computing aggregates. The results can be paged
+     * via the {@code offset} and {@code limit} parameters. For example, to get
+     * 10 groups with the largest counts the inputs would be: limit=10,
+     * options={"sort_order":"descending", "sort_by":"value"}. {@code options}
+     * can be used to customize behavior of this call e.g. filtering or sorting
+     * the results. To group by 'x' and 'y' and compute the number of objects
+     * within each group, use column_names=['x','y','count(*)'].  To also
+     * compute the sum of 'z' over each group, use
+     * column_names=['x','y','count(*)','sum(z)']. Available aggregation
+     * functions are: 'count(*)', 'sum', 'min', 'max', 'avg', 'mean', 'stddev',
+     * 'stddev_pop', 'stddev_samp', 'var', 'var_pop' and 'var_samp'. The
+     * response is returned as a dynamic schema. For details see: <a
      * href="../../../../../concepts/index.html#dynamic-schemas"
      * target="_top">dynamic schemas documentation</a>.
      * 
@@ -504,29 +497,22 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Calculates unique combinations (i.e. groups) of values for the given
-     * columns in a given table/view/collection and computes aggregates on each
-     * unique combination. This is somewhat analogous to an SQL-style
-     * SELECT...GROUP BY. Any column(s) can be grouped on, but only non-string
-     * (i.e. numeric) columns may be used for computing aggregates.
-     * <p>
-     * The results can be paged via the {@code offset} and {@code limit}
-     * parameters. For example, to get 10 groups with the largest counts the
-     * inputs would be: limit=10, options={"sort_order":"descending",
-     * "sort_by":"value"}.
-     * <p>
-     * {@code options} can be used to customize behavior of this call e.g.
-     * filtering or sorting the results.
-     * <p>
-     * To group by 'x' and 'y' and compute the number of objects within each
-     * group, use column_names=['x','y','count(*)'].  To also compute the sum
-     * of 'z' over each group, use column_names=['x','y','count(*)','sum(z)'].
-     * <p>
-     * Available aggregation functions are: 'count(*)', 'sum', 'min', 'max',
-     * 'avg', 'mean', 'stddev', 'stddev_pop', 'stddev_samp', 'var', 'var_pop'
-     * and 'var_samp'.
-     * <p>
-     * The response is returned as a dynamic schema. For details see: <a
+     * Calculates unique combinations (groups) of values for the given columns
+     * in a given table/view/collection and computes aggregates on each unique
+     * combination. This is somewhat analogous to an SQL-style SELECT...GROUP
+     * BY. Any column(s) can be grouped on, but only non-string (i.e. numeric)
+     * columns may be used for computing aggregates. The results can be paged
+     * via the {@code offset} and {@code limit} parameters. For example, to get
+     * 10 groups with the largest counts the inputs would be: limit=10,
+     * options={"sort_order":"descending", "sort_by":"value"}. {@code options}
+     * can be used to customize behavior of this call e.g. filtering or sorting
+     * the results. To group by 'x' and 'y' and compute the number of objects
+     * within each group, use column_names=['x','y','count(*)'].  To also
+     * compute the sum of 'z' over each group, use
+     * column_names=['x','y','count(*)','sum(z)']. Available aggregation
+     * functions are: 'count(*)', 'sum', 'min', 'max', 'avg', 'mean', 'stddev',
+     * 'stddev_pop', 'stddev_samp', 'var', 'var_pop' and 'var_samp'. The
+     * response is returned as a dynamic schema. For details see: <a
      * href="../../../../../concepts/index.html#dynamic-schemas"
      * target="_top">dynamic schemas documentation</a>.
      * 
@@ -553,29 +539,22 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Calculates unique combinations (i.e. groups) of values for the given
-     * columns in a given table/view/collection and computes aggregates on each
-     * unique combination. This is somewhat analogous to an SQL-style
-     * SELECT...GROUP BY. Any column(s) can be grouped on, but only non-string
-     * (i.e. numeric) columns may be used for computing aggregates.
-     * <p>
-     * The results can be paged via the {@code offset} and {@code limit}
-     * parameters. For example, to get 10 groups with the largest counts the
-     * inputs would be: limit=10, options={"sort_order":"descending",
-     * "sort_by":"value"}.
-     * <p>
-     * {@code options} can be used to customize behavior of this call e.g.
-     * filtering or sorting the results.
-     * <p>
-     * To group by 'x' and 'y' and compute the number of objects within each
-     * group, use column_names=['x','y','count(*)'].  To also compute the sum
-     * of 'z' over each group, use column_names=['x','y','count(*)','sum(z)'].
-     * <p>
-     * Available aggregation functions are: 'count(*)', 'sum', 'min', 'max',
-     * 'avg', 'mean', 'stddev', 'stddev_pop', 'stddev_samp', 'var', 'var_pop'
-     * and 'var_samp'.
-     * <p>
-     * The response is returned as a dynamic schema. For details see: <a
+     * Calculates unique combinations (groups) of values for the given columns
+     * in a given table/view/collection and computes aggregates on each unique
+     * combination. This is somewhat analogous to an SQL-style SELECT...GROUP
+     * BY. Any column(s) can be grouped on, but only non-string (i.e. numeric)
+     * columns may be used for computing aggregates. The results can be paged
+     * via the {@code offset} and {@code limit} parameters. For example, to get
+     * 10 groups with the largest counts the inputs would be: limit=10,
+     * options={"sort_order":"descending", "sort_by":"value"}. {@code options}
+     * can be used to customize behavior of this call e.g. filtering or sorting
+     * the results. To group by 'x' and 'y' and compute the number of objects
+     * within each group, use column_names=['x','y','count(*)'].  To also
+     * compute the sum of 'z' over each group, use
+     * column_names=['x','y','count(*)','sum(z)']. Available aggregation
+     * functions are: 'count(*)', 'sum', 'min', 'max', 'avg', 'mean', 'stddev',
+     * 'stddev_pop', 'stddev_samp', 'var', 'var_pop' and 'var_samp'. The
+     * response is returned as a dynamic schema. For details see: <a
      * href="../../../../../concepts/index.html#dynamic-schemas"
      * target="_top">dynamic schemas documentation</a>.
      * 
@@ -1116,7 +1095,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * The alter_system_properties endpoint is primarily used to simplify the
-     * testing of gpudb and is not expected to be used during normal execution.
+     * testing of GPUdb and is not expected to be used during normal execution.
      * Commands are given through the properties_update_map whose keys are
      * commands and values are strings representing integer values (for example
      * '8000') or boolean values ('true' or 'false').
@@ -1141,7 +1120,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * The alter_system_properties endpoint is primarily used to simplify the
-     * testing of gpudb and is not expected to be used during normal execution.
+     * testing of GPUdb and is not expected to be used during normal execution.
      * Commands are given through the properties_update_map whose keys are
      * commands and values are strings representing integer values (for example
      * '8000') or boolean values ('true' or 'false').
@@ -1170,7 +1149,7 @@ public class GPUdb extends GPUdbBase {
      * Apply various modifications to a table or collection. Available
      * modifications include:
      * <p>
-     *      Cereating or deleting an index on a particular column. This can
+     *      Creating or deleting an index on a particular column. This can
      * speed up certain search queries (such as {@link
      * GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link
      * GPUdb#deleteRecords(DeleteRecordsRequest)}, {@link
@@ -1211,7 +1190,7 @@ public class GPUdb extends GPUdbBase {
      * Apply various modifications to a table or collection. Available
      * modifications include:
      * <p>
-     *      Cereating or deleting an index on a particular column. This can
+     *      Creating or deleting an index on a particular column. This can
      * speed up certain search queries (such as {@link
      * GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link
      * GPUdb#deleteRecords(String, List, Map)}, {@link
@@ -1501,6 +1480,11 @@ public class GPUdb extends GPUdbBase {
      *                    statement where clause. For details see <a
      *                    href="../../../../../concepts/index.html#expressions"
      *                    target="_top">concepts</a>.
+     * @param expressions  An optional list of expression GPUdb uses to filter
+     *                     the join-table being created.  Corresponds to SQL
+     *                     select statement where clause. For details see <a
+     *                     href="../../../../../concepts/index.html#expressions"
+     *                     target="_top">concepts</a>.
      * @param options  Optional parameters.
      * 
      * @return Response object containing the results of the operation.
@@ -1510,8 +1494,8 @@ public class GPUdb extends GPUdbBase {
      * @throws GPUdbException  if an error occurs during the operation.
      * 
      */
-    public CreateJoinTableResponse createJoinTable(String joinTableName, List<String> tableNames, List<String> aliases, String expression, Map<String, String> options) throws GPUdbException {
-        CreateJoinTableRequest actualRequest_ = new CreateJoinTableRequest(joinTableName, tableNames, aliases, expression, options);
+    public CreateJoinTableResponse createJoinTable(String joinTableName, List<String> tableNames, List<String> aliases, String expression, List<String> expressions, Map<String, String> options) throws GPUdbException {
+        CreateJoinTableRequest actualRequest_ = new CreateJoinTableRequest(joinTableName, tableNames, aliases, expression, expressions, options);
         CreateJoinTableResponse actualResponse_ = new CreateJoinTableResponse();
         submitRequest("/create/jointable", actualRequest_, actualResponse_, false);
         return actualResponse_;
@@ -1940,7 +1924,7 @@ public class GPUdb extends GPUdbBase {
      * Deletes record(s) matching the provided criteria from the given table.
      * The record selection criteria can either be one or more  {@code
      * expressions} (matching multiple records) or a single record identified
-     * by {@code record_id} optiona.  Note that the two selection criteria are
+     * by {@code record_id} options.  Note that the two selection criteria are
      * mutually exclusive.  This operation cannot be run on a collection or a
      * view.  The operation is synchronous meaning that a response will not be
      * available until the request is completely processed and all the matching
@@ -1968,7 +1952,7 @@ public class GPUdb extends GPUdbBase {
      * Deletes record(s) matching the provided criteria from the given table.
      * The record selection criteria can either be one or more  {@code
      * expressions} (matching multiple records) or a single record identified
-     * by {@code record_id} optiona.  Note that the two selection criteria are
+     * by {@code record_id} options.  Note that the two selection criteria are
      * mutually exclusive.  This operation cannot be run on a collection or a
      * view.  The operation is synchronous meaning that a response will not be
      * available until the request is completely processed and all the matching
@@ -3233,7 +3217,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Retrieves the complete series/track records from the given {@code
-     * worldTableName} based on the partial track informaton contained in the
+     * worldTableName} based on the partial track information contained in the
      * {@code tableName}.
      * <p>
      * This operation supports paging through the data via the {@code offset}
@@ -3265,7 +3249,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Retrieves the complete series/track records from the given {@code
-     * worldTableName} based on the partial track informaton contained in the
+     * worldTableName} based on the partial track information contained in the
      * {@code tableName}.
      * <p>
      * This operation supports paging through the data via the {@code offset}
@@ -3311,7 +3295,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Retrieves the complete series/track records from the given {@code
-     * worldTableName} based on the partial track informaton contained in the
+     * worldTableName} based on the partial track information contained in the
      * {@code tableName}.
      * <p>
      * This operation supports paging through the data via the {@code offset}
@@ -3374,7 +3358,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Retrieves the complete series/track records from the given {@code
-     * worldTableName} based on the partial track informaton contained in the
+     * worldTableName} based on the partial track information contained in the
      * {@code tableName}.
      * <p>
      * This operation supports paging through the data via the {@code offset}
@@ -3412,7 +3396,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Retrieves the complete series/track records from the given {@code
-     * worldTableName} based on the partial track informaton contained in the
+     * worldTableName} based on the partial track information contained in the
      * {@code tableName}.
      * <p>
      * This operation supports paging through the data via the {@code offset}
@@ -4333,7 +4317,7 @@ public class GPUdb extends GPUdbBase {
      * in {@code tableName}. If the supplied {@code tableName} is a collection,
      * the call returns a list of tables contained in the collection, and for
      * each table it returns the description, type id, schema, type label, type
-     * propertiess, and additional information including TTL. If {@code
+     * properties, and additional information including TTL. If {@code
      * tableName} is empty it will return all top-level tables including all
      * collections and top-level child tables (i.e. tables with no parent).
      * <p>
@@ -4384,7 +4368,7 @@ public class GPUdb extends GPUdbBase {
      * in {@code tableName}. If the supplied {@code tableName} is a collection,
      * the call returns a list of tables contained in the collection, and for
      * each table it returns the description, type id, schema, type label, type
-     * propertiess, and additional information including TTL. If {@code
+     * properties, and additional information including TTL. If {@code
      * tableName} is empty it will return all top-level tables including all
      * collections and top-level child tables (i.e. tables with no parent).
      * <p>
@@ -5076,7 +5060,7 @@ public class GPUdb extends GPUdbBase {
      * @param cbColumnName1  Name of the column for the first class break.
      * @param cbVals1  Comma separated list of values or ranges (e.g.
      *                 '0:5,5:10,15:30').
-     * @param cbColumnName2  Optional comma seperated list of valid column
+     * @param cbColumnName2  Optional comma separated list of valid column
      *                       names. An empty string implies not using more than
      *                       one column for the class break. For a non-empty
      *                       list, there needs to be as many entries in the
