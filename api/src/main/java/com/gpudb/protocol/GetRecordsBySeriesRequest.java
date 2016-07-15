@@ -18,7 +18,7 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#getRecordsBySeriesRaw(GetRecordsBySeriesRequest)}.
  * <p>
  * Retrieves the complete series/track records from the given {@code
- * worldTableName} based on the partial track informaton contained in the
+ * worldTableName} based on the partial track information contained in the
  * {@code tableName}.
  * <p>
  * This operation supports paging through the data via the {@code offset} and

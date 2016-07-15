@@ -20,7 +20,7 @@ import org.apache.avro.generic.IndexedRecord;
  * {@code tableName}. If the supplied {@code tableName} is a collection, the
  * call returns a list of tables contained in the collection, and for each
  * table it returns the description, type id, schema, type label, type
- * propertiess, and additional information including TTL. If {@code tableName}
+ * properties, and additional information including TTL. If {@code tableName}
  * is empty it will return all top-level tables including all collections and
  * top-level child tables (i.e. tables with no parent).
  * <p>

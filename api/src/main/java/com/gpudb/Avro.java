@@ -13,6 +13,7 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.IndexedRecord;
@@ -170,7 +171,7 @@ public final class Avro {
                 throw new GPUdbRuntimeException("Could not create " + ((Class<T>)typeDescriptor).getName() + " instance.", ex);
             }
         } else if (typeDescriptor instanceof Schema) {
-            return (T)decode(new GenericRecord((Schema)typeDescriptor), encodedObject);
+            return (T)decode(new GenericData.Record((Schema)typeDescriptor), encodedObject);
         } else if (typeDescriptor instanceof Type) {
             return (T)decode(((Type)typeDescriptor).newInstance(), encodedObject);
         } else if (typeDescriptor instanceof TypeObjectMap) {
@@ -260,12 +261,12 @@ public final class Avro {
                 }
             } else if (typeDescriptor instanceof Schema) {
                 Schema schema = (Schema)typeDescriptor;
-                GenericDatumReader<GenericRecord> reader = new DatumReader<>(schema);
+                GenericDatumReader<org.apache.avro.generic.GenericRecord> reader = new DatumReader<>(schema);
                 DecoderFactory factory = DecoderFactory.get();
                 BinaryDecoder decoder = null;
 
                 for (int i = start; i < start + count; i++) {
-                    GenericRecord object = new GenericRecord(schema);
+                    org.apache.avro.generic.GenericRecord object = new GenericData.Record(schema);
                     decoder = factory.binaryDecoder(encodedObjects.get(i).array(), decoder);
                     reader.read(object, decoder);
                     objects.add((T)object);

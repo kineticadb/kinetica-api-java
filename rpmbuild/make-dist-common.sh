@@ -1,9 +1,14 @@
-#!/bin/bash
-# define the common functions that are used in all the make-xxx-dist files.
+#!/usr/bin/env bash
+
+# This script only defines common functions used in all the make-xxx-dist scripts.
+# You must set the environment variable LOG=logfile.txt to capture the output.
+
+# ---------------------------------------------------------------------------
+# Echo to the $LOG file
 
 function log
 {
-  echo $1 | tee -a $LOG
+    echo $1 | tee -a $LOG
 }
 
 # ---------------------------------------------------------------------------
@@ -15,11 +20,11 @@ function run_cmd
     #LOG=$2 easier to just use the global $LOG env var set in functions below
 
     echo " "  >> $LOG
-    echo $CMD 2>&1 | tee -a $LOG
-    eval $CMD 2>&1 | tee -a $LOG
+    echo "$CMD" 2>&1 | tee -a $LOG
+    eval "$CMD" 2>&1 | tee -a $LOG
 
     #ret_code=$? this is return code of tee
-    ret_code=${PIPESTATUS[0]}
+    local ret_code=${PIPESTATUS[0]}
     if [ $ret_code != 0 ]; then
         printf "Error : [%d] when executing command: '$CMD'\n" $ret_code
         echo "Please see log file: $LOG"
@@ -30,7 +35,7 @@ function run_cmd
 # Change to a directory and exit if it failed
 function pushd_cmd
 {
-    DIR=$1
+    local DIR=$1
     pushd $DIR
 
     if [ $? -ne 0 ] ; then
@@ -103,7 +108,7 @@ function get_file_attrs
 
     pushd_cmd $SEARCH_PATH
         find . -print0 | while read -d '' -r file; do
-            f=$(echo $file | sed 's@^\./@@g')
+            local f=$(echo $file | sed 's@^\./@@g')
             #echo "File attrs: $f"
             if [ -L "$file" ]; then
                 # symlinks cannot have attr or dir
@@ -112,7 +117,7 @@ function get_file_attrs
                 # Is directory
                 echo "%dir %attr(0755, %{owner}, %{user}) \"%{prefix}/$f\"" >> $RESULT_FILE
             elif ! echo "$IGNORE_FILES" | grep "$f" > /dev/null ; then
-                FILE_ATTR_PREFIX=""
+                local FILE_ATTR_PREFIX=""
                 if echo "$CONFIG_FILES" | grep "$f" > /dev/null ; then
                     FILE_ATTR_PREFIX='%config(noreplace) '
                 elif echo "$GHOST_FILES" | grep "$f" > /dev/null ; then
@@ -161,11 +166,47 @@ function get_dependent_libs()
     eval $OUTPUT_VAR_NAME="'$EXE_LIBS'"
 }
 
-# Get our git "Build Number" the YYYYMMDDHHMMSS of the last checkin.
+# Echos the git "Build Number" the YYYYMMDDHHMMSS of the last check-in.
 # Run this function in the git dir.
 function get_git_build_number()
 {
     # Turn '2016-03-17 22:34:47 -0400' into '20160317223447'
     local GIT_BUILD_DATE="$(git --no-pager log -1 --pretty=format:'%ci')"
     echo $GIT_BUILD_DATE | sed 's/-//g;s/://g' | cut -d' ' -f1,2 | sed 's/ //g'
+}
+
+# Check if the git repo has modifications, return code 0 means no modifications
+# Run this function in the git dir.
+function git_repo_is_not_modified()
+{
+    # This line supposedly confirms that all files are actually unchanged
+    # vs someone trying to manually force the git index to believe that a
+    # file is unchanged (assume-unchanged).  Not sure if it is necessary in our case, but we
+    # are leaving it in for now.
+    # See:
+    # https://github.com/git/git/commit/b13d44093bac2eb75f37be01f0e369290211472c
+    # and
+    # http://stackoverflow.com/questions/5143795/how-can-i-check-in-a-bash-script-if-my-local-git-repo-has-changes
+    # and
+    # https://git-scm.com/docs/git-update-index
+    git update-index -q --refresh
+    # No local changes && no committed changes that have not yet been pushed (diff upsteam vs HEAD returns no results)
+    return git diff-index --quiet HEAD -- && [ -z "$(git log @{u}..)" ]
+}
+
+# Echos the get_git_build_number with a trailing 'M' if there are local modifications.
+# Run this function in the git dir.
+function get_git_build_number_with_modifications()
+{
+    local RESULT=$(get_git_build_number)
+    if ! git_repo_is_not_modified ; then
+        RESULT="${RESULT}M"
+    fi
+    echo $RESULT
+}
+
+# Echos the current git branch we are on.
+function get_git_branch_name()
+{
+    git rev-parse --abbrev-ref HEAD
 }
