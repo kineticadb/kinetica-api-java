@@ -87,6 +87,34 @@ public final class ColumnProperty {
     public static final String CHAR16 = "char16";
 
     /**
+     * This property provides optimized memory, disk and query performance for
+     * string columns. Strings with this property must be no longer than 32
+     * characters. This property cannot be combined with *text_search*
+     */
+    public static final String CHAR32 = "char32";
+
+    /**
+     * This property provides optimized memory, disk and query performance for
+     * string columns. Strings with this property must be no longer than 64
+     * characters. This property cannot be combined with *text_search*
+     */
+    public static final String CHAR64 = "char64";
+
+    /**
+     * This property provides optimized memory, disk and query performance for
+     * string columns. Strings with this property must be no longer than 128
+     * characters. This property cannot be combined with *text_search*
+     */
+    public static final String CHAR128 = "char128";
+
+    /**
+     * This property provides optimized memory, disk and query performance for
+     * string columns. Strings with this property must be no longer than 256
+     * characters. This property cannot be combined with *text_search*
+     */
+    public static final String CHAR256 = "char256";
+
+    /**
      * This property provides optimized memory and query performance for int
      * columns. Ints with this property must be between -128 and +127
      * (inclusive)

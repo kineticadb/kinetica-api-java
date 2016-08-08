@@ -473,10 +473,14 @@ public class GPUdb extends GPUdbBase {
      * compute the sum of 'z' over each group, use
      * column_names=['x','y','count(*)','sum(z)']. Available aggregation
      * functions are: 'count(*)', 'sum', 'min', 'max', 'avg', 'mean', 'stddev',
-     * 'stddev_pop', 'stddev_samp', 'var', 'var_pop' and 'var_samp'. The
-     * response is returned as a dynamic schema. For details see: <a
-     * href="../../../../../concepts/index.html#dynamic-schemas"
-     * target="_top">dynamic schemas documentation</a>.
+     * 'stddev_pop', 'stddev_samp', 'var', 'var_pop', 'var_samp' and
+     * 'count_distinct'. Note that 'count_distinct' can only be used if there
+     * are no provided grouping columns. The response is returned as a dynamic
+     * schema. For details see: <a href="../../../../../concepts/index.html
+     * #dynamic-schemas" target="_top">dynamic schemas documentation</a>. If
+     * the 'result_table' option is provided then the results are stored in a
+     * table with the name given in the option and the results are not returned
+     * in the response.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -511,10 +515,14 @@ public class GPUdb extends GPUdbBase {
      * compute the sum of 'z' over each group, use
      * column_names=['x','y','count(*)','sum(z)']. Available aggregation
      * functions are: 'count(*)', 'sum', 'min', 'max', 'avg', 'mean', 'stddev',
-     * 'stddev_pop', 'stddev_samp', 'var', 'var_pop' and 'var_samp'. The
-     * response is returned as a dynamic schema. For details see: <a
-     * href="../../../../../concepts/index.html#dynamic-schemas"
-     * target="_top">dynamic schemas documentation</a>.
+     * 'stddev_pop', 'stddev_samp', 'var', 'var_pop', 'var_samp' and
+     * 'count_distinct'. Note that 'count_distinct' can only be used if there
+     * are no provided grouping columns. The response is returned as a dynamic
+     * schema. For details see: <a href="../../../../../concepts/index.html
+     * #dynamic-schemas" target="_top">dynamic schemas documentation</a>. If
+     * the 'result_table' option is provided then the results are stored in a
+     * table with the name given in the option and the results are not returned
+     * in the response.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -553,10 +561,14 @@ public class GPUdb extends GPUdbBase {
      * compute the sum of 'z' over each group, use
      * column_names=['x','y','count(*)','sum(z)']. Available aggregation
      * functions are: 'count(*)', 'sum', 'min', 'max', 'avg', 'mean', 'stddev',
-     * 'stddev_pop', 'stddev_samp', 'var', 'var_pop' and 'var_samp'. The
-     * response is returned as a dynamic schema. For details see: <a
-     * href="../../../../../concepts/index.html#dynamic-schemas"
-     * target="_top">dynamic schemas documentation</a>.
+     * 'stddev_pop', 'stddev_samp', 'var', 'var_pop', 'var_samp' and
+     * 'count_distinct'. Note that 'count_distinct' can only be used if there
+     * are no provided grouping columns. The response is returned as a dynamic
+     * schema. For details see: <a href="../../../../../concepts/index.html
+     * #dynamic-schemas" target="_top">dynamic schemas documentation</a>. If
+     * the 'result_table' option is provided then the results are stored in a
+     * table with the name given in the option and the results are not returned
+     * in the response.
      * 
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be a valid table/view/collection in
@@ -985,7 +997,9 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../../concepts/index.html#dynamic-schemas"
-     * target="_top">dynamic schemas documentation</a>.
+     * target="_top">dynamic schemas documentation</a>. If the 'result_table'
+     * option is provided then the results are stored in a table with the name
+     * given in the option and the results are not returned in the response.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -1019,7 +1033,9 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../../concepts/index.html#dynamic-schemas"
-     * target="_top">dynamic schemas documentation</a>.
+     * target="_top">dynamic schemas documentation</a>. If the 'result_table'
+     * option is provided then the results are stored in a table with the name
+     * given in the option and the results are not returned in the response.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -1057,7 +1073,9 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../../concepts/index.html#dynamic-schemas"
-     * target="_top">dynamic schemas documentation</a>.
+     * target="_top">dynamic schemas documentation</a>. If the 'result_table'
+     * option is provided then the results are stored in a table with the name
+     * given in the option and the results are not returned in the response.
      * 
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be a valid table in GPUdb.
@@ -1292,6 +1310,52 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Alters a user.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AlterUserResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AlterUserResponse alterUser(AlterUserRequest request) throws GPUdbException {
+        AlterUserResponse actualResponse_ = new AlterUserResponse();
+        submitRequest("/alter/user", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Alters a user.
+     * 
+     * @param name  Name of the user to be altered. Must be an existing user.
+     * @param action  Modification operation to be applied to the user.
+     * @param value  The value of the modification, depending on {@code
+     *               action}.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AlterUserResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AlterUserResponse alterUser(String name, String action, String value, Map<String, String> options) throws GPUdbException {
+        AlterUserRequest actualRequest_ = new AlterUserRequest(name, action, value, options);
+        AlterUserResponse actualResponse_ = new AlterUserResponse();
+        submitRequest("/alter/user", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Clears (drops) one or all tables in the GPUdb cluster. The operation is
      * synchronous meaning that the table will be cleared before the function
      * returns. The response payload returns the status of the operation along
@@ -1443,8 +1507,9 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a joint_table which is a list of tables and aliases for those
-     * tables.
+     * Creates a table that is the result of a SQL JOIN.  For details see: <a
+     * href="../../../../../concepts/index.html#joins" target="_top">join
+     * concept documentation</a>.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -1465,26 +1530,27 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a joint_table which is a list of tables and aliases for those
-     * tables.
+     * Creates a table that is the result of a SQL JOIN.  For details see: <a
+     * href="../../../../../concepts/index.html#joins" target="_top">join
+     * concept documentation</a>.
      * 
-     * @param joinTableName  Name of the join_table to be created. Must not be
+     * @param joinTableName  Name of the join table to be created. Must not be
      *                       the name of a currently existing GPUdb table or
-     *                       join_table. Cannot be an empty string.
+     *                       join table. Cannot be an empty string.
      * @param tableNames  The list of table names making up the joined set.
-     *                    Corresponds to SQL statement from clause
+     *                    Corresponds to a SQL statement FROM clause
      * @param aliases  The list of aliases for each of the corresponding
      *                 tables.
-     * @param expression  An optional expression GPUdb uses to filter the join-
-     *                    table being created.  Corresponds to SQL select
-     *                    statement where clause. For details see <a
+     * @param expression  An optional expression GPUdb uses to combine and
+     *                    filter the joined set.  Corresponds to a SQL
+     *                    statement WHERE clause. For details see: <a
      *                    href="../../../../../concepts/index.html#expressions"
-     *                    target="_top">concepts</a>.
-     * @param expressions  An optional list of expression GPUdb uses to filter
-     *                     the join-table being created.  Corresponds to SQL
-     *                     select statement where clause. For details see <a
+     *                    target="_top">expressions</a>.
+     * @param expressions  An optional list of expressions GPUdb uses to
+     *                     combine and filter the joined set.  Corresponds to a
+     *                     SQL statement WHERE clause. For details see: <a
      *                     href="../../../../../concepts/index.html#expressions"
-     *                     target="_top">concepts</a>.
+     *                     target="_top">expressions</a>.
      * @param options  Optional parameters.
      * 
      * @return Response object containing the results of the operation.
@@ -1498,6 +1564,52 @@ public class GPUdb extends GPUdbBase {
         CreateJoinTableRequest actualRequest_ = new CreateJoinTableRequest(joinTableName, tableNames, aliases, expression, expressions, options);
         CreateJoinTableResponse actualResponse_ = new CreateJoinTableResponse();
         submitRequest("/create/jointable", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Creates a new role.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateRoleResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateRoleResponse createRole(CreateRoleRequest request) throws GPUdbException {
+        CreateRoleResponse actualResponse_ = new CreateRoleResponse();
+        submitRequest("/create/role", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Creates a new role.
+     * 
+     * @param name  Name of the role to be created. Must contain only lowercase
+     *              letters, digits, and underscores, and cannot begin with a
+     *              digit. Must not be the same name as an existing user or
+     *              role in GPUdb.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateRoleResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateRoleResponse createRole(String name, Map<String, String> options) throws GPUdbException {
+        CreateRoleRequest actualRequest_ = new CreateRoleRequest(name, options);
+        CreateRoleResponse actualResponse_ = new CreateRoleResponse();
+        submitRequest("/create/role", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -1921,6 +2033,103 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Creates a new external user (a user whose credentials are managed by an
+     * external LDAP).
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateUserExternalResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateUserExternalResponse createUserExternal(CreateUserExternalRequest request) throws GPUdbException {
+        CreateUserExternalResponse actualResponse_ = new CreateUserExternalResponse();
+        submitRequest("/create/user/external", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Creates a new external user (a user whose credentials are managed by an
+     * external LDAP).
+     * 
+     * @param name  Name of the user to be created. Must exactly match the
+     *              user's name in the external LDAP, prefixed with a @. Must
+     *              not be the same name as an existing user in GPUdb.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateUserExternalResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateUserExternalResponse createUserExternal(String name, Map<String, String> options) throws GPUdbException {
+        CreateUserExternalRequest actualRequest_ = new CreateUserExternalRequest(name, options);
+        CreateUserExternalResponse actualResponse_ = new CreateUserExternalResponse();
+        submitRequest("/create/user/external", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Creates a new internal user (a user whose credentials are managed by
+     * GPUdb).
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateUserInternalResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateUserInternalResponse createUserInternal(CreateUserInternalRequest request) throws GPUdbException {
+        CreateUserInternalResponse actualResponse_ = new CreateUserInternalResponse();
+        submitRequest("/create/user/internal", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Creates a new internal user (a user whose credentials are managed by
+     * GPUdb).
+     * 
+     * @param name  Name of the user to be created. Must contain only lowercase
+     *              letters, digits, and underscores, and cannot begin with a
+     *              digit. Must not be the same name as an existing user or
+     *              role in GPUdb.
+     * @param password  Initial password of the user to be created. May be an
+     *                  empty string for no password.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateUserInternalResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateUserInternalResponse createUserInternal(String name, String password, Map<String, String> options) throws GPUdbException {
+        CreateUserInternalRequest actualRequest_ = new CreateUserInternalRequest(name, password, options);
+        CreateUserInternalResponse actualResponse_ = new CreateUserInternalResponse();
+        submitRequest("/create/user/internal", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Deletes record(s) matching the provided criteria from the given table.
      * The record selection criteria can either be one or more  {@code
      * expressions} (matching multiple records) or a single record identified
@@ -1980,6 +2189,92 @@ public class GPUdb extends GPUdbBase {
         DeleteRecordsRequest actualRequest_ = new DeleteRecordsRequest(tableName, expressions, options);
         DeleteRecordsResponse actualResponse_ = new DeleteRecordsResponse();
         submitRequest("/delete/records", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Deletes an existing role.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DeleteRoleResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public DeleteRoleResponse deleteRole(DeleteRoleRequest request) throws GPUdbException {
+        DeleteRoleResponse actualResponse_ = new DeleteRoleResponse();
+        submitRequest("/delete/role", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Deletes an existing role.
+     * 
+     * @param name  Name of the role to be deleted. Must be an existing role.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DeleteRoleResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public DeleteRoleResponse deleteRole(String name, Map<String, String> options) throws GPUdbException {
+        DeleteRoleRequest actualRequest_ = new DeleteRoleRequest(name, options);
+        DeleteRoleResponse actualResponse_ = new DeleteRoleResponse();
+        submitRequest("/delete/role", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Deletes an existing user.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DeleteUserResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public DeleteUserResponse deleteUser(DeleteUserRequest request) throws GPUdbException {
+        DeleteUserResponse actualResponse_ = new DeleteUserResponse();
+        submitRequest("/delete/user", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Deletes an existing user.
+     * 
+     * @param name  Name of the user to be deleted. Must be an existing user.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DeleteUserResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public DeleteUserResponse deleteUser(String name, Map<String, String> options) throws GPUdbException {
+        DeleteUserRequest actualRequest_ = new DeleteUserRequest(name, options);
+        DeleteUserResponse actualResponse_ = new DeleteUserResponse();
+        submitRequest("/delete/user", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -3655,6 +3950,147 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Grants a system-level permission to a user or role.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  GrantPermissionSystemResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public GrantPermissionSystemResponse grantPermissionSystem(GrantPermissionSystemRequest request) throws GPUdbException {
+        GrantPermissionSystemResponse actualResponse_ = new GrantPermissionSystemResponse();
+        submitRequest("/grant/permission/system", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Grants a system-level permission to a user or role.
+     * 
+     * @param name  Name of the user or role to which the permission will be
+     *              granted. Must be an existing user or role.
+     * @param permission  Permission to grant to the user or role.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  GrantPermissionSystemResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public GrantPermissionSystemResponse grantPermissionSystem(String name, String permission, Map<String, String> options) throws GPUdbException {
+        GrantPermissionSystemRequest actualRequest_ = new GrantPermissionSystemRequest(name, permission, options);
+        GrantPermissionSystemResponse actualResponse_ = new GrantPermissionSystemResponse();
+        submitRequest("/grant/permission/system", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Grants a table-level permission to a user or role.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  GrantPermissionTableResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public GrantPermissionTableResponse grantPermissionTable(GrantPermissionTableRequest request) throws GPUdbException {
+        GrantPermissionTableResponse actualResponse_ = new GrantPermissionTableResponse();
+        submitRequest("/grant/permission/table", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Grants a table-level permission to a user or role.
+     * 
+     * @param name  Name of the user or role to which the permission will be
+     *              granted. Must be an existing user or role.
+     * @param permission  Permission to grant to the user or role.
+     * @param tableName  Name of the table to which the permission grants
+     *                   access. Must be an existing table, collection, or
+     *                   view. If a collection, the permission also applies to
+     *                   tables and views in the collection.
+     * @param filterExpression  Reserved for future use.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  GrantPermissionTableResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public GrantPermissionTableResponse grantPermissionTable(String name, String permission, String tableName, String filterExpression, Map<String, String> options) throws GPUdbException {
+        GrantPermissionTableRequest actualRequest_ = new GrantPermissionTableRequest(name, permission, tableName, filterExpression, options);
+        GrantPermissionTableResponse actualResponse_ = new GrantPermissionTableResponse();
+        submitRequest("/grant/permission/table", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Grants membership in a role to a user or role.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  GrantRoleResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public GrantRoleResponse grantRole(GrantRoleRequest request) throws GPUdbException {
+        GrantRoleResponse actualResponse_ = new GrantRoleResponse();
+        submitRequest("/grant/role", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Grants membership in a role to a user or role.
+     * 
+     * @param role  Name of the role in which membership will be granted. Must
+     *              be an existing role.
+     * @param member  Name of the user or role that will be granted membership
+     *                in {@code role}. Must be an existing user or role.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  GrantRoleResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public GrantRoleResponse grantRole(String role, String member, Map<String, String> options) throws GPUdbException {
+        GrantRoleRequest actualRequest_ = new GrantRoleRequest(role, member, options);
+        GrantRoleResponse actualResponse_ = new GrantRoleResponse();
+        submitRequest("/grant/role", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Checks the existence of a table with the given name in GPUdb.
      * 
      * @param request  Request object containing the parameters for the
@@ -4169,6 +4605,190 @@ public class GPUdb extends GPUdbBase {
         LockTableRequest actualRequest_ = new LockTableRequest(tableName, lockType, options);
         LockTableResponse actualResponse_ = new LockTableResponse();
         submitRequest("/lock/table", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Revokes a system-level permission from a user or role.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  RevokePermissionSystemResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public RevokePermissionSystemResponse revokePermissionSystem(RevokePermissionSystemRequest request) throws GPUdbException {
+        RevokePermissionSystemResponse actualResponse_ = new RevokePermissionSystemResponse();
+        submitRequest("/revoke/permission/system", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Revokes a system-level permission from a user or role.
+     * 
+     * @param name  Name of the user or role from which the permission will be
+     *              revoked. Must be an existing user or role.
+     * @param permission  Permission to revoke from the user or role.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  RevokePermissionSystemResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public RevokePermissionSystemResponse revokePermissionSystem(String name, String permission, Map<String, String> options) throws GPUdbException {
+        RevokePermissionSystemRequest actualRequest_ = new RevokePermissionSystemRequest(name, permission, options);
+        RevokePermissionSystemResponse actualResponse_ = new RevokePermissionSystemResponse();
+        submitRequest("/revoke/permission/system", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Revokes a table-level permission from a user or role.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  RevokePermissionTableResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public RevokePermissionTableResponse revokePermissionTable(RevokePermissionTableRequest request) throws GPUdbException {
+        RevokePermissionTableResponse actualResponse_ = new RevokePermissionTableResponse();
+        submitRequest("/revoke/permission/table", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Revokes a table-level permission from a user or role.
+     * 
+     * @param name  Name of the user or role from which the permission will be
+     *              revoked. Must be an existing user or role.
+     * @param permission  Permission to revoke from the user or role.
+     * @param tableName  Name of the table to which the permission grants
+     *                   access. Must be an existing table, collection, or
+     *                   view.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  RevokePermissionTableResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public RevokePermissionTableResponse revokePermissionTable(String name, String permission, String tableName, Map<String, String> options) throws GPUdbException {
+        RevokePermissionTableRequest actualRequest_ = new RevokePermissionTableRequest(name, permission, tableName, options);
+        RevokePermissionTableResponse actualResponse_ = new RevokePermissionTableResponse();
+        submitRequest("/revoke/permission/table", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Revokes membership in a role from a user or role.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  RevokeRoleResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public RevokeRoleResponse revokeRole(RevokeRoleRequest request) throws GPUdbException {
+        RevokeRoleResponse actualResponse_ = new RevokeRoleResponse();
+        submitRequest("/revoke/role", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Revokes membership in a role from a user or role.
+     * 
+     * @param role  Name of the role in which membership will be revoked. Must
+     *              be an existing role.
+     * @param member  Name of the user or role that will be revoked membership
+     *                in {@code role}. Must be an existing user or role.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  RevokeRoleResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public RevokeRoleResponse revokeRole(String role, String member, Map<String, String> options) throws GPUdbException {
+        RevokeRoleRequest actualRequest_ = new RevokeRoleRequest(role, member, options);
+        RevokeRoleResponse actualResponse_ = new RevokeRoleResponse();
+        submitRequest("/revoke/role", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Shows security information relating to users and/or roles.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowSecurityResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowSecurityResponse showSecurity(ShowSecurityRequest request) throws GPUdbException {
+        ShowSecurityResponse actualResponse_ = new ShowSecurityResponse();
+        submitRequest("/show/security", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Shows security information relating to users and/or roles.
+     * 
+     * @param names  A list of names of users and/or roles about which security
+     *               information is requested. If none are provided,
+     *               information about all users and roles will be returned.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowSecurityResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowSecurityResponse showSecurity(List<String> names, Map<String, String> options) throws GPUdbException {
+        ShowSecurityRequest actualRequest_ = new ShowSecurityRequest(names, options);
+        ShowSecurityResponse actualResponse_ = new ShowSecurityResponse();
+        submitRequest("/show/security", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 

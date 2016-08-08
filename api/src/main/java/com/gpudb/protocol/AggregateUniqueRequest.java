@@ -30,7 +30,9 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * The response is returned as a dynamic schema. For details see: <a
  * href="../../../../../../concepts/index.html#dynamic-schemas"
- * target="_top">dynamic schemas documentation</a>.
+ * target="_top">dynamic schemas documentation</a>. If the 'result_table'
+ * option is provided then the results are stored in a table with the name
+ * given in the option and the results are not returned in the response.
  */
 public class AggregateUniqueRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -95,6 +97,12 @@ public class AggregateUniqueRequest implements IndexedRecord {
         public static final String SORT_ORDER = "sort_order";
         public static final String ASCENDING = "ascending";
         public static final String DESCENDING = "descending";
+
+        /**
+         * The name of the table used to store the results. If present no
+         * results are returned in the response.
+         */
+        public static final String RESULT_TABLE = "result_table";
 
         private Options() {  }
     }

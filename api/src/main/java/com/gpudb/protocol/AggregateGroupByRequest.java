@@ -32,10 +32,14 @@ import org.apache.avro.generic.IndexedRecord;
  * each group, use column_names=['x','y','count(*)'].  To also compute the sum
  * of 'z' over each group, use column_names=['x','y','count(*)','sum(z)'].
  * Available aggregation functions are: 'count(*)', 'sum', 'min', 'max', 'avg',
- * 'mean', 'stddev', 'stddev_pop', 'stddev_samp', 'var', 'var_pop' and
- * 'var_samp'. The response is returned as a dynamic schema. For details see:
- * <a href="../../../../../../concepts/index.html#dynamic-schemas"
- * target="_top">dynamic schemas documentation</a>.
+ * 'mean', 'stddev', 'stddev_pop', 'stddev_samp', 'var', 'var_pop', 'var_samp'
+ * and 'count_distinct'. Note that 'count_distinct' can only be used if there
+ * are no provided grouping columns. The response is returned as a dynamic
+ * schema. For details see: <a href="../../../../../../concepts/index.html
+ * #dynamic-schemas" target="_top">dynamic schemas documentation</a>. If the
+ * 'result_table' option is provided then the results are stored in a table
+ * with the name given in the option and the results are not returned in the
+ * response.
  */
 public class AggregateGroupByRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -132,6 +136,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
          * Indicates that the returned values should be sorted by value
          */
         public static final String VALUE = "value";
+
+        /**
+         * The name of the table used to store the results. If present no
+         * results are returned in the response.
+         */
+        public static final String RESULT_TABLE = "result_table";
 
         private Options() {  }
     }

@@ -1,7 +1,7 @@
 GPUdb Schemas Changelog
 =======================
 
-Version 5.2.0 - 2016-06-25
+Version 5.2.0 - 2016-08-05
 --------------------------
 
 -   /get/records now shows if there are more records to get.
@@ -11,6 +11,20 @@ Version 5.2.0 - 2016-06-25
 -   /alter/system/properties can change the max request timeout time.
 -   /filter/bylist supports 'not_in_list' for inverting match.
 -   /visualize/image/heatmap has new 'style_options' and simplify schema.
+-   New security system endpoints: 
+    -   /alter/user
+    -   /create/role
+    -   /create/user/external
+    -   /create/user/internal
+    -   /delete/role
+    -   /delete/user
+    -   /grant/permission/system
+    -   /grant/permission/table
+    -   /grant/role
+    -   /revoke/permission/system
+    -   /revoke/permission/table
+    -   /revoke/role
+    -   /show/security
 
 Version 5.1.0 - 2016-05-06
 --------------------------
