@@ -1,6 +1,7 @@
 package com.gpudb;
 
 import java.nio.ByteBuffer;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 
@@ -66,8 +67,6 @@ public interface Record extends IndexedRecord {
      * @return      the value of the field
      *
      * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws GPUdbRuntimeException if no field exists with the specified name
      */
     ByteBuffer getBytes(String name);
 
@@ -92,8 +91,6 @@ public interface Record extends IndexedRecord {
      * @return      the value of the field
      *
      * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws GPUdbRuntimeException if no field exists with the specified name
      */
     Double getDouble(String name);
 
@@ -118,8 +115,6 @@ public interface Record extends IndexedRecord {
      * @return      the value of the field
      *
      * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws GPUdbRuntimeException if no field exists with the specified name
      */
     Float getFloat(String name);
 
@@ -144,8 +139,6 @@ public interface Record extends IndexedRecord {
      * @return      the value of the field
      *
      * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws GPUdbRuntimeException if no field exists with the specified name
      */
     Integer getInt(String name);
 
@@ -170,8 +163,6 @@ public interface Record extends IndexedRecord {
      * @return      the value of the field
      *
      * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws GPUdbRuntimeException if no field exists with the specified name
      */
     Long getLong(String name);
 
@@ -196,8 +187,6 @@ public interface Record extends IndexedRecord {
      * @return      the value of the field
      *
      * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws GPUdbRuntimeException if no field exists with the specified name
      */
     String getString(String name);
 
@@ -206,6 +195,9 @@ public interface Record extends IndexedRecord {
      *
      * @param index  the index of the field
      * @param value  the new value
+     *
+     * @throws IllegalArgumentException if the field cannot be set to the
+     * specified value
      *
      * @throws IndexOutOfBoundsException if the specified index is not valid
      */
@@ -218,7 +210,17 @@ public interface Record extends IndexedRecord {
      * @param name   the name of the field
      * @param value  the new value
      *
-     * @throws GPUdbRuntimeException if no field exists with the specified name
+     * @throws IllegalArgumentException if no field exists with the specified
+     * name or the field cannot be set to the specified value
      */
     void put(String name, Object value);
+
+    /**
+     * Returns a {@link Map} of field names to values that is bound to the
+     * record (updates made to the map are reflected in the record and vice
+     * versa).
+     *
+     * @return  the map
+     */
+    Map<String, Object> getDataMap();
 }

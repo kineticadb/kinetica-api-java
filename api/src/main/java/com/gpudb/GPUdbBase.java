@@ -14,6 +14,8 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +41,10 @@ public abstract class GPUdbBase {
     public static final class Options {
         private String username;
         private String password;
-        private String userAuth;
         private boolean useSnappy;
         private int threadCount = 1;
         private ExecutorService executor;
+        private Map<String, String> httpHeaders = new HashMap<>();
         private int timeout;
 
         /**
@@ -65,18 +67,6 @@ public abstract class GPUdbBase {
          */
         public String getPassword() {
             return password;
-        }
-
-        /**
-         * Gets the user authorization string to be used when making requests to
-         * GPUdb.
-         *
-         * @return  the user authorization string
-         *
-         * @see #setUserAuth(String)
-         */
-        public String getUserAuth() {
-            return userAuth;
         }
 
         /**
@@ -120,6 +110,18 @@ public abstract class GPUdbBase {
             return executor;
         }
 
+        /**
+         * Gets the map of additional HTTP headers to send to GPUdb with each
+         * request. If empty, no additional headers will be sent.
+         *
+         * @return  the map
+         *
+         * @see #addHttpHeader(String, String)
+         * @see #setHttpHeaders(Map)
+         */
+        public Map<String, String> getHttpHeaders() {
+            return httpHeaders;
+        }
 
         /**
          * Gets the timeout value, in milliseconds, after which a lack of
@@ -175,23 +177,6 @@ public abstract class GPUdbBase {
         }
 
         /**
-         * Sets the user authorization string to be used when making requests to
-         * GPUdb. If set to a value other than {@code null} (the default) or an
-         * empty string, any GPUdb requests made via the API that support a user
-         * authorization string will use this value in lieu of any value
-         * provided in the request itself.
-         *
-         * @param value  the user authorization string
-         * @return       the current {@link Options} instance
-         *
-         * @see #getUserAuth()
-         */
-        public Options setUserAuth(String value) {
-            userAuth = value;
-            return this;
-        }
-
-        /**
          * Sets the flag indicating whether to use Snappy compression for
          * certain GPUdb requests that potentially submit large amounts of data.
          * If {@code true}, such requests will be automatically compressed
@@ -206,7 +191,6 @@ public abstract class GPUdbBase {
             useSnappy = value;
             return this;
         }
-
 
         /**
          * Sets the number of threads that will be used during data encoding and
@@ -256,6 +240,40 @@ public abstract class GPUdbBase {
          */
         public Options setExecutor(ExecutorService value) {
             executor = value;
+            return this;
+        }
+
+        /**
+         * Replaces the contents of the map of additional HTTP headers to send
+         * to GPUdb with each request with the contents of the specified map.
+         * If empty, no additional headers will be sent.
+         *
+         * @param value  the map
+         * @return       the current {@link Options} instance
+         *
+         * @see #addHttpHeader(String, String)
+         * @see #getHttpHeaders()
+         */
+        public Options setHttpHeaders(Map<String, String> value) {
+            httpHeaders.clear();
+            httpHeaders.putAll(value);
+            return this;
+        }
+
+        /**
+         * Adds an HTTP header to the map of additional HTTP headers to send to
+         * GPUdb with each request. If the header is already in the map, its
+         * value is replaced with the specified value.
+         *
+         * @param header  the HTTP header
+         * @param value   the value of the HTTP header
+         * @return        the current {@link Options} instance
+         *
+         * @see #getHttpHeaders()
+         * @see #setHttpHeaders(Map)
+         */
+        public Options addHttpHeader(String header, String value) {
+            httpHeaders.put(header, value);
             return this;
         }
 
@@ -353,6 +371,20 @@ public abstract class GPUdbBase {
         return "unknown";
     }
 
+    // Internal Helper
+
+    static URL appendPathToURL(URL url, String path) throws MalformedURLException {
+        String newPath = url.getPath();
+
+        if (newPath.endsWith("/")) {
+            newPath += path.substring(1);
+        } else {
+            newPath += path;
+        }
+
+        return new URL(url.getProtocol(), url.getHost(), url.getPort(), newPath);
+    }
+
     // Parameter Helpers
 
     /**
@@ -401,10 +433,10 @@ public abstract class GPUdbBase {
     private String username;
     private String password;
     private String authorization;
-    private String userAuth;
     private boolean useSnappy;
     private int threadCount;
     private ExecutorService executor;
+    private Map<String, String> httpHeaders;
     private int timeout;
     private ConcurrentHashMap<Class<?>, TypeObjectMap<?>> knownTypeObjectMaps;
     private ConcurrentHashMap<String, Object> knownTypes;
@@ -430,16 +462,25 @@ public abstract class GPUdbBase {
         username = options.getUsername();
         password = options.getPassword();
 
-        if (username != null || password != null) {
+        if ((username != null && !username.isEmpty()) || (password != null && !password.isEmpty())) {
             authorization = "Basic " + Base64.encodeBase64String(((username != null ? username : "") + ":" + (password != null ? password : "")).getBytes()).replace("\n", "");
         } else {
             authorization = null;
         }
 
-        userAuth = options.getUserAuth() != null ? options.getUserAuth() : "";
         useSnappy = options.getUseSnappy();
-        executor = options.getExecutor();
         threadCount = options.getThreadCount();
+        executor = options.getExecutor();
+
+        Map<String, String> tempHttpHeaders = new HashMap<>();
+
+        for (Map.Entry<String, String> entry : options.getHttpHeaders().entrySet()) {
+            if (entry.getKey() != null && entry.getValue() != null) {
+                tempHttpHeaders.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        httpHeaders = Collections.unmodifiableMap(tempHttpHeaders);
         timeout = options.getTimeout();
         knownTypeObjectMaps = new ConcurrentHashMap<>(16, 0.75f, 1);
         knownTypes = new ConcurrentHashMap<>(16, 0.75f, 1);
@@ -480,20 +521,6 @@ public abstract class GPUdbBase {
      */
     public String getPassword() {
         return password;
-    }
-
-    /**
-     * Gets the user authorization string used when making requests to GPUdb.
-     * Will be an empty string if none was provided to the {@link
-     * GPUdb#GPUdb(String, GPUdbBase.Options)} GPUdb constructor) via {@link
-     * Options}.
-     *
-     * @return  the user authorization string
-     *
-     * @see Options#setUserAuth(String)
-     */
-    public String getUserAuth() {
-        return userAuth;
     }
 
     /**
@@ -538,6 +565,21 @@ public abstract class GPUdbBase {
      */
     public ExecutorService getExecutor() {
         return executor;
+    }
+
+    /**
+     * Gets the map of additional HTTP headers that will be sent to GPUdb with
+     * each request. Will be empty if none were provided to the {@link
+     * GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} via {@link
+     * Options}.
+     *
+     * @return  the map
+     *
+     * @see Options#addHttpHeader(String, String)
+     * @see Options#setHttpHeaders(Map)
+     */
+    public Map<String, String> getHttpHeaders() {
+        return httpHeaders;
     }
 
     /**
@@ -828,7 +870,7 @@ public abstract class GPUdbBase {
      */
     public <T extends IndexedRecord> T submitRequest(String endpoint, IndexedRecord request, T response) throws GPUdbException {
         try {
-            return submitRequest(new URL(url, endpoint), request, response, false);
+            return submitRequest(appendPathToURL(url, endpoint), request, response, false);
         } catch (MalformedURLException ex) {
             throw new GPUdbException(ex.getMessage(), ex);
         }
@@ -856,7 +898,7 @@ public abstract class GPUdbBase {
      */
     public <T extends IndexedRecord> T submitRequest(String endpoint, IndexedRecord request, T response, boolean enableCompression) throws GPUdbException {
         try {
-            return submitRequest(new URL(url, endpoint), request, response, enableCompression);
+            return submitRequest(appendPathToURL(url, endpoint), request, response, enableCompression);
         } catch (MalformedURLException ex) {
             throw new GPUdbException(ex.getMessage(), ex);
         }
@@ -906,7 +948,10 @@ public abstract class GPUdbBase {
             connection.setReadTimeout(timeout);
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
-            connection.setFixedLengthStreamingMode(requestSize);
+
+            for (Map.Entry<String, String> entry : httpHeaders.entrySet()) {
+                connection.setRequestProperty(entry.getKey(), entry.getValue());
+            }
 
             if (enableCompression) {
                 connection.setRequestProperty("Content-type", "application/x-snappy");
@@ -914,13 +959,11 @@ public abstract class GPUdbBase {
                 connection.setRequestProperty("Content-type", "application/octet-stream");
             }
 
-            if (!userAuth.isEmpty()) {
-                connection.setRequestProperty("GPUdb-User-Auth", userAuth);
+            if (authorization != null) {
+                connection.setRequestProperty("Authorization", authorization);
             }
 
-            if (authorization != null) {
-                connection.setRequestProperty ("Authorization", authorization);
-            }
+            connection.setFixedLengthStreamingMode(requestSize);
 
             try (OutputStream outputStream = connection.getOutputStream()) {
                 outputStream.write(encodedRequest);
@@ -979,6 +1022,14 @@ public abstract class GPUdbBase {
             connection.setConnectTimeout(timeout);
             connection.setReadTimeout(timeout);
             connection.setRequestMethod("GET");
+
+            for (Map.Entry<String, String> entry : httpHeaders.entrySet()) {
+                connection.setRequestProperty(entry.getKey(), entry.getValue());
+            }
+
+            if (authorization != null) {
+                connection.setRequestProperty("Authorization", authorization);
+            }
 
             byte[] buffer = new byte[1024];
             int index = 0;

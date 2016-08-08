@@ -6,16 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
 
 /**
  * Abstract base class for objects that contain {@link Record} data with a
@@ -25,7 +22,7 @@ import org.apache.avro.generic.GenericData;
  * annotation may also be applied to derived classes to provide additional
  * information about the type.
  */
-public abstract class RecordObject implements Record {
+public abstract class RecordObject extends RecordBase {
     /**
      * Indicates that a public field is a GPUdb type column.
      */
@@ -64,7 +61,7 @@ public abstract class RecordObject implements Record {
         public String label();
     }
 
-    private static class Index {
+    private static final class Index {
         public final com.gpudb.Type type;
         public final Field[] fields;
         public final HashMap<String, Field> fieldMap;
@@ -233,34 +230,11 @@ public abstract class RecordObject implements Record {
         index = getIndex(getClass());
     }
 
-    /**
-     * Returns the GPUdb {@link Type} of the object.
-     *
-     * @return  the GPUdb type
-     */
     @Override
     public com.gpudb.Type getType() {
         return index.type;
     }
 
-    /**
-     * Returns the Avro record schema of the object.
-     *
-     * @return  the Avro record schema
-     */
-    @Override
-    public Schema getSchema() {
-        return index.type.getSchema();
-    }
-
-    /**
-     * Returns the value of the specified field.
-     *
-     * @param index  the index of the field
-     * @return       the value of the field
-     *
-     * @throws IndexOutOfBoundsException if the specified index is not valid
-     */
     @Override
     public Object get(int index) {
         try {
@@ -270,242 +244,6 @@ public abstract class RecordObject implements Record {
         }
     }
 
-    /**
-     * Returns the value of the specified field.
-     *
-     * @param name  the name of the field
-     * @return      the value of the field, or {@code null} if no field with the
-     *              specified name exists
-     */
-    @Override
-    public Object get(String name) {
-        Field field = index.fieldMap.get(name);
-
-        if (field == null) {
-            return null;
-        }
-
-        try {
-            return field.get(this);
-        } catch (IllegalAccessException ex) {
-            throw new GPUdbRuntimeException("Could not get field value for " + name + ".", ex);
-        }
-    }
-
-    /**
-     * Returns the value of the specified field cast to a {@link ByteBuffer}.
-     * If the field is not of the correct type an exception will be thrown.
-     *
-     * @param index  the index of the field
-     * @return       the value of the field
-     *
-     * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws IndexOutOfBoundsException if the specified index is not valid
-     */
-    @Override
-    public ByteBuffer getBytes(int index)
-    {
-        return (ByteBuffer)get(index);
-    }
-
-    /**
-     * Returns the value of the specified field cast to a {@link ByteBuffer}.
-     * If the field is not of the correct type an exception will be thrown.
-     *
-     * @param name  the name of the field
-     * @return      the value of the field
-     *
-     * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws GPUdbRuntimeException if no field exists with the specified name
-     */
-    @Override
-    public ByteBuffer getBytes(String name)
-    {
-        return (ByteBuffer)get(name);
-    }
-
-    /**
-     * Returns the value of the specified field cast to a {@link Double}.
-     * If the field is not of the correct type an exception will be thrown.
-     *
-     * @param index  the index of the field
-     * @return       the value of the field
-     *
-     * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws IndexOutOfBoundsException if the specified index is not valid
-     */
-    @Override
-    public Double getDouble(int index)
-    {
-        return (Double)get(index);
-    }
-
-    /**
-     * Returns the value of the specified field cast to a {@link Double}.
-     * If the field is not of the correct type an exception will be thrown.
-     *
-     * @param name  the name of the field
-     * @return      the value of the field
-     *
-     * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws GPUdbRuntimeException if no field exists with the specified name
-     */
-    @Override
-    public Double getDouble(String name)
-    {
-        return (Double)get(name);
-    }
-
-    /**
-     * Returns the value of the specified field cast to a {@link Float}.
-     * If the field is not of the correct type an exception will be thrown.
-     *
-     * @param index  the index of the field
-     * @return       the value of the field
-     *
-     * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws IndexOutOfBoundsException if the specified index is not valid
-     */
-    @Override
-    public Float getFloat(int index)
-    {
-        return (Float)get(index);
-    }
-
-    /**
-     * Returns the value of the specified field cast to a {@link Float}.
-     * If the field is not of the correct type an exception will be thrown.
-     *
-     * @param name  the name of the field
-     * @return      the value of the field
-     *
-     * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws GPUdbRuntimeException if no field exists with the specified name
-     */
-    @Override
-    public Float getFloat(String name)
-    {
-        return (Float)get(name);
-    }
-
-    /**
-     * Returns the value of the specified field cast to a {@link Integer}.
-     * If the field is not of the correct type an exception will be thrown.
-     *
-     * @param index  the index of the field
-     * @return       the value of the field
-     *
-     * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws IndexOutOfBoundsException if the specified index is not valid
-     */
-    @Override
-    public Integer getInt(int index)
-    {
-        return (Integer)get(index);
-    }
-
-    /**
-     * Returns the value of the specified field cast to a {@link Integer}.
-     * If the field is not of the correct type an exception will be thrown.
-     *
-     * @param name  the name of the field
-     * @return      the value of the field
-     *
-     * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws GPUdbRuntimeException if no field exists with the specified name
-     */
-    @Override
-    public Integer getInt(String name)
-    {
-        return (Integer)get(name);
-    }
-
-    /**
-     * Returns the value of the specified field cast to a {@link Long}.
-     * If the field is not of the correct type an exception will be thrown.
-     *
-     * @param index  the index of the field
-     * @return       the value of the field
-     *
-     * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws IndexOutOfBoundsException if the specified index is not valid
-     */
-    @Override
-    public Long getLong(int index)
-    {
-        return (Long)get(index);
-    }
-
-    /**
-     * Returns the value of the specified field cast to a {@link Long}.
-     * If the field is not of the correct type an exception will be thrown.
-     *
-     * @param name  the name of the field
-     * @return      the value of the field
-     *
-     * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws GPUdbRuntimeException if no field exists with the specified name
-     */
-    @Override
-    public Long getLong(String name)
-    {
-        return (Long)get(name);
-    }
-
-    /**
-     * Returns the value of the specified field cast to a {@link String}.
-     * If the field is not of the correct type an exception will be thrown.
-     *
-     * @param index  the index of the field
-     * @return       the value of the field
-     *
-     * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws IndexOutOfBoundsException if the specified index is not valid
-     */
-    @Override
-    public String getString(int index)
-    {
-        return (String)get(index);
-    }
-
-    /**
-     * Returns the value of the specified field cast to a {@link String}.
-     * If the field is not of the correct type an exception will be thrown.
-     *
-     * @param name  the name of the field
-     * @return      the value of the field
-     *
-     * @throws ClassCastException if the field is not of the correct type
-     *
-     * @throws GPUdbRuntimeException if no field exists with the specified name
-     */
-    @Override
-    public String getString(String name)
-    {
-        return (String)get(name);
-    }
-
-    /**
-     * Sets the value of the specified field.
-     *
-     * @param index  the index of the field
-     * @param value  the new value
-     *
-     * @throws IllegalArgumentException if the value is not of the correct type
-     *
-     * @throws IndexOutOfBoundsException if the specified index is not valid
-     */
     @Override
     public void put(int index, Object value) {
         try {
@@ -513,95 +251,5 @@ public abstract class RecordObject implements Record {
         } catch (IllegalAccessException ex) {
             throw new GPUdbRuntimeException("Could not set field value for " + this.index.fields[index].getName() + ".", ex);
         }
-    }
-
-    /**
-     * Sets the value of the specified field.
-     *
-     * @param name   the name of the field
-     * @param value  the new value
-     *
-     * @throws GPUdbRuntimeException if no field exists with the specified name
-     *
-     * @throws IllegalArgumentException if the value is not of the correct type
-     */
-    @Override
-    public void put(String name, Object value) {
-        Field field = index.fieldMap.get(name);
-
-        if (field == null) {
-            throw new GPUdbRuntimeException("Field " + name + " does not exist.");
-        }
-
-        try {
-            field.set(this, value);
-        } catch (IllegalAccessException ex) {
-            throw new GPUdbRuntimeException("Could not set field value for " + name + ".", ex);
-        }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
-
-        RecordObject that = (RecordObject)obj;
-
-        if (!that.index.type.equals(this.index.type)) {
-            return false;
-        }
-
-        int columnCount = this.index.type.getColumnCount();
-
-        for (int i = 0; i < columnCount; i++) {
-            if (!Objects.equals(that.get(i), this.get(i))) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int hashCode = 1;
-        int columnCount = index.type.getColumnCount();
-
-        for (int i = 0; i < columnCount; i++) {
-            hashCode = 31 * hashCode;
-            Object value = get(i);
-
-            if (value != null) {
-                hashCode += value.hashCode();
-            }
-        }
-
-        return hashCode;
-    }
-
-    @Override
-    public String toString() {
-        GenericData gd = GenericData.get();
-        StringBuilder builder = new StringBuilder();
-        builder.append("{");
-        int columnCount = index.type.getColumnCount();
-
-        for (int i = 0; i < columnCount; i++) {
-            if (i > 0) {
-                builder.append(",");
-            }
-
-            builder.append(gd.toString(index.type.getColumn(i).getName()));
-            builder.append(":");
-            builder.append(gd.toString(get(i)));
-        }
-
-        builder.append("}");
-        return builder.toString();
     }
 }

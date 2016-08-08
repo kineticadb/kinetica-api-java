@@ -583,10 +583,9 @@ public final class Type {
     }
 
     /**
-     * Creates a new instance of {@link GenericRecord} based on the schema for
-     * the type.
+     * Creates a new {@link Record} based on the type.
      *
-     * @return  a new {@link GenericRecord}
+     * @return  a new {@link Record}
      */
     public Record newInstance() {
         return new GenericRecord(this);

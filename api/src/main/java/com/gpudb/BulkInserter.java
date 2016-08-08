@@ -126,6 +126,7 @@ public class BulkInserter<T> {
          */
         public WorkerList(GPUdb gpudb, Pattern ipRegex) throws GPUdbException {
             Map<String, String> systemProperties = gpudb.showSystemProperties(GPUdb.options()).getPropertyMap();
+
             String s = systemProperties.get("conf.enable_worker_http_servers");
 
             if (s == null) {
@@ -136,53 +137,89 @@ public class BulkInserter<T> {
                 return;
             }
 
-            s = systemProperties.get("conf.worker_http_server_ips");
+            s = systemProperties.get("conf.worker_http_server_urls");
 
-            if (s == null) {
-                throw new GPUdbException("Missing value for conf.worker_http_server_ips.");
-            }
+            if (s != null) {
+                String[] urlLists = s.split(";");
 
-            String[] ipLists = s.split(";");
+                for (int i = 1; i < urlLists.length; i++) {
+                    String[] urls = urlLists[i].split(",");
+                    boolean found = false;
 
-            s = systemProperties.get("conf.worker_http_server_ports");
+                    for (String url : urls) {
+                        boolean match;
 
-            if (s == null) {
-                throw new GPUdbException("Missing value for conf.worker_http_server_ports.");
-            }
-
-            String[] ports = s.split(";");
-
-            if (ipLists.length != ports.length) {
-                throw new GPUdbException("Inconsistent number of values for conf.worker_http_server_ips and conf.worker_http_server_ports.");
-            }
-
-            for (int i = 1; i < ipLists.length; i++) {
-                String[] ips = ipLists[i].split(",");
-                boolean found = false;
-
-                for (String ip : ips) {
-                    boolean match;
-
-                    if (ipRegex != null) {
-                        match = ipRegex.matcher(ip).matches();
-                    } else {
-                        match = true;
-                    }
-
-                    if (match) {
-                        try {
-                            add(new URL("http://" + ip + ":" + ports[i]));
-                        } catch (MalformedURLException ex) {
-                            throw new GPUdbException(ex.getMessage(), ex);
+                        if (ipRegex != null) {
+                            match = ipRegex.matcher(url).matches();
+                        } else {
+                            match = true;
                         }
 
-                        found = true;
-                        break;
+                        if (match) {
+                            try {
+                                add(new URL(gpudb.getURL().getProtocol() + "://" + url));
+                            } catch (MalformedURLException ex) {
+                                throw new GPUdbException(ex.getMessage(), ex);
+                            }
+
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        throw new GPUdbException("No matching IP found for worker " + i + ".");
                     }
                 }
+            } else {
+                s = systemProperties.get("conf.worker_http_server_ips");
 
-                if (!found) {
-                    throw new GPUdbException("No matching IP found for worker " + i + ".");
+                if (s == null) {
+                    throw new GPUdbException("Missing value for conf.worker_http_server_ips.");
+                }
+
+                String[] ipLists = s.split(";");
+
+                s = systemProperties.get("conf.worker_http_server_ports");
+
+                if (s == null) {
+                    throw new GPUdbException("Missing value for conf.worker_http_server_ports.");
+                }
+
+                String[] ports = s.split(";");
+
+                if (ipLists.length != ports.length) {
+                    throw new GPUdbException("Inconsistent number of values for conf.worker_http_server_ips and conf.worker_http_server_ports.");
+                }
+
+                for (int i = 1; i < ipLists.length; i++) {
+                    String[] ips = ipLists[i].split(",");
+                    boolean found = false;
+
+                    for (String ip : ips) {
+                        boolean match;
+
+                        if (ipRegex != null) {
+                            match = ipRegex.matcher(ip).matches();
+                        } else {
+                            match = true;
+                        }
+
+                        if (match) {
+                            try {
+                                add(new URL(gpudb.getURL().getProtocol() + "://" + ip + ":" + ports[i]));
+                            } catch (MalformedURLException ex) {
+                                throw new GPUdbException(ex.getMessage(), ex);
+                            }
+
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        throw new GPUdbException("No matching IP found for worker " + i + ".");
+                    }
                 }
             }
 
@@ -315,6 +352,10 @@ public class BulkInserter<T> {
             CHAR4,
             CHAR8,
             CHAR16,
+            CHAR32,
+            CHAR64,
+            CHAR128,
+            CHAR256,
             DOUBLE,
             FLOAT,
             INT,
@@ -430,6 +471,18 @@ public class BulkInserter<T> {
                     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR16)) {
                         columnTypes.add(ColumnType.CHAR16);
                         size += 16;
+                    } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR32)) {
+                        columnTypes.add(ColumnType.CHAR32);
+                        size += 32;
+                    } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR64)) {
+                        columnTypes.add(ColumnType.CHAR64);
+                        size += 64;
+                    } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR128)) {
+                        columnTypes.add(ColumnType.CHAR128);
+                        size += 128;
+                    } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR256)) {
+                        columnTypes.add(ColumnType.CHAR256);
+                        size += 256;
                     } else if (typeColumn.getProperties().contains(ColumnProperty.IPV4)) {
                         throw new IllegalArgumentException("Cannot use column " + typeColumn.getName() + " as a key.");
                     } else {
@@ -487,6 +540,22 @@ public class BulkInserter<T> {
 
                     case CHAR16:
                         key.addChar((String)value, 16);
+                        break;
+
+                    case CHAR32:
+                        key.addChar((String)value, 32);
+                        break;
+
+                    case CHAR64:
+                        key.addChar((String)value, 64);
+                        break;
+
+                    case CHAR128:
+                        key.addChar((String)value, 128);
+                        break;
+
+                    case CHAR256:
+                        key.addChar((String)value, 256);
                         break;
 
                     case DOUBLE:
@@ -759,7 +828,7 @@ public class BulkInserter<T> {
         if (workers != null && !workers.isEmpty()) {
             try {
                 for (URL url : workers) {
-                    this.workerQueues.add(new WorkerQueue<T>(new URL(url, "/insert/records"), batchSize, primaryKeyBuilder != null, updateOnExistingPk));
+                    this.workerQueues.add(new WorkerQueue<T>(GPUdbBase.appendPathToURL(url, "/insert/records"), batchSize, primaryKeyBuilder != null, updateOnExistingPk));
                 }
             } catch (MalformedURLException ex) {
                 throw new GPUdbException(ex.getMessage(), ex);
@@ -774,7 +843,7 @@ public class BulkInserter<T> {
             }
         } else {
             try {
-                this.workerQueues.add(new WorkerQueue<T>(new URL(gpudb.getURL(), "/insert/records"), batchSize, primaryKeyBuilder != null, updateOnExistingPk));
+                this.workerQueues.add(new WorkerQueue<T>(GPUdbBase.appendPathToURL(gpudb.getURL(), "/insert/records"), batchSize, primaryKeyBuilder != null, updateOnExistingPk));
             } catch (MalformedURLException ex) {
                 throw new GPUdbException(ex.getMessage(), ex);
             }

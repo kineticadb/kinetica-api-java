@@ -363,6 +363,10 @@ public final class Avro {
             final int partitionStart = i * partitionSize + Math.min(i, partitionExtras);
             final int partitionEnd = (i + 1) * partitionSize + Math.min(i + 1, partitionExtras);
 
+            if (partitionStart == partitionEnd) {
+                break;
+            }
+
             futures.add(executorService.submit(new Callable<List<T>>() {
                 @Override
                 public List<T> call() throws GPUdbException {
@@ -635,6 +639,10 @@ public final class Avro {
         for (int i = 0; i < threadCount; i++) {
             final int partitionStart = i * partitionSize + Math.min(i, partitionExtras);
             final int partitionEnd = (i + 1) * partitionSize + Math.min(i + 1, partitionExtras);
+
+            if (partitionStart == partitionEnd) {
+                break;
+            }
 
             futures.add(executorService.submit(new Callable<List<ByteBuffer>>() {
                 @Override

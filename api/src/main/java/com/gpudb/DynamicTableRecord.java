@@ -3,15 +3,13 @@ package com.gpudb;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
-import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 
-final class DynamicTableRecord implements Record {
+final class DynamicTableRecord extends RecordBase {
     @SuppressWarnings("unchecked")
-    public static final List<Record> transpose(String schemaString, ByteBuffer encodedData) throws GPUdbException {
+    public static List<Record> transpose(String schemaString, ByteBuffer encodedData) throws GPUdbException {
         Schema schema;
 
         try {
@@ -101,178 +99,13 @@ final class DynamicTableRecord implements Record {
     }
 
     @Override
-    public Schema getSchema() {
-        return type.getSchema();
-    }
-
-    @Override
     public Object get(int index) {
         return ((List<?>)data.get(index)).get(recordIndex);
-    }
-
-    @Override
-    public Object get(String name) {
-        int columnIndex = type.getColumnIndex(name);
-
-        if (columnIndex == -1) {
-            return null;
-        }
-
-        return ((List<?>)data.get(columnIndex)).get(recordIndex);
-    }
-
-    @Override
-    public ByteBuffer getBytes(int index)
-    {
-        return (ByteBuffer)get(index);
-    }
-
-    @Override
-    public ByteBuffer getBytes(String name)
-    {
-        return (ByteBuffer)get(name);
-    }
-
-    @Override
-    public Double getDouble(int index)
-    {
-        return (Double)get(index);
-    }
-
-    @Override
-    public Double getDouble(String name)
-    {
-        return (Double)get(name);
-    }
-
-    @Override
-    public Float getFloat(int index)
-    {
-        return (Float)get(index);
-    }
-
-    @Override
-    public Float getFloat(String name)
-    {
-        return (Float)get(name);
-    }
-
-    @Override
-    public Integer getInt(int index)
-    {
-        return (Integer)get(index);
-    }
-
-    @Override
-    public Integer getInt(String name)
-    {
-        return (Integer)get(name);
-    }
-
-    @Override
-    public Long getLong(int index)
-    {
-        return (Long)get(index);
-    }
-
-    @Override
-    public Long getLong(String name)
-    {
-        return (Long)get(name);
-    }
-
-    @Override
-    public String getString(int index)
-    {
-        return (String)get(index);
-    }
-
-    @Override
-    public String getString(String name)
-    {
-        return (String)get(name);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void put(int index, Object value) {
         ((List)data.get(index)).set(recordIndex, value);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void put(String name, Object value) {
-        int index = type.getColumnIndex(name);
-
-        if (index == -1) {
-            throw new GPUdbRuntimeException("Field " + name + " does not exist.");
-        }
-
-        ((List)data.get(index)).set(recordIndex, value);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
-
-        DynamicTableRecord that = (DynamicTableRecord)obj;
-
-        if (!that.type.equals(this.type)) {
-            return false;
-        }
-
-        int columnCount = this.type.getColumnCount();
-
-        for (int i = 0; i < columnCount; i++) {
-            if (!Objects.equals(that.get(i), this.get(i))) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int hashCode = 1;
-        int columnCount = type.getColumnCount();
-
-        for (int i = 0; i < columnCount; i++) {
-            hashCode = 31 * hashCode;
-            Object value = get(i);
-
-            if (value != null) {
-                hashCode += value.hashCode();
-            }
-        }
-
-        return hashCode;
-    }
-
-    @Override
-    public String toString() {
-        GenericData gd = GenericData.get();
-        StringBuilder builder = new StringBuilder();
-        builder.append("{");
-        int columnCount = type.getColumnCount();
-
-        for (int i = 0; i < columnCount; i++) {
-            if (i > 0) {
-                builder.append(",");
-            }
-
-            builder.append(gd.toString(type.getColumn(i).getName()));
-            builder.append(":");
-            builder.append(gd.toString(get(i)));
-        }
-
-        builder.append("}");
-        return builder.toString();
     }
 }
