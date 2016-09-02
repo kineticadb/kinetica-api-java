@@ -129,6 +129,9 @@ public class FilterByStringRequest implements IndexedRecord {
      * @param columnNames  List of columns on which to apply the filter.
      *                     Ignored for 'search' mode.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>case_sensitive: If 'false' then string filtering will ignore case. Does not apply to 'search' mode.  values:TRUE, FALSE
+     * </ul>
      * 
      */
     public FilterByStringRequest(String tableName, String viewName, String expression, String mode, List<String> columnNames, Map<String, String> options) {
@@ -266,6 +269,9 @@ public class FilterByStringRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>case_sensitive: If 'false' then string filtering will ignore case. Does not apply to 'search' mode.  values:TRUE, FALSE
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

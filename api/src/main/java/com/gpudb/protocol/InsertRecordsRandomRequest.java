@@ -146,6 +146,11 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 These parameters take on different meanings depending on
      *                 the type of the column.  Below follows a more detailed
      *                 description of the map:
+     * <ul>
+     *     <li>all: This key indicates that the specifications relayed in the internal map are to be applied to all columns of the records.  
+     *     <li>attr_name: Set the following parameters for the column specified by the key. This overrides any parameter set by {all}@{key of input options}.  
+     *     <li>track_length: This key-map pair is only valid for track type data sets (GPUdb throws an error otherwise).  
+     * </ul>
      * 
      */
     public InsertRecordsRandomRequest(String tableName, long count, Map<String, Map<String, Double>> options) {
@@ -233,6 +238,11 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 These parameters take on different meanings depending on
      *                 the type of the column.  Below follows a more detailed
      *                 description of the map:
+     * <ul>
+     *     <li>all: This key indicates that the specifications relayed in the internal map are to be applied to all columns of the records.  
+     *     <li>attr_name: Set the following parameters for the column specified by the key. This overrides any parameter set by {all}@{key of input options}.  
+     *     <li>track_length: This key-map pair is only valid for track type data sets (GPUdb throws an error otherwise).  
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

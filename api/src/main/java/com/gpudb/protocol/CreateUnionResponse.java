@@ -5,8 +5,6 @@
  */
 package com.gpudb.protocol;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -14,19 +12,15 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#showSystemProperties(ShowSystemPropertiesRequest)}.
- * <p>
- * Returns server configuration and version related information to the caller.
- * The GPUdb Admin tool uses it to present server related information to the
- * user.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#createUnion(CreateUnionRequest)}.
  */
-public class ShowSystemPropertiesRequest implements IndexedRecord {
+public class CreateUnionResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("ShowSystemPropertiesRequest")
+            .record("CreateUnionResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("options").type().map().values().stringType().noDefault()
+                .name("tableName").type().stringType().noDefault()
             .endRecord();
 
 
@@ -41,67 +35,33 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
         return schema$;
     }
 
-
-    /**
-     * Optional parameters.
-     * A set of string constants for the parameter {@code options}.
-     */
-    public static final class Options {
-
-        /**
-         * A list of comma separated names of properties requested. If not
-         * specified, all properties will be returned.
-         */
-        public static final String PROPERTIES = "properties";
-
-        private Options() {  }
-    }
-
-    private Map<String, String> options;
+    private String tableName;
 
 
     /**
-     * Constructs a ShowSystemPropertiesRequest object with default parameters.
+     * Constructs a CreateUnionResponse object with default parameters.
      */
-    public ShowSystemPropertiesRequest() {
-        options = new LinkedHashMap<>();
-    }
-
-    /**
-     * Constructs a ShowSystemPropertiesRequest object with the specified
-     * parameters.
-     * 
-     * @param options  Optional parameters.
-     * <ul>
-     *     <li>properties: A list of comma separated names of properties requested. If not specified, all properties will be returned.  
-     * </ul>
-     * 
-     */
-    public ShowSystemPropertiesRequest(Map<String, String> options) {
-        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
+    public CreateUnionResponse() {
     }
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Value of {@code tableName}.
      * 
      */
-    public Map<String, String> getOptions() {
-        return options;
+    public String getTableName() {
+        return tableName;
     }
 
     /**
      * 
-     * @param options  Optional parameters.
-     * <ul>
-     *     <li>properties: A list of comma separated names of properties requested. If not specified, all properties will be returned.  
-     * </ul>
+     * @param tableName  Value of {@code tableName}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowSystemPropertiesRequest setOptions(Map<String, String> options) {
-        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
+    public CreateUnionResponse setTableName(String tableName) {
+        this.tableName = (tableName == null) ? "" : tableName;
         return this;
     }
 
@@ -132,7 +92,7 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.options;
+                return this.tableName;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -154,7 +114,7 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.options = (Map<String, String>)value;
+                this.tableName = (String)value;
                 break;
 
             default:
@@ -172,9 +132,9 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
             return false;
         }
 
-        ShowSystemPropertiesRequest that = (ShowSystemPropertiesRequest)obj;
+        CreateUnionResponse that = (CreateUnionResponse)obj;
 
-        return ( this.options.equals( that.options ) );
+        return ( this.tableName.equals( that.tableName ) );
     }
 
     @Override
@@ -182,9 +142,9 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "options" ) );
+        builder.append( gd.toString( "tableName" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.options ) );
+        builder.append( gd.toString( this.tableName ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -193,7 +153,7 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.options.hashCode();
+        hashCode = (31 * hashCode) + this.tableName.hashCode();
         return hashCode;
     }
 

@@ -104,6 +104,11 @@ public class InsertRecordsRequest<T> {
      *              added. All records must be of the same type as that of the
      *              table. Empty array if {@code listEncoding} is {@code json}.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>update_on_existing_pk: If the table has a {primary key}@{endpoint /create/type}, then if the value is 'true' then if any of the records being added have the same primary key as existing records, the existing records are replaced (i.e. *updated*) with the given records. If 'false' and if the records being added have the same primary key as existing records, the given records with existing primary keys are ignored (the existing records are left unchanged).  It is quite possible that in this case some of the given records will be inserted and some (those having existing primary keys) will be ignored (or updated). If the specified table does not have a primary key column then this optional parameter is ignored.  values:TRUE, FALSE
+     *     <li>return_record_ids: If 'true' then return GPUdb's internal record id along for each inserted record. Default is 'false'.  values:TRUE, FALSE
+     *     <li>route_to_address: Route to a specific rank/tom. Option not suitable for tables using primary/shard keys  
+     * </ul>
      * 
      */
     public InsertRecordsRequest(String tableName, List<T> data, Map<String, String> options) {
@@ -172,6 +177,11 @@ public class InsertRecordsRequest<T> {
     /**
      * 
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>update_on_existing_pk: If the table has a {primary key}@{endpoint /create/type}, then if the value is 'true' then if any of the records being added have the same primary key as existing records, the existing records are replaced (i.e. *updated*) with the given records. If 'false' and if the records being added have the same primary key as existing records, the given records with existing primary keys are ignored (the existing records are left unchanged).  It is quite possible that in this case some of the given records will be inserted and some (those having existing primary keys) will be ignored (or updated). If the specified table does not have a primary key column then this optional parameter is ignored.  values:TRUE, FALSE
+     *     <li>return_record_ids: If 'true' then return GPUdb's internal record id along for each inserted record. Default is 'false'.  values:TRUE, FALSE
+     *     <li>route_to_address: Route to a specific rank/tom. Option not suitable for tables using primary/shard keys  
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

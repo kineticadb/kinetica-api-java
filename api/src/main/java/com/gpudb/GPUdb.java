@@ -77,21 +77,6 @@ public class GPUdb extends GPUdbBase {
         super(url, options);
     }
 
-    /**
-     * Delete a node from the system.  To delete a node, the data is first
-     * distributed from the deleted node to all the other nodes.  Then the node
-     * is taken out of service.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminDeleteNodeResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public AdminDeleteNodeResponse adminDeleteNode(AdminDeleteNodeRequest request) throws GPUdbException {
         AdminDeleteNodeResponse actualResponse_ = new AdminDeleteNodeResponse();
         submitRequest("/admin/delete/node", request, actualResponse_, false);
@@ -100,24 +85,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Delete a node from the system.  To delete a node, the data is first
-     * distributed from the deleted node to all the other nodes.  Then the node
-     * is taken out of service.
-     * 
-     * @param rank  Rank number of the node being removed from the system.
-     * @param authorization  The password that GPUdb is configured with during
-     *                       startup. Incorrect or missing authorization code
-     *                       will result in an error.
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminDeleteNodeResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public AdminDeleteNodeResponse adminDeleteNode(int rank, String authorization, Map<String, String> options) throws GPUdbException {
         AdminDeleteNodeRequest actualRequest_ = new AdminDeleteNodeRequest(rank, authorization, options);
         AdminDeleteNodeResponse actualResponse_ = new AdminDeleteNodeResponse();
@@ -127,22 +94,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Returns the list of shards and the corresponding rank and tom containing
-     * the shard.  The response message contains arrays of 16384 (total number
-     * of shards in the system) rank and tom numbers corresponding to each
-     * shard.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminGetShardAssignmentsResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public AdminGetShardAssignmentsResponse adminGetShardAssignments(AdminGetShardAssignmentsRequest request) throws GPUdbException {
         AdminGetShardAssignmentsResponse actualResponse_ = new AdminGetShardAssignmentsResponse();
         submitRequest("/admin/getshardassignments", request, actualResponse_, false);
@@ -151,21 +102,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Returns the list of shards and the corresponding rank and tom containing
-     * the shard.  The response message contains arrays of 16384 (total number
-     * of shards in the system) rank and tom numbers corresponding to each
-     * shard.
-     * 
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminGetShardAssignmentsResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public AdminGetShardAssignmentsResponse adminGetShardAssignments(Map<String, String> options) throws GPUdbException {
         AdminGetShardAssignmentsRequest actualRequest_ = new AdminGetShardAssignmentsRequest(options);
         AdminGetShardAssignmentsResponse actualResponse_ = new AdminGetShardAssignmentsResponse();
@@ -220,20 +156,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Rebalance the database such that all the nodes contain approximately
-     * equal number of records.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminRebalanceResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public AdminRebalanceResponse adminRebalance(AdminRebalanceRequest request) throws GPUdbException {
         AdminRebalanceResponse actualResponse_ = new AdminRebalanceResponse();
         submitRequest("/admin/rebalance", request, actualResponse_, false);
@@ -242,21 +164,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Rebalance the database such that all the nodes contain approximately
-     * equal number of records.
-     * 
-     * @param tableNames  Names of the tables to be rebalanced.  If array is
-     *                    empty, all tables will be rebalanced.
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminRebalanceResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public AdminRebalanceResponse adminRebalance(List<String> tableNames, Map<String, String> options) throws GPUdbException {
         AdminRebalanceRequest actualRequest_ = new AdminRebalanceRequest(tableNames, options);
         AdminRebalanceResponse actualResponse_ = new AdminRebalanceResponse();
@@ -266,18 +173,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminSetShardAssignmentsResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public AdminSetShardAssignmentsResponse adminSetShardAssignments(AdminSetShardAssignmentsRequest request) throws GPUdbException {
         AdminSetShardAssignmentsResponse actualResponse_ = new AdminSetShardAssignmentsResponse();
         submitRequest("/admin/setshardassignments", request, actualResponse_, false);
@@ -286,22 +181,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * 
-     * @param version
-     * @param partialReassignment
-     * @param shardAssignmentsRank
-     * @param shardAssignmentsTom
-     * @param assignmentIndex
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminSetShardAssignmentsResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public AdminSetShardAssignmentsResponse adminSetShardAssignments(long version, boolean partialReassignment, List<Integer> shardAssignmentsRank, List<Integer> shardAssignmentsTom, List<Integer> assignmentIndex, Map<String, String> options) throws GPUdbException {
         AdminSetShardAssignmentsRequest actualRequest_ = new AdminSetShardAssignmentsRequest(version, partialReassignment, shardAssignmentsRank, shardAssignmentsTom, assignmentIndex, options);
         AdminSetShardAssignmentsResponse actualResponse_ = new AdminSetShardAssignmentsResponse();
@@ -585,6 +464,13 @@ public class GPUdb extends GPUdbBase {
      *               results to be returned Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>expression: Filter expression to apply to the table prior to computing the aggregate group by.  
+     *     <li>having: Filter expression to apply to the aggregated results.  
+     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending.  values:ASCENDING, DESCENDING
+     *     <li>sort_by: String determining how the results are sorted.  values:KEY, VALUE
+     *     <li>result_table: The name of the table used to store the results. If present no results are returned in the response.  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -657,6 +543,9 @@ public class GPUdb extends GPUdbBase {
      * @param interval  The size of each bin within the start and end
      *                  parameters.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>value_column: The name of the column GPUdb will use when calculating the bin values (values are summed).  The column must be a numerical type (int, double, long, float).  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -725,6 +614,11 @@ public class GPUdb extends GPUdbBase {
      * @param tolerance  Stop iterating when the distances between successive
      *                   points is less than the given tolerance.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>whiten: When set to 1 each of the columns is first normalized by its stdv - default is not to whiten.  
+     *     <li>max_iters: Number of times to try to hit the tolerance limit before giving up - default is 10.  
+     *     <li>num_tries: Number of times to run the k-means algorithm with a different randomly selected starting points - helps avoid local minimum. Default is 1.  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -865,6 +759,10 @@ public class GPUdb extends GPUdbBase {
      * @param stats  Comma separated list of the statistics to calculate, e.g.
      *               "sum,mean".
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>additional_column_names: A list of comma separated column names over which statistics can be accumulated along with the primary column.  
+     *     <li>weight_column_name: Name of column used as weighting attribute for the weighted average statistic.  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -966,6 +864,12 @@ public class GPUdb extends GPUdbBase {
      *                  the binning-column falls in the range
      *                  [start+interval``*``i, start+interval``*``(i+1)).
      * @param options  Map of optional parameters:
+     * <ul>
+     *     <li>additional_column_names: A list of comma separated value-column names over which statistics can be accumulated along with the primary value_column.  
+     *     <li>bin_values: A list of comma separated binning-column values. Values that match the nth bin_values value are placed in the nth bin.  
+     *     <li>weight_column_name: Name of the column used as weighting column for the weighted_average statistic.  
+     *     <li>order_column_name: Name of the column used for candlestick charting techniques.  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -1090,6 +994,11 @@ public class GPUdb extends GPUdbBase {
      *               results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>expression: Optional filter expression to apply to the table.  
+     *     <li>sort_order: String indicating how the returned values should be sorted.  
+     *     <li>result_table: The name of the table used to store the results. If present no results are returned in the response.  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -1552,6 +1461,13 @@ public class GPUdb extends GPUdbBase {
      *                     href="../../../../../concepts/index.html#expressions"
      *                     target="_top">expressions</a>.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>collection_name: Name of a collection in GPUdb to which the join table is to be assigned as a child table. If empty, then the join table will be a top level table.  
+     *     <li>max_query_dimensions: The maximum number of tables in a joined table that can be accessed by a query and are not equated by a foreign-key to primary-key equality predicate  
+     *     <li>optimize_lookups: Use the applied filters to precalculate the lookup table to get data from the primary key sets  
+     *     <li>refresh_method: Method by which the join table can be refreshed when underlying member tables have changed.  
+     *     <li>refresh: Do a manual refresh of the join table if it exists - throws an error otherwise  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -1668,6 +1584,14 @@ public class GPUdb extends GPUdbBase {
      *                added to the newly created table will be of this type.
      *                Must be an empty string if the *is_collection* is 'true'.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>no_error_if_exists: If {true}@{choice of key options.no_error_if_exists}, prevents an error from occurring if the table already exists and is of the given type.  If a table with the same ID but a different type exists, it is still an error.  values:TRUE, FALSE
+     *     <li>collection_name: Name of a collection in GPUdb to which the newly created table is to be assigned as a child table. If empty, then the newly created table will be a top level table. If the collection does not allow duplicate children, then this table creation request will fail if there is an existing child table with the same type id specified in this request.  
+     *     <li>is_collection: Indicates whether the new table to be created will be a collection. If false, the created table will be a top level table.  values:TRUE, FALSE
+     *     <li>disallow_homogeneous_tables: For a collection, indicates whether multiple children of exactly the same data type will be allowed.  values:TRUE, FALSE
+     *     <li>is_replicated: For a Table, this is an indication to GPUdb to replicate the table to all the ranks. This is only required when the table will be used to join with other tables in a query.  values:TRUE, FALSE
+     *     <li>foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'my_field references primary_table(primary_key_field)'.  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -2033,6 +1957,60 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Creates a table that is the union of one or more existing tables.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateUnionResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateUnionResponse createUnion(CreateUnionRequest request) throws GPUdbException {
+        CreateUnionResponse actualResponse_ = new CreateUnionResponse();
+        submitRequest("/create/union", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Creates a table that is the union of one or more existing tables.
+     * 
+     * @param tableName  Name of the table to be created. Must not be the name
+     *                   of a currently existing GPUdb table. Cannot be an
+     *                   empty string.
+     * @param tableNames  The list of table names making up the union. Must
+     *                    contain the names of one or more existing tables.
+     * @param inputColumnNames  The list of columns from each of the
+     *                          corresponding input tables.
+     * @param outputColumnNames  The list of names of the columns to be stored
+     *                           in the union.
+     * @param options  Optional parameters.
+     * <ul>
+     *     <li>collection_name: Name of a collection in GPUdb to which the union is to be assigned as a child table. If empty, then the union will be a top level table.  
+     * </ul>
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateUnionResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateUnionResponse createUnion(String tableName, List<String> tableNames, List<List<String>> inputColumnNames, List<String> outputColumnNames, Map<String, String> options) throws GPUdbException {
+        CreateUnionRequest actualRequest_ = new CreateUnionRequest(tableName, tableNames, inputColumnNames, outputColumnNames, options);
+        CreateUnionResponse actualResponse_ = new CreateUnionResponse();
+        submitRequest("/create/union", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Creates a new external user (a user whose credentials are managed by an
      * external LDAP).
      * 
@@ -2177,6 +2155,10 @@ public class GPUdb extends GPUdbBase {
      *                     mutually exclusive to specifying {@code record_id}
      *                     in the {@code options}.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>global_expression: An optional global expression to reduce the search space of the @{input expressions}.  
+     *     <li>record_id: A record id identifying a single record, obtained at the time of {insertion of the record}@{endpoint /insert/records} or by calling @{endpoint /get/records/fromcollection} with the *return_record_ids* option.  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -2655,6 +2637,9 @@ public class GPUdb extends GPUdbBase {
      * @param columnValuesMap  List of values for the corresponding column in
      *                         the table
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>filter_mode: String indicating the filter mode, either 'in_list' or 'not_in_list'.  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -2892,6 +2877,11 @@ public class GPUdb extends GPUdbBase {
      *                        track. If any provided, it must be an valid track
      *                        ID within the given set.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>spatial_radius: A positive number passed as a string representing the radius of the search area centered around each track point's geospatial coordinates. The value is interpreted in meters. Required parameter.  The minimum allowed value is 0. 
+     *     <li>time_radius: A positive number passed as a string representing the maximum allowable time difference between the timestamps of a filtered object and the given track's points. The value is interpreted in seconds. Required parameter.  The minimum allowed value is 0. 
+     *     <li>spatial_distance_metric: A string representing the coordinate system to use for the spatial search criteria. Acceptable values are 'euclidean' and 'great_circle'. Optional parameter; default is 'euclidean'.  values:EUCLIDEAN, GREAT_CIRCLE
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -2978,6 +2968,9 @@ public class GPUdb extends GPUdbBase {
      * @param columnNames  List of columns on which to apply the filter.
      *                     Ignored for 'search' mode.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>case_sensitive: If 'false' then string filtering will ignore case. Does not apply to 'search' mode.  values:TRUE, FALSE
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -3253,6 +3246,11 @@ public class GPUdb extends GPUdbBase {
      *               results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * @param options
+     * <ul>
+     *     <li>expression: Optional filter expression to apply to the table.  
+     *     <li>sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).  
+     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending. Ignored if 'sort_by' option is not specified.  values:ASCENDING, DESCENDING
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -3353,6 +3351,11 @@ public class GPUdb extends GPUdbBase {
      *               results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * @param options
+     * <ul>
+     *     <li>expression: Optional filter expression to apply to the table.  
+     *     <li>sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).  
+     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending. Ignored if 'sort_by' option is not specified.  values:ASCENDING, DESCENDING
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -3488,6 +3491,11 @@ public class GPUdb extends GPUdbBase {
      *               10000). Or END_OF_column (-9999) to indicate that the max
      *               number of results should be returned.
      * @param options
+     * <ul>
+     *     <li>expression: Optional filter expression to apply to the table.  
+     *     <li>sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).  
+     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending. Default is 'ascending'. Ignored if 'sort_by' option is not specified.  values:ASCENDING, DESCENDING
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -3841,6 +3849,9 @@ public class GPUdb extends GPUdbBase {
      *               results to be returned, or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * @param options
+     * <ul>
+     *     <li>return_record_ids: If 'true' then return GPUdb's internal record id along with each returned record. Default is 'false'.  values:TRUE, FALSE
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -3927,6 +3938,9 @@ public class GPUdb extends GPUdbBase {
      *               results to be returned, or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * @param options
+     * <ul>
+     *     <li>return_record_ids: If 'true' then return GPUdb's internal record id along with each returned record. Default is 'false'.  values:TRUE, FALSE
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -4337,6 +4351,11 @@ public class GPUdb extends GPUdbBase {
      *              added. All records must be of the same type as that of the
      *              table. Empty array if {@code listEncoding} is {@code json}.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>update_on_existing_pk: If the table has a {primary key}@{endpoint /create/type}, then if the value is 'true' then if any of the records being added have the same primary key as existing records, the existing records are replaced (i.e. *updated*) with the given records. If 'false' and if the records being added have the same primary key as existing records, the given records with existing primary keys are ignored (the existing records are left unchanged).  It is quite possible that in this case some of the given records will be inserted and some (those having existing primary keys) will be ignored (or updated). If the specified table does not have a primary key column then this optional parameter is ignored.  values:TRUE, FALSE
+     *     <li>return_record_ids: If 'true' then return GPUdb's internal record id along for each inserted record. Default is 'false'.  values:TRUE, FALSE
+     *     <li>route_to_address: Route to a specific rank/tom. Option not suitable for tables using primary/shard keys  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -4384,6 +4403,11 @@ public class GPUdb extends GPUdbBase {
      *              added. All records must be of the same type as that of the
      *              table. Empty array if {@code listEncoding} is {@code json}.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>update_on_existing_pk: If the table has a {primary key}@{endpoint /create/type}, then if the value is 'true' then if any of the records being added have the same primary key as existing records, the existing records are replaced (i.e. *updated*) with the given records. If 'false' and if the records being added have the same primary key as existing records, the given records with existing primary keys are ignored (the existing records are left unchanged).  It is quite possible that in this case some of the given records will be inserted and some (those having existing primary keys) will be ignored (or updated). If the specified table does not have a primary key column then this optional parameter is ignored.  values:TRUE, FALSE
+     *     <li>return_record_ids: If 'true' then return GPUdb's internal record id along for each inserted record. Default is 'false'.  values:TRUE, FALSE
+     *     <li>route_to_address: Route to a specific rank/tom. Option not suitable for tables using primary/shard keys  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -4463,6 +4487,11 @@ public class GPUdb extends GPUdbBase {
      *                 These parameters take on different meanings depending on
      *                 the type of the column.  Below follows a more detailed
      *                 description of the map:
+     * <ul>
+     *     <li>all: This key indicates that the specifications relayed in the internal map are to be applied to all columns of the records.  
+     *     <li>attr_name: Set the following parameters for the column specified by the key. This overrides any parameter set by {all}@{key of input options}.  
+     *     <li>track_length: This key-map pair is only valid for track type data sets (GPUdb throws an error otherwise).  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -4536,6 +4565,9 @@ public class GPUdb extends GPUdbBase {
      *                    this should be an svg path string, for example:
      *                    'M25.979,12.896,5.979,12.896,5.979,19.562,25.979,19.562z'
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>color: If @{input symbol_format} is 'svg' this is ignored. If @{input symbol_format} is 'svg_path' then this option specifies the color (in RRGGBB hex format) of the path. For example, to have the path rendered in red, used 'FF0000'. If 'color' is not provided then '00FF00' (i.e. green) is used by default.  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -4823,6 +4855,9 @@ public class GPUdb extends GPUdbBase {
      * information to the user.
      * 
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>properties: A list of comma separated names of properties requested. If not specified, all properties will be returned.  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -4949,7 +4984,7 @@ public class GPUdb extends GPUdbBase {
      *     If the option 'show_children' is set to 'false' then for a
      * collection it only returns information about the collection itself, not
      * about the child tables. If 'show_children' is set to 'true' then it will
-     * return information about each of the children.
+     * return information about each of the children, but not the collection.
      * <p>
      *     Running with 'show_children' = 'true' on a child table will return
      * an error.
@@ -5000,7 +5035,7 @@ public class GPUdb extends GPUdbBase {
      *     If the option 'show_children' is set to 'false' then for a
      * collection it only returns information about the collection itself, not
      * about the child tables. If 'show_children' is set to 'true' then it will
-     * return information about each of the children.
+     * return information about each of the children, but not the collection.
      * <p>
      *     Running with 'show_children' = 'true' on a child table will return
      * an error.
@@ -5015,6 +5050,10 @@ public class GPUdb extends GPUdbBase {
      *                   information. If blank then information about all
      *                   collections and top-level tables is returned.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>get_sizes: If 'true' then the table sizes will be returned; otherwise they will be returned blank.  values:TRUE, FALSE
+     *     <li>show_children: If @{input table_name} is a collection, then 'true' will return information about the children of the collection, and 'false' will return information about the collection itself. If @{input table_name} is a child table, 'show_children' must be 'false'. If @{input table_name} is empty then 'show_children' must be 'true'.  values:TRUE, FALSE
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -5418,6 +5457,12 @@ public class GPUdb extends GPUdbBase {
      *              corresponding element from this list will be added to the
      *              table.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>global_expression: An optional global expression to reduce the search space of the predicates listed in @{input expressions}.  
+     *     <li>bypass_safety_checks: When set to 'true', all predicates are available for primary key updates.  Keep in mind that it is possible to destroy data in this case, since a single predicate may match multiple objects (potentially all of records of a table), and then updating all of those records to have the same primary key will, due to the primary key uniqueness constraints, effectively delete all but one of those updated records.  values:TRUE, FALSE
+     *     <li>update_on_existing_pk: Can be used to customize behavior when the updated primary key value already exists, as described in @{endpoint /insert/records}.  values:TRUE, FALSE
+     *     <li>record_id: ID of a single record to be updated (returned in the call to @{endpoint /insert/records} or @{endpoint /get/records/fromcollection}.  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -5476,6 +5521,12 @@ public class GPUdb extends GPUdbBase {
      *              corresponding element from this list will be added to the
      *              table.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>global_expression: An optional global expression to reduce the search space of the predicates listed in @{input expressions}.  
+     *     <li>bypass_safety_checks: When set to 'true', all predicates are available for primary key updates.  Keep in mind that it is possible to destroy data in this case, since a single predicate may match multiple objects (potentially all of records of a table), and then updating all of those records to have the same primary key will, due to the primary key uniqueness constraints, effectively delete all but one of those updated records.  values:TRUE, FALSE
+     *     <li>update_on_existing_pk: Can be used to customize behavior when the updated primary key value already exists, as described in @{endpoint /insert/records}.  values:TRUE, FALSE
+     *     <li>record_id: ID of a single record to be updated (returned in the call to @{endpoint /insert/records} or @{endpoint /get/records/fromcollection}.  
+     * </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -5552,23 +5603,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Generates rasterized image tiles for an area of interest using the given
-     * tables and the provided parameters.
-     * <p>
-     * All color values must be in the format RRGGBB or AARRGGBB (to specify
-     * the alpha value).
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  VisualizeImageResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public VisualizeImageResponse visualizeImage(VisualizeImageRequest request) throws GPUdbException {
         VisualizeImageResponse actualResponse_ = new VisualizeImageResponse();
         submitRequest("/visualize/image", request, actualResponse_, false);
@@ -5577,40 +5611,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Generates rasterized image tiles for an area of interest using the given
-     * tables and the provided parameters.
-     * <p>
-     * All color values must be in the format RRGGBB or AARRGGBB (to specify
-     * the alpha value).
-     * 
-     * @param tableNames  Name of the table containing the data for the various
-     *                    layers to be rendered.
-     * @param worldTableNames  Optional name of the tables containing the data
-     *                         for the entire track when the {@code tableNames}
-     *                         contains only part of the track data, but the
-     *                         entire track has to be rendered.
-     * @param xColumnName  Name of the column containing the x coordinates.
-     * @param yColumnName  Name of the column containing the y coordinates.
-     * @param trackIds  Tracks from the {@code tableNames} to be rendered.
-     * @param minX  Lower bound for the x values.
-     * @param maxX  Upper bound for the x values.
-     * @param minY  Lower bound for the y values.
-     * @param maxY  Upper bound for the y values.
-     * @param width  Width of the generated image.
-     * @param height  Height of the generated image.
-     * @param projection  Spatial Reference System (i.e. EPSG Code).
-     * @param bgColor  Background color of the generated image
-     * @param styleOptions  Styling options for the image.
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  VisualizeImageResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public VisualizeImageResponse visualizeImage(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, List<List<String>> trackIds, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) throws GPUdbException {
         VisualizeImageRequest actualRequest_ = new VisualizeImageRequest(tableNames, worldTableNames, xColumnName, yColumnName, trackIds, minX, maxX, minY, maxY, width, height, projection, bgColor, styleOptions, options);
         VisualizeImageResponse actualResponse_ = new VisualizeImageResponse();
@@ -5620,31 +5620,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Generates 'class break' rasterized image tiles for an area of interest
-     * using the given tables and the provided parameters.
-     * <p>
-     * A class break rendering is where data from one or more GPUdb tables is
-     * rasterized with styling applied on a per-class basis. GPUdb supports
-     * class breaks based on one or more data columns. Distinct values (for
-     * strings) or ranges (for numeric attributes) must be provided in the
-     * cb_column_name1/cb_vals1 and cb_column_name2/cb_vals2 parameters. The
-     * styling parameters must be specified for each class.
-     * <p>
-     * All color values must be in the format RRGGBB or AARRGGBB (to specify
-     * the alpha value).
-     * The image is contained in the {@code imageData} field.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  VisualizeImageClassbreakResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public VisualizeImageClassbreakResponse visualizeImageClassbreak(VisualizeImageClassbreakRequest request) throws GPUdbException {
         VisualizeImageClassbreakResponse actualResponse_ = new VisualizeImageClassbreakResponse();
         submitRequest("/visualize/image/classbreak", request, actualResponse_, false);
@@ -5653,69 +5628,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Generates 'class break' rasterized image tiles for an area of interest
-     * using the given tables and the provided parameters.
-     * <p>
-     * A class break rendering is where data from one or more GPUdb tables is
-     * rasterized with styling applied on a per-class basis. GPUdb supports
-     * class breaks based on one or more data columns. Distinct values (for
-     * strings) or ranges (for numeric attributes) must be provided in the
-     * cb_column_name1/cb_vals1 and cb_column_name2/cb_vals2 parameters. The
-     * styling parameters must be specified for each class.
-     * <p>
-     * All color values must be in the format RRGGBB or AARRGGBB (to specify
-     * the alpha value).
-     * The image is contained in the {@code imageData} field.
-     * 
-     * @param tableNames  Name of the table containing the data for the various
-     *                    layers to be rendered.
-     * @param worldTableNames  Optional name of the tables containing the data
-     *                         for the entire track when the {@code tableNames}
-     *                         contains only part of the track data, but the
-     *                         entire track has to be rendered.
-     * @param xColumnName  Name of the column containing the x coordinates.
-     * @param yColumnName  Name of the column containing the y coordinates.
-     * @param trackIds  Tracks from the {@code tableNames} to be rendered.
-     * @param cbColumnName1  Name of the column for the first class break.
-     * @param cbVals1  Comma separated list of values or ranges (e.g.
-     *                 '0:5,5:10,15:30').
-     * @param cbColumnName2  Optional comma separated list of valid column
-     *                       names. An empty string implies not using more than
-     *                       one column for the class break. For a non-empty
-     *                       list, there needs to be as many entries in the
-     *                       list as there are classes for the first column
-     *                       ({@code cbColumnName1}). However, the column names
-     *                       can be empty to indicate that for the
-     *                       corresponding class of the first attribute, no
-     *                       secondary class break will be applied. All the
-     *                       column names in this list must be different from
-     *                       the first column {@code cbColumnName1}. For
-     *                       example, 'col2,col3,col2'.
-     * @param cbVals2  Comma separated list of []-enclosed lists of values or
-     *                 ranges; e.g. '[0:5,5:10],[of,on,so],[-50:-20]'. Each
-     *                 square bracket enclosed list describes the secondary
-     *                 classes for the respective attribute in {@code
-     *                 cbColumnName2} and the respective class in {@code
-     *                 cbColumnName1} / {@code cbVals1}.
-     * @param minX  Lower bound for the x values.
-     * @param maxX  Upper bound for the x values.
-     * @param minY  Lower bound for the y values.
-     * @param maxY  Upper bound for the y values.
-     * @param width  Width of the generated image.
-     * @param height  Height of the generated image.
-     * @param projection  Spatial Reference System (i.e. EPSG Code).
-     * @param bgColor  Background color of the generated image.
-     * @param styleOptions  Styling options for the image.
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  VisualizeImageClassbreakResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public VisualizeImageClassbreakResponse visualizeImageClassbreak(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, List<List<String>> trackIds, String cbColumnName1, List<String> cbVals1, List<String> cbColumnName2, List<List<String>> cbVals2, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) throws GPUdbException {
         VisualizeImageClassbreakRequest actualRequest_ = new VisualizeImageClassbreakRequest(tableNames, worldTableNames, xColumnName, yColumnName, trackIds, cbColumnName1, cbVals1, cbColumnName2, cbVals2, minX, maxX, minY, maxY, width, height, projection, bgColor, styleOptions, options);
         VisualizeImageClassbreakResponse actualResponse_ = new VisualizeImageClassbreakResponse();
@@ -5725,24 +5637,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Generates rasterized heatmap image tiles for an area of interest using
-     * the given tables and the provided parameters.
-     * <p>
-     * All color values must be in the format RRGGBB or AARRGGBB (to specify
-     * the alpha value).
-     * The heatmap image is contained in the {@code imageData} field.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  VisualizeImageHeatmapResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public VisualizeImageHeatmapResponse visualizeImageHeatmap(VisualizeImageHeatmapRequest request) throws GPUdbException {
         VisualizeImageHeatmapResponse actualResponse_ = new VisualizeImageHeatmapResponse();
         submitRequest("/visualize/image/heatmap", request, actualResponse_, false);
@@ -5751,36 +5645,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Generates rasterized heatmap image tiles for an area of interest using
-     * the given tables and the provided parameters.
-     * <p>
-     * All color values must be in the format RRGGBB or AARRGGBB (to specify
-     * the alpha value).
-     * The heatmap image is contained in the {@code imageData} field.
-     * 
-     * @param tableNames  Name of the table containing the data for the various
-     *                    layers to be rendered.
-     * @param xColumnName  Name of the column containing the x coordinates.
-     * @param yColumnName  Name of the column containing the y coordinates.
-     * @param valueColumnName
-     * @param minX  Lower bound for the x values.
-     * @param maxX  Upper bound for the x values.
-     * @param minY  Lower bound for the y values.
-     * @param maxY  Upper bound for the y values.
-     * @param width  Width of the generated image.
-     * @param height  Height of the generated image.
-     * @param projection  Spatial Reference System (i.e. EPSG Code).
-     * @param styleOptions  Various style related options.
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  VisualizeImageHeatmapResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public VisualizeImageHeatmapResponse visualizeImageHeatmap(List<String> tableNames, String xColumnName, String yColumnName, String valueColumnName, double minX, double maxX, double minY, double maxY, int width, int height, String projection, Map<String, String> styleOptions, Map<String, String> options) throws GPUdbException {
         VisualizeImageHeatmapRequest actualRequest_ = new VisualizeImageHeatmapRequest(tableNames, xColumnName, yColumnName, valueColumnName, minX, maxX, minY, maxY, width, height, projection, styleOptions, options);
         VisualizeImageHeatmapResponse actualResponse_ = new VisualizeImageHeatmapResponse();
@@ -5790,37 +5654,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Generates a rasterized image tile containing text labels defined by data
-     * contained in the given table, suitable for overlaying onto a feature
-     * image tile covering the same area (for example one generated using
-     * {@link GPUdb#visualizeImage(VisualizeImageRequest)}).
-     * <p>
-     * All color values must be integers encoded in the format RRGGBB or
-     * AARRGGBB (to specify the alpha value) when represented in hexadecimal;
-     * although note that literal color values must be specified in base 10,
-     * not hexadecimal.
-     * <p>
-     * Fonts are specified as strings of the form 'FAMILY STYLE-OPTIONS SIZE',
-     * where FAMILY is the font family, STYLE-OPTIONS is a whitespace separated
-     * list of words defining style, variant, weight, stretch, or gravity, and
-     * SIZE is a decimal number (size in points) or optionally followed by the
-     * unit modifier 'px' for absolute size. All three sub-fields are optional;
-     * default values will be used for omitted sub-fields. (For example,
-     * 'Helvetica Bold Italic 10' specifies Helvetica, Bold and Italic, 10
-     * points.) A substitute font will be used if a requested font is not
-     * installed.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  VisualizeImageLabelsResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public VisualizeImageLabelsResponse visualizeImageLabels(VisualizeImageLabelsRequest request) throws GPUdbException {
         VisualizeImageLabelsResponse actualResponse_ = new VisualizeImageLabelsResponse();
         submitRequest("/visualize/image/labels", request, actualResponse_, false);
@@ -5829,111 +5662,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Generates a rasterized image tile containing text labels defined by data
-     * contained in the given table, suitable for overlaying onto a feature
-     * image tile covering the same area (for example one generated using
-     * {@link GPUdb#visualizeImage(List, List, String, String, List, double,
-     * double, double, double, int, int, String, long, Map, Map)}).
-     * <p>
-     * All color values must be integers encoded in the format RRGGBB or
-     * AARRGGBB (to specify the alpha value) when represented in hexadecimal;
-     * although note that literal color values must be specified in base 10,
-     * not hexadecimal.
-     * <p>
-     * Fonts are specified as strings of the form 'FAMILY STYLE-OPTIONS SIZE',
-     * where FAMILY is the font family, STYLE-OPTIONS is a whitespace separated
-     * list of words defining style, variant, weight, stretch, or gravity, and
-     * SIZE is a decimal number (size in points) or optionally followed by the
-     * unit modifier 'px' for absolute size. All three sub-fields are optional;
-     * default values will be used for omitted sub-fields. (For example,
-     * 'Helvetica Bold Italic 10' specifies Helvetica, Bold and Italic, 10
-     * points.) A substitute font will be used if a requested font is not
-     * installed.
-     * 
-     * @param tableName  Name of the table containing the data defining the
-     *                   labels to render.
-     * @param xColumnName  Name of the column containing the x coordinates of
-     *                     the center points of the labels.
-     * @param yColumnName  Name of the column containing the y coordinates of
-     *                     the center points of the labels.
-     * @param xOffset  Either the name of an integer column, or a single
-     *                 literal integer value, defining the number of output
-     *                 pixels by which the labels will be offset horizontally
-     *                 from their specified x coordinates. If blank, an offset
-     *                 of 0 will be used.
-     * @param yOffset  Either the name of an integer column, or a single
-     *                 literal integer value, defining the number of output
-     *                 pixels by which the labels will be offset vertically
-     *                 from their specified y coordinates. If blank, an offset
-     *                 of 0 will be used.
-     * @param textString  Either the name of a string column, or a single
-     *                    literal string value (enclosed in double quotes),
-     *                    defining the text for the labels.
-     * @param font  Either the name of a string column, or a single literal
-     *              string value (enclosed in double quotes), defining the
-     *              fonts for the labels.
-     * @param textColor  Either the name of an integer column, or a single
-     *                   literal integer value, defining the text color for the
-     *                   labels. If blank, opaque black will be used.
-     * @param textAngle  Either the name of a numeric column, or a single
-     *                   literal numeric value, defining the angle of clockwise
-     *                   rotation (in degrees) for the labels. If blank, an
-     *                   angle of 0 will be used.
-     * @param textScale  Either the name of a numeric column, or a single
-     *                   literal numeric value, defining the scaling factor for
-     *                   the labels. (1 is normal size, 0.5 is half size, 2 is
-     *                   double size, etc.) If blank, a scaling factor of 1
-     *                   will be used.
-     * @param drawBox  Either the name of an integer column, or a single
-     *                 literal integer value, defining a Boolean flag
-     *                 indicating whether boxes will be drawn around the
-     *                 labels. If blank, no boxes will be drawn.
-     * @param drawLeader  Either the name of an integer column, or a single
-     *                    literal integer value, defining a Boolean flag
-     *                    indicating whether leader lines will be drawn from
-     *                    the labels to points specified using {@code
-     *                    leaderXColumnName} and {@code leaderYColumnName}. If
-     *                    blank, no leader lines will be drawn.
-     * @param lineWidth  Either the name of a numeric column, or a single
-     *                   literal numeric value, defining the line width in
-     *                   output pixels for the labels' boxes and leader lines.
-     *                   If blank, a line width of 1 will be used.
-     * @param lineColor  Either the name of an integer column, or a single
-     *                   literal integer value, defining the line color for the
-     *                   labels' boxes and leader lines. If blank, opaque black
-     *                   will be used.
-     * @param fillColor  Either the name of an integer column, or a single
-     *                   literal integer value, defining the fill color for the
-     *                   labels' boxes. If blank, the boxes will not be filled.
-     * @param leaderXColumnName  Name of the column containing the x
-     *                           coordinates of the points to which the labels'
-     *                           leader lines will be drawn. May be left blank
-     *                           if no leader lines are to be drawn.
-     * @param leaderYColumnName  Name of the column containing the y
-     *                           coordinates of the points to which the labels'
-     *                           leader lines will be drawn. May be left blank
-     *                           if no leader lines are to be drawn.
-     * @param minX  Lower bound for the x coordinates of labels to include in
-     *              the image.
-     * @param maxX  Upper bound for the x coordinates of labels to include in
-     *              the image.
-     * @param minY  Lower bound for the y coordinates of labels to include in
-     *              the image.
-     * @param maxY  Upper bound for the y coordinates of labels to include in
-     *              the image.
-     * @param width  Width of the generated image.
-     * @param height  Height of the generated image.
-     * @param projection  Spatial Reference System (i.e. EPSG Code).
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  VisualizeImageLabelsResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public VisualizeImageLabelsResponse visualizeImageLabels(String tableName, String xColumnName, String yColumnName, String xOffset, String yOffset, String textString, String font, String textColor, String textAngle, String textScale, String drawBox, String drawLeader, String lineWidth, String lineColor, String fillColor, String leaderXColumnName, String leaderYColumnName, double minX, double maxX, double minY, double maxY, int width, int height, String projection, Map<String, String> options) throws GPUdbException {
         VisualizeImageLabelsRequest actualRequest_ = new VisualizeImageLabelsRequest(tableName, xColumnName, yColumnName, xOffset, yOffset, textString, font, textColor, textAngle, textScale, drawBox, drawLeader, lineWidth, lineColor, fillColor, leaderXColumnName, leaderYColumnName, minX, maxX, minY, maxY, width, height, projection, options);
         VisualizeImageLabelsResponse actualResponse_ = new VisualizeImageLabelsResponse();
@@ -6069,51 +5797,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Creates raster heat-map images of table data based on input parameters.
-     * Numerous parameters are required to call this function. Some of the
-     * important parameters are the attributes of the generated images ({@code
-     * bg_color}, {@code width}, {@code height}), the collection of GPUdb table
-     * names on which this function is to be applied and a user specified
-     * session key. This session key is later used to fetch the generated
-     * images stored by GPUdb. The operation is synchronous meaning that GPUdb
-     * will not return the request until all the images are fully available.
-     * <p>
-     * Once the request has been processed then the generated video frames are
-     * available for download via WMS using STYLES=cached. In this request the
-     * LAYERS parameter should be populated with the session key passed in
-     * {@code sessionKey} of the visualize video request and the FRAME
-     * parameter indicates which 0-based frame of the video should be returned.
-     * All other WMS parameters are ignored for this mode.
-     * <p>
-     * For instance, if a 20 frame video with the session key 'MY-SESSION-KEY'
-     * was generated, the first frame could be retrieved with the URL::
-     * <p>
-     *      http://<gpudb-ip-
-     * address>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-
-     * KEY&FRAME=0
-     * <p>
-     * and the last frame could be retrieved with::
-     * <p>
-     *     http://gpudb-ip-address:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS
-     * =MY-SESSION-KEY&FRAME=19
-     * <p>
-
-     * <p>
-
-     * The response payload provides among other things the number of frames
-     * which were created by GPUdb.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  VisualizeVideoHeatmapResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public VisualizeVideoHeatmapResponse visualizeVideoHeatmap(VisualizeVideoHeatmapRequest request) throws GPUdbException {
         VisualizeVideoHeatmapResponse actualResponse_ = new VisualizeVideoHeatmapResponse();
         submitRequest("/visualize/video/heatmap", request, actualResponse_, false);
@@ -6122,66 +5805,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Creates raster heat-map images of table data based on input parameters.
-     * Numerous parameters are required to call this function. Some of the
-     * important parameters are the attributes of the generated images ({@code
-     * bg_color}, {@code width}, {@code height}), the collection of GPUdb table
-     * names on which this function is to be applied and a user specified
-     * session key. This session key is later used to fetch the generated
-     * images stored by GPUdb. The operation is synchronous meaning that GPUdb
-     * will not return the request until all the images are fully available.
-     * <p>
-     * Once the request has been processed then the generated video frames are
-     * available for download via WMS using STYLES=cached. In this request the
-     * LAYERS parameter should be populated with the session key passed in
-     * {@code sessionKey} of the visualize video request and the FRAME
-     * parameter indicates which 0-based frame of the video should be returned.
-     * All other WMS parameters are ignored for this mode.
-     * <p>
-     * For instance, if a 20 frame video with the session key 'MY-SESSION-KEY'
-     * was generated, the first frame could be retrieved with the URL::
-     * <p>
-     *      http://<gpudb-ip-
-     * address>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-
-     * KEY&FRAME=0
-     * <p>
-     * and the last frame could be retrieved with::
-     * <p>
-     *     http://gpudb-ip-address:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS
-     * =MY-SESSION-KEY&FRAME=19
-     * <p>
-
-     * <p>
-
-     * The response payload provides among other things the number of frames
-     * which were created by GPUdb.
-     * 
-     * @param tableNames  Names of the tables containing the data for various
-     *                    layers of the resulting video
-     * @param xColumnName  Name of the column containing the x coordinates.
-     * @param yColumnName  Name of the column containing the y coordinates.
-     * @param minX  Lower bound for the x values.
-     * @param maxX  Upper bound for the x values.
-     * @param minY  Lower bound for the y values.
-     * @param maxY  Upper bound for the y values.
-     * @param timeIntervals
-     * @param width  Width of the generated video.
-     * @param height  Height of the generated video.
-     * @param projection  Spatial Reference System (i.e. EPSG Code).
-     * @param videoStyle
-     * @param sessionKey  User Provided session key that is later used to
-     *                    retrieve the generated video from the WMS.
-     * @param styleOptions  Various style related options.
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  VisualizeVideoHeatmapResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public VisualizeVideoHeatmapResponse visualizeVideoHeatmap(List<String> tableNames, String xColumnName, String yColumnName, double minX, double maxX, double minY, double maxY, List<List<Double>> timeIntervals, int width, int height, String projection, String videoStyle, String sessionKey, Map<String, String> styleOptions, Map<String, String> options) throws GPUdbException {
         VisualizeVideoHeatmapRequest actualRequest_ = new VisualizeVideoHeatmapRequest(tableNames, xColumnName, yColumnName, minX, maxX, minY, maxY, timeIntervals, width, height, projection, videoStyle, sessionKey, styleOptions, options);
         VisualizeVideoHeatmapResponse actualResponse_ = new VisualizeVideoHeatmapResponse();

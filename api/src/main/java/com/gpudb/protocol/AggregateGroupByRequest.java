@@ -183,6 +183,13 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *               results to be returned Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>expression: Filter expression to apply to the table prior to computing the aggregate group by.  
+     *     <li>having: Filter expression to apply to the aggregated results.  
+     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending.  values:ASCENDING, DESCENDING
+     *     <li>sort_by: String determining how the results are sorted.  values:KEY, VALUE
+     *     <li>result_table: The name of the table used to store the results. If present no results are returned in the response.  
+     * </ul>
      * 
      */
     public AggregateGroupByRequest(String tableName, List<String> columnNames, long offset, long limit, Map<String, String> options) {
@@ -214,6 +221,13 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *               that the max number of results should be returned.
      * @param encoding  Specifies the encoding for returned records.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>expression: Filter expression to apply to the table prior to computing the aggregate group by.  
+     *     <li>having: Filter expression to apply to the aggregated results.  
+     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending.  values:ASCENDING, DESCENDING
+     *     <li>sort_by: String determining how the results are sorted.  values:KEY, VALUE
+     *     <li>result_table: The name of the table used to store the results. If present no results are returned in the response.  
+     * </ul>
      * 
      */
     public AggregateGroupByRequest(String tableName, List<String> columnNames, long offset, long limit, String encoding, Map<String, String> options) {
@@ -361,6 +375,13 @@ public class AggregateGroupByRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>expression: Filter expression to apply to the table prior to computing the aggregate group by.  
+     *     <li>having: Filter expression to apply to the aggregated results.  
+     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending.  values:ASCENDING, DESCENDING
+     *     <li>sort_by: String determining how the results are sorted.  values:KEY, VALUE
+     *     <li>result_table: The name of the table used to store the results. If present no results are returned in the response.  
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

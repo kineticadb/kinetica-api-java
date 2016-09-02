@@ -32,7 +32,7 @@ import org.apache.avro.generic.IndexedRecord;
  *     If the option 'show_children' is set to 'false' then for a collection it
  * only returns information about the collection itself, not about the child
  * tables. If 'show_children' is set to 'true' then it will return information
- * about each of the children.
+ * about each of the children, but not the collection.
  * <p>
  *     Running with 'show_children' = 'true' on a child table will return an
  * error.
@@ -110,6 +110,10 @@ public class ShowTableRequest implements IndexedRecord {
      *                   information. If blank then information about all
      *                   collections and top-level tables is returned.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>get_sizes: If 'true' then the table sizes will be returned; otherwise they will be returned blank.  values:TRUE, FALSE
+     *     <li>show_children: If @{input table_name} is a collection, then 'true' will return information about the children of the collection, and 'false' will return information about the collection itself. If @{input table_name} is a child table, 'show_children' must be 'false'. If @{input table_name} is empty then 'show_children' must be 'true'.  values:TRUE, FALSE
+     * </ul>
      * 
      */
     public ShowTableRequest(String tableName, Map<String, String> options) {
@@ -154,6 +158,10 @@ public class ShowTableRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>get_sizes: If 'true' then the table sizes will be returned; otherwise they will be returned blank.  values:TRUE, FALSE
+     *     <li>show_children: If @{input table_name} is a collection, then 'true' will return information about the children of the collection, and 'false' will return information about the collection itself. If @{input table_name} is a child table, 'show_children' must be 'false'. If @{input table_name} is empty then 'show_children' must be 'true'.  values:TRUE, FALSE
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

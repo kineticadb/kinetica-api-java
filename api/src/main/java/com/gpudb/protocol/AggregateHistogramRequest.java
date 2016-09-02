@@ -101,6 +101,9 @@ public class AggregateHistogramRequest implements IndexedRecord {
      * @param interval  The size of each bin within the start and end
      *                  parameters.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>value_column: The name of the column GPUdb will use when calculating the bin values (values are summed).  The column must be a numerical type (int, double, long, float).  
+     * </ul>
      * 
      */
     public AggregateHistogramRequest(String tableName, String columnName, double start, double end, double interval, Map<String, String> options) {
@@ -236,6 +239,9 @@ public class AggregateHistogramRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>value_column: The name of the column GPUdb will use when calculating the bin values (values are summed).  The column must be a numerical type (int, double, long, float).  
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

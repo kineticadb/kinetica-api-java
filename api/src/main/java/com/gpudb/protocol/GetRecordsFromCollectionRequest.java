@@ -112,6 +112,9 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *               results to be returned, or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * @param options
+     * <ul>
+     *     <li>return_record_ids: If 'true' then return GPUdb's internal record id along with each returned record. Default is 'false'.  values:TRUE, FALSE
+     * </ul>
      * 
      */
     public GetRecordsFromCollectionRequest(String tableName, long offset, long limit, Map<String, String> options) {
@@ -139,6 +142,9 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * @param encoding  Specifies the encoding for returned records; either
      *                  'binary' or 'json'.
      * @param options
+     * <ul>
+     *     <li>return_record_ids: If 'true' then return GPUdb's internal record id along with each returned record. Default is 'false'.  values:TRUE, FALSE
+     * </ul>
      * 
      */
     public GetRecordsFromCollectionRequest(String tableName, long offset, long limit, String encoding, Map<String, String> options) {
@@ -254,6 +260,9 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     /**
      * 
      * @param options
+     * <ul>
+     *     <li>return_record_ids: If 'true' then return GPUdb's internal record id along with each returned record. Default is 'false'.  values:TRUE, FALSE
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

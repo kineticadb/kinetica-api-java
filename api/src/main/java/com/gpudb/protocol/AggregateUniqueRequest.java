@@ -142,6 +142,11 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *               results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>expression: Optional filter expression to apply to the table.  
+     *     <li>sort_order: String indicating how the returned values should be sorted.  
+     *     <li>result_table: The name of the table used to store the results. If present no results are returned in the response.  
+     * </ul>
      * 
      */
     public AggregateUniqueRequest(String tableName, String columnName, long offset, long limit, Map<String, String> options) {
@@ -171,6 +176,11 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *               that the max number of results should be returned.
      * @param encoding  Specifies the encoding for returned records.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>expression: Optional filter expression to apply to the table.  
+     *     <li>sort_order: String indicating how the returned values should be sorted.  
+     *     <li>result_table: The name of the table used to store the results. If present no results are returned in the response.  
+     * </ul>
      * 
      */
     public AggregateUniqueRequest(String tableName, String columnName, long offset, long limit, String encoding, Map<String, String> options) {
@@ -314,6 +324,11 @@ public class AggregateUniqueRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>expression: Optional filter expression to apply to the table.  
+     *     <li>sort_order: String indicating how the returned values should be sorted.  
+     *     <li>result_table: The name of the table used to store the results. If present no results are returned in the response.  
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

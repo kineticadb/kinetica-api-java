@@ -138,6 +138,11 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *               10000). Or END_OF_column (-9999) to indicate that the max
      *               number of results should be returned.
      * @param options
+     * <ul>
+     *     <li>expression: Optional filter expression to apply to the table.  
+     *     <li>sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).  
+     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending. Default is 'ascending'. Ignored if 'sort_by' option is not specified.  values:ASCENDING, DESCENDING
+     * </ul>
      * 
      */
     public GetRecordsByColumnRequest(String tableName, List<String> columnNames, long offset, long limit, Map<String, String> options) {
@@ -168,6 +173,11 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * @param encoding  Specifies the encoding for returned records; either
      *                  'binary' or 'json'.
      * @param options
+     * <ul>
+     *     <li>expression: Optional filter expression to apply to the table.  
+     *     <li>sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).  
+     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending. Default is 'ascending'. Ignored if 'sort_by' option is not specified.  values:ASCENDING, DESCENDING
+     * </ul>
      * 
      */
     public GetRecordsByColumnRequest(String tableName, List<String> columnNames, long offset, long limit, String encoding, Map<String, String> options) {
@@ -308,6 +318,11 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
     /**
      * 
      * @param options
+     * <ul>
+     *     <li>expression: Optional filter expression to apply to the table.  
+     *     <li>sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).  
+     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending. Default is 'ascending'. Ignored if 'sort_by' option is not specified.  values:ASCENDING, DESCENDING
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -122,6 +122,12 @@ public class UpdateRecordsRequest<T> {
      *              corresponding element from this list will be added to the
      *              table.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>global_expression: An optional global expression to reduce the search space of the predicates listed in @{input expressions}.  
+     *     <li>bypass_safety_checks: When set to 'true', all predicates are available for primary key updates.  Keep in mind that it is possible to destroy data in this case, since a single predicate may match multiple objects (potentially all of records of a table), and then updating all of those records to have the same primary key will, due to the primary key uniqueness constraints, effectively delete all but one of those updated records.  values:TRUE, FALSE
+     *     <li>update_on_existing_pk: Can be used to customize behavior when the updated primary key value already exists, as described in @{endpoint /insert/records}.  values:TRUE, FALSE
+     *     <li>record_id: ID of a single record to be updated (returned in the call to @{endpoint /insert/records} or @{endpoint /get/records/fromcollection}.  
+     * </ul>
      * 
      */
     public UpdateRecordsRequest(String tableName, List<String> expressions, List<Map<String, String>> newValuesMaps, List<T> data, Map<String, String> options) {
@@ -250,6 +256,12 @@ public class UpdateRecordsRequest<T> {
     /**
      * 
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>global_expression: An optional global expression to reduce the search space of the predicates listed in @{input expressions}.  
+     *     <li>bypass_safety_checks: When set to 'true', all predicates are available for primary key updates.  Keep in mind that it is possible to destroy data in this case, since a single predicate may match multiple objects (potentially all of records of a table), and then updating all of those records to have the same primary key will, due to the primary key uniqueness constraints, effectively delete all but one of those updated records.  values:TRUE, FALSE
+     *     <li>update_on_existing_pk: Can be used to customize behavior when the updated primary key value already exists, as described in @{endpoint /insert/records}.  values:TRUE, FALSE
+     *     <li>record_id: ID of a single record to be updated (returned in the call to @{endpoint /insert/records} or @{endpoint /get/records/fromcollection}.  
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
