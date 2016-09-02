@@ -113,6 +113,9 @@ public class InsertSymbolRequest implements IndexedRecord {
      *                    this should be an svg path string, for example:
      *                    'M25.979,12.896,5.979,12.896,5.979,19.562,25.979,19.562z'
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>color: If @{input symbol_format} is 'svg' this is ignored. If @{input symbol_format} is 'svg_path' then this option specifies the color (in RRGGBB hex format) of the path. For example, to have the path rendered in red, used 'FF0000'. If 'color' is not provided then '00FF00' (i.e. green) is used by default.  
+     * </ul>
      * 
      */
     public InsertSymbolRequest(String symbolId, String symbolFormat, ByteBuffer symbolData, Map<String, String> options) {
@@ -210,6 +213,9 @@ public class InsertSymbolRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>color: If @{input symbol_format} is 'svg' this is ignored. If @{input symbol_format} is 'svg_path' then this option specifies the color (in RRGGBB hex format) of the path. For example, to have the path rendered in red, used 'FF0000'. If 'color' is not provided then '00FF00' (i.e. green) is used by default.  
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

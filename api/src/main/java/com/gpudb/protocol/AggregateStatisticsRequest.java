@@ -198,6 +198,10 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      * @param stats  Comma separated list of the statistics to calculate, e.g.
      *               "sum,mean".
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>additional_column_names: A list of comma separated column names over which statistics can be accumulated along with the primary column.  
+     *     <li>weight_column_name: Name of column used as weighting attribute for the weighted average statistic.  
+     * </ul>
      * 
      */
     public AggregateStatisticsRequest(String tableName, String columnName, String stats, Map<String, String> options) {
@@ -288,6 +292,10 @@ public class AggregateStatisticsRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>additional_column_names: A list of comma separated column names over which statistics can be accumulated along with the primary column.  
+     *     <li>weight_column_name: Name of column used as weighting attribute for the weighted average statistic.  
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

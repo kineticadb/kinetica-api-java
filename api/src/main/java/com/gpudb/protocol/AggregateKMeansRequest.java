@@ -112,6 +112,11 @@ public class AggregateKMeansRequest implements IndexedRecord {
      * @param tolerance  Stop iterating when the distances between successive
      *                   points is less than the given tolerance.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>whiten: When set to 1 each of the columns is first normalized by its stdv - default is not to whiten.  
+     *     <li>max_iters: Number of times to try to hit the tolerance limit before giving up - default is 10.  
+     *     <li>num_tries: Number of times to run the k-means algorithm with a different randomly selected starting points - helps avoid local minimum. Default is 1.  
+     * </ul>
      * 
      */
     public AggregateKMeansRequest(String tableName, List<String> columnNames, int k, double tolerance, Map<String, String> options) {
@@ -228,6 +233,11 @@ public class AggregateKMeansRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>whiten: When set to 1 each of the columns is first normalized by its stdv - default is not to whiten.  
+     *     <li>max_iters: Number of times to try to hit the tolerance limit before giving up - default is 10.  
+     *     <li>num_tries: Number of times to run the k-means algorithm with a different randomly selected starting points - helps avoid local minimum. Default is 1.  
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

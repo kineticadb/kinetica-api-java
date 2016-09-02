@@ -126,6 +126,11 @@ public class FilterBySeriesRequest implements IndexedRecord {
      *                        track. If any provided, it must be an valid track
      *                        ID within the given set.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>spatial_radius: A positive number passed as a string representing the radius of the search area centered around each track point's geospatial coordinates. The value is interpreted in meters. Required parameter.  The minimum allowed value is 0. 
+     *     <li>time_radius: A positive number passed as a string representing the maximum allowable time difference between the timestamps of a filtered object and the given track's points. The value is interpreted in seconds. Required parameter.  The minimum allowed value is 0. 
+     *     <li>spatial_distance_metric: A string representing the coordinate system to use for the spatial search criteria. Acceptable values are 'euclidean' and 'great_circle'. Optional parameter; default is 'euclidean'.  values:EUCLIDEAN, GREAT_CIRCLE
+     * </ul>
      * 
      */
     public FilterBySeriesRequest(String tableName, String viewName, String trackId, List<String> targetTrackIds, Map<String, String> options) {
@@ -246,6 +251,11 @@ public class FilterBySeriesRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>spatial_radius: A positive number passed as a string representing the radius of the search area centered around each track point's geospatial coordinates. The value is interpreted in meters. Required parameter.  The minimum allowed value is 0. 
+     *     <li>time_radius: A positive number passed as a string representing the maximum allowable time difference between the timestamps of a filtered object and the given track's points. The value is interpreted in seconds. Required parameter.  The minimum allowed value is 0. 
+     *     <li>spatial_distance_metric: A string representing the coordinate system to use for the spatial search criteria. Acceptable values are 'euclidean' and 'great_circle'. Optional parameter; default is 'euclidean'.  values:EUCLIDEAN, GREAT_CIRCLE
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

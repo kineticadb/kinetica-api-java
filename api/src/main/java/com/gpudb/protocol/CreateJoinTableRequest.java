@@ -76,30 +76,39 @@ public class CreateJoinTableRequest implements IndexedRecord {
         public static final String OPTIMIZE_LOOKUPS = "optimize_lookups";
 
         /**
-         * Method by which the join table can be refreshed when underlying sets
-         * have changed.
+         * Method by which the join table can be refreshed when underlying
+         * member tables have changed.
          */
         public static final String REFRESH_METHOD = "refresh_method";
 
         /**
          * refresh only occurs when manually requested by calling this endpoint
-         * with refresh option set to true
+         * with refresh option set to 'refresh' or 'full_refresh'
          */
         public static final String MANUAL = "manual";
 
         /**
-         * refresh occurs whenever a new query is issued
+         * incrementally refresh (refresh just those records added) whenever a
+         * new query is issued and new data is inserted into the base table.  A
+         * full refresh of all the records occurs when a new query is issued
+         * and there have been inserts to any non-base-tables since the last
+         * query
          */
         public static final String ON_QUERY = "on_query";
 
         /**
-         * refresh occurs whenever new data is inserted into fact set - if
-         * inserted into other sets refreshes whenever a new query is issued
+         * incrementally refresh (refresh just those records added) whenever
+         * new data is inserted into a base table.  A full refresh of all the
+         * records occurs when a new query is issued and there have been
+         * inserts to any non-base-tables since the last query
          */
         public static final String ON_INSERT = "on_insert";
 
         /**
-         * refresh if needed - will do incremental refresh if possible
+         * incrementally refresh (refresh just those records added) if new data
+         * has been inserted into the base table.  A full refresh of all the
+         * records occurs if there have been inserts to any non-base-tables
+         * since the last refresh
          */
         public static final String REFRESH = "refresh";
 
@@ -109,8 +118,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
         public static final String NO_REFRESH = "no_refresh";
 
         /**
-         * refresh if needed - alwasy does a full refresh - mainly used for
-         * testing
+         * always refresh even if no new records have been added.  Only refresh
+         * method guaranteed to do a full refresh (refresh all the records) if
+         * a delete or update has occurred since the last refresh.
          */
         public static final String FULL_REFRESH = "full_refresh";
 
@@ -159,6 +169,13 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                     href="../../../../../../concepts/index.html#expressions"
      *                     target="_top">expressions</a>.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>collection_name: Name of a collection in GPUdb to which the join table is to be assigned as a child table. If empty, then the join table will be a top level table.  
+     *     <li>max_query_dimensions: The maximum number of tables in a joined table that can be accessed by a query and are not equated by a foreign-key to primary-key equality predicate  
+     *     <li>optimize_lookups: Use the applied filters to precalculate the lookup table to get data from the primary key sets  
+     *     <li>refresh_method: Method by which the join table can be refreshed when underlying member tables have changed.  
+     *     <li>refresh: Do a manual refresh of the join table if it exists - throws an error otherwise  
+     * </ul>
      * 
      */
     public CreateJoinTableRequest(String joinTableName, List<String> tableNames, List<String> aliases, String expression, List<String> expressions, Map<String, String> options) {
@@ -310,6 +327,13 @@ public class CreateJoinTableRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>collection_name: Name of a collection in GPUdb to which the join table is to be assigned as a child table. If empty, then the join table will be a top level table.  
+     *     <li>max_query_dimensions: The maximum number of tables in a joined table that can be accessed by a query and are not equated by a foreign-key to primary-key equality predicate  
+     *     <li>optimize_lookups: Use the applied filters to precalculate the lookup table to get data from the primary key sets  
+     *     <li>refresh_method: Method by which the join table can be refreshed when underlying member tables have changed.  
+     *     <li>refresh: Do a manual refresh of the join table if it exists - throws an error otherwise  
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

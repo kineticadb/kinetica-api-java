@@ -102,6 +102,10 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *                     mutually exclusive to specifying {@code record_id}
      *                     in the {@code options}.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>global_expression: An optional global expression to reduce the search space of the @{input expressions}.  
+     *     <li>record_id: A record id identifying a single record, obtained at the time of {insertion of the record}@{endpoint /insert/records} or by calling @{endpoint /get/records/fromcollection} with the *return_record_ids* option.  
+     * </ul>
      * 
      */
     public DeleteRecordsRequest(String tableName, List<String> expressions, Map<String, String> options) {
@@ -176,6 +180,10 @@ public class DeleteRecordsRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>global_expression: An optional global expression to reduce the search space of the @{input expressions}.  
+     *     <li>record_id: A record id identifying a single record, obtained at the time of {insertion of the record}@{endpoint /insert/records} or by calling @{endpoint /get/records/fromcollection} with the *return_record_ids* option.  
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

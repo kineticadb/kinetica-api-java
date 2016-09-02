@@ -126,6 +126,11 @@ public class GetRecordsRequest implements IndexedRecord {
      *               results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * @param options
+     * <ul>
+     *     <li>expression: Optional filter expression to apply to the table.  
+     *     <li>sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).  
+     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending. Ignored if 'sort_by' option is not specified.  values:ASCENDING, DESCENDING
+     * </ul>
      * 
      */
     public GetRecordsRequest(String tableName, long offset, long limit, Map<String, String> options) {
@@ -151,6 +156,11 @@ public class GetRecordsRequest implements IndexedRecord {
      *               that the max number of results should be returned.
      * @param encoding  Specifies the encoding for returned records.
      * @param options
+     * <ul>
+     *     <li>expression: Optional filter expression to apply to the table.  
+     *     <li>sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).  
+     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending. Ignored if 'sort_by' option is not specified.  values:ASCENDING, DESCENDING
+     * </ul>
      * 
      */
     public GetRecordsRequest(String tableName, long offset, long limit, String encoding, Map<String, String> options) {
@@ -264,6 +274,11 @@ public class GetRecordsRequest implements IndexedRecord {
     /**
      * 
      * @param options
+     * <ul>
+     *     <li>expression: Optional filter expression to apply to the table.  
+     *     <li>sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).  
+     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending. Ignored if 'sort_by' option is not specified.  values:ASCENDING, DESCENDING
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -70,7 +70,39 @@ final class DynamicTableRecord extends RecordBase {
                 throw new GPUdbException("Fields must all have the same number of elements.");
             }
 
-            columns.add(new Type.Column(expressions.get(i), columnType));
+            String name = expressions.get(i);
+
+            for (int j = 0; j < i; j++) {
+                if (name.equals(columns.get(j).getName())) {
+                    for (int n = 2; ; n++) {
+                        String tempName = name + "_" + n;
+                        boolean found = false;
+
+                        for (int k = 0; k < i; k++) {
+                            if (tempName.equals(columns.get(k).getName())) {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (!found) {
+                            for (int k = i + 1; k < fieldCount; k++) {
+                                if (tempName.equals(expressions.get(k))) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!found) {
+                            name = tempName;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            columns.add(new Type.Column(name, columnType));
         }
 
         Type type = new Type("", columns);

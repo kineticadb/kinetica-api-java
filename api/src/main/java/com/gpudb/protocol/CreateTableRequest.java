@@ -132,6 +132,14 @@ public class CreateTableRequest implements IndexedRecord {
      *                added to the newly created table will be of this type.
      *                Must be an empty string if the *is_collection* is 'true'.
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>no_error_if_exists: If {true}@{choice of key options.no_error_if_exists}, prevents an error from occurring if the table already exists and is of the given type.  If a table with the same ID but a different type exists, it is still an error.  values:TRUE, FALSE
+     *     <li>collection_name: Name of a collection in GPUdb to which the newly created table is to be assigned as a child table. If empty, then the newly created table will be a top level table. If the collection does not allow duplicate children, then this table creation request will fail if there is an existing child table with the same type id specified in this request.  
+     *     <li>is_collection: Indicates whether the new table to be created will be a collection. If false, the created table will be a top level table.  values:TRUE, FALSE
+     *     <li>disallow_homogeneous_tables: For a collection, indicates whether multiple children of exactly the same data type will be allowed.  values:TRUE, FALSE
+     *     <li>is_replicated: For a Table, this is an indication to GPUdb to replicate the table to all the ranks. This is only required when the table will be used to join with other tables in a query.  values:TRUE, FALSE
+     *     <li>foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'my_field references primary_table(primary_key_field)'.  
+     * </ul>
      * 
      */
     public CreateTableRequest(String tableName, String typeId, Map<String, String> options) {
@@ -213,6 +221,14 @@ public class CreateTableRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>no_error_if_exists: If {true}@{choice of key options.no_error_if_exists}, prevents an error from occurring if the table already exists and is of the given type.  If a table with the same ID but a different type exists, it is still an error.  values:TRUE, FALSE
+     *     <li>collection_name: Name of a collection in GPUdb to which the newly created table is to be assigned as a child table. If empty, then the newly created table will be a top level table. If the collection does not allow duplicate children, then this table creation request will fail if there is an existing child table with the same type id specified in this request.  
+     *     <li>is_collection: Indicates whether the new table to be created will be a collection. If false, the created table will be a top level table.  values:TRUE, FALSE
+     *     <li>disallow_homogeneous_tables: For a collection, indicates whether multiple children of exactly the same data type will be allowed.  values:TRUE, FALSE
+     *     <li>is_replicated: For a Table, this is an indication to GPUdb to replicate the table to all the ranks. This is only required when the table will be used to join with other tables in a query.  values:TRUE, FALSE
+     *     <li>foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'my_field references primary_table(primary_key_field)'.  
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

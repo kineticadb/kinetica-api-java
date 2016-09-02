@@ -102,6 +102,9 @@ public class FilterByListRequest implements IndexedRecord {
      * @param columnValuesMap  List of values for the corresponding column in
      *                         the table
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>filter_mode: String indicating the filter mode, either 'in_list' or 'not_in_list'.  
+     * </ul>
      * 
      */
     public FilterByListRequest(String tableName, String viewName, Map<String, List<String>> columnValuesMap, Map<String, String> options) {
@@ -197,6 +200,9 @@ public class FilterByListRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     * <ul>
+     *     <li>filter_mode: String indicating the filter mode, either 'in_list' or 'not_in_list'.  
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

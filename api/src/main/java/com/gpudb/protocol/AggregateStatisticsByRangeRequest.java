@@ -147,6 +147,12 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      *                  the binning-column falls in the range
      *                  [start+interval``*``i, start+interval``*``(i+1)).
      * @param options  Map of optional parameters:
+     * <ul>
+     *     <li>additional_column_names: A list of comma separated value-column names over which statistics can be accumulated along with the primary value_column.  
+     *     <li>bin_values: A list of comma separated binning-column values. Values that match the nth bin_values value are placed in the nth bin.  
+     *     <li>weight_column_name: Name of the column used as weighting column for the weighted_average statistic.  
+     *     <li>order_column_name: Name of the column used for candlestick charting techniques.  
+     * </ul>
      * 
      */
     public AggregateStatisticsByRangeRequest(String tableName, String selectExpression, String columnName, String valueColumnName, String stats, double start, double end, double interval, Map<String, String> options) {
@@ -358,6 +364,12 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
     /**
      * 
      * @param options  Map of optional parameters:
+     * <ul>
+     *     <li>additional_column_names: A list of comma separated value-column names over which statistics can be accumulated along with the primary value_column.  
+     *     <li>bin_values: A list of comma separated binning-column values. Values that match the nth bin_values value are placed in the nth bin.  
+     *     <li>weight_column_name: Name of the column used as weighting column for the weighted_average statistic.  
+     *     <li>order_column_name: Name of the column used for candlestick charting techniques.  
+     * </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
