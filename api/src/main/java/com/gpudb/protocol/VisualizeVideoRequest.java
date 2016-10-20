@@ -16,39 +16,29 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#visualizeVideo(VisualizeVideoRequest)}.
- * <p>
- * Creates raster images of data in the given table based on provided input
- * parameters. Numerous parameters are required to call this function. Some of
- * the important parameters are the attributes of the generated images ({@code
- * bgColor}, {@code width}, {@code height}), the collection of GPUdb table
- * names on which this function is to be applied, for which shapes (point,
- * polygon, tracks) the images are to be created and a user specified session
- * key. This session key is later used to fetch the generated images stored by
- * GPUdb. The operation is synchronous meaning that GPUdb will not return the
- * request until the images for all the frames of the video are fully
- * available.
- * <p>
- * Once the request has been processed then the generated video frames are
- * available for download via WMS using STYLES=cached. In this request the
- * LAYERS parameter should be populated with the session key passed in {@code
- * sessionKey} of the visualize video request and the FRAME parameter indicates
- * which 0-based frame of the video should be returned. All other WMS
- * parameters are ignored for this mode.
- * <p>
- * For instance, if a 20 frame video with the session key 'MY-SESSION-KEY' was
- * generated, the first frame could be retrieved with the URL::
- * <p>
- *      http://<gpudb-ip-address>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS
- * =MY-SESSION-KEY&FRAME=0
- * <p>
- * and the last frame could be retrieved with::
- * <p>
- *     http://gpudb-ip-address:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-
- * SESSION-KEY&FRAME=19
- * The response payload provides, among other things, the number of frames
- * which were created by GPUdb.
+ * A set of parameters for {@link com.gpudb.GPUdb#visualizeVideo(VisualizeVideoRequest)}.
+ * <br />
+ * <br />Creates raster images of data in the given table based on provided input parameters. Numerous parameters are required to
+ * call this function. Some of the important parameters are the attributes of the generated images ({@code bgColor}, {@code width},
+ * {@code height}), the collection of GPUdb table names on which this function is to be applied, for which shapes (point, polygon,
+ * tracks) the images are to be created and a user specified session key. This session key is later used to fetch the generated
+ * images stored by GPUdb. The operation is synchronous meaning that GPUdb will not return the request until the images for all the
+ * frames of the video are fully available.
+ * <br />
+ * <br />Once the request has been processed then the generated video frames are available for download via WMS using STYLES=cached.
+ * In this request the LAYERS parameter should be populated with the session key passed in {@code sessionKey} of the visualize video
+ * request and the FRAME parameter indicates which 0-based frame of the video should be returned. All other WMS parameters are
+ * ignored for this mode.
+ * <br />
+ * <br />For instance, if a 20 frame video with the session key 'MY-SESSION-KEY' was generated, the first frame could be retrieved
+ * with the URL::
+ * <br />
+ * <br />     http://<gpudb-ip-address>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=0
+ * <br />
+ * <br />and the last frame could be retrieved with::
+ * <br />
+ * <br />    http://gpudb-ip-address:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=19
+ * <br />The response payload provides, among other things, the number of frames which were created by GPUdb.
  */
 public class VisualizeVideoRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -77,8 +67,7 @@ public class VisualizeVideoRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -89,8 +78,10 @@ public class VisualizeVideoRequest implements IndexedRecord {
 
 
     /**
-     * Spatial Reference System (i.e. EPSG Code).
-     * A set of string constants for the parameter {@code projection}.
+     * Spatial Reference System (i.e. EPSG Code). Values: EPSG:4326, PLATE_CARREE, 900913, EPSG:900913, 102100, EPSG:102100, 3857,
+     * EPSG:3857, WEB_MERCATOR.
+     * <br />
+     * <br />A set of string constants for the parameter {@code projection}.
      */
     public static final class Projection {
         public static final String EPSG_4326 = "EPSG:4326";
@@ -109,24 +100,55 @@ public class VisualizeVideoRequest implements IndexedRecord {
 
     /**
      * Styling options for the image.
-     * A set of string constants for the parameter {@code styleOptions}.
+     * <br /><ul>
+     * <br />  <li> do_points: Rasterize point data toggle. Values: true, false.
+     * <br />
+     * <br />  <li> do_shapes: Rasterize shapes toggle. Values: true, false.
+     * <br />
+     * <br />  <li> do_tracks: Rasterize tracks toggle. Values: true, false.
+     * <br />
+     * <br />  <li> pointcolors: RGB color value in hex for the points.
+     * <br />  <li> pointsizes: Size of points.
+     * <br />  <li> pointshapes: Shape of the point. Values: none, circle, square, diamond, hollowcircle, hollowsquare,
+     * hollowdiamond, SYMBOLCODE.
+     * <br />
+     * <br />  <li> shapelinewidths: Width of the lines.
+     * <br />  <li> shapelinecolors: RGB color values in hex for the line.
+     * <br />  <li> shapefillcolors: RGB color values in hex for the fill color of the shapes. Use '-1' for no fill.
+     * <br />  <li> tracklinewidths: Width of the track lines. '0' implies do not draw track lines.
+     * <br />  <li> tracklinecolors: RGB color values for the track lines.
+     * <br />  <li> trackmarkersizes: Size of the track point markers.
+     * <br />  <li> trackmarkercolors: Color of the track point markers.
+     * <br />  <li> trackmarkershapes: Shape of track point markers. Values: none, circle, square, diamond, hollowcircle,
+     * hollowsquare, hollowdiamond, SYMBOLCODE.
+     * <br />
+     * <br />  <li> trackheadcolors: Color of track head markers.
+     * <br />  <li> trackheadsizes: Size of track head markers.
+     * <br />  <li> trackheadshapes: Shape of track head markers. Values: none, circle, square, diamond, hollowcircle, hollowsquare,
+     * hollowdiamond, SYMBOLCODE.
+     * <br />
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code styleOptions}.
      */
     public static final class StyleOptions {
 
         /**
-         * Rasterize point data toggle.
+         * Rasterize point data toggle. Values: true, false.
+         * <br />
          */
         public static final String DO_POINTS = "do_points";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
 
         /**
-         * Rasterize shapes toggle.
+         * Rasterize shapes toggle. Values: true, false.
+         * <br />
          */
         public static final String DO_SHAPES = "do_shapes";
 
         /**
-         * Rasterize tracks toggle.
+         * Rasterize tracks toggle. Values: true, false.
+         * <br />
          */
         public static final String DO_TRACKS = "do_tracks";
 
@@ -141,7 +163,8 @@ public class VisualizeVideoRequest implements IndexedRecord {
         public static final String POINTSIZES = "pointsizes";
 
         /**
-         * Shape of the point.
+         * Shape of the point. Values: none, circle, square, diamond, hollowcircle, hollowsquare, hollowdiamond, SYMBOLCODE.
+         * <br />
          */
         public static final String POINTSHAPES = "pointshapes";
         public static final String NONE = "none";
@@ -164,8 +187,7 @@ public class VisualizeVideoRequest implements IndexedRecord {
         public static final String SHAPELINECOLORS = "shapelinecolors";
 
         /**
-         * RGB color values in hex for the fill color of the shapes. Use '-1'
-         * for no fill.
+         * RGB color values in hex for the fill color of the shapes. Use '-1' for no fill.
          */
         public static final String SHAPEFILLCOLORS = "shapefillcolors";
 
@@ -190,7 +212,9 @@ public class VisualizeVideoRequest implements IndexedRecord {
         public static final String TRACKMARKERCOLORS = "trackmarkercolors";
 
         /**
-         * Shape of track point markers.
+         * Shape of track point markers. Values: none, circle, square, diamond, hollowcircle, hollowsquare, hollowdiamond,
+         * SYMBOLCODE.
+         * <br />
          */
         public static final String TRACKMARKERSHAPES = "trackmarkershapes";
 
@@ -205,7 +229,9 @@ public class VisualizeVideoRequest implements IndexedRecord {
         public static final String TRACKHEADSIZES = "trackheadsizes";
 
         /**
-         * Shape of track head markers.
+         * Shape of track head markers. Values: none, circle, square, diamond, hollowcircle, hollowsquare, hollowdiamond,
+         * SYMBOLCODE.
+         * <br />
          */
         public static final String TRACKHEADSHAPES = "trackheadshapes";
 
@@ -252,14 +278,10 @@ public class VisualizeVideoRequest implements IndexedRecord {
     /**
      * Constructs a VisualizeVideoRequest object with the specified parameters.
      * 
-     * @param tableNames  Names of the tables containing the data for various
-     *                    layers of the resulting video.
-     * @param worldTableNames  Optional name of the tables containing the data
-     *                         for the entire track when the {@code tableNames}
-     *                         contains only part of the track data, but the
-     *                         entire track has to be rendered. The number of
-     *                         tables should match the number of tables in the
-     *                         {@code tableNames}
+     * @param tableNames  Names of the tables containing the data for various layers of the resulting video.
+     * @param worldTableNames  Optional name of the tables containing the data for the entire track when the {@code tableNames}
+     *                         contains only part of the track data, but the entire track has to be rendered. The number of tables
+     *                         should match the number of tables in the {@code tableNames}
      * @param trackIds  Tracks from the {@code tableNames} to be rendered.
      * @param xColumnName  Name of the column containing the x coordinates.
      * @param yColumnName  Name of the column containing the y coordinates.
@@ -269,13 +291,36 @@ public class VisualizeVideoRequest implements IndexedRecord {
      * @param maxY  Upper bound for the y values.
      * @param width  Width of the generated image.
      * @param height  Height of the generated image.
-     * @param projection  Spatial Reference System (i.e. EPSG Code).
+     * @param projection  Spatial Reference System (i.e. EPSG Code). Values: EPSG:4326, PLATE_CARREE, 900913, EPSG:900913, 102100,
+     *                    EPSG:102100, 3857, EPSG:3857, WEB_MERCATOR.
      * @param bgColor  Background color of the generated image.
      * @param timeIntervals
      * @param videoStyle
-     * @param sessionKey  User Provided session key that is later used to
-     *                    retrieve the generated video from the WMS.
+     * @param sessionKey  User Provided session key that is later used to retrieve the generated video from the WMS.
      * @param styleOptions  Styling options for the image.
+     *                      <ul>
+     *                              <li> do_points: Rasterize point data toggle. Values: true, false.
+     *                              <li> do_shapes: Rasterize shapes toggle. Values: true, false.
+     *                              <li> do_tracks: Rasterize tracks toggle. Values: true, false.
+     *                              <li> pointcolors: RGB color value in hex for the points.
+     *                              <li> pointsizes: Size of points.
+     *                              <li> pointshapes: Shape of the point. Values: none, circle, square, diamond, hollowcircle,
+     *                      hollowsquare, hollowdiamond, SYMBOLCODE.
+     *                              <li> shapelinewidths: Width of the lines.
+     *                              <li> shapelinecolors: RGB color values in hex for the line.
+     *                              <li> shapefillcolors: RGB color values in hex for the fill color of the shapes. Use '-1' for no
+     *                      fill.
+     *                              <li> tracklinewidths: Width of the track lines. '0' implies do not draw track lines.
+     *                              <li> tracklinecolors: RGB color values for the track lines.
+     *                              <li> trackmarkersizes: Size of the track point markers.
+     *                              <li> trackmarkercolors: Color of the track point markers.
+     *                              <li> trackmarkershapes: Shape of track point markers. Values: none, circle, square, diamond,
+     *                      hollowcircle, hollowsquare, hollowdiamond, SYMBOLCODE.
+     *                              <li> trackheadcolors: Color of track head markers.
+     *                              <li> trackheadsizes: Size of track head markers.
+     *                              <li> trackheadshapes: Shape of track head markers. Values: none, circle, square, diamond,
+     *                      hollowcircle, hollowsquare, hollowdiamond, SYMBOLCODE.
+     *                      </ul>
      * @param options  Optional parameters.
      * 
      */
@@ -302,8 +347,7 @@ public class VisualizeVideoRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Names of the tables containing the data for various layers of
-     *         the resulting video.
+     * @return Names of the tables containing the data for various layers of the resulting video.
      * 
      */
     public List<String> getTableNames() {
@@ -312,8 +356,7 @@ public class VisualizeVideoRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  Names of the tables containing the data for various
-     *                    layers of the resulting video.
+     * @param tableNames  Names of the tables containing the data for various layers of the resulting video.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -325,11 +368,9 @@ public class VisualizeVideoRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional name of the tables containing the data for the entire
-     *         track when the {@code tableNames} contains only part of the
-     *         track data, but the entire track has to be rendered. The number
-     *         of tables should match the number of tables in the {@code
-     *         tableNames}
+     * @return Optional name of the tables containing the data for the entire track when the {@code tableNames} contains only part
+     *         of the track data, but the entire track has to be rendered. The number of tables should match the number of tables in
+     *         the {@code tableNames}
      * 
      */
     public List<String> getWorldTableNames() {
@@ -338,12 +379,9 @@ public class VisualizeVideoRequest implements IndexedRecord {
 
     /**
      * 
-     * @param worldTableNames  Optional name of the tables containing the data
-     *                         for the entire track when the {@code tableNames}
-     *                         contains only part of the track data, but the
-     *                         entire track has to be rendered. The number of
-     *                         tables should match the number of tables in the
-     *                         {@code tableNames}
+     * @param worldTableNames  Optional name of the tables containing the data for the entire track when the {@code tableNames}
+     *                         contains only part of the track data, but the entire track has to be rendered. The number of tables
+     *                         should match the number of tables in the {@code tableNames}
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -544,7 +582,8 @@ public class VisualizeVideoRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Spatial Reference System (i.e. EPSG Code).
+     * @return Spatial Reference System (i.e. EPSG Code). Values: EPSG:4326, PLATE_CARREE, 900913, EPSG:900913, 102100, EPSG:102100,
+     *         3857, EPSG:3857, WEB_MERCATOR.
      * 
      */
     public String getProjection() {
@@ -553,7 +592,8 @@ public class VisualizeVideoRequest implements IndexedRecord {
 
     /**
      * 
-     * @param projection  Spatial Reference System (i.e. EPSG Code).
+     * @param projection  Spatial Reference System (i.e. EPSG Code). Values: EPSG:4326, PLATE_CARREE, 900913, EPSG:900913, 102100,
+     *                    EPSG:102100, 3857, EPSG:3857, WEB_MERCATOR.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -616,8 +656,7 @@ public class VisualizeVideoRequest implements IndexedRecord {
 
     /**
      * 
-     * @return User Provided session key that is later used to retrieve the
-     *         generated video from the WMS.
+     * @return User Provided session key that is later used to retrieve the generated video from the WMS.
      * 
      */
     public String getSessionKey() {
@@ -626,8 +665,7 @@ public class VisualizeVideoRequest implements IndexedRecord {
 
     /**
      * 
-     * @param sessionKey  User Provided session key that is later used to
-     *                    retrieve the generated video from the WMS.
+     * @param sessionKey  User Provided session key that is later used to retrieve the generated video from the WMS.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -640,6 +678,28 @@ public class VisualizeVideoRequest implements IndexedRecord {
     /**
      * 
      * @return Styling options for the image.
+     *         <ul>
+     *                 <li> do_points: Rasterize point data toggle. Values: true, false.
+     *                 <li> do_shapes: Rasterize shapes toggle. Values: true, false.
+     *                 <li> do_tracks: Rasterize tracks toggle. Values: true, false.
+     *                 <li> pointcolors: RGB color value in hex for the points.
+     *                 <li> pointsizes: Size of points.
+     *                 <li> pointshapes: Shape of the point. Values: none, circle, square, diamond, hollowcircle, hollowsquare,
+     *         hollowdiamond, SYMBOLCODE.
+     *                 <li> shapelinewidths: Width of the lines.
+     *                 <li> shapelinecolors: RGB color values in hex for the line.
+     *                 <li> shapefillcolors: RGB color values in hex for the fill color of the shapes. Use '-1' for no fill.
+     *                 <li> tracklinewidths: Width of the track lines. '0' implies do not draw track lines.
+     *                 <li> tracklinecolors: RGB color values for the track lines.
+     *                 <li> trackmarkersizes: Size of the track point markers.
+     *                 <li> trackmarkercolors: Color of the track point markers.
+     *                 <li> trackmarkershapes: Shape of track point markers. Values: none, circle, square, diamond, hollowcircle,
+     *         hollowsquare, hollowdiamond, SYMBOLCODE.
+     *                 <li> trackheadcolors: Color of track head markers.
+     *                 <li> trackheadsizes: Size of track head markers.
+     *                 <li> trackheadshapes: Shape of track head markers. Values: none, circle, square, diamond, hollowcircle,
+     *         hollowsquare, hollowdiamond, SYMBOLCODE.
+     *         </ul>
      * 
      */
     public Map<String, List<String>> getStyleOptions() {
@@ -649,6 +709,29 @@ public class VisualizeVideoRequest implements IndexedRecord {
     /**
      * 
      * @param styleOptions  Styling options for the image.
+     *                      <ul>
+     *                              <li> do_points: Rasterize point data toggle. Values: true, false.
+     *                              <li> do_shapes: Rasterize shapes toggle. Values: true, false.
+     *                              <li> do_tracks: Rasterize tracks toggle. Values: true, false.
+     *                              <li> pointcolors: RGB color value in hex for the points.
+     *                              <li> pointsizes: Size of points.
+     *                              <li> pointshapes: Shape of the point. Values: none, circle, square, diamond, hollowcircle,
+     *                      hollowsquare, hollowdiamond, SYMBOLCODE.
+     *                              <li> shapelinewidths: Width of the lines.
+     *                              <li> shapelinecolors: RGB color values in hex for the line.
+     *                              <li> shapefillcolors: RGB color values in hex for the fill color of the shapes. Use '-1' for no
+     *                      fill.
+     *                              <li> tracklinewidths: Width of the track lines. '0' implies do not draw track lines.
+     *                              <li> tracklinecolors: RGB color values for the track lines.
+     *                              <li> trackmarkersizes: Size of the track point markers.
+     *                              <li> trackmarkercolors: Color of the track point markers.
+     *                              <li> trackmarkershapes: Shape of track point markers. Values: none, circle, square, diamond,
+     *                      hollowcircle, hollowsquare, hollowdiamond, SYMBOLCODE.
+     *                              <li> trackheadcolors: Color of track head markers.
+     *                              <li> trackheadsizes: Size of track head markers.
+     *                              <li> trackheadshapes: Shape of track head markers. Values: none, circle, square, diamond,
+     *                      hollowcircle, hollowsquare, hollowdiamond, SYMBOLCODE.
+     *                      </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -680,8 +763,7 @@ public class VisualizeVideoRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -692,8 +774,7 @@ public class VisualizeVideoRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -765,8 +846,7 @@ public class VisualizeVideoRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

@@ -14,8 +14,7 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}.
  */
 public class DeleteRecordsResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -28,8 +27,7 @@ public class DeleteRecordsResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -59,8 +57,7 @@ public class DeleteRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param countDeleted  Total number of records deleted across all
-     *                      expressions.
+     * @param countDeleted  Total number of records deleted across all expressions.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -92,8 +89,7 @@ public class DeleteRecordsResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -104,8 +100,7 @@ public class DeleteRecordsResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -129,8 +124,7 @@ public class DeleteRecordsResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

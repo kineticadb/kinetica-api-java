@@ -14,8 +14,7 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#showSystemProperties(ShowSystemPropertiesRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#showSystemProperties(ShowSystemPropertiesRequest)}.
  */
 public class ShowSystemPropertiesResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -27,8 +26,7 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -40,37 +38,42 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
 
     /**
      * A map of server configuration parameters and version information.
-     * A set of string constants for the parameter {@code propertyMap}.
+     * <br /><ul>
+     * <br />  <li> conf.enable_worker_http_servers: Boolean value indicating whether the GPUdb server is configured for multi-head
+     * ingestion. Values: TRUE, FALSE.
+     * <br />
+     * <br />  <li> conf.worker_http_server_ips: Semicolon (';') separated string of IP addresses of all the ingestion-enabled
+     * worker heads of the GPUdb server.
+     * <br />  <li> conf.worker_http_server_ports: Semicolon (';') separated string of the port numbers of all the ingestion-enabled
+     * worker ranks of the GPUdb server.
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code propertyMap}.
      */
     public static final class PropertyMap {
 
         /**
-         * Boolean value indicating whether the GPUdb server is configured for
-         * multi-head ingestion.
+         * Boolean value indicating whether the GPUdb server is configured for multi-head ingestion. Values: TRUE, FALSE.
+         * <br />
          */
         public static final String CONF_ENABLE_WORKER_HTTP_SERVERS = "conf.enable_worker_http_servers";
 
         /**
-         * Indicates that the GPUdb server is configured for multi-head
-         * ingestion.
+         * Indicates that the GPUdb server is configured for multi-head ingestion.
          */
         public static final String TRUE = "TRUE";
 
         /**
-         * Indicates that the GPUdb server is NOT configured for multi-head
-         * ingestion.
+         * Indicates that the GPUdb server is NOT configured for multi-head ingestion.
          */
         public static final String FALSE = "FALSE";
 
         /**
-         * Semicolon (';') separated string of IP addresses of all the
-         * ingestion-enabled worker heads of the GPUdb server.
+         * Semicolon (';') separated string of IP addresses of all the ingestion-enabled worker heads of the GPUdb server.
          */
         public static final String CONF_WORKER_HTTP_SERVER_IPS = "conf.worker_http_server_ips";
 
         /**
-         * Semicolon (';') separated string of the port numbers of all the
-         * ingestion-enabled worker ranks of the GPUdb server.
+         * Semicolon (';') separated string of the port numbers of all the ingestion-enabled worker ranks of the GPUdb server.
          */
         public static final String CONF_WORKER_HTTP_SERVER_PORTS = "conf.worker_http_server_ports";
 
@@ -81,16 +84,22 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
 
 
     /**
-     * Constructs a ShowSystemPropertiesResponse object with default
-     * parameters.
+     * Constructs a ShowSystemPropertiesResponse object with default parameters.
      */
     public ShowSystemPropertiesResponse() {
     }
 
     /**
      * 
-     * @return A map of server configuration parameters and version
-     *         information.
+     * @return A map of server configuration parameters and version information.
+     *         <ul>
+     *                 <li> conf.enable_worker_http_servers: Boolean value indicating whether the GPUdb server is configured for
+     *         multi-head ingestion. Values: TRUE, FALSE.
+     *                 <li> conf.worker_http_server_ips: Semicolon (';') separated string of IP addresses of all the
+     *         ingestion-enabled worker heads of the GPUdb server.
+     *                 <li> conf.worker_http_server_ports: Semicolon (';') separated string of the port numbers of all the
+     *         ingestion-enabled worker ranks of the GPUdb server.
+     *         </ul>
      * 
      */
     public Map<String, String> getPropertyMap() {
@@ -99,8 +108,15 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param propertyMap  A map of server configuration parameters and version
-     *                     information.
+     * @param propertyMap  A map of server configuration parameters and version information.
+     *                     <ul>
+     *                             <li> conf.enable_worker_http_servers: Boolean value indicating whether the GPUdb server is
+     *                     configured for multi-head ingestion. Values: TRUE, FALSE.
+     *                             <li> conf.worker_http_server_ips: Semicolon (';') separated string of IP addresses of all the
+     *                     ingestion-enabled worker heads of the GPUdb server.
+     *                             <li> conf.worker_http_server_ports: Semicolon (';') separated string of the port numbers of all
+     *                     the ingestion-enabled worker ranks of the GPUdb server.
+     *                     </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -111,8 +127,7 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -123,8 +138,7 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -145,8 +159,7 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

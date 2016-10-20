@@ -14,17 +14,13 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#filterByTable(FilterByTableRequest)}.
- * <p>
- * Filters objects in one table based on objects in another table. The user
- * must specify matching column types from the two tables (i.e. the target
- * table from which objects will be filtered and the source table based on
- * which the filter will be created); the column names need not be the same. If
- * a {@code viewName} is specified, then the filtered objects will then be put
- * in a newly created view. The operation is synchronous, meaning that GPUdb
- * will not return until all objects are fully available in the result view.
- * The return value contains the count (i.e. the size) of the resulting view.
+ * A set of parameters for {@link com.gpudb.GPUdb#filterByTable(FilterByTableRequest)}.
+ * <br />
+ * <br />Filters objects in one table based on objects in another table. The user must specify matching column types from the two
+ * tables (i.e. the target table from which objects will be filtered and the source table based on which the filter will be
+ * created); the column names need not be the same. If a {@code viewName} is specified, then the filtered objects will then be put
+ * in a newly created view. The operation is synchronous, meaning that GPUdb will not return until all objects are fully available
+ * in the result view. The return value contains the count (i.e. the size) of the resulting view.
  */
 public class FilterByTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -41,8 +37,7 @@ public class FilterByTableRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -74,22 +69,15 @@ public class FilterByTableRequest implements IndexedRecord {
     /**
      * Constructs a FilterByTableRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table whose data will be filtered. Must be
-     *                   an existing table in GPUdb.
-     * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Must not be an already existing
+     * @param tableName  Name of the table whose data will be filtered. Must be an existing table in GPUdb.
+     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view.
-     * @param columnName  Name of the column by whose value the data will be
-     *                    filtered from the table designated by {@code
+     * @param columnName  Name of the column by whose value the data will be filtered from the table designated by {@code
      *                    tableName}.
-     * @param sourceTableName  Name of the table whose data will be compared
-     *                         against in the table called {@code tableName}.
-     *                         Must be an existing table in GPUdb.
-     * @param sourceTableColumnName  Name of the column in the {@code
-     *                               sourceTableName} whose values will be used
-     *                               as the filter for table {@code tableName}.
-     *                               Must match the type of the {@code
-     *                               columnName}.
+     * @param sourceTableName  Name of the table whose data will be compared against in the table called {@code tableName}. Must be
+     *                         an existing table in GPUdb.
+     * @param sourceTableColumnName  Name of the column in the {@code sourceTableName} whose values will be used as the filter for
+     *                               table {@code tableName}. Must match the type of the {@code columnName}.
      * @param options  Optional parameters.
      * 
      */
@@ -104,8 +92,7 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table whose data will be filtered. Must be an
-     *         existing table in GPUdb.
+     * @return Name of the table whose data will be filtered. Must be an existing table in GPUdb.
      * 
      */
     public String getTableName() {
@@ -114,8 +101,7 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table whose data will be filtered. Must be
-     *                   an existing table in GPUdb.
+     * @param tableName  Name of the table whose data will be filtered. Must be an existing table in GPUdb.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -127,9 +113,8 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return If provided, then this will be the name of the view containing
-     *         the results. Must not be an already existing collection, table
-     *         or view.
+     * @return If provided, then this will be the name of the view containing the results. Must not be an already existing
+     *         collection, table or view.
      * 
      */
     public String getViewName() {
@@ -138,8 +123,7 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Must not be an already existing
+     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -152,8 +136,7 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the column by whose value the data will be filtered from
-     *         the table designated by {@code tableName}.
+     * @return Name of the column by whose value the data will be filtered from the table designated by {@code tableName}.
      * 
      */
     public String getColumnName() {
@@ -162,8 +145,7 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnName  Name of the column by whose value the data will be
-     *                    filtered from the table designated by {@code
+     * @param columnName  Name of the column by whose value the data will be filtered from the table designated by {@code
      *                    tableName}.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -176,9 +158,8 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table whose data will be compared against in the
-     *         table called {@code tableName}. Must be an existing table in
-     *         GPUdb.
+     * @return Name of the table whose data will be compared against in the table called {@code tableName}. Must be an existing
+     *         table in GPUdb.
      * 
      */
     public String getSourceTableName() {
@@ -187,9 +168,8 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param sourceTableName  Name of the table whose data will be compared
-     *                         against in the table called {@code tableName}.
-     *                         Must be an existing table in GPUdb.
+     * @param sourceTableName  Name of the table whose data will be compared against in the table called {@code tableName}. Must be
+     *                         an existing table in GPUdb.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -201,9 +181,8 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the column in the {@code sourceTableName} whose values
-     *         will be used as the filter for table {@code tableName}. Must
-     *         match the type of the {@code columnName}.
+     * @return Name of the column in the {@code sourceTableName} whose values will be used as the filter for table {@code
+     *         tableName}. Must match the type of the {@code columnName}.
      * 
      */
     public String getSourceTableColumnName() {
@@ -212,11 +191,8 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param sourceTableColumnName  Name of the column in the {@code
-     *                               sourceTableName} whose values will be used
-     *                               as the filter for table {@code tableName}.
-     *                               Must match the type of the {@code
-     *                               columnName}.
+     * @param sourceTableColumnName  Name of the column in the {@code sourceTableName} whose values will be used as the filter for
+     *                               table {@code tableName}. Must match the type of the {@code columnName}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -248,8 +224,7 @@ public class FilterByTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -260,8 +235,7 @@ public class FilterByTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -297,8 +271,7 @@ public class FilterByTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

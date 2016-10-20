@@ -16,25 +16,19 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
- * <p>
- * For a given table, retrieves the values of the given columns within a given
- * range. It returns maps of column name to the vector of values for each
- * supported data type (double, float, long, int and string). This operation
- * supports pagination feature, i.e. values that are retrieved are those
- * associated with the indices between the start (offset) and end value (offset
- * + limit) parameters (inclusive). If there are num_points values in the table
- * then each of the indices between 0 and num_points-1 retrieves a unique
- * value.
- * <p>
- * Note that when using the pagination feature, if the table (or the underlying
- * table in case of a view) is updated (records are inserted, deleted or
- * modified) the records or values retrieved may differ between calls
- * (discontiguous or overlap) based on the type of the update.
- * <p>
- * The response is returned as a dynamic schema. For details see: <a
- * href="../../../../../../concepts/index.html#dynamic-schemas"
+ * A set of parameters for {@link com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
+ * <br />
+ * <br />For a given table, retrieves the values of the given columns within a given range. It returns maps of column name to the
+ * vector of values for each supported data type (double, float, long, int and string). This operation supports pagination feature,
+ * i.e. values that are retrieved are those associated with the indices between the start (offset) and end value (offset + limit)
+ * parameters (inclusive). If there are num_points values in the table then each of the indices between 0 and num_points-1 retrieves
+ * a unique value.
+ * <br />
+ * <br />Note that when using the pagination feature, if the table (or the underlying table in case of a view) is updated (records
+ * are inserted, deleted or modified) the records or values retrieved may differ between calls (discontiguous or overlap) based on
+ * the type of the update.
+ * <br />
+ * <br />The response is returned as a dynamic schema. For details see: <a href="../../../../../concepts/index.html#dynamic-schemas"
  * target="_top">dynamic schemas documentation</a>.
  */
 public class GetRecordsByColumnRequest implements IndexedRecord {
@@ -52,8 +46,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -64,8 +57,9 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
 
     /**
-     * Specifies the encoding for returned records; either 'binary' or 'json'.
-     * A set of string constants for the parameter {@code encoding}.
+     * Specifies the encoding for returned records; either 'binary' or 'json'. Values: binary, json.
+     * <br />
+     * <br />A set of string constants for the parameter {@code encoding}.
      */
     public static final class Encoding {
         public static final String BINARY = "binary";
@@ -76,7 +70,15 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
 
     /**
-     * A set of string constants for the parameter {@code options}.
+
+     * <br /><ul>
+     * <br />  <li> expression: Optional filter expression to apply to the table.
+     * <br />  <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).
+     * <br />  <li> sort_order: String indicating how the returned values should be sorted - ascending or descending. Default is
+     * 'ascending'. Ignored if 'sort_by' option is not specified. Values: ascending, descending.
+     * <br />
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
@@ -86,15 +88,14 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
         public static final String EXPRESSION = "expression";
 
         /**
-         * Optional column that the data should be sorted by. Empty by default
-         * (i.e. no sorting is applied).
+         * Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).
          */
         public static final String SORT_BY = "sort_by";
 
         /**
-         * String indicating how the returned values should be sorted -
-         * ascending or descending. Default is 'ascending'. Ignored if
-         * 'sort_by' option is not specified.
+         * String indicating how the returned values should be sorted - ascending or descending. Default is 'ascending'. Ignored if
+         * 'sort_by' option is not specified. Values: ascending, descending.
+         * <br />
          */
         public static final String SORT_ORDER = "sort_order";
         public static final String ASCENDING = "ascending";
@@ -122,27 +123,23 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a GetRecordsByColumnRequest object with the specified
-     * parameters.
+     * Constructs a GetRecordsByColumnRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which this operation will be
-     *                   performed. The table cannot be a parent set.
-     * @param columnNames  The list of column values to retrieve. Columns
-     *                     annotated as store only cannot be retrieved.
-     * @param offset  A positive integer indicating the number of initial
-     *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
-     * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned (if not provided the default is
-     *               10000). Or END_OF_column (-9999) to indicate that the max
-     *               number of results should be returned.
+     * @param tableName  Name of the table on which this operation will be performed. The table cannot be a parent set.
+     * @param columnNames  The list of column values to retrieve. Columns annotated as store only cannot be retrieved.
+     * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
+     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
+     * @param limit  A positive integer indicating the maximum number of results to be returned (if not provided the default is
+     *               10000). Or END_OF_column (-9999) to indicate that the max number of results should be returned.
      * @param options
-     * <ul>
-     *     <li>expression: Optional filter expression to apply to the table.  
-     *     <li>sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).  
-     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending. Default is 'ascending'. Ignored if 'sort_by' option is not specified.  values:ASCENDING, DESCENDING
-     * </ul>
+     *                 <ul>
+     *                         <li> expression: Optional filter expression to apply to the table.
+     *                         <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
+     *                 applied).
+     *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
+     *                 descending. Default is 'ascending'. Ignored if 'sort_by' option is not specified. Values: ascending,
+     *                 descending.
+     *                 </ul>
      * 
      */
     public GetRecordsByColumnRequest(String tableName, List<String> columnNames, long offset, long limit, Map<String, String> options) {
@@ -155,29 +152,24 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a GetRecordsByColumnRequest object with the specified
-     * parameters.
+     * Constructs a GetRecordsByColumnRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which this operation will be
-     *                   performed. The table cannot be a parent set.
-     * @param columnNames  The list of column values to retrieve. Columns
-     *                     annotated as store only cannot be retrieved.
-     * @param offset  A positive integer indicating the number of initial
-     *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
-     * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned (if not provided the default is
-     *               10000). Or END_OF_column (-9999) to indicate that the max
-     *               number of results should be returned.
-     * @param encoding  Specifies the encoding for returned records; either
-     *                  'binary' or 'json'.
+     * @param tableName  Name of the table on which this operation will be performed. The table cannot be a parent set.
+     * @param columnNames  The list of column values to retrieve. Columns annotated as store only cannot be retrieved.
+     * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
+     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
+     * @param limit  A positive integer indicating the maximum number of results to be returned (if not provided the default is
+     *               10000). Or END_OF_column (-9999) to indicate that the max number of results should be returned.
+     * @param encoding  Specifies the encoding for returned records; either 'binary' or 'json'. Values: binary, json.
      * @param options
-     * <ul>
-     *     <li>expression: Optional filter expression to apply to the table.  
-     *     <li>sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).  
-     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending. Default is 'ascending'. Ignored if 'sort_by' option is not specified.  values:ASCENDING, DESCENDING
-     * </ul>
+     *                 <ul>
+     *                         <li> expression: Optional filter expression to apply to the table.
+     *                         <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
+     *                 applied).
+     *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
+     *                 descending. Default is 'ascending'. Ignored if 'sort_by' option is not specified. Values: ascending,
+     *                 descending.
+     *                 </ul>
      * 
      */
     public GetRecordsByColumnRequest(String tableName, List<String> columnNames, long offset, long limit, String encoding, Map<String, String> options) {
@@ -191,8 +183,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which this operation will be performed. The
-     *         table cannot be a parent set.
+     * @return Name of the table on which this operation will be performed. The table cannot be a parent set.
      * 
      */
     public String getTableName() {
@@ -201,8 +192,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which this operation will be
-     *                   performed. The table cannot be a parent set.
+     * @param tableName  Name of the table on which this operation will be performed. The table cannot be a parent set.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -214,8 +204,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The list of column values to retrieve. Columns annotated as
-     *         store only cannot be retrieved.
+     * @return The list of column values to retrieve. Columns annotated as store only cannot be retrieved.
      * 
      */
     public List<String> getColumnNames() {
@@ -224,8 +213,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnNames  The list of column values to retrieve. Columns
-     *                     annotated as store only cannot be retrieved.
+     * @param columnNames  The list of column values to retrieve. Columns annotated as store only cannot be retrieved.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -237,10 +225,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A positive integer indicating the number of initial results to
-     *         skip (this can be useful for paging through the results).  The
-     *         minimum allowed value is 0. The maximum allowed value is
-     *         MAX_INT.
+     * @return A positive integer indicating the number of initial results to skip (this can be useful for paging through the
+     *         results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
      * 
      */
     public long getOffset() {
@@ -249,10 +235,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @param offset  A positive integer indicating the number of initial
-     *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
+     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -264,10 +248,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A positive integer indicating the maximum number of results to
-     *         be returned (if not provided the default is 10000). Or
-     *         END_OF_column (-9999) to indicate that the max number of results
-     *         should be returned.
+     * @return A positive integer indicating the maximum number of results to be returned (if not provided the default is 10000). Or
+     *         END_OF_column (-9999) to indicate that the max number of results should be returned.
      * 
      */
     public long getLimit() {
@@ -276,10 +258,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned (if not provided the default is
-     *               10000). Or END_OF_column (-9999) to indicate that the max
-     *               number of results should be returned.
+     * @param limit  A positive integer indicating the maximum number of results to be returned (if not provided the default is
+     *               10000). Or END_OF_column (-9999) to indicate that the max number of results should be returned.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -291,8 +271,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Specifies the encoding for returned records; either 'binary' or
-     *         'json'.
+     * @return Specifies the encoding for returned records; either 'binary' or 'json'. Values: binary, json.
      * 
      */
     public String getEncoding() {
@@ -301,8 +280,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @param encoding  Specifies the encoding for returned records; either
-     *                  'binary' or 'json'.
+     * @param encoding  Specifies the encoding for returned records; either 'binary' or 'json'. Values: binary, json.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -311,6 +289,19 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
         this.encoding = (encoding == null) ? Encoding.BINARY : encoding;
         return this;
     }
+
+    /**
+     * 
+     * @return
+     *         <ul>
+     *                 <li> expression: Optional filter expression to apply to the table.
+     *                 <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
+     *         applied).
+     *                 <li> sort_order: String indicating how the returned values should be sorted - ascending or descending.
+     *         Default is 'ascending'. Ignored if 'sort_by' option is not specified. Values: ascending, descending.
+     *         </ul>
+     * 
+     */
     public Map<String, String> getOptions() {
         return options;
     }
@@ -318,11 +309,14 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
     /**
      * 
      * @param options
-     * <ul>
-     *     <li>expression: Optional filter expression to apply to the table.  
-     *     <li>sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).  
-     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending. Default is 'ascending'. Ignored if 'sort_by' option is not specified.  values:ASCENDING, DESCENDING
-     * </ul>
+     *                 <ul>
+     *                         <li> expression: Optional filter expression to apply to the table.
+     *                         <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
+     *                 applied).
+     *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
+     *                 descending. Default is 'ascending'. Ignored if 'sort_by' option is not specified. Values: ascending,
+     *                 descending.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -333,8 +327,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -345,8 +338,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -382,8 +374,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

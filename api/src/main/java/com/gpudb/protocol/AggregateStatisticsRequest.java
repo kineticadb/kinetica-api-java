@@ -14,32 +14,23 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#aggregateStatistics(AggregateStatisticsRequest)}.
- * <p>
- * Calculates the requested statistics of a given column in a given table.
- * <p>
- * The available statistics are count (number of total objects), mean, stdv
- * (standard deviation), variance, skew, kurtosis, sum, min, max,
- * weighted_average, cardinality (unique count), estimated cardinality,
- * percentile and percentile_rank.
- * <p>
- * Estimated cardinality is calculated by using the hyperloglog approximation
- * technique.
- * <p>
- * Percentiles and percentile_ranks are approximate and are calculated using
- * the t-digest algorithm. They must include the desired
- * percentile/percentile_rank. To compute multiple percentiles each value must
- * be specified separately (i.e.
+ * A set of parameters for {@link com.gpudb.GPUdb#aggregateStatistics(AggregateStatisticsRequest)}.
+ * <br />
+ * <br />Calculates the requested statistics of a given column in a given table.
+ * <br />
+ * <br />The available statistics are count (number of total objects), mean, stdv (standard deviation), variance, skew, kurtosis,
+ * sum, min, max, weighted_average, cardinality (unique count), estimated cardinality, percentile and percentile_rank.
+ * <br />
+ * <br />Estimated cardinality is calculated by using the hyperloglog approximation technique.
+ * <br />
+ * <br />Percentiles and percentile_ranks are approximate and are calculated using the t-digest algorithm. They must include the
+ * desired percentile/percentile_rank. To compute multiple percentiles each value must be specified separately (i.e.
  * 'percentile(75.0),percentile(99.0),percentile_rank(1234.56),percentile_rank(-5)').
- * <p>
- * The weighted average statistic requires a weight_attribute to be specified
- * in {@code options}. The weighted average is then defined as the sum of the
- * products of {@code columnName} times the weight attribute divided by the sum
- * of the weight attribute.
- * <p>
- * The response includes a list of the statistics requested along with the
- * count of the number of items in the given set.
+ * <br />
+ * <br />The weighted average statistic requires a weight_attribute to be specified in {@code options}. The weighted average is then
+ * defined as the sum of the products of {@code columnName} times the weight attribute divided by the sum of the weight attribute.
+ * <br />
+ * <br />The response includes a list of the statistics requested along with the count of the number of items in the given set.
  */
 public class AggregateStatisticsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -54,8 +45,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -66,8 +56,10 @@ public class AggregateStatisticsRequest implements IndexedRecord {
 
 
     /**
-     * Comma separated list of the statistics to calculate, e.g. "sum,mean".
-     * A set of string constants for the parameter {@code stats}.
+     * Comma separated list of the statistics to calculate, e.g. "sum,mean". Values: count, mean, stdv, variance, skew, kurtosis,
+     * sum, min, max, weighted_average, cardinality, estimated_cardinality, percentile, percentile_rank.
+     * <br />
+     * <br />A set of string constants for the parameter {@code stats}.
      */
     public static final class Stats {
 
@@ -117,8 +109,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
         public static final String MAX = "max";
 
         /**
-         * Weighted arithmetic mean (using the option 'weight_column_name' as
-         * the weighting column).
+         * Weighted arithmetic mean (using the option 'weight_column_name' as the weighting column).
          */
         public static final String WEIGHTED_AVERAGE = "weighted_average";
 
@@ -128,21 +119,18 @@ public class AggregateStatisticsRequest implements IndexedRecord {
         public static final String CARDINALITY = "cardinality";
 
         /**
-         * Estimate (via hyperloglog technique) of the number of unique values
-         * in the column.
+         * Estimate (via hyperloglog technique) of the number of unique values in the column.
          */
         public static final String ESTIMATED_CARDINALITY = "estimated_cardinality";
 
         /**
-         * Estimate (via t-digest) of the given percentile of the column
-         * (percentile(50.0) will be an approximation of the median).
+         * Estimate (via t-digest) of the given percentile of the column (percentile(50.0) will be an approximation of the median).
          */
         public static final String PERCENTILE = "percentile";
 
         /**
-         * Estimate (via t-digest) of the percentile rank of the given value in
-         * the column (if the given value is the median of the column,
-         * percentile_rank(<median>) will return approximately 50.0).
+         * Estimate (via t-digest) of the percentile rank of the given value in the column (if the given value is the median of the
+         * column, percentile_rank(<median>) will return approximately 50.0).
          */
         public static final String PERCENTILE_RANK = "percentile_rank";
 
@@ -152,19 +140,22 @@ public class AggregateStatisticsRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * A set of string constants for the parameter {@code options}.
+     * <br /><ul>
+     * <br />  <li> additional_column_names: A list of comma separated column names over which statistics can be accumulated along
+     * with the primary column.
+     * <br />  <li> weight_column_name: Name of column used as weighting attribute for the weighted average statistic.
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * A list of comma separated column names over which statistics can be
-         * accumulated along with the primary column.
+         * A list of comma separated column names over which statistics can be accumulated along with the primary column.
          */
         public static final String ADDITIONAL_COLUMN_NAMES = "additional_column_names";
 
         /**
-         * Name of column used as weighting attribute for the weighted average
-         * statistic.
+         * Name of column used as weighting attribute for the weighted average statistic.
          */
         public static final String WEIGHT_COLUMN_NAME = "weight_column_name";
 
@@ -188,20 +179,20 @@ public class AggregateStatisticsRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs an AggregateStatisticsRequest object with the specified
-     * parameters.
+     * Constructs an AggregateStatisticsRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the statistics operation
-     *                   will be performed.
-     * @param columnName  Name of the column for which the statistics are to be
-     *                    calculated.
-     * @param stats  Comma separated list of the statistics to calculate, e.g.
-     *               "sum,mean".
+     * @param tableName  Name of the table on which the statistics operation will be performed.
+     * @param columnName  Name of the column for which the statistics are to be calculated.
+     * @param stats  Comma separated list of the statistics to calculate, e.g. "sum,mean". Values: count, mean, stdv, variance,
+     *               skew, kurtosis, sum, min, max, weighted_average, cardinality, estimated_cardinality, percentile,
+     *               percentile_rank.
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>additional_column_names: A list of comma separated column names over which statistics can be accumulated along with the primary column.  
-     *     <li>weight_column_name: Name of column used as weighting attribute for the weighted average statistic.  
-     * </ul>
+     *                 <ul>
+     *                         <li> additional_column_names: A list of comma separated column names over which statistics can be
+     *                 accumulated along with the primary column.
+     *                         <li> weight_column_name: Name of column used as weighting attribute for the weighted average
+     *                 statistic.
+     *                 </ul>
      * 
      */
     public AggregateStatisticsRequest(String tableName, String columnName, String stats, Map<String, String> options) {
@@ -213,8 +204,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the statistics operation will be
-     *         performed.
+     * @return Name of the table on which the statistics operation will be performed.
      * 
      */
     public String getTableName() {
@@ -223,8 +213,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the statistics operation
-     *                   will be performed.
+     * @param tableName  Name of the table on which the statistics operation will be performed.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -236,8 +225,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the column for which the statistics are to be
-     *         calculated.
+     * @return Name of the column for which the statistics are to be calculated.
      * 
      */
     public String getColumnName() {
@@ -246,8 +234,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnName  Name of the column for which the statistics are to be
-     *                    calculated.
+     * @param columnName  Name of the column for which the statistics are to be calculated.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -259,8 +246,8 @@ public class AggregateStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Comma separated list of the statistics to calculate, e.g.
-     *         "sum,mean".
+     * @return Comma separated list of the statistics to calculate, e.g. "sum,mean". Values: count, mean, stdv, variance, skew,
+     *         kurtosis, sum, min, max, weighted_average, cardinality, estimated_cardinality, percentile, percentile_rank.
      * 
      */
     public String getStats() {
@@ -269,8 +256,9 @@ public class AggregateStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param stats  Comma separated list of the statistics to calculate, e.g.
-     *               "sum,mean".
+     * @param stats  Comma separated list of the statistics to calculate, e.g. "sum,mean". Values: count, mean, stdv, variance,
+     *               skew, kurtosis, sum, min, max, weighted_average, cardinality, estimated_cardinality, percentile,
+     *               percentile_rank.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -283,6 +271,11 @@ public class AggregateStatisticsRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> additional_column_names: A list of comma separated column names over which statistics can be accumulated
+     *         along with the primary column.
+     *                 <li> weight_column_name: Name of column used as weighting attribute for the weighted average statistic.
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -292,10 +285,12 @@ public class AggregateStatisticsRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>additional_column_names: A list of comma separated column names over which statistics can be accumulated along with the primary column.  
-     *     <li>weight_column_name: Name of column used as weighting attribute for the weighted average statistic.  
-     * </ul>
+     *                 <ul>
+     *                         <li> additional_column_names: A list of comma separated column names over which statistics can be
+     *                 accumulated along with the primary column.
+     *                         <li> weight_column_name: Name of column used as weighting attribute for the weighted average
+     *                 statistic.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -306,8 +301,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -318,8 +312,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -349,8 +342,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

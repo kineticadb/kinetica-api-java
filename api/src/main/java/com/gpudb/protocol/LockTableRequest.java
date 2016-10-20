@@ -15,13 +15,11 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#lockTable(LockTableRequest)}.
- * <p>
- * Locks a table.  By default a table has no locks and all operations are
- * permitted.  A user may request a read-only or a write-only lock, after which
- * only read or write operations are permitted on the table until the next
- * request.  When lock_type is disable then then no operations are permitted on
- * the table.  The lock status can be queried by passing an empty string for
- * {@code lockType}.
+ * <br />
+ * <br />Locks a table.  By default a table has a {@code lockType} of {@code unlock}, indicating all operations are permitted.  A
+ * user may request a {@code read-only} or a {@code write-only} lock, after which only read or write operations, respectively, are
+ * permitted on the table until the lock is removed.  When {@code lockType} is {@code disable} then no operations are permitted on
+ * the table.  The lock status can be queried by setting  {@code lockType} to {@code status}.
  */
 public class LockTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -35,8 +33,7 @@ public class LockTableRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -47,16 +44,36 @@ public class LockTableRequest implements IndexedRecord {
 
 
     /**
-     * The type of lock being applied to the table or blank to query. Empty
-     * string returns the lock status without change the lock status of the
-     * table.
-     * A set of string constants for the parameter {@code lockType}.
+     * The type of lock being applied to the table. Setting it to 'status' will return the current lock status of the table without
+     * changing it. Values: status, disable, read-only, write-only, unlock.
+     * <br />
+     * <br />A set of string constants for the parameter {@code lockType}.
      */
     public static final class LockType {
-        public static final String EMPTY_STRING = "";
+
+        /**
+         * Show locked status
+         */
+        public static final String STATUS = "status";
+
+        /**
+         * Allow no read/writer operations
+         */
         public static final String DISABLE = "disable";
+
+        /**
+         * Allow only read operations
+         */
         public static final String READ_ONLY = "read-only";
+
+        /**
+         * Allow only write operations
+         */
         public static final String WRITE_ONLY = "write-only";
+
+        /**
+         * Allow all read/write operations
+         */
         public static final String UNLOCK = "unlock";
 
         private LockType() {  }
@@ -79,11 +96,9 @@ public class LockTableRequest implements IndexedRecord {
     /**
      * Constructs a LockTableRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to be locked. It must be a currently
-     *                   existing table and not a collection or a view.
-     * @param lockType  The type of lock being applied to the table or blank to
-     *                  query. Empty string returns the lock status without
-     *                  change the lock status of the table.
+     * @param tableName  Name of the table to be locked. It must be a currently existing table and not a collection or a view.
+     * @param lockType  The type of lock being applied to the table. Setting it to 'status' will return the current lock status of
+     *                  the table without changing it. Values: status, disable, read-only, write-only, unlock.
      * @param options  Optional parameters.
      * 
      */
@@ -95,8 +110,7 @@ public class LockTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to be locked. It must be a currently existing
-     *         table and not a collection or a view.
+     * @return Name of the table to be locked. It must be a currently existing table and not a collection or a view.
      * 
      */
     public String getTableName() {
@@ -105,8 +119,7 @@ public class LockTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to be locked. It must be a currently
-     *                   existing table and not a collection or a view.
+     * @param tableName  Name of the table to be locked. It must be a currently existing table and not a collection or a view.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -118,9 +131,8 @@ public class LockTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The type of lock being applied to the table or blank to query.
-     *         Empty string returns the lock status without change the lock
-     *         status of the table.
+     * @return The type of lock being applied to the table. Setting it to 'status' will return the current lock status of the table
+     *         without changing it. Values: status, disable, read-only, write-only, unlock.
      * 
      */
     public String getLockType() {
@@ -129,9 +141,8 @@ public class LockTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param lockType  The type of lock being applied to the table or blank to
-     *                  query. Empty string returns the lock status without
-     *                  change the lock status of the table.
+     * @param lockType  The type of lock being applied to the table. Setting it to 'status' will return the current lock status of
+     *                  the table without changing it. Values: status, disable, read-only, write-only, unlock.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -163,8 +174,7 @@ public class LockTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -175,8 +185,7 @@ public class LockTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -203,8 +212,7 @@ public class LockTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

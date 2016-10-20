@@ -14,25 +14,19 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
- * <p>
- * Returns all the unique values from a particular column (specified by {@code
- * columnName}) of a particular table (specified by {@code tableName}). If
- * {@code columnName} is a numeric column the values will be in {@code
- * binaryEncodedResponse}. Otherwise if {@code columnName} is a string column
- * the values will be in {@code jsonEncodedResponse}.  {@code offset} and
- * {@code limit} are used to page through the results if there are large
- * numbers of unique values. To get the first 10 unique values sorted in
+ * A set of parameters for {@link com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
+ * <br />
+ * <br />Returns all the unique values from a particular column (specified by {@code columnName}) of a particular table (specified
+ * by {@code tableName}). If {@code columnName} is a numeric column the values will be in {@code binaryEncodedResponse}. Otherwise
+ * if {@code columnName} is a string column the values will be in {@code jsonEncodedResponse}.  {@code offset} and {@code limit} are
+ * used to page through the results if there are large numbers of unique values. To get the first 10 unique values sorted in
  * descending order {@code options} would be::
- * <p>
- * {"limit":"10","sort_order":"descending"}.
- * <p>
- * The response is returned as a dynamic schema. For details see: <a
- * href="../../../../../../concepts/index.html#dynamic-schemas"
- * target="_top">dynamic schemas documentation</a>. If the 'result_table'
- * option is provided then the results are stored in a table with the name
- * given in the option and the results are not returned in the response.
+ * <br />
+ * <br />{"limit":"10","sort_order":"descending"}.
+ * <br />
+ * <br />The response is returned as a dynamic schema. For details see: <a href="../../../../../concepts/index.html#dynamic-schemas"
+ * target="_top">dynamic schemas documentation</a>. If the 'result_table' option is provided then the results are stored in a table
+ * with the name given in the option and the results are not returned in the response.
  */
 public class AggregateUniqueRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -49,8 +43,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -61,8 +54,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
 
     /**
-     * Specifies the encoding for returned records.
-     * A set of string constants for the parameter {@code encoding}.
+     * Specifies the encoding for returned records. Values: binary, json.
+     * <br />
+     * <br />A set of string constants for the parameter {@code encoding}.
      */
     public static final class Encoding {
 
@@ -82,7 +76,14 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * A set of string constants for the parameter {@code options}.
+     * <br /><ul>
+     * <br />  <li> expression: Optional filter expression to apply to the table.
+     * <br />  <li> sort_order: String indicating how the returned values should be sorted. Values: ascending, descending.
+     * <br />
+     * <br />  <li> result_table: The name of the table used to store the results. If present no results are returned in the
+     * response.
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
@@ -92,15 +93,15 @@ public class AggregateUniqueRequest implements IndexedRecord {
         public static final String EXPRESSION = "expression";
 
         /**
-         * String indicating how the returned values should be sorted.
+         * String indicating how the returned values should be sorted. Values: ascending, descending.
+         * <br />
          */
         public static final String SORT_ORDER = "sort_order";
         public static final String ASCENDING = "ascending";
         public static final String DESCENDING = "descending";
 
         /**
-         * The name of the table used to store the results. If present no
-         * results are returned in the response.
+         * The name of the table used to store the results. If present no results are returned in the response.
          */
         public static final String RESULT_TABLE = "result_table";
 
@@ -126,27 +127,23 @@ public class AggregateUniqueRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs an AggregateUniqueRequest object with the specified
-     * parameters.
+     * Constructs an AggregateUniqueRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be a valid table in GPUdb.
-     * @param columnName  Name of the column or an expression containing one or
-     *                    more column names on which the unique function would
+     * @param tableName  Name of the table on which the operation will be performed. Must be a valid table in GPUdb.
+     * @param columnName  Name of the column or an expression containing one or more column names on which the unique function would
      *                    be applied.
-     * @param offset  A positive integer indicating the number of initial
-     *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
-     * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned. Or END_OF_SET (-9999) to indicate
+     * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
+     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
+     * @param limit  A positive integer indicating the maximum number of results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>expression: Optional filter expression to apply to the table.  
-     *     <li>sort_order: String indicating how the returned values should be sorted.  
-     *     <li>result_table: The name of the table used to store the results. If present no results are returned in the response.  
-     * </ul>
+     *                 <ul>
+     *                         <li> expression: Optional filter expression to apply to the table.
+     *                         <li> sort_order: String indicating how the returned values should be sorted. Values: ascending,
+     *                 descending.
+     *                         <li> result_table: The name of the table used to store the results. If present no results are
+     *                 returned in the response.
+     *                 </ul>
      * 
      */
     public AggregateUniqueRequest(String tableName, String columnName, long offset, long limit, Map<String, String> options) {
@@ -159,28 +156,24 @@ public class AggregateUniqueRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs an AggregateUniqueRequest object with the specified
-     * parameters.
+     * Constructs an AggregateUniqueRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be a valid table in GPUdb.
-     * @param columnName  Name of the column or an expression containing one or
-     *                    more column names on which the unique function would
+     * @param tableName  Name of the table on which the operation will be performed. Must be a valid table in GPUdb.
+     * @param columnName  Name of the column or an expression containing one or more column names on which the unique function would
      *                    be applied.
-     * @param offset  A positive integer indicating the number of initial
-     *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
-     * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned. Or END_OF_SET (-9999) to indicate
+     * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
+     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
+     * @param limit  A positive integer indicating the maximum number of results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
-     * @param encoding  Specifies the encoding for returned records.
+     * @param encoding  Specifies the encoding for returned records. Values: binary, json.
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>expression: Optional filter expression to apply to the table.  
-     *     <li>sort_order: String indicating how the returned values should be sorted.  
-     *     <li>result_table: The name of the table used to store the results. If present no results are returned in the response.  
-     * </ul>
+     *                 <ul>
+     *                         <li> expression: Optional filter expression to apply to the table.
+     *                         <li> sort_order: String indicating how the returned values should be sorted. Values: ascending,
+     *                 descending.
+     *                         <li> result_table: The name of the table used to store the results. If present no results are
+     *                 returned in the response.
+     *                 </ul>
      * 
      */
     public AggregateUniqueRequest(String tableName, String columnName, long offset, long limit, String encoding, Map<String, String> options) {
@@ -194,8 +187,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the operation will be performed. Must
-     *         be a valid table in GPUdb.
+     * @return Name of the table on which the operation will be performed. Must be a valid table in GPUdb.
      * 
      */
     public String getTableName() {
@@ -204,8 +196,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be a valid table in GPUdb.
+     * @param tableName  Name of the table on which the operation will be performed. Must be a valid table in GPUdb.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -217,8 +208,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the column or an expression containing one or more
-     *         column names on which the unique function would be applied.
+     * @return Name of the column or an expression containing one or more column names on which the unique function would be
+     *         applied.
      * 
      */
     public String getColumnName() {
@@ -227,8 +218,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnName  Name of the column or an expression containing one or
-     *                    more column names on which the unique function would
+     * @param columnName  Name of the column or an expression containing one or more column names on which the unique function would
      *                    be applied.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -241,10 +231,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A positive integer indicating the number of initial results to
-     *         skip (this can be useful for paging through the results).  The
-     *         minimum allowed value is 0. The maximum allowed value is
-     *         MAX_INT.
+     * @return A positive integer indicating the number of initial results to skip (this can be useful for paging through the
+     *         results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
      * 
      */
     public long getOffset() {
@@ -253,10 +241,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * 
-     * @param offset  A positive integer indicating the number of initial
-     *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
+     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -268,9 +254,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A positive integer indicating the maximum number of results to
-     *         be returned. Or END_OF_SET (-9999) to indicate that the max
-     *         number of results should be returned.
+     * @return A positive integer indicating the maximum number of results to be returned. Or END_OF_SET (-9999) to indicate that
+     *         the max number of results should be returned.
      * 
      */
     public long getLimit() {
@@ -279,8 +264,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * 
-     * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned. Or END_OF_SET (-9999) to indicate
+     * @param limit  A positive integer indicating the maximum number of results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -293,7 +277,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Specifies the encoding for returned records.
+     * @return Specifies the encoding for returned records. Values: binary, json.
      * 
      */
     public String getEncoding() {
@@ -302,7 +286,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * 
-     * @param encoding  Specifies the encoding for returned records.
+     * @param encoding  Specifies the encoding for returned records. Values: binary, json.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -315,6 +299,12 @@ public class AggregateUniqueRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> expression: Optional filter expression to apply to the table.
+     *                 <li> sort_order: String indicating how the returned values should be sorted. Values: ascending, descending.
+     *                 <li> result_table: The name of the table used to store the results. If present no results are returned in the
+     *         response.
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -324,11 +314,13 @@ public class AggregateUniqueRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>expression: Optional filter expression to apply to the table.  
-     *     <li>sort_order: String indicating how the returned values should be sorted.  
-     *     <li>result_table: The name of the table used to store the results. If present no results are returned in the response.  
-     * </ul>
+     *                 <ul>
+     *                         <li> expression: Optional filter expression to apply to the table.
+     *                         <li> sort_order: String indicating how the returned values should be sorted. Values: ascending,
+     *                 descending.
+     *                         <li> result_table: The name of the table used to store the results. If present no results are
+     *                 returned in the response.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -339,8 +331,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -351,8 +342,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -388,8 +378,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

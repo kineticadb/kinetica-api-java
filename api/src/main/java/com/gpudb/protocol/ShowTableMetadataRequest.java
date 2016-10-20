@@ -16,10 +16,9 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#showTableMetadata(ShowTableMetadataRequest)}.
- * <p>
- * Retrieves the user provided metadata for the specified tables.
+ * A set of parameters for {@link com.gpudb.GPUdb#showTableMetadata(ShowTableMetadataRequest)}.
+ * <br />
+ * <br />Retrieves the user provided metadata for the specified tables.
  */
 public class ShowTableMetadataRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -32,8 +31,7 @@ public class ShowTableMetadataRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -55,12 +53,9 @@ public class ShowTableMetadataRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a ShowTableMetadataRequest object with the specified
-     * parameters.
+     * Constructs a ShowTableMetadataRequest object with the specified parameters.
      * 
-     * @param tableNames  Tables whose metadata will be fetched. All provided
-     *                    tables must exist in GPUdb, or GPUdb returns an
-     *                    error.
+     * @param tableNames  Tables whose metadata will be fetched. All provided tables must exist in GPUdb, or GPUdb returns an error.
      * @param options  Optional parameters.
      * 
      */
@@ -71,8 +66,7 @@ public class ShowTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Tables whose metadata will be fetched. All provided tables must
-     *         exist in GPUdb, or GPUdb returns an error.
+     * @return Tables whose metadata will be fetched. All provided tables must exist in GPUdb, or GPUdb returns an error.
      * 
      */
     public List<String> getTableNames() {
@@ -81,9 +75,7 @@ public class ShowTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  Tables whose metadata will be fetched. All provided
-     *                    tables must exist in GPUdb, or GPUdb returns an
-     *                    error.
+     * @param tableNames  Tables whose metadata will be fetched. All provided tables must exist in GPUdb, or GPUdb returns an error.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -115,8 +107,7 @@ public class ShowTableMetadataRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -127,8 +118,7 @@ public class ShowTableMetadataRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -152,8 +142,7 @@ public class ShowTableMetadataRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

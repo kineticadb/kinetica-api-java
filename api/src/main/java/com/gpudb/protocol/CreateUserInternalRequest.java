@@ -14,10 +14,9 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#createUserInternal(CreateUserInternalRequest)}.
- * <p>
- * Creates a new internal user (a user whose credentials are managed by GPUdb).
+ * A set of parameters for {@link com.gpudb.GPUdb#createUserInternal(CreateUserInternalRequest)}.
+ * <br />
+ * <br />Creates a new internal user (a user whose credentials are managed by GPUdb).
  */
 public class CreateUserInternalRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -31,8 +30,7 @@ public class CreateUserInternalRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -56,15 +54,11 @@ public class CreateUserInternalRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a CreateUserInternalRequest object with the specified
-     * parameters.
+     * Constructs a CreateUserInternalRequest object with the specified parameters.
      * 
-     * @param name  Name of the user to be created. Must contain only lowercase
-     *              letters, digits, and underscores, and cannot begin with a
-     *              digit. Must not be the same name as an existing user or
-     *              role in GPUdb.
-     * @param password  Initial password of the user to be created. May be an
-     *                  empty string for no password.
+     * @param name  Name of the user to be created. Must contain only lowercase letters, digits, and underscores, and cannot begin
+     *              with a digit. Must not be the same name as an existing user or role in GPUdb.
+     * @param password  Initial password of the user to be created. May be an empty string for no password.
      * @param options  Optional parameters.
      * 
      */
@@ -76,9 +70,8 @@ public class CreateUserInternalRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the user to be created. Must contain only lowercase
-     *         letters, digits, and underscores, and cannot begin with a digit.
-     *         Must not be the same name as an existing user or role in GPUdb.
+     * @return Name of the user to be created. Must contain only lowercase letters, digits, and underscores, and cannot begin with a
+     *         digit. Must not be the same name as an existing user or role in GPUdb.
      * 
      */
     public String getName() {
@@ -87,10 +80,8 @@ public class CreateUserInternalRequest implements IndexedRecord {
 
     /**
      * 
-     * @param name  Name of the user to be created. Must contain only lowercase
-     *              letters, digits, and underscores, and cannot begin with a
-     *              digit. Must not be the same name as an existing user or
-     *              role in GPUdb.
+     * @param name  Name of the user to be created. Must contain only lowercase letters, digits, and underscores, and cannot begin
+     *              with a digit. Must not be the same name as an existing user or role in GPUdb.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -102,8 +93,7 @@ public class CreateUserInternalRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Initial password of the user to be created. May be an empty
-     *         string for no password.
+     * @return Initial password of the user to be created. May be an empty string for no password.
      * 
      */
     public String getPassword() {
@@ -112,8 +102,7 @@ public class CreateUserInternalRequest implements IndexedRecord {
 
     /**
      * 
-     * @param password  Initial password of the user to be created. May be an
-     *                  empty string for no password.
+     * @param password  Initial password of the user to be created. May be an empty string for no password.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -145,8 +134,7 @@ public class CreateUserInternalRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -157,8 +145,7 @@ public class CreateUserInternalRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -185,8 +172,7 @@ public class CreateUserInternalRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

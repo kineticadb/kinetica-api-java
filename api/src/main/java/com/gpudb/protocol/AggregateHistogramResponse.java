@@ -14,8 +14,7 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#aggregateHistogram(AggregateHistogramRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#aggregateHistogram(AggregateHistogramRequest)}.
  */
 public class AggregateHistogramResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -29,8 +28,7 @@ public class AggregateHistogramResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -52,8 +50,7 @@ public class AggregateHistogramResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The array of calculated values that represents the histogram
-     *         data points.
+     * @return The array of calculated values that represents the histogram data points.
      * 
      */
     public List<Double> getCounts() {
@@ -62,8 +59,7 @@ public class AggregateHistogramResponse implements IndexedRecord {
 
     /**
      * 
-     * @param counts  The array of calculated values that represents the
-     *                histogram data points.
+     * @param counts  The array of calculated values that represents the histogram data points.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -116,8 +112,7 @@ public class AggregateHistogramResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -128,8 +123,7 @@ public class AggregateHistogramResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -156,8 +150,7 @@ public class AggregateHistogramResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

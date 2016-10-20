@@ -14,15 +14,12 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#filterByBox(FilterByBoxRequest)}.
- * <p>
- * Calculates how many objects within the given table lie in a rectangular box.
- * The operation is synchronous meaning that GPUdb will not return the request
- * until all the objects are fully available. The response payload provides the
- * count of the resulting set. A new resultant set which satisfies the input
- * NAI restriction specification is also created when a {@code viewName} is
- * passed in as part of the input payload.
+ * A set of parameters for {@link com.gpudb.GPUdb#filterByBox(FilterByBoxRequest)}.
+ * <br />
+ * <br />Calculates how many objects within the given table lie in a rectangular box. The operation is synchronous meaning that
+ * GPUdb will not return the request until all the objects are fully available. The response payload provides the count of the
+ * resulting set. A new resultant set which satisfies the input NAI restriction specification is also created when a {@code
+ * viewName} is passed in as part of the input payload.
  */
 public class FilterByBoxRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -42,8 +39,7 @@ public class FilterByBoxRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -77,25 +73,17 @@ public class FilterByBoxRequest implements IndexedRecord {
     /**
      * Constructs a FilterByBoxRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the bounding box operation
-     *                   will be performed. Must be a valid table in GPUdb.
-     * @param viewName  Optional name of the result view that will be created
-     *                  containing the results of the query. Must not be an
+     * @param tableName  Name of the table on which the bounding box operation will be performed. Must be a valid table in GPUdb.
+     * @param viewName  Optional name of the result view that will be created containing the results of the query. Must not be an
      *                  already existing collection, table or view in GPUdb.
-     * @param xColumnName  Name of the column on which to perform the bounding
-     *                     box query. If the table's data type is not a shape
+     * @param xColumnName  Name of the column on which to perform the bounding box query. If the table's data type is not a shape
      *                     type, must be a valid numeric column.
-     * @param minX  Lower bound for the column chosen by {@code xColumnName}.
-     *              Must be less than or equal to {@code maxX}.
-     * @param maxX  Upper bound for {@code xColumnName}.  Must be greater than
-     *              or equal to {@code minX}.
-     * @param yColumnName  Name of a column on which to perform the bounding
-     *                     box query. If the table's data type is not a shape
+     * @param minX  Lower bound for the column chosen by {@code xColumnName}.  Must be less than or equal to {@code maxX}.
+     * @param maxX  Upper bound for {@code xColumnName}.  Must be greater than or equal to {@code minX}.
+     * @param yColumnName  Name of a column on which to perform the bounding box query. If the table's data type is not a shape
      *                     type, must be a valid numeric column.
-     * @param minY  Lower bound for {@code yColumnName}. Must be less than or
-     *              equal to {@code maxY}.
-     * @param maxY  Upper bound for {@code yColumnName}. Must be greater than
-     *              or equal to {@code minY}.
+     * @param minY  Lower bound for {@code yColumnName}. Must be less than or equal to {@code maxY}.
+     * @param maxY  Upper bound for {@code yColumnName}. Must be greater than or equal to {@code minY}.
      * @param options  Optional parameters.
      * 
      */
@@ -113,8 +101,7 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the bounding box operation will be
-     *         performed. Must be a valid table in GPUdb.
+     * @return Name of the table on which the bounding box operation will be performed. Must be a valid table in GPUdb.
      * 
      */
     public String getTableName() {
@@ -123,8 +110,7 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the bounding box operation
-     *                   will be performed. Must be a valid table in GPUdb.
+     * @param tableName  Name of the table on which the bounding box operation will be performed. Must be a valid table in GPUdb.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -136,9 +122,8 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional name of the result view that will be created containing
-     *         the results of the query. Must not be an already existing
-     *         collection, table or view in GPUdb.
+     * @return Optional name of the result view that will be created containing the results of the query. Must not be an already
+     *         existing collection, table or view in GPUdb.
      * 
      */
     public String getViewName() {
@@ -147,8 +132,7 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @param viewName  Optional name of the result view that will be created
-     *                  containing the results of the query. Must not be an
+     * @param viewName  Optional name of the result view that will be created containing the results of the query. Must not be an
      *                  already existing collection, table or view in GPUdb.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -161,9 +145,8 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the column on which to perform the bounding box query.
-     *         If the table's data type is not a shape type, must be a valid
-     *         numeric column.
+     * @return Name of the column on which to perform the bounding box query. If the table's data type is not a shape type, must be
+     *         a valid numeric column.
      * 
      */
     public String getXColumnName() {
@@ -172,8 +155,7 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @param xColumnName  Name of the column on which to perform the bounding
-     *                     box query. If the table's data type is not a shape
+     * @param xColumnName  Name of the column on which to perform the bounding box query. If the table's data type is not a shape
      *                     type, must be a valid numeric column.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -186,8 +168,7 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Lower bound for the column chosen by {@code xColumnName}.  Must
-     *         be less than or equal to {@code maxX}.
+     * @return Lower bound for the column chosen by {@code xColumnName}.  Must be less than or equal to {@code maxX}.
      * 
      */
     public double getMinX() {
@@ -196,8 +177,7 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @param minX  Lower bound for the column chosen by {@code xColumnName}.
-     *              Must be less than or equal to {@code maxX}.
+     * @param minX  Lower bound for the column chosen by {@code xColumnName}.  Must be less than or equal to {@code maxX}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -209,8 +189,7 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Upper bound for {@code xColumnName}.  Must be greater than or
-     *         equal to {@code minX}.
+     * @return Upper bound for {@code xColumnName}.  Must be greater than or equal to {@code minX}.
      * 
      */
     public double getMaxX() {
@@ -219,8 +198,7 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @param maxX  Upper bound for {@code xColumnName}.  Must be greater than
-     *              or equal to {@code minX}.
+     * @param maxX  Upper bound for {@code xColumnName}.  Must be greater than or equal to {@code minX}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -232,9 +210,8 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of a column on which to perform the bounding box query. If
-     *         the table's data type is not a shape type, must be a valid
-     *         numeric column.
+     * @return Name of a column on which to perform the bounding box query. If the table's data type is not a shape type, must be a
+     *         valid numeric column.
      * 
      */
     public String getYColumnName() {
@@ -243,8 +220,7 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @param yColumnName  Name of a column on which to perform the bounding
-     *                     box query. If the table's data type is not a shape
+     * @param yColumnName  Name of a column on which to perform the bounding box query. If the table's data type is not a shape
      *                     type, must be a valid numeric column.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -257,8 +233,7 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Lower bound for {@code yColumnName}. Must be less than or equal
-     *         to {@code maxY}.
+     * @return Lower bound for {@code yColumnName}. Must be less than or equal to {@code maxY}.
      * 
      */
     public double getMinY() {
@@ -267,8 +242,7 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @param minY  Lower bound for {@code yColumnName}. Must be less than or
-     *              equal to {@code maxY}.
+     * @param minY  Lower bound for {@code yColumnName}. Must be less than or equal to {@code maxY}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -280,8 +254,7 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Upper bound for {@code yColumnName}. Must be greater than or
-     *         equal to {@code minY}.
+     * @return Upper bound for {@code yColumnName}. Must be greater than or equal to {@code minY}.
      * 
      */
     public double getMaxY() {
@@ -290,8 +263,7 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @param maxY  Upper bound for {@code yColumnName}. Must be greater than
-     *              or equal to {@code minY}.
+     * @param maxY  Upper bound for {@code yColumnName}. Must be greater than or equal to {@code minY}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -323,8 +295,7 @@ public class FilterByBoxRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -335,8 +306,7 @@ public class FilterByBoxRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -381,8 +351,7 @@ public class FilterByBoxRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

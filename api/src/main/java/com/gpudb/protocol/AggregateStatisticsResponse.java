@@ -14,8 +14,7 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#aggregateStatistics(AggregateStatisticsRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#aggregateStatistics(AggregateStatisticsRequest)}.
  */
 public class AggregateStatisticsResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -27,8 +26,7 @@ public class AggregateStatisticsResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -41,16 +39,14 @@ public class AggregateStatisticsResponse implements IndexedRecord {
 
 
     /**
-     * Constructs an AggregateStatisticsResponse object with default
-     * parameters.
+     * Constructs an AggregateStatisticsResponse object with default parameters.
      */
     public AggregateStatisticsResponse() {
     }
 
     /**
      * 
-     * @return (statistic name, double value) pairs of the requested
-     *         statistics, including the total count by default.
+     * @return (statistic name, double value) pairs of the requested statistics, including the total count by default.
      * 
      */
     public Map<String, Double> getStats() {
@@ -59,8 +55,7 @@ public class AggregateStatisticsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param stats  (statistic name, double value) pairs of the requested
-     *               statistics, including the total count by default.
+     * @param stats  (statistic name, double value) pairs of the requested statistics, including the total count by default.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -71,8 +66,7 @@ public class AggregateStatisticsResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -83,8 +77,7 @@ public class AggregateStatisticsResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -105,8 +98,7 @@ public class AggregateStatisticsResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

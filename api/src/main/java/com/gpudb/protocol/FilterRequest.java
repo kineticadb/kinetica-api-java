@@ -15,15 +15,13 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#filter(FilterRequest)}.
- * <p>
- * Filters data based on the specified expression.  The results are stored in a
- * result set with the given {@code viewName}.
- * <p>
- * For details see <a href="../../../../../../concepts/index.html#expressions"
- * target="_top">concepts</a>.
- * <p>
- * The response message contains the number of points for which the expression
- * evaluated to be true, which is equivalent to the size of the result view.
+ * <br />
+ * <br />Filters data based on the specified expression.  The results are stored in a result set with the given {@code viewName}.
+ * <br />
+ * <br />For details see <a href="../../../../../concepts/index.html#expressions" target="_top">concepts</a>.
+ * <br />
+ * <br />The response message contains the number of points for which the expression evaluated to be true, which is equivalent to
+ * the size of the result view.
  */
 public class FilterRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -38,24 +36,13 @@ public class FilterRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
      */
     public static Schema getClassSchema() {
         return schema$;
-    }
-
-
-    /**
-     * Optional parameters.
-     * A set of string constants for the parameter {@code options}.
-     */
-    public static final class Options {
-
-        private Options() {  }
     }
 
     private String tableName;
@@ -77,17 +64,12 @@ public class FilterRequest implements IndexedRecord {
     /**
      * Constructs a FilterRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to filter.  This may be the ID of a
-     *                   collection, table or a result set (for chaining
-     *                   queries).  Collections may be filtered only if all
-     *                   tables within the collection have the same type ID.
-     * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Must not be an already existing
+     * @param tableName  Name of the table to filter.  This may be the ID of a collection, table or a result set (for chaining
+     *                   queries).  Collections may be filtered only if all tables within the collection have the same type ID.
+     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view .
-     * @param expression  The select expression GPUdb uses to filter the
-     *                    specified table.  For details see <a
-     *                    href="../../../../../../concepts/index.html#expressions"
-     *                    target="_top">concepts</a>.
+     * @param expression  The select expression GPUdb uses to filter the specified table.  For details see <a
+     *                    href="../../../../../concepts/index.html#expressions" target="_top">concepts</a>.
      * @param options  Optional parameters.
      * 
      */
@@ -100,10 +82,8 @@ public class FilterRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to filter.  This may be the ID of a
-     *         collection, table or a result set (for chaining queries).
-     *         Collections may be filtered only if all tables within the
-     *         collection have the same type ID.
+     * @return Name of the table to filter.  This may be the ID of a collection, table or a result set (for chaining queries).
+     *         Collections may be filtered only if all tables within the collection have the same type ID.
      * 
      */
     public String getTableName() {
@@ -112,10 +92,8 @@ public class FilterRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to filter.  This may be the ID of a
-     *                   collection, table or a result set (for chaining
-     *                   queries).  Collections may be filtered only if all
-     *                   tables within the collection have the same type ID.
+     * @param tableName  Name of the table to filter.  This may be the ID of a collection, table or a result set (for chaining
+     *                   queries).  Collections may be filtered only if all tables within the collection have the same type ID.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -127,9 +105,8 @@ public class FilterRequest implements IndexedRecord {
 
     /**
      * 
-     * @return If provided, then this will be the name of the view containing
-     *         the results. Must not be an already existing collection, table
-     *         or view .
+     * @return If provided, then this will be the name of the view containing the results. Must not be an already existing
+     *         collection, table or view .
      * 
      */
     public String getViewName() {
@@ -138,8 +115,7 @@ public class FilterRequest implements IndexedRecord {
 
     /**
      * 
-     * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Must not be an already existing
+     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view .
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -152,10 +128,8 @@ public class FilterRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The select expression GPUdb uses to filter the specified table.
-     *         For details see <a
-     *         href="../../../../../../concepts/index.html#expressions"
-     *         target="_top">concepts</a>.
+     * @return The select expression GPUdb uses to filter the specified table.  For details see <a
+     *         href="../../../../../concepts/index.html#expressions" target="_top">concepts</a>.
      * 
      */
     public String getExpression() {
@@ -164,10 +138,8 @@ public class FilterRequest implements IndexedRecord {
 
     /**
      * 
-     * @param expression  The select expression GPUdb uses to filter the
-     *                    specified table.  For details see <a
-     *                    href="../../../../../../concepts/index.html#expressions"
-     *                    target="_top">concepts</a>.
+     * @param expression  The select expression GPUdb uses to filter the specified table.  For details see <a
+     *                    href="../../../../../concepts/index.html#expressions" target="_top">concepts</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -199,8 +171,7 @@ public class FilterRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -211,8 +182,7 @@ public class FilterRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -242,8 +212,7 @@ public class FilterRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

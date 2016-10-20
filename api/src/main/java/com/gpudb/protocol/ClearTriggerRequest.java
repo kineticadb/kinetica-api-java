@@ -14,12 +14,10 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#clearTrigger(ClearTriggerRequest)}.
- * <p>
- * Clears or cancels the trigger identified by the specified handle. The output
- * returns the handle of the trigger cleared as well as indicating success or
- * failure of the trigger deactivation.
+ * A set of parameters for {@link com.gpudb.GPUdb#clearTrigger(ClearTriggerRequest)}.
+ * <br />
+ * <br />Clears or cancels the trigger identified by the specified handle. The output returns the handle of the trigger cleared as
+ * well as indicating success or failure of the trigger deactivation.
  */
 public class ClearTriggerRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -32,8 +30,7 @@ public class ClearTriggerRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -109,8 +106,7 @@ public class ClearTriggerRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -121,8 +117,7 @@ public class ClearTriggerRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -146,8 +141,7 @@ public class ClearTriggerRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

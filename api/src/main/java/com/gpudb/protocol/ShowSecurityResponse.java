@@ -15,8 +15,7 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#showSecurity(ShowSecurityRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#showSecurity(ShowSecurityRequest)}.
  */
 public class ShowSecurityResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -30,14 +29,38 @@ public class ShowSecurityResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
      */
     public static Schema getClassSchema() {
         return schema$;
+    }
+
+
+    /**
+     * Map of user/role name to the type of that user/role.
+     * <br />A set of string constants for the parameter {@code types}.
+     */
+    public static final class Types {
+
+        /**
+         * A user whose credentials are managed by GPUdb.
+         */
+        public static final String INTERNAL_USER = "internal_user";
+
+        /**
+         * A user whose credentials are managed by an external LDAP.
+         */
+        public static final String EXTERNAL_USER = "external_user";
+
+        /**
+         * A role.
+         */
+        public static final String ROLE = "role";
+
+        private Types() {  }
     }
 
     private Map<String, String> types;
@@ -74,8 +97,7 @@ public class ShowSecurityResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Map of user/role name to a list of names of roles of which that
-     *         user/role is a member.
+     * @return Map of user/role name to a list of names of roles of which that user/role is a member.
      * 
      */
     public Map<String, List<String>> getRoles() {
@@ -84,8 +106,7 @@ public class ShowSecurityResponse implements IndexedRecord {
 
     /**
      * 
-     * @param roles  Map of user/role name to a list of names of roles of which
-     *               that user/role is a member.
+     * @param roles  Map of user/role name to a list of names of roles of which that user/role is a member.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -97,8 +118,7 @@ public class ShowSecurityResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Map of user/role name to a list of permissions directly granted
-     *         to that user/role.
+     * @return Map of user/role name to a list of permissions directly granted to that user/role.
      * 
      */
     public Map<String, List<Map<String, String>>> getPermissions() {
@@ -107,8 +127,7 @@ public class ShowSecurityResponse implements IndexedRecord {
 
     /**
      * 
-     * @param permissions  Map of user/role name to a list of permissions
-     *                     directly granted to that user/role.
+     * @param permissions  Map of user/role name to a list of permissions directly granted to that user/role.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -119,8 +138,7 @@ public class ShowSecurityResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -131,8 +149,7 @@ public class ShowSecurityResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -159,8 +176,7 @@ public class ShowSecurityResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

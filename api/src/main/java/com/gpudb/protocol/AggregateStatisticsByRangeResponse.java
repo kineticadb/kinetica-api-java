@@ -15,8 +15,7 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#aggregateStatisticsByRange(AggregateStatisticsByRangeRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#aggregateStatisticsByRange(AggregateStatisticsByRangeRequest)}.
  */
 public class AggregateStatisticsByRangeResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -28,8 +27,7 @@ public class AggregateStatisticsByRangeResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -42,18 +40,15 @@ public class AggregateStatisticsByRangeResponse implements IndexedRecord {
 
 
     /**
-     * Constructs an AggregateStatisticsByRangeResponse object with default
-     * parameters.
+     * Constructs an AggregateStatisticsByRangeResponse object with default parameters.
      */
     public AggregateStatisticsByRangeResponse() {
     }
 
     /**
      * 
-     * @return A map with a key for each statistic in the stats input parameter
-     *         having a value that is a vector of the corresponding value-
-     *         column bin statistics. In a addition the key count has a value
-     *         that is a histogram of the binning-column.
+     * @return A map with a key for each statistic in the stats input parameter having a value that is a vector of the corresponding
+     *         value-column bin statistics. In a addition the key count has a value that is a histogram of the binning-column.
      * 
      */
     public Map<String, List<Double>> getStats() {
@@ -62,10 +57,8 @@ public class AggregateStatisticsByRangeResponse implements IndexedRecord {
 
     /**
      * 
-     * @param stats  A map with a key for each statistic in the stats input
-     *               parameter having a value that is a vector of the
-     *               corresponding value-column bin statistics. In a addition
-     *               the key count has a value that is a histogram of the
+     * @param stats  A map with a key for each statistic in the stats input parameter having a value that is a vector of the
+     *               corresponding value-column bin statistics. In a addition the key count has a value that is a histogram of the
      *               binning-column.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -77,8 +70,7 @@ public class AggregateStatisticsByRangeResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -89,8 +81,7 @@ public class AggregateStatisticsByRangeResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -111,8 +102,7 @@ public class AggregateStatisticsByRangeResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

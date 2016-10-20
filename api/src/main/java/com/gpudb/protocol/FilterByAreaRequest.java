@@ -16,15 +16,12 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#filterByArea(FilterByAreaRequest)}.
- * <p>
- * Calculates which objects from a table are within a named area of interest
- * (NAI/polygon). The operation is synchronous meaning that GPUdb will not
- * return the request until all the matching objects are fully available. The
- * response payload provides the count of the resulting set. A new resultant
- * set (view) which satisfies the input NAI restriction specification is
- * created with the name {@code viewName} passed in as part of the input.
+ * A set of parameters for {@link com.gpudb.GPUdb#filterByArea(FilterByAreaRequest)}.
+ * <br />
+ * <br />Calculates which objects from a table are within a named area of interest (NAI/polygon). The operation is synchronous
+ * meaning that GPUdb will not return the request until all the matching objects are fully available. The response payload provides
+ * the count of the resulting set. A new resultant set (view) which satisfies the input NAI restriction specification is created
+ * with the name {@code viewName} passed in as part of the input.
  */
 public class FilterByAreaRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -42,8 +39,7 @@ public class FilterByAreaRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -77,21 +73,14 @@ public class FilterByAreaRequest implements IndexedRecord {
     /**
      * Constructs a FilterByAreaRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to filter.  This may be the name of
-     *                   a collection, a table or a view (when chaining
-     *                   queries).  Collections may be filtered only if all
-     *                   tables within the collection have the same type ID.
-     * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Must not be an already existing
+     * @param tableName  Name of the table to filter.  This may be the name of a collection, a table or a view (when chaining
+     *                   queries).  Collections may be filtered only if all tables within the collection have the same type ID.
+     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view.
-     * @param xColumnName  Name of the column containing the x values to be
-     *                     filtered.
-     * @param xVector  List of x coordinates of the vertices of the polygon
-     *                 representing the area to be filtered.
-     * @param yColumnName  Name of the column containing the y values to be
-     *                     filtered.
-     * @param yVector  List of y coordinates of the vertices of the polygon
-     *                 representing the area to be filtered.
+     * @param xColumnName  Name of the column containing the x values to be filtered.
+     * @param xVector  List of x coordinates of the vertices of the polygon representing the area to be filtered.
+     * @param yColumnName  Name of the column containing the y values to be filtered.
+     * @param yVector  List of y coordinates of the vertices of the polygon representing the area to be filtered.
      * @param options  Optional parameters.
      * 
      */
@@ -107,10 +96,8 @@ public class FilterByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to filter.  This may be the name of a
-     *         collection, a table or a view (when chaining queries).
-     *         Collections may be filtered only if all tables within the
-     *         collection have the same type ID.
+     * @return Name of the table to filter.  This may be the name of a collection, a table or a view (when chaining queries).
+     *         Collections may be filtered only if all tables within the collection have the same type ID.
      * 
      */
     public String getTableName() {
@@ -119,10 +106,8 @@ public class FilterByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to filter.  This may be the name of
-     *                   a collection, a table or a view (when chaining
-     *                   queries).  Collections may be filtered only if all
-     *                   tables within the collection have the same type ID.
+     * @param tableName  Name of the table to filter.  This may be the name of a collection, a table or a view (when chaining
+     *                   queries).  Collections may be filtered only if all tables within the collection have the same type ID.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -134,9 +119,8 @@ public class FilterByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @return If provided, then this will be the name of the view containing
-     *         the results. Must not be an already existing collection, table
-     *         or view.
+     * @return If provided, then this will be the name of the view containing the results. Must not be an already existing
+     *         collection, table or view.
      * 
      */
     public String getViewName() {
@@ -145,8 +129,7 @@ public class FilterByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Must not be an already existing
+     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -168,8 +151,7 @@ public class FilterByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @param xColumnName  Name of the column containing the x values to be
-     *                     filtered.
+     * @param xColumnName  Name of the column containing the x values to be filtered.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -181,8 +163,7 @@ public class FilterByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @return List of x coordinates of the vertices of the polygon
-     *         representing the area to be filtered.
+     * @return List of x coordinates of the vertices of the polygon representing the area to be filtered.
      * 
      */
     public List<Double> getXVector() {
@@ -191,8 +172,7 @@ public class FilterByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @param xVector  List of x coordinates of the vertices of the polygon
-     *                 representing the area to be filtered.
+     * @param xVector  List of x coordinates of the vertices of the polygon representing the area to be filtered.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -213,8 +193,7 @@ public class FilterByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @param yColumnName  Name of the column containing the y values to be
-     *                     filtered.
+     * @param yColumnName  Name of the column containing the y values to be filtered.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -226,8 +205,7 @@ public class FilterByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @return List of y coordinates of the vertices of the polygon
-     *         representing the area to be filtered.
+     * @return List of y coordinates of the vertices of the polygon representing the area to be filtered.
      * 
      */
     public List<Double> getYVector() {
@@ -236,8 +214,7 @@ public class FilterByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @param yVector  List of y coordinates of the vertices of the polygon
-     *                 representing the area to be filtered.
+     * @param yVector  List of y coordinates of the vertices of the polygon representing the area to be filtered.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -269,8 +246,7 @@ public class FilterByAreaRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -281,8 +257,7 @@ public class FilterByAreaRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -321,8 +296,7 @@ public class FilterByAreaRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

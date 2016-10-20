@@ -16,10 +16,10 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#showSecurity(ShowSecurityRequest)}.
- * <p>
- * Shows security information relating to users and/or roles.
+ * A set of parameters for {@link com.gpudb.GPUdb#showSecurity(ShowSecurityRequest)}.
+ * <br />
+ * <br />Shows security information relating to users and/or roles. If the caller is not a system administrator, only information
+ * relating to the caller and their roles is returned.
  */
 public class ShowSecurityRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -32,8 +32,7 @@ public class ShowSecurityRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -57,8 +56,7 @@ public class ShowSecurityRequest implements IndexedRecord {
     /**
      * Constructs a ShowSecurityRequest object with the specified parameters.
      * 
-     * @param names  A list of names of users and/or roles about which security
-     *               information is requested. If none are provided,
+     * @param names  A list of names of users and/or roles about which security information is requested. If none are provided,
      *               information about all users and roles will be returned.
      * @param options  Optional parameters.
      * 
@@ -70,9 +68,8 @@ public class ShowSecurityRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A list of names of users and/or roles about which security
-     *         information is requested. If none are provided, information
-     *         about all users and roles will be returned.
+     * @return A list of names of users and/or roles about which security information is requested. If none are provided,
+     *         information about all users and roles will be returned.
      * 
      */
     public List<String> getNames() {
@@ -81,8 +78,7 @@ public class ShowSecurityRequest implements IndexedRecord {
 
     /**
      * 
-     * @param names  A list of names of users and/or roles about which security
-     *               information is requested. If none are provided,
+     * @param names  A list of names of users and/or roles about which security information is requested. If none are provided,
      *               information about all users and roles will be returned.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -115,8 +111,7 @@ public class ShowSecurityRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -127,8 +122,7 @@ public class ShowSecurityRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -152,8 +146,7 @@ public class ShowSecurityRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

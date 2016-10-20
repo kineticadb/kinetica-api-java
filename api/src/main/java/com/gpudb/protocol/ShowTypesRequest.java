@@ -15,12 +15,10 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#showTypes(ShowTypesRequest)}.
- * <p>
- * Retrieves information for the specified data type. Given a type ID, GPUdb
- * returns the data type schema, the label, and the semantic type along with
- * the type ID. If the user provides any combination of label and semantic
- * type, then GPUdb returns the pertinent information for all data types that
- * match the input criteria.
+ * <br />
+ * <br />Retrieves information for the specified data type. Given a type ID, GPUdb returns the data type schema, the label, and the
+ * semantic type along with the type ID. If the user provides any combination of label and semantic type, then GPUdb returns the
+ * pertinent information for all data types that match the input criteria.
  */
 public class ShowTypesRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -34,8 +32,7 @@ public class ShowTypesRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -61,10 +58,8 @@ public class ShowTypesRequest implements IndexedRecord {
     /**
      * Constructs a ShowTypesRequest object with the specified parameters.
      * 
-     * @param typeId  Type Id returned in response to a call to {@link
-     *                com.gpudb.GPUdb#createType(CreateTypeRequest)}.
-     * @param label  Option string that was supplied by user in a call to
-     *               {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}.
+     * @param typeId  Type Id returned in response to a call to {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}.
+     * @param label  Option string that was supplied by user in a call to {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}.
      * @param options  Optional parameters.
      * 
      */
@@ -76,8 +71,7 @@ public class ShowTypesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Type Id returned in response to a call to {@link
-     *         com.gpudb.GPUdb#createType(CreateTypeRequest)}.
+     * @return Type Id returned in response to a call to {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}.
      * 
      */
     public String getTypeId() {
@@ -86,8 +80,7 @@ public class ShowTypesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param typeId  Type Id returned in response to a call to {@link
-     *                com.gpudb.GPUdb#createType(CreateTypeRequest)}.
+     * @param typeId  Type Id returned in response to a call to {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -99,8 +92,7 @@ public class ShowTypesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Option string that was supplied by user in a call to {@link
-     *         com.gpudb.GPUdb#createType(CreateTypeRequest)}.
+     * @return Option string that was supplied by user in a call to {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}.
      * 
      */
     public String getLabel() {
@@ -109,8 +101,7 @@ public class ShowTypesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param label  Option string that was supplied by user in a call to
-     *               {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}.
+     * @param label  Option string that was supplied by user in a call to {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -142,8 +133,7 @@ public class ShowTypesRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -154,8 +144,7 @@ public class ShowTypesRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -182,8 +171,7 @@ public class ShowTypesRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set
