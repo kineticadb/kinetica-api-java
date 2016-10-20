@@ -14,18 +14,13 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#insertRecordsRandom(InsertRecordsRandomRequest)}.
- * <p>
- * Generates a specified number of random records and adds them to the given
- * table. There is an optional parameter that allows the user to customize the
- * ranges of the column values. It also allows the user to specify linear
- * profiles for some or all columns in which case linear values are generated
- * rather than random ones. Only individual tables are supported for this
- * operation.
- * <p>
- * This operation is synchronous, meaning that GPUdb will not return until all
- * random records are fully available.
+ * A set of parameters for {@link com.gpudb.GPUdb#insertRecordsRandom(InsertRecordsRandomRequest)}.
+ * <br />
+ * <br />Generates a specified number of random records and adds them to the given table. There is an optional parameter that allows
+ * the user to customize the ranges of the column values. It also allows the user to specify linear profiles for some or all columns
+ * in which case linear values are generated rather than random ones. Only individual tables are supported for this operation.
+ * <br />
+ * <br />This operation is synchronous, meaning that GPUdb will not return until all random records are fully available.
  */
 public class InsertRecordsRandomRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -39,8 +34,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -51,62 +45,177 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
 
 
     /**
-     * Optional parameter to pass in specifications for the randomness of the
-     * values.  This map is different from the *options* parameter of most
-     * other endpoints in that it is a map of string to map of string to
-     * doubles, while most others are maps of string to string.  In this map,
-     * the top level keys represent which column's parameters are being
-     * specified, while the internal keys represents which parameter is being
-     * specified.  The parameters that can be specified are: *min*, *max*, and
-     * *interval*.  These parameters take on different meanings depending on
-     * the type of the column.  Below follows a more detailed description of
-     * the map:
-     * A set of string constants for the parameter {@code options}.
+     * Optional parameter to pass in specifications for the randomness of the values.  This map is different from the *options*
+     * parameter of most other endpoints in that it is a map of string to map of string to doubles, while most others are maps of
+     * string to string.  In this map, the top level keys represent which column's parameters are being specified, while the
+     * internal keys represents which parameter is being specified.  The parameters that can be specified are: *min*, *max*, and
+     * *interval*.  These parameters take on different meanings depending on the type of the column.  Below follows a more detailed
+     * description of the map:
+     * <br /><ul>
+     * <br />  <li> all: This key indicates that the specifications relayed in the internal map are to be applied to all columns of
+     * the records.
+     * <br /><ul>
+     * <br />  <li> min: For numerical columns, the minimum of the generated values is set to this value.  Default is -99999.  For
+     * point, shape, and track semantic types, min for numeric 'x' and 'y' columns needs to be within [-180, 180] and [-90, 90],
+     * respectively. The default minimum possible values for these columns in such cases are -180.0 and -90.0. For the 'TIMESTAMP'
+     * column, the default minimum corresponds to Jan 1, 2010.
+     * <br />
+     * <br />For string columns, the minimum length of the randomly generated strings is set to this value (default is 1). If both
+     * minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within [1, 200].
+     * <br />
+     * <br />If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types, then
+     * those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the responsibility of the user
+     * to use the {@code all} parameter judiciously.
+     * <br />  <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is 99999. For
+     * point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within [-180, 180] and [-90, 90],
+     * respectively. The default minimum possible values for these columns in such cases are 180.0 and 90.0.
+     * <br />
+     * <br />For string columns, the maximum length of the randomly generated strings is set to this value (default is 200). If both
+     * minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to be within [1, 200].
+     * <br />
+     * <br />If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types,
+     * then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the responsibility of the
+     * user to use the {@code all} parameter judiciously.
+     * <br />  <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the given interval
+     * value starting at the minimum value (instead of generating random data). *Any provided max value is disregarded.*  For
+     * string-type columns, the interval value is ignored but the string values would be generated following the pattern:
+     * 'attrname_creationIndex#', i.e. the column name suffixed with an underscore and a running counter (starting at 0).
+     * <br /></ul>
+     * <br />  <li> attr_name: Set the following parameters for the column specified by the key. This overrides any parameter set by
+     * {@code all}.
+     * <br /><ul>
+     * <br />  <li> min: For numerical columns, the minimum of the generated values is set to this value.  Default is -99999.  For
+     * point, shape, and track semantic types, min for numeric 'x' and 'y' columns needs to be within [-180, 180] and [-90, 90],
+     * respectively. The default minimum possible values for these columns in such cases are -180.0 and -90.0. For the 'TIMESTAMP'
+     * column, the default minimum corresponds to Jan 1, 2010.
+     * <br />
+     * <br />For string columns, the minimum length of the randomly generated strings is set to this value (default is 1). If both
+     * minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within [1, 200].
+     * <br />
+     * <br />If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types, then
+     * those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the responsibility of the user
+     * to use the {@code all} parameter judiciously.
+     * <br />  <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is 99999. For
+     * point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within [-180, 180] and [-90, 90],
+     * respectively. The default minimum possible values for these columns in such cases are 180.0 and 90.0.
+     * <br />
+     * <br />For string columns, the maximum length of the randomly generated strings is set to this value (default is 200). If both
+     * minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to be within [1, 200].
+     * <br />
+     * <br />If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types,
+     * then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the responsibility of the
+     * user to use the {@code all} parameter judiciously.
+     * <br />  <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the given interval
+     * value starting at the minimum value (instead of generating random data). *Any provided max value is disregarded.*  For
+     * string-type columns, the interval value is ignored but the string values would be generated following the pattern:
+     * 'attrname_creationIndex#', i.e. the column name suffixed with an underscore and a running counter (starting at 0).
+     * <br /></ul>
+     * <br />  <li> track_length: This key-map pair is only valid for track type data sets (GPUdb throws an error otherwise).
+     * <br /><ul>
+     * <br />  <li> min: Minimum possible length for generated series; default is 100 records per series. Must be an integral value
+     * within the range [1, 500]. If both min and max are specified, min must be less than or equal to max.
+     * <br />  <li> max: Maximum possible length for generated series; default is 500 records per series. Must be an integral value
+     * within the range [1, 500]. If both min and max are specified, max must be greater than or equal to min.
+     * <br /></ul>
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * This key indicates that the specifications relayed in the internal
-         * map are to be applied to all columns of the records.
+         * This key indicates that the specifications relayed in the internal map are to be applied to all columns of the records.
+         * <br /><ul>
+         * <br />  <li> min: For numerical columns, the minimum of the generated values is set to this value.  Default is -99999.
+         * For point, shape, and track semantic types, min for numeric 'x' and 'y' columns needs to be within [-180, 180] and [-90,
+         * 90], respectively. The default minimum possible values for these columns in such cases are -180.0 and -90.0. For the
+         * 'TIMESTAMP' column, the default minimum corresponds to Jan 1, 2010.
+         * <br />
+         * <br />For string columns, the minimum length of the randomly generated strings is set to this value (default is 1). If
+         * both minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within [1, 200].
+         * <br />
+         * <br />If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types,
+         * then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the responsibility of
+         * the user to use the {@code all} parameter judiciously.
+         * <br />  <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is 99999. For
+         * point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within [-180, 180] and [-90, 90],
+         * respectively. The default minimum possible values for these columns in such cases are 180.0 and 90.0.
+         * <br />
+         * <br />For string columns, the maximum length of the randomly generated strings is set to this value (default is 200). If
+         * both minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to be within [1, 200].
+         * <br />
+         * <br />If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
+         * types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the
+         * responsibility of the user to use the {@code all} parameter judiciously.
+         * <br />  <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the given
+         * interval value starting at the minimum value (instead of generating random data). *Any provided max value is
+         * disregarded.*  For string-type columns, the interval value is ignored but the string values would be generated following
+         * the pattern: 'attrname_creationIndex#', i.e. the column name suffixed with an underscore and a running counter (starting
+         * at 0).
+         * <br /></ul>
          */
         public static final String ALL = "all";
 
         /**
-         * Minimum possible length for generated series; default is 100 records
-         * per series. Must be an integral value within the range [1, 500]. If
-         * both min and max are specified, min must be less than or equal to
-         * max.
+         * Minimum possible length for generated series; default is 100 records per series. Must be an integral value within the
+         * range [1, 500]. If both min and max are specified, min must be less than or equal to max.
          */
         public static final String MIN = "min";
 
         /**
-         * Maximum possible length for generated series; default is 500 records
-         * per series. Must be an integral value within the range [1, 500]. If
-         * both min and max are specified, max must be greater than or equal to
-         * min.
+         * Maximum possible length for generated series; default is 500 records per series. Must be an integral value within the
+         * range [1, 500]. If both min and max are specified, max must be greater than or equal to min.
          */
         public static final String MAX = "max";
 
         /**
-         * If specified, then generate values for all columns linearly and
-         * evenly spaced with the given interval value starting at the minimum
-         * value (instead of generating random data). *Any provided max value
-         * is disregarded.*  For string-type columns, the interval value is
-         * ignored but the string values would be generated following the
-         * pattern: 'attrname_creationIndex#', i.e. the column name suffixed
-         * with an underscore and a running counter (starting at 0).
+         * If specified, then generate values for all columns linearly and evenly spaced with the given interval value starting at
+         * the minimum value (instead of generating random data). *Any provided max value is disregarded.*  For string-type columns,
+         * the interval value is ignored but the string values would be generated following the pattern: 'attrname_creationIndex#',
+         * i.e. the column name suffixed with an underscore and a running counter (starting at 0).
          */
         public static final String INTERVAL = "interval";
 
         /**
-         * Set the following parameters for the column specified by the key.
-         * This overrides any parameter set by {@code all}.
+         * Set the following parameters for the column specified by the key. This overrides any parameter set by {@code all}.
+         * <br /><ul>
+         * <br />  <li> min: For numerical columns, the minimum of the generated values is set to this value.  Default is -99999.
+         * For point, shape, and track semantic types, min for numeric 'x' and 'y' columns needs to be within [-180, 180] and [-90,
+         * 90], respectively. The default minimum possible values for these columns in such cases are -180.0 and -90.0. For the
+         * 'TIMESTAMP' column, the default minimum corresponds to Jan 1, 2010.
+         * <br />
+         * <br />For string columns, the minimum length of the randomly generated strings is set to this value (default is 1). If
+         * both minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within [1, 200].
+         * <br />
+         * <br />If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types,
+         * then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the responsibility of
+         * the user to use the {@code all} parameter judiciously.
+         * <br />  <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is 99999. For
+         * point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within [-180, 180] and [-90, 90],
+         * respectively. The default minimum possible values for these columns in such cases are 180.0 and 90.0.
+         * <br />
+         * <br />For string columns, the maximum length of the randomly generated strings is set to this value (default is 200). If
+         * both minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to be within [1, 200].
+         * <br />
+         * <br />If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
+         * types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the
+         * responsibility of the user to use the {@code all} parameter judiciously.
+         * <br />  <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the given
+         * interval value starting at the minimum value (instead of generating random data). *Any provided max value is
+         * disregarded.*  For string-type columns, the interval value is ignored but the string values would be generated following
+         * the pattern: 'attrname_creationIndex#', i.e. the column name suffixed with an underscore and a running counter (starting
+         * at 0).
+         * <br /></ul>
          */
         public static final String ATTR_NAME = "attr_name";
 
         /**
-         * This key-map pair is only valid for track type data sets (GPUdb
-         * throws an error otherwise).
+         * This key-map pair is only valid for track type data sets (GPUdb throws an error otherwise).
+         * <br /><ul>
+         * <br />  <li> min: Minimum possible length for generated series; default is 100 records per series. Must be an integral
+         * value within the range [1, 500]. If both min and max are specified, min must be less than or equal to max.
+         * <br />  <li> max: Maximum possible length for generated series; default is 500 records per series. Must be an integral
+         * value within the range [1, 500]. If both min and max are specified, max must be greater than or equal to min.
+         * <br /></ul>
          */
         public static final String TRACK_LENGTH = "track_length";
 
@@ -127,30 +236,87 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs an InsertRecordsRandomRequest object with the specified
-     * parameters.
+     * Constructs an InsertRecordsRandomRequest object with the specified parameters.
      * 
-     * @param tableName  Table to which random records will be added. Must be
-     *                   an existing table.  Also, must be an individual table,
+     * @param tableName  Table to which random records will be added. Must be an existing table.  Also, must be an individual table,
      *                   not a collection of tables, nor a view of a table.
      * @param count  Number of records to generate.
-     * @param options  Optional parameter to pass in specifications for the
-     *                 randomness of the values.  This map is different from
-     *                 the *options* parameter of most other endpoints in that
-     *                 it is a map of string to map of string to doubles, while
-     *                 most others are maps of string to string.  In this map,
-     *                 the top level keys represent which column's parameters
-     *                 are being specified, while the internal keys represents
-     *                 which parameter is being specified.  The parameters that
-     *                 can be specified are: *min*, *max*, and *interval*.
-     *                 These parameters take on different meanings depending on
-     *                 the type of the column.  Below follows a more detailed
-     *                 description of the map:
-     * <ul>
-     *     <li>all: This key indicates that the specifications relayed in the internal map are to be applied to all columns of the records.  
-     *     <li>attr_name: Set the following parameters for the column specified by the key. This overrides any parameter set by {all}@{key of input options}.  
-     *     <li>track_length: This key-map pair is only valid for track type data sets (GPUdb throws an error otherwise).  
-     * </ul>
+     * @param options  Optional parameter to pass in specifications for the randomness of the values.  This map is different from
+     *                 the *options* parameter of most other endpoints in that it is a map of string to map of string to doubles,
+     *                 while most others are maps of string to string.  In this map, the top level keys represent which column's
+     *                 parameters are being specified, while the internal keys represents which parameter is being specified.  The
+     *                 parameters that can be specified are: *min*, *max*, and *interval*.  These parameters take on different
+     *                 meanings depending on the type of the column.  Below follows a more detailed description of the map:
+     *                 <ul>
+     *                         <li> all: This key indicates that the specifications relayed in the internal map are to be applied to
+     *                 all columns of the records.
+     *                 <ul>
+     *                         <li> min: For numerical columns, the minimum of the generated values is set to this value.  Default
+     *                 is -99999.  For point, shape, and track semantic types, min for numeric 'x' and 'y' columns needs to be
+     *                 within [-180, 180] and [-90, 90], respectively. The default minimum possible values for these columns in such
+     *                 cases are -180.0 and -90.0. For the 'TIMESTAMP' column, the default minimum corresponds to Jan 1, 2010.
+     *                 For string columns, the minimum length of the randomly generated strings is set to this value (default is 1).
+     *                 If both minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within
+     *                 [1, 200].
+     *                 If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
+     *                 types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is
+     *                 the responsibility of the user to use the {@code all} parameter judiciously.
+     *                         <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is
+     *                 99999. For point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within
+     *                 [-180, 180] and [-90, 90], respectively. The default minimum possible values for these columns in such cases
+     *                 are 180.0 and 90.0.
+     *                 For string columns, the maximum length of the randomly generated strings is set to this value (default is
+     *                 200). If both minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to
+     *                 be within [1, 200].
+     *                 If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
+     *                 types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is
+     *                 the responsibility of the user to use the {@code all} parameter judiciously.
+     *                         <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the
+     *                 given interval value starting at the minimum value (instead of generating random data). *Any provided max
+     *                 value is disregarded.*  For string-type columns, the interval value is ignored but the string values would be
+     *                 generated following the pattern: 'attrname_creationIndex#', i.e. the column name suffixed with an underscore
+     *                 and a running counter (starting at 0).
+     *                 </ul>
+     *                         <li> attr_name: Set the following parameters for the column specified by the key. This overrides any
+     *                 parameter set by {@code all}.
+     *                 <ul>
+     *                         <li> min: For numerical columns, the minimum of the generated values is set to this value.  Default
+     *                 is -99999.  For point, shape, and track semantic types, min for numeric 'x' and 'y' columns needs to be
+     *                 within [-180, 180] and [-90, 90], respectively. The default minimum possible values for these columns in such
+     *                 cases are -180.0 and -90.0. For the 'TIMESTAMP' column, the default minimum corresponds to Jan 1, 2010.
+     *                 For string columns, the minimum length of the randomly generated strings is set to this value (default is 1).
+     *                 If both minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within
+     *                 [1, 200].
+     *                 If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
+     *                 types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is
+     *                 the responsibility of the user to use the {@code all} parameter judiciously.
+     *                         <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is
+     *                 99999. For point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within
+     *                 [-180, 180] and [-90, 90], respectively. The default minimum possible values for these columns in such cases
+     *                 are 180.0 and 90.0.
+     *                 For string columns, the maximum length of the randomly generated strings is set to this value (default is
+     *                 200). If both minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to
+     *                 be within [1, 200].
+     *                 If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
+     *                 types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is
+     *                 the responsibility of the user to use the {@code all} parameter judiciously.
+     *                         <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the
+     *                 given interval value starting at the minimum value (instead of generating random data). *Any provided max
+     *                 value is disregarded.*  For string-type columns, the interval value is ignored but the string values would be
+     *                 generated following the pattern: 'attrname_creationIndex#', i.e. the column name suffixed with an underscore
+     *                 and a running counter (starting at 0).
+     *                 </ul>
+     *                         <li> track_length: This key-map pair is only valid for track type data sets (GPUdb throws an error
+     *                 otherwise).
+     *                 <ul>
+     *                         <li> min: Minimum possible length for generated series; default is 100 records per series. Must be an
+     *                 integral value within the range [1, 500]. If both min and max are specified, min must be less than or equal
+     *                 to max.
+     *                         <li> max: Maximum possible length for generated series; default is 500 records per series. Must be an
+     *                 integral value within the range [1, 500]. If both min and max are specified, max must be greater than or
+     *                 equal to min.
+     *                 </ul>
+     *                 </ul>
      * 
      */
     public InsertRecordsRandomRequest(String tableName, long count, Map<String, Map<String, Double>> options) {
@@ -161,9 +327,8 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Table to which random records will be added. Must be an existing
-     *         table.  Also, must be an individual table, not a collection of
-     *         tables, nor a view of a table.
+     * @return Table to which random records will be added. Must be an existing table.  Also, must be an individual table, not a
+     *         collection of tables, nor a view of a table.
      * 
      */
     public String getTableName() {
@@ -172,8 +337,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Table to which random records will be added. Must be
-     *                   an existing table.  Also, must be an individual table,
+     * @param tableName  Table to which random records will be added. Must be an existing table.  Also, must be an individual table,
      *                   not a collection of tables, nor a view of a table.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -207,17 +371,77 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameter to pass in specifications for the randomness
-     *         of the values.  This map is different from the *options*
-     *         parameter of most other endpoints in that it is a map of string
-     *         to map of string to doubles, while most others are maps of
-     *         string to string.  In this map, the top level keys represent
-     *         which column's parameters are being specified, while the
-     *         internal keys represents which parameter is being specified.
-     *         The parameters that can be specified are: *min*, *max*, and
-     *         *interval*.  These parameters take on different meanings
-     *         depending on the type of the column.  Below follows a more
-     *         detailed description of the map:
+     * @return Optional parameter to pass in specifications for the randomness of the values.  This map is different from the
+     *         *options* parameter of most other endpoints in that it is a map of string to map of string to doubles, while most
+     *         others are maps of string to string.  In this map, the top level keys represent which column's parameters are being
+     *         specified, while the internal keys represents which parameter is being specified.  The parameters that can be
+     *         specified are: *min*, *max*, and *interval*.  These parameters take on different meanings depending on the type of
+     *         the column.  Below follows a more detailed description of the map:
+     *         <ul>
+     *                 <li> all: This key indicates that the specifications relayed in the internal map are to be applied to all
+     *         columns of the records.
+     *         <ul>
+     *                 <li> min: For numerical columns, the minimum of the generated values is set to this value.  Default is
+     *         -99999.  For point, shape, and track semantic types, min for numeric 'x' and 'y' columns needs to be within [-180,
+     *         180] and [-90, 90], respectively. The default minimum possible values for these columns in such cases are -180.0 and
+     *         -90.0. For the 'TIMESTAMP' column, the default minimum corresponds to Jan 1, 2010.
+     *         For string columns, the minimum length of the randomly generated strings is set to this value (default is 1). If both
+     *         minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within [1, 200].
+     *         If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types,
+     *         then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the
+     *         responsibility of the user to use the {@code all} parameter judiciously.
+     *                 <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is 99999.
+     *         For point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within [-180, 180] and
+     *         [-90, 90], respectively. The default minimum possible values for these columns in such cases are 180.0 and 90.0.
+     *         For string columns, the maximum length of the randomly generated strings is set to this value (default is 200). If
+     *         both minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to be within [1,
+     *         200].
+     *         If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types,
+     *         then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the
+     *         responsibility of the user to use the {@code all} parameter judiciously.
+     *                 <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the given
+     *         interval value starting at the minimum value (instead of generating random data). *Any provided max value is
+     *         disregarded.*  For string-type columns, the interval value is ignored but the string values would be generated
+     *         following the pattern: 'attrname_creationIndex#', i.e. the column name suffixed with an underscore and a running
+     *         counter (starting at 0).
+     *         </ul>
+     *                 <li> attr_name: Set the following parameters for the column specified by the key. This overrides any
+     *         parameter set by {@code all}.
+     *         <ul>
+     *                 <li> min: For numerical columns, the minimum of the generated values is set to this value.  Default is
+     *         -99999.  For point, shape, and track semantic types, min for numeric 'x' and 'y' columns needs to be within [-180,
+     *         180] and [-90, 90], respectively. The default minimum possible values for these columns in such cases are -180.0 and
+     *         -90.0. For the 'TIMESTAMP' column, the default minimum corresponds to Jan 1, 2010.
+     *         For string columns, the minimum length of the randomly generated strings is set to this value (default is 1). If both
+     *         minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within [1, 200].
+     *         If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types,
+     *         then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the
+     *         responsibility of the user to use the {@code all} parameter judiciously.
+     *                 <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is 99999.
+     *         For point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within [-180, 180] and
+     *         [-90, 90], respectively. The default minimum possible values for these columns in such cases are 180.0 and 90.0.
+     *         For string columns, the maximum length of the randomly generated strings is set to this value (default is 200). If
+     *         both minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to be within [1,
+     *         200].
+     *         If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types,
+     *         then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the
+     *         responsibility of the user to use the {@code all} parameter judiciously.
+     *                 <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the given
+     *         interval value starting at the minimum value (instead of generating random data). *Any provided max value is
+     *         disregarded.*  For string-type columns, the interval value is ignored but the string values would be generated
+     *         following the pattern: 'attrname_creationIndex#', i.e. the column name suffixed with an underscore and a running
+     *         counter (starting at 0).
+     *         </ul>
+     *                 <li> track_length: This key-map pair is only valid for track type data sets (GPUdb throws an error
+     *         otherwise).
+     *         <ul>
+     *                 <li> min: Minimum possible length for generated series; default is 100 records per series. Must be an
+     *         integral value within the range [1, 500]. If both min and max are specified, min must be less than or equal to max.
+     *                 <li> max: Maximum possible length for generated series; default is 500 records per series. Must be an
+     *         integral value within the range [1, 500]. If both min and max are specified, max must be greater than or equal to
+     *         min.
+     *         </ul>
+     *         </ul>
      * 
      */
     public Map<String, Map<String, Double>> getOptions() {
@@ -226,23 +450,82 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameter to pass in specifications for the
-     *                 randomness of the values.  This map is different from
-     *                 the *options* parameter of most other endpoints in that
-     *                 it is a map of string to map of string to doubles, while
-     *                 most others are maps of string to string.  In this map,
-     *                 the top level keys represent which column's parameters
-     *                 are being specified, while the internal keys represents
-     *                 which parameter is being specified.  The parameters that
-     *                 can be specified are: *min*, *max*, and *interval*.
-     *                 These parameters take on different meanings depending on
-     *                 the type of the column.  Below follows a more detailed
-     *                 description of the map:
-     * <ul>
-     *     <li>all: This key indicates that the specifications relayed in the internal map are to be applied to all columns of the records.  
-     *     <li>attr_name: Set the following parameters for the column specified by the key. This overrides any parameter set by {all}@{key of input options}.  
-     *     <li>track_length: This key-map pair is only valid for track type data sets (GPUdb throws an error otherwise).  
-     * </ul>
+     * @param options  Optional parameter to pass in specifications for the randomness of the values.  This map is different from
+     *                 the *options* parameter of most other endpoints in that it is a map of string to map of string to doubles,
+     *                 while most others are maps of string to string.  In this map, the top level keys represent which column's
+     *                 parameters are being specified, while the internal keys represents which parameter is being specified.  The
+     *                 parameters that can be specified are: *min*, *max*, and *interval*.  These parameters take on different
+     *                 meanings depending on the type of the column.  Below follows a more detailed description of the map:
+     *                 <ul>
+     *                         <li> all: This key indicates that the specifications relayed in the internal map are to be applied to
+     *                 all columns of the records.
+     *                 <ul>
+     *                         <li> min: For numerical columns, the minimum of the generated values is set to this value.  Default
+     *                 is -99999.  For point, shape, and track semantic types, min for numeric 'x' and 'y' columns needs to be
+     *                 within [-180, 180] and [-90, 90], respectively. The default minimum possible values for these columns in such
+     *                 cases are -180.0 and -90.0. For the 'TIMESTAMP' column, the default minimum corresponds to Jan 1, 2010.
+     *                 For string columns, the minimum length of the randomly generated strings is set to this value (default is 1).
+     *                 If both minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within
+     *                 [1, 200].
+     *                 If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
+     *                 types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is
+     *                 the responsibility of the user to use the {@code all} parameter judiciously.
+     *                         <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is
+     *                 99999. For point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within
+     *                 [-180, 180] and [-90, 90], respectively. The default minimum possible values for these columns in such cases
+     *                 are 180.0 and 90.0.
+     *                 For string columns, the maximum length of the randomly generated strings is set to this value (default is
+     *                 200). If both minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to
+     *                 be within [1, 200].
+     *                 If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
+     *                 types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is
+     *                 the responsibility of the user to use the {@code all} parameter judiciously.
+     *                         <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the
+     *                 given interval value starting at the minimum value (instead of generating random data). *Any provided max
+     *                 value is disregarded.*  For string-type columns, the interval value is ignored but the string values would be
+     *                 generated following the pattern: 'attrname_creationIndex#', i.e. the column name suffixed with an underscore
+     *                 and a running counter (starting at 0).
+     *                 </ul>
+     *                         <li> attr_name: Set the following parameters for the column specified by the key. This overrides any
+     *                 parameter set by {@code all}.
+     *                 <ul>
+     *                         <li> min: For numerical columns, the minimum of the generated values is set to this value.  Default
+     *                 is -99999.  For point, shape, and track semantic types, min for numeric 'x' and 'y' columns needs to be
+     *                 within [-180, 180] and [-90, 90], respectively. The default minimum possible values for these columns in such
+     *                 cases are -180.0 and -90.0. For the 'TIMESTAMP' column, the default minimum corresponds to Jan 1, 2010.
+     *                 For string columns, the minimum length of the randomly generated strings is set to this value (default is 1).
+     *                 If both minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within
+     *                 [1, 200].
+     *                 If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
+     *                 types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is
+     *                 the responsibility of the user to use the {@code all} parameter judiciously.
+     *                         <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is
+     *                 99999. For point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within
+     *                 [-180, 180] and [-90, 90], respectively. The default minimum possible values for these columns in such cases
+     *                 are 180.0 and 90.0.
+     *                 For string columns, the maximum length of the randomly generated strings is set to this value (default is
+     *                 200). If both minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to
+     *                 be within [1, 200].
+     *                 If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
+     *                 types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is
+     *                 the responsibility of the user to use the {@code all} parameter judiciously.
+     *                         <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the
+     *                 given interval value starting at the minimum value (instead of generating random data). *Any provided max
+     *                 value is disregarded.*  For string-type columns, the interval value is ignored but the string values would be
+     *                 generated following the pattern: 'attrname_creationIndex#', i.e. the column name suffixed with an underscore
+     *                 and a running counter (starting at 0).
+     *                 </ul>
+     *                         <li> track_length: This key-map pair is only valid for track type data sets (GPUdb throws an error
+     *                 otherwise).
+     *                 <ul>
+     *                         <li> min: Minimum possible length for generated series; default is 100 records per series. Must be an
+     *                 integral value within the range [1, 500]. If both min and max are specified, min must be less than or equal
+     *                 to max.
+     *                         <li> max: Maximum possible length for generated series; default is 500 records per series. Must be an
+     *                 integral value within the range [1, 500]. If both min and max are specified, max must be greater than or
+     *                 equal to min.
+     *                 </ul>
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -253,8 +536,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -265,8 +547,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -293,8 +574,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

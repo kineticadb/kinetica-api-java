@@ -14,22 +14,16 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#filterByRadius(FilterByRadiusRequest)}.
- * <p>
- * Calculates which objects from a table lie within a circle with the given
- * radius and center point (i.e. circular NAI). The operation is synchronous
- * meaning that GPUdb will not return a response until all the objects are
- * fully available. The response payload provides the count of the resulting
- * set. A new resultant set (view) which satisfies the input circular NAI
- * restriction specification is also created if a {@code viewName} is passed in
- * as part of the request.
- * <p>
- * For track data, all track points that lie within the circle plus one point
- * on either side of the circle (if the track goes beyond the circle) will be
- * included in the result. For shapes, e.g. polygons, all polygons that
- * intersect the circle will be included (even if none of the points of the
- * polygon fall within the circle).
+ * A set of parameters for {@link com.gpudb.GPUdb#filterByRadius(FilterByRadiusRequest)}.
+ * <br />
+ * <br />Calculates which objects from a table lie within a circle with the given radius and center point (i.e. circular NAI). The
+ * operation is synchronous meaning that GPUdb will not return a response until all the objects are fully available. The response
+ * payload provides the count of the resulting set. A new resultant set (view) which satisfies the input circular NAI restriction
+ * specification is also created if a {@code viewName} is passed in as part of the request.
+ * <br />
+ * <br />For track data, all track points that lie within the circle plus one point on either side of the circle (if the track goes
+ * beyond the circle) will be included in the result. For shapes, e.g. polygons, all polygons that intersect the circle will be
+ * included (even if none of the points of the polygon fall within the circle).
  */
 public class FilterByRadiusRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -48,8 +42,7 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -82,27 +75,19 @@ public class FilterByRadiusRequest implements IndexedRecord {
     /**
      * Constructs a FilterByRadiusRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the filter by radius
-     *                   operation will be performed.  Must be an existing
-     *                   table in GPUdb.
-     * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Must not be an already existing
+     * @param tableName  Name of the table on which the filter by radius operation will be performed.  Must be an existing table in
+     *                   GPUdb.
+     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view.
-     * @param xColumnName  Name of the column to be used for the x-coordinate
-     *                     (the longitude) of the center.
-     * @param xCenter  Value of the longitude of the center. Must be within
-     *                 [-180.0, 180.0].  The minimum allowed value is -180. The
+     * @param xColumnName  Name of the column to be used for the x-coordinate (the longitude) of the center.
+     * @param xCenter  Value of the longitude of the center. Must be within [-180.0, 180.0].  The minimum allowed value is -180. The
      *                 maximum allowed value is 180.
-     * @param yColumnName  Name of the column to be used for the y-coordinate-
-     *                     the latitude-of the center.
-     * @param yCenter  Value of the latitude of the center. Must be within
-     *                 [-90.0, 90.0].  The minimum allowed value is -90. The
+     * @param yColumnName  Name of the column to be used for the y-coordinate-the latitude-of the center.
+     * @param yCenter  Value of the latitude of the center. Must be within [-90.0, 90.0].  The minimum allowed value is -90. The
      *                 maximum allowed value is 90.
-     * @param radius  The radius of the circle within which the search will be
-     *                performed. Must be a non-zero positive value. It is in
-     *                meters; so, for example, a value of '42000' means 42 km.
-     *                The minimum allowed value is 0. The maximum allowed value
-     *                is MAX_INT.
+     * @param radius  The radius of the circle within which the search will be performed. Must be a non-zero positive value. It is
+     *                in meters; so, for example, a value of '42000' means 42 km.  The minimum allowed value is 0. The maximum
+     *                allowed value is MAX_INT.
      * @param options  Optional parameters.
      * 
      */
@@ -119,8 +104,7 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the filter by radius operation will
-     *         be performed.  Must be an existing table in GPUdb.
+     * @return Name of the table on which the filter by radius operation will be performed.  Must be an existing table in GPUdb.
      * 
      */
     public String getTableName() {
@@ -129,9 +113,8 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the filter by radius
-     *                   operation will be performed.  Must be an existing
-     *                   table in GPUdb.
+     * @param tableName  Name of the table on which the filter by radius operation will be performed.  Must be an existing table in
+     *                   GPUdb.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -143,9 +126,8 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
     /**
      * 
-     * @return If provided, then this will be the name of the view containing
-     *         the results. Must not be an already existing collection, table
-     *         or view.
+     * @return If provided, then this will be the name of the view containing the results. Must not be an already existing
+     *         collection, table or view.
      * 
      */
     public String getViewName() {
@@ -154,8 +136,7 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
     /**
      * 
-     * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Must not be an already existing
+     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -168,8 +149,7 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the column to be used for the x-coordinate (the
-     *         longitude) of the center.
+     * @return Name of the column to be used for the x-coordinate (the longitude) of the center.
      * 
      */
     public String getXColumnName() {
@@ -178,8 +158,7 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
     /**
      * 
-     * @param xColumnName  Name of the column to be used for the x-coordinate
-     *                     (the longitude) of the center.
+     * @param xColumnName  Name of the column to be used for the x-coordinate (the longitude) of the center.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -191,9 +170,8 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Value of the longitude of the center. Must be within [-180.0,
-     *         180.0].  The minimum allowed value is -180. The maximum allowed
-     *         value is 180.
+     * @return Value of the longitude of the center. Must be within [-180.0, 180.0].  The minimum allowed value is -180. The maximum
+     *         allowed value is 180.
      * 
      */
     public double getXCenter() {
@@ -202,8 +180,7 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
     /**
      * 
-     * @param xCenter  Value of the longitude of the center. Must be within
-     *                 [-180.0, 180.0].  The minimum allowed value is -180. The
+     * @param xCenter  Value of the longitude of the center. Must be within [-180.0, 180.0].  The minimum allowed value is -180. The
      *                 maximum allowed value is 180.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -216,8 +193,7 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the column to be used for the y-coordinate-the latitude-
-     *         of the center.
+     * @return Name of the column to be used for the y-coordinate-the latitude-of the center.
      * 
      */
     public String getYColumnName() {
@@ -226,8 +202,7 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
     /**
      * 
-     * @param yColumnName  Name of the column to be used for the y-coordinate-
-     *                     the latitude-of the center.
+     * @param yColumnName  Name of the column to be used for the y-coordinate-the latitude-of the center.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -239,9 +214,8 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Value of the latitude of the center. Must be within [-90.0,
-     *         90.0].  The minimum allowed value is -90. The maximum allowed
-     *         value is 90.
+     * @return Value of the latitude of the center. Must be within [-90.0, 90.0].  The minimum allowed value is -90. The maximum
+     *         allowed value is 90.
      * 
      */
     public double getYCenter() {
@@ -250,8 +224,7 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
     /**
      * 
-     * @param yCenter  Value of the latitude of the center. Must be within
-     *                 [-90.0, 90.0].  The minimum allowed value is -90. The
+     * @param yCenter  Value of the latitude of the center. Must be within [-90.0, 90.0].  The minimum allowed value is -90. The
      *                 maximum allowed value is 90.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -264,10 +237,9 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The radius of the circle within which the search will be
-     *         performed. Must be a non-zero positive value. It is in meters;
-     *         so, for example, a value of '42000' means 42 km.  The minimum
-     *         allowed value is 0. The maximum allowed value is MAX_INT.
+     * @return The radius of the circle within which the search will be performed. Must be a non-zero positive value. It is in
+     *         meters; so, for example, a value of '42000' means 42 km.  The minimum allowed value is 0. The maximum allowed value
+     *         is MAX_INT.
      * 
      */
     public double getRadius() {
@@ -276,11 +248,9 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
     /**
      * 
-     * @param radius  The radius of the circle within which the search will be
-     *                performed. Must be a non-zero positive value. It is in
-     *                meters; so, for example, a value of '42000' means 42 km.
-     *                The minimum allowed value is 0. The maximum allowed value
-     *                is MAX_INT.
+     * @param radius  The radius of the circle within which the search will be performed. Must be a non-zero positive value. It is
+     *                in meters; so, for example, a value of '42000' means 42 km.  The minimum allowed value is 0. The maximum
+     *                allowed value is MAX_INT.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -312,8 +282,7 @@ public class FilterByRadiusRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -324,8 +293,7 @@ public class FilterByRadiusRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -367,8 +335,7 @@ public class FilterByRadiusRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

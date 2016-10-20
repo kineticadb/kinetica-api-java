@@ -14,22 +14,17 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)}.
- * <p>
- * Retrieves records from a given table, optionally filtered by an expression
- * and/or sorted by a column. This operation can only be performed on tables or
- * on homogeneous collection (collections whose children all have the same
- * type). Records can be returned encoded as binary or json.
- * <p>
- * This operation supports paging through the data via the {@code offset} and
- * {@code limit} parameters. Note that when paging through a table, if the
- * table (or the underlying table in case of a view) is updated (records are
- * inserted, deleted or modified) the records retrieved may differ between
- * calls based on the updates applied.
- * <p>
- * Note that when using the Java API, it is not possible to retrieve records
- * from join tables using this operation.
+ * A set of parameters for {@link com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)}.
+ * <br />
+ * <br />Retrieves records from a given table, optionally filtered by an expression and/or sorted by a column. This operation can
+ * only be performed on tables or on homogeneous collection (collections whose children all have the same type). Records can be
+ * returned encoded as binary or json.
+ * <br />
+ * <br />This operation supports paging through the data via the {@code offset} and {@code limit} parameters. Note that when paging
+ * through a table, if the table (or the underlying table in case of a view) is updated (records are inserted, deleted or modified)
+ * the records retrieved may differ between calls based on the updates applied.
+ * <br />
+ * <br />Note that when using the Java API, it is not possible to retrieve records from join tables using this operation.
  */
 public class GetRecordsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -45,8 +40,7 @@ public class GetRecordsRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -57,8 +51,9 @@ public class GetRecordsRequest implements IndexedRecord {
 
 
     /**
-     * Specifies the encoding for returned records.
-     * A set of string constants for the parameter {@code encoding}.
+     * Specifies the encoding for returned records. Values: binary, json.
+     * <br />
+     * <br />A set of string constants for the parameter {@code encoding}.
      */
     public static final class Encoding {
         public static final String BINARY = "binary";
@@ -69,7 +64,15 @@ public class GetRecordsRequest implements IndexedRecord {
 
 
     /**
-     * A set of string constants for the parameter {@code options}.
+
+     * <br /><ul>
+     * <br />  <li> expression: Optional filter expression to apply to the table.
+     * <br />  <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).
+     * <br />  <li> sort_order: String indicating how the returned values should be sorted - ascending or descending. Ignored if
+     * 'sort_by' option is not specified. Values: ascending, descending.
+     * <br />
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
@@ -79,15 +82,14 @@ public class GetRecordsRequest implements IndexedRecord {
         public static final String EXPRESSION = "expression";
 
         /**
-         * Optional column that the data should be sorted by. Empty by default
-         * (i.e. no sorting is applied).
+         * Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).
          */
         public static final String SORT_BY = "sort_by";
 
         /**
-         * String indicating how the returned values should be sorted -
-         * ascending or descending. Ignored if 'sort_by' option is not
-         * specified.
+         * String indicating how the returned values should be sorted - ascending or descending. Ignored if 'sort_by' option is not
+         * specified. Values: ascending, descending.
+         * <br />
          */
         public static final String SORT_ORDER = "sort_order";
         public static final String ASCENDING = "ascending";
@@ -115,22 +117,19 @@ public class GetRecordsRequest implements IndexedRecord {
     /**
      * Constructs a GetRecordsRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table from which the records will be
-     *                   fetched. Must be a table, view or homogeneous
-     *                   collection.
-     * @param offset  A positive integer indicating the number of initial
-     *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
-     * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned. Or END_OF_SET (-9999) to indicate
+     * @param tableName  Name of the table from which the records will be fetched. Must be a table, view or homogeneous collection.
+     * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
+     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
+     * @param limit  A positive integer indicating the maximum number of results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * @param options
-     * <ul>
-     *     <li>expression: Optional filter expression to apply to the table.  
-     *     <li>sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).  
-     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending. Ignored if 'sort_by' option is not specified.  values:ASCENDING, DESCENDING
-     * </ul>
+     *                 <ul>
+     *                         <li> expression: Optional filter expression to apply to the table.
+     *                         <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
+     *                 applied).
+     *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
+     *                 descending. Ignored if 'sort_by' option is not specified. Values: ascending, descending.
+     *                 </ul>
      * 
      */
     public GetRecordsRequest(String tableName, long offset, long limit, Map<String, String> options) {
@@ -144,23 +143,20 @@ public class GetRecordsRequest implements IndexedRecord {
     /**
      * Constructs a GetRecordsRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table from which the records will be
-     *                   fetched. Must be a table, view or homogeneous
-     *                   collection.
-     * @param offset  A positive integer indicating the number of initial
-     *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
-     * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned. Or END_OF_SET (-9999) to indicate
+     * @param tableName  Name of the table from which the records will be fetched. Must be a table, view or homogeneous collection.
+     * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
+     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
+     * @param limit  A positive integer indicating the maximum number of results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
-     * @param encoding  Specifies the encoding for returned records.
+     * @param encoding  Specifies the encoding for returned records. Values: binary, json.
      * @param options
-     * <ul>
-     *     <li>expression: Optional filter expression to apply to the table.  
-     *     <li>sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).  
-     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending. Ignored if 'sort_by' option is not specified.  values:ASCENDING, DESCENDING
-     * </ul>
+     *                 <ul>
+     *                         <li> expression: Optional filter expression to apply to the table.
+     *                         <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
+     *                 applied).
+     *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
+     *                 descending. Ignored if 'sort_by' option is not specified. Values: ascending, descending.
+     *                 </ul>
      * 
      */
     public GetRecordsRequest(String tableName, long offset, long limit, String encoding, Map<String, String> options) {
@@ -173,8 +169,7 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table from which the records will be fetched. Must
-     *         be a table, view or homogeneous collection.
+     * @return Name of the table from which the records will be fetched. Must be a table, view or homogeneous collection.
      * 
      */
     public String getTableName() {
@@ -183,9 +178,7 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table from which the records will be
-     *                   fetched. Must be a table, view or homogeneous
-     *                   collection.
+     * @param tableName  Name of the table from which the records will be fetched. Must be a table, view or homogeneous collection.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -197,10 +190,8 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A positive integer indicating the number of initial results to
-     *         skip (this can be useful for paging through the results).  The
-     *         minimum allowed value is 0. The maximum allowed value is
-     *         MAX_INT.
+     * @return A positive integer indicating the number of initial results to skip (this can be useful for paging through the
+     *         results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
      * 
      */
     public long getOffset() {
@@ -209,10 +200,8 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param offset  A positive integer indicating the number of initial
-     *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
+     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -224,9 +213,8 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A positive integer indicating the maximum number of results to
-     *         be returned. Or END_OF_SET (-9999) to indicate that the max
-     *         number of results should be returned.
+     * @return A positive integer indicating the maximum number of results to be returned. Or END_OF_SET (-9999) to indicate that
+     *         the max number of results should be returned.
      * 
      */
     public long getLimit() {
@@ -235,8 +223,7 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned. Or END_OF_SET (-9999) to indicate
+     * @param limit  A positive integer indicating the maximum number of results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -249,7 +236,7 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Specifies the encoding for returned records.
+     * @return Specifies the encoding for returned records. Values: binary, json.
      * 
      */
     public String getEncoding() {
@@ -258,7 +245,7 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param encoding  Specifies the encoding for returned records.
+     * @param encoding  Specifies the encoding for returned records. Values: binary, json.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -267,6 +254,19 @@ public class GetRecordsRequest implements IndexedRecord {
         this.encoding = (encoding == null) ? Encoding.BINARY : encoding;
         return this;
     }
+
+    /**
+     * 
+     * @return
+     *         <ul>
+     *                 <li> expression: Optional filter expression to apply to the table.
+     *                 <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
+     *         applied).
+     *                 <li> sort_order: String indicating how the returned values should be sorted - ascending or descending.
+     *         Ignored if 'sort_by' option is not specified. Values: ascending, descending.
+     *         </ul>
+     * 
+     */
     public Map<String, String> getOptions() {
         return options;
     }
@@ -274,11 +274,13 @@ public class GetRecordsRequest implements IndexedRecord {
     /**
      * 
      * @param options
-     * <ul>
-     *     <li>expression: Optional filter expression to apply to the table.  
-     *     <li>sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).  
-     *     <li>sort_order: String indicating how the returned values should be sorted - ascending or descending. Ignored if 'sort_by' option is not specified.  values:ASCENDING, DESCENDING
-     * </ul>
+     *                 <ul>
+     *                         <li> expression: Optional filter expression to apply to the table.
+     *                         <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
+     *                 applied).
+     *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
+     *                 descending. Ignored if 'sort_by' option is not specified. Values: ascending, descending.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -289,8 +291,7 @@ public class GetRecordsRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -301,8 +302,7 @@ public class GetRecordsRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -335,8 +335,7 @@ public class GetRecordsRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

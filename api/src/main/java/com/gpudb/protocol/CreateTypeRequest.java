@@ -15,47 +15,38 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#createType(CreateTypeRequest)}.
- * <p>
- * Creates a new type in GPUdb describing the layout or schema of a table. The
- * type definition is a JSON string describing the fields (i.e. columns) of the
- * type. Each field consists of a name and a data type. Supported data types
- * are: double, float, int, long, string, and bytes. In addition one or more
- * properties can be specified for each column which customize the memory usage
- * and query availability of that column.  Note that some properties are
- * mutually exclusive--i.e. they cannot be specified for any given column
- * simultaneously.  One example of mutually exclusive properties are {@code
- * data} and {@code store_only}.
- * <p>
- * To set a *primary key* on one or more columns include the property
- * 'primary_key' on the desired column_names. If a primary key is specified
- * then GPUdb enforces a uniqueness constraint in that only a single object can
- * exist with a given primary key. When {@link
- * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest) inserting} data
- * into a table with a primary key, depending on the parameters in the request,
- * incoming objects with primary keys that match existing objects will either
- * overwrite (i.e. update) the existing object or will be skipped and not added
- * into the set.
- * <p>
- * Example of a type definition with some of the parameters::
- * <p>
- *         {"type":"record",
- *         "name":"point",
- *         "fields":[{"name":"msg_id","type":"string"},
- *                         {"name":"x","type":"double"},
- *                         {"name":"y","type":"double"},
- *                         {"name":"TIMESTAMP","type":"double"},
- *                         {"name":"source","type":"string"},
- *                         {"name":"group_id","type":"string"},
- *                         {"name":"OBJECT_ID","type":"string"}]
- *         }
- * <p>
- * Properties::
- * <p>
- *         {"group_id":["store_only"],
- *         "msg_id":["store_only","text_search"]
- *         }
+ * A set of parameters for {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}.
+ * <br />
+ * <br />Creates a new type in GPUdb describing the layout or schema of a table. The type definition is a JSON string describing the
+ * fields (i.e. columns) of the type. Each field consists of a name and a data type. Supported data types are: double, float, int,
+ * long, string, and bytes. In addition one or more properties can be specified for each column which customize the memory usage and
+ * query availability of that column.  Note that some properties are mutually exclusive--i.e. they cannot be specified for any given
+ * column simultaneously.  One example of mutually exclusive properties are {@code data} and {@code store_only}.
+ * <br />
+ * <br />To set a *primary key* on one or more columns include the property 'primary_key' on the desired column_names. If a primary
+ * key is specified then GPUdb enforces a uniqueness constraint in that only a single object can exist with a given primary key.
+ * When {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest) inserting} data into a table with a primary key, depending
+ * on the parameters in the request, incoming objects with primary keys that match existing objects will either overwrite (i.e.
+ * update) the existing object or will be skipped and not added into the set.
+ * <br />
+ * <br />Example of a type definition with some of the parameters::
+ * <br />
+ * <br />  {"type":"record",
+ * <br />  "name":"point",
+ * <br />  "fields":[{"name":"msg_id","type":"string"},
+ * <br />                  {"name":"x","type":"double"},
+ * <br />                  {"name":"y","type":"double"},
+ * <br />                  {"name":"TIMESTAMP","type":"double"},
+ * <br />                  {"name":"source","type":"string"},
+ * <br />                  {"name":"group_id","type":"string"},
+ * <br />                  {"name":"OBJECT_ID","type":"string"}]
+ * <br />  }
+ * <br />
+ * <br />Properties::
+ * <br />
+ * <br />  {"group_id":["store_only"],
+ * <br />  "msg_id":["store_only","text_search"]
+ * <br />  }
  */
 public class CreateTypeRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -70,8 +61,7 @@ public class CreateTypeRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -82,175 +72,130 @@ public class CreateTypeRequest implements IndexedRecord {
 
 
     /**
-     * Each key-value pair specifies the properties to use for a given column
-     * where the key is the column name.  All keys used must be relevant column
-     * names for the given table.  Specifying any property overrides the
-     * default properties for that column (which is based on the column's data
-     * type).
-     * A set of string constants for the parameter {@code properties}.
+     * Each key-value pair specifies the properties to use for a given column where the key is the column name.  All keys used must
+     * be relevant column names for the given table.  Specifying any property overrides the default properties for that column
+     * (which is based on the column's data type).
+     * <br />A set of string constants for the parameter {@code properties}.
      */
     public static final class Properties {
 
         /**
-         * Default property for all numeric and string type columns; makes the
-         * column available for GPU queries.
+         * Default property for all numeric and string type columns; makes the column available for GPU queries.
          */
         public static final String DATA = "data";
 
         /**
-         * Valid only for 'string' columns. Enables full text search for string
-         * columns. Can be set independently of *data* and *store_only*.
+         * Valid only for 'string' columns. Enables full text search for string columns. Can be set independently of *data* and
+         * *store_only*.
          */
         public static final String TEXT_SEARCH = "text_search";
 
         /**
-         * Persist the column value but do not make it available to queries
-         * (e.g. {@link com.gpudb.GPUdb#filterByBox(FilterByBoxRequest)})-i.e.
-         * it is mutually exclusive to the 'data' property. Any 'bytes' type
-         * column must have a 'store_only' property. This property reduces
-         * system memory usage.
+         * Persist the column value but do not make it available to queries (e.g. {@link
+         * com.gpudb.GPUdb#filterByBox(FilterByBoxRequest)})-i.e. it is mutually exclusive to the 'data' property. Any 'bytes' type
+         * column must have a 'store_only' property. This property reduces system memory usage.
          */
         public static final String STORE_ONLY = "store_only";
 
         /**
-         * Works in conjunction with the 'data' property for string columns.
-         * This property reduces system disk usage by disabling reverse string
-         * lookups. Queries like {@link com.gpudb.GPUdb#filter(FilterRequest)},
-         * {@link com.gpudb.GPUdb#filterByList(FilterByListRequest)}, and
-         * {@link com.gpudb.GPUdb#filterByValue(FilterByValueRequest)} work as
-         * usual but {@link
-         * com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}, {@link
-         * com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)} and
-         * {@link
-         * com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}
-         * are not allowed on columns with this property.
+         * Works in conjunction with the 'data' property for string columns. This property reduces system disk usage by disabling
+         * reverse string lookups. Queries like {@link com.gpudb.GPUdb#filter(FilterRequest)}, {@link
+         * com.gpudb.GPUdb#filterByList(FilterByListRequest)}, and {@link com.gpudb.GPUdb#filterByValue(FilterByValueRequest)} work
+         * as usual but {@link com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}, {@link
+         * com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)} and {@link
+         * com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)} are not allowed on columns with this property.
          */
         public static final String DISK_OPTIMIZED = "disk_optimized";
 
         /**
-         * Valid only for 'long' columns. Indicates that this field represents
-         * a timestamp and will be provided in milliseconds since the Unix
-         * epoch: 00:00:00 Jan 1 1970.
+         * Valid only for 'long' columns. Indicates that this field represents a timestamp and will be provided in milliseconds
+         * since the Unix epoch: 00:00:00 Jan 1 1970.
          */
         public static final String TIMESTAMP = "timestamp";
 
         /**
-         * This property provides optimized memory, disk and query performance
-         * for string columns. Strings with this property must be no longer
-         * than 1 character. This property cannot be combined with
-         * *text_search*
+         * This property provides optimized memory, disk and query performance for string columns. Strings with this property must
+         * be no longer than 1 character. This property cannot be combined with *text_search*
          */
         public static final String CHAR1 = "char1";
 
         /**
-         * This property provides optimized memory, disk and query performance
-         * for string columns. Strings with this property must be no longer
-         * than 2 characters. This property cannot be combined with
-         * *text_search*
+         * This property provides optimized memory, disk and query performance for string columns. Strings with this property must
+         * be no longer than 2 characters. This property cannot be combined with *text_search*
          */
         public static final String CHAR2 = "char2";
 
         /**
-         * This property provides optimized memory, disk and query performance
-         * for string columns. Strings with this property must be no longer
-         * than 4 characters. This property cannot be combined with
-         * *text_search*
+         * This property provides optimized memory, disk and query performance for string columns. Strings with this property must
+         * be no longer than 4 characters. This property cannot be combined with *text_search*
          */
         public static final String CHAR4 = "char4";
 
         /**
-         * This property provides optimized memory, disk and query performance
-         * for string columns. Strings with this property must be no longer
-         * than 8 characters. This property cannot be combined with
-         * *text_search*
+         * This property provides optimized memory, disk and query performance for string columns. Strings with this property must
+         * be no longer than 8 characters. This property cannot be combined with *text_search*
          */
         public static final String CHAR8 = "char8";
 
         /**
-         * This property provides optimized memory, disk and query performance
-         * for string columns. Strings with this property must be no longer
-         * than 16 characters. This property cannot be combined with
-         * *text_search*
+         * This property provides optimized memory, disk and query performance for string columns. Strings with this property must
+         * be no longer than 16 characters. This property cannot be combined with *text_search*
          */
         public static final String CHAR16 = "char16";
 
         /**
-         * This property provides optimized memory, disk and query performance
-         * for string columns. Strings with this property must be no longer
-         * than 32 characters. This property cannot be combined with
-         * *text_search*
+         * This property provides optimized memory, disk and query performance for string columns. Strings with this property must
+         * be no longer than 32 characters. This property cannot be combined with *text_search*
          */
         public static final String CHAR32 = "char32";
 
         /**
-         * This property provides optimized memory, disk and query performance
-         * for string columns. Strings with this property must be no longer
-         * than 64 characters. This property cannot be combined with
-         * *text_search*
+         * This property provides optimized memory, disk and query performance for string columns. Strings with this property must
+         * be no longer than 64 characters. This property cannot be combined with *text_search*
          */
         public static final String CHAR64 = "char64";
 
         /**
-         * This property provides optimized memory, disk and query performance
-         * for string columns. Strings with this property must be no longer
-         * than 128 characters. This property cannot be combined with
-         * *text_search*
+         * This property provides optimized memory, disk and query performance for string columns. Strings with this property must
+         * be no longer than 128 characters. This property cannot be combined with *text_search*
          */
         public static final String CHAR128 = "char128";
 
         /**
-         * This property provides optimized memory, disk and query performance
-         * for string columns. Strings with this property must be no longer
-         * than 256 characters. This property cannot be combined with
-         * *text_search*
+         * This property provides optimized memory, disk and query performance for string columns. Strings with this property must
+         * be no longer than 256 characters. This property cannot be combined with *text_search*
          */
         public static final String CHAR256 = "char256";
 
         /**
-         * This property provides optimized memory and query performance for
-         * int columns. Ints with this property must be between -128 and +127
-         * (inclusive)
+         * This property provides optimized memory and query performance for int columns. Ints with this property must be between
+         * -128 and +127 (inclusive)
          */
         public static final String INT8 = "int8";
 
         /**
-         * This property provides optimized memory and query performance for
-         * int columns. Ints with this property must be between -32768 and
-         * +32767 (inclusive)
+         * This property provides optimized memory and query performance for int columns. Ints with this property must be between
+         * -32768 and +32767 (inclusive)
          */
         public static final String INT16 = "int16";
 
         /**
-         * This property provides optimized memory, disk and query performance
-         * for string columns representing IPv4 addresses (i.e. 192.168.1.1).
-         * Strings with this property must be of the form: A.B.C.D where A, B,
-         * C and D are in the range of 0-255.
+         * This property provides optimized memory, disk and query performance for string columns representing IPv4 addresses (i.e.
+         * 192.168.1.1). Strings with this property must be of the form: A.B.C.D where A, B, C and D are in the range of 0-255.
          */
         public static final String IPV4 = "ipv4";
 
         /**
-         * This property indicates that this column will be part of (or the
-         * entire) primary key.
+         * This property indicates that this column will be part of (or the entire) primary key.
          */
         public static final String PRIMARY_KEY = "primary_key";
 
         /**
-         * This property indicates that this column will be part of (or the
-         * entire) shard key.
+         * This property indicates that this column will be part of (or the entire) shard key.
          */
         public static final String SHARD_KEY = "shard_key";
 
         private Properties() {  }
-    }
-
-
-    /**
-     * Optional parameters.
-     * A set of string constants for the parameter {@code options}.
-     */
-    public static final class Options {
-
-        private Options() {  }
     }
 
     private String typeDefinition;
@@ -272,17 +217,12 @@ public class CreateTypeRequest implements IndexedRecord {
     /**
      * Constructs a CreateTypeRequest object with the specified parameters.
      * 
-     * @param typeDefinition  a JSON string describing the columns of the type
-     *                        to be registered.
-     * @param label  A user-defined description string which can be used to
-     *               differentiate between tables and types with otherwise
+     * @param typeDefinition  a JSON string describing the columns of the type to be registered.
+     * @param label  A user-defined description string which can be used to differentiate between tables and types with otherwise
      *               identical schemas.
-     * @param properties  Each key-value pair specifies the properties to use
-     *                    for a given column where the key is the column name.
-     *                    All keys used must be relevant column names for the
-     *                    given table.  Specifying any property overrides the
-     *                    default properties for that column (which is based on
-     *                    the column's data type).
+     * @param properties  Each key-value pair specifies the properties to use for a given column where the key is the column name.
+     *                    All keys used must be relevant column names for the given table.  Specifying any property overrides the
+     *                    default properties for that column (which is based on the column's data type).
      * @param options  Optional parameters.
      * 
      */
@@ -295,8 +235,7 @@ public class CreateTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return a JSON string describing the columns of the type to be
-     *         registered.
+     * @return a JSON string describing the columns of the type to be registered.
      * 
      */
     public String getTypeDefinition() {
@@ -305,8 +244,7 @@ public class CreateTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param typeDefinition  a JSON string describing the columns of the type
-     *                        to be registered.
+     * @param typeDefinition  a JSON string describing the columns of the type to be registered.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -318,9 +256,8 @@ public class CreateTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A user-defined description string which can be used to
-     *         differentiate between tables and types with otherwise identical
-     *         schemas.
+     * @return A user-defined description string which can be used to differentiate between tables and types with otherwise
+     *         identical schemas.
      * 
      */
     public String getLabel() {
@@ -329,8 +266,7 @@ public class CreateTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param label  A user-defined description string which can be used to
-     *               differentiate between tables and types with otherwise
+     * @param label  A user-defined description string which can be used to differentiate between tables and types with otherwise
      *               identical schemas.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -343,11 +279,9 @@ public class CreateTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Each key-value pair specifies the properties to use for a given
-     *         column where the key is the column name.  All keys used must be
-     *         relevant column names for the given table.  Specifying any
-     *         property overrides the default properties for that column (which
-     *         is based on the column's data type).
+     * @return Each key-value pair specifies the properties to use for a given column where the key is the column name.  All keys
+     *         used must be relevant column names for the given table.  Specifying any property overrides the default properties for
+     *         that column (which is based on the column's data type).
      * 
      */
     public Map<String, List<String>> getProperties() {
@@ -356,12 +290,9 @@ public class CreateTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param properties  Each key-value pair specifies the properties to use
-     *                    for a given column where the key is the column name.
-     *                    All keys used must be relevant column names for the
-     *                    given table.  Specifying any property overrides the
-     *                    default properties for that column (which is based on
-     *                    the column's data type).
+     * @param properties  Each key-value pair specifies the properties to use for a given column where the key is the column name.
+     *                    All keys used must be relevant column names for the given table.  Specifying any property overrides the
+     *                    default properties for that column (which is based on the column's data type).
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -393,8 +324,7 @@ public class CreateTypeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -405,8 +335,7 @@ public class CreateTypeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -436,8 +365,7 @@ public class CreateTypeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

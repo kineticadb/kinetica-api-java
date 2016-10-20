@@ -15,33 +15,25 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#showTable(ShowTableRequest)}.
- * <p>
- * Retrieves detailed information about a particular GPUdb table, specified in
- * {@code tableName}. If the supplied {@code tableName} is a collection, the
- * call returns a list of tables contained in the collection, and for each
- * table it returns the description, type id, schema, type label, type
- * properties, and additional information including TTL. If {@code tableName}
- * is empty it will return all top-level tables including all collections and
- * top-level child tables (i.e. tables with no parent).
- * <p>
- *     If the option 'get_sizes' is set to 'true' then the sizes (objects and
- * elements) of each table are returned (in {@code sizes} and {@code
- * fullSizes}), along with the total number of objects in the requested table
- * (in {@code totalSize} and {@code totalFullSize}).
- * <p>
- *     If the option 'show_children' is set to 'false' then for a collection it
- * only returns information about the collection itself, not about the child
- * tables. If 'show_children' is set to 'true' then it will return information
- * about each of the children, but not the collection.
- * <p>
- *     Running with 'show_children' = 'true' on a child table will return an
- * error.
- * <p>
- *     Running with 'show_children' = 'false' with {@code tableName} empty will
- * return an error.
- * <p>
- * If the requested table is blank, then information is returned about all top-
- * level tables including collections.
+ * <br />
+ * <br />Retrieves detailed information about a particular GPUdb table, specified in {@code tableName}. If the supplied {@code
+ * tableName} is a collection, the call returns a list of tables contained in the collection, and for each table it returns the
+ * description, type id, schema, type label, type properties, and additional information including TTL. If {@code tableName} is
+ * empty it will return all top-level tables including all collections and top-level child tables (i.e. tables with no parent).
+ * <br />
+ * <br />    If the option 'get_sizes' is set to 'true' then the sizes (objects and elements) of each table are returned (in {@code
+ * sizes} and {@code fullSizes}), along with the total number of objects in the requested table (in {@code totalSize} and {@code
+ * totalFullSize}).
+ * <br />
+ * <br />    If the option 'show_children' is set to 'false' then for a collection it only returns information about the collection
+ * itself, not about the child tables. If 'show_children' is set to 'true' then it will return information about each of the
+ * children, but not the collection.
+ * <br />
+ * <br />    Running with 'show_children' = 'true' on a child table will return an error.
+ * <br />
+ * <br />    Running with 'show_children' = 'false' with {@code tableName} empty will return an error.
+ * <br />
+ * <br />If the requested table is blank, then information is returned about all top-level tables including collections.
  */
 public class ShowTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -54,8 +46,7 @@ public class ShowTableRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -67,24 +58,32 @@ public class ShowTableRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * A set of string constants for the parameter {@code options}.
+     * <br /><ul>
+     * <br />  <li> get_sizes: If 'true' then the table sizes will be returned; otherwise they will be returned blank. Values: true,
+     * false.
+     * <br />
+     * <br />  <li> show_children: If {@code tableName} is a collection, then 'true' will return information about the children of
+     * the collection, and 'false' will return information about the collection itself. If {@code tableName} is a child table,
+     * 'show_children' must be 'false'. If {@code tableName} is empty then 'show_children' must be 'true'. Values: true, false.
+     * <br />
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * If 'true' then the table sizes will be returned; otherwise they will
-         * be returned blank.
+         * If 'true' then the table sizes will be returned; otherwise they will be returned blank. Values: true, false.
+         * <br />
          */
         public static final String GET_SIZES = "get_sizes";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
 
         /**
-         * If {@code tableName} is a collection, then 'true' will return
-         * information about the children of the collection, and 'false' will
-         * return information about the collection itself. If {@code tableName}
-         * is a child table, 'show_children' must be 'false'. If {@code
-         * tableName} is empty then 'show_children' must be 'true'.
+         * If {@code tableName} is a collection, then 'true' will return information about the children of the collection, and
+         * 'false' will return information about the collection itself. If {@code tableName} is a child table, 'show_children' must
+         * be 'false'. If {@code tableName} is empty then 'show_children' must be 'true'. Values: true, false.
+         * <br />
          */
         public static final String SHOW_CHILDREN = "show_children";
 
@@ -106,14 +105,17 @@ public class ShowTableRequest implements IndexedRecord {
     /**
      * Constructs a ShowTableRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table for which to retrieve the
-     *                   information. If blank then information about all
-     *                   collections and top-level tables is returned.
+     * @param tableName  Name of the table for which to retrieve the information. If blank then information about all collections
+     *                   and top-level tables is returned.
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>get_sizes: If 'true' then the table sizes will be returned; otherwise they will be returned blank.  values:TRUE, FALSE
-     *     <li>show_children: If @{input table_name} is a collection, then 'true' will return information about the children of the collection, and 'false' will return information about the collection itself. If @{input table_name} is a child table, 'show_children' must be 'false'. If @{input table_name} is empty then 'show_children' must be 'true'.  values:TRUE, FALSE
-     * </ul>
+     *                 <ul>
+     *                         <li> get_sizes: If 'true' then the table sizes will be returned; otherwise they will be returned
+     *                 blank. Values: true, false.
+     *                         <li> show_children: If {@code tableName} is a collection, then 'true' will return information about
+     *                 the children of the collection, and 'false' will return information about the collection itself. If {@code
+     *                 tableName} is a child table, 'show_children' must be 'false'. If {@code tableName} is empty then
+     *                 'show_children' must be 'true'. Values: true, false.
+     *                 </ul>
      * 
      */
     public ShowTableRequest(String tableName, Map<String, String> options) {
@@ -123,9 +125,8 @@ public class ShowTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table for which to retrieve the information. If
-     *         blank then information about all collections and top-level
-     *         tables is returned.
+     * @return Name of the table for which to retrieve the information. If blank then information about all collections and
+     *         top-level tables is returned.
      * 
      */
     public String getTableName() {
@@ -134,9 +135,8 @@ public class ShowTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table for which to retrieve the
-     *                   information. If blank then information about all
-     *                   collections and top-level tables is returned.
+     * @param tableName  Name of the table for which to retrieve the information. If blank then information about all collections
+     *                   and top-level tables is returned.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -149,6 +149,14 @@ public class ShowTableRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> get_sizes: If 'true' then the table sizes will be returned; otherwise they will be returned blank.
+     *         Values: true, false.
+     *                 <li> show_children: If {@code tableName} is a collection, then 'true' will return information about the
+     *         children of the collection, and 'false' will return information about the collection itself. If {@code tableName} is
+     *         a child table, 'show_children' must be 'false'. If {@code tableName} is empty then 'show_children' must be 'true'.
+     *         Values: true, false.
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -158,10 +166,14 @@ public class ShowTableRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>get_sizes: If 'true' then the table sizes will be returned; otherwise they will be returned blank.  values:TRUE, FALSE
-     *     <li>show_children: If @{input table_name} is a collection, then 'true' will return information about the children of the collection, and 'false' will return information about the collection itself. If @{input table_name} is a child table, 'show_children' must be 'false'. If @{input table_name} is empty then 'show_children' must be 'true'.  values:TRUE, FALSE
-     * </ul>
+     *                 <ul>
+     *                         <li> get_sizes: If 'true' then the table sizes will be returned; otherwise they will be returned
+     *                 blank. Values: true, false.
+     *                         <li> show_children: If {@code tableName} is a collection, then 'true' will return information about
+     *                 the children of the collection, and 'false' will return information about the collection itself. If {@code
+     *                 tableName} is a child table, 'show_children' must be 'false'. If {@code tableName} is empty then
+     *                 'show_children' must be 'true'. Values: true, false.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -172,8 +184,7 @@ public class ShowTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -184,8 +195,7 @@ public class ShowTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -209,8 +219,7 @@ public class ShowTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

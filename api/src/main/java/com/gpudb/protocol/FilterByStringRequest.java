@@ -16,26 +16,23 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#filterByString(FilterByStringRequest)}.
- * <p>
- * Calculates which objects from a table, collection or view match a string
- * expression for the given string columns. The 'mode' may be:
- * <p>
- *     'search' for full text search query with wildcards and boolean
- * operators, e.g. '(bob* OR sue) AND NOT jane'. Note that for this mode, no
- * column can be specified in {@code columnNames}; GPUdb will search through
- * all string columns of the table that have text search enabled. Also, the
- * first character of the regular expression cannot be a wildcard (* or ?).
- * <p>
- * * 'equals' for an exact whole-string match
- * * 'contains' for a partial substring match (not accelerated)
- * * 'starts_with' to find strings that start with the given expression (not
- * accelerated)
- * * 'regex' - to use a full regular expression search (not accelerated)
- * <p>
- * The options 'case_sensitive' can be used to modify the behavior for all
- * modes except 'search'
+ * A set of parameters for {@link com.gpudb.GPUdb#filterByString(FilterByStringRequest)}.
+ * <br />
+ * <br />Calculates which objects from a table, collection or view match a string expression for the given string columns. The
+ * 'mode' may be:
+ * <br />
+ * <br />* search : full text search query with wildcards and boolean operators, e.g. '(bob* OR sue) AND NOT jane'. Note that for
+ * this mode, no column can be specified in {@code columnNames}; GPUdb will search through all string columns of the table that have
+ * text search enabled. Also, the first character of the regular expression cannot be a wildcard (* or ?).
+ * <br />* equals: exact whole-string match (accelerated)
+ * <br />* contains: partial substring match (not accelerated).  If the column is a string type (non-charN) and the number of
+ * records is too large, it will return 0.
+ * <br />* starts_with: strings that start with the given expression (not accelerated), If the column is a string type (non-charN)
+ * and the number of records is too large, it will return 0.
+ * <br />* regex: full regular expression search (not accelerated). If the column is a string type (non-charN) and the number of
+ * records is too large, it will return 0.
+ * <br />
+ * <br />The options 'case_sensitive' can be used to modify the behavior for all modes except 'search'
  */
 public class FilterByStringRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -52,8 +49,7 @@ public class FilterByStringRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -64,8 +60,9 @@ public class FilterByStringRequest implements IndexedRecord {
 
 
     /**
-     * The string filtering mode to apply. See above for details.
-     * A set of string constants for the parameter {@code mode}.
+     * The string filtering mode to apply. See above for details. Values: search, equals, contains, starts_with, regex.
+     * <br />
+     * <br />A set of string constants for the parameter {@code mode}.
      */
     public static final class Mode {
         public static final String SEARCH = "search";
@@ -80,13 +77,18 @@ public class FilterByStringRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * A set of string constants for the parameter {@code options}.
+     * <br /><ul>
+     * <br />  <li> case_sensitive: If 'false' then string filtering will ignore case. Does not apply to 'search' mode. Values:
+     * true, false.
+     * <br />
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * If 'false' then string filtering will ignore case. Does not apply to
-         * 'search' mode.
+         * If 'false' then string filtering will ignore case. Does not apply to 'search' mode. Values: true, false.
+         * <br />
          */
         public static final String CASE_SENSITIVE = "case_sensitive";
         public static final String TRUE = "true";
@@ -118,20 +120,18 @@ public class FilterByStringRequest implements IndexedRecord {
     /**
      * Constructs a FilterByStringRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the filter operation will
-     *                   be performed.  Must be a valid GPUdb table, collection
+     * @param tableName  Name of the table on which the filter operation will be performed.  Must be a valid GPUdb table, collection
      *                   or view.
-     * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Must not be an already existing
+     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view.
      * @param expression  The expression with which to filter the table.
-     * @param mode  The string filtering mode to apply. See above for details.
-     * @param columnNames  List of columns on which to apply the filter.
-     *                     Ignored for 'search' mode.
+     * @param mode  The string filtering mode to apply. See above for details. Values: search, equals, contains, starts_with, regex.
+     * @param columnNames  List of columns on which to apply the filter. Ignored for 'search' mode.
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>case_sensitive: If 'false' then string filtering will ignore case. Does not apply to 'search' mode.  values:TRUE, FALSE
-     * </ul>
+     *                 <ul>
+     *                         <li> case_sensitive: If 'false' then string filtering will ignore case. Does not apply to 'search'
+     *                 mode. Values: true, false.
+     *                 </ul>
      * 
      */
     public FilterByStringRequest(String tableName, String viewName, String expression, String mode, List<String> columnNames, Map<String, String> options) {
@@ -145,8 +145,7 @@ public class FilterByStringRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the filter operation will be
-     *         performed.  Must be a valid GPUdb table, collection or view.
+     * @return Name of the table on which the filter operation will be performed.  Must be a valid GPUdb table, collection or view.
      * 
      */
     public String getTableName() {
@@ -155,8 +154,7 @@ public class FilterByStringRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the filter operation will
-     *                   be performed.  Must be a valid GPUdb table, collection
+     * @param tableName  Name of the table on which the filter operation will be performed.  Must be a valid GPUdb table, collection
      *                   or view.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -169,9 +167,8 @@ public class FilterByStringRequest implements IndexedRecord {
 
     /**
      * 
-     * @return If provided, then this will be the name of the view containing
-     *         the results. Must not be an already existing collection, table
-     *         or view.
+     * @return If provided, then this will be the name of the view containing the results. Must not be an already existing
+     *         collection, table or view.
      * 
      */
     public String getViewName() {
@@ -180,8 +177,7 @@ public class FilterByStringRequest implements IndexedRecord {
 
     /**
      * 
-     * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Must not be an already existing
+     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -215,7 +211,7 @@ public class FilterByStringRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The string filtering mode to apply. See above for details.
+     * @return The string filtering mode to apply. See above for details. Values: search, equals, contains, starts_with, regex.
      * 
      */
     public String getMode() {
@@ -224,7 +220,7 @@ public class FilterByStringRequest implements IndexedRecord {
 
     /**
      * 
-     * @param mode  The string filtering mode to apply. See above for details.
+     * @param mode  The string filtering mode to apply. See above for details. Values: search, equals, contains, starts_with, regex.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -236,8 +232,7 @@ public class FilterByStringRequest implements IndexedRecord {
 
     /**
      * 
-     * @return List of columns on which to apply the filter. Ignored for
-     *         'search' mode.
+     * @return List of columns on which to apply the filter. Ignored for 'search' mode.
      * 
      */
     public List<String> getColumnNames() {
@@ -246,8 +241,7 @@ public class FilterByStringRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnNames  List of columns on which to apply the filter.
-     *                     Ignored for 'search' mode.
+     * @param columnNames  List of columns on which to apply the filter. Ignored for 'search' mode.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -260,6 +254,10 @@ public class FilterByStringRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> case_sensitive: If 'false' then string filtering will ignore case. Does not apply to 'search' mode.
+     *         Values: true, false.
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -269,9 +267,10 @@ public class FilterByStringRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>case_sensitive: If 'false' then string filtering will ignore case. Does not apply to 'search' mode.  values:TRUE, FALSE
-     * </ul>
+     *                 <ul>
+     *                         <li> case_sensitive: If 'false' then string filtering will ignore case. Does not apply to 'search'
+     *                 mode. Values: true, false.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -282,8 +281,7 @@ public class FilterByStringRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -294,8 +292,7 @@ public class FilterByStringRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -331,8 +328,7 @@ public class FilterByStringRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

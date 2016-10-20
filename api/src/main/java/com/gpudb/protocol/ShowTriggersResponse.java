@@ -14,8 +14,7 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#showTriggers(ShowTriggersRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#showTriggers(ShowTriggersRequest)}.
  */
 public class ShowTriggersResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -27,8 +26,7 @@ public class ShowTriggersResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -48,16 +46,12 @@ public class ShowTriggersResponse implements IndexedRecord {
 
     /**
      * 
-     * @return This dictionary contains (key, value) pairs of (trigger ID,
-     *         information map/dictionary) where the key is a Unicode string
-     *         representing a Trigger ID. The value is another embedded
-     *         dictionary containing (key, value) pairs where the keys consist
-     *         of 'table_name', 'type' and the parameter names relating to the
-     *         trigger type, e.g. *nai*, *min*, *max*. The values are unicode
-     *         strings (numeric values are also converted to strings)
-     *         representing the value of the respective parameter. If a trigger
-     *         is associated with multiple tables, then the string value for
-     *         *table_name* contains a comma separated list of table names.
+     * @return This dictionary contains (key, value) pairs of (trigger ID, information map/dictionary) where the key is a Unicode
+     *         string representing a Trigger ID. The value is another embedded dictionary containing (key, value) pairs where the
+     *         keys consist of 'table_name', 'type' and the parameter names relating to the trigger type, e.g. *nai*, *min*, *max*.
+     *         The values are unicode strings (numeric values are also converted to strings) representing the value of the
+     *         respective parameter. If a trigger is associated with multiple tables, then the string value for *table_name*
+     *         contains a comma separated list of table names.
      * 
      */
     public Map<String, Map<String, String>> getTriggerMap() {
@@ -66,19 +60,12 @@ public class ShowTriggersResponse implements IndexedRecord {
 
     /**
      * 
-     * @param triggerMap  This dictionary contains (key, value) pairs of
-     *                    (trigger ID, information map/dictionary) where the
-     *                    key is a Unicode string representing a Trigger ID.
-     *                    The value is another embedded dictionary containing
-     *                    (key, value) pairs where the keys consist of
-     *                    'table_name', 'type' and the parameter names relating
-     *                    to the trigger type, e.g. *nai*, *min*, *max*. The
-     *                    values are unicode strings (numeric values are also
-     *                    converted to strings) representing the value of the
-     *                    respective parameter. If a trigger is associated with
-     *                    multiple tables, then the string value for
-     *                    *table_name* contains a comma separated list of table
-     *                    names.
+     * @param triggerMap  This dictionary contains (key, value) pairs of (trigger ID, information map/dictionary) where the key is a
+     *                    Unicode string representing a Trigger ID. The value is another embedded dictionary containing (key, value)
+     *                    pairs where the keys consist of 'table_name', 'type' and the parameter names relating to the trigger type,
+     *                    e.g. *nai*, *min*, *max*. The values are unicode strings (numeric values are also converted to strings)
+     *                    representing the value of the respective parameter. If a trigger is associated with multiple tables, then
+     *                    the string value for *table_name* contains a comma separated list of table names.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -89,8 +76,7 @@ public class ShowTriggersResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -101,8 +87,7 @@ public class ShowTriggersResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -123,8 +108,7 @@ public class ShowTriggersResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

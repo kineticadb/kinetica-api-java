@@ -11,8 +11,7 @@ import org.apache.avro.generic.GenericData;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#getRecordsBySeries(Object, GetRecordsBySeriesRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#getRecordsBySeries(Object, GetRecordsBySeriesRequest)}.
  * 
  * @param <T>  The type of object being processed.
  * 
@@ -32,8 +31,7 @@ public class GetRecordsBySeriesResponse<T> {
 
     /**
      * 
-     * @return The table name (one per series/track) of the returned
-     *         series/tracks.
+     * @return The table name (one per series/track) of the returned series/tracks.
      * 
      */
     public List<String> getTableNames() {
@@ -42,8 +40,7 @@ public class GetRecordsBySeriesResponse<T> {
 
     /**
      * 
-     * @param tableNames  The table name (one per series/track) of the returned
-     *                    series/tracks.
+     * @param tableNames  The table name (one per series/track) of the returned series/tracks.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -55,10 +52,8 @@ public class GetRecordsBySeriesResponse<T> {
 
     /**
      * 
-     * @return The type IDs (one per series/track) of the returned
-     *         series/tracks. This is useful when {@code tableName} is a
-     *         collection and the returned series/tracks belong to tables with
-     *         different types.
+     * @return The type IDs (one per series/track) of the returned series/tracks. This is useful when {@code tableName} is a
+     *         collection and the returned series/tracks belong to tables with different types.
      * 
      */
     public List<String> getTypeNames() {
@@ -67,10 +62,8 @@ public class GetRecordsBySeriesResponse<T> {
 
     /**
      * 
-     * @param typeNames  The type IDs (one per series/track) of the returned
-     *                   series/tracks. This is useful when {@code tableName}
-     *                   is a collection and the returned series/tracks belong
-     *                   to tables with different types.
+     * @param typeNames  The type IDs (one per series/track) of the returned series/tracks. This is useful when {@code tableName} is
+     *                   a collection and the returned series/tracks belong to tables with different types.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -82,8 +75,7 @@ public class GetRecordsBySeriesResponse<T> {
 
     /**
      * 
-     * @return The type schemas (one per series/track) of the returned
-     *         series/tracks.
+     * @return The type schemas (one per series/track) of the returned series/tracks.
      * 
      */
     public List<String> getTypeSchemas() {
@@ -92,8 +84,7 @@ public class GetRecordsBySeriesResponse<T> {
 
     /**
      * 
-     * @param typeSchemas  The type schemas (one per series/track) of the
-     *                     returned series/tracks.
+     * @param typeSchemas  The type schemas (one per series/track) of the returned series/tracks.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -105,10 +96,8 @@ public class GetRecordsBySeriesResponse<T> {
 
     /**
      * 
-     * @return If the encoding parameter of the request was 'binary' then this
-     *         list-of-lists contains the binary encoded records for each
-     *         object (inner list) in each series/track (outer list).
-     *         Otherwise, empty list-of-lists.
+     * @return If the encoding parameter of the request was 'binary' then this list-of-lists contains the binary encoded records for
+     *         each object (inner list) in each series/track (outer list). Otherwise, empty list-of-lists.
      * 
      */
     public List<List<T>> getData() {
@@ -117,10 +106,8 @@ public class GetRecordsBySeriesResponse<T> {
 
     /**
      * 
-     * @param data  If the encoding parameter of the request was 'binary' then
-     *              this list-of-lists contains the binary encoded records for
-     *              each object (inner list) in each series/track (outer list).
-     *              Otherwise, empty list-of-lists.
+     * @param data  If the encoding parameter of the request was 'binary' then this list-of-lists contains the binary encoded
+     *              records for each object (inner list) in each series/track (outer list). Otherwise, empty list-of-lists.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

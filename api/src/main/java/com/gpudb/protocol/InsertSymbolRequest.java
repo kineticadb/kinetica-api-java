@@ -15,19 +15,14 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#insertSymbol(InsertSymbolRequest)}.
- * <p>
- * Adds a symbol or icon (i.e. an image) to represent data points when data is
- * rendered visually. Users must provide the symbol identifier (string), a
- * format (currently supported: 'svg' and 'svg_path'), the data for the symbol,
- * and any additional optional parameter (e.g. color). To have a symbol used
- * for rendering create a table with a string column named 'SYMBOLCODE' (along
- * with 'x' or 'y' for example). Then when the table is rendered (via <a
- * href="../../../../../rest/wms_rest.html" target="_top">WMS</a> or {@link
- * com.gpudb.GPUdb#visualizeImage(VisualizeImageRequest)}) if the 'dosymbology'
- * parameter is 'true' then GPUdb uses the value of the 'SYMBOLCODE' column to
- * pick the symbol displayed for each point.
+ * A set of parameters for {@link com.gpudb.GPUdb#insertSymbol(InsertSymbolRequest)}.
+ * <br />
+ * <br />Adds a symbol or icon (i.e. an image) to represent data points when data is rendered visually. Users must provide the
+ * symbol identifier (string), a format (currently supported: 'svg' and 'svg_path'), the data for the symbol, and any additional
+ * optional parameter (e.g. color). To have a symbol used for rendering create a table with a string column named 'SYMBOLCODE'
+ * (along with 'x' or 'y' for example). Then when the table is rendered (via <a href="../../../../rest/wms_rest.html"
+ * target="_top">WMS</a> or {@link com.gpudb.GPUdb#visualizeImage(VisualizeImageRequest)}) if the 'dosymbology' parameter is 'true'
+ * then GPUdb uses the value of the 'SYMBOLCODE' column to pick the symbol displayed for each point.
  */
 public class InsertSymbolRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -42,8 +37,7 @@ public class InsertSymbolRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -54,8 +48,9 @@ public class InsertSymbolRequest implements IndexedRecord {
 
 
     /**
-     * Specifies the symbol format. Must be either 'svg' or 'svg_path'.
-     * A set of string constants for the parameter {@code symbolFormat}.
+     * Specifies the symbol format. Must be either 'svg' or 'svg_path'. Values: svg, svg_path.
+     * <br />
+     * <br />A set of string constants for the parameter {@code symbolFormat}.
      */
     public static final class SymbolFormat {
         public static final String SVG = "svg";
@@ -67,16 +62,19 @@ public class InsertSymbolRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * A set of string constants for the parameter {@code options}.
+     * <br /><ul>
+     * <br />  <li> color: If {@code symbolFormat} is 'svg' this is ignored. If {@code symbolFormat} is 'svg_path' then this option
+     * specifies the color (in RRGGBB hex format) of the path. For example, to have the path rendered in red, used 'FF0000'. If
+     * 'color' is not provided then '00FF00' (i.e. green) is used by default.
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * If {@code symbolFormat} is 'svg' this is ignored. If {@code
-         * symbolFormat} is 'svg_path' then this option specifies the color (in
-         * RRGGBB hex format) of the path. For example, to have the path
-         * rendered in red, used 'FF0000'. If 'color' is not provided then
-         * '00FF00' (i.e. green) is used by default.
+         * If {@code symbolFormat} is 'svg' this is ignored. If {@code symbolFormat} is 'svg_path' then this option specifies the
+         * color (in RRGGBB hex format) of the path. For example, to have the path rendered in red, used 'FF0000'. If 'color' is not
+         * provided then '00FF00' (i.e. green) is used by default.
          */
         public static final String COLOR = "color";
 
@@ -102,20 +100,18 @@ public class InsertSymbolRequest implements IndexedRecord {
     /**
      * Constructs an InsertSymbolRequest object with the specified parameters.
      * 
-     * @param symbolId  The id of the symbol being added. This is the same id
-     *                  that should be in the 'SYMBOLCODE' column for objects
+     * @param symbolId  The id of the symbol being added. This is the same id that should be in the 'SYMBOLCODE' column for objects
      *                  using this symbol
-     * @param symbolFormat  Specifies the symbol format. Must be either 'svg'
-     *                      or 'svg_path'.
-     * @param symbolData  The actual symbol data. If {@code symbolFormat} is
-     *                    'svg' then this should be the raw bytes representing
-     *                    an svg file. If {@code symbolFormat} is svg path then
-     *                    this should be an svg path string, for example:
+     * @param symbolFormat  Specifies the symbol format. Must be either 'svg' or 'svg_path'. Values: svg, svg_path.
+     * @param symbolData  The actual symbol data. If {@code symbolFormat} is 'svg' then this should be the raw bytes representing an
+     *                    svg file. If {@code symbolFormat} is svg path then this should be an svg path string, for example:
      *                    'M25.979,12.896,5.979,12.896,5.979,19.562,25.979,19.562z'
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>color: If @{input symbol_format} is 'svg' this is ignored. If @{input symbol_format} is 'svg_path' then this option specifies the color (in RRGGBB hex format) of the path. For example, to have the path rendered in red, used 'FF0000'. If 'color' is not provided then '00FF00' (i.e. green) is used by default.  
-     * </ul>
+     *                 <ul>
+     *                         <li> color: If {@code symbolFormat} is 'svg' this is ignored. If {@code symbolFormat} is 'svg_path'
+     *                 then this option specifies the color (in RRGGBB hex format) of the path. For example, to have the path
+     *                 rendered in red, used 'FF0000'. If 'color' is not provided then '00FF00' (i.e. green) is used by default.
+     *                 </ul>
      * 
      */
     public InsertSymbolRequest(String symbolId, String symbolFormat, ByteBuffer symbolData, Map<String, String> options) {
@@ -127,9 +123,8 @@ public class InsertSymbolRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The id of the symbol being added. This is the same id that
-     *         should be in the 'SYMBOLCODE' column for objects using this
-     *         symbol
+     * @return The id of the symbol being added. This is the same id that should be in the 'SYMBOLCODE' column for objects using
+     *         this symbol
      * 
      */
     public String getSymbolId() {
@@ -138,8 +133,7 @@ public class InsertSymbolRequest implements IndexedRecord {
 
     /**
      * 
-     * @param symbolId  The id of the symbol being added. This is the same id
-     *                  that should be in the 'SYMBOLCODE' column for objects
+     * @param symbolId  The id of the symbol being added. This is the same id that should be in the 'SYMBOLCODE' column for objects
      *                  using this symbol
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -152,7 +146,7 @@ public class InsertSymbolRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Specifies the symbol format. Must be either 'svg' or 'svg_path'.
+     * @return Specifies the symbol format. Must be either 'svg' or 'svg_path'. Values: svg, svg_path.
      * 
      */
     public String getSymbolFormat() {
@@ -161,8 +155,7 @@ public class InsertSymbolRequest implements IndexedRecord {
 
     /**
      * 
-     * @param symbolFormat  Specifies the symbol format. Must be either 'svg'
-     *                      or 'svg_path'.
+     * @param symbolFormat  Specifies the symbol format. Must be either 'svg' or 'svg_path'. Values: svg, svg_path.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -174,10 +167,8 @@ public class InsertSymbolRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The actual symbol data. If {@code symbolFormat} is 'svg' then
-     *         this should be the raw bytes representing an svg file. If {@code
-     *         symbolFormat} is svg path then this should be an svg path
-     *         string, for example:
+     * @return The actual symbol data. If {@code symbolFormat} is 'svg' then this should be the raw bytes representing an svg file.
+     *         If {@code symbolFormat} is svg path then this should be an svg path string, for example:
      *         'M25.979,12.896,5.979,12.896,5.979,19.562,25.979,19.562z'
      * 
      */
@@ -187,10 +178,8 @@ public class InsertSymbolRequest implements IndexedRecord {
 
     /**
      * 
-     * @param symbolData  The actual symbol data. If {@code symbolFormat} is
-     *                    'svg' then this should be the raw bytes representing
-     *                    an svg file. If {@code symbolFormat} is svg path then
-     *                    this should be an svg path string, for example:
+     * @param symbolData  The actual symbol data. If {@code symbolFormat} is 'svg' then this should be the raw bytes representing an
+     *                    svg file. If {@code symbolFormat} is svg path then this should be an svg path string, for example:
      *                    'M25.979,12.896,5.979,12.896,5.979,19.562,25.979,19.562z'
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -204,6 +193,11 @@ public class InsertSymbolRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> color: If {@code symbolFormat} is 'svg' this is ignored. If {@code symbolFormat} is 'svg_path' then this
+     *         option specifies the color (in RRGGBB hex format) of the path. For example, to have the path rendered in red, used
+     *         'FF0000'. If 'color' is not provided then '00FF00' (i.e. green) is used by default.
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -213,9 +207,11 @@ public class InsertSymbolRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>color: If @{input symbol_format} is 'svg' this is ignored. If @{input symbol_format} is 'svg_path' then this option specifies the color (in RRGGBB hex format) of the path. For example, to have the path rendered in red, used 'FF0000'. If 'color' is not provided then '00FF00' (i.e. green) is used by default.  
-     * </ul>
+     *                 <ul>
+     *                         <li> color: If {@code symbolFormat} is 'svg' this is ignored. If {@code symbolFormat} is 'svg_path'
+     *                 then this option specifies the color (in RRGGBB hex format) of the path. For example, to have the path
+     *                 rendered in red, used 'FF0000'. If 'color' is not provided then '00FF00' (i.e. green) is used by default.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -226,8 +222,7 @@ public class InsertSymbolRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -238,8 +233,7 @@ public class InsertSymbolRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -269,8 +263,7 @@ public class InsertSymbolRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

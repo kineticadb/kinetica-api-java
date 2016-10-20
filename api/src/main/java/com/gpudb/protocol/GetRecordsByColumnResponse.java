@@ -12,8 +12,7 @@ import org.apache.avro.generic.GenericData;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#getRecordsByColumn(GetRecordsByColumnRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#getRecordsByColumn(GetRecordsByColumnRequest)}.
  */
 public class GetRecordsByColumnResponse {
     private String tableName;
@@ -39,8 +38,7 @@ public class GetRecordsByColumnResponse {
 
     /**
      * 
-     * @param tableName  The same table name as was passed in the parameter
-     *                   list.
+     * @param tableName  The same table name as was passed in the parameter list.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

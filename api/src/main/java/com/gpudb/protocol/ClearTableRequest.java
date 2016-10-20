@@ -14,14 +14,11 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#clearTable(ClearTableRequest)}.
- * <p>
- * Clears (drops) one or all tables in the GPUdb cluster. The operation is
- * synchronous meaning that the table will be cleared before the function
- * returns. The response payload returns the status of the operation along with
- * the name of the table that was cleared. For protected tables, this function
- * requires an administrator password without which the operation will fail.
+ * A set of parameters for {@link com.gpudb.GPUdb#clearTable(ClearTableRequest)}.
+ * <br />
+ * <br />Clears (drops) one or all tables in the GPUdb cluster. The operation is synchronous meaning that the table will be cleared
+ * before the function returns. The response payload returns the status of the operation along with the name of the table that was
+ * cleared.
  */
 public class ClearTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -35,8 +32,7 @@ public class ClearTableRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -62,12 +58,9 @@ public class ClearTableRequest implements IndexedRecord {
     /**
      * Constructs a ClearTableRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to be cleared. Must be an existing
-     *                   GPUdb table. Empty string clears all available tables
+     * @param tableName  Name of the table to be cleared. Must be an existing GPUdb table. Empty string clears all available tables
      *                   in GPUdb.
-     * @param authorization  Administrator password needed for clearing
-     *                       protected tables. For unprotected tables the
-     *                       string can be left blank.
+     * @param authorization  No longer used. User can pass an empty string.
      * @param options  Optional parameters.
      * 
      */
@@ -79,8 +72,7 @@ public class ClearTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to be cleared. Must be an existing GPUdb
-     *         table. Empty string clears all available tables in GPUdb.
+     * @return Name of the table to be cleared. Must be an existing GPUdb table. Empty string clears all available tables in GPUdb.
      * 
      */
     public String getTableName() {
@@ -89,8 +81,7 @@ public class ClearTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to be cleared. Must be an existing
-     *                   GPUdb table. Empty string clears all available tables
+     * @param tableName  Name of the table to be cleared. Must be an existing GPUdb table. Empty string clears all available tables
      *                   in GPUdb.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -103,8 +94,7 @@ public class ClearTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Administrator password needed for clearing protected tables. For
-     *         unprotected tables the string can be left blank.
+     * @return No longer used. User can pass an empty string.
      * 
      */
     public String getAuthorization() {
@@ -113,9 +103,7 @@ public class ClearTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param authorization  Administrator password needed for clearing
-     *                       protected tables. For unprotected tables the
-     *                       string can be left blank.
+     * @param authorization  No longer used. User can pass an empty string.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -147,8 +135,7 @@ public class ClearTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -159,8 +146,7 @@ public class ClearTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -187,8 +173,7 @@ public class ClearTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

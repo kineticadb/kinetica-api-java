@@ -15,8 +15,7 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#showTable(ShowTableRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#showTable(ShowTableRequest)}.
  */
 public class ShowTableResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -40,8 +39,7 @@ public class ShowTableResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -52,9 +50,10 @@ public class ShowTableResponse implements IndexedRecord {
 
 
     /**
-     * List of descriptions for the respective tables in {@code tableNames}.
-     * Values include: 'COLLECTION','VIEW','REPLICATED','JOIN'
-     * A set of string constants for the parameter {@code tableDescriptions}.
+     * List of descriptions for the respective tables in {@code tableNames}. Values include: 'COLLECTION','VIEW','REPLICATED','JOIN'
+     * Values: COLLECTION, VIEW, REPLICATED, JOIN.
+     * <br />
+     * <br />A set of string constants for the parameter {@code tableDescriptions}.
      */
     public static final class TableDescriptions {
         public static final String COLLECTION = "COLLECTION";
@@ -67,49 +66,47 @@ public class ShowTableResponse implements IndexedRecord {
 
 
     /**
-     * Additional information about the respective tables in {@code
-     * tableNames}.
-     * A set of string constants for the parameter {@code additionalInfo}.
+     * Additional information about the respective tables in {@code tableNames}. Values: .
+     * <br />
+     * <br />A set of string constants for the parameter {@code additionalInfo}.
      */
     public static final class AdditionalInfo {
 
         /**
-         * Only present if the respective table is a collection. The value
-         * indicates whether the table allows duplicate children or not.
+         * Only present if the respective table is a collection. The value indicates whether the table allows duplicate children or
+         * not. Values: true, false.
+         * <br />
          */
         public static final String ALLOW_HOMOGENOUS_TABLES = "allow_homogenous_tables";
-        public static final String TRUE = "true";
         public static final String FALSE = "false";
+        public static final String TRUE = "true";
 
         /**
-         * Indicates whether the respective table is protected or not.
+         * Indicates whether the respective table is protected or not. Values: true, false.
+         * <br />
          */
         public static final String PROTECTED = "protected";
 
         /**
-         * The value of TTL setting, in minutes, for the respective table (-1
-         * if it will never expire).  This is not the remaining amount of time
-         * before the table expires.
+         * The value of TTL setting, in minutes, for the respective table (-1 if it will never expire).  This is not the remaining
+         * amount of time before the table expires.
          */
         public static final String TABLE_TTL = "table_ttl";
 
         /**
-         * The remaining amount of minutes before the respective table expires
-         * (-1 if it will never expire).  This value may be different from the
-         * table's TTL setting.
+         * The remaining amount of minutes before the respective table expires (-1 if it will never expire).  This value may be
+         * different from the table's TTL setting.
          */
         public static final String REMAINING_TABLE_TTL = "remaining_table_ttl";
 
         /**
-         * Semicolon-separated list of foreign key constraints, of the format
-         * 'my_field references primary_table(primary_key_field)'. Not present
-         * for collections.
+         * Semicolon-separated list of foreign key constraints, of the format 'my_field references
+         * primary_table(primary_key_field)'. Not present for collections.
          */
         public static final String FOREIGN_KEYS = "foreign_keys";
 
         /**
-         * Semicolon-separated list of columns that have attribute indexes. Not
-         * present for collections.
+         * Semicolon-separated list of columns that have attribute indexes. Not present for collections.
          */
         public static final String ATTRIBUTE_INDEXES = "attribute_indexes";
 
@@ -160,14 +157,10 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return If the table is a child-type table, then the single element of
-     *         the array is {@code tableName}. If the table is a collection and
-     *         'show_children' is set to 'true', then this array is populated
-     *         with the names of all child tables of the given collection. If
-     *         'show_children' is 'false' then this array will only include the
-     *         collection itself. . If {@code tableName} is an empty string,
-     *         then the array contains the names of all top-level tables in
-     *         GPUdb.
+     * @return If the table is a child-type table, then the single element of the array is {@code tableName}. If the table is a
+     *         collection and 'show_children' is set to 'true', then this array is populated with the names of all child tables of
+     *         the given collection. If 'show_children' is 'false' then this array will only include the collection itself. . If
+     *         {@code tableName} is an empty string, then the array contains the names of all top-level tables in GPUdb.
      * 
      */
     public List<String> getTableNames() {
@@ -176,15 +169,11 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  If the table is a child-type table, then the single
-     *                    element of the array is {@code tableName}. If the
-     *                    table is a collection and 'show_children' is set to
-     *                    'true', then this array is populated with the names
-     *                    of all child tables of the given collection. If
-     *                    'show_children' is 'false' then this array will only
-     *                    include the collection itself. . If {@code tableName}
-     *                    is an empty string, then the array contains the names
-     *                    of all top-level tables in GPUdb.
+     * @param tableNames  If the table is a child-type table, then the single element of the array is {@code tableName}. If the
+     *                    table is a collection and 'show_children' is set to 'true', then this array is populated with the names of
+     *                    all child tables of the given collection. If 'show_children' is 'false' then this array will only include
+     *                    the collection itself. . If {@code tableName} is an empty string, then the array contains the names of all
+     *                    top-level tables in GPUdb.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -196,9 +185,8 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return List of descriptions for the respective tables in {@code
-     *         tableNames}. Values include:
-     *         'COLLECTION','VIEW','REPLICATED','JOIN'
+     * @return List of descriptions for the respective tables in {@code tableNames}. Values include:
+     *         'COLLECTION','VIEW','REPLICATED','JOIN' Values: COLLECTION, VIEW, REPLICATED, JOIN.
      * 
      */
     public List<List<String>> getTableDescriptions() {
@@ -207,9 +195,8 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param tableDescriptions  List of descriptions for the respective tables
-     *                           in {@code tableNames}. Values include:
-     *                           'COLLECTION','VIEW','REPLICATED','JOIN'
+     * @param tableDescriptions  List of descriptions for the respective tables in {@code tableNames}. Values include:
+     *                           'COLLECTION','VIEW','REPLICATED','JOIN' Values: COLLECTION, VIEW, REPLICATED, JOIN.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -251,8 +238,7 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param typeSchemas  Type schemas of the respective tables in {@code
-     *                     tableNames}.
+     * @param typeSchemas  Type schemas of the respective tables in {@code tableNames}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -273,8 +259,7 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param typeLabels  Type labels of the respective tables in {@code
-     *                    tableNames}.
+     * @param typeLabels  Type labels of the respective tables in {@code tableNames}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -295,8 +280,7 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param properties  Property maps of the respective tables in {@code
-     *                    tableNames}.
+     * @param properties  Property maps of the respective tables in {@code tableNames}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -308,8 +292,7 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Additional information about the respective tables in {@code
-     *         tableNames}.
+     * @return Additional information about the respective tables in {@code tableNames}. Values: .
      * 
      */
     public List<Map<String, String>> getAdditionalInfo() {
@@ -318,8 +301,7 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param additionalInfo  Additional information about the respective
-     *                        tables in {@code tableNames}.
+     * @param additionalInfo  Additional information about the respective tables in {@code tableNames}. Values: .
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -331,13 +313,10 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Empty array if the 'get_sizes' option is 'false'. Otherwise,
-     *         sizes of the respective tables represented in {@code
-     *         tableNames}. For all but track data types, this is simply the
-     *         number of total objects in a table. For track types, since each
-     *         track semantically contains many individual objects, the 'size'
-     *         is the count of 'conceptual' tracks (each of which may be
-     *         associated with multiple objects).
+     * @return Empty array if the 'get_sizes' option is 'false'. Otherwise, sizes of the respective tables represented in {@code
+     *         tableNames}. For all but track data types, this is simply the number of total objects in a table. For track types,
+     *         since each track semantically contains many individual objects, the 'size' is the count of 'conceptual' tracks (each
+     *         of which may be associated with multiple objects).
      * 
      */
     public List<Long> getSizes() {
@@ -346,14 +325,10 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param sizes  Empty array if the 'get_sizes' option is 'false'.
-     *               Otherwise, sizes of the respective tables represented in
-     *               {@code tableNames}. For all but track data types, this is
-     *               simply the number of total objects in a table. For track
-     *               types, since each track semantically contains many
-     *               individual objects, the 'size' is the count of
-     *               'conceptual' tracks (each of which may be associated with
-     *               multiple objects).
+     * @param sizes  Empty array if the 'get_sizes' option is 'false'. Otherwise, sizes of the respective tables represented in
+     *               {@code tableNames}. For all but track data types, this is simply the number of total objects in a table. For
+     *               track types, since each track semantically contains many individual objects, the 'size' is the count of
+     *               'conceptual' tracks (each of which may be associated with multiple objects).
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -365,12 +340,9 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Empty array if the 'get_sizes' option is 'false'. Otherwise,
-     *         number of total objects in the respective tables represented in
-     *         {@code tableNames}. For all but track data types, this is the
-     *         same as sizes. For track types, since each track semantically
-     *         contains many individual objects, the 'full size' is the count
-     *         of total objects.
+     * @return Empty array if the 'get_sizes' option is 'false'. Otherwise, number of total objects in the respective tables
+     *         represented in {@code tableNames}. For all but track data types, this is the same as sizes. For track types, since
+     *         each track semantically contains many individual objects, the 'full size' is the count of total objects.
      * 
      */
     public List<Long> getFullSizes() {
@@ -379,13 +351,10 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param fullSizes  Empty array if the 'get_sizes' option is 'false'.
-     *                   Otherwise, number of total objects in the respective
-     *                   tables represented in {@code tableNames}. For all but
-     *                   track data types, this is the same as sizes. For track
-     *                   types, since each track semantically contains many
-     *                   individual objects, the 'full size' is the count of
-     *                   total objects.
+     * @param fullSizes  Empty array if the 'get_sizes' option is 'false'. Otherwise, number of total objects in the respective
+     *                   tables represented in {@code tableNames}. For all but track data types, this is the same as sizes. For
+     *                   track types, since each track semantically contains many individual objects, the 'full size' is the count
+     *                   of total objects.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -397,13 +366,10 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Empty array if the 'get_sizes' option is 'false'. Otherwise,
-     *         number of unfiltered objects in the cross product of the sub-
-     *         tables in the joined-tables represented in {@code tableNames}.
-     *         For simple tables this number will be the same as size.  For
-     *         join-tables this value gives the number of joined-table rows
-     *         that must be processed by any aggregate functions operating on
-     *         the table.
+     * @return Empty array if the 'get_sizes' option is 'false'. Otherwise, number of unfiltered objects in the cross product of the
+     *         sub-tables in the joined-tables represented in {@code tableNames}. For simple tables this number will be the same as
+     *         size.  For join-tables this value gives the number of joined-table rows that must be processed by any aggregate
+     *         functions operating on the table.
      * 
      */
     public List<Double> getJoinSizes() {
@@ -412,14 +378,10 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param joinSizes  Empty array if the 'get_sizes' option is 'false'.
-     *                   Otherwise, number of unfiltered objects in the cross
-     *                   product of the sub-tables in the joined-tables
-     *                   represented in {@code tableNames}. For simple tables
-     *                   this number will be the same as size.  For join-tables
-     *                   this value gives the number of joined-table rows that
-     *                   must be processed by any aggregate functions operating
-     *                   on the table.
+     * @param joinSizes  Empty array if the 'get_sizes' option is 'false'. Otherwise, number of unfiltered objects in the cross
+     *                   product of the sub-tables in the joined-tables represented in {@code tableNames}. For simple tables this
+     *                   number will be the same as size.  For join-tables this value gives the number of joined-table rows that
+     *                   must be processed by any aggregate functions operating on the table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -431,8 +393,7 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return -1 if the 'get_sizes' option is 'false'. Otherwise, the sum of
-     *         the elements of {@code sizes}.
+     * @return -1 if the 'get_sizes' option is 'false'. Otherwise, the sum of the elements of {@code sizes}.
      * 
      */
     public long getTotalSize() {
@@ -441,8 +402,7 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param totalSize  -1 if the 'get_sizes' option is 'false'. Otherwise,
-     *                   the sum of the elements of {@code sizes}.
+     * @param totalSize  -1 if the 'get_sizes' option is 'false'. Otherwise, the sum of the elements of {@code sizes}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -454,8 +414,7 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return -1 if the 'get_sizes' option is 'false'. The sum of the elements
-     *         of {@code fullSizes}.
+     * @return -1 if the 'get_sizes' option is 'false'. The sum of the elements of {@code fullSizes}.
      * 
      */
     public long getTotalFullSize() {
@@ -464,8 +423,7 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param totalFullSize  -1 if the 'get_sizes' option is 'false'. The sum
-     *                       of the elements of {@code fullSizes}.
+     * @param totalFullSize  -1 if the 'get_sizes' option is 'false'. The sum of the elements of {@code fullSizes}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -476,8 +434,7 @@ public class ShowTableResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -488,8 +445,7 @@ public class ShowTableResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -546,8 +502,7 @@ public class ShowTableResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

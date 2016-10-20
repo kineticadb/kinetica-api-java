@@ -14,10 +14,9 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#grantPermissionSystem(GrantPermissionSystemRequest)}.
- * <p>
- * Grants a system-level permission to a user or role.
+ * A set of parameters for {@link com.gpudb.GPUdb#grantPermissionSystem(GrantPermissionSystemRequest)}.
+ * <br />
+ * <br />Grants a system-level permission to a user or role.
  */
 public class GrantPermissionSystemRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -31,8 +30,7 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -43,8 +41,9 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
 
 
     /**
-     * Permission to grant to the user or role.
-     * A set of string constants for the parameter {@code permission}.
+     * Permission to grant to the user or role. Values: system_admin, system_write, system_read.
+     * <br />
+     * <br />A set of string constants for the parameter {@code permission}.
      */
     public static final class Permission {
 
@@ -72,8 +71,7 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
 
 
     /**
-     * Constructs a GrantPermissionSystemRequest object with default
-     * parameters.
+     * Constructs a GrantPermissionSystemRequest object with default parameters.
      */
     public GrantPermissionSystemRequest() {
         name = "";
@@ -82,12 +80,10 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a GrantPermissionSystemRequest object with the specified
-     * parameters.
+     * Constructs a GrantPermissionSystemRequest object with the specified parameters.
      * 
-     * @param name  Name of the user or role to which the permission will be
-     *              granted. Must be an existing user or role.
-     * @param permission  Permission to grant to the user or role.
+     * @param name  Name of the user or role to which the permission will be granted. Must be an existing user or role.
+     * @param permission  Permission to grant to the user or role. Values: system_admin, system_write, system_read.
      * @param options  Optional parameters.
      * 
      */
@@ -99,8 +95,7 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the user or role to which the permission will be
-     *         granted. Must be an existing user or role.
+     * @return Name of the user or role to which the permission will be granted. Must be an existing user or role.
      * 
      */
     public String getName() {
@@ -109,8 +104,7 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
 
     /**
      * 
-     * @param name  Name of the user or role to which the permission will be
-     *              granted. Must be an existing user or role.
+     * @param name  Name of the user or role to which the permission will be granted. Must be an existing user or role.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -122,7 +116,7 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Permission to grant to the user or role.
+     * @return Permission to grant to the user or role. Values: system_admin, system_write, system_read.
      * 
      */
     public String getPermission() {
@@ -131,7 +125,7 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
 
     /**
      * 
-     * @param permission  Permission to grant to the user or role.
+     * @param permission  Permission to grant to the user or role. Values: system_admin, system_write, system_read.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -163,8 +157,7 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -175,8 +168,7 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -203,8 +195,7 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

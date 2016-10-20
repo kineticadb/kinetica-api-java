@@ -17,28 +17,20 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}.
- * <p>
- * Runs multiple predicate-based updates in a single call.  With the list of
- * given expressions, any matching record's column values will be updated as
- * provided in {@code newValuesMaps}.  There is also an optional 'upsert'
- * capability where if a particular predicate doesn't match any existing
- * record, then a new record can be inserted.
- * <p>
- * Note that this operation can only be run on an original table and not on a
- * collection or a result view.
- * <p>
- * This operation can update primary key values.  By default only 'pure primary
- * key' predicates are allowed when updating primary key values. If the primary
- * key for a table is the column 'attr1', then the operation will only accept
- * predicates of the form: "attr1 == 'foo'" if the attr1 column is being
- * updated.  For a composite primary key (e.g. columns 'attr1' and 'attr2')
- * then this operation will only accept predicates of the form: "(attr1 ==
- * 'foo') and (attr2 == 'bar')".  Meaning, all primary key columns must appear
- * in an equality predicate in the expressions.  Furthermore each 'pure primary
- * key' predicate must be unique within a given request.  These restrictions
- * can be removed by utilizing some available options through {@code options}.
+ * A set of parameters for {@link com.gpudb.GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}.
+ * <br />
+ * <br />Runs multiple predicate-based updates in a single call.  With the list of given expressions, any matching record's column
+ * values will be updated as provided in {@code newValuesMaps}.  There is also an optional 'upsert' capability where if a particular
+ * predicate doesn't match any existing record, then a new record can be inserted.
+ * <br />
+ * <br />Note that this operation can only be run on an original table and not on a collection or a result view.
+ * <br />
+ * <br />This operation can update primary key values.  By default only 'pure primary key' predicates are allowed when updating
+ * primary key values. If the primary key for a table is the column 'attr1', then the operation will only accept predicates of the
+ * form: "attr1 == 'foo'" if the attr1 column is being updated.  For a composite primary key (e.g. columns 'attr1' and 'attr2') then
+ * this operation will only accept predicates of the form: "(attr1 == 'foo') and (attr2 == 'bar')".  Meaning, all primary key
+ * columns must appear in an equality predicate in the expressions.  Furthermore each 'pure primary key' predicate must be unique
+ * within a given request.  These restrictions can be removed by utilizing some available options through {@code options}.
  */
 public class RawUpdateRecordsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -56,8 +48,7 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -68,9 +59,9 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
 
     /**
-     * Identifies which of {@code recordsToInsert} and {@code
-     * recordsToInsertStr} should be used.
-     * A set of string constants for the parameter {@code recordEncoding}.
+     * Identifies which of {@code recordsToInsert} and {@code recordsToInsertStr} should be used. Values: binary, json.
+     * <br />
+     * <br />A set of string constants for the parameter {@code recordEncoding}.
      */
     public static final class RecordEncoding {
         public static final String BINARY = "binary";
@@ -82,40 +73,52 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * A set of string constants for the parameter {@code options}.
+     * <br /><ul>
+     * <br />  <li> global_expression: An optional global expression to reduce the search space of the predicates listed in {@code
+     * expressions}.
+     * <br />  <li> bypass_safety_checks: When set to 'true', all predicates are available for primary key updates.  Keep in mind
+     * that it is possible to destroy data in this case, since a single predicate may match multiple objects (potentially all of
+     * records of a table), and then updating all of those records to have the same primary key will, due to the primary key
+     * uniqueness constraints, effectively delete all but one of those updated records. Values: true, false.
+     * <br />
+     * <br />  <li> update_on_existing_pk: Can be used to customize behavior when the updated primary key value already exists, as
+     * described in {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}. Values: true, false.
+     * <br />
+     * <br />  <li> record_id: ID of a single record to be updated (returned in the call to {@link
+     * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} or {@link
+     * com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}).
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * An optional global expression to reduce the search space of the
-         * predicates listed in {@code expressions}.
+         * An optional global expression to reduce the search space of the predicates listed in {@code expressions}.
          */
         public static final String GLOBAL_EXPRESSION = "global_expression";
 
         /**
-         * When set to 'true', all predicates are available for primary key
-         * updates.  Keep in mind that it is possible to destroy data in this
-         * case, since a single predicate may match multiple objects
-         * (potentially all of records of a table), and then updating all of
-         * those records to have the same primary key will, due to the primary
-         * key uniqueness constraints, effectively delete all but one of those
-         * updated records.
+         * When set to 'true', all predicates are available for primary key updates.  Keep in mind that it is possible to destroy
+         * data in this case, since a single predicate may match multiple objects (potentially all of records of a table), and then
+         * updating all of those records to have the same primary key will, due to the primary key uniqueness constraints,
+         * effectively delete all but one of those updated records. Values: true, false.
+         * <br />
          */
         public static final String BYPASS_SAFETY_CHECKS = "bypass_safety_checks";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
 
         /**
-         * Can be used to customize behavior when the updated primary key value
-         * already exists, as described in {@link
-         * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+         * Can be used to customize behavior when the updated primary key value already exists, as described in {@link
+         * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}. Values: true, false.
+         * <br />
          */
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
 
         /**
          * ID of a single record to be updated (returned in the call to {@link
          * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} or {@link
-         * com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}.
+         * com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}).
          */
         public static final String RECORD_ID = "record_id";
 
@@ -145,33 +148,33 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a RawUpdateRecordsRequest object with the specified
-     * parameters.
+     * Constructs a RawUpdateRecordsRequest object with the specified parameters.
      * 
-     * @param tableName  Table to be updated. Must be a currently existing
-     *                   table and not a collection or view.
-     * @param expressions  A list of the actual predicates, one for each
-     *                     update; format should follow the guidelines {@link
+     * @param tableName  Table to be updated. Must be a currently existing table and not a collection or view.
+     * @param expressions  A list of the actual predicates, one for each update; format should follow the guidelines {@link
      *                     com.gpudb.GPUdb#filter(FilterRequest) here}.
-     * @param newValuesMaps  List of new values for the matching records.  Each
-     *                       element is a map with (key, value) pairs where the
-     *                       keys are the names of the columns whose values are
-     *                       to be updated; the values are the new values.  The
-     *                       number of elements in the list should match the
-     *                       length of {@code expressions}.
-     * @param recordsToInsert  An *optional* list of new binary-avro encoded
-     *                         records to insert, one for each update.  If one
-     *                         of {@code expressions} does not yield a matching
-     *                         record to be updated, then the corresponding
-     *                         element from this list will be added to the
-     *                         table.
+     * @param newValuesMaps  List of new values for the matching records.  Each element is a map with (key, value) pairs where the
+     *                       keys are the names of the columns whose values are to be updated; the values are the new values.  The
+     *                       number of elements in the list should match the length of {@code expressions}.
+     * @param recordsToInsert  An *optional* list of new binary-avro encoded records to insert, one for each update.  If one of
+     *                         {@code expressions} does not yield a matching record to be updated, then the corresponding element
+     *                         from this list will be added to the table.
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>global_expression: An optional global expression to reduce the search space of the predicates listed in @{input expressions}.  
-     *     <li>bypass_safety_checks: When set to 'true', all predicates are available for primary key updates.  Keep in mind that it is possible to destroy data in this case, since a single predicate may match multiple objects (potentially all of records of a table), and then updating all of those records to have the same primary key will, due to the primary key uniqueness constraints, effectively delete all but one of those updated records.  values:TRUE, FALSE
-     *     <li>update_on_existing_pk: Can be used to customize behavior when the updated primary key value already exists, as described in @{endpoint /insert/records}.  values:TRUE, FALSE
-     *     <li>record_id: ID of a single record to be updated (returned in the call to @{endpoint /insert/records} or @{endpoint /get/records/fromcollection}.  
-     * </ul>
+     *                 <ul>
+     *                         <li> global_expression: An optional global expression to reduce the search space of the predicates
+     *                 listed in {@code expressions}.
+     *                         <li> bypass_safety_checks: When set to 'true', all predicates are available for primary key updates.
+     *                 Keep in mind that it is possible to destroy data in this case, since a single predicate may match multiple
+     *                 objects (potentially all of records of a table), and then updating all of those records to have the same
+     *                 primary key will, due to the primary key uniqueness constraints, effectively delete all but one of those
+     *                 updated records. Values: true, false.
+     *                         <li> update_on_existing_pk: Can be used to customize behavior when the updated primary key value
+     *                 already exists, as described in {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}. Values:
+     *                 true, false.
+     *                         <li> record_id: ID of a single record to be updated (returned in the call to {@link
+     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} or {@link
+     *                 com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}).
+     *                 </ul>
      * 
      */
     public RawUpdateRecordsRequest(String tableName, List<String> expressions, List<Map<String, String>> newValuesMaps, List<ByteBuffer> recordsToInsert, Map<String, String> options) {
@@ -185,39 +188,37 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a RawUpdateRecordsRequest object with the specified
-     * parameters.
+     * Constructs a RawUpdateRecordsRequest object with the specified parameters.
      * 
-     * @param tableName  Table to be updated. Must be a currently existing
-     *                   table and not a collection or view.
-     * @param expressions  A list of the actual predicates, one for each
-     *                     update; format should follow the guidelines {@link
+     * @param tableName  Table to be updated. Must be a currently existing table and not a collection or view.
+     * @param expressions  A list of the actual predicates, one for each update; format should follow the guidelines {@link
      *                     com.gpudb.GPUdb#filter(FilterRequest) here}.
-     * @param newValuesMaps  List of new values for the matching records.  Each
-     *                       element is a map with (key, value) pairs where the
-     *                       keys are the names of the columns whose values are
-     *                       to be updated; the values are the new values.  The
-     *                       number of elements in the list should match the
-     *                       length of {@code expressions}.
-     * @param recordsToInsert  An *optional* list of new binary-avro encoded
-     *                         records to insert, one for each update.  If one
-     *                         of {@code expressions} does not yield a matching
-     *                         record to be updated, then the corresponding
-     *                         element from this list will be added to the
-     *                         table.
-     * @param recordsToInsertStr  An optional list of new json-avro encoded
-     *                            objects to insert, one for each update, to be
-     *                            added to the set if the particular update did
-     *                            not affect any objects.
-     * @param recordEncoding  Identifies which of {@code recordsToInsert} and
-     *                        {@code recordsToInsertStr} should be used.
+     * @param newValuesMaps  List of new values for the matching records.  Each element is a map with (key, value) pairs where the
+     *                       keys are the names of the columns whose values are to be updated; the values are the new values.  The
+     *                       number of elements in the list should match the length of {@code expressions}.
+     * @param recordsToInsert  An *optional* list of new binary-avro encoded records to insert, one for each update.  If one of
+     *                         {@code expressions} does not yield a matching record to be updated, then the corresponding element
+     *                         from this list will be added to the table.
+     * @param recordsToInsertStr  An optional list of new json-avro encoded objects to insert, one for each update, to be added to
+     *                            the set if the particular update did not affect any objects.
+     * @param recordEncoding  Identifies which of {@code recordsToInsert} and {@code recordsToInsertStr} should be used. Values:
+     *                        binary, json.
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>global_expression: An optional global expression to reduce the search space of the predicates listed in @{input expressions}.  
-     *     <li>bypass_safety_checks: When set to 'true', all predicates are available for primary key updates.  Keep in mind that it is possible to destroy data in this case, since a single predicate may match multiple objects (potentially all of records of a table), and then updating all of those records to have the same primary key will, due to the primary key uniqueness constraints, effectively delete all but one of those updated records.  values:TRUE, FALSE
-     *     <li>update_on_existing_pk: Can be used to customize behavior when the updated primary key value already exists, as described in @{endpoint /insert/records}.  values:TRUE, FALSE
-     *     <li>record_id: ID of a single record to be updated (returned in the call to @{endpoint /insert/records} or @{endpoint /get/records/fromcollection}.  
-     * </ul>
+     *                 <ul>
+     *                         <li> global_expression: An optional global expression to reduce the search space of the predicates
+     *                 listed in {@code expressions}.
+     *                         <li> bypass_safety_checks: When set to 'true', all predicates are available for primary key updates.
+     *                 Keep in mind that it is possible to destroy data in this case, since a single predicate may match multiple
+     *                 objects (potentially all of records of a table), and then updating all of those records to have the same
+     *                 primary key will, due to the primary key uniqueness constraints, effectively delete all but one of those
+     *                 updated records. Values: true, false.
+     *                         <li> update_on_existing_pk: Can be used to customize behavior when the updated primary key value
+     *                 already exists, as described in {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}. Values:
+     *                 true, false.
+     *                         <li> record_id: ID of a single record to be updated (returned in the call to {@link
+     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} or {@link
+     *                 com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}).
+     *                 </ul>
      * 
      */
     public RawUpdateRecordsRequest(String tableName, List<String> expressions, List<Map<String, String>> newValuesMaps, List<ByteBuffer> recordsToInsert, List<String> recordsToInsertStr, String recordEncoding, Map<String, String> options) {
@@ -232,8 +233,7 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Table to be updated. Must be a currently existing table and not
-     *         a collection or view.
+     * @return Table to be updated. Must be a currently existing table and not a collection or view.
      * 
      */
     public String getTableName() {
@@ -242,8 +242,7 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Table to be updated. Must be a currently existing
-     *                   table and not a collection or view.
+     * @param tableName  Table to be updated. Must be a currently existing table and not a collection or view.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -255,8 +254,7 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A list of the actual predicates, one for each update; format
-     *         should follow the guidelines {@link
+     * @return A list of the actual predicates, one for each update; format should follow the guidelines {@link
      *         com.gpudb.GPUdb#filter(FilterRequest) here}.
      * 
      */
@@ -266,8 +264,7 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param expressions  A list of the actual predicates, one for each
-     *                     update; format should follow the guidelines {@link
+     * @param expressions  A list of the actual predicates, one for each update; format should follow the guidelines {@link
      *                     com.gpudb.GPUdb#filter(FilterRequest) here}.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -280,11 +277,9 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return List of new values for the matching records.  Each element is a
-     *         map with (key, value) pairs where the keys are the names of the
-     *         columns whose values are to be updated; the values are the new
-     *         values.  The number of elements in the list should match the
-     *         length of {@code expressions}.
+     * @return List of new values for the matching records.  Each element is a map with (key, value) pairs where the keys are the
+     *         names of the columns whose values are to be updated; the values are the new values.  The number of elements in the
+     *         list should match the length of {@code expressions}.
      * 
      */
     public List<Map<String, String>> getNewValuesMaps() {
@@ -293,12 +288,9 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param newValuesMaps  List of new values for the matching records.  Each
-     *                       element is a map with (key, value) pairs where the
-     *                       keys are the names of the columns whose values are
-     *                       to be updated; the values are the new values.  The
-     *                       number of elements in the list should match the
-     *                       length of {@code expressions}.
+     * @param newValuesMaps  List of new values for the matching records.  Each element is a map with (key, value) pairs where the
+     *                       keys are the names of the columns whose values are to be updated; the values are the new values.  The
+     *                       number of elements in the list should match the length of {@code expressions}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -310,10 +302,9 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return An *optional* list of new binary-avro encoded records to insert,
-     *         one for each update.  If one of {@code expressions} does not
-     *         yield a matching record to be updated, then the corresponding
-     *         element from this list will be added to the table.
+     * @return An *optional* list of new binary-avro encoded records to insert, one for each update.  If one of {@code expressions}
+     *         does not yield a matching record to be updated, then the corresponding element from this list will be added to the
+     *         table.
      * 
      */
     public List<ByteBuffer> getRecordsToInsert() {
@@ -322,12 +313,9 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param recordsToInsert  An *optional* list of new binary-avro encoded
-     *                         records to insert, one for each update.  If one
-     *                         of {@code expressions} does not yield a matching
-     *                         record to be updated, then the corresponding
-     *                         element from this list will be added to the
-     *                         table.
+     * @param recordsToInsert  An *optional* list of new binary-avro encoded records to insert, one for each update.  If one of
+     *                         {@code expressions} does not yield a matching record to be updated, then the corresponding element
+     *                         from this list will be added to the table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -339,9 +327,8 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return An optional list of new json-avro encoded objects to insert, one
-     *         for each update, to be added to the set if the particular update
-     *         did not affect any objects.
+     * @return An optional list of new json-avro encoded objects to insert, one for each update, to be added to the set if the
+     *         particular update did not affect any objects.
      * 
      */
     public List<String> getRecordsToInsertStr() {
@@ -350,10 +337,8 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param recordsToInsertStr  An optional list of new json-avro encoded
-     *                            objects to insert, one for each update, to be
-     *                            added to the set if the particular update did
-     *                            not affect any objects.
+     * @param recordsToInsertStr  An optional list of new json-avro encoded objects to insert, one for each update, to be added to
+     *                            the set if the particular update did not affect any objects.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -365,8 +350,7 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Identifies which of {@code recordsToInsert} and {@code
-     *         recordsToInsertStr} should be used.
+     * @return Identifies which of {@code recordsToInsert} and {@code recordsToInsertStr} should be used. Values: binary, json.
      * 
      */
     public String getRecordEncoding() {
@@ -375,8 +359,8 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param recordEncoding  Identifies which of {@code recordsToInsert} and
-     *                        {@code recordsToInsertStr} should be used.
+     * @param recordEncoding  Identifies which of {@code recordsToInsert} and {@code recordsToInsertStr} should be used. Values:
+     *                        binary, json.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -389,6 +373,20 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> global_expression: An optional global expression to reduce the search space of the predicates listed in
+     *         {@code expressions}.
+     *                 <li> bypass_safety_checks: When set to 'true', all predicates are available for primary key updates.  Keep in
+     *         mind that it is possible to destroy data in this case, since a single predicate may match multiple objects
+     *         (potentially all of records of a table), and then updating all of those records to have the same primary key will,
+     *         due to the primary key uniqueness constraints, effectively delete all but one of those updated records. Values: true,
+     *         false.
+     *                 <li> update_on_existing_pk: Can be used to customize behavior when the updated primary key value already
+     *         exists, as described in {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}. Values: true, false.
+     *                 <li> record_id: ID of a single record to be updated (returned in the call to {@link
+     *         com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} or {@link
+     *         com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}).
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -398,12 +396,21 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>global_expression: An optional global expression to reduce the search space of the predicates listed in @{input expressions}.  
-     *     <li>bypass_safety_checks: When set to 'true', all predicates are available for primary key updates.  Keep in mind that it is possible to destroy data in this case, since a single predicate may match multiple objects (potentially all of records of a table), and then updating all of those records to have the same primary key will, due to the primary key uniqueness constraints, effectively delete all but one of those updated records.  values:TRUE, FALSE
-     *     <li>update_on_existing_pk: Can be used to customize behavior when the updated primary key value already exists, as described in @{endpoint /insert/records}.  values:TRUE, FALSE
-     *     <li>record_id: ID of a single record to be updated (returned in the call to @{endpoint /insert/records} or @{endpoint /get/records/fromcollection}.  
-     * </ul>
+     *                 <ul>
+     *                         <li> global_expression: An optional global expression to reduce the search space of the predicates
+     *                 listed in {@code expressions}.
+     *                         <li> bypass_safety_checks: When set to 'true', all predicates are available for primary key updates.
+     *                 Keep in mind that it is possible to destroy data in this case, since a single predicate may match multiple
+     *                 objects (potentially all of records of a table), and then updating all of those records to have the same
+     *                 primary key will, due to the primary key uniqueness constraints, effectively delete all but one of those
+     *                 updated records. Values: true, false.
+     *                         <li> update_on_existing_pk: Can be used to customize behavior when the updated primary key value
+     *                 already exists, as described in {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}. Values:
+     *                 true, false.
+     *                         <li> record_id: ID of a single record to be updated (returned in the call to {@link
+     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} or {@link
+     *                 com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}).
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -414,8 +421,7 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -426,8 +432,7 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -466,8 +471,7 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

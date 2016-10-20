@@ -16,17 +16,13 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}.
- * <p>
- * Deletes record(s) matching the provided criteria from the given table. The
- * record selection criteria can either be one or more  {@code expressions}
- * (matching multiple records) or a single record identified by {@code
- * record_id} options.  Note that the two selection criteria are mutually
- * exclusive.  This operation cannot be run on a collection or a view.  The
- * operation is synchronous meaning that a response will not be available until
- * the request is completely processed and all the matching records are
- * deleted.
+ * A set of parameters for {@link com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}.
+ * <br />
+ * <br />Deletes record(s) matching the provided criteria from the given table. The record selection criteria can either be one or
+ * more  {@code expressions} (matching multiple records) or a single record identified by {@code record_id} options.  Note that the
+ * two selection criteria are mutually exclusive.  This operation cannot be run on a collection or a view.  The operation is
+ * synchronous meaning that a response will not be available until the request is completely processed and all the matching records
+ * are deleted.
  */
 public class DeleteRecordsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -40,8 +36,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -53,22 +48,25 @@ public class DeleteRecordsRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * A set of string constants for the parameter {@code options}.
+     * <br /><ul>
+     * <br />  <li> global_expression: An optional global expression to reduce the search space of the {@code expressions}.
+     * <br />  <li> record_id: A record id identifying a single record, obtained at the time of {@link
+     * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest) insertion of the record} or by calling {@link
+     * com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)} with the *return_record_ids* option.
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * An optional global expression to reduce the search space of the
-         * {@code expressions}.
+         * An optional global expression to reduce the search space of the {@code expressions}.
          */
         public static final String GLOBAL_EXPRESSION = "global_expression";
 
         /**
-         * A record id identifying a single record, obtained at the time of
-         * {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)
-         * insertion of the record} or by calling {@link
-         * com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
-         * with the *return_record_ids* option.
+         * A record id identifying a single record, obtained at the time of {@link
+         * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest) insertion of the record} or by calling {@link
+         * com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)} with the *return_record_ids* option.
          */
         public static final String RECORD_ID = "record_id";
 
@@ -92,20 +90,20 @@ public class DeleteRecordsRequest implements IndexedRecord {
     /**
      * Constructs a DeleteRecordsRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table from which to delete records. The
-     *                   set must be a currently existing table and not a
+     * @param tableName  Name of the table from which to delete records. The set must be a currently existing table and not a
      *                   collection or a view.
-     * @param expressions  A list of the actual predicates, one for each
-     *                     select; format should follow the guidelines provided
-     *                     {@link com.gpudb.GPUdb#filter(FilterRequest) here}.
-     *                     Specifying one or more {@code expressions} is
-     *                     mutually exclusive to specifying {@code record_id}
-     *                     in the {@code options}.
+     * @param expressions  A list of the actual predicates, one for each select; format should follow the guidelines provided {@link
+     *                     com.gpudb.GPUdb#filter(FilterRequest) here}. Specifying one or more {@code expressions} is mutually
+     *                     exclusive to specifying {@code record_id} in the {@code options}.
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>global_expression: An optional global expression to reduce the search space of the @{input expressions}.  
-     *     <li>record_id: A record id identifying a single record, obtained at the time of {insertion of the record}@{endpoint /insert/records} or by calling @{endpoint /get/records/fromcollection} with the *return_record_ids* option.  
-     * </ul>
+     *                 <ul>
+     *                         <li> global_expression: An optional global expression to reduce the search space of the {@code
+     *                 expressions}.
+     *                         <li> record_id: A record id identifying a single record, obtained at the time of {@link
+     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest) insertion of the record} or by calling {@link
+     *                 com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)} with the *return_record_ids*
+     *                 option.
+     *                 </ul>
      * 
      */
     public DeleteRecordsRequest(String tableName, List<String> expressions, Map<String, String> options) {
@@ -116,8 +114,8 @@ public class DeleteRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table from which to delete records. The set must be
-     *         a currently existing table and not a collection or a view.
+     * @return Name of the table from which to delete records. The set must be a currently existing table and not a collection or a
+     *         view.
      * 
      */
     public String getTableName() {
@@ -126,8 +124,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table from which to delete records. The
-     *                   set must be a currently existing table and not a
+     * @param tableName  Name of the table from which to delete records. The set must be a currently existing table and not a
      *                   collection or a view.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -140,11 +137,9 @@ public class DeleteRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A list of the actual predicates, one for each select; format
-     *         should follow the guidelines provided {@link
-     *         com.gpudb.GPUdb#filter(FilterRequest) here}. Specifying one or
-     *         more {@code expressions} is mutually exclusive to specifying
-     *         {@code record_id} in the {@code options}.
+     * @return A list of the actual predicates, one for each select; format should follow the guidelines provided {@link
+     *         com.gpudb.GPUdb#filter(FilterRequest) here}. Specifying one or more {@code expressions} is mutually exclusive to
+     *         specifying {@code record_id} in the {@code options}.
      * 
      */
     public List<String> getExpressions() {
@@ -153,12 +148,9 @@ public class DeleteRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param expressions  A list of the actual predicates, one for each
-     *                     select; format should follow the guidelines provided
-     *                     {@link com.gpudb.GPUdb#filter(FilterRequest) here}.
-     *                     Specifying one or more {@code expressions} is
-     *                     mutually exclusive to specifying {@code record_id}
-     *                     in the {@code options}.
+     * @param expressions  A list of the actual predicates, one for each select; format should follow the guidelines provided {@link
+     *                     com.gpudb.GPUdb#filter(FilterRequest) here}. Specifying one or more {@code expressions} is mutually
+     *                     exclusive to specifying {@code record_id} in the {@code options}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -171,6 +163,12 @@ public class DeleteRecordsRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> global_expression: An optional global expression to reduce the search space of the {@code expressions}.
+     *                 <li> record_id: A record id identifying a single record, obtained at the time of {@link
+     *         com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest) insertion of the record} or by calling {@link
+     *         com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)} with the *return_record_ids* option.
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -180,10 +178,14 @@ public class DeleteRecordsRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>global_expression: An optional global expression to reduce the search space of the @{input expressions}.  
-     *     <li>record_id: A record id identifying a single record, obtained at the time of {insertion of the record}@{endpoint /insert/records} or by calling @{endpoint /get/records/fromcollection} with the *return_record_ids* option.  
-     * </ul>
+     *                 <ul>
+     *                         <li> global_expression: An optional global expression to reduce the search space of the {@code
+     *                 expressions}.
+     *                         <li> record_id: A record id identifying a single record, obtained at the time of {@link
+     *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest) insertion of the record} or by calling {@link
+     *                 com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)} with the *return_record_ids*
+     *                 option.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -194,8 +196,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -206,8 +207,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -234,8 +234,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

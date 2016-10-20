@@ -14,14 +14,11 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#showTablesByType(ShowTablesByTypeRequest)}.
- * <p>
- * Gets names of the tables from GPUdb based on the type information. Each
- * table in GPUdb has a particular type. This type is made out of the type
- * label, schema of the table and the semantic type of the table. This function
- * allows a look up of the existing tables based on full or partial type
- * information. The operation is synchronous.
+ * A set of parameters for {@link com.gpudb.GPUdb#showTablesByType(ShowTablesByTypeRequest)}.
+ * <br />
+ * <br />Gets names of the tables from GPUdb based on the type information. Each table in GPUdb has a particular type. This type is
+ * made out of the type label, schema of the table and the semantic type of the table. This function allows a look up of the
+ * existing tables based on full or partial type information. The operation is synchronous.
  */
 public class ShowTablesByTypeRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -35,8 +32,7 @@ public class ShowTablesByTypeRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -60,13 +56,11 @@ public class ShowTablesByTypeRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a ShowTablesByTypeRequest object with the specified
-     * parameters.
+     * Constructs a ShowTablesByTypeRequest object with the specified parameters.
      * 
-     * @param typeId  Type id returned by a call to {@link
-     *                com.gpudb.GPUdb#createType(CreateTypeRequest)}.
-     * @param label  Optional user supplied label which can be used instead of
-     *               the type_id to retrieve all tables with the given label.
+     * @param typeId  Type id returned by a call to {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}.
+     * @param label  Optional user supplied label which can be used instead of the type_id to retrieve all tables with the given
+     *               label.
      * @param options  Optional parameters.
      * 
      */
@@ -78,8 +72,7 @@ public class ShowTablesByTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Type id returned by a call to {@link
-     *         com.gpudb.GPUdb#createType(CreateTypeRequest)}.
+     * @return Type id returned by a call to {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}.
      * 
      */
     public String getTypeId() {
@@ -88,8 +81,7 @@ public class ShowTablesByTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param typeId  Type id returned by a call to {@link
-     *                com.gpudb.GPUdb#createType(CreateTypeRequest)}.
+     * @param typeId  Type id returned by a call to {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -101,8 +93,7 @@ public class ShowTablesByTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional user supplied label which can be used instead of the
-     *         type_id to retrieve all tables with the given label.
+     * @return Optional user supplied label which can be used instead of the type_id to retrieve all tables with the given label.
      * 
      */
     public String getLabel() {
@@ -111,8 +102,8 @@ public class ShowTablesByTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param label  Optional user supplied label which can be used instead of
-     *               the type_id to retrieve all tables with the given label.
+     * @param label  Optional user supplied label which can be used instead of the type_id to retrieve all tables with the given
+     *               label.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -144,8 +135,7 @@ public class ShowTablesByTypeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -156,8 +146,7 @@ public class ShowTablesByTypeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -184,8 +173,7 @@ public class ShowTablesByTypeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

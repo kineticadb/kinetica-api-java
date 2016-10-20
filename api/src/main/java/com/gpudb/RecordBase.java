@@ -340,7 +340,7 @@ public abstract class RecordBase implements Record {
             return false;
         }
 
-        DynamicTableRecord that = (DynamicTableRecord)obj;
+        RecordBase that = (RecordBase)obj;
 
         if (!that.getType().equals(this.getType())) {
             return false;

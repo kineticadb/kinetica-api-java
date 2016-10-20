@@ -15,8 +15,7 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#showTableMetadata(ShowTableMetadataRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#showTableMetadata(ShowTableMetadataRequest)}.
  */
 public class ShowTableMetadataResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -29,8 +28,7 @@ public class ShowTableMetadataResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -72,9 +70,8 @@ public class ShowTableMetadataResponse implements IndexedRecord {
 
     /**
      * 
-     * @return A list of maps which contain the metadata of the tables in the
-     *         order the tables are listed in {@code tableNames}. Each map has
-     *         (metadata attribute name, metadata attribute value) pairs.
+     * @return A list of maps which contain the metadata of the tables in the order the tables are listed in {@code tableNames}.
+     *         Each map has (metadata attribute name, metadata attribute value) pairs.
      * 
      */
     public List<Map<String, String>> getMetadataMaps() {
@@ -83,10 +80,8 @@ public class ShowTableMetadataResponse implements IndexedRecord {
 
     /**
      * 
-     * @param metadataMaps  A list of maps which contain the metadata of the
-     *                      tables in the order the tables are listed in {@code
-     *                      tableNames}. Each map has (metadata attribute name,
-     *                      metadata attribute value) pairs.
+     * @param metadataMaps  A list of maps which contain the metadata of the tables in the order the tables are listed in {@code
+     *                      tableNames}. Each map has (metadata attribute name, metadata attribute value) pairs.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -97,8 +92,7 @@ public class ShowTableMetadataResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -109,8 +103,7 @@ public class ShowTableMetadataResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -134,8 +127,7 @@ public class ShowTableMetadataResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

@@ -16,23 +16,16 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#createTriggerByRange(CreateTriggerByRangeRequest)}.
- * <p>
- * Sets up a simple range trigger for a column_name for one or more tables.
- * Once the trigger has been activated, any record added to the listed
- * tables(s) via {@link
- * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} with the chosen
- * column_name's value falling within the specified range will trip the
- * trigger. All such records will be queued at GPUdb's trigger port-by default
- * '9001' but can also be obtained via {@link
- * com.gpudb.GPUdb#showSystemStatus(ShowSystemStatusRequest)}-for any listening
- * client to collect. Active triggers can be cancelled by using the {@link
- * com.gpudb.GPUdb#clearTrigger(ClearTriggerRequest)} endpoint or by clearing
- * all relevant tables.
- * <p>
- * The output returns the trigger handle as well as indicating success or
- * failure of the trigger activation.
+ * A set of parameters for {@link com.gpudb.GPUdb#createTriggerByRange(CreateTriggerByRangeRequest)}.
+ * <br />
+ * <br />Sets up a simple range trigger for a column_name for one or more tables. Once the trigger has been activated, any record
+ * added to the listed tables(s) via {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} with the chosen column_name's
+ * value falling within the specified range will trip the trigger. All such records will be queued at GPUdb's trigger port-by
+ * default '9001' but can also be obtained via {@link com.gpudb.GPUdb#showSystemStatus(ShowSystemStatusRequest)}-for any listening
+ * client to collect. Active triggers can be cancelled by using the {@link com.gpudb.GPUdb#clearTrigger(ClearTriggerRequest)}
+ * endpoint or by clearing all relevant tables.
+ * <br />
+ * <br />The output returns the trigger handle as well as indicating success or failure of the trigger activation.
  */
 public class CreateTriggerByRangeRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -49,8 +42,7 @@ public class CreateTriggerByRangeRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -78,13 +70,11 @@ public class CreateTriggerByRangeRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a CreateTriggerByRangeRequest object with the specified
-     * parameters.
+     * Constructs a CreateTriggerByRangeRequest object with the specified parameters.
      * 
      * @param requestId  ID for the trigger request.
      * @param tableNames  Tables on which the trigger will be active.
-     * @param columnName  Name of a numeric column_name on which the trigger is
-     *                    activated.
+     * @param columnName  Name of a numeric column_name on which the trigger is activated.
      * @param min  The lower bound (inclusive) for the trigger range.
      * @param max  The upper bound (inclusive) for the trigger range.
      * @param options  Optional parameters.
@@ -152,8 +142,7 @@ public class CreateTriggerByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnName  Name of a numeric column_name on which the trigger is
-     *                    activated.
+     * @param columnName  Name of a numeric column_name on which the trigger is activated.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -227,8 +216,7 @@ public class CreateTriggerByRangeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -239,8 +227,7 @@ public class CreateTriggerByRangeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -276,8 +263,7 @@ public class CreateTriggerByRangeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

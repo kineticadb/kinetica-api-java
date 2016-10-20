@@ -26,6 +26,12 @@ final class DynamicTableRecord extends RecordBase {
         int fieldCount = schema.getFields().size() - 1;
         int recordCount = ((List<?>)data.get(0)).size();
         List<String> expressions = (List<String>)data.get(fieldCount);
+
+        if (expressions.size() < fieldCount)
+        {
+            throw new GPUdbException("Every field must have a corresponding expression.");
+        }
+
         List<Type.Column> columns = new ArrayList<>();
 
         for (int i = 0; i < fieldCount; i++) {
@@ -35,9 +41,24 @@ final class DynamicTableRecord extends RecordBase {
                 throw new GPUdbException("Field " + field.name() + " must be of type array.");
             }
 
+            Schema fieldSchema = field.schema().getElementType();
+            Schema.Type fieldType = fieldSchema.getType();
+            boolean isNullable = false;
+
+            if (fieldType == Schema.Type.UNION) {
+                List<Schema> fieldUnionTypes = fieldSchema.getTypes();
+
+                if (fieldUnionTypes.size() == 2 && fieldUnionTypes.get(1).getType() == Schema.Type.NULL) {
+                    fieldType = fieldUnionTypes.get(0).getType();
+                    isNullable = true;
+                } else {
+                    throw new GPUdbException("Field " + field.name() + " has invalid type.");
+                }
+            }
+
             Class<?> columnType;
 
-            switch (field.schema().getElementType().getType()) {
+            switch (fieldType) {
                 case BYTES:
                     columnType = ByteBuffer.class;
                     break;
@@ -102,7 +123,11 @@ final class DynamicTableRecord extends RecordBase {
                 }
             }
 
-            columns.add(new Type.Column(name, columnType));
+            if (isNullable) {
+                columns.add(new Type.Column(name, columnType, "nullable"));
+            } else {
+                columns.add(new Type.Column(name, columnType));
+            }
         }
 
         Type type = new Type("", columns);

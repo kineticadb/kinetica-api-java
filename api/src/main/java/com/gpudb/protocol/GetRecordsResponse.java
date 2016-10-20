@@ -11,8 +11,7 @@ import org.apache.avro.generic.GenericData;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#getRecords(Object,
- * GetRecordsRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#getRecords(Object, GetRecordsRequest)}.
  * 
  * @param <T>  The type of object being processed.
  * 
@@ -79,8 +78,7 @@ public class GetRecordsResponse<T> {
 
     /**
      * 
-     * @param typeSchema  Avro schema of {@code recordsBinary} or {@code
-     *                    recordsJson}
+     * @param typeSchema  Avro schema of {@code recordsBinary} or {@code recordsJson}
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -92,9 +90,8 @@ public class GetRecordsResponse<T> {
 
     /**
      * 
-     * @return If the {@code encoding} was 'binary', then this list contains
-     *         the JSON encoded records retrieved from the set, otherwise not
-     *         populated.
+     * @return If the {@code encoding} was 'binary', then this list contains the JSON encoded records retrieved from the set,
+     *         otherwise not populated.
      * 
      */
     public List<T> getData() {
@@ -103,8 +100,7 @@ public class GetRecordsResponse<T> {
 
     /**
      * 
-     * @param data  If the {@code encoding} was 'binary', then this list
-     *              contains the JSON encoded records retrieved from the set,
+     * @param data  If the {@code encoding} was 'binary', then this list contains the JSON encoded records retrieved from the set,
      *              otherwise not populated.
      * 
      * @return {@code this} to mimic the builder pattern.

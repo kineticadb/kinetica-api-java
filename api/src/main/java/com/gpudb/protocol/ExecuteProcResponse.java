@@ -15,8 +15,7 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
  */
 public class ExecuteProcResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -29,8 +28,7 @@ public class ExecuteProcResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -51,8 +49,8 @@ public class ExecuteProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @return A map containing string results returned from the proc. Each
-     *         key/value pair specifies the name of a result and its value.
+     * @return A map containing string results returned from the proc. Each key/value pair specifies the name of a result and its
+     *         value.
      * 
      */
     public Map<String, String> getResults() {
@@ -61,9 +59,8 @@ public class ExecuteProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @param results  A map containing string results returned from the proc.
-     *                 Each key/value pair specifies the name of a result and
-     *                 its value.
+     * @param results  A map containing string results returned from the proc. Each key/value pair specifies the name of a result
+     *                 and its value.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -75,8 +72,8 @@ public class ExecuteProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @return A map containing binary results returned from the proc. Each
-     *         key/value pair specifies the name of a result and its value.
+     * @return A map containing binary results returned from the proc. Each key/value pair specifies the name of a result and its
+     *         value.
      * 
      */
     public Map<String, ByteBuffer> getBinResults() {
@@ -85,9 +82,8 @@ public class ExecuteProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @param binResults  A map containing binary results returned from the
-     *                    proc. Each key/value pair specifies the name of a
-     *                    result and its value.
+     * @param binResults  A map containing binary results returned from the proc. Each key/value pair specifies the name of a result
+     *                    and its value.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -98,8 +94,7 @@ public class ExecuteProcResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -110,8 +105,7 @@ public class ExecuteProcResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -135,8 +129,7 @@ public class ExecuteProcResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

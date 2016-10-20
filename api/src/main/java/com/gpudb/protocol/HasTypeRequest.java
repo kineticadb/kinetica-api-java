@@ -15,8 +15,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#hasType(HasTypeRequest)}.
- * <p>
- * Check the existence of a type in GPUdb.
+ * <br />
+ * <br />Check the existence of a type in GPUdb.
  */
 public class HasTypeRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -29,8 +29,7 @@ public class HasTypeRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -54,8 +53,7 @@ public class HasTypeRequest implements IndexedRecord {
     /**
      * Constructs a HasTypeRequest object with the specified parameters.
      * 
-     * @param typeId  Id of the type returned by GPUdb in response to {@link
-     *                com.gpudb.GPUdb#createType(CreateTypeRequest)} request.
+     * @param typeId  Id of the type returned by GPUdb in response to {@link com.gpudb.GPUdb#createType(CreateTypeRequest)} request.
      * @param options  Optional parameters.
      * 
      */
@@ -66,8 +64,7 @@ public class HasTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Id of the type returned by GPUdb in response to {@link
-     *         com.gpudb.GPUdb#createType(CreateTypeRequest)} request.
+     * @return Id of the type returned by GPUdb in response to {@link com.gpudb.GPUdb#createType(CreateTypeRequest)} request.
      * 
      */
     public String getTypeId() {
@@ -76,8 +73,7 @@ public class HasTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param typeId  Id of the type returned by GPUdb in response to {@link
-     *                com.gpudb.GPUdb#createType(CreateTypeRequest)} request.
+     * @param typeId  Id of the type returned by GPUdb in response to {@link com.gpudb.GPUdb#createType(CreateTypeRequest)} request.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -109,8 +105,7 @@ public class HasTypeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -121,8 +116,7 @@ public class HasTypeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -146,8 +140,7 @@ public class HasTypeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

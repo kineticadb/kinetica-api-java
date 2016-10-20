@@ -12,8 +12,7 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
  */
 public class CreateTableMonitorResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -27,8 +26,7 @@ public class CreateTableMonitorResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -92,8 +90,7 @@ public class CreateTableMonitorResponse implements IndexedRecord {
 
     /**
      * 
-     * @return JSON Avro schema of the table, for use in decoding published
-     *         records.
+     * @return JSON Avro schema of the table, for use in decoding published records.
      * 
      */
     public String getTypeSchema() {
@@ -102,8 +99,7 @@ public class CreateTableMonitorResponse implements IndexedRecord {
 
     /**
      * 
-     * @param typeSchema  JSON Avro schema of the table, for use in decoding
-     *                    published records.
+     * @param typeSchema  JSON Avro schema of the table, for use in decoding published records.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -114,8 +110,7 @@ public class CreateTableMonitorResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -126,8 +121,7 @@ public class CreateTableMonitorResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -154,8 +148,7 @@ public class CreateTableMonitorResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

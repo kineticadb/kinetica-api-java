@@ -11,9 +11,7 @@ import org.apache.avro.generic.GenericData;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#getRecordsFromCollection(Object,
- * GetRecordsFromCollectionRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#getRecordsFromCollection(Object, GetRecordsFromCollectionRequest)}.
  * 
  * @param <T>  The type of object being processed.
  * 
@@ -26,8 +24,7 @@ public class GetRecordsFromCollectionResponse<T> {
 
 
     /**
-     * Constructs a GetRecordsFromCollectionResponse object with default
-     * parameters.
+     * Constructs a GetRecordsFromCollectionResponse object with default parameters.
      */
     public GetRecordsFromCollectionResponse() {
     }
@@ -55,10 +52,8 @@ public class GetRecordsFromCollectionResponse<T> {
 
     /**
      * 
-     * @return The type IDs of the corresponding records in {@code
-     *         recordsBinary} or {@code recordsJson}. This is useful when
-     *         {@code tableName} is a heterogeneous collection (i.e. the child
-     *         tables are not all of the same type).
+     * @return The type IDs of the corresponding records in {@code recordsBinary} or {@code recordsJson}. This is useful when {@code
+     *         tableName} is a heterogeneous collection (i.e. the child tables are not all of the same type).
      * 
      */
     public List<String> getTypeNames() {
@@ -67,10 +62,8 @@ public class GetRecordsFromCollectionResponse<T> {
 
     /**
      * 
-     * @param typeNames  The type IDs of the corresponding records in {@code
-     *                   recordsBinary} or {@code recordsJson}. This is useful
-     *                   when {@code tableName} is a heterogeneous collection
-     *                   (i.e. the child tables are not all of the same type).
+     * @param typeNames  The type IDs of the corresponding records in {@code recordsBinary} or {@code recordsJson}. This is useful
+     *                   when {@code tableName} is a heterogeneous collection (i.e. the child tables are not all of the same type).
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -82,9 +75,8 @@ public class GetRecordsFromCollectionResponse<T> {
 
     /**
      * 
-     * @return If the encoding parameter of the request was 'binary' then this
-     *         list contains the binary encoded records retrieved from the
-     *         table/collection. Otherwise, empty list.
+     * @return If the encoding parameter of the request was 'binary' then this list contains the binary encoded records retrieved
+     *         from the table/collection. Otherwise, empty list.
      * 
      */
     public List<T> getData() {
@@ -93,9 +85,8 @@ public class GetRecordsFromCollectionResponse<T> {
 
     /**
      * 
-     * @param data  If the encoding parameter of the request was 'binary' then
-     *              this list contains the binary encoded records retrieved
-     *              from the table/collection. Otherwise, empty list.
+     * @param data  If the encoding parameter of the request was 'binary' then this list contains the binary encoded records
+     *              retrieved from the table/collection. Otherwise, empty list.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -107,9 +98,8 @@ public class GetRecordsFromCollectionResponse<T> {
 
     /**
      * 
-     * @return If the 'return_record_ids' option of the request was 'true',
-     *         then this list contains the internal GPUdb id for each object.
-     *         Otherwise it will be empty.
+     * @return If the 'return_record_ids' option of the request was 'true', then this list contains the internal GPUdb id for each
+     *         object. Otherwise it will be empty.
      * 
      */
     public List<String> getRecordIds() {
@@ -118,8 +108,7 @@ public class GetRecordsFromCollectionResponse<T> {
 
     /**
      * 
-     * @param recordIds  If the 'return_record_ids' option of the request was
-     *                   'true', then this list contains the internal GPUdb id
+     * @param recordIds  If the 'return_record_ids' option of the request was 'true', then this list contains the internal GPUdb id
      *                   for each object. Otherwise it will be empty.
      * 
      * @return {@code this} to mimic the builder pattern.

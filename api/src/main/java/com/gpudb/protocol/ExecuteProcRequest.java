@@ -15,10 +15,9 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
- * <p>
- * Executes a proc in the GPUdb Node.js proc server.
+ * A set of parameters for {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
+ * <br />
+ * <br />Executes a proc in the GPUdb Node.js proc server.
  */
 public class ExecuteProcRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -33,8 +32,7 @@ public class ExecuteProcRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -63,11 +61,9 @@ public class ExecuteProcRequest implements IndexedRecord {
      * Constructs an ExecuteProcRequest object with the specified parameters.
      * 
      * @param name  Name of the proc to execute.
-     * @param params  A map containing string parameters to pass to the proc.
-     *                Each key/value pair specifies the name of a parameter and
-     *                its value.
-     * @param binParams  A map containing binary parameters to pass to the
-     *                   proc. Each key/value pair specifies the name of a
+     * @param params  A map containing string parameters to pass to the proc. Each key/value pair specifies the name of a parameter
+     *                and its value.
+     * @param binParams  A map containing binary parameters to pass to the proc. Each key/value pair specifies the name of a
      *                   parameter and its value.
      * @param options  Optional parameters.
      * 
@@ -102,8 +98,8 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A map containing string parameters to pass to the proc. Each
-     *         key/value pair specifies the name of a parameter and its value.
+     * @return A map containing string parameters to pass to the proc. Each key/value pair specifies the name of a parameter and its
+     *         value.
      * 
      */
     public Map<String, String> getParams() {
@@ -112,9 +108,8 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param params  A map containing string parameters to pass to the proc.
-     *                Each key/value pair specifies the name of a parameter and
-     *                its value.
+     * @param params  A map containing string parameters to pass to the proc. Each key/value pair specifies the name of a parameter
+     *                and its value.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -126,8 +121,8 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A map containing binary parameters to pass to the proc. Each
-     *         key/value pair specifies the name of a parameter and its value.
+     * @return A map containing binary parameters to pass to the proc. Each key/value pair specifies the name of a parameter and its
+     *         value.
      * 
      */
     public Map<String, ByteBuffer> getBinParams() {
@@ -136,8 +131,7 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param binParams  A map containing binary parameters to pass to the
-     *                   proc. Each key/value pair specifies the name of a
+     * @param binParams  A map containing binary parameters to pass to the proc. Each key/value pair specifies the name of a
      *                   parameter and its value.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -170,8 +164,7 @@ public class ExecuteProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -182,8 +175,7 @@ public class ExecuteProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -213,8 +205,7 @@ public class ExecuteProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

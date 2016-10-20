@@ -427,6 +427,14 @@ public abstract class GPUdbBase {
         return result;
     }
 
+    // Constants
+
+    /**
+     * Constant used with certain requests to indicate that the maximum allowed
+     * number of results should be returned.
+     */
+    public static final long END_OF_SET = -9999;
+
     // Fields
 
     private URL url;

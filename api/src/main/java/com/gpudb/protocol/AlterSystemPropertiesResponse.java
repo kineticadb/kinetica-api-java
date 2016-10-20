@@ -14,8 +14,7 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#alterSystemProperties(AlterSystemPropertiesRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#alterSystemProperties(AlterSystemPropertiesRequest)}.
  */
 public class AlterSystemPropertiesResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -27,8 +26,7 @@ public class AlterSystemPropertiesResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -41,16 +39,14 @@ public class AlterSystemPropertiesResponse implements IndexedRecord {
 
 
     /**
-     * Constructs an AlterSystemPropertiesResponse object with default
-     * parameters.
+     * Constructs an AlterSystemPropertiesResponse object with default parameters.
      */
     public AlterSystemPropertiesResponse() {
     }
 
     /**
      * 
-     * @return map of values updated, For speed tests a map of values measured
-     *         to the measurement
+     * @return map of values updated, For speed tests a map of values measured to the measurement
      * 
      */
     public Map<String, String> getUpdatedPropertiesMap() {
@@ -59,8 +55,7 @@ public class AlterSystemPropertiesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param updatedPropertiesMap  map of values updated, For speed tests a
-     *                              map of values measured to the measurement
+     * @param updatedPropertiesMap  map of values updated, For speed tests a map of values measured to the measurement
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -71,8 +66,7 @@ public class AlterSystemPropertiesResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -83,8 +77,7 @@ public class AlterSystemPropertiesResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -105,8 +98,7 @@ public class AlterSystemPropertiesResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

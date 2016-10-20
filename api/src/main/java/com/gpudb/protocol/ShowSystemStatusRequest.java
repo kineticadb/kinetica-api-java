@@ -14,11 +14,10 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#showSystemStatus(ShowSystemStatusRequest)}.
- * <p>
- * Provides server configuration and health related status to the caller. The
- * GPUdb Admin tool uses it to present server related information to the user.
+ * A set of parameters for {@link com.gpudb.GPUdb#showSystemStatus(ShowSystemStatusRequest)}.
+ * <br />
+ * <br />Provides server configuration and health related status to the caller. The GPUdb Admin tool uses it to present server
+ * related information to the user.
  */
 public class ShowSystemStatusRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -30,8 +29,7 @@ public class ShowSystemStatusRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -51,8 +49,7 @@ public class ShowSystemStatusRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a ShowSystemStatusRequest object with the specified
-     * parameters.
+     * Constructs a ShowSystemStatusRequest object with the specified parameters.
      * 
      * @param options  Optional parameters, currently unused.
      * 
@@ -83,8 +80,7 @@ public class ShowSystemStatusRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -95,8 +91,7 @@ public class ShowSystemStatusRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -117,8 +112,7 @@ public class ShowSystemStatusRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

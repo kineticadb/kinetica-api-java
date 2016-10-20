@@ -16,10 +16,9 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#createUnion(CreateUnionRequest)}.
- * <p>
- * Creates a table that is the union of one or more existing tables.
+ * A set of parameters for {@link com.gpudb.GPUdb#createUnion(CreateUnionRequest)}.
+ * <br />
+ * <br />Creates a table that is the union of one or more existing tables.
  */
 public class CreateUnionRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -35,8 +34,7 @@ public class CreateUnionRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -48,14 +46,17 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * A set of string constants for the parameter {@code options}.
+     * <br /><ul>
+     * <br />  <li> collection_name: Name of a collection in GPUdb to which the union is to be assigned as a child table. If empty,
+     * then the union will be a top level table.
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * Name of a collection in GPUdb to which the union is to be assigned
-         * as a child table. If empty, then the union will be a top level
-         * table.
+         * Name of a collection in GPUdb to which the union is to be assigned as a child table. If empty, then the union will be a
+         * top level table.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -83,19 +84,16 @@ public class CreateUnionRequest implements IndexedRecord {
     /**
      * Constructs a CreateUnionRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to be created. Must not be the name
-     *                   of a currently existing GPUdb table. Cannot be an
+     * @param tableName  Name of the table to be created. Must not be the name of a currently existing GPUdb table. Cannot be an
      *                   empty string.
-     * @param tableNames  The list of table names making up the union. Must
-     *                    contain the names of one or more existing tables.
-     * @param inputColumnNames  The list of columns from each of the
-     *                          corresponding input tables.
-     * @param outputColumnNames  The list of names of the columns to be stored
-     *                           in the union.
+     * @param tableNames  The list of table names making up the union. Must contain the names of one or more existing tables.
+     * @param inputColumnNames  The list of columns from each of the corresponding input tables.
+     * @param outputColumnNames  The list of names of the columns to be stored in the union.
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>collection_name: Name of a collection in GPUdb to which the union is to be assigned as a child table. If empty, then the union will be a top level table.  
-     * </ul>
+     *                 <ul>
+     *                         <li> collection_name: Name of a collection in GPUdb to which the union is to be assigned as a child
+     *                 table. If empty, then the union will be a top level table.
+     *                 </ul>
      * 
      */
     public CreateUnionRequest(String tableName, List<String> tableNames, List<List<String>> inputColumnNames, List<String> outputColumnNames, Map<String, String> options) {
@@ -108,8 +106,7 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to be created. Must not be the name of a
-     *         currently existing GPUdb table. Cannot be an empty string.
+     * @return Name of the table to be created. Must not be the name of a currently existing GPUdb table. Cannot be an empty string.
      * 
      */
     public String getTableName() {
@@ -118,8 +115,7 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to be created. Must not be the name
-     *                   of a currently existing GPUdb table. Cannot be an
+     * @param tableName  Name of the table to be created. Must not be the name of a currently existing GPUdb table. Cannot be an
      *                   empty string.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -132,8 +128,7 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The list of table names making up the union. Must contain the
-     *         names of one or more existing tables.
+     * @return The list of table names making up the union. Must contain the names of one or more existing tables.
      * 
      */
     public List<String> getTableNames() {
@@ -142,8 +137,7 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  The list of table names making up the union. Must
-     *                    contain the names of one or more existing tables.
+     * @param tableNames  The list of table names making up the union. Must contain the names of one or more existing tables.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -164,8 +158,7 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param inputColumnNames  The list of columns from each of the
-     *                          corresponding input tables.
+     * @param inputColumnNames  The list of columns from each of the corresponding input tables.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -186,8 +179,7 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param outputColumnNames  The list of names of the columns to be stored
-     *                           in the union.
+     * @param outputColumnNames  The list of names of the columns to be stored in the union.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -200,6 +192,10 @@ public class CreateUnionRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> collection_name: Name of a collection in GPUdb to which the union is to be assigned as a child table. If
+     *         empty, then the union will be a top level table.
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -209,9 +205,10 @@ public class CreateUnionRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>collection_name: Name of a collection in GPUdb to which the union is to be assigned as a child table. If empty, then the union will be a top level table.  
-     * </ul>
+     *                 <ul>
+     *                         <li> collection_name: Name of a collection in GPUdb to which the union is to be assigned as a child
+     *                 table. If empty, then the union will be a top level table.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -222,8 +219,7 @@ public class CreateUnionRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -234,8 +230,7 @@ public class CreateUnionRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -268,8 +263,7 @@ public class CreateUnionRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

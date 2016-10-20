@@ -14,12 +14,10 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#showSystemProperties(ShowSystemPropertiesRequest)}.
- * <p>
- * Returns server configuration and version related information to the caller.
- * The GPUdb Admin tool uses it to present server related information to the
- * user.
+ * A set of parameters for {@link com.gpudb.GPUdb#showSystemProperties(ShowSystemPropertiesRequest)}.
+ * <br />
+ * <br />Returns server configuration and version related information to the caller. The GPUdb Admin tool uses it to present server
+ * related information to the user.
  */
 public class ShowSystemPropertiesRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -31,8 +29,7 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -44,13 +41,16 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * A set of string constants for the parameter {@code options}.
+     * <br /><ul>
+     * <br />  <li> properties: A list of comma separated names of properties requested. If not specified, all properties will be
+     * returned.
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * A list of comma separated names of properties requested. If not
-         * specified, all properties will be returned.
+         * A list of comma separated names of properties requested. If not specified, all properties will be returned.
          */
         public static final String PROPERTIES = "properties";
 
@@ -68,13 +68,13 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a ShowSystemPropertiesRequest object with the specified
-     * parameters.
+     * Constructs a ShowSystemPropertiesRequest object with the specified parameters.
      * 
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>properties: A list of comma separated names of properties requested. If not specified, all properties will be returned.  
-     * </ul>
+     *                 <ul>
+     *                         <li> properties: A list of comma separated names of properties requested. If not specified, all
+     *                 properties will be returned.
+     *                 </ul>
      * 
      */
     public ShowSystemPropertiesRequest(Map<String, String> options) {
@@ -84,6 +84,10 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> properties: A list of comma separated names of properties requested. If not specified, all properties
+     *         will be returned.
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -93,9 +97,10 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
-     * <ul>
-     *     <li>properties: A list of comma separated names of properties requested. If not specified, all properties will be returned.  
-     * </ul>
+     *                 <ul>
+     *                         <li> properties: A list of comma separated names of properties requested. If not specified, all
+     *                 properties will be returned.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -106,8 +111,7 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -118,8 +122,7 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -140,8 +143,7 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

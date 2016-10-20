@@ -33,13 +33,14 @@ public final class Type {
     public static final class Column {
         private String name;
         private Class<?> type;
+        private boolean isNullable;
         private List<String> properties;
 
         /**
          * Creates a {@link Column} object with the specified metadata.
          *
          * @param name        the name of the column
-         * @param type        the Java data type of the column.
+         * @param type        the Java data type of the column
          * @param properties  the list of properties that apply to the column;
          *                    defaults to none
          *
@@ -89,6 +90,10 @@ public final class Type {
                     if (property.isEmpty()) {
                         throw new IllegalArgumentException("Properties must not be empty.");
                     }
+
+                    if (!isNullable && property.equals("nullable")) {
+                        isNullable = true;
+                    }
                 }
             }
 
@@ -113,6 +118,15 @@ public final class Type {
          */
         public Class<?> getType() {
             return type;
+        }
+
+        /**
+         * Gets whether the column is nullable.
+         *
+         * @return  whether the column is nullable
+         */
+        public boolean isNullable() {
+            return isNullable;
         }
 
         /**
@@ -230,8 +244,7 @@ public final class Type {
 
     private String label;
     private List<Column> columns;
-    private Map<String, Column> columnMap;
-    private Map<String, Integer> columnIndexMap;
+    private Map<String, Integer> columnMap;
     private Schema schema;
 
     /**
@@ -290,17 +303,16 @@ public final class Type {
         this.label = label;
         this.columns = Collections.unmodifiableList(new ArrayList<>(columns));
         columnMap = new HashMap<>();
-        columnIndexMap = new HashMap<>();
 
         for (int i = 0; i < columns.size(); i++) {
             Column column = columns.get(i);
+            String columnName = column.getName();
 
-            if (columnMap.containsKey(column.getName())) {
-                throw new IllegalArgumentException("Duplicate column name " + column.getName() + " specified.");
+            if (columnMap.containsKey(columnName)) {
+                throw new IllegalArgumentException("Duplicate column name " + columnName+ " specified.");
             }
 
-            columnMap.put(column.getName(), column);
-            columnIndexMap.put(column.getName(), i);
+            columnMap.put(columnName, i);
         }
 
         createSchema();
@@ -337,6 +349,7 @@ public final class Type {
     public Type(String label, String typeSchema, Map<String, List<String>> properties) {
         this.label = label;
         columns = new ArrayList<>();
+        columnMap = new HashMap<>();
         JsonNode root;
 
         try {
@@ -374,21 +387,55 @@ public final class Type {
 
             String columnName = fieldName.getTextValue();
 
-            for (Column column : columns) {
-                if (column.getName().equals(columnName)) {
-                    throw new IllegalArgumentException("Duplicate field name " + columnName + ".");
-                }
+            if (columnMap.containsKey(columnName)) {
+                 throw new IllegalArgumentException("Duplicate field name " + columnName + ".");
             }
 
             JsonNode fieldType = field.get("type");
 
-            if (fieldType == null || !fieldType.isTextual()) {
+            if (fieldType == null) {
                 throw new IllegalArgumentException("Field " + columnName + " has no type.");
+            }
+
+            if (!fieldType.isTextual() && !fieldType.isArray()) {
+                throw new IllegalArgumentException("Field " + columnName + " has invalid type.");
+            }
+
+            String fieldTypeString = null;
+
+            if (fieldType.isTextual()) {
+                fieldTypeString = fieldType.getTextValue();
+            } else {
+                Iterator<JsonNode> fieldTypeIterator = fieldType.getElements();
+
+                while (fieldTypeIterator.hasNext()) {
+                    JsonNode fieldTypeElement = fieldTypeIterator.next();
+                    boolean valid = false;
+
+                    if (fieldTypeElement.isTextual()) {
+                        String fieldTypeElementString = fieldTypeElement.getTextValue();
+
+                        if (fieldTypeString != null && fieldTypeElementString.equals("null")) {
+                            valid = true;
+                        } else if (fieldTypeString == null) {
+                            fieldTypeString = fieldTypeElementString;
+                            valid = true;
+                        }
+                    }
+
+                    if (!valid) {
+                        throw new IllegalArgumentException("Field " + columnName + " has invalid type.");
+                    }
+                }
+
+                if (fieldTypeString == null) {
+                    throw new IllegalArgumentException("Field " + columnName + " has invalid type.");
+                }
             }
 
             Class<?> columnType;
 
-            switch (fieldType.getTextValue()) {
+            switch (fieldTypeString) {
                 case "bytes":
                     columnType = ByteBuffer.class;
                     break;
@@ -418,18 +465,10 @@ public final class Type {
             }
 
             columns.add(new Column(columnName, columnType, properties != null ? properties.get(columnName) : null));
+            columnMap.put(columnName, columns.size() - 1);
         }
 
         columns = Collections.unmodifiableList(columns);
-        columnMap = new HashMap<>();
-        columnIndexMap = new HashMap<>();
-
-        for (int i = 0; i < columns.size(); i++) {
-            Column column = columns.get(i);
-            columnMap.put(column.getName(), column);
-            columnIndexMap.put(column.getName(), i);
-        }
-
         createSchema();
     }
 
@@ -503,6 +542,10 @@ public final class Type {
                 throw new IllegalArgumentException("Column " + columnName + " must be of type ByteBuffer, Double, Float, Integer, Long or String.");
             }
 
+            if (column.isNullable()) {
+                fieldSchema = Schema.createUnion(fieldSchema, Schema.create(Schema.Type.NULL));
+            }
+
             Field field = new Field(fieldName, fieldSchema, null, (Object)null);
             fields.add(field);
         }
@@ -549,7 +592,7 @@ public final class Type {
      *              column exists
      */
     public Column getColumn(String name) {
-        return columnMap.get(name);
+        return columns.get(columnMap.get(name));
     }
 
     /**
@@ -569,7 +612,7 @@ public final class Type {
      *              such column exists
      */
     public int getColumnIndex(String name) {
-        Integer result = columnIndexMap.get(name);
+        Integer result = columnMap.get(name);
         return result == null ? -1 : result;
     }
 
@@ -614,21 +657,34 @@ public final class Type {
             String columnName = column.getName();
             field.put("name", columnName);
             Class<?> columnType = column.getType();
+            String columnTypeString;
 
             if (columnType == ByteBuffer.class) {
-                field.put("type", "bytes");
+                columnTypeString = "bytes";
             } else if (columnType == Double.class) {
-                field.put("type", "double");
+                columnTypeString = "double";
             } else if (columnType == Float.class) {
-                field.put("type", "float");
+                columnTypeString = "float";
             } else if (columnType == Integer.class) {
-                field.put("type", "int");
+                columnTypeString = "int";
             } else if (columnType == Long.class) {
-                field.put("type", "long");
+                columnTypeString = "long";
             } else if (columnType == String.class) {
-                field.put("type", "string");
+                columnTypeString = "string";
             } else {
                 throw new IllegalArgumentException("Column " + columnName + " must be of type ByteBuffer, Double, Float, Integer, Long or String.");
+            }
+
+            if (column.isNullable())
+            {
+                ArrayNode fieldArray = MAPPER.createArrayNode();
+                fieldArray.add(columnTypeString);
+                fieldArray.add("null");
+                field.put("type", fieldArray);
+            }
+            else
+            {
+                field.put("type", columnTypeString);
             }
 
             fields.add(field);

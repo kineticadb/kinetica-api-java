@@ -14,14 +14,11 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#alterSystemProperties(AlterSystemPropertiesRequest)}.
- * <p>
- * The alter_system_properties endpoint is primarily used to simplify the
- * testing of GPUdb and is not expected to be used during normal execution.
- * Commands are given through the properties_update_map whose keys are commands
- * and values are strings representing integer values (for example '8000') or
- * boolean values ('true' or 'false').
+ * A set of parameters for {@link com.gpudb.GPUdb#alterSystemProperties(AlterSystemPropertiesRequest)}.
+ * <br />
+ * <br />The alter_system_properties endpoint is primarily used to simplify the testing of GPUdb and is not expected to be used
+ * during normal execution.  Commands are given through the properties_update_map whose keys are commands and values are strings
+ * representing integer values (for example '8000') or boolean values ('true' or 'false').
  */
 public class AlterSystemPropertiesRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -34,8 +31,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -46,9 +42,32 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
 
     /**
-     * Map containing the properties of the system to be updated. Error if
-     * empty.
-     * A set of string constants for the parameter {@code propertyUpdatesMap}.
+     * Map containing the properties of the system to be updated. Error if empty.
+     * <br /><ul>
+     * <br />  <li> sm_omp_threads: Set the number of sm_omp_threads to the specified integer value.
+     * <br />  <li> kernel_omp_threads: Set the number of kernel_omp_threads to the specified integer value.
+     * <br />  <li> concurrent_kernel_execution: Enables concurrent kernel execution if the value is 'true' and disables it if the
+     * value is 'false'.
+     * <br />  <li> chunk_size: Sets the chunk size of all new sets to the specified integer value.
+     * <br />  <li> flush_to_disk: Flushes any changes to any tables to the persistent store.  These changes include updates to the
+     * vector store, object store, and text search store, Value string is ignored
+     * <br />  <li> clear_cache: Clears cached results.  Useful to allow repeated timing of endpoints. Value string is ignored
+     * <br />  <li> communicator_test: Invoke the communicator test and report timing results. Value string is is a comma separated
+     * list of <key>=<value> expressions.  Expressions are: num_transactions = <num> where <num> is the number of request reply
+     * transactions to invoke per test; message_size = <bytes> where bytes is the size of the messages to send in bytes;
+     * check_values = <enabled> where if enabled is true the value of the messages received are verified.
+     * <br />  <li> set_message_timers_enabled: Enables the communicator test to collect additional timing statistics when the value
+     * string is 'true'. Disables the collection when the value string is 'false'
+     * <br />  <li> bulk_add_test: Invoke the bulk_add test and report timing results. Value string is ignored.
+     * <br />  <li> network_speed: Invoke the network speed test and report timing results. Value string is a comma separated list
+     * of <key>=<value> expressions.  Expressions are: seconds = <time> where time is the time in seconds to run the test; data_size
+     * = <size> where <size> is the size in bytes of the block to be transferred; threads = <number of threads>; to_ranks = <comma
+     * separated list of ranks> where the list of ranks is the ranks that rank 0 will send data to and get data from. If to_ranks is
+     * unspecified then all worker ranks are used.
+     * <br />  <li> request_timeout: Number of minutes after which /filter/* and /aggregate/* queries will timeout.
+     * <br />  <li> max_get_records_size: set max_get_records_size. default 20000
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code propertyUpdatesMap}.
      */
     public static final class PropertyUpdatesMap {
 
@@ -63,8 +82,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String KERNEL_OMP_THREADS = "kernel_omp_threads";
 
         /**
-         * Enables concurrent kernel execution if the value is 'true' and
-         * disables it if the value is 'false'.
+         * Enables concurrent kernel execution if the value is 'true' and disables it if the value is 'false'.
          */
         public static final String CONCURRENT_KERNEL_EXECUTION = "concurrent_kernel_execution";
 
@@ -74,57 +92,46 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String CHUNK_SIZE = "chunk_size";
 
         /**
-         * Flushes any changes to any tables to the persistent store.  These
-         * changes include updates to the vector store, object store, and text
-         * search store, Value string is ignored
+         * Flushes any changes to any tables to the persistent store.  These changes include updates to the vector store, object
+         * store, and text search store, Value string is ignored
          */
         public static final String FLUSH_TO_DISK = "flush_to_disk";
 
         /**
-         * Clears cached results.  Useful to allow repeated timing of
-         * endpoints. Value string is ignored
+         * Clears cached results.  Useful to allow repeated timing of endpoints. Value string is ignored
          */
         public static final String CLEAR_CACHE = "clear_cache";
 
         /**
-         * Invoke the communicator test and report timing results. Value string
-         * is is a comma separated list of <key>=<value> expressions.
-         * Expressions are: num_transactions = <num> where <num> is the number
-         * of request reply transactions to invoke per test; message_size =
-         * <bytes> where bytes is the size of the messages to send in bytes;
-         * check_values = <enabled> where if enabled is true the value of the
-         * messages received are verified.
+         * Invoke the communicator test and report timing results. Value string is is a comma separated list of <key>=<value>
+         * expressions.  Expressions are: num_transactions = <num> where <num> is the number of request reply transactions to invoke
+         * per test; message_size = <bytes> where bytes is the size of the messages to send in bytes; check_values = <enabled> where
+         * if enabled is true the value of the messages received are verified.
          */
         public static final String COMMUNICATOR_TEST = "communicator_test";
 
         /**
-         * Enables the communicator test to collect additional timing
-         * statistics when the value string is 'true'. Disables the collection
-         * when the value string is 'false'
+         * Enables the communicator test to collect additional timing statistics when the value string is 'true'. Disables the
+         * collection when the value string is 'false'
          */
         public static final String SET_MESSAGE_TIMERS_ENABLED = "set_message_timers_enabled";
 
         /**
-         * Invoke the bulk_add test and report timing results. Value string is
-         * ignored.
+         * Invoke the bulk_add test and report timing results. Value string is ignored.
          */
         public static final String BULK_ADD_TEST = "bulk_add_test";
 
         /**
-         * Invoke the network speed test and report timing results. Value
-         * string is a comma separated list of <key>=<value> expressions.
-         * Expressions are: seconds = <time> where time is the time in seconds
-         * to run the test; data_size = <size> where <size> is the size in
-         * bytes of the block to be transferred; threads = <number of threads>;
-         * to_ranks = <comma separated list of ranks> where the list of ranks
-         * is the ranks that rank 0 will send data to and get data from. If
+         * Invoke the network speed test and report timing results. Value string is a comma separated list of <key>=<value>
+         * expressions.  Expressions are: seconds = <time> where time is the time in seconds to run the test; data_size = <size>
+         * where <size> is the size in bytes of the block to be transferred; threads = <number of threads>; to_ranks = <comma
+         * separated list of ranks> where the list of ranks is the ranks that rank 0 will send data to and get data from. If
          * to_ranks is unspecified then all worker ranks are used.
          */
         public static final String NETWORK_SPEED = "network_speed";
 
         /**
-         * Number of minutes after which /filter/* and /aggregate/* queries
-         * will timeout.
+         * Number of minutes after which /filter/* and /aggregate/* queries will timeout.
          */
         public static final String REQUEST_TIMEOUT = "request_timeout";
 
@@ -141,8 +148,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
 
     /**
-     * Constructs an AlterSystemPropertiesRequest object with default
-     * parameters.
+     * Constructs an AlterSystemPropertiesRequest object with default parameters.
      */
     public AlterSystemPropertiesRequest() {
         propertyUpdatesMap = new LinkedHashMap<>();
@@ -150,11 +156,41 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs an AlterSystemPropertiesRequest object with the specified
-     * parameters.
+     * Constructs an AlterSystemPropertiesRequest object with the specified parameters.
      * 
-     * @param propertyUpdatesMap  Map containing the properties of the system
-     *                            to be updated. Error if empty.
+     * @param propertyUpdatesMap  Map containing the properties of the system to be updated. Error if empty.
+     *                            <ul>
+     *                                    <li> sm_omp_threads: Set the number of sm_omp_threads to the specified integer value.
+     *                                    <li> kernel_omp_threads: Set the number of kernel_omp_threads to the specified integer
+     *                            value.
+     *                                    <li> concurrent_kernel_execution: Enables concurrent kernel execution if the value is
+     *                            'true' and disables it if the value is 'false'.
+     *                                    <li> chunk_size: Sets the chunk size of all new sets to the specified integer value.
+     *                                    <li> flush_to_disk: Flushes any changes to any tables to the persistent store.  These
+     *                            changes include updates to the vector store, object store, and text search store, Value string is
+     *                            ignored
+     *                                    <li> clear_cache: Clears cached results.  Useful to allow repeated timing of endpoints.
+     *                            Value string is ignored
+     *                                    <li> communicator_test: Invoke the communicator test and report timing results. Value
+     *                            string is is a comma separated list of <key>=<value> expressions.  Expressions are:
+     *                            num_transactions = <num> where <num> is the number of request reply transactions to invoke per
+     *                            test; message_size = <bytes> where bytes is the size of the messages to send in bytes;
+     *                            check_values = <enabled> where if enabled is true the value of the messages received are verified.
+     *                                    <li> set_message_timers_enabled: Enables the communicator test to collect additional
+     *                            timing statistics when the value string is 'true'. Disables the collection when the value string
+     *                            is 'false'
+     *                                    <li> bulk_add_test: Invoke the bulk_add test and report timing results. Value string is
+     *                            ignored.
+     *                                    <li> network_speed: Invoke the network speed test and report timing results. Value string
+     *                            is a comma separated list of <key>=<value> expressions.  Expressions are: seconds = <time> where
+     *                            time is the time in seconds to run the test; data_size = <size> where <size> is the size in bytes
+     *                            of the block to be transferred; threads = <number of threads>; to_ranks = <comma separated list of
+     *                            ranks> where the list of ranks is the ranks that rank 0 will send data to and get data from. If
+     *                            to_ranks is unspecified then all worker ranks are used.
+     *                                    <li> request_timeout: Number of minutes after which /filter/* and /aggregate/* queries
+     *                            will timeout.
+     *                                    <li> max_get_records_size: set max_get_records_size. default 20000
+     *                            </ul>
      * @param options  Optional parameters.
      * 
      */
@@ -165,8 +201,32 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Map containing the properties of the system to be updated. Error
-     *         if empty.
+     * @return Map containing the properties of the system to be updated. Error if empty.
+     *         <ul>
+     *                 <li> sm_omp_threads: Set the number of sm_omp_threads to the specified integer value.
+     *                 <li> kernel_omp_threads: Set the number of kernel_omp_threads to the specified integer value.
+     *                 <li> concurrent_kernel_execution: Enables concurrent kernel execution if the value is 'true' and disables it
+     *         if the value is 'false'.
+     *                 <li> chunk_size: Sets the chunk size of all new sets to the specified integer value.
+     *                 <li> flush_to_disk: Flushes any changes to any tables to the persistent store.  These changes include updates
+     *         to the vector store, object store, and text search store, Value string is ignored
+     *                 <li> clear_cache: Clears cached results.  Useful to allow repeated timing of endpoints. Value string is
+     *         ignored
+     *                 <li> communicator_test: Invoke the communicator test and report timing results. Value string is is a comma
+     *         separated list of <key>=<value> expressions.  Expressions are: num_transactions = <num> where <num> is the number of
+     *         request reply transactions to invoke per test; message_size = <bytes> where bytes is the size of the messages to send
+     *         in bytes; check_values = <enabled> where if enabled is true the value of the messages received are verified.
+     *                 <li> set_message_timers_enabled: Enables the communicator test to collect additional timing statistics when
+     *         the value string is 'true'. Disables the collection when the value string is 'false'
+     *                 <li> bulk_add_test: Invoke the bulk_add test and report timing results. Value string is ignored.
+     *                 <li> network_speed: Invoke the network speed test and report timing results. Value string is a comma
+     *         separated list of <key>=<value> expressions.  Expressions are: seconds = <time> where time is the time in seconds to
+     *         run the test; data_size = <size> where <size> is the size in bytes of the block to be transferred; threads = <number
+     *         of threads>; to_ranks = <comma separated list of ranks> where the list of ranks is the ranks that rank 0 will send
+     *         data to and get data from. If to_ranks is unspecified then all worker ranks are used.
+     *                 <li> request_timeout: Number of minutes after which /filter/* and /aggregate/* queries will timeout.
+     *                 <li> max_get_records_size: set max_get_records_size. default 20000
+     *         </ul>
      * 
      */
     public Map<String, String> getPropertyUpdatesMap() {
@@ -175,8 +235,39 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param propertyUpdatesMap  Map containing the properties of the system
-     *                            to be updated. Error if empty.
+     * @param propertyUpdatesMap  Map containing the properties of the system to be updated. Error if empty.
+     *                            <ul>
+     *                                    <li> sm_omp_threads: Set the number of sm_omp_threads to the specified integer value.
+     *                                    <li> kernel_omp_threads: Set the number of kernel_omp_threads to the specified integer
+     *                            value.
+     *                                    <li> concurrent_kernel_execution: Enables concurrent kernel execution if the value is
+     *                            'true' and disables it if the value is 'false'.
+     *                                    <li> chunk_size: Sets the chunk size of all new sets to the specified integer value.
+     *                                    <li> flush_to_disk: Flushes any changes to any tables to the persistent store.  These
+     *                            changes include updates to the vector store, object store, and text search store, Value string is
+     *                            ignored
+     *                                    <li> clear_cache: Clears cached results.  Useful to allow repeated timing of endpoints.
+     *                            Value string is ignored
+     *                                    <li> communicator_test: Invoke the communicator test and report timing results. Value
+     *                            string is is a comma separated list of <key>=<value> expressions.  Expressions are:
+     *                            num_transactions = <num> where <num> is the number of request reply transactions to invoke per
+     *                            test; message_size = <bytes> where bytes is the size of the messages to send in bytes;
+     *                            check_values = <enabled> where if enabled is true the value of the messages received are verified.
+     *                                    <li> set_message_timers_enabled: Enables the communicator test to collect additional
+     *                            timing statistics when the value string is 'true'. Disables the collection when the value string
+     *                            is 'false'
+     *                                    <li> bulk_add_test: Invoke the bulk_add test and report timing results. Value string is
+     *                            ignored.
+     *                                    <li> network_speed: Invoke the network speed test and report timing results. Value string
+     *                            is a comma separated list of <key>=<value> expressions.  Expressions are: seconds = <time> where
+     *                            time is the time in seconds to run the test; data_size = <size> where <size> is the size in bytes
+     *                            of the block to be transferred; threads = <number of threads>; to_ranks = <comma separated list of
+     *                            ranks> where the list of ranks is the ranks that rank 0 will send data to and get data from. If
+     *                            to_ranks is unspecified then all worker ranks are used.
+     *                                    <li> request_timeout: Number of minutes after which /filter/* and /aggregate/* queries
+     *                            will timeout.
+     *                                    <li> max_get_records_size: set max_get_records_size. default 20000
+     *                            </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -208,8 +299,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -220,8 +310,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -245,8 +334,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

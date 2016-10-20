@@ -14,11 +14,9 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#adminShutdown(AdminShutdownRequest)}.
- * <p>
- * Exits the GPUdb server application. A authorization code is required (chosen
- * at the time of GPUdb configuration) to successfully complete this request.
+ * A set of parameters for {@link com.gpudb.GPUdb#adminShutdown(AdminShutdownRequest)}.
+ * <br />
+ * <br />Exits the GPUdb server application.
  */
 public class AdminShutdownRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -32,8 +30,7 @@ public class AdminShutdownRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -60,9 +57,7 @@ public class AdminShutdownRequest implements IndexedRecord {
      * Constructs an AdminShutdownRequest object with the specified parameters.
      * 
      * @param exitType  Reserved for future use. User can pass an empty string.
-     * @param authorization  The password that GPUdb is configured with during
-     *                       startup. Incorrect or missing authorization code
-     *                       will result in an error.
+     * @param authorization  No longer used. User can pass an empty string.
      * @param options  Optional parameters.
      * 
      */
@@ -95,8 +90,7 @@ public class AdminShutdownRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The password that GPUdb is configured with during startup.
-     *         Incorrect or missing authorization code will result in an error.
+     * @return No longer used. User can pass an empty string.
      * 
      */
     public String getAuthorization() {
@@ -105,9 +99,7 @@ public class AdminShutdownRequest implements IndexedRecord {
 
     /**
      * 
-     * @param authorization  The password that GPUdb is configured with during
-     *                       startup. Incorrect or missing authorization code
-     *                       will result in an error.
+     * @param authorization  No longer used. User can pass an empty string.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -139,8 +131,7 @@ public class AdminShutdownRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -151,8 +142,7 @@ public class AdminShutdownRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -179,8 +169,7 @@ public class AdminShutdownRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called
-     * directly by the user.
+     * This method supports the Avro framework and is not intended to be called directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

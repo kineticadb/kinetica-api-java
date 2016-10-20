@@ -12,8 +12,7 @@ import org.apache.avro.generic.GenericData;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#aggregateGroupBy(AggregateGroupByRequest)}.
+ * A set of results returned by {@link com.gpudb.GPUdb#aggregateGroupBy(AggregateGroupByRequest)}.
  */
 public class AggregateGroupByResponse {
     private List<Record> data;
