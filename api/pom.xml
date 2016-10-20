@@ -5,17 +5,17 @@
     <artifactId>gpudb-api</artifactId>
     <version>${gpudb-api.version}</version>
     <packaging>jar</packaging>
-    <name>GPUdb Java API</name>
+    <name>Kinetica Java API</name>
     <distributionManagement>
        <repository>
           <id>releases</id>
           <name>Releases</name>
-          <url>http://gpudb.com/nexus/content/repositories/releases</url>
+          <url>http://files.kinetica.com/nexus/content/repositories/releases</url>
        </repository>
        <snapshotRepository>
           <id>snapshots</id>
           <name>Snapshots</name>
-          <url>http://gpudb.com/nexus/content/repositories/snapshots</url>
+          <url>http://files.kinetica.com/nexus/content/repositories/snapshots</url>
        </snapshotRepository>
     </distributionManagement>
     <dependencies>
