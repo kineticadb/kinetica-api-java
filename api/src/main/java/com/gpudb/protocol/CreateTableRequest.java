@@ -50,21 +50,19 @@ public class CreateTableRequest implements IndexedRecord {
      * <br />  <li> no_error_if_exists: If {@code true}, prevents an error from occurring if the table already exists and is of the
      * given type.  If a table with the same ID but a different type exists, it is still an error. Values: true, false.
      * <br />
-     * <br />  <li> collection_name: Name of a collection in GPUdb to which the newly created table is to be assigned as a child
-     * table. If empty, then the newly created table will be a top level table. If the collection does not allow duplicate children,
-     * then this table creation request will fail if there is an existing child table with the same type id specified in this
-     * request.
-     * <br />  <li> is_collection: Indicates whether the new table to be created will be a collection. If false, the created table
-     * will be a top level table. Values: true, false.
+     * <br />  <li> collection_name: Name of a collection which is to contain the newly created table. If empty, then the newly
+     * created table will be a top-level table. If the collection does not allow duplicate types and it contains a table of the same
+     * type as the given one, then this table creation request will fail.
+     * <br />  <li> is_collection: Indicates whether the new table to be created will be a collection. Values: true, false.
      * <br />
-     * <br />  <li> disallow_homogeneous_tables: For a collection, indicates whether multiple children of exactly the same data type
-     * will be allowed. Values: true, false.
+     * <br />  <li> disallow_homogeneous_tables: For a collection, indicates whether the collection prohibits containment of
+     * multiple tables of exactly the same data type. Values: true, false.
      * <br />
-     * <br />  <li> is_replicated: For a Table, this is an indication to GPUdb to replicate the table to all the ranks. This is only
-     * required when the table will be used to join with other tables in a query. Values: true, false.
+     * <br />  <li> is_replicated: For a table, indicates whether the table is to be replicated to all the database ranks. This may
+     * be necessary when the table is to be joined with other tables in a query. Values: true, false.
      * <br />
-     * <br />  <li> foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'my_field references
-     * primary_table(primary_key_field)'.
+     * <br />  <li> foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'source_column references
+     * target_table(primary_key_column)'.
      * <br /></ul>
      * <br />A set of string constants for the parameter {@code options}.
      */
@@ -80,35 +78,35 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Name of a collection in GPUdb to which the newly created table is to be assigned as a child table. If empty, then the
-         * newly created table will be a top level table. If the collection does not allow duplicate children, then this table
-         * creation request will fail if there is an existing child table with the same type id specified in this request.
+         * Name of a collection which is to contain the newly created table. If empty, then the newly created table will be a
+         * top-level table. If the collection does not allow duplicate types and it contains a table of the same type as the given
+         * one, then this table creation request will fail.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * Indicates whether the new table to be created will be a collection. If false, the created table will be a top level
-         * table. Values: true, false.
+         * Indicates whether the new table to be created will be a collection. Values: true, false.
          * <br />
          */
         public static final String IS_COLLECTION = "is_collection";
 
         /**
-         * For a collection, indicates whether multiple children of exactly the same data type will be allowed. Values: true, false.
+         * For a collection, indicates whether the collection prohibits containment of multiple tables of exactly the same data
+         * type. Values: true, false.
          * <br />
          */
         public static final String DISALLOW_HOMOGENEOUS_TABLES = "disallow_homogeneous_tables";
 
         /**
-         * For a Table, this is an indication to GPUdb to replicate the table to all the ranks. This is only required when the table
-         * will be used to join with other tables in a query. Values: true, false.
+         * For a table, indicates whether the table is to be replicated to all the database ranks. This may be necessary when the
+         * table is to be joined with other tables in a query. Values: true, false.
          * <br />
          */
         public static final String IS_REPLICATED = "is_replicated";
 
         /**
-         * Semicolon-separated list of foreign key constraints, of the format 'my_field references
-         * primary_table(primary_key_field)'.
+         * Semicolon-separated list of foreign key constraints, of the format 'source_column references
+         * target_table(primary_key_column)'.
          */
         public static final String FOREIGN_KEYS = "foreign_keys";
 
@@ -144,19 +142,18 @@ public class CreateTableRequest implements IndexedRecord {
      *                         <li> no_error_if_exists: If {@code true}, prevents an error from occurring if the table already
      *                 exists and is of the given type.  If a table with the same ID but a different type exists, it is still an
      *                 error. Values: true, false.
-     *                         <li> collection_name: Name of a collection in GPUdb to which the newly created table is to be
-     *                 assigned as a child table. If empty, then the newly created table will be a top level table. If the
-     *                 collection does not allow duplicate children, then this table creation request will fail if there is an
-     *                 existing child table with the same type id specified in this request.
-     *                         <li> is_collection: Indicates whether the new table to be created will be a collection. If false, the
-     *                 created table will be a top level table. Values: true, false.
-     *                         <li> disallow_homogeneous_tables: For a collection, indicates whether multiple children of exactly
-     *                 the same data type will be allowed. Values: true, false.
-     *                         <li> is_replicated: For a Table, this is an indication to GPUdb to replicate the table to all the
-     *                 ranks. This is only required when the table will be used to join with other tables in a query. Values: true,
+     *                         <li> collection_name: Name of a collection which is to contain the newly created table. If empty,
+     *                 then the newly created table will be a top-level table. If the collection does not allow duplicate types and
+     *                 it contains a table of the same type as the given one, then this table creation request will fail.
+     *                         <li> is_collection: Indicates whether the new table to be created will be a collection. Values: true,
      *                 false.
-     *                         <li> foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'my_field
-     *                 references primary_table(primary_key_field)'.
+     *                         <li> disallow_homogeneous_tables: For a collection, indicates whether the collection prohibits
+     *                 containment of multiple tables of exactly the same data type. Values: true, false.
+     *                         <li> is_replicated: For a table, indicates whether the table is to be replicated to all the database
+     *                 ranks. This may be necessary when the table is to be joined with other tables in a query. Values: true,
+     *                 false.
+     *                         <li> foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'source_column
+     *                 references target_table(primary_key_column)'.
      *                 </ul>
      * 
      */
@@ -224,18 +221,16 @@ public class CreateTableRequest implements IndexedRecord {
      *                 <li> no_error_if_exists: If {@code true}, prevents an error from occurring if the table already exists and is
      *         of the given type.  If a table with the same ID but a different type exists, it is still an error. Values: true,
      *         false.
-     *                 <li> collection_name: Name of a collection in GPUdb to which the newly created table is to be assigned as a
-     *         child table. If empty, then the newly created table will be a top level table. If the collection does not allow
-     *         duplicate children, then this table creation request will fail if there is an existing child table with the same type
-     *         id specified in this request.
-     *                 <li> is_collection: Indicates whether the new table to be created will be a collection. If false, the created
-     *         table will be a top level table. Values: true, false.
-     *                 <li> disallow_homogeneous_tables: For a collection, indicates whether multiple children of exactly the same
-     *         data type will be allowed. Values: true, false.
-     *                 <li> is_replicated: For a Table, this is an indication to GPUdb to replicate the table to all the ranks. This
-     *         is only required when the table will be used to join with other tables in a query. Values: true, false.
-     *                 <li> foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'my_field references
-     *         primary_table(primary_key_field)'.
+     *                 <li> collection_name: Name of a collection which is to contain the newly created table. If empty, then the
+     *         newly created table will be a top-level table. If the collection does not allow duplicate types and it contains a
+     *         table of the same type as the given one, then this table creation request will fail.
+     *                 <li> is_collection: Indicates whether the new table to be created will be a collection. Values: true, false.
+     *                 <li> disallow_homogeneous_tables: For a collection, indicates whether the collection prohibits containment of
+     *         multiple tables of exactly the same data type. Values: true, false.
+     *                 <li> is_replicated: For a table, indicates whether the table is to be replicated to all the database ranks.
+     *         This may be necessary when the table is to be joined with other tables in a query. Values: true, false.
+     *                 <li> foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'source_column
+     *         references target_table(primary_key_column)'.
      *         </ul>
      * 
      */
@@ -250,19 +245,18 @@ public class CreateTableRequest implements IndexedRecord {
      *                         <li> no_error_if_exists: If {@code true}, prevents an error from occurring if the table already
      *                 exists and is of the given type.  If a table with the same ID but a different type exists, it is still an
      *                 error. Values: true, false.
-     *                         <li> collection_name: Name of a collection in GPUdb to which the newly created table is to be
-     *                 assigned as a child table. If empty, then the newly created table will be a top level table. If the
-     *                 collection does not allow duplicate children, then this table creation request will fail if there is an
-     *                 existing child table with the same type id specified in this request.
-     *                         <li> is_collection: Indicates whether the new table to be created will be a collection. If false, the
-     *                 created table will be a top level table. Values: true, false.
-     *                         <li> disallow_homogeneous_tables: For a collection, indicates whether multiple children of exactly
-     *                 the same data type will be allowed. Values: true, false.
-     *                         <li> is_replicated: For a Table, this is an indication to GPUdb to replicate the table to all the
-     *                 ranks. This is only required when the table will be used to join with other tables in a query. Values: true,
+     *                         <li> collection_name: Name of a collection which is to contain the newly created table. If empty,
+     *                 then the newly created table will be a top-level table. If the collection does not allow duplicate types and
+     *                 it contains a table of the same type as the given one, then this table creation request will fail.
+     *                         <li> is_collection: Indicates whether the new table to be created will be a collection. Values: true,
      *                 false.
-     *                         <li> foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'my_field
-     *                 references primary_table(primary_key_field)'.
+     *                         <li> disallow_homogeneous_tables: For a collection, indicates whether the collection prohibits
+     *                 containment of multiple tables of exactly the same data type. Values: true, false.
+     *                         <li> is_replicated: For a table, indicates whether the table is to be replicated to all the database
+     *                 ranks. This may be necessary when the table is to be joined with other tables in a query. Values: true,
+     *                 false.
+     *                         <li> foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'source_column
+     *                 references target_table(primary_key_column)'.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

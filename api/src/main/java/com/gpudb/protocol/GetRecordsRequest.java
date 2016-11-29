@@ -16,8 +16,8 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)}.
  * <br />
- * <br />Retrieves records from a given table, optionally filtered by an expression and/or sorted by a column. This operation can
- * only be performed on tables or on homogeneous collection (collections whose children all have the same type). Records can be
+ * <br />Retrieves records from a given table, optionally filtered by an expression and/or sorted by a column. This operation can be
+ * performed on tables, views, or on homogeneous collections (collections containing tables of all the same type). Records can be
  * returned encoded as binary or json.
  * <br />
  * <br />This operation supports paging through the data via the {@code offset} and {@code limit} parameters. Note that when paging

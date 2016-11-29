@@ -28,8 +28,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
             .fields()
                 .name("joinTableName").type().stringType().noDefault()
                 .name("tableNames").type().array().items().stringType().noDefault()
-                .name("aliases").type().array().items().stringType().noDefault()
-                .name("expression").type().stringType().noDefault()
+                .name("columnNames").type().array().items().stringType().noDefault()
                 .name("expressions").type().array().items().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
@@ -49,8 +48,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <br /><ul>
-     * <br />  <li> collection_name: Name of a collection in GPUdb to which the join table is to be assigned as a child table. If
-     * empty, then the join table will be a top level table.
+     * <br />  <li> collection_name: Name of a collection which is to contain the join table. If empty, then the join table will be
+     * a top-level table.
      * <br />  <li> max_query_dimensions: The maximum number of tables in a joined table that can be accessed by a query and are not
      * equated by a foreign-key to primary-key equality predicate
      * <br />  <li> optimize_lookups: Use the applied filters to precalculate the lookup table to get data from the primary key sets
@@ -66,8 +65,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection in GPUdb to which the join table is to be assigned as a child table. If empty, then the join table
-         * will be a top level table.
+         * Name of a collection which is to contain the join table. If empty, then the join table will be a top-level table.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -131,8 +129,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     private String joinTableName;
     private List<String> tableNames;
-    private List<String> aliases;
-    private String expression;
+    private List<String> columnNames;
     private List<String> expressions;
     private Map<String, String> options;
 
@@ -143,8 +140,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
     public CreateJoinTableRequest() {
         joinTableName = "";
         tableNames = new ArrayList<>();
-        aliases = new ArrayList<>();
-        expression = "";
+        columnNames = new ArrayList<>();
         expressions = new ArrayList<>();
         options = new LinkedHashMap<>();
     }
@@ -155,17 +151,15 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * @param joinTableName  Name of the join table to be created. Must not be the name of a currently existing GPUdb table or join
      *                       table. Cannot be an empty string.
      * @param tableNames  The list of table names making up the joined set.  Corresponds to a SQL statement FROM clause
-     * @param aliases  The list of aliases for each of the corresponding tables.
-     * @param expression  An optional expression GPUdb uses to combine and filter the joined set.  Corresponds to a SQL statement
-     *                    WHERE clause. For details see: <a href="../../../../../concepts/index.html#expressions"
-     *                    target="_top">expressions</a>.
+     * @param columnNames  The list of columns to be selected from the input table names. Empty list says to select all the column
+     *                     names.  Empty list is the default.
      * @param expressions  An optional list of expressions GPUdb uses to combine and filter the joined set.  Corresponds to a SQL
      *                     statement WHERE clause. For details see: <a href="../../../../../concepts/index.html#expressions"
      *                     target="_top">expressions</a>.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection in GPUdb to which the join table is to be assigned as a
-     *                 child table. If empty, then the join table will be a top level table.
+     *                         <li> collection_name: Name of a collection which is to contain the join table. If empty, then the
+     *                 join table will be a top-level table.
      *                         <li> max_query_dimensions: The maximum number of tables in a joined table that can be accessed by a
      *                 query and are not equated by a foreign-key to primary-key equality predicate
      *                         <li> optimize_lookups: Use the applied filters to precalculate the lookup table to get data from the
@@ -177,11 +171,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 </ul>
      * 
      */
-    public CreateJoinTableRequest(String joinTableName, List<String> tableNames, List<String> aliases, String expression, List<String> expressions, Map<String, String> options) {
+    public CreateJoinTableRequest(String joinTableName, List<String> tableNames, List<String> columnNames, List<String> expressions, Map<String, String> options) {
         this.joinTableName = (joinTableName == null) ? "" : joinTableName;
         this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
-        this.aliases = (aliases == null) ? new ArrayList<String>() : aliases;
-        this.expression = (expression == null) ? "" : expression;
+        this.columnNames = (columnNames == null) ? new ArrayList<String>() : columnNames;
         this.expressions = (expressions == null) ? new ArrayList<String>() : expressions;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
@@ -232,46 +225,24 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The list of aliases for each of the corresponding tables.
+     * @return The list of columns to be selected from the input table names. Empty list says to select all the column names.  Empty
+     *         list is the default.
      * 
      */
-    public List<String> getAliases() {
-        return aliases;
+    public List<String> getColumnNames() {
+        return columnNames;
     }
 
     /**
      * 
-     * @param aliases  The list of aliases for each of the corresponding tables.
+     * @param columnNames  The list of columns to be selected from the input table names. Empty list says to select all the column
+     *                     names.  Empty list is the default.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public CreateJoinTableRequest setAliases(List<String> aliases) {
-        this.aliases = (aliases == null) ? new ArrayList<String>() : aliases;
-        return this;
-    }
-
-    /**
-     * 
-     * @return An optional expression GPUdb uses to combine and filter the joined set.  Corresponds to a SQL statement WHERE clause.
-     *         For details see: <a href="../../../../../concepts/index.html#expressions" target="_top">expressions</a>.
-     * 
-     */
-    public String getExpression() {
-        return expression;
-    }
-
-    /**
-     * 
-     * @param expression  An optional expression GPUdb uses to combine and filter the joined set.  Corresponds to a SQL statement
-     *                    WHERE clause. For details see: <a href="../../../../../concepts/index.html#expressions"
-     *                    target="_top">expressions</a>.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public CreateJoinTableRequest setExpression(String expression) {
-        this.expression = (expression == null) ? "" : expression;
+    public CreateJoinTableRequest setColumnNames(List<String> columnNames) {
+        this.columnNames = (columnNames == null) ? new ArrayList<String>() : columnNames;
         return this;
     }
 
@@ -304,8 +275,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> collection_name: Name of a collection in GPUdb to which the join table is to be assigned as a child
-     *         table. If empty, then the join table will be a top level table.
+     *                 <li> collection_name: Name of a collection which is to contain the join table. If empty, then the join table
+     *         will be a top-level table.
      *                 <li> max_query_dimensions: The maximum number of tables in a joined table that can be accessed by a query and
      *         are not equated by a foreign-key to primary-key equality predicate
      *                 <li> optimize_lookups: Use the applied filters to precalculate the lookup table to get data from the primary
@@ -325,8 +296,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection in GPUdb to which the join table is to be assigned as a
-     *                 child table. If empty, then the join table will be a top level table.
+     *                         <li> collection_name: Name of a collection which is to contain the join table. If empty, then the
+     *                 join table will be a top-level table.
      *                         <li> max_query_dimensions: The maximum number of tables in a joined table that can be accessed by a
      *                 query and are not equated by a foreign-key to primary-key equality predicate
      *                         <li> optimize_lookups: Use the applied filters to precalculate the lookup table to get data from the
@@ -376,15 +347,12 @@ public class CreateJoinTableRequest implements IndexedRecord {
                 return this.tableNames;
 
             case 2:
-                return this.aliases;
+                return this.columnNames;
 
             case 3:
-                return this.expression;
-
-            case 4:
                 return this.expressions;
 
-            case 5:
+            case 4:
                 return this.options;
 
             default:
@@ -414,18 +382,14 @@ public class CreateJoinTableRequest implements IndexedRecord {
                 break;
 
             case 2:
-                this.aliases = (List<String>)value;
+                this.columnNames = (List<String>)value;
                 break;
 
             case 3:
-                this.expression = (String)value;
-                break;
-
-            case 4:
                 this.expressions = (List<String>)value;
                 break;
 
-            case 5:
+            case 4:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -448,8 +412,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
         return ( this.joinTableName.equals( that.joinTableName )
                  && this.tableNames.equals( that.tableNames )
-                 && this.aliases.equals( that.aliases )
-                 && this.expression.equals( that.expression )
+                 && this.columnNames.equals( that.columnNames )
                  && this.expressions.equals( that.expressions )
                  && this.options.equals( that.options ) );
     }
@@ -467,13 +430,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.tableNames ) );
         builder.append( ", " );
-        builder.append( gd.toString( "aliases" ) );
+        builder.append( gd.toString( "columnNames" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.aliases ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "expression" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.expression ) );
+        builder.append( gd.toString( this.columnNames ) );
         builder.append( ", " );
         builder.append( gd.toString( "expressions" ) );
         builder.append( ": " );
@@ -492,8 +451,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.joinTableName.hashCode();
         hashCode = (31 * hashCode) + this.tableNames.hashCode();
-        hashCode = (31 * hashCode) + this.aliases.hashCode();
-        hashCode = (31 * hashCode) + this.expression.hashCode();
+        hashCode = (31 * hashCode) + this.columnNames.hashCode();
         hashCode = (31 * hashCode) + this.expressions.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;

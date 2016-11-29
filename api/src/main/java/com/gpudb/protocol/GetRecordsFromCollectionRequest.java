@@ -102,8 +102,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     /**
      * Constructs a GetRecordsFromCollectionRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the collection or table from which records are to be retrieved. Must be an existing GPUdb
-     *                   collection or table.
+     * @param tableName  Name of the collection or table from which records are to be retrieved. Must be an existing collection or
+     *                   table.
      * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
      *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of results to be returned, or END_OF_SET (-9999) to indicate
@@ -126,8 +126,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     /**
      * Constructs a GetRecordsFromCollectionRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the collection or table from which records are to be retrieved. Must be an existing GPUdb
-     *                   collection or table.
+     * @param tableName  Name of the collection or table from which records are to be retrieved. Must be an existing collection or
+     *                   table.
      * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
      *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of results to be returned, or END_OF_SET (-9999) to indicate
@@ -150,8 +150,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the collection or table from which records are to be retrieved. Must be an existing GPUdb collection or
-     *         table.
+     * @return Name of the collection or table from which records are to be retrieved. Must be an existing collection or table.
      * 
      */
     public String getTableName() {
@@ -160,8 +159,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the collection or table from which records are to be retrieved. Must be an existing GPUdb
-     *                   collection or table.
+     * @param tableName  Name of the collection or table from which records are to be retrieved. Must be an existing collection or
+     *                   table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -969,14 +969,15 @@ public class GPUdb extends GPUdbBase {
      * <br />     Creating or deleting an index on a particular column. This can speed up certain search queries (such as {@link
      * GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link GPUdb#deleteRecords(DeleteRecordsRequest)}, {@link
      * GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}) when using expressions containing equality or relational operators on
-     * indexed columns. This only applies to child tables.
+     * indexed columns. This only applies to tables.
      * <br />
-     * <br />     Making a table protected or not. Protected tables need the admin password to be sent in a {@link
-     * GPUdb#clearTable(ClearTableRequest)} to delete the table. This can be applied to child tables or collections or views.
+     * <br />     Setting the time-to-live (TTL). This can be applied to tables, views, or collections.  When applied to
+     * collections, every table & view within the collection will have its TTL set to the given value.
      * <br />
-     * <br />     Setting the ttl (time-to-live). This can be applied to child tables or collections or views.
+     * <br />     Making a table protected or not. Protected tables have their TTLs set to not automatically expire. This can be
+     * applied to tables, views, and collections.
      * <br />
-     * <br />     Allowing homogeneous child tables. This only applies to collections.
+     * <br />     Allowing homogeneous tables within a collection.
      * 
      * @param request  Request object containing the parameters for the operation.
      * 
@@ -1001,20 +1002,20 @@ public class GPUdb extends GPUdbBase {
      * <br />     Creating or deleting an index on a particular column. This can speed up certain search queries (such as {@link
      * GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link GPUdb#deleteRecords(String, List, Map)}, {@link
      * GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}) when using expressions containing equality or relational operators on
-     * indexed columns. This only applies to child tables.
+     * indexed columns. This only applies to tables.
      * <br />
-     * <br />     Making a table protected or not. Protected tables need the admin password to be sent in a {@link
-     * GPUdb#clearTable(String, String, Map)} to delete the table. This can be applied to child tables or collections or views.
+     * <br />     Setting the time-to-live (TTL). This can be applied to tables, views, or collections.  When applied to
+     * collections, every table & view within the collection will have its TTL set to the given value.
      * <br />
-     * <br />     Setting the ttl (time-to-live). This can be applied to child tables or collections or views.
+     * <br />     Making a table protected or not. Protected tables have their TTLs set to not automatically expire. This can be
+     * applied to tables, views, and collections.
      * <br />
-     * <br />     Allowing homogeneous child tables. This only applies to collections.
+     * <br />     Allowing homogeneous tables within a collection.
      * 
-     * @param tableName  Table on which the operation will be performed. Must be a valid table or collection in GPUdb.
-     * @param action  Modification operation to be applied to the table or collection Values: create_index, delete_index,
-     *                allow_homogeneous_tables, protected, ttl.
-     * @param value  The value of the modification. May be a column name, 'true' or 'false', or a time-to-live depending on {@code
-     *               action}.
+     * @param tableName  Table on which the operation will be performed. Must be a valid table, view, or collection in GPUdb.
+     * @param action  Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected,
+     *                ttl.
+     * @param value  The value of the modification. May be a column name, 'true' or 'false', or a TTL depending on {@code action}.
      * @param options  Optional parameters.
      * 
      * @return Response object containing the results of the operation.
@@ -1289,17 +1290,15 @@ public class GPUdb extends GPUdbBase {
      * @param joinTableName  Name of the join table to be created. Must not be the name of a currently existing GPUdb table or join
      *                       table. Cannot be an empty string.
      * @param tableNames  The list of table names making up the joined set.  Corresponds to a SQL statement FROM clause
-     * @param aliases  The list of aliases for each of the corresponding tables.
-     * @param expression  An optional expression GPUdb uses to combine and filter the joined set.  Corresponds to a SQL statement
-     *                    WHERE clause. For details see: <a href="../../../../concepts/index.html#expressions"
-     *                    target="_top">expressions</a>.
+     * @param columnNames  The list of columns to be selected from the input table names. Empty list says to select all the column
+     *                     names.  Empty list is the default.
      * @param expressions  An optional list of expressions GPUdb uses to combine and filter the joined set.  Corresponds to a SQL
      *                     statement WHERE clause. For details see: <a href="../../../../concepts/index.html#expressions"
      *                     target="_top">expressions</a>.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection in GPUdb to which the join table is to be assigned as a
-     *                 child table. If empty, then the join table will be a top level table.
+     *                         <li> collection_name: Name of a collection which is to contain the join table. If empty, then the
+     *                 join table will be a top-level table.
      *                         <li> max_query_dimensions: The maximum number of tables in a joined table that can be accessed by a
      *                 query and are not equated by a foreign-key to primary-key equality predicate
      *                         <li> optimize_lookups: Use the applied filters to precalculate the lookup table to get data from the
@@ -1317,8 +1316,8 @@ public class GPUdb extends GPUdbBase {
      * @throws GPUdbException  if an error occurs during the operation.
      * 
      */
-    public CreateJoinTableResponse createJoinTable(String joinTableName, List<String> tableNames, List<String> aliases, String expression, List<String> expressions, Map<String, String> options) throws GPUdbException {
-        CreateJoinTableRequest actualRequest_ = new CreateJoinTableRequest(joinTableName, tableNames, aliases, expression, expressions, options);
+    public CreateJoinTableResponse createJoinTable(String joinTableName, List<String> tableNames, List<String> columnNames, List<String> expressions, Map<String, String> options) throws GPUdbException {
+        CreateJoinTableRequest actualRequest_ = new CreateJoinTableRequest(joinTableName, tableNames, columnNames, expressions, options);
         CreateJoinTableResponse actualResponse_ = new CreateJoinTableResponse();
         submitRequest("/create/jointable", actualRequest_, actualResponse_, false);
         return actualResponse_;
@@ -1412,19 +1411,18 @@ public class GPUdb extends GPUdbBase {
      *                         <li> no_error_if_exists: If {@code true}, prevents an error from occurring if the table already
      *                 exists and is of the given type.  If a table with the same ID but a different type exists, it is still an
      *                 error. Values: true, false.
-     *                         <li> collection_name: Name of a collection in GPUdb to which the newly created table is to be
-     *                 assigned as a child table. If empty, then the newly created table will be a top level table. If the
-     *                 collection does not allow duplicate children, then this table creation request will fail if there is an
-     *                 existing child table with the same type id specified in this request.
-     *                         <li> is_collection: Indicates whether the new table to be created will be a collection. If false, the
-     *                 created table will be a top level table. Values: true, false.
-     *                         <li> disallow_homogeneous_tables: For a collection, indicates whether multiple children of exactly
-     *                 the same data type will be allowed. Values: true, false.
-     *                         <li> is_replicated: For a Table, this is an indication to GPUdb to replicate the table to all the
-     *                 ranks. This is only required when the table will be used to join with other tables in a query. Values: true,
+     *                         <li> collection_name: Name of a collection which is to contain the newly created table. If empty,
+     *                 then the newly created table will be a top-level table. If the collection does not allow duplicate types and
+     *                 it contains a table of the same type as the given one, then this table creation request will fail.
+     *                         <li> is_collection: Indicates whether the new table to be created will be a collection. Values: true,
      *                 false.
-     *                         <li> foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'my_field
-     *                 references primary_table(primary_key_field)'.
+     *                         <li> disallow_homogeneous_tables: For a collection, indicates whether the collection prohibits
+     *                 containment of multiple tables of exactly the same data type. Values: true, false.
+     *                         <li> is_replicated: For a table, indicates whether the table is to be replicated to all the database
+     *                 ranks. This may be necessary when the table is to be joined with other tables in a query. Values: true,
+     *                 false.
+     *                         <li> foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'source_column
+     *                 references target_table(primary_key_column)'.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -1757,8 +1755,10 @@ public class GPUdb extends GPUdbBase {
      * @param outputColumnNames  The list of names of the columns to be stored in the union.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection in GPUdb to which the union is to be assigned as a child
-     *                 table. If empty, then the union will be a top level table.
+     *                         <li> collection_name: Name of a collection which is to contain the union. If empty, then the union
+     *                 will be a top-level table.
+     *                         <li> mode: If 'merge_views' then this operation will merge (i.e. union) the provided views. All
+     *                 'table_names' must be views from the same underlying base table. Values: normal, merge_views.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -2226,8 +2226,8 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Applies a geometry filter against a spatial column in a given table, collection or view. The filtering geometry is provided
-     * by {@code inputWkt}.
+     * Applies a geometry filter against a spatial column named WKT in a given table, collection or view. The filtering geometry is
+     * provided by {@code inputWkt}.
      * 
      * @param request  Request object containing the parameters for the operation.
      * 
@@ -2247,15 +2247,15 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Applies a geometry filter against a spatial column in a given table, collection or view. The filtering geometry is provided
-     * by {@code inputWkt}.
+     * Applies a geometry filter against a spatial column named WKT in a given table, collection or view. The filtering geometry is
+     * provided by {@code inputWkt}.
      * 
-     * @param tableName  Name of the table on which the filter by spatial operation will be performed.  Must be an existing table,
-     *                   collection or view in GPUdb.
+     * @param tableName  Name of the table on which the filter by geometry will be performed.  Must be an existing table, collection
+     *                   or view containing a column named WKT.
      * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view.
-     * @param columnName  Name of the column to be used in the filter. Must be a spatial column. Typically this will be 'WKT'
-     * @param inputWkt  A geometry in WKT format that will be used to filter the objects in {@code tableName}
+     * @param columnName  Name of the column to be used in the filter. Must be 'WKT'
+     * @param inputWkt  A geometry in WKT format that will be used to filter the objects in {@code tableName}.
      * @param operation  The geometric filtering operation to perform Values: contains, crosses, disjoint, equals, intersects,
      *                   overlaps, touches, within.
      * @param options  Optional parameters.
@@ -2665,6 +2665,19 @@ public class GPUdb extends GPUdbBase {
      * @param sourceTableColumnName  Name of the column in the {@code sourceTableName} whose values will be used as the filter for
      *                               table {@code tableName}. Must match the type of the {@code columnName}.
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> filter_mode: String indicating the filter mode, either 'in_table' or 'not_in_table'. Values:
+     *                 in_table, not_in_table.
+     *                         <li> mode: Mode - should be either 'spatial' or 'normal'. Values: normal, spatial.
+     *                         <li> buffer: Buffer size, in meters. Only relevant for 'spatial' mode.
+     *                         <li> buffer_method: Method used to buffer polygons.  Only relevant for 'spatial' mode. Values:
+     *                 normal, geos.
+     *                         <li> max_partition_size: Maximum number of points in a partition. Only relevant for 'spatial' mode.
+     *                         <li> max_partition_score: Maximum number of points * edges in a partition. Only relevant for
+     *                 'spatial' mode.
+     *                         <li> x_column_name: Name of column containing x value of point being filtered in spatial mode.
+     *                         <li> y_column_name: Name of column containing x value of point being filtered in spatial mode.
+     *                 </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -2739,9 +2752,9 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Retrieves records from a given table, optionally filtered by an expression and/or sorted by a column. This operation can only
-     * be performed on tables or on homogeneous collection (collections whose children all have the same type). Records can be
-     * returned encoded as binary or json.
+     * Retrieves records from a given table, optionally filtered by an expression and/or sorted by a column. This operation can be
+     * performed on tables, views, or on homogeneous collections (collections containing tables of all the same type). Records can
+     * be returned encoded as binary or json.
      * <br />
      * <br />This operation supports paging through the data via the {@code offset} and {@code limit} parameters. Note that when
      * paging through a table, if the table (or the underlying table in case of a view) is updated (records are inserted, deleted or
@@ -2767,9 +2780,9 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Retrieves records from a given table, optionally filtered by an expression and/or sorted by a column. This operation can only
-     * be performed on tables or on homogeneous collection (collections whose children all have the same type). Records can be
-     * returned encoded as binary or json.
+     * Retrieves records from a given table, optionally filtered by an expression and/or sorted by a column. This operation can be
+     * performed on tables, views, or on homogeneous collections (collections containing tables of all the same type). Records can
+     * be returned encoded as binary or json.
      * <br />
      * <br />This operation supports paging through the data via the {@code offset} and {@code limit} parameters. Note that when
      * paging through a table, if the table (or the underlying table in case of a view) is updated (records are inserted, deleted or
@@ -2807,9 +2820,9 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Retrieves records from a given table, optionally filtered by an expression and/or sorted by a column. This operation can only
-     * be performed on tables or on homogeneous collection (collections whose children all have the same type). Records can be
-     * returned encoded as binary or json.
+     * Retrieves records from a given table, optionally filtered by an expression and/or sorted by a column. This operation can be
+     * performed on tables, views, or on homogeneous collections (collections containing tables of all the same type). Records can
+     * be returned encoded as binary or json.
      * <br />
      * <br />This operation supports paging through the data via the {@code offset} and {@code limit} parameters. Note that when
      * paging through a table, if the table (or the underlying table in case of a view) is updated (records are inserted, deleted or
@@ -2860,9 +2873,9 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Retrieves records from a given table, optionally filtered by an expression and/or sorted by a column. This operation can only
-     * be performed on tables or on homogeneous collection (collections whose children all have the same type). Records can be
-     * returned encoded as binary or json.
+     * Retrieves records from a given table, optionally filtered by an expression and/or sorted by a column. This operation can be
+     * performed on tables, views, or on homogeneous collections (collections containing tables of all the same type). Records can
+     * be returned encoded as binary or json.
      * <br />
      * <br />This operation supports paging through the data via the {@code offset} and {@code limit} parameters. Note that when
      * paging through a table, if the table (or the underlying table in case of a view) is updated (records are inserted, deleted or
@@ -2896,9 +2909,9 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Retrieves records from a given table, optionally filtered by an expression and/or sorted by a column. This operation can only
-     * be performed on tables or on homogeneous collection (collections whose children all have the same type). Records can be
-     * returned encoded as binary or json.
+     * Retrieves records from a given table, optionally filtered by an expression and/or sorted by a column. This operation can be
+     * performed on tables, views, or on homogeneous collections (collections containing tables of all the same type). Records can
+     * be returned encoded as binary or json.
      * <br />
      * <br />This operation supports paging through the data via the {@code offset} and {@code limit} parameters. Note that when
      * paging through a table, if the table (or the underlying table in case of a view) is updated (records are inserted, deleted or
@@ -3030,7 +3043,8 @@ public class GPUdb extends GPUdbBase {
      * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
      *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of results to be returned (if not provided the default is
-     *               10000). Or END_OF_column (-9999) to indicate that the max number of results should be returned.
+     *               10000), or END_OF_SET (-9999) to indicate that the maximum number of results allowed by the server should be
+     *               returned.
      * @param options
      *                 <ul>
      *                         <li> expression: Optional filter expression to apply to the table.
@@ -3319,8 +3333,8 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param <TResponse>  The type of object being retrieved.
      * @param typeDescriptor  Type descriptor used for decoding returned objects.
-     * @param tableName  Name of the collection or table from which records are to be retrieved. Must be an existing GPUdb
-     *                   collection or table.
+     * @param tableName  Name of the collection or table from which records are to be retrieved. Must be an existing collection or
+     *                   table.
      * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
      *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of results to be returned, or END_OF_SET (-9999) to indicate
@@ -3395,8 +3409,8 @@ public class GPUdb extends GPUdbBase {
      * <br />Note that when using the Java API, it is not possible to retrieve records from join tables using this operation.
      * 
      * @param <TResponse>  The type of object being retrieved.
-     * @param tableName  Name of the collection or table from which records are to be retrieved. Must be an existing GPUdb
-     *                   collection or table.
+     * @param tableName  Name of the collection or table from which records are to be retrieved. Must be an existing collection or
+     *                   table.
      * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
      *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of results to be returned, or END_OF_SET (-9999) to indicate
@@ -4046,10 +4060,11 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Locks a table.  By default a table has a {@code lockType} of {@code unlock}, indicating all operations are permitted.  A user
-     * may request a {@code read-only} or a {@code write-only} lock, after which only read or write operations, respectively, are
-     * permitted on the table until the lock is removed.  When {@code lockType} is {@code disable} then no operations are permitted
-     * on the table.  The lock status can be queried by setting  {@code lockType} to {@code status}.
+     * Manages global access to a table's data.  By default a table has a {@code lockType} of {@code unlock}, indicating all
+     * operations are permitted.  A user may request a {@code read-only} or a {@code write-only} lock, after which only read or
+     * write operations, respectively, are permitted on the table until the lock is removed.  When {@code lockType} is {@code
+     * disable} then no operations are permitted on the table.  The lock status can be queried by setting {@code lockType} to {@code
+     * status}.
      * 
      * @param request  Request object containing the parameters for the operation.
      * 
@@ -4069,14 +4084,15 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Locks a table.  By default a table has a {@code lockType} of {@code unlock}, indicating all operations are permitted.  A user
-     * may request a {@code read-only} or a {@code write-only} lock, after which only read or write operations, respectively, are
-     * permitted on the table until the lock is removed.  When {@code lockType} is {@code disable} then no operations are permitted
-     * on the table.  The lock status can be queried by setting  {@code lockType} to {@code status}.
+     * Manages global access to a table's data.  By default a table has a {@code lockType} of {@code unlock}, indicating all
+     * operations are permitted.  A user may request a {@code read-only} or a {@code write-only} lock, after which only read or
+     * write operations, respectively, are permitted on the table until the lock is removed.  When {@code lockType} is {@code
+     * disable} then no operations are permitted on the table.  The lock status can be queried by setting {@code lockType} to {@code
+     * status}.
      * 
-     * @param tableName  Name of the table to be locked. It must be a currently existing table and not a collection or a view.
-     * @param lockType  The type of lock being applied to the table. Setting it to 'status' will return the current lock status of
-     *                  the table without changing it. Values: status, disable, read-only, write-only, unlock.
+     * @param tableName  Name of the table to be locked. It must be a currently existing table, collection, or view.
+     * @param lockType  The type of lock being applied to the table. Setting it to {@code status} will return the current lock
+     *                  status of the table without changing it. Values: status, disable, read-only, write-only, unlock.
      * @param options  Optional parameters.
      * 
      * @return Response object containing the results of the operation.

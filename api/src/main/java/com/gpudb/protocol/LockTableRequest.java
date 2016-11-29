@@ -16,10 +16,10 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#lockTable(LockTableRequest)}.
  * <br />
- * <br />Locks a table.  By default a table has a {@code lockType} of {@code unlock}, indicating all operations are permitted.  A
- * user may request a {@code read-only} or a {@code write-only} lock, after which only read or write operations, respectively, are
- * permitted on the table until the lock is removed.  When {@code lockType} is {@code disable} then no operations are permitted on
- * the table.  The lock status can be queried by setting  {@code lockType} to {@code status}.
+ * <br />Manages global access to a table's data.  By default a table has a {@code lockType} of {@code unlock}, indicating all
+ * operations are permitted.  A user may request a {@code read-only} or a {@code write-only} lock, after which only read or write
+ * operations, respectively, are permitted on the table until the lock is removed.  When {@code lockType} is {@code disable} then no
+ * operations are permitted on the table.  The lock status can be queried by setting {@code lockType} to {@code status}.
  */
 public class LockTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -44,8 +44,8 @@ public class LockTableRequest implements IndexedRecord {
 
 
     /**
-     * The type of lock being applied to the table. Setting it to 'status' will return the current lock status of the table without
-     * changing it. Values: status, disable, read-only, write-only, unlock.
+     * The type of lock being applied to the table. Setting it to {@code status} will return the current lock status of the table
+     * without changing it. Values: status, disable, read-only, write-only, unlock.
      * <br />
      * <br />A set of string constants for the parameter {@code lockType}.
      */
@@ -57,7 +57,7 @@ public class LockTableRequest implements IndexedRecord {
         public static final String STATUS = "status";
 
         /**
-         * Allow no read/writer operations
+         * Allow no read/write operations
          */
         public static final String DISABLE = "disable";
 
@@ -96,9 +96,9 @@ public class LockTableRequest implements IndexedRecord {
     /**
      * Constructs a LockTableRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to be locked. It must be a currently existing table and not a collection or a view.
-     * @param lockType  The type of lock being applied to the table. Setting it to 'status' will return the current lock status of
-     *                  the table without changing it. Values: status, disable, read-only, write-only, unlock.
+     * @param tableName  Name of the table to be locked. It must be a currently existing table, collection, or view.
+     * @param lockType  The type of lock being applied to the table. Setting it to {@code status} will return the current lock
+     *                  status of the table without changing it. Values: status, disable, read-only, write-only, unlock.
      * @param options  Optional parameters.
      * 
      */
@@ -110,7 +110,7 @@ public class LockTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to be locked. It must be a currently existing table and not a collection or a view.
+     * @return Name of the table to be locked. It must be a currently existing table, collection, or view.
      * 
      */
     public String getTableName() {
@@ -119,7 +119,7 @@ public class LockTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to be locked. It must be a currently existing table and not a collection or a view.
+     * @param tableName  Name of the table to be locked. It must be a currently existing table, collection, or view.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -131,8 +131,8 @@ public class LockTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The type of lock being applied to the table. Setting it to 'status' will return the current lock status of the table
-     *         without changing it. Values: status, disable, read-only, write-only, unlock.
+     * @return The type of lock being applied to the table. Setting it to {@code status} will return the current lock status of the
+     *         table without changing it. Values: status, disable, read-only, write-only, unlock.
      * 
      */
     public String getLockType() {
@@ -141,8 +141,8 @@ public class LockTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param lockType  The type of lock being applied to the table. Setting it to 'status' will return the current lock status of
-     *                  the table without changing it. Values: status, disable, read-only, write-only, unlock.
+     * @param lockType  The type of lock being applied to the table. Setting it to {@code status} will return the current lock
+     *                  status of the table without changing it. Values: status, disable, read-only, write-only, unlock.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

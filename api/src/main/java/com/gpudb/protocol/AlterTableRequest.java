@@ -21,14 +21,15 @@ import org.apache.avro.generic.IndexedRecord;
  * <br />     Creating or deleting an index on a particular column. This can speed up certain search queries (such as {@link
  * com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}, {@link
  * com.gpudb.GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}) when using expressions containing equality or relational operators on
- * indexed columns. This only applies to child tables.
+ * indexed columns. This only applies to tables.
  * <br />
- * <br />     Making a table protected or not. Protected tables need the admin password to be sent in a {@link
- * com.gpudb.GPUdb#clearTable(ClearTableRequest)} to delete the table. This can be applied to child tables or collections or views.
+ * <br />     Setting the time-to-live (TTL). This can be applied to tables, views, or collections.  When applied to collections,
+ * every table & view within the collection will have its TTL set to the given value.
  * <br />
- * <br />     Setting the ttl (time-to-live). This can be applied to child tables or collections or views.
+ * <br />     Making a table protected or not. Protected tables have their TTLs set to not automatically expire. This can be applied
+ * to tables, views, and collections.
  * <br />
- * <br />     Allowing homogeneous child tables. This only applies to collections.
+ * <br />     Allowing homogeneous tables within a collection.
  */
 public class AlterTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -54,39 +55,38 @@ public class AlterTableRequest implements IndexedRecord {
 
 
     /**
-     * Modification operation to be applied to the table or collection Values: create_index, delete_index, allow_homogeneous_tables,
-     * protected, ttl.
+     * Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected, ttl.
      * <br />
      * <br />A set of string constants for the parameter {@code action}.
      */
     public static final class Action {
 
         /**
-         * Creates an index on the column name specified in {@code value}. If this column is already indexed, GPUdb will return an
-         * error.
+         * Creates an index on the column name specified in {@code value}. If this column is already indexed, an error will be
+         * returned.
          */
         public static final String CREATE_INDEX = "create_index";
 
         /**
          * Deletes an existing index on the column name specified in {@code value}. If this column does not have indexing turned on,
-         * GPUdb will return an error.
+         * an error will be returned.
          */
         public static final String DELETE_INDEX = "delete_index";
 
         /**
-         * Sets whether homogeneous child tables are allowed in the given collection. This action is only valid if {@code tableName}
-         * is a collection. {@code value} must be either 'true' or 'false'.
+         * Sets whether homogeneous tables are allowed in the given collection. This action is only valid if {@code tableName} is a
+         * collection. The {@code value} must be either 'true' or 'false'.
          */
         public static final String ALLOW_HOMOGENEOUS_TABLES = "allow_homogeneous_tables";
 
         /**
-         * Sets whether the given {@code tableName} should be protected or not. {@code value} must be either 'true' or 'false'.
+         * Sets whether the given {@code tableName} should be protected or not. The {@code value} must be either 'true' or 'false'.
          */
         public static final String PROTECTED = "protected";
 
         /**
-         * Sets the ttl (time-to-live) of the table or collection specified in {@code tableName}. {@code value} must be the desired
-         * ttl in minutes.
+         * Sets the TTL of the table, view, or collection specified in {@code tableName}. The {@code value} must be the desired TTL
+         * in minutes.
          */
         public static final String TTL = "ttl";
 
@@ -112,11 +112,10 @@ public class AlterTableRequest implements IndexedRecord {
     /**
      * Constructs an AlterTableRequest object with the specified parameters.
      * 
-     * @param tableName  Table on which the operation will be performed. Must be a valid table or collection in GPUdb.
-     * @param action  Modification operation to be applied to the table or collection Values: create_index, delete_index,
-     *                allow_homogeneous_tables, protected, ttl.
-     * @param value  The value of the modification. May be a column name, 'true' or 'false', or a time-to-live depending on {@code
-     *               action}.
+     * @param tableName  Table on which the operation will be performed. Must be a valid table, view, or collection in GPUdb.
+     * @param action  Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected,
+     *                ttl.
+     * @param value  The value of the modification. May be a column name, 'true' or 'false', or a TTL depending on {@code action}.
      * @param options  Optional parameters.
      * 
      */
@@ -129,7 +128,7 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Table on which the operation will be performed. Must be a valid table or collection in GPUdb.
+     * @return Table on which the operation will be performed. Must be a valid table, view, or collection in GPUdb.
      * 
      */
     public String getTableName() {
@@ -138,7 +137,7 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Table on which the operation will be performed. Must be a valid table or collection in GPUdb.
+     * @param tableName  Table on which the operation will be performed. Must be a valid table, view, or collection in GPUdb.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -150,8 +149,7 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Modification operation to be applied to the table or collection Values: create_index, delete_index,
-     *         allow_homogeneous_tables, protected, ttl.
+     * @return Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected, ttl.
      * 
      */
     public String getAction() {
@@ -160,8 +158,8 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param action  Modification operation to be applied to the table or collection Values: create_index, delete_index,
-     *                allow_homogeneous_tables, protected, ttl.
+     * @param action  Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected,
+     *                ttl.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -173,8 +171,7 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The value of the modification. May be a column name, 'true' or 'false', or a time-to-live depending on {@code
-     *         action}.
+     * @return The value of the modification. May be a column name, 'true' or 'false', or a TTL depending on {@code action}.
      * 
      */
     public String getValue() {
@@ -183,8 +180,7 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param value  The value of the modification. May be a column name, 'true' or 'false', or a time-to-live depending on {@code
-     *               action}.
+     * @param value  The value of the modification. May be a column name, 'true' or 'false', or a TTL depending on {@code action}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

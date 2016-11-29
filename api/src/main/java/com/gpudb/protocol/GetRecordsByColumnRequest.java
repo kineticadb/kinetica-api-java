@@ -130,7 +130,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
      *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of results to be returned (if not provided the default is
-     *               10000). Or END_OF_column (-9999) to indicate that the max number of results should be returned.
+     *               10000), or END_OF_SET (-9999) to indicate that the maximum number of results allowed by the server should be
+     *               returned.
      * @param options
      *                 <ul>
      *                         <li> expression: Optional filter expression to apply to the table.
@@ -159,7 +160,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
      *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of results to be returned (if not provided the default is
-     *               10000). Or END_OF_column (-9999) to indicate that the max number of results should be returned.
+     *               10000), or END_OF_SET (-9999) to indicate that the maximum number of results allowed by the server should be
+     *               returned.
      * @param encoding  Specifies the encoding for returned records; either 'binary' or 'json'. Values: binary, json.
      * @param options
      *                 <ul>
@@ -248,8 +250,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A positive integer indicating the maximum number of results to be returned (if not provided the default is 10000). Or
-     *         END_OF_column (-9999) to indicate that the max number of results should be returned.
+     * @return A positive integer indicating the maximum number of results to be returned (if not provided the default is 10000), or
+     *         END_OF_SET (-9999) to indicate that the maximum number of results allowed by the server should be returned.
      * 
      */
     public long getLimit() {
@@ -259,7 +261,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
     /**
      * 
      * @param limit  A positive integer indicating the maximum number of results to be returned (if not provided the default is
-     *               10000). Or END_OF_column (-9999) to indicate that the max number of results should be returned.
+     *               10000), or END_OF_SET (-9999) to indicate that the maximum number of results allowed by the server should be
+     *               returned.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

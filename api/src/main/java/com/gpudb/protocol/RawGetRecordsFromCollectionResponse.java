@@ -77,7 +77,7 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
     /**
      * 
      * @return The type IDs of the corresponding records in {@code recordsBinary} or {@code recordsJson}. This is useful when {@code
-     *         tableName} is a heterogeneous collection (i.e. the child tables are not all of the same type).
+     *         tableName} is a heterogeneous collection (collections containing tables of different types).
      * 
      */
     public List<String> getTypeNames() {
@@ -87,7 +87,7 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
     /**
      * 
      * @param typeNames  The type IDs of the corresponding records in {@code recordsBinary} or {@code recordsJson}. This is useful
-     *                   when {@code tableName} is a heterogeneous collection (i.e. the child tables are not all of the same type).
+     *                   when {@code tableName} is a heterogeneous collection (collections containing tables of different types).
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

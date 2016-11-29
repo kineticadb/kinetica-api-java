@@ -47,18 +47,37 @@ public class CreateUnionRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <br /><ul>
-     * <br />  <li> collection_name: Name of a collection in GPUdb to which the union is to be assigned as a child table. If empty,
-     * then the union will be a top level table.
+     * <br />  <li> collection_name: Name of a collection which is to contain the union. If empty, then the union will be a
+     * top-level table.
+     * <br />  <li> mode: If 'merge_views' then this operation will merge (i.e. union) the provided views. All 'table_names' must be
+     * views from the same underlying base table. Values: normal, merge_views.
+     * <br />
      * <br /></ul>
      * <br />A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * Name of a collection in GPUdb to which the union is to be assigned as a child table. If empty, then the union will be a
-         * top level table.
+         * Name of a collection which is to contain the union. If empty, then the union will be a top-level table.
          */
         public static final String COLLECTION_NAME = "collection_name";
+
+        /**
+         * If 'merge_views' then this operation will merge (i.e. union) the provided views. All 'table_names' must be views from the
+         * same underlying base table. Values: normal, merge_views.
+         * <br />
+         */
+        public static final String MODE = "mode";
+
+        /**
+         * Normal operation.
+         */
+        public static final String NORMAL = "normal";
+
+        /**
+         * Merge (union) 2 or more views of the same base table into a new view.
+         */
+        public static final String MERGE_VIEWS = "merge_views";
 
         private Options() {  }
     }
@@ -91,8 +110,10 @@ public class CreateUnionRequest implements IndexedRecord {
      * @param outputColumnNames  The list of names of the columns to be stored in the union.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection in GPUdb to which the union is to be assigned as a child
-     *                 table. If empty, then the union will be a top level table.
+     *                         <li> collection_name: Name of a collection which is to contain the union. If empty, then the union
+     *                 will be a top-level table.
+     *                         <li> mode: If 'merge_views' then this operation will merge (i.e. union) the provided views. All
+     *                 'table_names' must be views from the same underlying base table. Values: normal, merge_views.
      *                 </ul>
      * 
      */
@@ -193,8 +214,10 @@ public class CreateUnionRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> collection_name: Name of a collection in GPUdb to which the union is to be assigned as a child table. If
-     *         empty, then the union will be a top level table.
+     *                 <li> collection_name: Name of a collection which is to contain the union. If empty, then the union will be a
+     *         top-level table.
+     *                 <li> mode: If 'merge_views' then this operation will merge (i.e. union) the provided views. All 'table_names'
+     *         must be views from the same underlying base table. Values: normal, merge_views.
      *         </ul>
      * 
      */
@@ -206,8 +229,10 @@ public class CreateUnionRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection in GPUdb to which the union is to be assigned as a child
-     *                 table. If empty, then the union will be a top level table.
+     *                         <li> collection_name: Name of a collection which is to contain the union. If empty, then the union
+     *                 will be a top-level table.
+     *                         <li> mode: If 'merge_views' then this operation will merge (i.e. union) the provided views. All
+     *                 'table_names' must be views from the same underlying base table. Values: normal, merge_views.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

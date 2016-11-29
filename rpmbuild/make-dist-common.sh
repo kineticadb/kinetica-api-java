@@ -353,7 +353,7 @@ function get_git_branch_name
 function get_git_repo_name
 {
     local OUTPUT_VAR_NAME="$1"
-    local GIT_REPO_NAME_RESULT=$(git remote show origin -n | grep "Fetch URL:" | sed -E 's#^.*/(.*)$#\1#' | sed 's#.git$##')
+    local GIT_REPO_NAME_RESULT=$(git remote show origin -n | grep "Fetch URL:" | sed -r 's#^.*/(.*)$#\1#' | sed 's#.git$##')
     if [ "$?" -ne 0 ]; then
         >&2 echo "ERROR: Unable to retrieve git repo name of $(pwd)"
         exit 1

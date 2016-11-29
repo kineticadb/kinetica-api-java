@@ -46,6 +46,82 @@ public class FilterByTableRequest implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Optional parameters.
+     * <br /><ul>
+     * <br />  <li> filter_mode: String indicating the filter mode, either 'in_table' or 'not_in_table'. Values: in_table,
+     * not_in_table.
+     * <br />
+     * <br />  <li> mode: Mode - should be either 'spatial' or 'normal'. Values: normal, spatial.
+     * <br />
+     * <br />  <li> buffer: Buffer size, in meters. Only relevant for 'spatial' mode.
+     * <br />  <li> buffer_method: Method used to buffer polygons.  Only relevant for 'spatial' mode. Values: normal, geos.
+     * <br />
+     * <br />  <li> max_partition_size: Maximum number of points in a partition. Only relevant for 'spatial' mode.
+     * <br />  <li> max_partition_score: Maximum number of points * edges in a partition. Only relevant for 'spatial' mode.
+     * <br />  <li> x_column_name: Name of column containing x value of point being filtered in spatial mode.
+     * <br />  <li> y_column_name: Name of column containing x value of point being filtered in spatial mode.
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * String indicating the filter mode, either 'in_table' or 'not_in_table'. Values: in_table, not_in_table.
+         * <br />
+         */
+        public static final String FILTER_MODE = "filter_mode";
+        public static final String IN_TABLE = "in_table";
+        public static final String NOT_IN_TABLE = "not_in_table";
+
+        /**
+         * Mode - should be either 'spatial' or 'normal'. Values: normal, spatial.
+         * <br />
+         */
+        public static final String MODE = "mode";
+        public static final String NORMAL = "normal";
+        public static final String SPATIAL = "spatial";
+
+        /**
+         * Buffer size, in meters. Only relevant for 'spatial' mode.
+         */
+        public static final String BUFFER = "buffer";
+
+        /**
+         * Method used to buffer polygons.  Only relevant for 'spatial' mode. Values: normal, geos.
+         * <br />
+         */
+        public static final String BUFFER_METHOD = "buffer_method";
+
+        /**
+         * Use geos 1 edge per corner algorithm
+         */
+        public static final String GEOS = "geos";
+
+        /**
+         * Maximum number of points in a partition. Only relevant for 'spatial' mode.
+         */
+        public static final String MAX_PARTITION_SIZE = "max_partition_size";
+
+        /**
+         * Maximum number of points * edges in a partition. Only relevant for 'spatial' mode.
+         */
+        public static final String MAX_PARTITION_SCORE = "max_partition_score";
+
+        /**
+         * Name of column containing x value of point being filtered in spatial mode.
+         */
+        public static final String X_COLUMN_NAME = "x_column_name";
+
+        /**
+         * Name of column containing x value of point being filtered in spatial mode.
+         */
+        public static final String Y_COLUMN_NAME = "y_column_name";
+
+        private Options() {  }
+    }
+
     private String tableName;
     private String viewName;
     private String columnName;
@@ -79,6 +155,19 @@ public class FilterByTableRequest implements IndexedRecord {
      * @param sourceTableColumnName  Name of the column in the {@code sourceTableName} whose values will be used as the filter for
      *                               table {@code tableName}. Must match the type of the {@code columnName}.
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> filter_mode: String indicating the filter mode, either 'in_table' or 'not_in_table'. Values:
+     *                 in_table, not_in_table.
+     *                         <li> mode: Mode - should be either 'spatial' or 'normal'. Values: normal, spatial.
+     *                         <li> buffer: Buffer size, in meters. Only relevant for 'spatial' mode.
+     *                         <li> buffer_method: Method used to buffer polygons.  Only relevant for 'spatial' mode. Values:
+     *                 normal, geos.
+     *                         <li> max_partition_size: Maximum number of points in a partition. Only relevant for 'spatial' mode.
+     *                         <li> max_partition_score: Maximum number of points * edges in a partition. Only relevant for
+     *                 'spatial' mode.
+     *                         <li> x_column_name: Name of column containing x value of point being filtered in spatial mode.
+     *                         <li> y_column_name: Name of column containing x value of point being filtered in spatial mode.
+     *                 </ul>
      * 
      */
     public FilterByTableRequest(String tableName, String viewName, String columnName, String sourceTableName, String sourceTableColumnName, Map<String, String> options) {
@@ -205,6 +294,17 @@ public class FilterByTableRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> filter_mode: String indicating the filter mode, either 'in_table' or 'not_in_table'. Values: in_table,
+     *         not_in_table.
+     *                 <li> mode: Mode - should be either 'spatial' or 'normal'. Values: normal, spatial.
+     *                 <li> buffer: Buffer size, in meters. Only relevant for 'spatial' mode.
+     *                 <li> buffer_method: Method used to buffer polygons.  Only relevant for 'spatial' mode. Values: normal, geos.
+     *                 <li> max_partition_size: Maximum number of points in a partition. Only relevant for 'spatial' mode.
+     *                 <li> max_partition_score: Maximum number of points * edges in a partition. Only relevant for 'spatial' mode.
+     *                 <li> x_column_name: Name of column containing x value of point being filtered in spatial mode.
+     *                 <li> y_column_name: Name of column containing x value of point being filtered in spatial mode.
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -214,6 +314,19 @@ public class FilterByTableRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> filter_mode: String indicating the filter mode, either 'in_table' or 'not_in_table'. Values:
+     *                 in_table, not_in_table.
+     *                         <li> mode: Mode - should be either 'spatial' or 'normal'. Values: normal, spatial.
+     *                         <li> buffer: Buffer size, in meters. Only relevant for 'spatial' mode.
+     *                         <li> buffer_method: Method used to buffer polygons.  Only relevant for 'spatial' mode. Values:
+     *                 normal, geos.
+     *                         <li> max_partition_size: Maximum number of points in a partition. Only relevant for 'spatial' mode.
+     *                         <li> max_partition_score: Maximum number of points * edges in a partition. Only relevant for
+     *                 'spatial' mode.
+     *                         <li> x_column_name: Name of column containing x value of point being filtered in spatial mode.
+     *                         <li> y_column_name: Name of column containing x value of point being filtered in spatial mode.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
