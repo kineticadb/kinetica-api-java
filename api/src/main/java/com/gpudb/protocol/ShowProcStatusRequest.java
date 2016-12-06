@@ -7,19 +7,22 @@
 package com.gpudb.protocol;
 
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 
 
-public class ExecuteProcResponse implements IndexedRecord {
+public class ShowProcStatusRequest implements IndexedRecord {
 
     private static final Schema schema$ = SchemaBuilder
-            .record("ExecuteProcResponse")
+            .record("ShowProcStatusRequest")
             .namespace("com.gpudb")
             .fields()
                 .name("runId").type().stringType().noDefault()
+                .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -28,18 +31,48 @@ public class ExecuteProcResponse implements IndexedRecord {
     }
 
 
+    public static final class Options {
+
+        public static final String CLEAR_COMPLETE = "clear_complete";
+
+        public static final String TRUE = "true";
+
+        public static final String FALSE = "false";
+
+
+        private Options() {  }
+    }
+
+
     private String runId;
+    private Map<String, String> options;
 
 
-    public ExecuteProcResponse() {
+    public ShowProcStatusRequest() {
+        runId = "";
+        options = new LinkedHashMap<>();
+    }
+
+    public ShowProcStatusRequest(String runId, Map<String, String> options) {
+        this.runId = (runId == null) ? "" : runId;
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     public String getRunId() {
         return runId;
     }
 
-    public ExecuteProcResponse setRunId(String runId) {
+    public ShowProcStatusRequest setRunId(String runId) {
         this.runId = (runId == null) ? "" : runId;
+        return this;
+    }
+
+    public Map<String, String> getOptions() {
+        return options;
+    }
+
+    public ShowProcStatusRequest setOptions(Map<String, String> options) {
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
 
@@ -54,6 +87,9 @@ public class ExecuteProcResponse implements IndexedRecord {
             case 0:
                 return this.runId;
 
+            case 1:
+                return this.options;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -65,6 +101,10 @@ public class ExecuteProcResponse implements IndexedRecord {
         switch (index) {
             case 0:
                 this.runId = (String)value;
+                break;
+
+            case 1:
+                this.options = (Map<String, String>)value;
                 break;
 
             default:
@@ -83,9 +123,10 @@ public class ExecuteProcResponse implements IndexedRecord {
             return false;
         }
 
-        ExecuteProcResponse that = (ExecuteProcResponse)obj;
+        ShowProcStatusRequest that = (ShowProcStatusRequest)obj;
 
-        return ( this.runId.equals( that.runId ) );
+        return ( this.runId.equals( that.runId )
+                 && this.options.equals( that.options ) );
     }
 
 
@@ -97,6 +138,10 @@ public class ExecuteProcResponse implements IndexedRecord {
         builder.append( gd.toString( "runId" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.runId ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "options" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.options ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -107,6 +152,7 @@ public class ExecuteProcResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.runId.hashCode();
+        hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }
 

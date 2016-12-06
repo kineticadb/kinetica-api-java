@@ -18,18 +18,18 @@ import org.apache.avro.generic.IndexedRecord;
  * <br />
  * <br />Apply various modifications to a table or collection. Available modifications include:
  * <br />
- * <br />     Creating or deleting an index on a particular column. This can speed up certain search queries (such as {@link
- * com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}, {@link
- * com.gpudb.GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}) when using expressions containing equality or relational operators on
- * indexed columns. This only applies to tables.
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Creating or deleting an index on a particular column. This can speed up certain search
+ * queries (such as {@link com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link
+ * com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}, {@link com.gpudb.GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}) when
+ * using expressions containing equality or relational operators on indexed columns. This only applies to tables.
  * <br />
- * <br />     Setting the time-to-live (TTL). This can be applied to tables, views, or collections.  When applied to collections,
- * every table & view within the collection will have its TTL set to the given value.
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Setting the time-to-live (TTL). This can be applied to tables, views, or collections.  When
+ * applied to collections, every table & view within the collection will have its TTL set to the given value.
  * <br />
- * <br />     Making a table protected or not. Protected tables have their TTLs set to not automatically expire. This can be applied
- * to tables, views, and collections.
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Making a table protected or not. Protected tables have their TTLs set to not automatically
+ * expire. This can be applied to tables, views, and collections.
  * <br />
- * <br />     Allowing homogeneous tables within a collection.
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Allowing homogeneous tables within a collection.
  */
 public class AlterTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

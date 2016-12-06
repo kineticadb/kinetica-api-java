@@ -7,19 +7,21 @@
 package com.gpudb.protocol;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 
 
-public class ExecuteProcResponse implements IndexedRecord {
+public class KillProcResponse implements IndexedRecord {
 
     private static final Schema schema$ = SchemaBuilder
-            .record("ExecuteProcResponse")
+            .record("KillProcResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("runId").type().stringType().noDefault()
+                .name("runIds").type().array().items().stringType().noDefault()
             .endRecord();
 
 
@@ -28,18 +30,18 @@ public class ExecuteProcResponse implements IndexedRecord {
     }
 
 
-    private String runId;
+    private List<String> runIds;
 
 
-    public ExecuteProcResponse() {
+    public KillProcResponse() {
     }
 
-    public String getRunId() {
-        return runId;
+    public List<String> getRunIds() {
+        return runIds;
     }
 
-    public ExecuteProcResponse setRunId(String runId) {
-        this.runId = (runId == null) ? "" : runId;
+    public KillProcResponse setRunIds(List<String> runIds) {
+        this.runIds = (runIds == null) ? new ArrayList<String>() : runIds;
         return this;
     }
 
@@ -52,7 +54,7 @@ public class ExecuteProcResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.runId;
+                return this.runIds;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -64,7 +66,7 @@ public class ExecuteProcResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.runId = (String)value;
+                this.runIds = (List<String>)value;
                 break;
 
             default:
@@ -83,9 +85,9 @@ public class ExecuteProcResponse implements IndexedRecord {
             return false;
         }
 
-        ExecuteProcResponse that = (ExecuteProcResponse)obj;
+        KillProcResponse that = (KillProcResponse)obj;
 
-        return ( this.runId.equals( that.runId ) );
+        return ( this.runIds.equals( that.runIds ) );
     }
 
 
@@ -94,9 +96,9 @@ public class ExecuteProcResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "runId" ) );
+        builder.append( gd.toString( "runIds" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.runId ) );
+        builder.append( gd.toString( this.runIds ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -106,7 +108,7 @@ public class ExecuteProcResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.runId.hashCode();
+        hashCode = (31 * hashCode) + this.runIds.hashCode();
         return hashCode;
     }
 

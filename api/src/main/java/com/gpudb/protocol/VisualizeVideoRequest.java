@@ -33,11 +33,12 @@ import org.apache.avro.generic.IndexedRecord;
  * <br />For instance, if a 20 frame video with the session key 'MY-SESSION-KEY' was generated, the first frame could be retrieved
  * with the URL::
  * <br />
- * <br />     http://<gpudb-ip-address>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=0
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ * http://<gpudb-ip-address>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=0
  * <br />
  * <br />and the last frame could be retrieved with::
  * <br />
- * <br />    http://gpudb-ip-address:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=19
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://gpudb-ip-address:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=19
  * <br />The response payload provides, among other things, the number of frames which were created by GPUdb.
  */
 public class VisualizeVideoRequest implements IndexedRecord {

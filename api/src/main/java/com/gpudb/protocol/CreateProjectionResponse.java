@@ -13,13 +13,13 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 
 
-public class ExecuteProcResponse implements IndexedRecord {
+public class CreateProjectionResponse implements IndexedRecord {
 
     private static final Schema schema$ = SchemaBuilder
-            .record("ExecuteProcResponse")
+            .record("CreateProjectionResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("runId").type().stringType().noDefault()
+                .name("projectionName").type().stringType().noDefault()
             .endRecord();
 
 
@@ -28,18 +28,18 @@ public class ExecuteProcResponse implements IndexedRecord {
     }
 
 
-    private String runId;
+    private String projectionName;
 
 
-    public ExecuteProcResponse() {
+    public CreateProjectionResponse() {
     }
 
-    public String getRunId() {
-        return runId;
+    public String getProjectionName() {
+        return projectionName;
     }
 
-    public ExecuteProcResponse setRunId(String runId) {
-        this.runId = (runId == null) ? "" : runId;
+    public CreateProjectionResponse setProjectionName(String projectionName) {
+        this.projectionName = (projectionName == null) ? "" : projectionName;
         return this;
     }
 
@@ -52,7 +52,7 @@ public class ExecuteProcResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.runId;
+                return this.projectionName;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -64,7 +64,7 @@ public class ExecuteProcResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.runId = (String)value;
+                this.projectionName = (String)value;
                 break;
 
             default:
@@ -83,9 +83,9 @@ public class ExecuteProcResponse implements IndexedRecord {
             return false;
         }
 
-        ExecuteProcResponse that = (ExecuteProcResponse)obj;
+        CreateProjectionResponse that = (CreateProjectionResponse)obj;
 
-        return ( this.runId.equals( that.runId ) );
+        return ( this.projectionName.equals( that.projectionName ) );
     }
 
 
@@ -94,9 +94,9 @@ public class ExecuteProcResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "runId" ) );
+        builder.append( gd.toString( "projectionName" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.runId ) );
+        builder.append( gd.toString( this.projectionName ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -106,7 +106,7 @@ public class ExecuteProcResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.runId.hashCode();
+        hashCode = (31 * hashCode) + this.projectionName.hashCode();
         return hashCode;
     }
 

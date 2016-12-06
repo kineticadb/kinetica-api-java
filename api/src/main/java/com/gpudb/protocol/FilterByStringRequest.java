@@ -18,12 +18,52 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#filterByString(FilterByStringRequest)}.
  * <br />
- * <br />Calculates which objects from a table, collection or view match a string expression for the given string columns. The
+ * <br />Calculates which objects from a table, collection, or view match a string expression for the given string columns. The
  * 'mode' may be:
- * <br />
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  * <br />* search : full text search query with wildcards and boolean operators, e.g. '(bob* OR sue) AND NOT jane'. Note that for
  * this mode, no column can be specified in {@code columnNames}; GPUdb will search through all string columns of the table that have
- * text search enabled. Also, the first character of the regular expression cannot be a wildcard (* or ?).
+ * text search enabled. Also, the first character of a search term cannot be a wildcard (* or ?), and search terms cannot be any of
+ * the following:  "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no", "not", "of",
+ * "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was", "will", "with".
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Search query types:
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Multiple search terms
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. perfect union - will match
+ * any record containing "perfect", "union", or both.
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Exact phrases
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. "Perfect Union" - will only
+ * match the exact phrase "Perfect Union"
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Boolean (NOT, AND, OR, parentheses. OR assumed if no operator
+ * specified)
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. justice AND tranquility -
+ * will match only those records containing both justice and tranquility
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* XOR (specified with -)
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. justice - peace - will match
+ * records containing "justice" or "peace", but not both
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Zero or more char wildcard - (specified with *)
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex, est*is* - will match any
+ * records containing a word that starts with "est" and ends with "sh", such as "establish", "establishable", and "establishment"
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Exactly one char wildcard - (specified with ?)
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. est???is* - will only match
+ * strings that start with "est", followed by exactly three letters, followed by "is", followed by one more letter.  This would only
+ * match "establish"
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Fuzzy search (term~)
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. rear~ will match
+ * rear,fear,bear,read,etc.
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Proximity - match two words within a specified distance of
+ * eachother
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. "Union Tranquility"~10 will
+ * match any record that has the words Union and Tranquility within 10 words of eachother
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Range - inclusive [<term1> TO <term2>] and exclusive {<term1>
+ * TO <term2>}.  Note: This is a string search, so numbers will be seen as a string of numeric characters, not as a number.  Ex. 2 >
+ * 123
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. [100 TO 200] will find all
+ * strings between 100 and 200 inclusive.
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. {alpha to beta} will find all
+ * strings between alpha and beta, but not the words alpha or beta&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* escaping special characters - Special characters are escaped
+ * with a backslash(\), special characters are: + - && || ! ( ) { } [ ] ^ " ~ * ? : \
+ * <br />
  * <br />* equals: exact whole-string match (accelerated)
  * <br />* contains: partial substring match (not accelerated).  If the column is a string type (non-charN) and the number of
  * records is too large, it will return 0.

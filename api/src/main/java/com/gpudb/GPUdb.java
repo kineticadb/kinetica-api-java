@@ -966,18 +966,18 @@ public class GPUdb extends GPUdbBase {
     /**
      * Apply various modifications to a table or collection. Available modifications include:
      * <br />
-     * <br />     Creating or deleting an index on a particular column. This can speed up certain search queries (such as {@link
-     * GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link GPUdb#deleteRecords(DeleteRecordsRequest)}, {@link
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Creating or deleting an index on a particular column. This can speed up certain search
+     * queries (such as {@link GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link GPUdb#deleteRecords(DeleteRecordsRequest)}, {@link
      * GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}) when using expressions containing equality or relational operators on
      * indexed columns. This only applies to tables.
      * <br />
-     * <br />     Setting the time-to-live (TTL). This can be applied to tables, views, or collections.  When applied to
-     * collections, every table & view within the collection will have its TTL set to the given value.
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Setting the time-to-live (TTL). This can be applied to tables, views, or collections.
+     * When applied to collections, every table & view within the collection will have its TTL set to the given value.
      * <br />
-     * <br />     Making a table protected or not. Protected tables have their TTLs set to not automatically expire. This can be
-     * applied to tables, views, and collections.
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Making a table protected or not. Protected tables have their TTLs set to not
+     * automatically expire. This can be applied to tables, views, and collections.
      * <br />
-     * <br />     Allowing homogeneous tables within a collection.
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Allowing homogeneous tables within a collection.
      * 
      * @param request  Request object containing the parameters for the operation.
      * 
@@ -999,18 +999,18 @@ public class GPUdb extends GPUdbBase {
     /**
      * Apply various modifications to a table or collection. Available modifications include:
      * <br />
-     * <br />     Creating or deleting an index on a particular column. This can speed up certain search queries (such as {@link
-     * GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link GPUdb#deleteRecords(String, List, Map)}, {@link
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Creating or deleting an index on a particular column. This can speed up certain search
+     * queries (such as {@link GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link GPUdb#deleteRecords(String, List, Map)}, {@link
      * GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}) when using expressions containing equality or relational operators on
      * indexed columns. This only applies to tables.
      * <br />
-     * <br />     Setting the time-to-live (TTL). This can be applied to tables, views, or collections.  When applied to
-     * collections, every table & view within the collection will have its TTL set to the given value.
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Setting the time-to-live (TTL). This can be applied to tables, views, or collections.
+     * When applied to collections, every table & view within the collection will have its TTL set to the given value.
      * <br />
-     * <br />     Making a table protected or not. Protected tables have their TTLs set to not automatically expire. This can be
-     * applied to tables, views, and collections.
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Making a table protected or not. Protected tables have their TTLs set to not
+     * automatically expire. This can be applied to tables, views, and collections.
      * <br />
-     * <br />     Allowing homogeneous tables within a collection.
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Allowing homogeneous tables within a collection.
      * 
      * @param tableName  Table on which the operation will be performed. Must be a valid table, view, or collection in GPUdb.
      * @param action  Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected,
@@ -1320,6 +1320,40 @@ public class GPUdb extends GPUdbBase {
         CreateJoinTableRequest actualRequest_ = new CreateJoinTableRequest(joinTableName, tableNames, columnNames, expressions, options);
         CreateJoinTableResponse actualResponse_ = new CreateJoinTableResponse();
         submitRequest("/create/jointable", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public CreateProcResponse createProc(CreateProcRequest request) throws GPUdbException {
+        CreateProcResponse actualResponse_ = new CreateProcResponse();
+        submitRequest("/create/proc", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public CreateProcResponse createProc(String procName, Map<String, ByteBuffer> files, String command, List<String> args, Map<String, String> options) throws GPUdbException {
+        CreateProcRequest actualRequest_ = new CreateProcRequest(procName, files, command, args, options);
+        CreateProcResponse actualResponse_ = new CreateProcResponse();
+        submitRequest("/create/proc", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public CreateProjectionResponse createProjection(CreateProjectionRequest request) throws GPUdbException {
+        CreateProjectionResponse actualResponse_ = new CreateProjectionResponse();
+        submitRequest("/create/projection", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public CreateProjectionResponse createProjection(String tableName, String projectionName, List<String> columnNames, Map<String, String> options) throws GPUdbException {
+        CreateProjectionRequest actualRequest_ = new CreateProjectionRequest(tableName, projectionName, columnNames, options);
+        CreateProjectionResponse actualResponse_ = new CreateProjectionResponse();
+        submitRequest("/create/projection", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -1726,7 +1760,9 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a table that is the union of one or more existing tables.
+     * Creates a table that is the concatenation of one or more existing tables. It is equivalent to the SQL UNION ALL operator.
+     * Non-charN 'string' and 'bytes' column types cannot be included in a union, neither can columns with the property
+     * 'store_only'.
      * 
      * @param request  Request object containing the parameters for the operation.
      * 
@@ -1746,7 +1782,9 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a table that is the union of one or more existing tables.
+     * Creates a table that is the concatenation of one or more existing tables. It is equivalent to the SQL UNION ALL operator.
+     * Non-charN 'string' and 'bytes' column types cannot be included in a union, neither can columns with the property
+     * 'store_only'.
      * 
      * @param tableName  Name of the table to be created. Must not be the name of a currently existing GPUdb table. Cannot be an
      *                   empty string.
@@ -1859,6 +1897,23 @@ public class GPUdb extends GPUdbBase {
         CreateUserInternalRequest actualRequest_ = new CreateUserInternalRequest(name, password, options);
         CreateUserInternalResponse actualResponse_ = new CreateUserInternalResponse();
         submitRequest("/create/user/internal", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public DeleteProcResponse deleteProc(DeleteProcRequest request) throws GPUdbException {
+        DeleteProcResponse actualResponse_ = new DeleteProcResponse();
+        submitRequest("/delete/proc", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public DeleteProcResponse deleteProc(String procName, Map<String, String> options) throws GPUdbException {
+        DeleteProcRequest actualRequest_ = new DeleteProcRequest(procName, options);
+        DeleteProcResponse actualResponse_ = new DeleteProcResponse();
+        submitRequest("/delete/proc", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -2009,18 +2064,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Executes a proc in the GPUdb Node.js proc server.
-     * 
-     * @param request  Request object containing the parameters for the operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  ExecuteProcResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public ExecuteProcResponse executeProc(ExecuteProcRequest request) throws GPUdbException {
         ExecuteProcResponse actualResponse_ = new ExecuteProcResponse();
         submitRequest("/execute/proc", request, actualResponse_, false);
@@ -2029,25 +2072,8 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Executes a proc in the GPUdb Node.js proc server.
-     * 
-     * @param name  Name of the proc to execute.
-     * @param params  A map containing string parameters to pass to the proc. Each key/value pair specifies the name of a parameter
-     *                and its value.
-     * @param binParams  A map containing binary parameters to pass to the proc. Each key/value pair specifies the name of a
-     *                   parameter and its value.
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  ExecuteProcResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public ExecuteProcResponse executeProc(String name, Map<String, String> params, Map<String, ByteBuffer> binParams, Map<String, String> options) throws GPUdbException {
-        ExecuteProcRequest actualRequest_ = new ExecuteProcRequest(name, params, binParams, options);
+    public ExecuteProcResponse executeProc(String procName, Map<String, String> params, Map<String, ByteBuffer> binParams, List<String> inputTableNames, Map<String, List<String>> inputColumnNames, List<String> outputTableNames, Map<String, String> options) throws GPUdbException {
+        ExecuteProcRequest actualRequest_ = new ExecuteProcRequest(procName, params, binParams, inputTableNames, inputColumnNames, outputTableNames, options);
         ExecuteProcResponse actualResponse_ = new ExecuteProcResponse();
         submitRequest("/execute/proc", actualRequest_, actualResponse_, false);
         return actualResponse_;
@@ -2545,12 +2571,55 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Calculates which objects from a table, collection or view match a string expression for the given string columns. The 'mode'
+     * Calculates which objects from a table, collection, or view match a string expression for the given string columns. The 'mode'
      * may be:
-     * <br />
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
      * <br />* search : full text search query with wildcards and boolean operators, e.g. '(bob* OR sue) AND NOT jane'. Note that
      * for this mode, no column can be specified in {@code columnNames}; GPUdb will search through all string columns of the table
-     * that have text search enabled. Also, the first character of the regular expression cannot be a wildcard (* or ?).
+     * that have text search enabled. Also, the first character of a search term cannot be a wildcard (* or ?), and search terms
+     * cannot be any of the following:  "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is",
+     * "it", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was",
+     * "will", "with".
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Search query types:
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Multiple search terms
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. perfect union - will
+     * match any record containing "perfect", "union", or both.
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Exact phrases
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. "Perfect Union" - will
+     * only match the exact phrase "Perfect Union"
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Boolean (NOT, AND, OR, parentheses. OR assumed if no
+     * operator specified)
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. justice AND tranquility -
+     * will match only those records containing both justice and tranquility
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* XOR (specified with -)
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. justice - peace - will
+     * match records containing "justice" or "peace", but not both
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Zero or more char wildcard - (specified with *)
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex, est*is* - will match any
+     * records containing a word that starts with "est" and ends with "sh", such as "establish", "establishable", and
+     * "establishment"
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Exactly one char wildcard - (specified with ?)
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. est???is* - will only
+     * match strings that start with "est", followed by exactly three letters, followed by "is", followed by one more letter.  This
+     * would only match "establish"
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Fuzzy search (term~)
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. rear~ will match
+     * rear,fear,bear,read,etc.
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Proximity - match two words within a specified distance
+     * of eachother
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. "Union Tranquility"~10
+     * will match any record that has the words Union and Tranquility within 10 words of eachother
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Range - inclusive [<term1> TO <term2>] and exclusive
+     * {<term1> TO <term2>}.  Note: This is a string search, so numbers will be seen as a string of numeric characters, not as a
+     * number.  Ex. 2 > 123
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. [100 TO 200] will find
+     * all strings between 100 and 200 inclusive.
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. {alpha to beta} will find
+     * all strings between alpha and beta, but not the words alpha or
+     * beta&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* escaping special characters - Special characters are
+     * escaped with a backslash(\), special characters are: + - && || ! ( ) { } [ ] ^ " ~ * ? : \
+     * <br />
      * <br />* equals: exact whole-string match (accelerated)
      * <br />* contains: partial substring match (not accelerated).  If the column is a string type (non-charN) and the number of
      * records is too large, it will return 0.
@@ -2579,12 +2648,55 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Calculates which objects from a table, collection or view match a string expression for the given string columns. The 'mode'
+     * Calculates which objects from a table, collection, or view match a string expression for the given string columns. The 'mode'
      * may be:
-     * <br />
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
      * <br />* search : full text search query with wildcards and boolean operators, e.g. '(bob* OR sue) AND NOT jane'. Note that
      * for this mode, no column can be specified in {@code columnNames}; GPUdb will search through all string columns of the table
-     * that have text search enabled. Also, the first character of the regular expression cannot be a wildcard (* or ?).
+     * that have text search enabled. Also, the first character of a search term cannot be a wildcard (* or ?), and search terms
+     * cannot be any of the following:  "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is",
+     * "it", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was",
+     * "will", "with".
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Search query types:
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Multiple search terms
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. perfect union - will
+     * match any record containing "perfect", "union", or both.
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Exact phrases
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. "Perfect Union" - will
+     * only match the exact phrase "Perfect Union"
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Boolean (NOT, AND, OR, parentheses. OR assumed if no
+     * operator specified)
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. justice AND tranquility -
+     * will match only those records containing both justice and tranquility
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* XOR (specified with -)
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. justice - peace - will
+     * match records containing "justice" or "peace", but not both
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Zero or more char wildcard - (specified with *)
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex, est*is* - will match any
+     * records containing a word that starts with "est" and ends with "sh", such as "establish", "establishable", and
+     * "establishment"
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Exactly one char wildcard - (specified with ?)
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. est???is* - will only
+     * match strings that start with "est", followed by exactly three letters, followed by "is", followed by one more letter.  This
+     * would only match "establish"
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Fuzzy search (term~)
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. rear~ will match
+     * rear,fear,bear,read,etc.
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Proximity - match two words within a specified distance
+     * of eachother
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. "Union Tranquility"~10
+     * will match any record that has the words Union and Tranquility within 10 words of eachother
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Range - inclusive [<term1> TO <term2>] and exclusive
+     * {<term1> TO <term2>}.  Note: This is a string search, so numbers will be seen as a string of numeric characters, not as a
+     * number.  Ex. 2 > 123
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. [100 TO 200] will find
+     * all strings between 100 and 200 inclusive.
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. {alpha to beta} will find
+     * all strings between alpha and beta, but not the words alpha or
+     * beta&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* escaping special characters - Special characters are
+     * escaped with a backslash(\), special characters are: + - && || ! ( ) { } [ ] ^ " ~ * ? : \
+     * <br />
      * <br />* equals: exact whole-string match (accelerated)
      * <br />* contains: partial substring match (not accelerated).  If the column is a string type (non-charN) and the number of
      * records is too large, it will return 0.
@@ -4059,6 +4171,23 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    public KillProcResponse killProc(KillProcRequest request) throws GPUdbException {
+        KillProcResponse actualResponse_ = new KillProcResponse();
+        submitRequest("/kill/proc", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public KillProcResponse killProc(String runId, Map<String, String> options) throws GPUdbException {
+        KillProcRequest actualRequest_ = new KillProcRequest(runId, options);
+        KillProcResponse actualResponse_ = new KillProcResponse();
+        submitRequest("/kill/proc", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
     /**
      * Manages global access to a table's data.  By default a table has a {@code lockType} of {@code unlock}, indicating all
      * operations are permitted.  A user may request a {@code read-only} or a {@code write-only} lock, after which only read or
@@ -4237,6 +4366,40 @@ public class GPUdb extends GPUdbBase {
         RevokeRoleRequest actualRequest_ = new RevokeRoleRequest(role, member, options);
         RevokeRoleResponse actualResponse_ = new RevokeRoleResponse();
         submitRequest("/revoke/role", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public ShowProcResponse showProc(ShowProcRequest request) throws GPUdbException {
+        ShowProcResponse actualResponse_ = new ShowProcResponse();
+        submitRequest("/show/proc", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public ShowProcResponse showProc(String procName, Map<String, String> options) throws GPUdbException {
+        ShowProcRequest actualRequest_ = new ShowProcRequest(procName, options);
+        ShowProcResponse actualResponse_ = new ShowProcResponse();
+        submitRequest("/show/proc", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public ShowProcStatusResponse showProcStatus(ShowProcStatusRequest request) throws GPUdbException {
+        ShowProcStatusResponse actualResponse_ = new ShowProcStatusResponse();
+        submitRequest("/show/proc/status", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public ShowProcStatusResponse showProcStatus(String runId, Map<String, String> options) throws GPUdbException {
+        ShowProcStatusRequest actualRequest_ = new ShowProcStatusRequest(runId, options);
+        ShowProcStatusResponse actualResponse_ = new ShowProcStatusResponse();
+        submitRequest("/show/proc/status", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -4421,24 +4584,18 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Retrieves detailed information about a particular GPUdb table, specified in {@code tableName}. If the supplied {@code
-     * tableName} is a collection, the call returns a list of tables contained in the collection, and for each table it returns the
-     * description, type id, schema, type label, type properties, and additional information including TTL. If {@code tableName} is
-     * empty it will return all top-level tables including all collections and top-level child tables (i.e. tables with no parent).
+     * Retrieves detailed information about a table, view, or collection, specified in {@code tableName}. If the supplied {@code
+     * tableName} is a collection, the call can return information about either the collection itself or the tables and views it
+     * contains. If {@code tableName} is empty, information about all collections and top-level tables and views can be returned.
      * <br />
-     * <br />    If the option 'get_sizes' is set to 'true' then the sizes (objects and elements) of each table are returned (in
-     * {@code sizes} and {@code fullSizes}), along with the total number of objects in the requested table (in {@code totalSize} and
-     * {@code totalFullSize}).
+     * <br />If the option {@code get_sizes} is set to {@code true}, then the sizes (objects and elements) of each table are
+     * returned (in {@code sizes} and {@code fullSizes}), along with the total number of objects in the requested table (in {@code
+     * totalSize} and {@code totalFullSize}).
      * <br />
-     * <br />    If the option 'show_children' is set to 'false' then for a collection it only returns information about the
-     * collection itself, not about the child tables. If 'show_children' is set to 'true' then it will return information about each
-     * of the children, but not the collection.
-     * <br />
-     * <br />    Running with 'show_children' = 'true' on a child table will return an error.
-     * <br />
-     * <br />    Running with 'show_children' = 'false' with {@code tableName} empty will return an error.
-     * <br />
-     * <br />If the requested table is blank, then information is returned about all top-level tables including collections.
+     * <br />For a collection, setting the {@code show_children} option to {@code false} returns only information about the
+     * collection itself; setting {@code show_children} to {@code true} returns a list of tables and views contained in the
+     * collection, along with their description, type id, schema, type label, type properties, and additional information including
+     * TTL.
      * 
      * @param request  Request object containing the parameters for the operation.
      * 
@@ -4463,35 +4620,29 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Retrieves detailed information about a particular GPUdb table, specified in {@code tableName}. If the supplied {@code
-     * tableName} is a collection, the call returns a list of tables contained in the collection, and for each table it returns the
-     * description, type id, schema, type label, type properties, and additional information including TTL. If {@code tableName} is
-     * empty it will return all top-level tables including all collections and top-level child tables (i.e. tables with no parent).
+     * Retrieves detailed information about a table, view, or collection, specified in {@code tableName}. If the supplied {@code
+     * tableName} is a collection, the call can return information about either the collection itself or the tables and views it
+     * contains. If {@code tableName} is empty, information about all collections and top-level tables and views can be returned.
      * <br />
-     * <br />    If the option 'get_sizes' is set to 'true' then the sizes (objects and elements) of each table are returned (in
-     * {@code sizes} and {@code fullSizes}), along with the total number of objects in the requested table (in {@code totalSize} and
-     * {@code totalFullSize}).
+     * <br />If the option {@code get_sizes} is set to {@code true}, then the sizes (objects and elements) of each table are
+     * returned (in {@code sizes} and {@code fullSizes}), along with the total number of objects in the requested table (in {@code
+     * totalSize} and {@code totalFullSize}).
      * <br />
-     * <br />    If the option 'show_children' is set to 'false' then for a collection it only returns information about the
-     * collection itself, not about the child tables. If 'show_children' is set to 'true' then it will return information about each
-     * of the children, but not the collection.
-     * <br />
-     * <br />    Running with 'show_children' = 'true' on a child table will return an error.
-     * <br />
-     * <br />    Running with 'show_children' = 'false' with {@code tableName} empty will return an error.
-     * <br />
-     * <br />If the requested table is blank, then information is returned about all top-level tables including collections.
+     * <br />For a collection, setting the {@code show_children} option to {@code false} returns only information about the
+     * collection itself; setting {@code show_children} to {@code true} returns a list of tables and views contained in the
+     * collection, along with their description, type id, schema, type label, type properties, and additional information including
+     * TTL.
      * 
-     * @param tableName  Name of the table for which to retrieve the information. If blank then information about all collections
-     *                   and top-level tables is returned.
+     * @param tableName  Name of the table for which to retrieve the information. If blank, then information about all collections
+     *                   and top-level tables and views is returned.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> get_sizes: If 'true' then the table sizes will be returned; otherwise they will be returned
-     *                 blank. Values: true, false.
-     *                         <li> show_children: If {@code tableName} is a collection, then 'true' will return information about
-     *                 the children of the collection, and 'false' will return information about the collection itself. If {@code
-     *                 tableName} is a child table, 'show_children' must be 'false'. If {@code tableName} is empty then
-     *                 'show_children' must be 'true'. Values: true, false.
+     *                         <li> get_sizes: If {@code true} then the table sizes will be returned; blank, otherwise. Values:
+     *                 true, false.
+     *                         <li> show_children: If {@code tableName} is a collection, then {@code true} will return information
+     *                 about the children of the collection, and {@code false} will return information about the collection itself.
+     *                 If {@code tableName} is a table or view, {@code show_children} must be {@code false}. If {@code tableName} is
+     *                 empty, then {@code show_children} must be {@code true}. Values: true, false.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -5059,11 +5210,13 @@ public class GPUdb extends GPUdbBase {
      * <br />For instance, if a 20 frame video with the session key 'MY-SESSION-KEY' was generated, the first frame could be
      * retrieved with the URL::
      * <br />
-     * <br />     http://<gpudb-ip-address>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=0
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     * http://<gpudb-ip-address>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=0
      * <br />
      * <br />and the last frame could be retrieved with::
      * <br />
-     * <br />    http://gpudb-ip-address:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=19
+     * <br
+     * />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://gpudb-ip-address:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=19
      * <br />The response payload provides, among other things, the number of frames which were created by GPUdb.
      * 
      * @param request  Request object containing the parameters for the operation.
@@ -5099,11 +5252,13 @@ public class GPUdb extends GPUdbBase {
      * <br />For instance, if a 20 frame video with the session key 'MY-SESSION-KEY' was generated, the first frame could be
      * retrieved with the URL::
      * <br />
-     * <br />     http://<gpudb-ip-address>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=0
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     * http://<gpudb-ip-address>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=0
      * <br />
      * <br />and the last frame could be retrieved with::
      * <br />
-     * <br />    http://gpudb-ip-address:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=19
+     * <br
+     * />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://gpudb-ip-address:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=19
      * <br />The response payload provides, among other things, the number of frames which were created by GPUdb.
      * 
      * @param tableNames  Names of the tables containing the data for various layers of the resulting video.

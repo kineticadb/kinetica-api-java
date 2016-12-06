@@ -18,7 +18,8 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#createUnion(CreateUnionRequest)}.
  * <br />
- * <br />Creates a table that is the union of one or more existing tables.
+ * <br />Creates a table that is the concatenation of one or more existing tables. It is equivalent to the SQL UNION ALL operator.
+ * Non-charN 'string' and 'bytes' column types cannot be included in a union, neither can columns with the property 'store_only'.
  */
 public class CreateUnionRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
