@@ -50,7 +50,8 @@ public class ShowTableResponse implements IndexedRecord {
 
 
     /**
-     * List of descriptions for the respective tables in {@code tableNames}. Values: COLLECTION, VIEW, REPLICATED, JOIN.
+     * List of descriptions for the respective tables in {@code tableNames}. Values: COLLECTION, VIEW, REPLICATED, JOIN,
+     * RESULT_TABLE.
      * <br />
      * <br />A set of string constants for the parameter {@code tableDescriptions}.
      */
@@ -59,6 +60,7 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String VIEW = "VIEW";
         public static final String REPLICATED = "REPLICATED";
         public static final String JOIN = "JOIN";
+        public static final String RESULT_TABLE = "RESULT_TABLE";
 
         private TableDescriptions() {  }
     }
@@ -76,7 +78,7 @@ public class ShowTableResponse implements IndexedRecord {
          * multiple tables or views of the same type or not. Values: true, false.
          * <br />
          */
-        public static final String ALLOW_HOMOGENOUS_TABLES = "allow_homogenous_tables";
+        public static final String ALLOW_HOMOGENEOUS_TABLES = "allow_homogeneous_tables";
         public static final String FALSE = "false";
         public static final String TRUE = "true";
 
@@ -185,7 +187,8 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return List of descriptions for the respective tables in {@code tableNames}. Values: COLLECTION, VIEW, REPLICATED, JOIN.
+     * @return List of descriptions for the respective tables in {@code tableNames}. Values: COLLECTION, VIEW, REPLICATED, JOIN,
+     *         RESULT_TABLE.
      * 
      */
     public List<List<String>> getTableDescriptions() {
@@ -195,7 +198,7 @@ public class ShowTableResponse implements IndexedRecord {
     /**
      * 
      * @param tableDescriptions  List of descriptions for the respective tables in {@code tableNames}. Values: COLLECTION, VIEW,
-     *                           REPLICATED, JOIN.
+     *                           REPLICATED, JOIN, RESULT_TABLE.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -39,7 +39,7 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
             .fields()
                 .name("tableName").type().stringType().noDefault()
                 .name("expressions").type().array().items().stringType().noDefault()
-                .name("newValuesMaps").type().array().items().map().values().stringType().noDefault()
+                .name("newValuesMaps").type().array().items().map().values().unionOf().stringType().and().nullType().endUnion().noDefault()
                 .name("recordsToInsert").type().array().items().bytesType().noDefault()
                 .name("recordsToInsertStr").type().array().items().stringType().noDefault()
                 .name("recordEncoding").type().stringType().noDefault()

@@ -126,6 +126,11 @@ public final class ColumnProperty {
      */
     public static final String SHARD_KEY = "shard_key";
 
+    /**
+     * This property indicates that this column is nullable.
+     */
+    public static final String NULLABLE = "nullable";
+
     private ColumnProperty() {  }
 }
 

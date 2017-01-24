@@ -518,7 +518,7 @@ public class BulkInserter<T> {
                 if (indexedRecord != null) {
                     value = indexedRecord.get(columns.get(i));
                 } else {
-                    value = typeObjectMap.get(object, i);
+                    value = typeObjectMap.get(object, columns.get(i));
                 }
 
                 switch (columnTypes.get(i)) {

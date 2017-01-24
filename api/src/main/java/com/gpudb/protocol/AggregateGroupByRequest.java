@@ -87,8 +87,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * <br />
      * <br />  <li> sort_by: String determining how the results are sorted. Values: key, value.
      * <br />
-     * <br />  <li> result_table: The name of the table used to store the results. If present no results are returned in the
-     * response.
+     * <br />  <li> result_table: The name of the table used to store the results. Column names (group-by and aggregate fields) need
+     * to be given aliases e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If present, no results are returned in the
+     * response.  This option is not available if one of the grouping attributes is an unrestricted string (i.e.; not charN) type.
      * <br /></ul>
      * <br />A set of string constants for the parameter {@code options}.
      */
@@ -137,7 +138,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String VALUE = "value";
 
         /**
-         * The name of the table used to store the results. If present no results are returned in the response.
+         * The name of the table used to store the results. Column names (group-by and aggregate fields) need to be given aliases
+         * e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If present, no results are returned in the response.  This option
+         * is not available if one of the grouping attributes is an unrestricted string (i.e.; not charN) type.
          */
         public static final String RESULT_TABLE = "result_table";
 
@@ -179,8 +182,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
      *                 descending. Values: ascending, descending.
      *                         <li> sort_by: String determining how the results are sorted. Values: key, value.
-     *                         <li> result_table: The name of the table used to store the results. If present no results are
-     *                 returned in the response.
+     *                         <li> result_table: The name of the table used to store the results. Column names (group-by and
+     *                 aggregate fields) need to be given aliases e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If present,
+     *                 no results are returned in the response.  This option is not available if one of the grouping attributes is
+     *                 an unrestricted string (i.e.; not charN) type.
      *                 </ul>
      * 
      */
@@ -211,8 +216,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
      *                 descending. Values: ascending, descending.
      *                         <li> sort_by: String determining how the results are sorted. Values: key, value.
-     *                         <li> result_table: The name of the table used to store the results. If present no results are
-     *                 returned in the response.
+     *                         <li> result_table: The name of the table used to store the results. Column names (group-by and
+     *                 aggregate fields) need to be given aliases e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If present,
+     *                 no results are returned in the response.  This option is not available if one of the grouping attributes is
+     *                 an unrestricted string (i.e.; not charN) type.
      *                 </ul>
      * 
      */
@@ -345,8 +352,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 <li> sort_order: String indicating how the returned values should be sorted - ascending or descending.
      *         Values: ascending, descending.
      *                 <li> sort_by: String determining how the results are sorted. Values: key, value.
-     *                 <li> result_table: The name of the table used to store the results. If present no results are returned in the
-     *         response.
+     *                 <li> result_table: The name of the table used to store the results. Column names (group-by and aggregate
+     *         fields) need to be given aliases e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If present, no results are
+     *         returned in the response.  This option is not available if one of the grouping attributes is an unrestricted string
+     *         (i.e.; not charN) type.
      *         </ul>
      * 
      */
@@ -363,8 +372,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
      *                 descending. Values: ascending, descending.
      *                         <li> sort_by: String determining how the results are sorted. Values: key, value.
-     *                         <li> result_table: The name of the table used to store the results. If present no results are
-     *                 returned in the response.
+     *                         <li> result_table: The name of the table used to store the results. Column names (group-by and
+     *                 aggregate fields) need to be given aliases e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If present,
+     *                 no results are returned in the response.  This option is not available if one of the grouping attributes is
+     *                 an unrestricted string (i.e.; not charN) type.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

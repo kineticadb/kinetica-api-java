@@ -414,8 +414,10 @@ public class GPUdb extends GPUdbBase {
      *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
      *                 descending. Values: ascending, descending.
      *                         <li> sort_by: String determining how the results are sorted. Values: key, value.
-     *                         <li> result_table: The name of the table used to store the results. If present no results are
-     *                 returned in the response.
+     *                         <li> result_table: The name of the table used to store the results. Column names (group-by and
+     *                 aggregate fields) need to be given aliases e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If present,
+     *                 no results are returned in the response.  This option is not available if one of the grouping attributes is
+     *                 an unrestricted string (i.e.; not charN) type.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -1014,9 +1016,23 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Table on which the operation will be performed. Must be a valid table, view, or collection in GPUdb.
      * @param action  Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected,
-     *                ttl.
+     *                ttl, add_column, delete_column, change_column, rename_table.
      * @param value  The value of the modification. May be a column name, 'true' or 'false', or a TTL depending on {@code action}.
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> column_default_value: when adding a column: set a default value, for existing data.
+     *                         <li> column_properties: when adding or changing a column: set the column properties (strings,
+     *                 separated by a comma: data, store_only, text_search, char8, int8 etc).
+     *                         <li> column_type: when adding or changing a column: set the column type (strings, separated by a
+     *                 comma: int, double, string, null etc).
+     *                         <li> validate_change_column: Validate the type change before applying column_change request. Default
+     *                 is true (if option is missing). If True, then validate all values. A value too large (or too long) for the
+     *                 new type will prevent any change. If False, then when a value is too large or long, it will be trancated.
+     *                 Values: true, false.
+     *                         <li> copy_values_from_column: when adding or changing a column: enter column name - from where to
+     *                 copy values.
+     *                         <li> rename_column: new column name (using change_column).
+     *                 </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -1325,6 +1341,18 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Creates a proc.
+     * 
+     * @param request  Request object containing the parameters for the operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public CreateProcResponse createProc(CreateProcRequest request) throws GPUdbException {
         CreateProcResponse actualResponse_ = new CreateProcResponse();
         submitRequest("/create/proc", request, actualResponse_, false);
@@ -1333,8 +1361,32 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    public CreateProcResponse createProc(String procName, Map<String, ByteBuffer> files, String command, List<String> args, Map<String, String> options) throws GPUdbException {
-        CreateProcRequest actualRequest_ = new CreateProcRequest(procName, files, command, args, options);
+    /**
+     * Creates a proc.
+     * 
+     * @param procName  Name of the proc to be created. Must not be the name of a currently existing proc.
+     * @param executionMode  The execution mode of the proc. Values: distributed, nondistributed.
+     * @param files  A map of the files that make up the proc. The keys of the map are file names, and the values are the binary
+     *               contents of the files. The file names may include subdirectory names (e.g. 'subdir/file') but must not resolve
+     *               to a directory above the root for the proc.
+     * @param command  The command (excluding arguments) that will be invoked when the proc is executed. It will be invoked from the
+     *                 directory containing the proc {@code files} and may be any command that can be resolved from that directory.
+     *                 It need not refer to a file actually in that directory; for example, it could be 'java' if the proc is a Java
+     *                 application; however, any necessary external programs must be preinstalled on every GPUdb node. If the
+     *                 command refers to a file in that directory, it must be preceded with './' as per Linux convention. If not
+     *                 specified, and exactly one file is provided in {@code files}, that file will be invoked.
+     * @param args  An array of command-line arguments that will be passed to {@code command} when the proc is executed.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateProcResponse createProc(String procName, String executionMode, Map<String, ByteBuffer> files, String command, List<String> args, Map<String, String> options) throws GPUdbException {
+        CreateProcRequest actualRequest_ = new CreateProcRequest(procName, executionMode, files, command, args, options);
         CreateProcResponse actualResponse_ = new CreateProcResponse();
         submitRequest("/create/proc", actualRequest_, actualResponse_, false);
         return actualResponse_;
@@ -1403,11 +1455,13 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a new table or collection in GPUdb. If a new table is being created then type of the table is given by {@code typeId}
-     * which must the be the type id of a currently registered type (i.e. one created via {@link
-     * GPUdb#createType(CreateTypeRequest)}). The table will be created inside a collection if the option *collection_name* is
-     * specified. If that collection does not already exist then it will be created. To create a new, empty collection specify the
-     * collection name in {@code tableName}, leave {@code typeId} blank, and set the *is_collection* option to 'true'.
+     * Creates a new table or collection. If a new table is being created, the type of the table is given by {@code typeId}, which
+     * must the be the ID of a currently registered type (i.e. one created via {@link GPUdb#createType(CreateTypeRequest)}). The
+     * table will be created inside a collection if the option {@code collection_name} is specified. If that collection does not
+     * already exist, it will be created.
+     * <br />
+     * <br />To create a new collection, specify the name of the collection in {@code tableName} and set the {@code is_collection}
+     * option to {@code true}; {@code typeId} will be ignored.
      * 
      * @param request  Request object containing the parameters for the operation.
      * 
@@ -1427,19 +1481,21 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a new table or collection in GPUdb. If a new table is being created then type of the table is given by {@code typeId}
-     * which must the be the type id of a currently registered type (i.e. one created via {@link GPUdb#createType(String, String,
-     * Map, Map)}). The table will be created inside a collection if the option *collection_name* is specified. If that collection
-     * does not already exist then it will be created. To create a new, empty collection specify the collection name in {@code
-     * tableName}, leave {@code typeId} blank, and set the *is_collection* option to 'true'.
+     * Creates a new table or collection. If a new table is being created, the type of the table is given by {@code typeId}, which
+     * must the be the ID of a currently registered type (i.e. one created via {@link GPUdb#createType(String, String, Map, Map)}).
+     * The table will be created inside a collection if the option {@code collection_name} is specified. If that collection does not
+     * already exist, it will be created.
+     * <br />
+     * <br />To create a new collection, specify the name of the collection in {@code tableName} and set the {@code is_collection}
+     * option to {@code true}; {@code typeId} will be ignored.
      * 
-     * @param tableName  Name of the table to be created. Must not be the name of a currently existing GPUdb table of a different
-     *                   type.  Error for requests with existing table of the same name and type id may be suppressed by using the
-     *                   {@code no_error_if_exists} option.  Cannot be an empty string.  Valid characters are 'A-Za-z0-9_-(){}[] .:'
-     *                   (excluding the single quote), with the first character being one of 'A-Za-z0-9_'.  The maximum length is
-     *                   256 characters.
-     * @param typeId  ID of a currently registered type in GPUdb. All objects added to the newly created table will be of this type.
-     *                Must be an empty string if the *is_collection* is 'true'.
+     * @param tableName  Name of the table to be created. Must not be the name of a currently existing table of a different type.
+     *                   Error for requests with existing table of the same name and type id may be suppressed by using the {@code
+     *                   no_error_if_exists} option.  Cannot be an empty string.  Valid characters are alphanumeric or any of
+     *                   '_-(){}[] .:' (excluding the single quotes), with the first character being alphanumeric or an underscore.
+     *                   The maximum length is 256 characters.
+     * @param typeId  ID of a currently registered type. All objects added to the newly created table will be of this type.  Ignored
+     *                if {@code is_collection} is {@code true}.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> no_error_if_exists: If {@code true}, prevents an error from occurring if the table already
@@ -1796,7 +1852,8 @@ public class GPUdb extends GPUdbBase {
      *                         <li> collection_name: Name of a collection which is to contain the union. If empty, then the union
      *                 will be a top-level table.
      *                         <li> mode: If 'merge_views' then this operation will merge (i.e. union) the provided views. All
-     *                 'table_names' must be views from the same underlying base table. Values: normal, merge_views.
+     *                 'table_names' must be views from the same underlying base table. Values: union_all, union, union_distinct,
+     *                 except, intersect, merge_views.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -1902,6 +1959,18 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Deletes a proc. Any currently running instances of the proc will be killed.
+     * 
+     * @param request  Request object containing the parameters for the operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DeleteProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public DeleteProcResponse deleteProc(DeleteProcRequest request) throws GPUdbException {
         DeleteProcResponse actualResponse_ = new DeleteProcResponse();
         submitRequest("/delete/proc", request, actualResponse_, false);
@@ -1910,6 +1979,19 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Deletes a proc. Any currently running instances of the proc will be killed.
+     * 
+     * @param procName  Name of the proc to be deleted. Must be the name of a currently existing proc.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DeleteProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public DeleteProcResponse deleteProc(String procName, Map<String, String> options) throws GPUdbException {
         DeleteProcRequest actualRequest_ = new DeleteProcRequest(procName, options);
         DeleteProcResponse actualResponse_ = new DeleteProcResponse();
@@ -2064,6 +2146,18 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Executes a proc. This endpoint is asynchronous and does not wait for the proc to complete before returning.
+     * 
+     * @param request  Request object containing the parameters for the operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ExecuteProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public ExecuteProcResponse executeProc(ExecuteProcRequest request) throws GPUdbException {
         ExecuteProcResponse actualResponse_ = new ExecuteProcResponse();
         submitRequest("/execute/proc", request, actualResponse_, false);
@@ -2072,6 +2166,46 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Executes a proc. This endpoint is asynchronous and does not wait for the proc to complete before returning.
+     * 
+     * @param procName  Name of the proc to execute. Must be the name of a currently existing proc.
+     * @param params  A map containing named parameters to pass to the proc. Each key/value pair specifies the name of a parameter
+     *                and its value.
+     * @param binParams  A map containing named binary parameters to pass to the proc. Each key/value pair specifies the name of a
+     *                   parameter and its value.
+     * @param inputTableNames  Names of the tables containing data to be passed to the proc. Each name specified must be the name of
+     *                         a currently existing table. If no table names are specified, no data will be passed to the proc.
+     * @param inputColumnNames  Map of table names from {@code inputTableNames} to lists of names of columns from those tables that
+     *                          will be passed to the proc. Each column name specified must be the name of an existing column in the
+     *                          corresponding table. If a table name from {@code inputTableNames} is not included, all columns from
+     *                          that table will be passed to the proc.
+     * @param outputTableNames  Names of the tables to which output data from the proc will be written. If a specified table does
+     *                          not exist, it will automatically be created with the same schema as the corresponding table (by
+     *                          order) from {@code inputTableNames}, excluding any primary and shard keys. If no table names are
+     *                          specified, no output data can be returned from the proc.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> cache_input: A comma-delimited list of table names from {@code inputTableNames} from which input
+     *                 data will be cached for use in subsequent calls to {@link GPUdb#executeProc(String, Map, Map, List, Map,
+     *                 List, Map)} with the {@code use_cached_input} option. Cached input data will be retained until the proc
+     *                 status is cleared with the {@link GPUdb#showProcStatus(String, Map) clear_complete} option of {@link
+     *                 GPUdb#showProcStatus(String, Map)} and all proc instances using the cached data have completed.
+     *                         <li> use_cached_input: A comma-delimited list of run IDs (as returned from prior calls to {@link
+     *                 GPUdb#executeProc(String, Map, Map, List, Map, List, Map)}) of running or completed proc instances from which
+     *                 input data cached using the {@code cache_input} option will be used. Cached input data will not be used for
+     *                 any tables specified in {@code inputTableNames}, but data from all other tables cached for the specified run
+     *                 IDs will be passed to the proc. If the same table was cached for multiple specified run IDs, the cached data
+     *                 from the first run ID specified in the list that includes that table will be used.
+     *                 </ul>
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ExecuteProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public ExecuteProcResponse executeProc(String procName, Map<String, String> params, Map<String, ByteBuffer> binParams, List<String> inputTableNames, Map<String, List<String>> inputColumnNames, List<String> outputTableNames, Map<String, String> options) throws GPUdbException {
         ExecuteProcRequest actualRequest_ = new ExecuteProcRequest(procName, params, binParams, inputTableNames, inputColumnNames, outputTableNames, options);
         ExecuteProcResponse actualResponse_ = new ExecuteProcResponse();
@@ -3688,6 +3822,48 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Checks the existence of a proc with the given name.
+     * 
+     * @param request  Request object containing the parameters for the operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  HasProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public HasProcResponse hasProc(HasProcRequest request) throws GPUdbException {
+        HasProcResponse actualResponse_ = new HasProcResponse();
+        submitRequest("/has/proc", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Checks the existence of a proc with the given name.
+     * 
+     * @param procName  Name of the proc to check for existence.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  HasProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public HasProcResponse hasProc(String procName, Map<String, String> options) throws GPUdbException {
+        HasProcRequest actualRequest_ = new HasProcRequest(procName, options);
+        HasProcResponse actualResponse_ = new HasProcResponse();
+        submitRequest("/has/proc", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Checks the existence of a table with the given name in GPUdb.
      * 
      * @param request  Request object containing the parameters for the operation.
@@ -3773,18 +3949,22 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Adds multiple records to the specified table. The operation is synchronous meaning that GPUdb will not return a response
-     * until all the records are fully inserted and available. The response payload provides unique identifier for each added record
-     * along with counts of the number of records actually inserted and/or updated.
+     * until all the records are fully inserted and available. The response payload provides the counts of the number of records
+     * actually inserted and/or updated, and can provide the unique identifier of each added record.
      * <br />
-     * <br />{@code options} can be used to customize this function's behavior. The only parameter available is {@code
-     * update_on_existing_pk}. The value can be either 'true' or 'false'. If the table has a {@link
-     * GPUdb#createType(CreateTypeRequest) primary key} and if {@code update_on_existing_pk} is 'true' then if any of the records
-     * being added have the same primary key as existing records, the existing records are replaced (i.e. *updated*) with the given
-     * records. If {@code update_on_existing_pk} is false and if the records being added have the same primary key as existing
-     * records, the given records with existing primary keys are ignored (the existing records are left unchanged). It is quite
-     * possible that in this case some of the given records will be inserted and some (those having existing primary keys) will be
-     * ignored (or updated). If the specified table does not have a primary key column then the {@code update_on_existing_pk} option
-     * is ignored.
+     * <br />The {@code options} parameter can be used to customize this function's behavior.  The {@code update_on_existing_pk}
+     * option specifies the primary-key collision policy.  If the table has a {@link GPUdb#createType(CreateTypeRequest) primary
+     * key} and if {@code update_on_existing_pk} is {@code true}, then if any of the records being added have the same primary key
+     * as existing records, the existing records are replaced (i.e. updated) with the given records.  If {@code
+     * update_on_existing_pk} is {@code false} and if the records being added have the same primary key as existing records, they
+     * are ignored (the existing records are left unchanged).  It is quite possible that in this case some of the given records will
+     * be inserted and some (those having existing primary keys) will be ignored (or updated).  If the specified table does not have
+     * a primary key column, then the {@code update_on_existing_pk} option is ignored.
+     * <br />
+     * <br />The {@code return_record_ids} option indicates that the database should return the unique identifiers of inserted
+     * records.
+     * <br />
+     * <br />The {@code route_to_address} option directs that inserted records should be targeted for a particular database node.
      * 
      * @param request  Request object containing the parameters for the operation.
      * 
@@ -3805,18 +3985,22 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Adds multiple records to the specified table. The operation is synchronous meaning that GPUdb will not return a response
-     * until all the records are fully inserted and available. The response payload provides unique identifier for each added record
-     * along with counts of the number of records actually inserted and/or updated.
+     * until all the records are fully inserted and available. The response payload provides the counts of the number of records
+     * actually inserted and/or updated, and can provide the unique identifier of each added record.
      * <br />
-     * <br />{@code options} can be used to customize this function's behavior. The only parameter available is {@code
-     * update_on_existing_pk}. The value can be either 'true' or 'false'. If the table has a {@link
-     * GPUdb#createType(CreateTypeRequest) primary key} and if {@code update_on_existing_pk} is 'true' then if any of the records
-     * being added have the same primary key as existing records, the existing records are replaced (i.e. *updated*) with the given
-     * records. If {@code update_on_existing_pk} is false and if the records being added have the same primary key as existing
-     * records, the given records with existing primary keys are ignored (the existing records are left unchanged). It is quite
-     * possible that in this case some of the given records will be inserted and some (those having existing primary keys) will be
-     * ignored (or updated). If the specified table does not have a primary key column then the {@code update_on_existing_pk} option
-     * is ignored.
+     * <br />The {@code options} parameter can be used to customize this function's behavior.  The {@code update_on_existing_pk}
+     * option specifies the primary-key collision policy.  If the table has a {@link GPUdb#createType(CreateTypeRequest) primary
+     * key} and if {@code update_on_existing_pk} is {@code true}, then if any of the records being added have the same primary key
+     * as existing records, the existing records are replaced (i.e. updated) with the given records.  If {@code
+     * update_on_existing_pk} is {@code false} and if the records being added have the same primary key as existing records, they
+     * are ignored (the existing records are left unchanged).  It is quite possible that in this case some of the given records will
+     * be inserted and some (those having existing primary keys) will be ignored (or updated).  If the specified table does not have
+     * a primary key column, then the {@code update_on_existing_pk} option is ignored.
+     * <br />
+     * <br />The {@code return_record_ids} option indicates that the database should return the unique identifiers of inserted
+     * records.
+     * <br />
+     * <br />The {@code route_to_address} option directs that inserted records should be targeted for a particular database node.
      * 
      * @param <TRequest>  The type of object being added.
      * @param request  Request object containing the parameters for the operation.
@@ -3839,18 +4023,22 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Adds multiple records to the specified table. The operation is synchronous meaning that GPUdb will not return a response
-     * until all the records are fully inserted and available. The response payload provides unique identifier for each added record
-     * along with counts of the number of records actually inserted and/or updated.
+     * until all the records are fully inserted and available. The response payload provides the counts of the number of records
+     * actually inserted and/or updated, and can provide the unique identifier of each added record.
      * <br />
-     * <br />{@code options} can be used to customize this function's behavior. The only parameter available is {@code
-     * update_on_existing_pk}. The value can be either 'true' or 'false'. If the table has a {@link
-     * GPUdb#createType(CreateTypeRequest) primary key} and if {@code update_on_existing_pk} is 'true' then if any of the records
-     * being added have the same primary key as existing records, the existing records are replaced (i.e. *updated*) with the given
-     * records. If {@code update_on_existing_pk} is false and if the records being added have the same primary key as existing
-     * records, the given records with existing primary keys are ignored (the existing records are left unchanged). It is quite
-     * possible that in this case some of the given records will be inserted and some (those having existing primary keys) will be
-     * ignored (or updated). If the specified table does not have a primary key column then the {@code update_on_existing_pk} option
-     * is ignored.
+     * <br />The {@code options} parameter can be used to customize this function's behavior.  The {@code update_on_existing_pk}
+     * option specifies the primary-key collision policy.  If the table has a {@link GPUdb#createType(CreateTypeRequest) primary
+     * key} and if {@code update_on_existing_pk} is {@code true}, then if any of the records being added have the same primary key
+     * as existing records, the existing records are replaced (i.e. updated) with the given records.  If {@code
+     * update_on_existing_pk} is {@code false} and if the records being added have the same primary key as existing records, they
+     * are ignored (the existing records are left unchanged).  It is quite possible that in this case some of the given records will
+     * be inserted and some (those having existing primary keys) will be ignored (or updated).  If the specified table does not have
+     * a primary key column, then the {@code update_on_existing_pk} option is ignored.
+     * <br />
+     * <br />The {@code return_record_ids} option indicates that the database should return the unique identifiers of inserted
+     * records.
+     * <br />
+     * <br />The {@code route_to_address} option directs that inserted records should be targeted for a particular database node.
      * 
      * @param <TRequest>  The type of object being added.
      * @param typeObjectMap  Type object map used for encoding input objects.
@@ -3877,17 +4065,22 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Adds multiple records to the specified table. The operation is synchronous meaning that GPUdb will not return a response
-     * until all the records are fully inserted and available. The response payload provides unique identifier for each added record
-     * along with counts of the number of records actually inserted and/or updated.
+     * until all the records are fully inserted and available. The response payload provides the counts of the number of records
+     * actually inserted and/or updated, and can provide the unique identifier of each added record.
      * <br />
-     * <br />{@code options} can be used to customize this function's behavior. The only parameter available is {@code
-     * update_on_existing_pk}. The value can be either 'true' or 'false'. If the table has a {@link GPUdb#createType(String, String,
-     * Map, Map) primary key} and if {@code update_on_existing_pk} is 'true' then if any of the records being added have the same
-     * primary key as existing records, the existing records are replaced (i.e. *updated*) with the given records. If {@code
-     * update_on_existing_pk} is false and if the records being added have the same primary key as existing records, the given
-     * records with existing primary keys are ignored (the existing records are left unchanged). It is quite possible that in this
-     * case some of the given records will be inserted and some (those having existing primary keys) will be ignored (or updated).
-     * If the specified table does not have a primary key column then the {@code update_on_existing_pk} option is ignored.
+     * <br />The {@code options} parameter can be used to customize this function's behavior.  The {@code update_on_existing_pk}
+     * option specifies the primary-key collision policy.  If the table has a {@link GPUdb#createType(String, String, Map, Map)
+     * primary key} and if {@code update_on_existing_pk} is {@code true}, then if any of the records being added have the same
+     * primary key as existing records, the existing records are replaced (i.e. updated) with the given records.  If {@code
+     * update_on_existing_pk} is {@code false} and if the records being added have the same primary key as existing records, they
+     * are ignored (the existing records are left unchanged).  It is quite possible that in this case some of the given records will
+     * be inserted and some (those having existing primary keys) will be ignored (or updated).  If the specified table does not have
+     * a primary key column, then the {@code update_on_existing_pk} option is ignored.
+     * <br />
+     * <br />The {@code return_record_ids} option indicates that the database should return the unique identifiers of inserted
+     * records.
+     * <br />
+     * <br />The {@code route_to_address} option directs that inserted records should be targeted for a particular database node.
      * 
      * @param <TRequest>  The type of object being added.
      * @param tableName  Table to which the records are to be added. Must be an existing table.
@@ -3896,15 +4089,14 @@ public class GPUdb extends GPUdbBase {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> update_on_existing_pk: If the table has a {@link GPUdb#createType(String, String, Map, Map)
-     *                 primary key}, then if the value is 'true' then if any of the records being added have the same primary key as
-     *                 existing records, the existing records are replaced (i.e. *updated*) with the given records. If 'false' and
-     *                 if the records being added have the same primary key as existing records, the given records with existing
-     *                 primary keys are ignored (the existing records are left unchanged).  It is quite possible that in this case
-     *                 some of the given records will be inserted and some (those having existing primary keys) will be ignored (or
-     *                 updated). If the specified table does not have a primary key column then this optional parameter is ignored.
-     *                 Values: true, false.
-     *                         <li> return_record_ids: If 'true' then return GPUdb's internal record id along for each inserted
-     *                 record. Default is 'false'. Values: true, false.
+     *                 primary key}, then if the value is {@code true} then if any of the records being added have the same primary
+     *                 key as existing records, the existing records are replaced (i.e. updated) with the given records. If {@code
+     *                 false}, and if the records being added have the same primary key as existing records, they are ignored (the
+     *                 existing records are left unchanged).  It is quite possible that in this case some of the given records will
+     *                 be inserted and some (those having existing primary keys) will be ignored (or updated). If the specified
+     *                 table does not have a primary key column then this optional parameter is ignored. Values: true, false.
+     *                         <li> return_record_ids: If {@code true} then return GPUdb's internal record id along for each
+     *                 inserted record. Values: true, false.
      *                         <li> route_to_address: Route to a specific rank/tom. Option not suitable for tables using
      *                 primary/shard keys
      *                 </ul>
@@ -3927,17 +4119,22 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Adds multiple records to the specified table. The operation is synchronous meaning that GPUdb will not return a response
-     * until all the records are fully inserted and available. The response payload provides unique identifier for each added record
-     * along with counts of the number of records actually inserted and/or updated.
+     * until all the records are fully inserted and available. The response payload provides the counts of the number of records
+     * actually inserted and/or updated, and can provide the unique identifier of each added record.
      * <br />
-     * <br />{@code options} can be used to customize this function's behavior. The only parameter available is {@code
-     * update_on_existing_pk}. The value can be either 'true' or 'false'. If the table has a {@link GPUdb#createType(String, String,
-     * Map, Map) primary key} and if {@code update_on_existing_pk} is 'true' then if any of the records being added have the same
-     * primary key as existing records, the existing records are replaced (i.e. *updated*) with the given records. If {@code
-     * update_on_existing_pk} is false and if the records being added have the same primary key as existing records, the given
-     * records with existing primary keys are ignored (the existing records are left unchanged). It is quite possible that in this
-     * case some of the given records will be inserted and some (those having existing primary keys) will be ignored (or updated).
-     * If the specified table does not have a primary key column then the {@code update_on_existing_pk} option is ignored.
+     * <br />The {@code options} parameter can be used to customize this function's behavior.  The {@code update_on_existing_pk}
+     * option specifies the primary-key collision policy.  If the table has a {@link GPUdb#createType(String, String, Map, Map)
+     * primary key} and if {@code update_on_existing_pk} is {@code true}, then if any of the records being added have the same
+     * primary key as existing records, the existing records are replaced (i.e. updated) with the given records.  If {@code
+     * update_on_existing_pk} is {@code false} and if the records being added have the same primary key as existing records, they
+     * are ignored (the existing records are left unchanged).  It is quite possible that in this case some of the given records will
+     * be inserted and some (those having existing primary keys) will be ignored (or updated).  If the specified table does not have
+     * a primary key column, then the {@code update_on_existing_pk} option is ignored.
+     * <br />
+     * <br />The {@code return_record_ids} option indicates that the database should return the unique identifiers of inserted
+     * records.
+     * <br />
+     * <br />The {@code route_to_address} option directs that inserted records should be targeted for a particular database node.
      * 
      * @param <TRequest>  The type of object being added.
      * @param typeObjectMap  Type object map used for encoding input objects.
@@ -3947,15 +4144,14 @@ public class GPUdb extends GPUdbBase {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> update_on_existing_pk: If the table has a {@link GPUdb#createType(String, String, Map, Map)
-     *                 primary key}, then if the value is 'true' then if any of the records being added have the same primary key as
-     *                 existing records, the existing records are replaced (i.e. *updated*) with the given records. If 'false' and
-     *                 if the records being added have the same primary key as existing records, the given records with existing
-     *                 primary keys are ignored (the existing records are left unchanged).  It is quite possible that in this case
-     *                 some of the given records will be inserted and some (those having existing primary keys) will be ignored (or
-     *                 updated). If the specified table does not have a primary key column then this optional parameter is ignored.
-     *                 Values: true, false.
-     *                         <li> return_record_ids: If 'true' then return GPUdb's internal record id along for each inserted
-     *                 record. Default is 'false'. Values: true, false.
+     *                 primary key}, then if the value is {@code true} then if any of the records being added have the same primary
+     *                 key as existing records, the existing records are replaced (i.e. updated) with the given records. If {@code
+     *                 false}, and if the records being added have the same primary key as existing records, they are ignored (the
+     *                 existing records are left unchanged).  It is quite possible that in this case some of the given records will
+     *                 be inserted and some (those having existing primary keys) will be ignored (or updated). If the specified
+     *                 table does not have a primary key column then this optional parameter is ignored. Values: true, false.
+     *                         <li> return_record_ids: If {@code true} then return GPUdb's internal record id along for each
+     *                 inserted record. Values: true, false.
      *                         <li> route_to_address: Route to a specific rank/tom. Option not suitable for tables using
      *                 primary/shard keys
      *                 </ul>
@@ -4171,6 +4367,18 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Kills a running proc instance.
+     * 
+     * @param request  Request object containing the parameters for the operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  KillProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public KillProcResponse killProc(KillProcRequest request) throws GPUdbException {
         KillProcResponse actualResponse_ = new KillProcResponse();
         submitRequest("/kill/proc", request, actualResponse_, false);
@@ -4179,6 +4387,20 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Kills a running proc instance.
+     * 
+     * @param runId  The run ID of the running proc instance. If the run ID is not found or the proc instance has already completed,
+     *               this does nothing. If not specified, all running proc instances will be killed.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  KillProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public KillProcResponse killProc(String runId, Map<String, String> options) throws GPUdbException {
         KillProcRequest actualRequest_ = new KillProcRequest(runId, options);
         KillProcResponse actualResponse_ = new KillProcResponse();
@@ -4371,6 +4593,18 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Shows information about a proc.
+     * 
+     * @param request  Request object containing the parameters for the operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public ShowProcResponse showProc(ShowProcRequest request) throws GPUdbException {
         ShowProcResponse actualResponse_ = new ShowProcResponse();
         submitRequest("/show/proc", request, actualResponse_, false);
@@ -4379,6 +4613,24 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Shows information about a proc.
+     * 
+     * @param procName  Name of the proc to show information about. If specified, must be the name of a currently existing proc. If
+     *                  not specified, information about all procs will be returned.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> include_files: If set to {@code true}, the files that make up the proc will be returned. If set
+     *                 to {@code false}, the files will not be returned. Values: true, false.
+     *                 </ul>
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public ShowProcResponse showProc(String procName, Map<String, String> options) throws GPUdbException {
         ShowProcRequest actualRequest_ = new ShowProcRequest(procName, options);
         ShowProcResponse actualResponse_ = new ShowProcResponse();
@@ -4388,6 +4640,20 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Shows the statuses of running or completed proc instances. Results are grouped by run ID (as returned from {@link
+     * GPUdb#executeProc(ExecuteProcRequest)}) and data segment ID (each invocation of the proc command on a data segment is
+     * assigned a data segment ID).
+     * 
+     * @param request  Request object containing the parameters for the operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowProcStatusResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public ShowProcStatusResponse showProcStatus(ShowProcStatusRequest request) throws GPUdbException {
         ShowProcStatusResponse actualResponse_ = new ShowProcStatusResponse();
         submitRequest("/show/proc/status", request, actualResponse_, false);
@@ -4396,6 +4662,28 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Shows the statuses of running or completed proc instances. Results are grouped by run ID (as returned from {@link
+     * GPUdb#executeProc(String, Map, Map, List, Map, List, Map)}) and data segment ID (each invocation of the proc command on a
+     * data segment is assigned a data segment ID).
+     * 
+     * @param runId  The run ID of a specific running or completed proc instance for which the status will be returned. If the run
+     *               ID is not found, nothing will be returned. If not specified, the statuses of all running and completed proc
+     *               instances will be returned.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> clear_complete: If set to {@code true}, if a proc instance has completed (either successfully or
+     *                 unsuccessfully) then its status will be cleared and no longer returned in subsequent calls. Values: true,
+     *                 false.
+     *                 </ul>
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowProcStatusResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public ShowProcStatusResponse showProcStatus(String runId, Map<String, String> options) throws GPUdbException {
         ShowProcStatusRequest actualRequest_ = new ShowProcStatusRequest(runId, options);
         ShowProcStatusResponse actualResponse_ = new ShowProcStatusResponse();

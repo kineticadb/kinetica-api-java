@@ -16,11 +16,13 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#createTable(CreateTableRequest)}.
  * <br />
- * <br />Creates a new table or collection in GPUdb. If a new table is being created then type of the table is given by {@code
- * typeId} which must the be the type id of a currently registered type (i.e. one created via {@link
- * com.gpudb.GPUdb#createType(CreateTypeRequest)}). The table will be created inside a collection if the option *collection_name* is
- * specified. If that collection does not already exist then it will be created. To create a new, empty collection specify the
- * collection name in {@code tableName}, leave {@code typeId} blank, and set the *is_collection* option to 'true'.
+ * <br />Creates a new table or collection. If a new table is being created, the type of the table is given by {@code typeId}, which
+ * must the be the ID of a currently registered type (i.e. one created via {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}).
+ * The table will be created inside a collection if the option {@code collection_name} is specified. If that collection does not
+ * already exist, it will be created.
+ * <br />
+ * <br />To create a new collection, specify the name of the collection in {@code tableName} and set the {@code is_collection}
+ * option to {@code true}; {@code typeId} will be ignored.
  */
 public class CreateTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -130,13 +132,13 @@ public class CreateTableRequest implements IndexedRecord {
     /**
      * Constructs a CreateTableRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to be created. Must not be the name of a currently existing GPUdb table of a different
-     *                   type.  Error for requests with existing table of the same name and type id may be suppressed by using the
-     *                   {@code no_error_if_exists} option.  Cannot be an empty string.  Valid characters are 'A-Za-z0-9_-(){}[] .:'
-     *                   (excluding the single quote), with the first character being one of 'A-Za-z0-9_'.  The maximum length is
-     *                   256 characters.
-     * @param typeId  ID of a currently registered type in GPUdb. All objects added to the newly created table will be of this type.
-     *                Must be an empty string if the *is_collection* is 'true'.
+     * @param tableName  Name of the table to be created. Must not be the name of a currently existing table of a different type.
+     *                   Error for requests with existing table of the same name and type id may be suppressed by using the {@code
+     *                   no_error_if_exists} option.  Cannot be an empty string.  Valid characters are alphanumeric or any of
+     *                   '_-(){}[] .:' (excluding the single quotes), with the first character being alphanumeric or an underscore.
+     *                   The maximum length is 256 characters.
+     * @param typeId  ID of a currently registered type. All objects added to the newly created table will be of this type.  Ignored
+     *                if {@code is_collection} is {@code true}.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> no_error_if_exists: If {@code true}, prevents an error from occurring if the table already
@@ -165,10 +167,10 @@ public class CreateTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to be created. Must not be the name of a currently existing GPUdb table of a different type.  Error
-     *         for requests with existing table of the same name and type id may be suppressed by using the {@code
-     *         no_error_if_exists} option.  Cannot be an empty string.  Valid characters are 'A-Za-z0-9_-(){}[] .:' (excluding the
-     *         single quote), with the first character being one of 'A-Za-z0-9_'.  The maximum length is 256 characters.
+     * @return Name of the table to be created. Must not be the name of a currently existing table of a different type.  Error for
+     *         requests with existing table of the same name and type id may be suppressed by using the {@code no_error_if_exists}
+     *         option.  Cannot be an empty string.  Valid characters are alphanumeric or any of '_-(){}[] .:' (excluding the single
+     *         quotes), with the first character being alphanumeric or an underscore.  The maximum length is 256 characters.
      * 
      */
     public String getTableName() {
@@ -177,11 +179,11 @@ public class CreateTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to be created. Must not be the name of a currently existing GPUdb table of a different
-     *                   type.  Error for requests with existing table of the same name and type id may be suppressed by using the
-     *                   {@code no_error_if_exists} option.  Cannot be an empty string.  Valid characters are 'A-Za-z0-9_-(){}[] .:'
-     *                   (excluding the single quote), with the first character being one of 'A-Za-z0-9_'.  The maximum length is
-     *                   256 characters.
+     * @param tableName  Name of the table to be created. Must not be the name of a currently existing table of a different type.
+     *                   Error for requests with existing table of the same name and type id may be suppressed by using the {@code
+     *                   no_error_if_exists} option.  Cannot be an empty string.  Valid characters are alphanumeric or any of
+     *                   '_-(){}[] .:' (excluding the single quotes), with the first character being alphanumeric or an underscore.
+     *                   The maximum length is 256 characters.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -193,8 +195,8 @@ public class CreateTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return ID of a currently registered type in GPUdb. All objects added to the newly created table will be of this type.  Must
-     *         be an empty string if the *is_collection* is 'true'.
+     * @return ID of a currently registered type. All objects added to the newly created table will be of this type.  Ignored if
+     *         {@code is_collection} is {@code true}.
      * 
      */
     public String getTypeId() {
@@ -203,8 +205,8 @@ public class CreateTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param typeId  ID of a currently registered type in GPUdb. All objects added to the newly created table will be of this type.
-     *                Must be an empty string if the *is_collection* is 'true'.
+     * @param typeId  ID of a currently registered type. All objects added to the newly created table will be of this type.  Ignored
+     *                if {@code is_collection} is {@code true}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

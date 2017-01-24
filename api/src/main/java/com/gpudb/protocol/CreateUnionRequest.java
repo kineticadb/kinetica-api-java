@@ -51,7 +51,7 @@ public class CreateUnionRequest implements IndexedRecord {
      * <br />  <li> collection_name: Name of a collection which is to contain the union. If empty, then the union will be a
      * top-level table.
      * <br />  <li> mode: If 'merge_views' then this operation will merge (i.e. union) the provided views. All 'table_names' must be
-     * views from the same underlying base table. Values: normal, merge_views.
+     * views from the same underlying base table. Values: union_all, union, union_distinct, except, intersect, merge_views.
      * <br />
      * <br /></ul>
      * <br />A set of string constants for the parameter {@code options}.
@@ -65,15 +65,35 @@ public class CreateUnionRequest implements IndexedRecord {
 
         /**
          * If 'merge_views' then this operation will merge (i.e. union) the provided views. All 'table_names' must be views from the
-         * same underlying base table. Values: normal, merge_views.
+         * same underlying base table. Values: union_all, union, union_distinct, except, intersect, merge_views.
          * <br />
          */
         public static final String MODE = "mode";
 
         /**
-         * Normal operation.
+         * Retains all rows from the specified tables.
          */
-        public static final String NORMAL = "normal";
+        public static final String UNION_ALL = "union_all";
+
+        /**
+         * Retains all unique rows from the specified tables (synonym for 'union_distinct').
+         */
+        public static final String UNION = "union";
+
+        /**
+         * Retains all unique rows from the specified tables.
+         */
+        public static final String UNION_DISTINCT = "union_distinct";
+
+        /**
+         * Retains all unique rows from the first table that do not appear in the second table (only works on 2 tables).
+         */
+        public static final String EXCEPT = "except";
+
+        /**
+         * Retains all unique rows that appear in both of the specified tables (only works on 2 tables).
+         */
+        public static final String INTERSECT = "intersect";
 
         /**
          * Merge (union) 2 or more views of the same base table into a new view.
@@ -114,7 +134,8 @@ public class CreateUnionRequest implements IndexedRecord {
      *                         <li> collection_name: Name of a collection which is to contain the union. If empty, then the union
      *                 will be a top-level table.
      *                         <li> mode: If 'merge_views' then this operation will merge (i.e. union) the provided views. All
-     *                 'table_names' must be views from the same underlying base table. Values: normal, merge_views.
+     *                 'table_names' must be views from the same underlying base table. Values: union_all, union, union_distinct,
+     *                 except, intersect, merge_views.
      *                 </ul>
      * 
      */
@@ -218,7 +239,8 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 <li> collection_name: Name of a collection which is to contain the union. If empty, then the union will be a
      *         top-level table.
      *                 <li> mode: If 'merge_views' then this operation will merge (i.e. union) the provided views. All 'table_names'
-     *         must be views from the same underlying base table. Values: normal, merge_views.
+     *         must be views from the same underlying base table. Values: union_all, union, union_distinct, except, intersect,
+     *         merge_views.
      *         </ul>
      * 
      */
@@ -233,7 +255,8 @@ public class CreateUnionRequest implements IndexedRecord {
      *                         <li> collection_name: Name of a collection which is to contain the union. If empty, then the union
      *                 will be a top-level table.
      *                         <li> mode: If 'merge_views' then this operation will merge (i.e. union) the provided views. All
-     *                 'table_names' must be views from the same underlying base table. Values: normal, merge_views.
+     *                 'table_names' must be views from the same underlying base table. Values: union_all, union, union_distinct,
+     *                 except, intersect, merge_views.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

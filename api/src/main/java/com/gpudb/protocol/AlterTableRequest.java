@@ -55,7 +55,8 @@ public class AlterTableRequest implements IndexedRecord {
 
 
     /**
-     * Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected, ttl.
+     * Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected, ttl,
+     * add_column, delete_column, change_column, rename_table.
      * <br />
      * <br />A set of string constants for the parameter {@code action}.
      */
@@ -90,7 +91,94 @@ public class AlterTableRequest implements IndexedRecord {
          */
         public static final String TTL = "ttl";
 
+        /**
+         * Add a column {@code value} to the table. set the column properties in options
+         */
+        public static final String ADD_COLUMN = "add_column";
+
+        /**
+         * Delete a column {@code value} from the table
+         */
+        public static final String DELETE_COLUMN = "delete_column";
+
+        /**
+         * Change properties of a column {@code value} in the table. set the column properties in options
+         */
+        public static final String CHANGE_COLUMN = "change_column";
+
+        /**
+         * Rename a table {@code value}.
+         */
+        public static final String RENAME_TABLE = "rename_table";
+
         private Action() {  }
+    }
+
+
+    /**
+     * Optional parameters.
+     * <br /><ul>
+     * <br />  <li> column_default_value: when adding a column: set a default value, for existing data.
+     * <br />  <li> column_properties: when adding or changing a column: set the column properties (strings, separated by a comma:
+     * data, store_only, text_search, char8, int8 etc).
+     * <br />  <li> column_type: when adding or changing a column: set the column type (strings, separated by a comma: int, double,
+     * string, null etc).
+     * <br />  <li> validate_change_column: Validate the type change before applying column_change request. Default is true (if
+     * option is missing). If True, then validate all values. A value too large (or too long) for the new type will prevent any
+     * change. If False, then when a value is too large or long, it will be trancated. Values: true, false.
+     * <br />
+     * <br />  <li> copy_values_from_column: when adding or changing a column: enter column name - from where to copy values.
+     * <br />  <li> rename_column: new column name (using change_column).
+     * <br /></ul>
+     * <br />A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * when adding a column: set a default value, for existing data.
+         */
+        public static final String COLUMN_DEFAULT_VALUE = "column_default_value";
+
+        /**
+         * when adding or changing a column: set the column properties (strings, separated by a comma: data, store_only,
+         * text_search, char8, int8 etc).
+         */
+        public static final String COLUMN_PROPERTIES = "column_properties";
+
+        /**
+         * when adding or changing a column: set the column type (strings, separated by a comma: int, double, string, null etc).
+         */
+        public static final String COLUMN_TYPE = "column_type";
+
+        /**
+         * Validate the type change before applying column_change request. Default is true (if option is missing). If True, then
+         * validate all values. A value too large (or too long) for the new type will prevent any change. If False, then when a
+         * value is too large or long, it will be trancated. Values: true, false.
+         * <br />
+         */
+        public static final String VALIDATE_CHANGE_COLUMN = "validate_change_column";
+
+        /**
+         * true
+         */
+        public static final String TRUE = "true";
+
+        /**
+         * false
+         */
+        public static final String FALSE = "false";
+
+        /**
+         * when adding or changing a column: enter column name - from where to copy values.
+         */
+        public static final String COPY_VALUES_FROM_COLUMN = "copy_values_from_column";
+
+        /**
+         * new column name (using change_column).
+         */
+        public static final String RENAME_COLUMN = "rename_column";
+
+        private Options() {  }
     }
 
     private String tableName;
@@ -114,9 +202,23 @@ public class AlterTableRequest implements IndexedRecord {
      * 
      * @param tableName  Table on which the operation will be performed. Must be a valid table, view, or collection in GPUdb.
      * @param action  Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected,
-     *                ttl.
+     *                ttl, add_column, delete_column, change_column, rename_table.
      * @param value  The value of the modification. May be a column name, 'true' or 'false', or a TTL depending on {@code action}.
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> column_default_value: when adding a column: set a default value, for existing data.
+     *                         <li> column_properties: when adding or changing a column: set the column properties (strings,
+     *                 separated by a comma: data, store_only, text_search, char8, int8 etc).
+     *                         <li> column_type: when adding or changing a column: set the column type (strings, separated by a
+     *                 comma: int, double, string, null etc).
+     *                         <li> validate_change_column: Validate the type change before applying column_change request. Default
+     *                 is true (if option is missing). If True, then validate all values. A value too large (or too long) for the
+     *                 new type will prevent any change. If False, then when a value is too large or long, it will be trancated.
+     *                 Values: true, false.
+     *                         <li> copy_values_from_column: when adding or changing a column: enter column name - from where to
+     *                 copy values.
+     *                         <li> rename_column: new column name (using change_column).
+     *                 </ul>
      * 
      */
     public AlterTableRequest(String tableName, String action, String value, Map<String, String> options) {
@@ -149,7 +251,8 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected, ttl.
+     * @return Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected, ttl,
+     *         add_column, delete_column, change_column, rename_table.
      * 
      */
     public String getAction() {
@@ -159,7 +262,7 @@ public class AlterTableRequest implements IndexedRecord {
     /**
      * 
      * @param action  Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected,
-     *                ttl.
+     *                ttl, add_column, delete_column, change_column, rename_table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -193,6 +296,19 @@ public class AlterTableRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> column_default_value: when adding a column: set a default value, for existing data.
+     *                 <li> column_properties: when adding or changing a column: set the column properties (strings, separated by a
+     *         comma: data, store_only, text_search, char8, int8 etc).
+     *                 <li> column_type: when adding or changing a column: set the column type (strings, separated by a comma: int,
+     *         double, string, null etc).
+     *                 <li> validate_change_column: Validate the type change before applying column_change request. Default is true
+     *         (if option is missing). If True, then validate all values. A value too large (or too long) for the new type will
+     *         prevent any change. If False, then when a value is too large or long, it will be trancated. Values: true, false.
+     *                 <li> copy_values_from_column: when adding or changing a column: enter column name - from where to copy
+     *         values.
+     *                 <li> rename_column: new column name (using change_column).
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -202,6 +318,20 @@ public class AlterTableRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> column_default_value: when adding a column: set a default value, for existing data.
+     *                         <li> column_properties: when adding or changing a column: set the column properties (strings,
+     *                 separated by a comma: data, store_only, text_search, char8, int8 etc).
+     *                         <li> column_type: when adding or changing a column: set the column type (strings, separated by a
+     *                 comma: int, double, string, null etc).
+     *                         <li> validate_change_column: Validate the type change before applying column_change request. Default
+     *                 is true (if option is missing). If True, then validate all values. A value too large (or too long) for the
+     *                 new type will prevent any change. If False, then when a value is too large or long, it will be trancated.
+     *                 Values: true, false.
+     *                         <li> copy_values_from_column: when adding or changing a column: enter column name - from where to
+     *                 copy values.
+     *                         <li> rename_column: new column name (using change_column).
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

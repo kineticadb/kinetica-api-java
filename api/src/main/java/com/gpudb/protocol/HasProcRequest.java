@@ -14,16 +14,16 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#killProc(KillProcRequest)}.
+ * A set of parameters for {@link com.gpudb.GPUdb#hasProc(HasProcRequest)}.
  * <br />
- * <br />Kills a running proc instance.
+ * <br />Checks the existence of a proc with the given name.
  */
-public class KillProcRequest implements IndexedRecord {
+public class HasProcRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("KillProcRequest")
+            .record("HasProcRequest")
             .namespace("com.gpudb")
             .fields()
-                .name("runId").type().stringType().noDefault()
+                .name("procName").type().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -38,51 +38,48 @@ public class KillProcRequest implements IndexedRecord {
         return schema$;
     }
 
-    private String runId;
+    private String procName;
     private Map<String, String> options;
 
 
     /**
-     * Constructs a KillProcRequest object with default parameters.
+     * Constructs a HasProcRequest object with default parameters.
      */
-    public KillProcRequest() {
-        runId = "";
+    public HasProcRequest() {
+        procName = "";
         options = new LinkedHashMap<>();
     }
 
     /**
-     * Constructs a KillProcRequest object with the specified parameters.
+     * Constructs a HasProcRequest object with the specified parameters.
      * 
-     * @param runId  The run ID of the running proc instance. If the run ID is not found or the proc instance has already completed,
-     *               this does nothing. If not specified, all running proc instances will be killed.
+     * @param procName  Name of the proc to check for existence.
      * @param options  Optional parameters.
      * 
      */
-    public KillProcRequest(String runId, Map<String, String> options) {
-        this.runId = (runId == null) ? "" : runId;
+    public HasProcRequest(String procName, Map<String, String> options) {
+        this.procName = (procName == null) ? "" : procName;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
      * 
-     * @return The run ID of the running proc instance. If the run ID is not found or the proc instance has already completed, this
-     *         does nothing. If not specified, all running proc instances will be killed.
+     * @return Name of the proc to check for existence.
      * 
      */
-    public String getRunId() {
-        return runId;
+    public String getProcName() {
+        return procName;
     }
 
     /**
      * 
-     * @param runId  The run ID of the running proc instance. If the run ID is not found or the proc instance has already completed,
-     *               this does nothing. If not specified, all running proc instances will be killed.
+     * @param procName  Name of the proc to check for existence.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public KillProcRequest setRunId(String runId) {
-        this.runId = (runId == null) ? "" : runId;
+    public HasProcRequest setProcName(String procName) {
+        this.procName = (procName == null) ? "" : procName;
         return this;
     }
 
@@ -102,7 +99,7 @@ public class KillProcRequest implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public KillProcRequest setOptions(Map<String, String> options) {
+    public HasProcRequest setOptions(Map<String, String> options) {
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
@@ -132,7 +129,7 @@ public class KillProcRequest implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.runId;
+                return this.procName;
 
             case 1:
                 return this.options;
@@ -156,7 +153,7 @@ public class KillProcRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.runId = (String)value;
+                this.procName = (String)value;
                 break;
 
             case 1:
@@ -178,9 +175,9 @@ public class KillProcRequest implements IndexedRecord {
             return false;
         }
 
-        KillProcRequest that = (KillProcRequest)obj;
+        HasProcRequest that = (HasProcRequest)obj;
 
-        return ( this.runId.equals( that.runId )
+        return ( this.procName.equals( that.procName )
                  && this.options.equals( that.options ) );
     }
 
@@ -189,9 +186,9 @@ public class KillProcRequest implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "runId" ) );
+        builder.append( gd.toString( "procName" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.runId ) );
+        builder.append( gd.toString( this.procName ) );
         builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
@@ -204,7 +201,7 @@ public class KillProcRequest implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.runId.hashCode();
+        hashCode = (31 * hashCode) + this.procName.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

@@ -12,6 +12,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
@@ -114,6 +116,12 @@ public final class Avro {
      */
     private static final ExecutorService defaultThreadPool =
             new ThreadPoolExecutor(0, Integer.MAX_VALUE, 100L, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
+
+    /**
+     * Pattern for parsing Avro NullPointerException messages.
+     */
+    private static final Pattern nullPointerExceptionPattern =
+            Pattern.compile("null of .+ in field (.+) of .+");
 
     /**
      * Decodes an Avro binary object into a pre-created destination object.
@@ -467,9 +475,17 @@ public final class Avro {
             encoder.flush();
             stream.close();
             return ByteBuffer.wrap(stream.toByteArray());
-        } catch (IOException ex) {
+        } catch (ClassCastException | IOException ex) {
             if (ex.getMessage() == null) {
                 throw new GPUdbException("Could not encode object", ex);
+            } else {
+                throw new GPUdbException("Could not encode object: " + ex.getMessage(), ex);
+            }
+        } catch (NullPointerException ex) {
+            Matcher matcher = nullPointerExceptionPattern.matcher(ex.getMessage());
+
+            if (matcher.matches()) {
+                throw new GPUdbException("Could not encode object: Non-nullable field " + matcher.group(1) + " cannot be null.", ex);
             } else {
                 throw new GPUdbException("Could not encode object: " + ex.getMessage(), ex);
             }
@@ -562,9 +578,17 @@ public final class Avro {
                 stream.close();
                 encodedObjects.add(ByteBuffer.wrap(stream.toByteArray()));
             }
-        } catch (IOException ex) {
+        } catch (ClassCastException | IOException ex) {
             if (ex.getMessage() == null) {
                 throw new GPUdbException("Could not encode object", ex);
+            } else {
+                throw new GPUdbException("Could not encode object: " + ex.getMessage(), ex);
+            }
+        } catch (NullPointerException ex) {
+            Matcher matcher = nullPointerExceptionPattern.matcher(ex.getMessage());
+
+            if (matcher.matches()) {
+                throw new GPUdbException("Could not encode object: Non-nullable field " + matcher.group(1) + " cannot be null.", ex);
             } else {
                 throw new GPUdbException("Could not encode object: " + ex.getMessage(), ex);
             }
