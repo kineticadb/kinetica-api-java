@@ -22,9 +22,9 @@ import org.apache.avro.generic.IndexedRecord;
  * 'mode' may be:
  * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  * <br />* search : full text search query with wildcards and boolean operators, e.g. '(bob* OR sue) AND NOT jane'. Note that for
- * this mode, no column can be specified in {@code columnNames}; GPUdb will search through all string columns of the table that have
- * text search enabled. Also, the first character of a search term cannot be a wildcard (* or ?), and search terms cannot be any of
- * the following:  "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no", "not", "of",
+ * this mode, no column can be specified in {@code columnNames}; all string columns of the table that have text search enabled will
+ * be searched. Also, the first character of a search term cannot be a wildcard (* or ?), and search terms cannot be any of the
+ * following:  "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no", "not", "of",
  * "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was", "will", "with".
  * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Search query types:
  * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Multiple search terms
@@ -160,7 +160,7 @@ public class FilterByStringRequest implements IndexedRecord {
     /**
      * Constructs a FilterByStringRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the filter operation will be performed.  Must be a valid GPUdb table, collection
+     * @param tableName  Name of the table on which the filter operation will be performed.  Must be an existing table, collection
      *                   or view.
      * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view.
@@ -185,7 +185,7 @@ public class FilterByStringRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the filter operation will be performed.  Must be a valid GPUdb table, collection or view.
+     * @return Name of the table on which the filter operation will be performed.  Must be an existing table, collection or view.
      * 
      */
     public String getTableName() {
@@ -194,7 +194,7 @@ public class FilterByStringRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the filter operation will be performed.  Must be a valid GPUdb table, collection
+     * @param tableName  Name of the table on which the filter operation will be performed.  Must be an existing table, collection
      *                   or view.
      * 
      * @return {@code this} to mimic the builder pattern.

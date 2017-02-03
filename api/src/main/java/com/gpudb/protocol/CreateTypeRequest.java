@@ -17,17 +17,17 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}.
  * <br />
- * <br />Creates a new type in GPUdb describing the layout or schema of a table. The type definition is a JSON string describing the
- * fields (i.e. columns) of the type. Each field consists of a name and a data type. Supported data types are: double, float, int,
- * long, string, and bytes. In addition one or more properties can be specified for each column which customize the memory usage and
- * query availability of that column.  Note that some properties are mutually exclusive--i.e. they cannot be specified for any given
+ * <br />Creates a new type describing the layout or schema of a table. The type definition is a JSON string describing the fields
+ * (i.e. columns) of the type. Each field consists of a name and a data type. Supported data types are: double, float, int, long,
+ * string, and bytes. In addition one or more properties can be specified for each column which customize the memory usage and query
+ * availability of that column.  Note that some properties are mutually exclusive--i.e. they cannot be specified for any given
  * column simultaneously.  One example of mutually exclusive properties are {@code data} and {@code store_only}.
  * <br />
  * <br />To set a *primary key* on one or more columns include the property 'primary_key' on the desired column_names. If a primary
- * key is specified then GPUdb enforces a uniqueness constraint in that only a single object can exist with a given primary key.
- * When {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest) inserting} data into a table with a primary key, depending
- * on the parameters in the request, incoming objects with primary keys that match existing objects will either overwrite (i.e.
- * update) the existing object or will be skipped and not added into the set.
+ * key is specified, then a uniqueness constraint is enforced, in that only a single object can exist with a given primary key. When
+ * {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest) inserting} data into a table with a primary key, depending on
+ * the parameters in the request, incoming objects with primary keys that match existing objects will either overwrite (i.e. update)
+ * the existing object or will be skipped and not added into the set.
  * <br />
  * <br />Example of a type definition with some of the parameters::
  * <br />
@@ -109,9 +109,29 @@ public class CreateTypeRequest implements IndexedRecord {
 
         /**
          * Valid only for 'long' columns. Indicates that this field represents a timestamp and will be provided in milliseconds
-         * since the Unix epoch: 00:00:00 Jan 1 1970.
+         * since the Unix epoch: 00:00:00 Jan 1 1970.  Dates represented by a timestamp must fall between the year 1000 and the year
+         * 2900.
          */
         public static final String TIMESTAMP = "timestamp";
+
+        /**
+         * Valid only for 'string' columns.  It represents a SQL type NUMERIC(19, 4) data type.  There can be up to 15 digits before
+         * the decimal point and up to four digits in the fractional part.  The value can be positive or negative (indicated by a
+         * minus sign at the beginning).  This property is mutually exclusive with the 'text_search' property.
+         */
+        public static final String DECIMAL = "decimal";
+
+        /**
+         * Valid only for 'string' columns.  Indicates that this field represents a date and will be provided in the format
+         * 'YYYY-MM-DD'.  The allowable range is 1000-01-01 through 2900-01-01.
+         */
+        public static final String DATE = "date";
+
+        /**
+         * Valid only for 'string' columns.  Indicates that this field represents a time-of-day and will be provided in the format
+         * 'HH:MM:SS.mmm'.  The allowable range is 00:00:00.000 through 23:59:59.999.
+         */
+        public static final String TIME = "time";
 
         /**
          * This property provides optimized memory, disk and query performance for string columns. Strings with this property must

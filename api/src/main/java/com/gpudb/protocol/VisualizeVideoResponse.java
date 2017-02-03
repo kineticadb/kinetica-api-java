@@ -120,7 +120,7 @@ public class VisualizeVideoResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Number of frames created by GPUdb.
+     * @return Number of frames created.
      * 
      */
     public int getNumFrames() {
@@ -129,7 +129,7 @@ public class VisualizeVideoResponse implements IndexedRecord {
 
     /**
      * 
-     * @param numFrames  Number of frames created by GPUdb.
+     * @param numFrames  Number of frames created.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

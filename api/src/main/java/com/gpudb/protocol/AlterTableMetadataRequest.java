@@ -60,8 +60,8 @@ public class AlterTableMetadataRequest implements IndexedRecord {
     /**
      * Constructs an AlterTableMetadataRequest object with the specified parameters.
      * 
-     * @param tableNames  Names of the tables whose metadata will be updated. All specified tables must exist in GPUdb, or GPUdb
-     *                    will return an error.
+     * @param tableNames  Names of the tables whose metadata will be updated. All specified tables must exist, or an error will be
+     *                    returned.
      * @param metadataMap  A map which contains the metadata of the tables that are to be updated. Note that only one map is
      *                     provided for all the tables; so the change will be applied to every table. If the provided map is empty,
      *                     then all existing metadata for the table(s) will be cleared.
@@ -76,8 +76,7 @@ public class AlterTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Names of the tables whose metadata will be updated. All specified tables must exist in GPUdb, or GPUdb will return an
-     *         error.
+     * @return Names of the tables whose metadata will be updated. All specified tables must exist, or an error will be returned.
      * 
      */
     public List<String> getTableNames() {
@@ -86,8 +85,8 @@ public class AlterTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  Names of the tables whose metadata will be updated. All specified tables must exist in GPUdb, or GPUdb
-     *                    will return an error.
+     * @param tableNames  Names of the tables whose metadata will be updated. All specified tables must exist, or an error will be
+     *                    returned.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

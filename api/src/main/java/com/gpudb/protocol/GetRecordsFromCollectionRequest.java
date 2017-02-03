@@ -63,7 +63,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     /**
 
      * <br /><ul>
-     * <br />  <li> return_record_ids: If 'true' then return GPUdb's internal record id along with each returned record. Default is
+     * <br />  <li> return_record_ids: If 'true' then return the internal record ID along with each returned record. Default is
      * 'false'. Values: true, false.
      * <br />
      * <br /></ul>
@@ -72,8 +72,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * If 'true' then return GPUdb's internal record id along with each returned record. Default is 'false'. Values: true,
-         * false.
+         * If 'true' then return the internal record ID along with each returned record. Default is 'false'. Values: true, false.
          * <br />
          */
         public static final String RETURN_RECORD_IDS = "return_record_ids";
@@ -110,8 +109,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *               that the max number of results should be returned.
      * @param options
      *                 <ul>
-     *                         <li> return_record_ids: If 'true' then return GPUdb's internal record id along with each returned
-     *                 record. Default is 'false'. Values: true, false.
+     *                         <li> return_record_ids: If 'true' then return the internal record ID along with each returned record.
+     *                 Default is 'false'. Values: true, false.
      *                 </ul>
      * 
      */
@@ -135,8 +134,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * @param encoding  Specifies the encoding for returned records; either 'binary' or 'json'. Values: binary, json.
      * @param options
      *                 <ul>
-     *                         <li> return_record_ids: If 'true' then return GPUdb's internal record id along with each returned
-     *                 record. Default is 'false'. Values: true, false.
+     *                         <li> return_record_ids: If 'true' then return the internal record ID along with each returned record.
+     *                 Default is 'false'. Values: true, false.
      *                 </ul>
      * 
      */
@@ -241,8 +240,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * 
      * @return
      *         <ul>
-     *                 <li> return_record_ids: If 'true' then return GPUdb's internal record id along with each returned record.
-     *         Default is 'false'. Values: true, false.
+     *                 <li> return_record_ids: If 'true' then return the internal record ID along with each returned record. Default
+     *         is 'false'. Values: true, false.
      *         </ul>
      * 
      */
@@ -254,8 +253,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * 
      * @param options
      *                 <ul>
-     *                         <li> return_record_ids: If 'true' then return GPUdb's internal record id along with each returned
-     *                 record. Default is 'false'. Values: true, false.
+     *                         <li> return_record_ids: If 'true' then return the internal record ID along with each returned record.
+     *                 Default is 'false'. Values: true, false.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

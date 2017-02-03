@@ -22,7 +22,7 @@ import org.apache.avro.generic.IndexedRecord;
  * optional parameter (e.g. color). To have a symbol used for rendering create a table with a string column named 'SYMBOLCODE'
  * (along with 'x' or 'y' for example). Then when the table is rendered (via <a href="../../../../rest/wms_rest.html"
  * target="_top">WMS</a> or {@link com.gpudb.GPUdb#visualizeImage(VisualizeImageRequest)}) if the 'dosymbology' parameter is 'true'
- * then GPUdb uses the value of the 'SYMBOLCODE' column to pick the symbol displayed for each point.
+ * then the value of the 'SYMBOLCODE' column is used to pick the symbol displayed for each point.
  */
 public class InsertSymbolRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

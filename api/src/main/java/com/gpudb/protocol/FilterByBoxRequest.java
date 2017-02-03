@@ -16,10 +16,10 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#filterByBox(FilterByBoxRequest)}.
  * <br />
- * <br />Calculates how many objects within the given table lie in a rectangular box. The operation is synchronous meaning that
- * GPUdb will not return the request until all the objects are fully available. The response payload provides the count of the
- * resulting set. A new resultant set which satisfies the input NAI restriction specification is also created when a {@code
- * viewName} is passed in as part of the input payload.
+ * <br />Calculates how many objects within the given table lie in a rectangular box. The operation is synchronous, meaning that a
+ * response will not be returned until all the objects are fully available. The response payload provides the count of the resulting
+ * set. A new resultant set which satisfies the input NAI restriction specification is also created when a {@code viewName} is
+ * passed in as part of the input payload.
  */
 public class FilterByBoxRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -73,9 +73,9 @@ public class FilterByBoxRequest implements IndexedRecord {
     /**
      * Constructs a FilterByBoxRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the bounding box operation will be performed. Must be a valid table in GPUdb.
+     * @param tableName  Name of the table on which the bounding box operation will be performed. Must be an existing table.
      * @param viewName  Optional name of the result view that will be created containing the results of the query. Must not be an
-     *                  already existing collection, table or view in GPUdb.
+     *                  already existing collection, table or view.
      * @param xColumnName  Name of the column on which to perform the bounding box query. If the table's data type is not a shape
      *                     type, must be a valid numeric column.
      * @param minX  Lower bound for the column chosen by {@code xColumnName}.  Must be less than or equal to {@code maxX}.
@@ -101,7 +101,7 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the bounding box operation will be performed. Must be a valid table in GPUdb.
+     * @return Name of the table on which the bounding box operation will be performed. Must be an existing table.
      * 
      */
     public String getTableName() {
@@ -110,7 +110,7 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the bounding box operation will be performed. Must be a valid table in GPUdb.
+     * @param tableName  Name of the table on which the bounding box operation will be performed. Must be an existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -123,7 +123,7 @@ public class FilterByBoxRequest implements IndexedRecord {
     /**
      * 
      * @return Optional name of the result view that will be created containing the results of the query. Must not be an already
-     *         existing collection, table or view in GPUdb.
+     *         existing collection, table or view.
      * 
      */
     public String getViewName() {
@@ -133,7 +133,7 @@ public class FilterByBoxRequest implements IndexedRecord {
     /**
      * 
      * @param viewName  Optional name of the result view that will be created containing the results of the query. Must not be an
-     *                  already existing collection, table or view in GPUdb.
+     *                  already existing collection, table or view.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

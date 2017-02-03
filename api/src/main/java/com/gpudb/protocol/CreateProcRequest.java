@@ -19,7 +19,9 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#createProc(CreateProcRequest)}.
  * <br />
- * <br />Creates a proc.
+ * <br />Creates an instance (proc) of the user-defined function (UDF) specified by the given command, options, and files, and makes
+ * it available for execution.  For details on UDFs, see: <a href="../../../../../concepts/index.html#user-defined-functions"
+ * target="_top">User-Defined Functions</a>
  */
 public class CreateProcRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -99,7 +101,7 @@ public class CreateProcRequest implements IndexedRecord {
      * @param command  The command (excluding arguments) that will be invoked when the proc is executed. It will be invoked from the
      *                 directory containing the proc {@code files} and may be any command that can be resolved from that directory.
      *                 It need not refer to a file actually in that directory; for example, it could be 'java' if the proc is a Java
-     *                 application; however, any necessary external programs must be preinstalled on every GPUdb node. If the
+     *                 application; however, any necessary external programs must be preinstalled on every database node. If the
      *                 command refers to a file in that directory, it must be preceded with './' as per Linux convention. If not
      *                 specified, and exactly one file is provided in {@code files}, that file will be invoked.
      * @param args  An array of command-line arguments that will be passed to {@code command} when the proc is executed.
@@ -187,8 +189,8 @@ public class CreateProcRequest implements IndexedRecord {
      * @return The command (excluding arguments) that will be invoked when the proc is executed. It will be invoked from the
      *         directory containing the proc {@code files} and may be any command that can be resolved from that directory. It need
      *         not refer to a file actually in that directory; for example, it could be 'java' if the proc is a Java application;
-     *         however, any necessary external programs must be preinstalled on every GPUdb node. If the command refers to a file in
-     *         that directory, it must be preceded with './' as per Linux convention. If not specified, and exactly one file is
+     *         however, any necessary external programs must be preinstalled on every database node. If the command refers to a file
+     *         in that directory, it must be preceded with './' as per Linux convention. If not specified, and exactly one file is
      *         provided in {@code files}, that file will be invoked.
      * 
      */
@@ -201,7 +203,7 @@ public class CreateProcRequest implements IndexedRecord {
      * @param command  The command (excluding arguments) that will be invoked when the proc is executed. It will be invoked from the
      *                 directory containing the proc {@code files} and may be any command that can be resolved from that directory.
      *                 It need not refer to a file actually in that directory; for example, it could be 'java' if the proc is a Java
-     *                 application; however, any necessary external programs must be preinstalled on every GPUdb node. If the
+     *                 application; however, any necessary external programs must be preinstalled on every database node. If the
      *                 command refers to a file in that directory, it must be preceded with './' as per Linux convention. If not
      *                 specified, and exactly one file is provided in {@code files}, that file will be invoked.
      * 

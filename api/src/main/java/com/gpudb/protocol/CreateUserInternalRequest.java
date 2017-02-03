@@ -16,7 +16,7 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#createUserInternal(CreateUserInternalRequest)}.
  * <br />
- * <br />Creates a new internal user (a user whose credentials are managed by GPUdb).
+ * <br />Creates a new internal user (a user whose credentials are managed by the database system).
  */
 public class CreateUserInternalRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -57,7 +57,7 @@ public class CreateUserInternalRequest implements IndexedRecord {
      * Constructs a CreateUserInternalRequest object with the specified parameters.
      * 
      * @param name  Name of the user to be created. Must contain only lowercase letters, digits, and underscores, and cannot begin
-     *              with a digit. Must not be the same name as an existing user or role in GPUdb.
+     *              with a digit. Must not be the same name as an existing user or role.
      * @param password  Initial password of the user to be created. May be an empty string for no password.
      * @param options  Optional parameters.
      * 
@@ -71,7 +71,7 @@ public class CreateUserInternalRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the user to be created. Must contain only lowercase letters, digits, and underscores, and cannot begin with a
-     *         digit. Must not be the same name as an existing user or role in GPUdb.
+     *         digit. Must not be the same name as an existing user or role.
      * 
      */
     public String getName() {
@@ -81,7 +81,7 @@ public class CreateUserInternalRequest implements IndexedRecord {
     /**
      * 
      * @param name  Name of the user to be created. Must contain only lowercase letters, digits, and underscores, and cannot begin
-     *              with a digit. Must not be the same name as an existing user or role in GPUdb.
+     *              with a digit. Must not be the same name as an existing user or role.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

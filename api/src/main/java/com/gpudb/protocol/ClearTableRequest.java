@@ -16,9 +16,9 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#clearTable(ClearTableRequest)}.
  * <br />
- * <br />Clears (drops) one or all tables in the GPUdb cluster. The operation is synchronous meaning that the table will be cleared
- * before the function returns. The response payload returns the status of the operation along with the name of the table that was
- * cleared.
+ * <br />Clears (drops) one or all tables in the database cluster. The operation is synchronous meaning that the table will be
+ * cleared before the function returns. The response payload returns the status of the operation along with the name of the table
+ * that was cleared.
  */
 public class ClearTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -58,8 +58,7 @@ public class ClearTableRequest implements IndexedRecord {
     /**
      * Constructs a ClearTableRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to be cleared. Must be an existing GPUdb table. Empty string clears all available tables
-     *                   in GPUdb.
+     * @param tableName  Name of the table to be cleared. Must be an existing table. Empty string clears all available tables.
      * @param authorization  No longer used. User can pass an empty string.
      * @param options  Optional parameters.
      * 
@@ -72,7 +71,7 @@ public class ClearTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to be cleared. Must be an existing GPUdb table. Empty string clears all available tables in GPUdb.
+     * @return Name of the table to be cleared. Must be an existing table. Empty string clears all available tables.
      * 
      */
     public String getTableName() {
@@ -81,8 +80,7 @@ public class ClearTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to be cleared. Must be an existing GPUdb table. Empty string clears all available tables
-     *                   in GPUdb.
+     * @param tableName  Name of the table to be cleared. Must be an existing table. Empty string clears all available tables.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

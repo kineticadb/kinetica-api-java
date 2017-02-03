@@ -54,7 +54,7 @@ public class CreateRoleRequest implements IndexedRecord {
      * Constructs a CreateRoleRequest object with the specified parameters.
      * 
      * @param name  Name of the role to be created. Must contain only lowercase letters, digits, and underscores, and cannot begin
-     *              with a digit. Must not be the same name as an existing user or role in GPUdb.
+     *              with a digit. Must not be the same name as an existing user or role.
      * @param options  Optional parameters.
      * 
      */
@@ -66,7 +66,7 @@ public class CreateRoleRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the role to be created. Must contain only lowercase letters, digits, and underscores, and cannot begin with a
-     *         digit. Must not be the same name as an existing user or role in GPUdb.
+     *         digit. Must not be the same name as an existing user or role.
      * 
      */
     public String getName() {
@@ -76,7 +76,7 @@ public class CreateRoleRequest implements IndexedRecord {
     /**
      * 
      * @param name  Name of the role to be created. Must contain only lowercase letters, digits, and underscores, and cannot begin
-     *              with a digit. Must not be the same name as an existing user or role in GPUdb.
+     *              with a digit. Must not be the same name as an existing user or role.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

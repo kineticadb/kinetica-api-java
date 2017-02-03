@@ -65,7 +65,7 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
     /**
      * Constructs an UpdateRecordsBySeriesRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the view on which the update operation will be performed. Must be a valid view in GPUdb.
+     * @param tableName  Name of the view on which the update operation will be performed. Must be an existing view.
      * @param worldTableName  Name of the table containing the complete series (track) information.
      * @param viewName  Optional name of the view containing the series (tracks) which have to be updated.
      * @param reserved
@@ -82,7 +82,7 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the view on which the update operation will be performed. Must be a valid view in GPUdb.
+     * @return Name of the view on which the update operation will be performed. Must be an existing view.
      * 
      */
     public String getTableName() {
@@ -91,7 +91,7 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the view on which the update operation will be performed. Must be a valid view in GPUdb.
+     * @param tableName  Name of the view on which the update operation will be performed. Must be an existing view.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

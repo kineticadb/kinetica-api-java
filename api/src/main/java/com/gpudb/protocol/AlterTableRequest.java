@@ -200,7 +200,7 @@ public class AlterTableRequest implements IndexedRecord {
     /**
      * Constructs an AlterTableRequest object with the specified parameters.
      * 
-     * @param tableName  Table on which the operation will be performed. Must be a valid table, view, or collection in GPUdb.
+     * @param tableName  Table on which the operation will be performed. Must be an existing table, view, or collection.
      * @param action  Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected,
      *                ttl, add_column, delete_column, change_column, rename_table.
      * @param value  The value of the modification. May be a column name, 'true' or 'false', or a TTL depending on {@code action}.
@@ -230,7 +230,7 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Table on which the operation will be performed. Must be a valid table, view, or collection in GPUdb.
+     * @return Table on which the operation will be performed. Must be an existing table, view, or collection.
      * 
      */
     public String getTableName() {
@@ -239,7 +239,7 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Table on which the operation will be performed. Must be a valid table, view, or collection in GPUdb.
+     * @param tableName  Table on which the operation will be performed. Must be an existing table, view, or collection.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

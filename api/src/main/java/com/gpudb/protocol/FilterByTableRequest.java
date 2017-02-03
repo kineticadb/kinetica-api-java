@@ -19,8 +19,8 @@ import org.apache.avro.generic.IndexedRecord;
  * <br />Filters objects in one table based on objects in another table. The user must specify matching column types from the two
  * tables (i.e. the target table from which objects will be filtered and the source table based on which the filter will be
  * created); the column names need not be the same. If a {@code viewName} is specified, then the filtered objects will then be put
- * in a newly created view. The operation is synchronous, meaning that GPUdb will not return until all objects are fully available
- * in the result view. The return value contains the count (i.e. the size) of the resulting view.
+ * in a newly created view. The operation is synchronous, meaning that a response will not be returned until all objects are fully
+ * available in the result view. The return value contains the count (i.e. the size) of the resulting view.
  */
 public class FilterByTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -145,13 +145,13 @@ public class FilterByTableRequest implements IndexedRecord {
     /**
      * Constructs a FilterByTableRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table whose data will be filtered. Must be an existing table in GPUdb.
+     * @param tableName  Name of the table whose data will be filtered. Must be an existing table.
      * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view.
      * @param columnName  Name of the column by whose value the data will be filtered from the table designated by {@code
      *                    tableName}.
      * @param sourceTableName  Name of the table whose data will be compared against in the table called {@code tableName}. Must be
-     *                         an existing table in GPUdb.
+     *                         an existing table.
      * @param sourceTableColumnName  Name of the column in the {@code sourceTableName} whose values will be used as the filter for
      *                               table {@code tableName}. Must match the type of the {@code columnName}.
      * @param options  Optional parameters.
@@ -181,7 +181,7 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table whose data will be filtered. Must be an existing table in GPUdb.
+     * @return Name of the table whose data will be filtered. Must be an existing table.
      * 
      */
     public String getTableName() {
@@ -190,7 +190,7 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table whose data will be filtered. Must be an existing table in GPUdb.
+     * @param tableName  Name of the table whose data will be filtered. Must be an existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -248,7 +248,7 @@ public class FilterByTableRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table whose data will be compared against in the table called {@code tableName}. Must be an existing
-     *         table in GPUdb.
+     *         table.
      * 
      */
     public String getSourceTableName() {
@@ -258,7 +258,7 @@ public class FilterByTableRequest implements IndexedRecord {
     /**
      * 
      * @param sourceTableName  Name of the table whose data will be compared against in the table called {@code tableName}. Must be
-     *                         an existing table in GPUdb.
+     *                         an existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -21,9 +21,9 @@ import org.apache.avro.generic.IndexedRecord;
  * <br />Sets up an area trigger mechanism for two column_names for one or more tables. (This function is essentially the
  * two-dimensional version of {@link com.gpudb.GPUdb#createTriggerByRange(CreateTriggerByRangeRequest)}.) Once the trigger has been
  * activated, any record added to the listed tables(s) via {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} with
- * the chosen columns' values falling within the specified region will trip the trigger. All such records will be queued at GPUdb's
- * trigger port-by default '9001' but can also be obtained via {@link com.gpudb.GPUdb#showSystemStatus(ShowSystemStatusRequest)}-for
- * any listening client to collect. Active triggers can be cancelled by using the {@link
+ * the chosen columns' values falling within the specified region will trip the trigger. All such records will be queued at the
+ * trigger port (by default '9001', but able to be retrieved via {@link com.gpudb.GPUdb#showSystemStatus(ShowSystemStatusRequest)})
+ * for any listening client to collect. Active triggers can be cancelled by using the {@link
  * com.gpudb.GPUdb#clearTrigger(ClearTriggerRequest)} endpoint or by clearing all relevant tables.
  * <br />
  * <br />The output returns the trigger handle as well as indicating success or failure of the trigger activation.

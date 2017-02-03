@@ -17,7 +17,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link com.gpudb.GPUdb#filterByRadius(FilterByRadiusRequest)}.
  * <br />
  * <br />Calculates which objects from a table lie within a circle with the given radius and center point (i.e. circular NAI). The
- * operation is synchronous meaning that GPUdb will not return a response until all the objects are fully available. The response
+ * operation is synchronous, meaning that a response will not be returned until all the objects are fully available. The response
  * payload provides the count of the resulting set. A new resultant set (view) which satisfies the input circular NAI restriction
  * specification is also created if a {@code viewName} is passed in as part of the request.
  * <br />
@@ -75,8 +75,7 @@ public class FilterByRadiusRequest implements IndexedRecord {
     /**
      * Constructs a FilterByRadiusRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the filter by radius operation will be performed.  Must be an existing table in
-     *                   GPUdb.
+     * @param tableName  Name of the table on which the filter by radius operation will be performed.  Must be an existing table.
      * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view.
      * @param xColumnName  Name of the column to be used for the x-coordinate (the longitude) of the center.
@@ -104,7 +103,7 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the filter by radius operation will be performed.  Must be an existing table in GPUdb.
+     * @return Name of the table on which the filter by radius operation will be performed.  Must be an existing table.
      * 
      */
     public String getTableName() {
@@ -113,8 +112,7 @@ public class FilterByRadiusRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the filter by radius operation will be performed.  Must be an existing table in
-     *                   GPUdb.
+     * @param tableName  Name of the table on which the filter by radius operation will be performed.  Must be an existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

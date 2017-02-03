@@ -18,8 +18,8 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#filterByArea(FilterByAreaRequest)}.
  * <br />
- * <br />Calculates which objects from a table are within a named area of interest (NAI/polygon). The operation is synchronous
- * meaning that GPUdb will not return the request until all the matching objects are fully available. The response payload provides
+ * <br />Calculates which objects from a table are within a named area of interest (NAI/polygon). The operation is synchronous,
+ * meaning that a response will not be returned until all the matching objects are fully available. The response payload provides
  * the count of the resulting set. A new resultant set (view) which satisfies the input NAI restriction specification is created
  * with the name {@code viewName} passed in as part of the input.
  */

@@ -18,7 +18,7 @@ import org.apache.avro.generic.IndexedRecord;
  * <br />
  * <br />Calculates which objects from a table has a particular value for a particular column. The input parameters provide a way to
  * specify either a String or a Double valued column and a desired value for the column on which the filter is performed. The
- * operation is synchronous meaning that GPUdb will not return a response until all the objects are fully available. The response
+ * operation is synchronous, meaning that a response will not be returned until all the objects are fully available. The response
  * payload provides the count of the resulting set. A new result view which satisfies the input filter restriction specification is
  * also created with a view name passed in as part of the input payload.
  */
@@ -70,7 +70,7 @@ public class FilterByValueRequest implements IndexedRecord {
     /**
      * Constructs a FilterByValueRequest object with the specified parameters.
      * 
-     * @param tableName  Name of an existing GPUdb table on which to perform the calculation.
+     * @param tableName  Name of an existing table on which to perform the calculation.
      * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view.
      * @param isString  Indicates whether the value being searched for is string or numeric.
@@ -92,7 +92,7 @@ public class FilterByValueRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of an existing GPUdb table on which to perform the calculation.
+     * @return Name of an existing table on which to perform the calculation.
      * 
      */
     public String getTableName() {
@@ -101,7 +101,7 @@ public class FilterByValueRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of an existing GPUdb table on which to perform the calculation.
+     * @param tableName  Name of an existing table on which to perform the calculation.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

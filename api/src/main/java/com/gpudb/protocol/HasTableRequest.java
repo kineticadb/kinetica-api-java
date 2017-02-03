@@ -16,7 +16,7 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#hasTable(HasTableRequest)}.
  * <br />
- * <br />Checks the existence of a table with the given name in GPUdb.
+ * <br />Checks for the existence of a table with the given name.
  */
 public class HasTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

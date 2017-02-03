@@ -98,8 +98,8 @@ public class GetRecordsFromCollectionResponse<T> {
 
     /**
      * 
-     * @return If the 'return_record_ids' option of the request was 'true', then this list contains the internal GPUdb id for each
-     *         object. Otherwise it will be empty.
+     * @return If the 'return_record_ids' option of the request was 'true', then this list contains the internal ID for each object.
+     *         Otherwise it will be empty.
      * 
      */
     public List<String> getRecordIds() {
@@ -108,8 +108,8 @@ public class GetRecordsFromCollectionResponse<T> {
 
     /**
      * 
-     * @param recordIds  If the 'return_record_ids' option of the request was 'true', then this list contains the internal GPUdb id
-     *                   for each object. Otherwise it will be empty.
+     * @param recordIds  If the 'return_record_ids' option of the request was 'true', then this list contains the internal ID for
+     *                   each object. Otherwise it will be empty.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

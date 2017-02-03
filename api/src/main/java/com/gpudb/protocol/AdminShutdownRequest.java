@@ -16,7 +16,7 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#adminShutdown(AdminShutdownRequest)}.
  * <br />
- * <br />Exits the GPUdb server application.
+ * <br />Exits the database server application.
  */
 public class AdminShutdownRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

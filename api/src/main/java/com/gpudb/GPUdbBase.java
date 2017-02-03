@@ -437,7 +437,9 @@ public abstract class GPUdbBase {
 
     // Fields
 
-    private URL url;
+    private List<URL> urls;
+    private final Object urlLock;
+    private int currentURL;
     private String username;
     private String password;
     private String authorization;
@@ -452,8 +454,10 @@ public abstract class GPUdbBase {
     // Constructor
 
     protected GPUdbBase(String url, Options options) throws GPUdbException {
+        urlLock = new Object();
+
         try {
-            this.url = new URL(url);
+            urls = Collections.unmodifiableList(list(new URL(url)));
         } catch (MalformedURLException ex) {
             throw new GPUdbException(ex.getMessage(), ex);
         }
@@ -462,7 +466,15 @@ public abstract class GPUdbBase {
     }
 
     protected GPUdbBase(URL url, Options options) throws GPUdbException {
-        this.url = url;
+        urlLock = new Object();
+        urls = Collections.unmodifiableList(list(url));
+        init(options);
+    }
+
+    protected GPUdbBase(List<URL> urls, Options options) throws GPUdbException {
+        urlLock = new Object();
+        this.urls = Collections.unmodifiableList(urls);
+        currentURL = (int)(Math.random() * urls.size());
         init(options);
     }
 
@@ -497,12 +509,45 @@ public abstract class GPUdbBase {
     // Properties
 
     /**
-    * Gets the URL of the GPUdb server.
-    *
-    * @return  the URL
-    */
+     * Gets the list of URLs for the GPUdb server. At any given time, one
+     * URL will be active and used for all GPUdb calls (call {@link #getURL
+     * getURL} to determine which one), but in the event of failure, the
+     * other URLs will be tried in order, and if a working one is found
+     * it will become the new active URL.
+     *
+     * @return  the list of URLs
+     */
+    public List<URL> getURLs() {
+        return urls;
+    }
+
+    /**
+     * Gets the active URL of the GPUdb server.
+     *
+     * @return  the URL
+     */
     public URL getURL() {
-        return url;
+        if (urls.size() == 1) {
+            return urls.get(0);
+        } else {
+            synchronized (urlLock) {
+                return urls.get(currentURL);
+            }
+        }
+    }
+
+    private URL switchURL(URL oldURL) {
+        synchronized (urlLock) {
+            if (urls.get(currentURL) == oldURL) {
+                currentURL++;
+
+                if (currentURL >= urls.size()) {
+                    currentURL = 0;
+                }
+            }
+
+            return urls.get(currentURL);
+        }
     }
 
     /**
@@ -877,11 +922,7 @@ public abstract class GPUdbBase {
      * @throws GPUdbException if an error occurs during the request
      */
     public <T extends IndexedRecord> T submitRequest(String endpoint, IndexedRecord request, T response) throws GPUdbException {
-        try {
-            return submitRequest(appendPathToURL(url, endpoint), request, response, false);
-        } catch (MalformedURLException ex) {
-            throw new GPUdbException(ex.getMessage(), ex);
-        }
+        return submitRequest(endpoint, request, response, false);
     }
 
     /**
@@ -905,10 +946,27 @@ public abstract class GPUdbBase {
      * @throws GPUdbException if an error occurs during the request
      */
     public <T extends IndexedRecord> T submitRequest(String endpoint, IndexedRecord request, T response, boolean enableCompression) throws GPUdbException {
-        try {
-            return submitRequest(appendPathToURL(url, endpoint), request, response, enableCompression);
-        } catch (MalformedURLException ex) {
-            throw new GPUdbException(ex.getMessage(), ex);
+        URL url = getURL();
+        URL originalURL = url;
+
+        while (true) {
+            try {
+                return submitRequest(appendPathToURL(url, endpoint), request, response, enableCompression);
+            } catch (MalformedURLException ex) {
+                throw new GPUdbException(ex.getMessage(), ex);
+            } catch (SubmitException ex) {
+                if (urls.size() == 1) {
+                    throw ex;
+                } else if (ex.getCause() != null) {
+                    url = switchURL(url);
+
+                    if (url == originalURL) {
+                        throw ex;
+                    }
+                } else {
+                    throw ex;
+                }
+            }
         }
     }
 
@@ -981,8 +1039,7 @@ public abstract class GPUdbBase {
 
             try (InputStream inputStream = connection.getResponseCode() < 400 ? connection.getInputStream() : connection.getErrorStream()) {
                 if (inputStream == null) {
-                    throw new SubmitException(url, request, requestSize,
-                            "Server returned HTTP " + connection.getResponseCode() + " (" + connection.getResponseMessage() + ").");
+                    throw new IOException("Server returned HTTP " + connection.getResponseCode() + " (" + connection.getResponseMessage() + ").");
                 }
 
                 int index = 0;
@@ -1004,7 +1061,12 @@ public abstract class GPUdbBase {
 
             connection.disconnect();
             GpudbResponse gpudbResponse = new GpudbResponse();
-            Avro.decode(gpudbResponse, ByteBuffer.wrap(buffer));
+
+            try {
+                Avro.decode(gpudbResponse, ByteBuffer.wrap(buffer));
+            } catch (Exception ex) {
+                throw new SubmitException(url, request, requestSize, "Server returned invalid response.", ex);
+            }
 
             if (gpudbResponse.getStatus().equals("ERROR")) {
                 throw new SubmitException(url, request, requestSize, gpudbResponse.getMessage());
@@ -1025,46 +1087,66 @@ public abstract class GPUdbBase {
      * the server
      */
     public void ping() throws GPUdbException {
-        try {
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            connection.setConnectTimeout(timeout);
-            connection.setReadTimeout(timeout);
-            connection.setRequestMethod("GET");
+        URL url = getURL();
+        URL originalURL = url;
 
-            for (Map.Entry<String, String> entry : httpHeaders.entrySet()) {
-                connection.setRequestProperty(entry.getKey(), entry.getValue());
-            }
+        while (true) {
+            try {
+                HttpURLConnection connection = (HttpURLConnection)getURL().openConnection();
+                connection.setConnectTimeout(timeout);
+                connection.setReadTimeout(timeout);
+                connection.setRequestMethod("GET");
 
-            if (authorization != null) {
-                connection.setRequestProperty("Authorization", authorization);
-            }
+                for (Map.Entry<String, String> entry : httpHeaders.entrySet()) {
+                    connection.setRequestProperty(entry.getKey(), entry.getValue());
+                }
 
-            byte[] buffer = new byte[1024];
-            int index = 0;
+                if (authorization != null) {
+                    connection.setRequestProperty("Authorization", authorization);
+                }
 
-            try (InputStream inputStream = connection.getResponseCode() < 400 ? connection.getInputStream() : connection.getErrorStream()) {
-                while (true) {
-                    int count = inputStream.read(buffer, index, buffer.length - index);
+                byte[] buffer = new byte[1024];
+                int index = 0;
 
-                    if (count == -1) {
-                        break;
+                try (InputStream inputStream = connection.getResponseCode() < 400 ? connection.getInputStream() : connection.getErrorStream()) {
+                    if (inputStream == null) {
+                        throw new IOException("Server returned HTTP " + connection.getResponseCode() + " (" + connection.getResponseMessage() + ").");
                     }
 
-                    index += count;
+                    while (true) {
+                        int count = inputStream.read(buffer, index, buffer.length - index);
 
-                    if (index == buffer.length) {
-                        buffer = Arrays.copyOf(buffer, buffer.length * 2);
+                        if (count == -1) {
+                            break;
+                        }
+
+                        index += count;
+
+                        if (index == buffer.length) {
+                            buffer = Arrays.copyOf(buffer, buffer.length * 2);
+                        }
+                    }
+                }
+
+                connection.disconnect();
+                String response = new String(Arrays.copyOf(buffer, index));
+
+                if (!response.equals("GPUdb is running!")) {
+                    throw new GPUdbException("Server returned invalid response: " + response);
+                }
+
+                return;
+            } catch (Exception ex) {
+                if (urls.size() == 1) {
+                    throw new GPUdbException(ex.getMessage(), ex);
+                } else {
+                    url = switchURL(url);
+
+                    if (url == originalURL) {
+                        throw new GPUdbException(ex.getMessage(), ex);
                     }
                 }
             }
-
-            String response = new String(Arrays.copyOf(buffer, index));
-
-            if (!response.equals("GPUdb is running!")) {
-                throw new GPUdbException(response);
-            }
-        } catch (IOException ex) {
-            throw new GPUdbException(ex.getMessage(), ex);
         }
     }
 }

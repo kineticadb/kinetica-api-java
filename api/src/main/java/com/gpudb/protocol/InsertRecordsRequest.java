@@ -15,7 +15,7 @@ import org.apache.avro.generic.GenericData;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#insertRecords(InsertRecordsRequest)}.
  * <br />
- * <br />Adds multiple records to the specified table. The operation is synchronous meaning that GPUdb will not return a response
+ * <br />Adds multiple records to the specified table. The operation is synchronous, meaning that a response will not be returned
  * until all the records are fully inserted and available. The response payload provides the counts of the number of records
  * actually inserted and/or updated, and can provide the unique identifier of each added record.
  * <br />
@@ -48,8 +48,8 @@ public class InsertRecordsRequest<T> {
      * (or updated). If the specified table does not have a primary key column then this optional parameter is ignored. Values:
      * true, false.
      * <br />
-     * <br />  <li> return_record_ids: If {@code true} then return GPUdb's internal record id along for each inserted record.
-     * Values: true, false.
+     * <br />  <li> return_record_ids: If {@code true} then return the internal record id along for each inserted record. Values:
+     * true, false.
      * <br />
      * <br />  <li> route_to_address: Route to a specific rank/tom. Option not suitable for tables using primary/shard keys
      * <br /></ul>
@@ -71,7 +71,7 @@ public class InsertRecordsRequest<T> {
         public static final String FALSE = "false";
 
         /**
-         * If {@code true} then return GPUdb's internal record id along for each inserted record. Values: true, false.
+         * If {@code true} then return the internal record id along for each inserted record. Values: true, false.
          * <br />
          */
         public static final String RETURN_RECORD_IDS = "return_record_ids";
@@ -113,8 +113,8 @@ public class InsertRecordsRequest<T> {
      *                 existing records are left unchanged).  It is quite possible that in this case some of the given records will
      *                 be inserted and some (those having existing primary keys) will be ignored (or updated). If the specified
      *                 table does not have a primary key column then this optional parameter is ignored. Values: true, false.
-     *                         <li> return_record_ids: If {@code true} then return GPUdb's internal record id along for each
-     *                 inserted record. Values: true, false.
+     *                         <li> return_record_ids: If {@code true} then return the internal record id along for each inserted
+     *                 record. Values: true, false.
      *                         <li> route_to_address: Route to a specific rank/tom. Option not suitable for tables using
      *                 primary/shard keys
      *                 </ul>
@@ -181,8 +181,8 @@ public class InsertRecordsRequest<T> {
      *         unchanged).  It is quite possible that in this case some of the given records will be inserted and some (those having
      *         existing primary keys) will be ignored (or updated). If the specified table does not have a primary key column then
      *         this optional parameter is ignored. Values: true, false.
-     *                 <li> return_record_ids: If {@code true} then return GPUdb's internal record id along for each inserted
-     *         record. Values: true, false.
+     *                 <li> return_record_ids: If {@code true} then return the internal record id along for each inserted record.
+     *         Values: true, false.
      *                 <li> route_to_address: Route to a specific rank/tom. Option not suitable for tables using primary/shard keys
      *         </ul>
      * 
@@ -202,8 +202,8 @@ public class InsertRecordsRequest<T> {
      *                 existing records are left unchanged).  It is quite possible that in this case some of the given records will
      *                 be inserted and some (those having existing primary keys) will be ignored (or updated). If the specified
      *                 table does not have a primary key column then this optional parameter is ignored. Values: true, false.
-     *                         <li> return_record_ids: If {@code true} then return GPUdb's internal record id along for each
-     *                 inserted record. Values: true, false.
+     *                         <li> return_record_ids: If {@code true} then return the internal record id along for each inserted
+     *                 record. Values: true, false.
      *                         <li> route_to_address: Route to a specific rank/tom. Option not suitable for tables using
      *                 primary/shard keys
      *                 </ul>

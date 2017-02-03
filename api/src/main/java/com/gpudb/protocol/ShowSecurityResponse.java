@@ -46,7 +46,7 @@ public class ShowSecurityResponse implements IndexedRecord {
     public static final class Types {
 
         /**
-         * A user whose credentials are managed by GPUdb.
+         * A user whose credentials are managed by the database system.
          */
         public static final String INTERNAL_USER = "internal_user";
 

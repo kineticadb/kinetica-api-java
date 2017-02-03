@@ -148,13 +148,13 @@ public class CreateJoinTableRequest implements IndexedRecord {
     /**
      * Constructs a CreateJoinTableRequest object with the specified parameters.
      * 
-     * @param joinTableName  Name of the join table to be created. Must not be the name of a currently existing GPUdb table or join
-     *                       table. Cannot be an empty string.
+     * @param joinTableName  Name of the join table to be created. Must not be the name of a currently existing table or join table.
+     *                       Cannot be an empty string.
      * @param tableNames  The list of table names making up the joined set.  Corresponds to a SQL statement FROM clause
      * @param columnNames  The list of columns to be selected from the input table names. Empty list says to select all the column
      *                     names.  Empty list is the default.
-     * @param expressions  An optional list of expressions GPUdb uses to combine and filter the joined set.  Corresponds to a SQL
-     *                     statement WHERE clause. For details see: <a href="../../../../../concepts/index.html#expressions"
+     * @param expressions  An optional list of expressions to combine and filter the joined set.  Corresponds to a SQL statement
+     *                     WHERE clause. For details see: <a href="../../../../../concepts/index.html#expressions"
      *                     target="_top">expressions</a>.
      * @param options  Optional parameters.
      *                 <ul>
@@ -181,8 +181,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the join table to be created. Must not be the name of a currently existing GPUdb table or join table. Cannot
-     *         be an empty string.
+     * @return Name of the join table to be created. Must not be the name of a currently existing table or join table. Cannot be an
+     *         empty string.
      * 
      */
     public String getJoinTableName() {
@@ -191,8 +191,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param joinTableName  Name of the join table to be created. Must not be the name of a currently existing GPUdb table or join
-     *                       table. Cannot be an empty string.
+     * @param joinTableName  Name of the join table to be created. Must not be the name of a currently existing table or join table.
+     *                       Cannot be an empty string.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -248,9 +248,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return An optional list of expressions GPUdb uses to combine and filter the joined set.  Corresponds to a SQL statement
-     *         WHERE clause. For details see: <a href="../../../../../concepts/index.html#expressions"
-     *         target="_top">expressions</a>.
+     * @return An optional list of expressions to combine and filter the joined set.  Corresponds to a SQL statement WHERE clause.
+     *         For details see: <a href="../../../../../concepts/index.html#expressions" target="_top">expressions</a>.
      * 
      */
     public List<String> getExpressions() {
@@ -259,8 +258,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param expressions  An optional list of expressions GPUdb uses to combine and filter the joined set.  Corresponds to a SQL
-     *                     statement WHERE clause. For details see: <a href="../../../../../concepts/index.html#expressions"
+     * @param expressions  An optional list of expressions to combine and filter the joined set.  Corresponds to a SQL statement
+     *                     WHERE clause. For details see: <a href="../../../../../concepts/index.html#expressions"
      *                     target="_top">expressions</a>.
      * 
      * @return {@code this} to mimic the builder pattern.

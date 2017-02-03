@@ -124,8 +124,8 @@ public class CreateUnionRequest implements IndexedRecord {
     /**
      * Constructs a CreateUnionRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to be created. Must not be the name of a currently existing GPUdb table. Cannot be an
-     *                   empty string.
+     * @param tableName  Name of the table to be created. Must not be the name of a currently existing table. Cannot be an empty
+     *                   string.
      * @param tableNames  The list of table names making up the union. Must contain the names of one or more existing tables.
      * @param inputColumnNames  The list of columns from each of the corresponding input tables.
      * @param outputColumnNames  The list of names of the columns to be stored in the union.
@@ -149,7 +149,7 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to be created. Must not be the name of a currently existing GPUdb table. Cannot be an empty string.
+     * @return Name of the table to be created. Must not be the name of a currently existing table. Cannot be an empty string.
      * 
      */
     public String getTableName() {
@@ -158,8 +158,8 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to be created. Must not be the name of a currently existing GPUdb table. Cannot be an
-     *                   empty string.
+     * @param tableName  Name of the table to be created. Must not be the name of a currently existing table. Cannot be an empty
+     *                   string.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

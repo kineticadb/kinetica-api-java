@@ -129,7 +129,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
     /**
      * Constructs an AggregateUniqueRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be a valid table in GPUdb.
+     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table.
      * @param columnName  Name of the column or an expression containing one or more column names on which the unique function would
      *                    be applied.
      * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
@@ -158,7 +158,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
     /**
      * Constructs an AggregateUniqueRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be a valid table in GPUdb.
+     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table.
      * @param columnName  Name of the column or an expression containing one or more column names on which the unique function would
      *                    be applied.
      * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
@@ -187,7 +187,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the operation will be performed. Must be a valid table in GPUdb.
+     * @return Name of the table on which the operation will be performed. Must be an existing table.
      * 
      */
     public String getTableName() {
@@ -196,7 +196,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be a valid table in GPUdb.
+     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

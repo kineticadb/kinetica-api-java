@@ -68,7 +68,7 @@ public class FilterRequest implements IndexedRecord {
      *                   queries).  Collections may be filtered only if all tables within the collection have the same type ID.
      * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view .
-     * @param expression  The select expression GPUdb uses to filter the specified table.  For details see <a
+     * @param expression  The select expression to filter the specified table.  For details see <a
      *                    href="../../../../../concepts/index.html#expressions" target="_top">concepts</a>.
      * @param options  Optional parameters.
      * 
@@ -128,7 +128,7 @@ public class FilterRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The select expression GPUdb uses to filter the specified table.  For details see <a
+     * @return The select expression to filter the specified table.  For details see <a
      *         href="../../../../../concepts/index.html#expressions" target="_top">concepts</a>.
      * 
      */
@@ -138,7 +138,7 @@ public class FilterRequest implements IndexedRecord {
 
     /**
      * 
-     * @param expression  The select expression GPUdb uses to filter the specified table.  For details see <a
+     * @param expression  The select expression to filter the specified table.  For details see <a
      *                    href="../../../../../concepts/index.html#expressions" target="_top">concepts</a>.
      * 
      * @return {@code this} to mimic the builder pattern.

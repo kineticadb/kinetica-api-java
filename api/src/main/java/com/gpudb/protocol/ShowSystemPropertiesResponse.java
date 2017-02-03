@@ -39,41 +39,41 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
     /**
      * A map of server configuration parameters and version information.
      * <br /><ul>
-     * <br />  <li> conf.enable_worker_http_servers: Boolean value indicating whether the GPUdb server is configured for multi-head
+     * <br />  <li> conf.enable_worker_http_servers: Boolean value indicating whether the system is configured for multi-head
      * ingestion. Values: TRUE, FALSE.
      * <br />
      * <br />  <li> conf.worker_http_server_ips: Semicolon (';') separated string of IP addresses of all the ingestion-enabled
-     * worker heads of the GPUdb server.
+     * worker heads of the system.
      * <br />  <li> conf.worker_http_server_ports: Semicolon (';') separated string of the port numbers of all the ingestion-enabled
-     * worker ranks of the GPUdb server.
+     * worker ranks of the system.
      * <br /></ul>
      * <br />A set of string constants for the parameter {@code propertyMap}.
      */
     public static final class PropertyMap {
 
         /**
-         * Boolean value indicating whether the GPUdb server is configured for multi-head ingestion. Values: TRUE, FALSE.
+         * Boolean value indicating whether the system is configured for multi-head ingestion. Values: TRUE, FALSE.
          * <br />
          */
         public static final String CONF_ENABLE_WORKER_HTTP_SERVERS = "conf.enable_worker_http_servers";
 
         /**
-         * Indicates that the GPUdb server is configured for multi-head ingestion.
+         * Indicates that the system is configured for multi-head ingestion.
          */
         public static final String TRUE = "TRUE";
 
         /**
-         * Indicates that the GPUdb server is NOT configured for multi-head ingestion.
+         * Indicates that the system is NOT configured for multi-head ingestion.
          */
         public static final String FALSE = "FALSE";
 
         /**
-         * Semicolon (';') separated string of IP addresses of all the ingestion-enabled worker heads of the GPUdb server.
+         * Semicolon (';') separated string of IP addresses of all the ingestion-enabled worker heads of the system.
          */
         public static final String CONF_WORKER_HTTP_SERVER_IPS = "conf.worker_http_server_ips";
 
         /**
-         * Semicolon (';') separated string of the port numbers of all the ingestion-enabled worker ranks of the GPUdb server.
+         * Semicolon (';') separated string of the port numbers of all the ingestion-enabled worker ranks of the system.
          */
         public static final String CONF_WORKER_HTTP_SERVER_PORTS = "conf.worker_http_server_ports";
 
@@ -93,12 +93,12 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
      * 
      * @return A map of server configuration parameters and version information.
      *         <ul>
-     *                 <li> conf.enable_worker_http_servers: Boolean value indicating whether the GPUdb server is configured for
+     *                 <li> conf.enable_worker_http_servers: Boolean value indicating whether the system is configured for
      *         multi-head ingestion. Values: TRUE, FALSE.
      *                 <li> conf.worker_http_server_ips: Semicolon (';') separated string of IP addresses of all the
-     *         ingestion-enabled worker heads of the GPUdb server.
+     *         ingestion-enabled worker heads of the system.
      *                 <li> conf.worker_http_server_ports: Semicolon (';') separated string of the port numbers of all the
-     *         ingestion-enabled worker ranks of the GPUdb server.
+     *         ingestion-enabled worker ranks of the system.
      *         </ul>
      * 
      */
@@ -110,12 +110,12 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
      * 
      * @param propertyMap  A map of server configuration parameters and version information.
      *                     <ul>
-     *                             <li> conf.enable_worker_http_servers: Boolean value indicating whether the GPUdb server is
-     *                     configured for multi-head ingestion. Values: TRUE, FALSE.
+     *                             <li> conf.enable_worker_http_servers: Boolean value indicating whether the system is configured
+     *                     for multi-head ingestion. Values: TRUE, FALSE.
      *                             <li> conf.worker_http_server_ips: Semicolon (';') separated string of IP addresses of all the
-     *                     ingestion-enabled worker heads of the GPUdb server.
+     *                     ingestion-enabled worker heads of the system.
      *                             <li> conf.worker_http_server_ports: Semicolon (';') separated string of the port numbers of all
-     *                     the ingestion-enabled worker ranks of the GPUdb server.
+     *                     the ingestion-enabled worker ranks of the system.
      *                     </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

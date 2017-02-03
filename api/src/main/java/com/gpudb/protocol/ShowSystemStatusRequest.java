@@ -16,8 +16,8 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#showSystemStatus(ShowSystemStatusRequest)}.
  * <br />
- * <br />Provides server configuration and health related status to the caller. The GPUdb Admin tool uses it to present server
- * related information to the user.
+ * <br />Provides server configuration and health related status to the caller. The admin tool uses it to present server related
+ * information to the user.
  */
 public class ShowSystemStatusRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

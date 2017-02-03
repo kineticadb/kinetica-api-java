@@ -168,7 +168,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
     /**
      * Constructs an AggregateGroupByRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be a valid table/view/collection in GPUdb.
+     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table/view/collection.
      * @param columnNames  List of one or more column names, expressions, and aggregate expressions. Must include at least one
      *                     'grouping' column or expression.  If no aggregate is included, count(*) will be computed as a default.
      * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
@@ -201,7 +201,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
     /**
      * Constructs an AggregateGroupByRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be a valid table/view/collection in GPUdb.
+     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table/view/collection.
      * @param columnNames  List of one or more column names, expressions, and aggregate expressions. Must include at least one
      *                     'grouping' column or expression.  If no aggregate is included, count(*) will be computed as a default.
      * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
@@ -234,7 +234,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the operation will be performed. Must be a valid table/view/collection in GPUdb.
+     * @return Name of the table on which the operation will be performed. Must be an existing table/view/collection.
      * 
      */
     public String getTableName() {
@@ -243,7 +243,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be a valid table/view/collection in GPUdb.
+     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table/view/collection.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -50,7 +50,7 @@ public class InsertRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return An array containing the IDs with which GPUdb internally identifies the added records.
+     * @return An array containing the IDs with which the added records are identified internally.
      * 
      */
     public List<String> getRecordIds() {
@@ -59,7 +59,7 @@ public class InsertRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param recordIds  An array containing the IDs with which GPUdb internally identifies the added records.
+     * @param recordIds  An array containing the IDs with which the added records are identified internally.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -4,18 +4,23 @@ import com.gpudb.protocol.AdminGetShardAssignmentsRequest;
 import com.gpudb.protocol.InsertRecordsRequest;
 import com.gpudb.protocol.InsertRecordsResponse;
 import com.gpudb.protocol.RawInsertRecordsRequest;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.avro.generic.IndexedRecord;
 
@@ -126,6 +131,7 @@ public class BulkInserter<T> {
          */
         public WorkerList(GPUdb gpudb, Pattern ipRegex) throws GPUdbException {
             Map<String, String> systemProperties = gpudb.showSystemProperties(GPUdb.options()).getPropertyMap();
+            String protocol = gpudb.getURL().getProtocol();
 
             String s = systemProperties.get("conf.enable_worker_http_servers");
 
@@ -157,7 +163,7 @@ public class BulkInserter<T> {
 
                         if (match) {
                             try {
-                                add(new URL(gpudb.getURL().getProtocol() + "://" + url));
+                                add(new URL(protocol + "://" + url));
                             } catch (MalformedURLException ex) {
                                 throw new GPUdbException(ex.getMessage(), ex);
                             }
@@ -207,7 +213,7 @@ public class BulkInserter<T> {
 
                         if (match) {
                             try {
-                                add(new URL(gpudb.getURL().getProtocol() + "://" + ip + ":" + ports[i]));
+                                add(new URL(protocol + "://" + ip + ":" + ports[i]));
                             } catch (MalformedURLException ex) {
                                 throw new GPUdbException(ex.getMessage(), ex);
                             }
@@ -255,19 +261,24 @@ public class BulkInserter<T> {
     }
 
     private static final class RecordKey {
-        private static final Charset UTF8 = Charset.forName("UTF-8");
+        private static final Pattern DATE_REGEX = Pattern.compile("\\A(\\d{4})-(\\d{2})-(\\d{2})$");
+        private static final Pattern DECIMAL_REGEX = Pattern.compile("\\A\\s*[+-]?(\\d+(\\.\\d{0,4})?|\\.\\d{1,4})$");
+        private static final Pattern IPV4_REGEX = Pattern.compile("\\A(\\d{1,3}).(\\d{1,3}).(\\d{1,3}).(\\d{1,3})$");
+        private static final Pattern TIME_REGEX = Pattern.compile("\\A(\\d{1,2}):(\\d{2}):(\\d{2})(?:.(\\d{3}))?$");
 
         private final ByteBuffer buffer;
         private int hashCode;
         private long routingHash;
+        private boolean isValid;
 
         public RecordKey(int size) {
             buffer = ByteBuffer.allocate(size);
             buffer.order(ByteOrder.LITTLE_ENDIAN);
+            isValid = true;
         }
 
         public void addChar(String value, int length) {
-            byte[] bytes = value.getBytes(UTF8);
+            byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
             int count = bytes.length;
 
             if (count > length) {
@@ -280,6 +291,69 @@ public class BulkInserter<T> {
 
             for (int i = count - 1; i >= 0; i--) {
                 buffer.put(bytes[i]);
+            }
+        }
+
+        public void addDate(String value) {
+            Matcher matcher = DATE_REGEX.matcher(value);
+
+            if (!matcher.matches()) {
+                buffer.putInt(0);
+                isValid = false;
+                return;
+            }
+
+            int year;
+            int month;
+            int day;
+            GregorianCalendar calendar;
+
+            try {
+                year = Integer.parseInt(matcher.group(1));
+                month = Integer.parseInt(matcher.group(2));
+                day = Integer.parseInt(matcher.group(3));
+                calendar = new GregorianCalendar();
+                calendar.setGregorianChange(new Date(Long.MIN_VALUE));
+                calendar.set(year, month - 1, day);
+            } catch (Exception ex) {
+                buffer.putInt(0);
+                isValid = false;
+                return;
+            }
+
+            if (year < 1000 || year > 2900) {
+                buffer.putInt(0);
+                isValid = false;
+                return;
+            }
+
+            buffer.putInt(((year - 1900) << 21)
+                    | (month << 17)
+                    | (day << 12)
+                    | (calendar.get(Calendar.DAY_OF_YEAR) << 3)
+                    | calendar.get(Calendar.DAY_OF_WEEK));
+        }
+
+        public void addDecimal(String value) {
+            Matcher matcher = DECIMAL_REGEX.matcher(value);
+
+            if (!matcher.matches()) {
+                buffer.putInt(0);
+                isValid = false;
+                return;
+            }
+
+            try {
+                int i = 0;
+
+                while (i < value.length() && Character.isWhitespace(value.charAt(i))) {
+                    i++;
+                }
+
+                buffer.putLong(new BigDecimal(value.substring(i)).movePointRight(4).setScale(0, BigDecimal.ROUND_UNNECESSARY).longValueExact());
+            } catch (Exception ex) {
+                buffer.putLong(0);
+                isValid = false;
             }
         }
 
@@ -303,15 +377,94 @@ public class BulkInserter<T> {
             buffer.putShort((short)value);
         }
 
+        public void addIPv4(String value) {
+            Matcher matcher = IPV4_REGEX.matcher(value);
+
+            if (!matcher.matches()) {
+                buffer.putInt(0);
+                isValid = false;
+                return;
+            }
+
+            int a;
+            int b;
+            int c;
+            int d;
+
+            try {
+                a = Integer.parseInt(matcher.group(1));
+                b = Integer.parseInt(matcher.group(2));
+                c = Integer.parseInt(matcher.group(3));
+                d = Integer.parseInt(matcher.group(4));
+            } catch (Exception ex) {
+                buffer.putInt(0);
+                isValid = false;
+                return;
+            }
+
+            if (a > 255 || b > 255 || c > 255 || d > 255) {
+                buffer.putInt(0);
+                isValid = false;
+                return;
+            }
+
+            buffer.putInt((a << 24)
+                    | (b << 16)
+                    | (c << 8)
+                    | d);
+        }
+
         public void addLong(long value) {
             buffer.putLong(value);
         }
 
         public void addString(String value) {
             MurmurHash3.LongPair murmur = new MurmurHash3.LongPair();
-            byte[] bytes = value.getBytes(UTF8);
+            byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
             MurmurHash3.murmurhash3_x64_128(bytes, 0, bytes.length, 10, murmur);
             buffer.putLong(murmur.val1);
+        }
+
+        public void addTime(String value) {
+            Matcher matcher = TIME_REGEX.matcher(value);
+
+            if (!matcher.matches()) {
+                buffer.putInt(0);
+                isValid = false;
+                return;
+            }
+
+            int hour;
+            int minute;
+            int second;
+            int millisecond;
+
+            try {
+                hour = Integer.parseInt(matcher.group(1));
+                minute = Integer.parseInt(matcher.group(2));
+                second = Integer.parseInt(matcher.group(3));
+
+                if (matcher.group(4) != null) {
+                    millisecond = Integer.parseInt(matcher.group(4));
+                } else {
+                    millisecond = 0;
+                }
+            } catch (Exception ex) {
+                buffer.putInt(0);
+                isValid = false;
+                return;
+            }
+
+            if (hour > 23 || minute > 59 || second > 59) {
+                buffer.putInt(0);
+                isValid = false;
+                return;
+            }
+
+            buffer.putInt((hour << 26)
+                    | (minute << 20)
+                    | (second << 14)
+                    | (millisecond << 4));
         }
 
         public void computeHashes() {
@@ -320,6 +473,10 @@ public class BulkInserter<T> {
             routingHash = murmur.val1;
             hashCode = (int)(routingHash ^ (routingHash >>> 32));
             buffer.rewind();
+        }
+
+        public boolean isValid() {
+            return isValid;
         }
 
         @Override
@@ -356,13 +513,17 @@ public class BulkInserter<T> {
             CHAR64,
             CHAR128,
             CHAR256,
+            DATE,
+            DECIMAL,
             DOUBLE,
             FLOAT,
             INT,
             INT8,
             INT16,
+            IPV4,
             LONG,
-            STRING
+            STRING,
+            TIME
         }
 
         private final TypeObjectMap<T> typeObjectMap;
@@ -483,8 +644,18 @@ public class BulkInserter<T> {
                     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR256)) {
                         columnTypes.add(ColumnType.CHAR256);
                         size += 256;
+                    } else if (typeColumn.getProperties().contains(ColumnProperty.DATE)) {
+                        columnTypes.add(ColumnType.DATE);
+                        size += 4;
+                    } else if (typeColumn.getProperties().contains(ColumnProperty.DECIMAL)) {
+                        columnTypes.add(ColumnType.DECIMAL);
+                        size += 8;
                     } else if (typeColumn.getProperties().contains(ColumnProperty.IPV4)) {
-                        throw new IllegalArgumentException("Cannot use column " + typeColumn.getName() + " as a key.");
+                        columnTypes.add(ColumnType.IPV4);
+                        size += 4;
+                    } else if (typeColumn.getProperties().contains(ColumnProperty.TIME)) {
+                        columnTypes.add(ColumnType.TIME);
+                        size += 4;
                     } else {
                         columnTypes.add(ColumnType.STRING);
                         size += 8;
@@ -558,6 +729,14 @@ public class BulkInserter<T> {
                         key.addChar((String)value, 256);
                         break;
 
+                    case DATE:
+                        key.addDate((String)value);
+                        break;
+
+                    case DECIMAL:
+                        key.addDecimal((String)value);
+                        break;
+
                     case DOUBLE:
                         key.addDouble((Double)value);
                         break;
@@ -578,12 +757,20 @@ public class BulkInserter<T> {
                         key.addInt16((Integer)value);
                         break;
 
+                    case IPV4:
+                        key.addIPv4((String)value);
+                        break;
+
                     case LONG:
                         key.addLong((Long)value);
                         break;
 
                     case STRING:
                         key.addString((String)value);
+                        break;
+
+                    case TIME:
+                        key.addTime((String)value);
                         break;
                 }
             }
@@ -633,7 +820,7 @@ public class BulkInserter<T> {
         }
 
         public List<T> insert(T record, RecordKey key) {
-            if (hasPrimaryKey) {
+            if (hasPrimaryKey && key.isValid()) {
                 if (updateOnExistingPk) {
                     Integer keyIndex = primaryKeyMap.get(key);
 

@@ -16,8 +16,8 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#showSystemTiming(ShowSystemTimingRequest)}.
  * <br />
- * <br />Returns the last 100 requests made to GPUdb along with the request timing and internal job id. The GPUdb Admin tool uses it
- * to present request timing information to the user.
+ * <br />Returns the last 100 database requests along with the request timing and internal job id. The admin tool uses it to present
+ * request timing information to the user.
  */
 public class ShowSystemTimingRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

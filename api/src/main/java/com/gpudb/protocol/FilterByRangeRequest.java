@@ -68,7 +68,7 @@ public class FilterByRangeRequest implements IndexedRecord {
     /**
      * Constructs a FilterByRangeRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the filter by range operation will be performed.  Must be a valid GPUdb table.
+     * @param tableName  Name of the table on which the filter by range operation will be performed.  Must be an existing table.
      * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view.
      * @param columnName  Name of a column or an expression of one or more columns on which the operation would be applied.
@@ -88,7 +88,7 @@ public class FilterByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the filter by range operation will be performed.  Must be a valid GPUdb table.
+     * @return Name of the table on which the filter by range operation will be performed.  Must be an existing table.
      * 
      */
     public String getTableName() {
@@ -97,7 +97,7 @@ public class FilterByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the filter by range operation will be performed.  Must be a valid GPUdb table.
+     * @param tableName  Name of the table on which the filter by range operation will be performed.  Must be an existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

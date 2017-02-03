@@ -18,7 +18,7 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#showTriggers(ShowTriggersRequest)}.
  * <br />
- * <br />Retrieves information regarding the specified triggers or all existing triggers currently active within GPUdb.
+ * <br />Retrieves information regarding the specified triggers or all existing triggers currently active.
  */
 public class ShowTriggersRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

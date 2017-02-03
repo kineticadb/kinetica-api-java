@@ -55,7 +55,7 @@ public class ShowTableMetadataRequest implements IndexedRecord {
     /**
      * Constructs a ShowTableMetadataRequest object with the specified parameters.
      * 
-     * @param tableNames  Tables whose metadata will be fetched. All provided tables must exist in GPUdb, or GPUdb returns an error.
+     * @param tableNames  Tables whose metadata will be fetched. All provided tables must exist, or an error is returned.
      * @param options  Optional parameters.
      * 
      */
@@ -66,7 +66,7 @@ public class ShowTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Tables whose metadata will be fetched. All provided tables must exist in GPUdb, or GPUdb returns an error.
+     * @return Tables whose metadata will be fetched. All provided tables must exist, or an error is returned.
      * 
      */
     public List<String> getTableNames() {
@@ -75,7 +75,7 @@ public class ShowTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  Tables whose metadata will be fetched. All provided tables must exist in GPUdb, or GPUdb returns an error.
+     * @param tableNames  Tables whose metadata will be fetched. All provided tables must exist, or an error is returned.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

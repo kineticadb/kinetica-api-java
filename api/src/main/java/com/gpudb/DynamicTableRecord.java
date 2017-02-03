@@ -23,13 +23,19 @@ final class DynamicTableRecord extends RecordBase {
         }
 
         IndexedRecord data = Avro.decode(schema, encodedData);
-        int fieldCount = schema.getFields().size() - 1;
+        int fieldCount = schema.getFields().size() - 2;
         int recordCount = ((List<?>)data.get(0)).size();
         List<String> expressions = (List<String>)data.get(fieldCount);
+        List<String> types = (List<String>)data.get(fieldCount + 1);
 
         if (expressions.size() < fieldCount)
         {
             throw new GPUdbException("Every field must have a corresponding expression.");
+        }
+
+        if (types.size() < fieldCount)
+        {
+            throw new GPUdbException("Every field must have a corresponding type.");
         }
 
         List<Type.Column> columns = new ArrayList<>();
@@ -43,14 +49,14 @@ final class DynamicTableRecord extends RecordBase {
 
             Schema fieldSchema = field.schema().getElementType();
             Schema.Type fieldType = fieldSchema.getType();
-            boolean isNullable = false;
+            List<String> columnProperties = new ArrayList<>();
 
             if (fieldType == Schema.Type.UNION) {
                 List<Schema> fieldUnionTypes = fieldSchema.getTypes();
 
                 if (fieldUnionTypes.size() == 2 && fieldUnionTypes.get(1).getType() == Schema.Type.NULL) {
                     fieldType = fieldUnionTypes.get(0).getType();
-                    isNullable = true;
+                    columnProperties.add(ColumnProperty.NULLABLE);
                 } else {
                     throw new GPUdbException("Field " + field.name() + " has invalid type.");
                 }
@@ -123,11 +129,29 @@ final class DynamicTableRecord extends RecordBase {
                 }
             }
 
-            if (isNullable) {
-                columns.add(new Type.Column(name, columnType, "nullable"));
-            } else {
-                columns.add(new Type.Column(name, columnType));
+            String type = types.get(i);
+
+            switch (type) {
+                case ColumnProperty.CHAR1:
+                case ColumnProperty.CHAR2:
+                case ColumnProperty.CHAR4:
+                case ColumnProperty.CHAR8:
+                case ColumnProperty.CHAR16:
+                case ColumnProperty.CHAR32:
+                case ColumnProperty.CHAR64:
+                case ColumnProperty.CHAR128:
+                case ColumnProperty.CHAR256:
+                case ColumnProperty.DATE:
+                case ColumnProperty.DECIMAL:
+                case ColumnProperty.INT8:
+                case ColumnProperty.INT16:
+                case ColumnProperty.IPV4:
+                case ColumnProperty.TIME:
+                case ColumnProperty.TIMESTAMP:
+                    columnProperties.add(type);
             }
+
+            columns.add(new Type.Column(name, columnType, columnProperties));
         }
 
         Type type = new Type("", columns);

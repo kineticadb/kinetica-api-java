@@ -592,7 +592,8 @@ public final class Type {
      *              column exists
      */
     public Column getColumn(String name) {
-        return columns.get(columnMap.get(name));
+        Integer index = columnMap.get(name);
+        return index == null ? null : columns.get(index);
     }
 
     /**

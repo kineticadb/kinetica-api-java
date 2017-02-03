@@ -59,7 +59,7 @@ public class AggregateConvexHullRequest implements IndexedRecord {
     /**
      * Constructs an AggregateConvexHullRequest object with the specified parameters.
      * 
-     * @param tableName  Name of Table on which the operation will be performed. Must be a valid table in GPUdb.  It can not be a
+     * @param tableName  Name of Table on which the operation will be performed. Must be an existing table.  It can not be a
      *                   collection.
      * @param xColumnName  Name of the column containing the x coordinates of the points for the operation being performed.
      * @param yColumnName  Name of the column containing the y coordinates of the points for the operation being performed.
@@ -75,7 +75,7 @@ public class AggregateConvexHullRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of Table on which the operation will be performed. Must be a valid table in GPUdb.  It can not be a collection.
+     * @return Name of Table on which the operation will be performed. Must be an existing table.  It can not be a collection.
      * 
      */
     public String getTableName() {
@@ -84,7 +84,7 @@ public class AggregateConvexHullRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of Table on which the operation will be performed. Must be a valid table in GPUdb.  It can not be a
+     * @param tableName  Name of Table on which the operation will be performed. Must be an existing table.  It can not be a
      *                   collection.
      * 
      * @return {@code this} to mimic the builder pattern.

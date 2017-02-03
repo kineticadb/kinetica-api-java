@@ -17,9 +17,9 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
  * <br />
  * <br />Creates a monitor that watches for new records inserted into a particular table (identified by {@code tableName}) and
- * forwards copies to subscribers via ZMQ. After this call completes, subscribe to the returned {@code topicId} on the GPUdb ZMQ
- * table monitor port (default 9002). Each time an insert operation on the table completes, a multipart message is published for
- * that topic; the first part contains only the topic ID, and each subsequent part contains one binary-encoded Avro object that was
+ * forwards copies to subscribers via ZMQ. After this call completes, subscribe to the returned {@code topicId} on the ZMQ table
+ * monitor port (default 9002). Each time an insert operation on the table completes, a multipart message is published for that
+ * topic; the first part contains only the topic ID, and each subsequent part contains one binary-encoded Avro object that was
  * inserted. The monitor will continue to run (regardless of whether or not there are any subscribers) until deactivated with {@link
  * com.gpudb.GPUdb#clearTableMonitor(ClearTableMonitorRequest)}.
  */

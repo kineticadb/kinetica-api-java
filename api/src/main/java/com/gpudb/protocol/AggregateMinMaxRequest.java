@@ -56,7 +56,7 @@ public class AggregateMinMaxRequest implements IndexedRecord {
     /**
      * Constructs an AggregateMinMaxRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be a valid table in GPUdb.
+     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table.
      * @param columnName  Name of a column or an expression of one or more column on which the min-max will be calculated.
      * @param options  Optional parameters.
      * 
@@ -69,7 +69,7 @@ public class AggregateMinMaxRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the operation will be performed. Must be a valid table in GPUdb.
+     * @return Name of the table on which the operation will be performed. Must be an existing table.
      * 
      */
     public String getTableName() {
@@ -78,7 +78,7 @@ public class AggregateMinMaxRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be a valid table in GPUdb.
+     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

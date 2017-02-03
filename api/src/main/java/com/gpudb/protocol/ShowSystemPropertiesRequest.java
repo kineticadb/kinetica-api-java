@@ -16,7 +16,7 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#showSystemProperties(ShowSystemPropertiesRequest)}.
  * <br />
- * <br />Returns server configuration and version related information to the caller. The GPUdb Admin tool uses it to present server
+ * <br />Returns server configuration and version related information to the caller. The admin tool uses it to present server
  * related information to the user.
  */
 public class ShowSystemPropertiesRequest implements IndexedRecord {

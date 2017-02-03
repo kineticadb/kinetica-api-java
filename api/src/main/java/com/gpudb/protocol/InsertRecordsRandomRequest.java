@@ -20,7 +20,7 @@ import org.apache.avro.generic.IndexedRecord;
  * the user to customize the ranges of the column values. It also allows the user to specify linear profiles for some or all columns
  * in which case linear values are generated rather than random ones. Only individual tables are supported for this operation.
  * <br />
- * <br />This operation is synchronous, meaning that GPUdb will not return until all random records are fully available.
+ * <br />This operation is synchronous, meaning that a response will not be returned until all random records are fully available.
  */
 public class InsertRecordsRandomRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -52,6 +52,14 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      * *interval*.  These parameters take on different meanings depending on the type of the column.  Below follows a more detailed
      * description of the map:
      * <br /><ul>
+     * <br />  <li> seed: If provided, the internal random number generator will be initialized with the given value.  The minimum
+     * is 0.  This allows for the same set of random numbers to be generated across invocation of this endpoint in case the user
+     * wants to repeat the test.  Since {@code options}, is a map of maps, we need an internal map to provide the seed value.  For
+     * example, to pass 100 as the seed value through this parameter, you need something equivalent to: 'options' = {'seed': {
+     * 'value': 100 } }
+     * <br /><ul>
+     * <br />  <li> value: Pass the seed value here.
+     * <br /></ul>
      * <br />  <li> all: This key indicates that the specifications relayed in the internal map are to be applied to all columns of
      * the records.
      * <br /><ul>
@@ -64,7 +72,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      * minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within [1, 200].
      * <br />
      * <br />If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types, then
-     * those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the responsibility of the user
+     * those parameters will not be set; however, an error will not be thrown in such a case. It is the responsibility of the user
      * to use the {@code all} parameter judiciously.
      * <br />  <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is 99999. For
      * point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within [-180, 180] and [-90, 90],
@@ -74,12 +82,16 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      * minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to be within [1, 200].
      * <br />
      * <br />If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types,
-     * then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the responsibility of the
+     * then those parameters will not be set; however, an error will not be thrown in such a case. It is the responsibility of the
      * user to use the {@code all} parameter judiciously.
      * <br />  <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the given interval
      * value starting at the minimum value (instead of generating random data). *Any provided max value is disregarded.*  For
      * string-type columns, the interval value is ignored but the string values would be generated following the pattern:
-     * 'attrname_creationIndex#', i.e. the column name suffixed with an underscore and a running counter (starting at 0).
+     * 'attrname_creationIndex#', i.e. the column name suffixed with an underscore and a running counter (starting at 0).  No nulls
+     * would be generated for nullable columns.
+     * <br />  <li> null_percentage: If specified, then generate the given percentage of the count as nulls for all nullable
+     * columns.  This option will be ignored for non-nullable columns.  The value must be within the range [0, 1.0].  The default
+     * value is 5% (0.05).
      * <br /></ul>
      * <br />  <li> attr_name: Set the following parameters for the column specified by the key. This overrides any parameter set by
      * {@code all}.
@@ -93,7 +105,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      * minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within [1, 200].
      * <br />
      * <br />If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types, then
-     * those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the responsibility of the user
+     * those parameters will not be set; however, an error will not be thrown in such a case. It is the responsibility of the user
      * to use the {@code all} parameter judiciously.
      * <br />  <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is 99999. For
      * point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within [-180, 180] and [-90, 90],
@@ -103,14 +115,19 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      * minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to be within [1, 200].
      * <br />
      * <br />If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types,
-     * then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the responsibility of the
+     * then those parameters will not be set; however, an error will not be thrown in such a case. It is the responsibility of the
      * user to use the {@code all} parameter judiciously.
      * <br />  <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the given interval
      * value starting at the minimum value (instead of generating random data). *Any provided max value is disregarded.*  For
      * string-type columns, the interval value is ignored but the string values would be generated following the pattern:
-     * 'attrname_creationIndex#', i.e. the column name suffixed with an underscore and a running counter (starting at 0).
+     * 'attrname_creationIndex#', i.e. the column name suffixed with an underscore and a running counter (starting at 0).  No nulls
+     * would be generated for nullable columns.
+     * <br />  <li> null_percentage: If specified and if this column is nullable, then generate the given percentage of the count as
+     * nulls.  This option will result in an error if the column is not nullable.  The value must be within the range [0, 1.0].  The
+     * default value is 5% (0.05).
      * <br /></ul>
-     * <br />  <li> track_length: This key-map pair is only valid for track type data sets (GPUdb throws an error otherwise).
+     * <br />  <li> track_length: This key-map pair is only valid for track type data sets (an error is thrown otherwise).  No nulls
+     * would be generated for nullable columns.
      * <br /><ul>
      * <br />  <li> min: Minimum possible length for generated series; default is 100 records per series. Must be an integral value
      * within the range [1, 500]. If both min and max are specified, min must be less than or equal to max.
@@ -121,6 +138,23 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      * <br />A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
+
+        /**
+         * If provided, the internal random number generator will be initialized with the given value.  The minimum is 0.  This
+         * allows for the same set of random numbers to be generated across invocation of this endpoint in case the user wants to
+         * repeat the test.  Since {@code options}, is a map of maps, we need an internal map to provide the seed value.  For
+         * example, to pass 100 as the seed value through this parameter, you need something equivalent to: 'options' = {'seed': {
+         * 'value': 100 } }
+         * <br /><ul>
+         * <br />  <li> value: Pass the seed value here.
+         * <br /></ul>
+         */
+        public static final String SEED = "seed";
+
+        /**
+         * Pass the seed value here.
+         */
+        public static final String VALUE = "value";
 
         /**
          * This key indicates that the specifications relayed in the internal map are to be applied to all columns of the records.
@@ -134,7 +168,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
          * both minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within [1, 200].
          * <br />
          * <br />If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types,
-         * then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the responsibility of
+         * then those parameters will not be set; however, an error will not be thrown in such a case. It is the responsibility of
          * the user to use the {@code all} parameter judiciously.
          * <br />  <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is 99999. For
          * point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within [-180, 180] and [-90, 90],
@@ -144,13 +178,16 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
          * both minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to be within [1, 200].
          * <br />
          * <br />If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
-         * types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the
+         * types, then those parameters will not be set; however, an error will not be thrown in such a case. It is the
          * responsibility of the user to use the {@code all} parameter judiciously.
          * <br />  <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the given
          * interval value starting at the minimum value (instead of generating random data). *Any provided max value is
          * disregarded.*  For string-type columns, the interval value is ignored but the string values would be generated following
          * the pattern: 'attrname_creationIndex#', i.e. the column name suffixed with an underscore and a running counter (starting
-         * at 0).
+         * at 0).  No nulls would be generated for nullable columns.
+         * <br />  <li> null_percentage: If specified, then generate the given percentage of the count as nulls for all nullable
+         * columns.  This option will be ignored for non-nullable columns.  The value must be within the range [0, 1.0].  The
+         * default value is 5% (0.05).
          * <br /></ul>
          */
         public static final String ALL = "all";
@@ -171,9 +208,17 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
          * If specified, then generate values for all columns linearly and evenly spaced with the given interval value starting at
          * the minimum value (instead of generating random data). *Any provided max value is disregarded.*  For string-type columns,
          * the interval value is ignored but the string values would be generated following the pattern: 'attrname_creationIndex#',
-         * i.e. the column name suffixed with an underscore and a running counter (starting at 0).
+         * i.e. the column name suffixed with an underscore and a running counter (starting at 0).  No nulls would be generated for
+         * nullable columns.
          */
         public static final String INTERVAL = "interval";
+
+        /**
+         * If specified and if this column is nullable, then generate the given percentage of the count as nulls.  This option will
+         * result in an error if the column is not nullable.  The value must be within the range [0, 1.0].  The default value is 5%
+         * (0.05).
+         */
+        public static final String NULL_PERCENTAGE = "null_percentage";
 
         /**
          * Set the following parameters for the column specified by the key. This overrides any parameter set by {@code all}.
@@ -187,7 +232,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
          * both minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within [1, 200].
          * <br />
          * <br />If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types,
-         * then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the responsibility of
+         * then those parameters will not be set; however, an error will not be thrown in such a case. It is the responsibility of
          * the user to use the {@code all} parameter judiciously.
          * <br />  <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is 99999. For
          * point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within [-180, 180] and [-90, 90],
@@ -197,19 +242,23 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
          * both minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to be within [1, 200].
          * <br />
          * <br />If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
-         * types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the
+         * types, then those parameters will not be set; however, an error will not be thrown in such a case. It is the
          * responsibility of the user to use the {@code all} parameter judiciously.
          * <br />  <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the given
          * interval value starting at the minimum value (instead of generating random data). *Any provided max value is
          * disregarded.*  For string-type columns, the interval value is ignored but the string values would be generated following
          * the pattern: 'attrname_creationIndex#', i.e. the column name suffixed with an underscore and a running counter (starting
-         * at 0).
+         * at 0).  No nulls would be generated for nullable columns.
+         * <br />  <li> null_percentage: If specified and if this column is nullable, then generate the given percentage of the
+         * count as nulls.  This option will result in an error if the column is not nullable.  The value must be within the range
+         * [0, 1.0].  The default value is 5% (0.05).
          * <br /></ul>
          */
         public static final String ATTR_NAME = "attr_name";
 
         /**
-         * This key-map pair is only valid for track type data sets (GPUdb throws an error otherwise).
+         * This key-map pair is only valid for track type data sets (an error is thrown otherwise).  No nulls would be generated for
+         * nullable columns.
          * <br /><ul>
          * <br />  <li> min: Minimum possible length for generated series; default is 100 records per series. Must be an integral
          * value within the range [1, 500]. If both min and max are specified, min must be less than or equal to max.
@@ -248,6 +297,14 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 parameters that can be specified are: *min*, *max*, and *interval*.  These parameters take on different
      *                 meanings depending on the type of the column.  Below follows a more detailed description of the map:
      *                 <ul>
+     *                         <li> seed: If provided, the internal random number generator will be initialized with the given
+     *                 value.  The minimum is 0.  This allows for the same set of random numbers to be generated across invocation
+     *                 of this endpoint in case the user wants to repeat the test.  Since {@code options}, is a map of maps, we need
+     *                 an internal map to provide the seed value.  For example, to pass 100 as the seed value through this
+     *                 parameter, you need something equivalent to: 'options' = {'seed': { 'value': 100 } }
+     *                 <ul>
+     *                         <li> value: Pass the seed value here.
+     *                 </ul>
      *                         <li> all: This key indicates that the specifications relayed in the internal map are to be applied to
      *                 all columns of the records.
      *                 <ul>
@@ -259,8 +316,8 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 If both minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within
      *                 [1, 200].
      *                 If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
-     *                 types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is
-     *                 the responsibility of the user to use the {@code all} parameter judiciously.
+     *                 types, then those parameters will not be set; however, an error will not be thrown in such a case. It is the
+     *                 responsibility of the user to use the {@code all} parameter judiciously.
      *                         <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is
      *                 99999. For point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within
      *                 [-180, 180] and [-90, 90], respectively. The default minimum possible values for these columns in such cases
@@ -269,13 +326,16 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 200). If both minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to
      *                 be within [1, 200].
      *                 If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
-     *                 types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is
-     *                 the responsibility of the user to use the {@code all} parameter judiciously.
+     *                 types, then those parameters will not be set; however, an error will not be thrown in such a case. It is the
+     *                 responsibility of the user to use the {@code all} parameter judiciously.
      *                         <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the
      *                 given interval value starting at the minimum value (instead of generating random data). *Any provided max
      *                 value is disregarded.*  For string-type columns, the interval value is ignored but the string values would be
      *                 generated following the pattern: 'attrname_creationIndex#', i.e. the column name suffixed with an underscore
-     *                 and a running counter (starting at 0).
+     *                 and a running counter (starting at 0).  No nulls would be generated for nullable columns.
+     *                         <li> null_percentage: If specified, then generate the given percentage of the count as nulls for all
+     *                 nullable columns.  This option will be ignored for non-nullable columns.  The value must be within the range
+     *                 [0, 1.0].  The default value is 5% (0.05).
      *                 </ul>
      *                         <li> attr_name: Set the following parameters for the column specified by the key. This overrides any
      *                 parameter set by {@code all}.
@@ -288,8 +348,8 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 If both minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within
      *                 [1, 200].
      *                 If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
-     *                 types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is
-     *                 the responsibility of the user to use the {@code all} parameter judiciously.
+     *                 types, then those parameters will not be set; however, an error will not be thrown in such a case. It is the
+     *                 responsibility of the user to use the {@code all} parameter judiciously.
      *                         <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is
      *                 99999. For point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within
      *                 [-180, 180] and [-90, 90], respectively. The default minimum possible values for these columns in such cases
@@ -298,16 +358,19 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 200). If both minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to
      *                 be within [1, 200].
      *                 If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
-     *                 types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is
-     *                 the responsibility of the user to use the {@code all} parameter judiciously.
+     *                 types, then those parameters will not be set; however, an error will not be thrown in such a case. It is the
+     *                 responsibility of the user to use the {@code all} parameter judiciously.
      *                         <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the
      *                 given interval value starting at the minimum value (instead of generating random data). *Any provided max
      *                 value is disregarded.*  For string-type columns, the interval value is ignored but the string values would be
      *                 generated following the pattern: 'attrname_creationIndex#', i.e. the column name suffixed with an underscore
-     *                 and a running counter (starting at 0).
+     *                 and a running counter (starting at 0).  No nulls would be generated for nullable columns.
+     *                         <li> null_percentage: If specified and if this column is nullable, then generate the given percentage
+     *                 of the count as nulls.  This option will result in an error if the column is not nullable.  The value must be
+     *                 within the range [0, 1.0].  The default value is 5% (0.05).
      *                 </ul>
-     *                         <li> track_length: This key-map pair is only valid for track type data sets (GPUdb throws an error
-     *                 otherwise).
+     *                         <li> track_length: This key-map pair is only valid for track type data sets (an error is thrown
+     *                 otherwise).  No nulls would be generated for nullable columns.
      *                 <ul>
      *                         <li> min: Minimum possible length for generated series; default is 100 records per series. Must be an
      *                 integral value within the range [1, 500]. If both min and max are specified, min must be less than or equal
@@ -378,6 +441,14 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *         specified are: *min*, *max*, and *interval*.  These parameters take on different meanings depending on the type of
      *         the column.  Below follows a more detailed description of the map:
      *         <ul>
+     *                 <li> seed: If provided, the internal random number generator will be initialized with the given value.  The
+     *         minimum is 0.  This allows for the same set of random numbers to be generated across invocation of this endpoint in
+     *         case the user wants to repeat the test.  Since {@code options}, is a map of maps, we need an internal map to provide
+     *         the seed value.  For example, to pass 100 as the seed value through this parameter, you need something equivalent to:
+     *         'options' = {'seed': { 'value': 100 } }
+     *         <ul>
+     *                 <li> value: Pass the seed value here.
+     *         </ul>
      *                 <li> all: This key indicates that the specifications relayed in the internal map are to be applied to all
      *         columns of the records.
      *         <ul>
@@ -388,8 +459,8 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *         For string columns, the minimum length of the randomly generated strings is set to this value (default is 1). If both
      *         minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within [1, 200].
      *         If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types,
-     *         then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the
-     *         responsibility of the user to use the {@code all} parameter judiciously.
+     *         then those parameters will not be set; however, an error will not be thrown in such a case. It is the responsibility
+     *         of the user to use the {@code all} parameter judiciously.
      *                 <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is 99999.
      *         For point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within [-180, 180] and
      *         [-90, 90], respectively. The default minimum possible values for these columns in such cases are 180.0 and 90.0.
@@ -397,13 +468,16 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *         both minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to be within [1,
      *         200].
      *         If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types,
-     *         then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the
-     *         responsibility of the user to use the {@code all} parameter judiciously.
+     *         then those parameters will not be set; however, an error will not be thrown in such a case. It is the responsibility
+     *         of the user to use the {@code all} parameter judiciously.
      *                 <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the given
      *         interval value starting at the minimum value (instead of generating random data). *Any provided max value is
      *         disregarded.*  For string-type columns, the interval value is ignored but the string values would be generated
      *         following the pattern: 'attrname_creationIndex#', i.e. the column name suffixed with an underscore and a running
-     *         counter (starting at 0).
+     *         counter (starting at 0).  No nulls would be generated for nullable columns.
+     *                 <li> null_percentage: If specified, then generate the given percentage of the count as nulls for all nullable
+     *         columns.  This option will be ignored for non-nullable columns.  The value must be within the range [0, 1.0].  The
+     *         default value is 5% (0.05).
      *         </ul>
      *                 <li> attr_name: Set the following parameters for the column specified by the key. This overrides any
      *         parameter set by {@code all}.
@@ -415,8 +489,8 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *         For string columns, the minimum length of the randomly generated strings is set to this value (default is 1). If both
      *         minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within [1, 200].
      *         If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types,
-     *         then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the
-     *         responsibility of the user to use the {@code all} parameter judiciously.
+     *         then those parameters will not be set; however, an error will not be thrown in such a case. It is the responsibility
+     *         of the user to use the {@code all} parameter judiciously.
      *                 <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is 99999.
      *         For point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within [-180, 180] and
      *         [-90, 90], respectively. The default minimum possible values for these columns in such cases are 180.0 and 90.0.
@@ -424,16 +498,19 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *         both minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to be within [1,
      *         200].
      *         If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track types,
-     *         then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is the
-     *         responsibility of the user to use the {@code all} parameter judiciously.
+     *         then those parameters will not be set; however, an error will not be thrown in such a case. It is the responsibility
+     *         of the user to use the {@code all} parameter judiciously.
      *                 <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the given
      *         interval value starting at the minimum value (instead of generating random data). *Any provided max value is
      *         disregarded.*  For string-type columns, the interval value is ignored but the string values would be generated
      *         following the pattern: 'attrname_creationIndex#', i.e. the column name suffixed with an underscore and a running
-     *         counter (starting at 0).
+     *         counter (starting at 0).  No nulls would be generated for nullable columns.
+     *                 <li> null_percentage: If specified and if this column is nullable, then generate the given percentage of the
+     *         count as nulls.  This option will result in an error if the column is not nullable.  The value must be within the
+     *         range [0, 1.0].  The default value is 5% (0.05).
      *         </ul>
-     *                 <li> track_length: This key-map pair is only valid for track type data sets (GPUdb throws an error
-     *         otherwise).
+     *                 <li> track_length: This key-map pair is only valid for track type data sets (an error is thrown otherwise).
+     *         No nulls would be generated for nullable columns.
      *         <ul>
      *                 <li> min: Minimum possible length for generated series; default is 100 records per series. Must be an
      *         integral value within the range [1, 500]. If both min and max are specified, min must be less than or equal to max.
@@ -457,6 +534,14 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 parameters that can be specified are: *min*, *max*, and *interval*.  These parameters take on different
      *                 meanings depending on the type of the column.  Below follows a more detailed description of the map:
      *                 <ul>
+     *                         <li> seed: If provided, the internal random number generator will be initialized with the given
+     *                 value.  The minimum is 0.  This allows for the same set of random numbers to be generated across invocation
+     *                 of this endpoint in case the user wants to repeat the test.  Since {@code options}, is a map of maps, we need
+     *                 an internal map to provide the seed value.  For example, to pass 100 as the seed value through this
+     *                 parameter, you need something equivalent to: 'options' = {'seed': { 'value': 100 } }
+     *                 <ul>
+     *                         <li> value: Pass the seed value here.
+     *                 </ul>
      *                         <li> all: This key indicates that the specifications relayed in the internal map are to be applied to
      *                 all columns of the records.
      *                 <ul>
@@ -468,8 +553,8 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 If both minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within
      *                 [1, 200].
      *                 If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
-     *                 types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is
-     *                 the responsibility of the user to use the {@code all} parameter judiciously.
+     *                 types, then those parameters will not be set; however, an error will not be thrown in such a case. It is the
+     *                 responsibility of the user to use the {@code all} parameter judiciously.
      *                         <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is
      *                 99999. For point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within
      *                 [-180, 180] and [-90, 90], respectively. The default minimum possible values for these columns in such cases
@@ -478,13 +563,16 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 200). If both minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to
      *                 be within [1, 200].
      *                 If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
-     *                 types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is
-     *                 the responsibility of the user to use the {@code all} parameter judiciously.
+     *                 types, then those parameters will not be set; however, an error will not be thrown in such a case. It is the
+     *                 responsibility of the user to use the {@code all} parameter judiciously.
      *                         <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the
      *                 given interval value starting at the minimum value (instead of generating random data). *Any provided max
      *                 value is disregarded.*  For string-type columns, the interval value is ignored but the string values would be
      *                 generated following the pattern: 'attrname_creationIndex#', i.e. the column name suffixed with an underscore
-     *                 and a running counter (starting at 0).
+     *                 and a running counter (starting at 0).  No nulls would be generated for nullable columns.
+     *                         <li> null_percentage: If specified, then generate the given percentage of the count as nulls for all
+     *                 nullable columns.  This option will be ignored for non-nullable columns.  The value must be within the range
+     *                 [0, 1.0].  The default value is 5% (0.05).
      *                 </ul>
      *                         <li> attr_name: Set the following parameters for the column specified by the key. This overrides any
      *                 parameter set by {@code all}.
@@ -497,8 +585,8 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 If both minimum and maximum are provided, minimum must be less than or equal to max. Value needs to be within
      *                 [1, 200].
      *                 If the min is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
-     *                 types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is
-     *                 the responsibility of the user to use the {@code all} parameter judiciously.
+     *                 types, then those parameters will not be set; however, an error will not be thrown in such a case. It is the
+     *                 responsibility of the user to use the {@code all} parameter judiciously.
      *                         <li> max: For numerical columns, the maximum of the generated values is set to this value. Default is
      *                 99999. For point, shape, and track semantic types, max for numeric 'x' and 'y' columns needs to be within
      *                 [-180, 180] and [-90, 90], respectively. The default minimum possible values for these columns in such cases
@@ -507,16 +595,19 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 200). If both minimum and maximum are provided, *max* must be greater than or equal to *min*. Value needs to
      *                 be within [1, 200].
      *                 If the *max* is outside the accepted ranges for strings columns and 'x' and 'y' columns for point/shape/track
-     *                 types, then those parameters will not be set; however, GPUdb will not throw an error in such a case. It is
-     *                 the responsibility of the user to use the {@code all} parameter judiciously.
+     *                 types, then those parameters will not be set; however, an error will not be thrown in such a case. It is the
+     *                 responsibility of the user to use the {@code all} parameter judiciously.
      *                         <li> interval: If specified, then generate values for all columns linearly and evenly spaced with the
      *                 given interval value starting at the minimum value (instead of generating random data). *Any provided max
      *                 value is disregarded.*  For string-type columns, the interval value is ignored but the string values would be
      *                 generated following the pattern: 'attrname_creationIndex#', i.e. the column name suffixed with an underscore
-     *                 and a running counter (starting at 0).
+     *                 and a running counter (starting at 0).  No nulls would be generated for nullable columns.
+     *                         <li> null_percentage: If specified and if this column is nullable, then generate the given percentage
+     *                 of the count as nulls.  This option will result in an error if the column is not nullable.  The value must be
+     *                 within the range [0, 1.0].  The default value is 5% (0.05).
      *                 </ul>
-     *                         <li> track_length: This key-map pair is only valid for track type data sets (GPUdb throws an error
-     *                 otherwise).
+     *                         <li> track_length: This key-map pair is only valid for track type data sets (an error is thrown
+     *                 otherwise).  No nulls would be generated for nullable columns.
      *                 <ul>
      *                         <li> min: Minimum possible length for generated series; default is 100 records per series. Must be an
      *                 integral value within the range [1, 500]. If both min and max are specified, min must be less than or equal

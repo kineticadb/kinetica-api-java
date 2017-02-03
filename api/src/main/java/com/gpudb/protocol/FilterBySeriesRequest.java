@@ -25,7 +25,7 @@ import org.apache.avro.generic.IndexedRecord;
  * Euclidean (flat geometry) or Great Circle (spherical geometry to approximate the Earth's surface distances). The filtered points
  * are stored in a newly created result set. The return value of the function is the number of points in the resultant set (view).
  * <br />
- * <br />This operation is synchronous meaning that GPUdb will not return a response until all the objects are fully available.
+ * <br />This operation is synchronous, meaning that a response will not be returned until all the objects are fully available.
  */
 public class FilterBySeriesRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

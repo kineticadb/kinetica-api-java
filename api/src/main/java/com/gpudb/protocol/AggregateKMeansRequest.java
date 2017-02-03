@@ -98,7 +98,7 @@ public class AggregateKMeansRequest implements IndexedRecord {
     /**
      * Constructs an AggregateKMeansRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be a valid table or collection in GPUdb.
+     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table or collection.
      * @param columnNames  List of column names on which the operation would be performed. If n columns are provided then each of
      *                     the k result points will have n dimensions corresponding to the n columns.
      * @param k  The number of mean points to be determined by the algorithm.
@@ -123,7 +123,7 @@ public class AggregateKMeansRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the operation will be performed. Must be a valid table or collection in GPUdb.
+     * @return Name of the table on which the operation will be performed. Must be an existing table or collection.
      * 
      */
     public String getTableName() {
@@ -132,7 +132,7 @@ public class AggregateKMeansRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be a valid table or collection in GPUdb.
+     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table or collection.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

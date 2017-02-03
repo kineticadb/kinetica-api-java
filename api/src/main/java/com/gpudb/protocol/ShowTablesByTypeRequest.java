@@ -16,9 +16,9 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#showTablesByType(ShowTablesByTypeRequest)}.
  * <br />
- * <br />Gets names of the tables from GPUdb based on the type information. Each table in GPUdb has a particular type. This type is
- * made out of the type label, schema of the table and the semantic type of the table. This function allows a look up of the
- * existing tables based on full or partial type information. The operation is synchronous.
+ * <br />Gets names of the tables whose type matches the given criteria. Each table has a particular type. This type is made out of
+ * the type label, schema of the table, and the semantic type of the table. This function allows a look up of the existing tables
+ * based on full or partial type information. The operation is synchronous.
  */
 public class ShowTablesByTypeRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

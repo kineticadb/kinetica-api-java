@@ -50,16 +50,16 @@ public class AggregateHistogramRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <br /><ul>
-     * <br />  <li> value_column: The name of the column GPUdb will use when calculating the bin values (values are summed).  The
-     * column must be a numerical type (int, double, long, float).
+     * <br />  <li> value_column: The name of the column to use when calculating the bin values (values are summed).  The column
+     * must be a numerical type (int, double, long, float).
      * <br /></ul>
      * <br />A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * The name of the column GPUdb will use when calculating the bin values (values are summed).  The column must be a
-         * numerical type (int, double, long, float).
+         * The name of the column to use when calculating the bin values (values are summed).  The column must be a numerical type
+         * (int, double, long, float).
          */
         public static final String VALUE_COLUMN = "value_column";
 
@@ -86,15 +86,15 @@ public class AggregateHistogramRequest implements IndexedRecord {
     /**
      * Constructs an AggregateHistogramRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be a valid table or collection in GPUdb.
+     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table or collection.
      * @param columnName  Name of a column or an expression of one or more column names over which the histogram will be calculated.
      * @param start  Lower end value of the histogram interval, inclusive.
      * @param end  Upper end value of the histogram interval, inclusive.
      * @param interval  The size of each bin within the start and end parameters.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> value_column: The name of the column GPUdb will use when calculating the bin values (values are
-     *                 summed).  The column must be a numerical type (int, double, long, float).
+     *                         <li> value_column: The name of the column to use when calculating the bin values (values are summed).
+     *                 The column must be a numerical type (int, double, long, float).
      *                 </ul>
      * 
      */
@@ -109,7 +109,7 @@ public class AggregateHistogramRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the operation will be performed. Must be a valid table or collection in GPUdb.
+     * @return Name of the table on which the operation will be performed. Must be an existing table or collection.
      * 
      */
     public String getTableName() {
@@ -118,7 +118,7 @@ public class AggregateHistogramRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be a valid table or collection in GPUdb.
+     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table or collection.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -216,8 +216,8 @@ public class AggregateHistogramRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> value_column: The name of the column GPUdb will use when calculating the bin values (values are summed).
-     *         The column must be a numerical type (int, double, long, float).
+     *                 <li> value_column: The name of the column to use when calculating the bin values (values are summed).  The
+     *         column must be a numerical type (int, double, long, float).
      *         </ul>
      * 
      */
@@ -229,8 +229,8 @@ public class AggregateHistogramRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> value_column: The name of the column GPUdb will use when calculating the bin values (values are
-     *                 summed).  The column must be a numerical type (int, double, long, float).
+     *                         <li> value_column: The name of the column to use when calculating the bin values (values are summed).
+     *                 The column must be a numerical type (int, double, long, float).
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
