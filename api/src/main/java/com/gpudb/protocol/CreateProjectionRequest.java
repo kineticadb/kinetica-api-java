@@ -100,8 +100,8 @@ public class CreateProjectionRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the existing table on which the projection is to be applied.
      * @param projectionName  Name of the projection to be created. Must not be the name of a currently existing table. Cannot be an
-     *                        empty string. Valid characters are 'A-Za-z0-9_-(){}[] .:' (excluding the single quote), with the first
-     *                        character being one of 'A-Za-z0-9_'. The maximum length is 256 characters.
+     *                        empty string. Valid characters are alphanumeric or any of '_-(){}[] .:' (excluding the single quotes),
+     *                        with the first character being alphanumeric or an underscore. The maximum length is 256 characters.
      * @param columnNames  List of columns from {@code tableName} to be included in the projection. Can include derived columns. Can
      *                     be specified as aliased via the syntax '<column_name> as <alias>.
      * @param options  Optional parameters.
@@ -145,8 +145,8 @@ public class CreateProjectionRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the projection to be created. Must not be the name of a currently existing table. Cannot be an empty string.
-     *         Valid characters are 'A-Za-z0-9_-(){}[] .:' (excluding the single quote), with the first character being one of
-     *         'A-Za-z0-9_'. The maximum length is 256 characters.
+     *         Valid characters are alphanumeric or any of '_-(){}[] .:' (excluding the single quotes), with the first character
+     *         being alphanumeric or an underscore. The maximum length is 256 characters.
      * 
      */
     public String getProjectionName() {
@@ -156,8 +156,8 @@ public class CreateProjectionRequest implements IndexedRecord {
     /**
      * 
      * @param projectionName  Name of the projection to be created. Must not be the name of a currently existing table. Cannot be an
-     *                        empty string. Valid characters are 'A-Za-z0-9_-(){}[] .:' (excluding the single quote), with the first
-     *                        character being one of 'A-Za-z0-9_'. The maximum length is 256 characters.
+     *                        empty string. Valid characters are alphanumeric or any of '_-(){}[] .:' (excluding the single quotes),
+     *                        with the first character being alphanumeric or an underscore. The maximum length is 256 characters.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

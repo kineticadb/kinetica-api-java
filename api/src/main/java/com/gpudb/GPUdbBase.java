@@ -324,7 +324,8 @@ public abstract class GPUdbBase {
         }
 
         /**
-         * Gets the URL that the failed request was submitted to.
+         * Gets the URL that the failed request was submitted to, or
+         * {@code null} if multiple failover URLs all failed.
          *
          * @return  the URL
          */
@@ -961,7 +962,7 @@ public abstract class GPUdbBase {
                     url = switchURL(url);
 
                     if (url == originalURL) {
-                        throw ex;
+                        throw new SubmitException(null, ex.getRequest(), ex.getRequestSize(), ex.getMessage(), ex.getCause());
                     }
                 } else {
                     throw ex;
@@ -1136,6 +1137,8 @@ public abstract class GPUdbBase {
                 }
 
                 return;
+            } catch (GPUdbException ex) {
+                throw ex;
             } catch (Exception ex) {
                 if (urls.size() == 1) {
                     throw new GPUdbException(ex.getMessage(), ex);

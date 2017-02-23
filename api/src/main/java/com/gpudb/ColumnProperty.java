@@ -146,6 +146,17 @@ public final class ColumnProperty {
     public static final String SHARD_KEY = "shard_key";
 
     /**
+     * This property indicates that this column is nullable.  However, setting this property is insufficient for making the column
+     * nullable.  The user must declare the type of the column as a union between its regular type and 'null' in the avro schema for
+     * the record type in {@code typeDefinition}.  For example, if a column is of type integer and is nullable, then the entry for
+     * the column in the avro schema must be: ['int', 'null'].
+     * <br />
+     * <br />The Java and C++ APIs have built-in convenience for bypassing setting the avro schema by hand.  For those two
+     * languages, one can use this property as usual and not have to worry about the avro schema for the record.
+     */
+    public static final String NULLABLE = "nullable";
+
+    /**
      * This property indicates that this column is nullable.
      */
     public static final String NULLABLE = "nullable";

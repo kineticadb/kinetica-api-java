@@ -1462,8 +1462,8 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of the existing table on which the projection is to be applied.
      * @param projectionName  Name of the projection to be created. Must not be the name of a currently existing table. Cannot be an
-     *                        empty string. Valid characters are 'A-Za-z0-9_-(){}[] .:' (excluding the single quote), with the first
-     *                        character being one of 'A-Za-z0-9_'. The maximum length is 256 characters.
+     *                        empty string. Valid characters are alphanumeric or any of '_-(){}[] .:' (excluding the single quotes),
+     *                        with the first character being alphanumeric or an underscore. The maximum length is 256 characters.
      * @param columnNames  List of columns from {@code tableName} to be included in the projection. Can include derived columns. Can
      *                     be specified as aliased via the syntax '<column_name> as <alias>.
      * @param options  Optional parameters.
@@ -2807,7 +2807,7 @@ public class GPUdb extends GPUdbBase {
      * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* XOR (specified with -)
      * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. justice - peace - will
      * match records containing "justice" or "peace", but not both
-     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Zero or more char wildcard - (specified with *)
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Zero or more char wildcard - (specified with '*')
      * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex, est*is* - will match any
      * records containing a word that starts with "est" and ends with "sh", such as "establish", "establishable", and
      * "establishment"
@@ -2884,7 +2884,7 @@ public class GPUdb extends GPUdbBase {
      * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* XOR (specified with -)
      * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. justice - peace - will
      * match records containing "justice" or "peace", but not both
-     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Zero or more char wildcard - (specified with *)
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Zero or more char wildcard - (specified with '*')
      * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex, est*is* - will match any
      * records containing a word that starts with "est" and ends with "sh", such as "establish", "establishable", and
      * "establishment"
@@ -4404,8 +4404,8 @@ public class GPUdb extends GPUdbBase {
      * identifier (string), a format (currently supported: 'svg' and 'svg_path'), the data for the symbol, and any additional
      * optional parameter (e.g. color). To have a symbol used for rendering create a table with a string column named 'SYMBOLCODE'
      * (along with 'x' or 'y' for example). Then when the table is rendered (via <a href="../../../rest/wms_rest.html"
-     * target="_top">WMS</a> or {@link GPUdb#visualizeImage(VisualizeImageRequest)}) if the 'dosymbology' parameter is 'true' then
-     * the value of the 'SYMBOLCODE' column is used to pick the symbol displayed for each point.
+     * target="_top">WMS</a>) if the 'dosymbology' parameter is 'true' then the value of the 'SYMBOLCODE' column is used to pick the
+     * symbol displayed for each point.
      * 
      * @param request  Request object containing the parameters for the operation.
      * 
@@ -4429,9 +4429,8 @@ public class GPUdb extends GPUdbBase {
      * identifier (string), a format (currently supported: 'svg' and 'svg_path'), the data for the symbol, and any additional
      * optional parameter (e.g. color). To have a symbol used for rendering create a table with a string column named 'SYMBOLCODE'
      * (along with 'x' or 'y' for example). Then when the table is rendered (via <a href="../../../rest/wms_rest.html"
-     * target="_top">WMS</a> or {@link GPUdb#visualizeImage(List, List, String, String, List, double, double, double, double, int,
-     * int, String, long, Map, Map)}) if the 'dosymbology' parameter is 'true' then the value of the 'SYMBOLCODE' column is used to
-     * pick the symbol displayed for each point.
+     * target="_top">WMS</a>) if the 'dosymbology' parameter is 'true' then the value of the 'SYMBOLCODE' column is used to pick the
+     * symbol displayed for each point.
      * 
      * @param symbolId  The id of the symbol being added. This is the same id that should be in the 'SYMBOLCODE' column for objects
      *                  using this symbol
@@ -5591,15 +5590,16 @@ public class GPUdb extends GPUdbBase {
      * WMS parameters are ignored for this mode.
      * <br />
      * <br />For instance, if a 20 frame video with the session key 'MY-SESSION-KEY' was generated, the first frame could be
-     * retrieved with the URL::
+     * retrieved with the URL:
      * <br />
-     * <br
-     * />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://<hostname/ipAddress>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=0
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="../../../rest/wms_rest.html"
+     * target="_top">http://<hostname/ipAddress>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=0</a>
      * <br />
-     * <br />and the last frame could be retrieved with::
+     * <br />and the last frame could be retrieved with:
      * <br />
-     * <br
-     * />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://<hostname/ipAddress>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=19
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="../../../rest/wms_rest.html"
+     * target="_top">http://<hostname/ipAddress>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=19</a>
+     * <br />
      * <br />The response payload provides, among other things, the number of frames which were created.
      * 
      * @param request  Request object containing the parameters for the operation.
@@ -5633,15 +5633,16 @@ public class GPUdb extends GPUdbBase {
      * WMS parameters are ignored for this mode.
      * <br />
      * <br />For instance, if a 20 frame video with the session key 'MY-SESSION-KEY' was generated, the first frame could be
-     * retrieved with the URL::
+     * retrieved with the URL:
      * <br />
-     * <br
-     * />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://<hostname/ipAddress>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=0
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="../../../rest/wms_rest.html"
+     * target="_top">http://<hostname/ipAddress>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=0</a>
      * <br />
-     * <br />and the last frame could be retrieved with::
+     * <br />and the last frame could be retrieved with:
      * <br />
-     * <br
-     * />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://<hostname/ipAddress>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=19
+     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="../../../rest/wms_rest.html"
+     * target="_top">http://<hostname/ipAddress>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=19</a>
+     * <br />
      * <br />The response payload provides, among other things, the number of frames which were created.
      * 
      * @param tableNames  Names of the tables containing the data for various layers of the resulting video.

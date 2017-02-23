@@ -31,15 +31,16 @@ import org.apache.avro.generic.IndexedRecord;
  * ignored for this mode.
  * <br />
  * <br />For instance, if a 20 frame video with the session key 'MY-SESSION-KEY' was generated, the first frame could be retrieved
- * with the URL::
+ * with the URL:
  * <br />
- * <br
- * />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://<hostname/ipAddress>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=0
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="../../../../rest/wms_rest.html"
+ * target="_top">http://<hostname/ipAddress>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=0</a>
  * <br />
- * <br />and the last frame could be retrieved with::
+ * <br />and the last frame could be retrieved with:
  * <br />
- * <br
- * />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://<hostname/ipAddress>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=19
+ * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="../../../../rest/wms_rest.html"
+ * target="_top">http://<hostname/ipAddress>:9191/wms?REQUEST=GetMap&STYLES=cached&LAYERS=MY-SESSION-KEY&FRAME=19</a>
+ * <br />
  * <br />The response payload provides, among other things, the number of frames which were created.
  */
 public class VisualizeVideoRequest implements IndexedRecord {
