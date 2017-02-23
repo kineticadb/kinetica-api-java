@@ -156,11 +156,6 @@ public final class ColumnProperty {
      */
     public static final String NULLABLE = "nullable";
 
-    /**
-     * This property indicates that this column is nullable.
-     */
-    public static final String NULLABLE = "nullable";
-
     private ColumnProperty() {  }
 }
 
