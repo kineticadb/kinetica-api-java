@@ -41,7 +41,7 @@ public abstract class GPUdbBase {
     public static final class Options {
         private String username;
         private String password;
-        private boolean useSnappy;
+        private boolean useSnappy = true;
         private int threadCount = 1;
         private ExecutorService executor;
         private Map<String, String> httpHeaders = new HashMap<>();
