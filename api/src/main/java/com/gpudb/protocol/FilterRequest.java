@@ -18,7 +18,7 @@ import org.apache.avro.generic.IndexedRecord;
  * <br />
  * <br />Filters data based on the specified expression.  The results are stored in a result set with the given {@code viewName}.
  * <br />
- * <br />For details see <a href="../../../../../concepts/index.html#expressions" target="_top">concepts</a>.
+ * <br />For details see <a href="../../../../../concepts/expressions.html" target="_top">concepts</a>.
  * <br />
  * <br />The response message contains the number of points for which the expression evaluated to be true, which is equivalent to
  * the size of the result view.
@@ -69,7 +69,7 @@ public class FilterRequest implements IndexedRecord {
      * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view .
      * @param expression  The select expression to filter the specified table.  For details see <a
-     *                    href="../../../../../concepts/index.html#expressions" target="_top">concepts</a>.
+     *                    href="../../../../../concepts/expressions.html" target="_top">concepts</a>.
      * @param options  Optional parameters.
      * 
      */
@@ -129,7 +129,7 @@ public class FilterRequest implements IndexedRecord {
     /**
      * 
      * @return The select expression to filter the specified table.  For details see <a
-     *         href="../../../../../concepts/index.html#expressions" target="_top">concepts</a>.
+     *         href="../../../../../concepts/expressions.html" target="_top">concepts</a>.
      * 
      */
     public String getExpression() {
@@ -139,7 +139,7 @@ public class FilterRequest implements IndexedRecord {
     /**
      * 
      * @param expression  The select expression to filter the specified table.  For details see <a
-     *                    href="../../../../../concepts/index.html#expressions" target="_top">concepts</a>.
+     *                    href="../../../../../concepts/expressions.html" target="_top">concepts</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

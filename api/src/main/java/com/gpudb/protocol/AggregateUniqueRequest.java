@@ -24,7 +24,7 @@ import org.apache.avro.generic.IndexedRecord;
  * <br />
  * <br />{"limit":"10","sort_order":"descending"}.
  * <br />
- * <br />The response is returned as a dynamic schema. For details see: <a href="../../../../../concepts/index.html#dynamic-schemas"
+ * <br />The response is returned as a dynamic schema. For details see: <a href="../../../../../concepts/dynamic_schemas.html"
  * target="_top">dynamic schemas documentation</a>. If the 'result_table' option is provided then the results are stored in a table
  * with the name given in the option and the results are not returned in the response.
  */

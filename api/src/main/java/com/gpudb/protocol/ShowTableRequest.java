@@ -59,6 +59,9 @@ public class ShowTableRequest implements IndexedRecord {
      * table or view, {@code show_children} must be {@code false}. If {@code tableName} is empty, then {@code show_children} must be
      * {@code true}. Values: true, false.
      * <br />
+     * <br />  <li> no_error_if_not_exists: If {@code false} will return an error if the provided {@code tableName} does not exist.
+     * If {@code true} then it will return an empty result. Values: true, false.
+     * <br />
      * <br /></ul>
      * <br />A set of string constants for the parameter {@code options}.
      */
@@ -80,6 +83,13 @@ public class ShowTableRequest implements IndexedRecord {
          * <br />
          */
         public static final String SHOW_CHILDREN = "show_children";
+
+        /**
+         * If {@code false} will return an error if the provided {@code tableName} does not exist. If {@code true} then it will
+         * return an empty result. Values: true, false.
+         * <br />
+         */
+        public static final String NO_ERROR_IF_NOT_EXISTS = "no_error_if_not_exists";
 
         private Options() {  }
     }
@@ -109,6 +119,8 @@ public class ShowTableRequest implements IndexedRecord {
      *                 about the children of the collection, and {@code false} will return information about the collection itself.
      *                 If {@code tableName} is a table or view, {@code show_children} must be {@code false}. If {@code tableName} is
      *                 empty, then {@code show_children} must be {@code true}. Values: true, false.
+     *                         <li> no_error_if_not_exists: If {@code false} will return an error if the provided {@code tableName}
+     *                 does not exist. If {@code true} then it will return an empty result. Values: true, false.
      *                 </ul>
      * 
      */
@@ -149,6 +161,8 @@ public class ShowTableRequest implements IndexedRecord {
      *         children of the collection, and {@code false} will return information about the collection itself. If {@code
      *         tableName} is a table or view, {@code show_children} must be {@code false}. If {@code tableName} is empty, then
      *         {@code show_children} must be {@code true}. Values: true, false.
+     *                 <li> no_error_if_not_exists: If {@code false} will return an error if the provided {@code tableName} does not
+     *         exist. If {@code true} then it will return an empty result. Values: true, false.
      *         </ul>
      * 
      */
@@ -166,6 +180,8 @@ public class ShowTableRequest implements IndexedRecord {
      *                 about the children of the collection, and {@code false} will return information about the collection itself.
      *                 If {@code tableName} is a table or view, {@code show_children} must be {@code false}. If {@code tableName} is
      *                 empty, then {@code show_children} must be {@code true}. Values: true, false.
+     *                         <li> no_error_if_not_exists: If {@code false} will return an error if the provided {@code tableName}
+     *                 does not exist. If {@code true} then it will return an empty result. Values: true, false.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

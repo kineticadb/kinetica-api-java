@@ -28,7 +28,7 @@ import org.apache.avro.generic.IndexedRecord;
  * are inserted, deleted or modified) the records or values retrieved may differ between calls (discontiguous or overlap) based on
  * the type of the update.
  * <br />
- * <br />The response is returned as a dynamic schema. For details see: <a href="../../../../../concepts/index.html#dynamic-schemas"
+ * <br />The response is returned as a dynamic schema. For details see: <a href="../../../../../concepts/dynamic_schemas.html"
  * target="_top">dynamic schemas documentation</a>.
  */
 public class GetRecordsByColumnRequest implements IndexedRecord {
@@ -75,7 +75,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * <br />  <li> expression: Optional filter expression to apply to the table.
      * <br />  <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).
      * <br />  <li> sort_order: String indicating how the returned values should be sorted - ascending or descending. Default is
-     * 'ascending'. Ignored if 'sort_by' option is not specified. Values: ascending, descending.
+     * 'ascending'. If sort_order is provided, sort_by has to be provided. Values: ascending, descending.
      * <br />
      * <br /></ul>
      * <br />A set of string constants for the parameter {@code options}.
@@ -93,8 +93,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
         public static final String SORT_BY = "sort_by";
 
         /**
-         * String indicating how the returned values should be sorted - ascending or descending. Default is 'ascending'. Ignored if
-         * 'sort_by' option is not specified. Values: ascending, descending.
+         * String indicating how the returned values should be sorted - ascending or descending. Default is 'ascending'. If
+         * sort_order is provided, sort_by has to be provided. Values: ascending, descending.
          * <br />
          */
         public static final String SORT_ORDER = "sort_order";
@@ -126,7 +126,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * Constructs a GetRecordsByColumnRequest object with the specified parameters.
      * 
      * @param tableName  Name of the table on which this operation will be performed. The table cannot be a parent set.
-     * @param columnNames  The list of column values to retrieve. Columns annotated as store only cannot be retrieved.
+     * @param columnNames  The list of column values to retrieve.
      * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
      *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of results to be returned (if not provided the default is
@@ -138,7 +138,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                         <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
      *                 applied).
      *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
-     *                 descending. Default is 'ascending'. Ignored if 'sort_by' option is not specified. Values: ascending,
+     *                 descending. Default is 'ascending'. If sort_order is provided, sort_by has to be provided. Values: ascending,
      *                 descending.
      *                 </ul>
      * 
@@ -156,7 +156,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * Constructs a GetRecordsByColumnRequest object with the specified parameters.
      * 
      * @param tableName  Name of the table on which this operation will be performed. The table cannot be a parent set.
-     * @param columnNames  The list of column values to retrieve. Columns annotated as store only cannot be retrieved.
+     * @param columnNames  The list of column values to retrieve.
      * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
      *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of results to be returned (if not provided the default is
@@ -169,7 +169,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                         <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
      *                 applied).
      *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
-     *                 descending. Default is 'ascending'. Ignored if 'sort_by' option is not specified. Values: ascending,
+     *                 descending. Default is 'ascending'. If sort_order is provided, sort_by has to be provided. Values: ascending,
      *                 descending.
      *                 </ul>
      * 
@@ -206,7 +206,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The list of column values to retrieve. Columns annotated as store only cannot be retrieved.
+     * @return The list of column values to retrieve.
      * 
      */
     public List<String> getColumnNames() {
@@ -215,7 +215,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnNames  The list of column values to retrieve. Columns annotated as store only cannot be retrieved.
+     * @param columnNames  The list of column values to retrieve.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -301,7 +301,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
      *         applied).
      *                 <li> sort_order: String indicating how the returned values should be sorted - ascending or descending.
-     *         Default is 'ascending'. Ignored if 'sort_by' option is not specified. Values: ascending, descending.
+     *         Default is 'ascending'. If sort_order is provided, sort_by has to be provided. Values: ascending, descending.
      *         </ul>
      * 
      */
@@ -317,7 +317,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                         <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
      *                 applied).
      *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
-     *                 descending. Default is 'ascending'. Ignored if 'sort_by' option is not specified. Values: ascending,
+     *                 descending. Default is 'ascending'. If sort_order is provided, sort_by has to be provided. Values: ascending,
      *                 descending.
      *                 </ul>
      * 

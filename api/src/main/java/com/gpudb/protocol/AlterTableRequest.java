@@ -125,7 +125,7 @@ public class AlterTableRequest implements IndexedRecord {
      * string, null etc).
      * <br />  <li> validate_change_column: Validate the type change before applying column_change request. Default is true (if
      * option is missing). If True, then validate all values. A value too large (or too long) for the new type will prevent any
-     * change. If False, then when a value is too large or long, it will be trancated. Values: true, false.
+     * change. If False, then when a value is too large or long, it will be truncated. Values: true, false.
      * <br />
      * <br />  <li> copy_values_from_column: when adding or changing a column: enter column name - from where to copy values.
      * <br />  <li> rename_column: new column name (using change_column).
@@ -153,7 +153,7 @@ public class AlterTableRequest implements IndexedRecord {
         /**
          * Validate the type change before applying column_change request. Default is true (if option is missing). If True, then
          * validate all values. A value too large (or too long) for the new type will prevent any change. If False, then when a
-         * value is too large or long, it will be trancated. Values: true, false.
+         * value is too large or long, it will be truncated. Values: true, false.
          * <br />
          */
         public static final String VALIDATE_CHANGE_COLUMN = "validate_change_column";
@@ -213,7 +213,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                 comma: int, double, string, null etc).
      *                         <li> validate_change_column: Validate the type change before applying column_change request. Default
      *                 is true (if option is missing). If True, then validate all values. A value too large (or too long) for the
-     *                 new type will prevent any change. If False, then when a value is too large or long, it will be trancated.
+     *                 new type will prevent any change. If False, then when a value is too large or long, it will be truncated.
      *                 Values: true, false.
      *                         <li> copy_values_from_column: when adding or changing a column: enter column name - from where to
      *                 copy values.
@@ -304,7 +304,7 @@ public class AlterTableRequest implements IndexedRecord {
      *         double, string, null etc).
      *                 <li> validate_change_column: Validate the type change before applying column_change request. Default is true
      *         (if option is missing). If True, then validate all values. A value too large (or too long) for the new type will
-     *         prevent any change. If False, then when a value is too large or long, it will be trancated. Values: true, false.
+     *         prevent any change. If False, then when a value is too large or long, it will be truncated. Values: true, false.
      *                 <li> copy_values_from_column: when adding or changing a column: enter column name - from where to copy
      *         values.
      *                 <li> rename_column: new column name (using change_column).
@@ -326,7 +326,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                 comma: int, double, string, null etc).
      *                         <li> validate_change_column: Validate the type change before applying column_change request. Default
      *                 is true (if option is missing). If True, then validate all values. A value too large (or too long) for the
-     *                 new type will prevent any change. If False, then when a value is too large or long, it will be trancated.
+     *                 new type will prevent any change. If False, then when a value is too large or long, it will be truncated.
      *                 Values: true, false.
      *                         <li> copy_values_from_column: when adding or changing a column: enter column name - from where to
      *                 copy values.

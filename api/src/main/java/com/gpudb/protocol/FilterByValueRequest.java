@@ -20,7 +20,8 @@ import org.apache.avro.generic.IndexedRecord;
  * specify either a String or a Double valued column and a desired value for the column on which the filter is performed. The
  * operation is synchronous, meaning that a response will not be returned until all the objects are fully available. The response
  * payload provides the count of the resulting set. A new result view which satisfies the input filter restriction specification is
- * also created with a view name passed in as part of the input payload.
+ * also created with a view name passed in as part of the input payload.  Although this functionality can also be accomplished with
+ * the standard filter function, it is more efficient.
  */
 public class FilterByValueRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -76,7 +77,7 @@ public class FilterByValueRequest implements IndexedRecord {
      * @param isString  Indicates whether the value being searched for is string or numeric.
      * @param value  The value to search for.
      * @param valueStr  The string value to search for.
-     * @param columnName  Name of a column or an expression of one or more columns on which the filter by value would be applied.
+     * @param columnName  Name of a column on which the filter by value would be applied.
      * @param options  Optional parameters.
      * 
      */
@@ -199,7 +200,7 @@ public class FilterByValueRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of a column or an expression of one or more columns on which the filter by value would be applied.
+     * @return Name of a column on which the filter by value would be applied.
      * 
      */
     public String getColumnName() {
@@ -208,7 +209,7 @@ public class FilterByValueRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnName  Name of a column or an expression of one or more columns on which the filter by value would be applied.
+     * @param columnName  Name of a column on which the filter by value would be applied.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -37,9 +37,6 @@ import org.apache.avro.generic.IndexedRecord;
  * specified)
  * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. justice AND tranquility -
  * will match only those records containing both justice and tranquility
- * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* XOR (specified with -)
- * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. justice - peace - will match
- * records containing "justice" or "peace", but not both
  * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Zero or more char wildcard - (specified with '*')
  * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex, est*is* - will match any
  * records containing a word that starts with "est" and ends with "sh", such as "establish", "establishable", and "establishment"

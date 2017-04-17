@@ -368,7 +368,7 @@ public class GPUdb extends GPUdbBase {
      * column_names=['x','y','count(*)'].  To also compute the sum of 'z' over each group, use
      * column_names=['x','y','count(*)','sum(z)']. Available aggregation functions are: 'count(*)', 'sum', 'min', 'max', 'avg',
      * 'mean', 'stddev', 'stddev_pop', 'stddev_samp', 'var', 'var_pop', 'var_samp', 'arg_min', 'arg_max' and 'count_distinct'. The
-     * response is returned as a dynamic schema. For details see: <a href="../../../../concepts/index.html#dynamic-schemas"
+     * response is returned as a dynamic schema. For details see: <a href="../../../../concepts/dynamic_schemas.html"
      * target="_top">dynamic schemas documentation</a>. If the 'result_table' option is provided then the results are stored in a
      * table with the name given in the option and the results are not returned in the response.
      * 
@@ -399,7 +399,7 @@ public class GPUdb extends GPUdbBase {
      * column_names=['x','y','count(*)'].  To also compute the sum of 'z' over each group, use
      * column_names=['x','y','count(*)','sum(z)']. Available aggregation functions are: 'count(*)', 'sum', 'min', 'max', 'avg',
      * 'mean', 'stddev', 'stddev_pop', 'stddev_samp', 'var', 'var_pop', 'var_samp', 'arg_min', 'arg_max' and 'count_distinct'. The
-     * response is returned as a dynamic schema. For details see: <a href="../../../../concepts/index.html#dynamic-schemas"
+     * response is returned as a dynamic schema. For details see: <a href="../../../../concepts/dynamic_schemas.html"
      * target="_top">dynamic schemas documentation</a>. If the 'result_table' option is provided then the results are stored in a
      * table with the name given in the option and the results are not returned in the response.
      * 
@@ -434,7 +434,7 @@ public class GPUdb extends GPUdbBase {
      * column_names=['x','y','count(*)'].  To also compute the sum of 'z' over each group, use
      * column_names=['x','y','count(*)','sum(z)']. Available aggregation functions are: 'count(*)', 'sum', 'min', 'max', 'avg',
      * 'mean', 'stddev', 'stddev_pop', 'stddev_samp', 'var', 'var_pop', 'var_samp', 'arg_min', 'arg_max' and 'count_distinct'. The
-     * response is returned as a dynamic schema. For details see: <a href="../../../../concepts/index.html#dynamic-schemas"
+     * response is returned as a dynamic schema. For details see: <a href="../../../../concepts/dynamic_schemas.html"
      * target="_top">dynamic schemas documentation</a>. If the 'result_table' option is provided then the results are stored in a
      * table with the name given in the option and the results are not returned in the response.
      * 
@@ -818,10 +818,9 @@ public class GPUdb extends GPUdbBase {
      * <br />
      * <br />{"limit":"10","sort_order":"descending"}.
      * <br />
-     * <br />The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/index.html#dynamic-schemas" target="_top">dynamic schemas documentation</a>. If the 'result_table'
-     * option is provided then the results are stored in a table with the name given in the option and the results are not returned
-     * in the response.
+     * <br />The response is returned as a dynamic schema. For details see: <a href="../../../../concepts/dynamic_schemas.html"
+     * target="_top">dynamic schemas documentation</a>. If the 'result_table' option is provided then the results are stored in a
+     * table with the name given in the option and the results are not returned in the response.
      * 
      * @param request  Request object containing the parameters for the operation.
      * 
@@ -849,10 +848,9 @@ public class GPUdb extends GPUdbBase {
      * <br />
      * <br />{"limit":"10","sort_order":"descending"}.
      * <br />
-     * <br />The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/index.html#dynamic-schemas" target="_top">dynamic schemas documentation</a>. If the 'result_table'
-     * option is provided then the results are stored in a table with the name given in the option and the results are not returned
-     * in the response.
+     * <br />The response is returned as a dynamic schema. For details see: <a href="../../../../concepts/dynamic_schemas.html"
+     * target="_top">dynamic schemas documentation</a>. If the 'result_table' option is provided then the results are stored in a
+     * table with the name given in the option and the results are not returned in the response.
      * 
      * @param request  Request object containing the parameters for the operation.
      * 
@@ -884,10 +882,9 @@ public class GPUdb extends GPUdbBase {
      * <br />
      * <br />{"limit":"10","sort_order":"descending"}.
      * <br />
-     * <br />The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/index.html#dynamic-schemas" target="_top">dynamic schemas documentation</a>. If the 'result_table'
-     * option is provided then the results are stored in a table with the name given in the option and the results are not returned
-     * in the response.
+     * <br />The response is returned as a dynamic schema. For details see: <a href="../../../../concepts/dynamic_schemas.html"
+     * target="_top">dynamic schemas documentation</a>. If the 'result_table' option is provided then the results are stored in a
+     * table with the name given in the option and the results are not returned in the response.
      * 
      * @param tableName  Name of the table on which the operation will be performed. Must be an existing table.
      * @param columnName  Name of the column or an expression containing one or more column names on which the unique function would
@@ -1065,7 +1062,7 @@ public class GPUdb extends GPUdbBase {
      *                 comma: int, double, string, null etc).
      *                         <li> validate_change_column: Validate the type change before applying column_change request. Default
      *                 is true (if option is missing). If True, then validate all values. A value too large (or too long) for the
-     *                 new type will prevent any change. If False, then when a value is too large or long, it will be trancated.
+     *                 new type will prevent any change. If False, then when a value is too large or long, it will be truncated.
      *                 Values: true, false.
      *                         <li> copy_values_from_column: when adding or changing a column: enter column name - from where to
      *                 copy values.
@@ -1316,7 +1313,7 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a table that is the result of a SQL JOIN.  For details see: <a href="../../../../concepts/index.html#joins"
+     * Creates a table that is the result of a SQL JOIN.  For details see: <a href="../../../../concepts/joins.html"
      * target="_top">join concept documentation</a>.
      * 
      * @param request  Request object containing the parameters for the operation.
@@ -1337,16 +1334,18 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a table that is the result of a SQL JOIN.  For details see: <a href="../../../../concepts/index.html#joins"
+     * Creates a table that is the result of a SQL JOIN.  For details see: <a href="../../../../concepts/joins.html"
      * target="_top">join concept documentation</a>.
      * 
      * @param joinTableName  Name of the join table to be created. Must not be the name of a currently existing table or join table.
      *                       Cannot be an empty string.
      * @param tableNames  The list of table names making up the joined set.  Corresponds to a SQL statement FROM clause
-     * @param columnNames  The list of columns to be selected from the input table names. Empty list says to select all the column
-     *                     names.  Empty list is the default.
+     * @param columnNames  List of columns to be included in the join table. Can be the column_names from the member sets if unique
+     *                     or can be prefixed by the table id as <id>.<column_name> where <id> is the table name or alias. Can be
+     *                     specified as aliased via the syntax '<column_name> as <alias>. Can use wild cards as '*' (include all
+     *                     columns), or <id>.* (include all columns from table with name or alias <id>)
      * @param expressions  An optional list of expressions to combine and filter the joined set.  Corresponds to a SQL statement
-     *                     WHERE clause. For details see: <a href="../../../../concepts/index.html#expressions"
+     *                     WHERE clause. For details see: <a href="../../../../concepts/expressions.html"
      *                     target="_top">expressions</a>.
      * @param options  Optional parameters.
      *                 <ul>
@@ -1380,8 +1379,8 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Creates an instance (proc) of the user-defined function (UDF) specified by the given command, options, and files, and makes
-     * it available for execution.  For details on UDFs, see: <a href="../../../../concepts/index.html#user-defined-functions"
-     * target="_top">User-Defined Functions</a>
+     * it available for execution.  For details on UDFs, see: <a href="../../../../concepts/udf.html" target="_top">User-Defined
+     * Functions</a>
      * 
      * @param request  Request object containing the parameters for the operation.
      * 
@@ -1402,8 +1401,8 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Creates an instance (proc) of the user-defined function (UDF) specified by the given command, options, and files, and makes
-     * it available for execution.  For details on UDFs, see: <a href="../../../../concepts/index.html#user-defined-functions"
-     * target="_top">User-Defined Functions</a>
+     * it available for execution.  For details on UDFs, see: <a href="../../../../concepts/udf.html" target="_top">User-Defined
+     * Functions</a>
      * 
      * @param procName  Name of the proc to be created. Must not be the name of a currently existing proc.
      * @param executionMode  The execution mode of the proc. Values: distributed, nondistributed.
@@ -2298,7 +2297,7 @@ public class GPUdb extends GPUdbBase {
     /**
      * Filters data based on the specified expression.  The results are stored in a result set with the given {@code viewName}.
      * <br />
-     * <br />For details see <a href="../../../../concepts/index.html#expressions" target="_top">concepts</a>.
+     * <br />For details see <a href="../../../../concepts/expressions.html" target="_top">concepts</a>.
      * <br />
      * <br />The response message contains the number of points for which the expression evaluated to be true, which is equivalent
      * to the size of the result view.
@@ -2323,7 +2322,7 @@ public class GPUdb extends GPUdbBase {
     /**
      * Filters data based on the specified expression.  The results are stored in a result set with the given {@code viewName}.
      * <br />
-     * <br />For details see <a href="../../../../concepts/index.html#expressions" target="_top">concepts</a>.
+     * <br />For details see <a href="../../../../concepts/expressions.html" target="_top">concepts</a>.
      * <br />
      * <br />The response message contains the number of points for which the expression evaluated to be true, which is equivalent
      * to the size of the result view.
@@ -2333,7 +2332,7 @@ public class GPUdb extends GPUdbBase {
      * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view .
      * @param expression  The select expression to filter the specified table.  For details see <a
-     *                    href="../../../../concepts/index.html#expressions" target="_top">concepts</a>.
+     *                    href="../../../../concepts/expressions.html" target="_top">concepts</a>.
      * @param options  Optional parameters.
      * 
      * @return Response object containing the results of the operation.
@@ -2653,7 +2652,7 @@ public class GPUdb extends GPUdbBase {
      * Calculates which objects from a table have a column that is within the given bounds. An object from the table identified by
      * {@code tableName} is added to the view {@code viewName} if its column is within [{@code lowerBound}, {@code upperBound}]
      * (inclusive). The operation is synchronous. The response provides a count of the number of objects which passed the bound
-     * filter.
+     * filter.  Although this functionality can also be accomplished with the standard filter function, it is more efficient.
      * <br />
      * <br />For track objects, the count reflects how many points fall within the given bounds (which may not include all the track
      * points of any given track).
@@ -2679,7 +2678,7 @@ public class GPUdb extends GPUdbBase {
      * Calculates which objects from a table have a column that is within the given bounds. An object from the table identified by
      * {@code tableName} is added to the view {@code viewName} if its column is within [{@code lowerBound}, {@code upperBound}]
      * (inclusive). The operation is synchronous. The response provides a count of the number of objects which passed the bound
-     * filter.
+     * filter.  Although this functionality can also be accomplished with the standard filter function, it is more efficient.
      * <br />
      * <br />For track objects, the count reflects how many points fall within the given bounds (which may not include all the track
      * points of any given track).
@@ -2687,7 +2686,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table on which the filter by range operation will be performed.  Must be an existing table.
      * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
      *                  collection, table or view.
-     * @param columnName  Name of a column or an expression of one or more columns on which the operation would be applied.
+     * @param columnName  Name of a column on which the operation would be applied.
      * @param lowerBound  Value of the lower bound (inclusive).
      * @param upperBound  Value of the upper bound (inclusive).
      * @param options  Optional parameters.
@@ -2804,9 +2803,6 @@ public class GPUdb extends GPUdbBase {
      * operator specified)
      * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. justice AND tranquility -
      * will match only those records containing both justice and tranquility
-     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* XOR (specified with -)
-     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. justice - peace - will
-     * match records containing "justice" or "peace", but not both
      * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Zero or more char wildcard - (specified with '*')
      * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex, est*is* - will match any
      * records containing a word that starts with "est" and ends with "sh", such as "establish", "establishable", and
@@ -2881,9 +2877,6 @@ public class GPUdb extends GPUdbBase {
      * operator specified)
      * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. justice AND tranquility -
      * will match only those records containing both justice and tranquility
-     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* XOR (specified with -)
-     * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex. justice - peace - will
-     * match records containing "justice" or "peace", but not both
      * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Zero or more char wildcard - (specified with '*')
      * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex, est*is* - will match any
      * records containing a word that starts with "est" and ends with "sh", such as "establish", "establishable", and
@@ -3025,7 +3018,8 @@ public class GPUdb extends GPUdbBase {
      * specify either a String or a Double valued column and a desired value for the column on which the filter is performed. The
      * operation is synchronous, meaning that a response will not be returned until all the objects are fully available. The
      * response payload provides the count of the resulting set. A new result view which satisfies the input filter restriction
-     * specification is also created with a view name passed in as part of the input payload.
+     * specification is also created with a view name passed in as part of the input payload.  Although this functionality can also
+     * be accomplished with the standard filter function, it is more efficient.
      * 
      * @param request  Request object containing the parameters for the operation.
      * 
@@ -3049,7 +3043,8 @@ public class GPUdb extends GPUdbBase {
      * specify either a String or a Double valued column and a desired value for the column on which the filter is performed. The
      * operation is synchronous, meaning that a response will not be returned until all the objects are fully available. The
      * response payload provides the count of the resulting set. A new result view which satisfies the input filter restriction
-     * specification is also created with a view name passed in as part of the input payload.
+     * specification is also created with a view name passed in as part of the input payload.  Although this functionality can also
+     * be accomplished with the standard filter function, it is more efficient.
      * 
      * @param tableName  Name of an existing table on which to perform the calculation.
      * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
@@ -3057,7 +3052,7 @@ public class GPUdb extends GPUdbBase {
      * @param isString  Indicates whether the value being searched for is string or numeric.
      * @param value  The value to search for.
      * @param valueStr  The string value to search for.
-     * @param columnName  Name of a column or an expression of one or more columns on which the filter by value would be applied.
+     * @param columnName  Name of a column on which the filter by value would be applied.
      * @param options  Optional parameters.
      * 
      * @return Response object containing the results of the operation.
@@ -3168,7 +3163,7 @@ public class GPUdb extends GPUdbBase {
      *                         <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
      *                 applied).
      *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
-     *                 descending. Ignored if 'sort_by' option is not specified. Values: ascending, descending.
+     *                 descending. If sort_order is provided, sort_by has to be provided. Values: ascending, descending.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -3256,7 +3251,7 @@ public class GPUdb extends GPUdbBase {
      *                         <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
      *                 applied).
      *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
-     *                 descending. Ignored if 'sort_by' option is not specified. Values: ascending, descending.
+     *                 descending. If sort_order is provided, sort_by has to be provided. Values: ascending, descending.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -3293,8 +3288,8 @@ public class GPUdb extends GPUdbBase {
      * (records are inserted, deleted or modified) the records or values retrieved may differ between calls (discontiguous or
      * overlap) based on the type of the update.
      * <br />
-     * <br />The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/index.html#dynamic-schemas" target="_top">dynamic schemas documentation</a>.
+     * <br />The response is returned as a dynamic schema. For details see: <a href="../../../../concepts/dynamic_schemas.html"
+     * target="_top">dynamic schemas documentation</a>.
      * 
      * @param request  Request object containing the parameters for the operation.
      * 
@@ -3324,8 +3319,8 @@ public class GPUdb extends GPUdbBase {
      * (records are inserted, deleted or modified) the records or values retrieved may differ between calls (discontiguous or
      * overlap) based on the type of the update.
      * <br />
-     * <br />The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/index.html#dynamic-schemas" target="_top">dynamic schemas documentation</a>.
+     * <br />The response is returned as a dynamic schema. For details see: <a href="../../../../concepts/dynamic_schemas.html"
+     * target="_top">dynamic schemas documentation</a>.
      * 
      * @param request  Request object containing the parameters for the operation.
      * 
@@ -3360,11 +3355,11 @@ public class GPUdb extends GPUdbBase {
      * (records are inserted, deleted or modified) the records or values retrieved may differ between calls (discontiguous or
      * overlap) based on the type of the update.
      * <br />
-     * <br />The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/index.html#dynamic-schemas" target="_top">dynamic schemas documentation</a>.
+     * <br />The response is returned as a dynamic schema. For details see: <a href="../../../../concepts/dynamic_schemas.html"
+     * target="_top">dynamic schemas documentation</a>.
      * 
      * @param tableName  Name of the table on which this operation will be performed. The table cannot be a parent set.
-     * @param columnNames  The list of column values to retrieve. Columns annotated as store only cannot be retrieved.
+     * @param columnNames  The list of column values to retrieve.
      * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
      *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of results to be returned (if not provided the default is
@@ -3376,7 +3371,7 @@ public class GPUdb extends GPUdbBase {
      *                         <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
      *                 applied).
      *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
-     *                 descending. Default is 'ascending'. Ignored if 'sort_by' option is not specified. Values: ascending,
+     *                 descending. Default is 'ascending'. If sort_order is provided, sort_by has to be provided. Values: ascending,
      *                 descending.
      *                 </ul>
      * 
@@ -5025,6 +5020,8 @@ public class GPUdb extends GPUdbBase {
      *                 about the children of the collection, and {@code false} will return information about the collection itself.
      *                 If {@code tableName} is a table or view, {@code show_children} must be {@code false}. If {@code tableName} is
      *                 empty, then {@code show_children} must be {@code true}. Values: true, false.
+     *                         <li> no_error_if_not_exists: If {@code false} will return an error if the provided {@code tableName}
+     *                 does not exist. If {@code true} then it will return an empty result. Values: true, false.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.

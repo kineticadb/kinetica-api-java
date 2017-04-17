@@ -20,8 +20,8 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link com.gpudb.GPUdb#createProc(CreateProcRequest)}.
  * <br />
  * <br />Creates an instance (proc) of the user-defined function (UDF) specified by the given command, options, and files, and makes
- * it available for execution.  For details on UDFs, see: <a href="../../../../../concepts/index.html#user-defined-functions"
- * target="_top">User-Defined Functions</a>
+ * it available for execution.  For details on UDFs, see: <a href="../../../../../concepts/udf.html" target="_top">User-Defined
+ * Functions</a>
  */
 public class CreateProcRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

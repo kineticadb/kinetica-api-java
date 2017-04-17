@@ -68,8 +68,8 @@ public class GetRecordsRequest implements IndexedRecord {
      * <br /><ul>
      * <br />  <li> expression: Optional filter expression to apply to the table.
      * <br />  <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is applied).
-     * <br />  <li> sort_order: String indicating how the returned values should be sorted - ascending or descending. Ignored if
-     * 'sort_by' option is not specified. Values: ascending, descending.
+     * <br />  <li> sort_order: String indicating how the returned values should be sorted - ascending or descending. If sort_order
+     * is provided, sort_by has to be provided. Values: ascending, descending.
      * <br />
      * <br /></ul>
      * <br />A set of string constants for the parameter {@code options}.
@@ -87,8 +87,8 @@ public class GetRecordsRequest implements IndexedRecord {
         public static final String SORT_BY = "sort_by";
 
         /**
-         * String indicating how the returned values should be sorted - ascending or descending. Ignored if 'sort_by' option is not
-         * specified. Values: ascending, descending.
+         * String indicating how the returned values should be sorted - ascending or descending. If sort_order is provided, sort_by
+         * has to be provided. Values: ascending, descending.
          * <br />
          */
         public static final String SORT_ORDER = "sort_order";
@@ -128,7 +128,7 @@ public class GetRecordsRequest implements IndexedRecord {
      *                         <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
      *                 applied).
      *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
-     *                 descending. Ignored if 'sort_by' option is not specified. Values: ascending, descending.
+     *                 descending. If sort_order is provided, sort_by has to be provided. Values: ascending, descending.
      *                 </ul>
      * 
      */
@@ -155,7 +155,7 @@ public class GetRecordsRequest implements IndexedRecord {
      *                         <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
      *                 applied).
      *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
-     *                 descending. Ignored if 'sort_by' option is not specified. Values: ascending, descending.
+     *                 descending. If sort_order is provided, sort_by has to be provided. Values: ascending, descending.
      *                 </ul>
      * 
      */
@@ -262,8 +262,8 @@ public class GetRecordsRequest implements IndexedRecord {
      *                 <li> expression: Optional filter expression to apply to the table.
      *                 <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
      *         applied).
-     *                 <li> sort_order: String indicating how the returned values should be sorted - ascending or descending.
-     *         Ignored if 'sort_by' option is not specified. Values: ascending, descending.
+     *                 <li> sort_order: String indicating how the returned values should be sorted - ascending or descending. If
+     *         sort_order is provided, sort_by has to be provided. Values: ascending, descending.
      *         </ul>
      * 
      */
@@ -279,7 +279,7 @@ public class GetRecordsRequest implements IndexedRecord {
      *                         <li> sort_by: Optional column that the data should be sorted by. Empty by default (i.e. no sorting is
      *                 applied).
      *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
-     *                 descending. Ignored if 'sort_by' option is not specified. Values: ascending, descending.
+     *                 descending. If sort_order is provided, sort_by has to be provided. Values: ascending, descending.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
