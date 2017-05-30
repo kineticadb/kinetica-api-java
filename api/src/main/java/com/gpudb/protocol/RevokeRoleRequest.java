@@ -14,9 +14,10 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#revokeRole(RevokeRoleRequest)}.
- * <br />
- * <br />Revokes membership in a role from a user or role.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#revokeRole(RevokeRoleRequest)}.
+ * <p>
+ * Revokes membership in a role from a user or role.
  */
 public class RevokeRoleRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -30,7 +31,8 @@ public class RevokeRoleRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -56,8 +58,10 @@ public class RevokeRoleRequest implements IndexedRecord {
     /**
      * Constructs a RevokeRoleRequest object with the specified parameters.
      * 
-     * @param role  Name of the role in which membership will be revoked. Must be an existing role.
-     * @param member  Name of the user or role that will be revoked membership in {@code role}. Must be an existing user or role.
+     * @param role  Name of the role in which membership will be revoked. Must
+     *              be an existing role.
+     * @param member  Name of the user or role that will be revoked membership
+     *                in {@code role}. Must be an existing user or role.
      * @param options  Optional parameters.
      * 
      */
@@ -69,7 +73,8 @@ public class RevokeRoleRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the role in which membership will be revoked. Must be an existing role.
+     * @return Name of the role in which membership will be revoked. Must be an
+     *         existing role.
      * 
      */
     public String getRole() {
@@ -78,7 +83,8 @@ public class RevokeRoleRequest implements IndexedRecord {
 
     /**
      * 
-     * @param role  Name of the role in which membership will be revoked. Must be an existing role.
+     * @param role  Name of the role in which membership will be revoked. Must
+     *              be an existing role.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -90,7 +96,8 @@ public class RevokeRoleRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the user or role that will be revoked membership in {@code role}. Must be an existing user or role.
+     * @return Name of the user or role that will be revoked membership in
+     *         {@code role}. Must be an existing user or role.
      * 
      */
     public String getMember() {
@@ -99,7 +106,8 @@ public class RevokeRoleRequest implements IndexedRecord {
 
     /**
      * 
-     * @param member  Name of the user or role that will be revoked membership in {@code role}. Must be an existing user or role.
+     * @param member  Name of the user or role that will be revoked membership
+     *                in {@code role}. Must be an existing user or role.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -131,7 +139,8 @@ public class RevokeRoleRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -142,7 +151,8 @@ public class RevokeRoleRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -169,7 +179,8 @@ public class RevokeRoleRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

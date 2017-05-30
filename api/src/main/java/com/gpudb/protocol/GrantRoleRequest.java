@@ -15,8 +15,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#grantRole(GrantRoleRequest)}.
- * <br />
- * <br />Grants membership in a role to a user or role.
+ * <p>
+ * Grants membership in a role to a user or role.
  */
 public class GrantRoleRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -30,7 +30,8 @@ public class GrantRoleRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -56,8 +57,10 @@ public class GrantRoleRequest implements IndexedRecord {
     /**
      * Constructs a GrantRoleRequest object with the specified parameters.
      * 
-     * @param role  Name of the role in which membership will be granted. Must be an existing role.
-     * @param member  Name of the user or role that will be granted membership in {@code role}. Must be an existing user or role.
+     * @param role  Name of the role in which membership will be granted. Must
+     *              be an existing role.
+     * @param member  Name of the user or role that will be granted membership
+     *                in {@code role}. Must be an existing user or role.
      * @param options  Optional parameters.
      * 
      */
@@ -69,7 +72,8 @@ public class GrantRoleRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the role in which membership will be granted. Must be an existing role.
+     * @return Name of the role in which membership will be granted. Must be an
+     *         existing role.
      * 
      */
     public String getRole() {
@@ -78,7 +82,8 @@ public class GrantRoleRequest implements IndexedRecord {
 
     /**
      * 
-     * @param role  Name of the role in which membership will be granted. Must be an existing role.
+     * @param role  Name of the role in which membership will be granted. Must
+     *              be an existing role.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -90,7 +95,8 @@ public class GrantRoleRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the user or role that will be granted membership in {@code role}. Must be an existing user or role.
+     * @return Name of the user or role that will be granted membership in
+     *         {@code role}. Must be an existing user or role.
      * 
      */
     public String getMember() {
@@ -99,7 +105,8 @@ public class GrantRoleRequest implements IndexedRecord {
 
     /**
      * 
-     * @param member  Name of the user or role that will be granted membership in {@code role}. Must be an existing user or role.
+     * @param member  Name of the user or role that will be granted membership
+     *                in {@code role}. Must be an existing user or role.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -131,7 +138,8 @@ public class GrantRoleRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -142,7 +150,8 @@ public class GrantRoleRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -169,7 +178,8 @@ public class GrantRoleRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

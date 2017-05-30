@@ -15,18 +15,23 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#showTable(ShowTableRequest)}.
- * <br />
- * <br />Retrieves detailed information about a table, view, or collection, specified in {@code tableName}. If the supplied {@code
- * tableName} is a collection, the call can return information about either the collection itself or the tables and views it
- * contains. If {@code tableName} is empty, information about all collections and top-level tables and views can be returned.
- * <br />
- * <br />If the option {@code get_sizes} is set to {@code true}, then the sizes (objects and elements) of each table are returned
- * (in {@code sizes} and {@code fullSizes}), along with the total number of objects in the requested table (in {@code totalSize} and
- * {@code totalFullSize}).
- * <br />
- * <br />For a collection, setting the {@code show_children} option to {@code false} returns only information about the collection
- * itself; setting {@code show_children} to {@code true} returns a list of tables and views contained in the collection, along with
- * their description, type id, schema, type label, type properties, and additional information including TTL.
+ * <p>
+ * Retrieves detailed information about a table, view, or collection, specified
+ * in {@code tableName}. If the supplied {@code tableName} is a collection, the
+ * call can return information about either the collection itself or the tables
+ * and views it contains. If {@code tableName} is empty, information about all
+ * collections and top-level tables and views can be returned.
+ * <p>
+ * If the option {@code get_sizes} is set to {@code true}, then the sizes
+ * (objects and elements) of each table are returned (in {@code sizes} and
+ * {@code fullSizes}), along with the total number of objects in the requested
+ * table (in {@code totalSize} and {@code totalFullSize}).
+ * <p>
+ * For a collection, setting the {@code show_children} option to {@code false}
+ * returns only information about the collection itself; setting {@code
+ * show_children} to {@code true} returns a list of tables and views contained
+ * in the collection, along with their description, type id, schema, type
+ * label, type properties, and additional information including TTL.
  */
 public class ShowTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -39,7 +44,8 @@ public class ShowTableRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -51,43 +57,48 @@ public class ShowTableRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * <br /><ul>
-     * <br />  <li> get_sizes: If {@code true} then the table sizes will be returned; blank, otherwise. Values: true, false.
-     * <br />
-     * <br />  <li> show_children: If {@code tableName} is a collection, then {@code true} will return information about the
-     * children of the collection, and {@code false} will return information about the collection itself. If {@code tableName} is a
-     * table or view, {@code show_children} must be {@code false}. If {@code tableName} is empty, then {@code show_children} must be
-     * {@code true}. Values: true, false.
-     * <br />
-     * <br />  <li> no_error_if_not_exists: If {@code false} will return an error if the provided {@code tableName} does not exist.
-     * If {@code true} then it will return an empty result. Values: true, false.
-     * <br />
-     * <br /></ul>
-     * <br />A set of string constants for the parameter {@code options}.
+     * <ul>
+     *         <li> get_sizes: If {@code true} then the table sizes will be
+     * returned; blank, otherwise. Values: true, false.
+     * <p>
+     *         <li> show_children: If {@code tableName} is a collection, then
+     * {@code true} will return information about the children of the
+     * collection, and {@code false} will return information about the
+     * collection itself. If {@code tableName} is a table or view, {@code
+     * show_children} must be {@code false}. If {@code tableName} is empty,
+     * then {@code show_children} must be {@code true}. Values: true, false.
+     * <p>
+     *         <li> no_error_if_not_exists: If {@code false} will return an
+     * error if the provided {@code tableName} does not exist. If {@code true}
+     * then it will return an empty result. Values: true, false.
+     * <p>
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * If {@code true} then the table sizes will be returned; blank, otherwise. Values: true, false.
-         * <br />
+         * If {@code true} then the table sizes will be returned; blank,
+         * otherwise. Values: true, false.
          */
         public static final String GET_SIZES = "get_sizes";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
 
         /**
-         * If {@code tableName} is a collection, then {@code true} will return information about the children of the collection, and
-         * {@code false} will return information about the collection itself. If {@code tableName} is a table or view, {@code
-         * show_children} must be {@code false}. If {@code tableName} is empty, then {@code show_children} must be {@code true}.
-         * Values: true, false.
-         * <br />
+         * If {@code tableName} is a collection, then {@code true} will return
+         * information about the children of the collection, and {@code false}
+         * will return information about the collection itself. If {@code
+         * tableName} is a table or view, {@code show_children} must be {@code
+         * false}. If {@code tableName} is empty, then {@code show_children}
+         * must be {@code true}. Values: true, false.
          */
         public static final String SHOW_CHILDREN = "show_children";
 
         /**
-         * If {@code false} will return an error if the provided {@code tableName} does not exist. If {@code true} then it will
-         * return an empty result. Values: true, false.
-         * <br />
+         * If {@code false} will return an error if the provided {@code
+         * tableName} does not exist. If {@code true} then it will return an
+         * empty result. Values: true, false.
          */
         public static final String NO_ERROR_IF_NOT_EXISTS = "no_error_if_not_exists";
 
@@ -109,18 +120,27 @@ public class ShowTableRequest implements IndexedRecord {
     /**
      * Constructs a ShowTableRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table for which to retrieve the information. If blank, then information about all collections
-     *                   and top-level tables and views is returned.
+     * @param tableName  Name of the table for which to retrieve the
+     *                   information. If blank, then information about all
+     *                   collections and top-level tables and views is
+     *                   returned.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> get_sizes: If {@code true} then the table sizes will be returned; blank, otherwise. Values:
-     *                 true, false.
-     *                         <li> show_children: If {@code tableName} is a collection, then {@code true} will return information
-     *                 about the children of the collection, and {@code false} will return information about the collection itself.
-     *                 If {@code tableName} is a table or view, {@code show_children} must be {@code false}. If {@code tableName} is
-     *                 empty, then {@code show_children} must be {@code true}. Values: true, false.
-     *                         <li> no_error_if_not_exists: If {@code false} will return an error if the provided {@code tableName}
-     *                 does not exist. If {@code true} then it will return an empty result. Values: true, false.
+     *                         <li> get_sizes: If {@code true} then the table
+     *                 sizes will be returned; blank, otherwise. Values: true,
+     *                 false.
+     *                         <li> show_children: If {@code tableName} is a
+     *                 collection, then {@code true} will return information
+     *                 about the children of the collection, and {@code false}
+     *                 will return information about the collection itself. If
+     *                 {@code tableName} is a table or view, {@code
+     *                 show_children} must be {@code false}. If {@code
+     *                 tableName} is empty, then {@code show_children} must be
+     *                 {@code true}. Values: true, false.
+     *                         <li> no_error_if_not_exists: If {@code false}
+     *                 will return an error if the provided {@code tableName}
+     *                 does not exist. If {@code true} then it will return an
+     *                 empty result. Values: true, false.
      *                 </ul>
      * 
      */
@@ -131,8 +151,9 @@ public class ShowTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table for which to retrieve the information. If blank, then information about all collections and
-     *         top-level tables and views is returned.
+     * @return Name of the table for which to retrieve the information. If
+     *         blank, then information about all collections and top-level
+     *         tables and views is returned.
      * 
      */
     public String getTableName() {
@@ -141,8 +162,10 @@ public class ShowTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table for which to retrieve the information. If blank, then information about all collections
-     *                   and top-level tables and views is returned.
+     * @param tableName  Name of the table for which to retrieve the
+     *                   information. If blank, then information about all
+     *                   collections and top-level tables and views is
+     *                   returned.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -156,13 +179,19 @@ public class ShowTableRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> get_sizes: If {@code true} then the table sizes will be returned; blank, otherwise. Values: true, false.
-     *                 <li> show_children: If {@code tableName} is a collection, then {@code true} will return information about the
-     *         children of the collection, and {@code false} will return information about the collection itself. If {@code
-     *         tableName} is a table or view, {@code show_children} must be {@code false}. If {@code tableName} is empty, then
-     *         {@code show_children} must be {@code true}. Values: true, false.
-     *                 <li> no_error_if_not_exists: If {@code false} will return an error if the provided {@code tableName} does not
-     *         exist. If {@code true} then it will return an empty result. Values: true, false.
+     *                 <li> get_sizes: If {@code true} then the table sizes
+     *         will be returned; blank, otherwise. Values: true, false.
+     *                 <li> show_children: If {@code tableName} is a
+     *         collection, then {@code true} will return information about the
+     *         children of the collection, and {@code false} will return
+     *         information about the collection itself. If {@code tableName} is
+     *         a table or view, {@code show_children} must be {@code false}. If
+     *         {@code tableName} is empty, then {@code show_children} must be
+     *         {@code true}. Values: true, false.
+     *                 <li> no_error_if_not_exists: If {@code false} will
+     *         return an error if the provided {@code tableName} does not
+     *         exist. If {@code true} then it will return an empty result.
+     *         Values: true, false.
      *         </ul>
      * 
      */
@@ -174,14 +203,21 @@ public class ShowTableRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> get_sizes: If {@code true} then the table sizes will be returned; blank, otherwise. Values:
-     *                 true, false.
-     *                         <li> show_children: If {@code tableName} is a collection, then {@code true} will return information
-     *                 about the children of the collection, and {@code false} will return information about the collection itself.
-     *                 If {@code tableName} is a table or view, {@code show_children} must be {@code false}. If {@code tableName} is
-     *                 empty, then {@code show_children} must be {@code true}. Values: true, false.
-     *                         <li> no_error_if_not_exists: If {@code false} will return an error if the provided {@code tableName}
-     *                 does not exist. If {@code true} then it will return an empty result. Values: true, false.
+     *                         <li> get_sizes: If {@code true} then the table
+     *                 sizes will be returned; blank, otherwise. Values: true,
+     *                 false.
+     *                         <li> show_children: If {@code tableName} is a
+     *                 collection, then {@code true} will return information
+     *                 about the children of the collection, and {@code false}
+     *                 will return information about the collection itself. If
+     *                 {@code tableName} is a table or view, {@code
+     *                 show_children} must be {@code false}. If {@code
+     *                 tableName} is empty, then {@code show_children} must be
+     *                 {@code true}. Values: true, false.
+     *                         <li> no_error_if_not_exists: If {@code false}
+     *                 will return an error if the provided {@code tableName}
+     *                 does not exist. If {@code true} then it will return an
+     *                 empty result. Values: true, false.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -193,7 +229,8 @@ public class ShowTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -204,7 +241,8 @@ public class ShowTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -228,7 +266,8 @@ public class ShowTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

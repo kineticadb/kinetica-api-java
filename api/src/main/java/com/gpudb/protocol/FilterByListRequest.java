@@ -15,17 +15,22 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#filterByList(FilterByListRequest)}.
- * <br />
- * <br />Calculates which records from a table have values in the given list for the corresponding column. The operation is
- * synchronous, meaning that a response will not be returned until all the objects are fully available. The response payload
- * provides the count of the resulting set. A new resultant set (view) which satisfies the input filter specification is also
- * created if a {@code viewName} is passed in as part of the request.
- * <br />
- * <br />For example, if a type definition has the columns 'x' and 'y', then a filter by list query with the column map
- * {"x":["10.1", "2.3"], "y":["0.0", "-31.5", "42.0"]} will return the count of all data points whose x and y values match one of
- * the values in the respective x- and y-lists. If the filter_mode option is set to 'not_in_list' then the filter will match all
- * items that are not in the provided list(s).
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#filterByList(FilterByListRequest)}.
+ * <p>
+ * Calculates which records from a table have values in the given list for the
+ * corresponding column. The operation is synchronous, meaning that a response
+ * will not be returned until all the objects are fully available. The response
+ * payload provides the count of the resulting set. A new resultant set (view)
+ * which satisfies the input filter specification is also created if a {@code
+ * viewName} is passed in as part of the request.
+ * <p>
+ * For example, if a type definition has the columns 'x' and 'y', then a filter
+ * by list query with the column map {"x":["10.1", "2.3"], "y":["0.0", "-31.5",
+ * "42.0"]} will return the count of all data points whose x and y values match
+ * one of the values in the respective x- and y-lists. If the filter_mode
+ * option is set to 'not_in_list' then the filter will match all items that are
+ * not in the provided list(s).
  */
 public class FilterByListRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -40,7 +45,8 @@ public class FilterByListRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -52,17 +58,18 @@ public class FilterByListRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * <br /><ul>
-     * <br />  <li> filter_mode: String indicating the filter mode, either 'in_list' or 'not_in_list'. Values: in_list, not_in_list.
-     * <br />
-     * <br /></ul>
-     * <br />A set of string constants for the parameter {@code options}.
+     * <ul>
+     *         <li> filter_mode: String indicating the filter mode, either
+     * 'in_list' or 'not_in_list'. Values: in_list, not_in_list.
+     * <p>
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * String indicating the filter mode, either 'in_list' or 'not_in_list'. Values: in_list, not_in_list.
-         * <br />
+         * String indicating the filter mode, either 'in_list' or
+         * 'not_in_list'. Values: in_list, not_in_list.
          */
         public static final String FILTER_MODE = "filter_mode";
         public static final String IN_LIST = "in_list";
@@ -90,14 +97,21 @@ public class FilterByListRequest implements IndexedRecord {
     /**
      * Constructs a FilterByListRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to filter.  This may be the ID of a collection, table or a result set (for chaining
-     *                   queries).  Collections may be filtered only if all tables within the collection have the same type ID.
-     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *                  collection, table or view.
-     * @param columnValuesMap  List of values for the corresponding column in the table
+     * @param tableName  Name of the table to filter.  This may be the ID of a
+     *                   collection, table or a result set (for chaining
+     *                   queries).  Collections may be filtered only if all
+     *                   tables within the collection have the same type ID.
+     * @param viewName  If provided, then this will be the name of the view
+     *                  containing the results. Has the same naming
+     *                  restrictions as <a
+     *                  href="../../../../../concepts/tables.html"
+     *                  target="_top">tables</a>.
+     * @param columnValuesMap  List of values for the corresponding column in
+     *                         the table
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> filter_mode: String indicating the filter mode, either 'in_list' or 'not_in_list'. Values:
+     *                         <li> filter_mode: String indicating the filter
+     *                 mode, either 'in_list' or 'not_in_list'. Values:
      *                 in_list, not_in_list.
      *                 </ul>
      * 
@@ -111,8 +125,10 @@ public class FilterByListRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to filter.  This may be the ID of a collection, table or a result set (for chaining queries).
-     *         Collections may be filtered only if all tables within the collection have the same type ID.
+     * @return Name of the table to filter.  This may be the ID of a
+     *         collection, table or a result set (for chaining queries).
+     *         Collections may be filtered only if all tables within the
+     *         collection have the same type ID.
      * 
      */
     public String getTableName() {
@@ -121,8 +137,10 @@ public class FilterByListRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to filter.  This may be the ID of a collection, table or a result set (for chaining
-     *                   queries).  Collections may be filtered only if all tables within the collection have the same type ID.
+     * @param tableName  Name of the table to filter.  This may be the ID of a
+     *                   collection, table or a result set (for chaining
+     *                   queries).  Collections may be filtered only if all
+     *                   tables within the collection have the same type ID.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -134,8 +152,10 @@ public class FilterByListRequest implements IndexedRecord {
 
     /**
      * 
-     * @return If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *         collection, table or view.
+     * @return If provided, then this will be the name of the view containing
+     *         the results. Has the same naming restrictions as <a
+     *         href="../../../../../concepts/tables.html"
+     *         target="_top">tables</a>.
      * 
      */
     public String getViewName() {
@@ -144,8 +164,11 @@ public class FilterByListRequest implements IndexedRecord {
 
     /**
      * 
-     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *                  collection, table or view.
+     * @param viewName  If provided, then this will be the name of the view
+     *                  containing the results. Has the same naming
+     *                  restrictions as <a
+     *                  href="../../../../../concepts/tables.html"
+     *                  target="_top">tables</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -166,7 +189,8 @@ public class FilterByListRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnValuesMap  List of values for the corresponding column in the table
+     * @param columnValuesMap  List of values for the corresponding column in
+     *                         the table
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -180,8 +204,8 @@ public class FilterByListRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> filter_mode: String indicating the filter mode, either 'in_list' or 'not_in_list'. Values: in_list,
-     *         not_in_list.
+     *                 <li> filter_mode: String indicating the filter mode,
+     *         either 'in_list' or 'not_in_list'. Values: in_list, not_in_list.
      *         </ul>
      * 
      */
@@ -193,7 +217,8 @@ public class FilterByListRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> filter_mode: String indicating the filter mode, either 'in_list' or 'not_in_list'. Values:
+     *                         <li> filter_mode: String indicating the filter
+     *                 mode, either 'in_list' or 'not_in_list'. Values:
      *                 in_list, not_in_list.
      *                 </ul>
      * 
@@ -206,7 +231,8 @@ public class FilterByListRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -217,7 +243,8 @@ public class FilterByListRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -247,7 +274,8 @@ public class FilterByListRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

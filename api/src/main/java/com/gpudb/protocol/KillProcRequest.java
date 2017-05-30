@@ -15,8 +15,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#killProc(KillProcRequest)}.
- * <br />
- * <br />Kills a running proc instance.
+ * <p>
+ * Kills a running proc instance.
  */
 public class KillProcRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -29,7 +29,8 @@ public class KillProcRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -53,8 +54,10 @@ public class KillProcRequest implements IndexedRecord {
     /**
      * Constructs a KillProcRequest object with the specified parameters.
      * 
-     * @param runId  The run ID of the running proc instance. If the run ID is not found or the proc instance has already completed,
-     *               this does nothing. If not specified, all running proc instances will be killed.
+     * @param runId  The run ID of the running proc instance. If the run ID is
+     *               not found or the proc instance has already completed, this
+     *               does nothing. If not specified, all running proc instances
+     *               will be killed.
      * @param options  Optional parameters.
      * 
      */
@@ -65,8 +68,10 @@ public class KillProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The run ID of the running proc instance. If the run ID is not found or the proc instance has already completed, this
-     *         does nothing. If not specified, all running proc instances will be killed.
+     * @return The run ID of the running proc instance. If the run ID is not
+     *         found or the proc instance has already completed, this does
+     *         nothing. If not specified, all running proc instances will be
+     *         killed.
      * 
      */
     public String getRunId() {
@@ -75,8 +80,10 @@ public class KillProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param runId  The run ID of the running proc instance. If the run ID is not found or the proc instance has already completed,
-     *               this does nothing. If not specified, all running proc instances will be killed.
+     * @param runId  The run ID of the running proc instance. If the run ID is
+     *               not found or the proc instance has already completed, this
+     *               does nothing. If not specified, all running proc instances
+     *               will be killed.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -108,7 +115,8 @@ public class KillProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -119,7 +127,8 @@ public class KillProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -143,7 +152,8 @@ public class KillProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

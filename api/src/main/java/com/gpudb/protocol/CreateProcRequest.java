@@ -17,11 +17,13 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#createProc(CreateProcRequest)}.
- * <br />
- * <br />Creates an instance (proc) of the user-defined function (UDF) specified by the given command, options, and files, and makes
- * it available for execution.  For details on UDFs, see: <a href="../../../../../concepts/udf.html" target="_top">User-Defined
- * Functions</a>
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#createProc(CreateProcRequest)}.
+ * <p>
+ * Creates an instance (proc) of the user-defined function (UDF) specified by
+ * the given command, options, and files, and makes it available for execution.
+ * For details on UDFs, see: <a href="../../../../../concepts/udf.html"
+ * target="_top">User-Defined Functions</a>
  */
 public class CreateProcRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -38,7 +40,8 @@ public class CreateProcRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -50,20 +53,23 @@ public class CreateProcRequest implements IndexedRecord {
 
     /**
      * The execution mode of the proc. Values: distributed, nondistributed.
-     * <br />
-     * <br />A set of string constants for the parameter {@code executionMode}.
+
+     * A set of string constants for the parameter {@code executionMode}.
      */
     public static final class ExecutionMode {
 
         /**
-         * Input table data will be divided into data segments that are distributed across all nodes in the cluster, and the proc
-         * command will be invoked once per data segment in parallel. Output table data from each invocation will be saved to the
-         * same node as the corresponding input data.
+         * Input table data will be divided into data segments that are
+         * distributed across all nodes in the cluster, and the proc command
+         * will be invoked once per data segment in parallel. Output table data
+         * from each invocation will be saved to the same node as the
+         * corresponding input data.
          */
         public static final String DISTRIBUTED = "distributed";
 
         /**
-         * The proc command will be invoked only once per execution, and will not have access to any input or output table data.
+         * The proc command will be invoked only once per execution, and will
+         * not have access to any input or output table data.
          */
         public static final String NONDISTRIBUTED = "nondistributed";
 
@@ -93,18 +99,29 @@ public class CreateProcRequest implements IndexedRecord {
     /**
      * Constructs a CreateProcRequest object with the specified parameters.
      * 
-     * @param procName  Name of the proc to be created. Must not be the name of a currently existing proc.
-     * @param executionMode  The execution mode of the proc. Values: distributed, nondistributed.
-     * @param files  A map of the files that make up the proc. The keys of the map are file names, and the values are the binary
-     *               contents of the files. The file names may include subdirectory names (e.g. 'subdir/file') but must not resolve
-     *               to a directory above the root for the proc.
-     * @param command  The command (excluding arguments) that will be invoked when the proc is executed. It will be invoked from the
-     *                 directory containing the proc {@code files} and may be any command that can be resolved from that directory.
-     *                 It need not refer to a file actually in that directory; for example, it could be 'java' if the proc is a Java
-     *                 application; however, any necessary external programs must be preinstalled on every database node. If the
-     *                 command refers to a file in that directory, it must be preceded with './' as per Linux convention. If not
-     *                 specified, and exactly one file is provided in {@code files}, that file will be invoked.
-     * @param args  An array of command-line arguments that will be passed to {@code command} when the proc is executed.
+     * @param procName  Name of the proc to be created. Must not be the name of
+     *                  a currently existing proc.
+     * @param executionMode  The execution mode of the proc. Values:
+     *                       distributed, nondistributed.
+     * @param files  A map of the files that make up the proc. The keys of the
+     *               map are file names, and the values are the binary contents
+     *               of the files. The file names may include subdirectory
+     *               names (e.g. 'subdir/file') but must not resolve to a
+     *               directory above the root for the proc.
+     * @param command  The command (excluding arguments) that will be invoked
+     *                 when the proc is executed. It will be invoked from the
+     *                 directory containing the proc {@code files} and may be
+     *                 any command that can be resolved from that directory. It
+     *                 need not refer to a file actually in that directory; for
+     *                 example, it could be 'java' if the proc is a Java
+     *                 application; however, any necessary external programs
+     *                 must be preinstalled on every database node. If the
+     *                 command refers to a file in that directory, it must be
+     *                 preceded with './' as per Linux convention. If not
+     *                 specified, and exactly one file is provided in {@code
+     *                 files}, that file will be invoked.
+     * @param args  An array of command-line arguments that will be passed to
+     *              {@code command} when the proc is executed.
      * @param options  Optional parameters.
      * 
      */
@@ -119,7 +136,8 @@ public class CreateProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the proc to be created. Must not be the name of a currently existing proc.
+     * @return Name of the proc to be created. Must not be the name of a
+     *         currently existing proc.
      * 
      */
     public String getProcName() {
@@ -128,7 +146,8 @@ public class CreateProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param procName  Name of the proc to be created. Must not be the name of a currently existing proc.
+     * @param procName  Name of the proc to be created. Must not be the name of
+     *                  a currently existing proc.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -140,7 +159,8 @@ public class CreateProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The execution mode of the proc. Values: distributed, nondistributed.
+     * @return The execution mode of the proc. Values: distributed,
+     *         nondistributed.
      * 
      */
     public String getExecutionMode() {
@@ -149,7 +169,8 @@ public class CreateProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param executionMode  The execution mode of the proc. Values: distributed, nondistributed.
+     * @param executionMode  The execution mode of the proc. Values:
+     *                       distributed, nondistributed.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -161,9 +182,11 @@ public class CreateProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A map of the files that make up the proc. The keys of the map are file names, and the values are the binary contents
-     *         of the files. The file names may include subdirectory names (e.g. 'subdir/file') but must not resolve to a directory
-     *         above the root for the proc.
+     * @return A map of the files that make up the proc. The keys of the map
+     *         are file names, and the values are the binary contents of the
+     *         files. The file names may include subdirectory names (e.g.
+     *         'subdir/file') but must not resolve to a directory above the
+     *         root for the proc.
      * 
      */
     public Map<String, ByteBuffer> getFiles() {
@@ -172,9 +195,11 @@ public class CreateProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param files  A map of the files that make up the proc. The keys of the map are file names, and the values are the binary
-     *               contents of the files. The file names may include subdirectory names (e.g. 'subdir/file') but must not resolve
-     *               to a directory above the root for the proc.
+     * @param files  A map of the files that make up the proc. The keys of the
+     *               map are file names, and the values are the binary contents
+     *               of the files. The file names may include subdirectory
+     *               names (e.g. 'subdir/file') but must not resolve to a
+     *               directory above the root for the proc.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -186,12 +211,17 @@ public class CreateProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The command (excluding arguments) that will be invoked when the proc is executed. It will be invoked from the
-     *         directory containing the proc {@code files} and may be any command that can be resolved from that directory. It need
-     *         not refer to a file actually in that directory; for example, it could be 'java' if the proc is a Java application;
-     *         however, any necessary external programs must be preinstalled on every database node. If the command refers to a file
-     *         in that directory, it must be preceded with './' as per Linux convention. If not specified, and exactly one file is
-     *         provided in {@code files}, that file will be invoked.
+     * @return The command (excluding arguments) that will be invoked when the
+     *         proc is executed. It will be invoked from the directory
+     *         containing the proc {@code files} and may be any command that
+     *         can be resolved from that directory. It need not refer to a file
+     *         actually in that directory; for example, it could be 'java' if
+     *         the proc is a Java application; however, any necessary external
+     *         programs must be preinstalled on every database node. If the
+     *         command refers to a file in that directory, it must be preceded
+     *         with './' as per Linux convention. If not specified, and exactly
+     *         one file is provided in {@code files}, that file will be
+     *         invoked.
      * 
      */
     public String getCommand() {
@@ -200,12 +230,18 @@ public class CreateProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param command  The command (excluding arguments) that will be invoked when the proc is executed. It will be invoked from the
-     *                 directory containing the proc {@code files} and may be any command that can be resolved from that directory.
-     *                 It need not refer to a file actually in that directory; for example, it could be 'java' if the proc is a Java
-     *                 application; however, any necessary external programs must be preinstalled on every database node. If the
-     *                 command refers to a file in that directory, it must be preceded with './' as per Linux convention. If not
-     *                 specified, and exactly one file is provided in {@code files}, that file will be invoked.
+     * @param command  The command (excluding arguments) that will be invoked
+     *                 when the proc is executed. It will be invoked from the
+     *                 directory containing the proc {@code files} and may be
+     *                 any command that can be resolved from that directory. It
+     *                 need not refer to a file actually in that directory; for
+     *                 example, it could be 'java' if the proc is a Java
+     *                 application; however, any necessary external programs
+     *                 must be preinstalled on every database node. If the
+     *                 command refers to a file in that directory, it must be
+     *                 preceded with './' as per Linux convention. If not
+     *                 specified, and exactly one file is provided in {@code
+     *                 files}, that file will be invoked.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -217,7 +253,8 @@ public class CreateProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return An array of command-line arguments that will be passed to {@code command} when the proc is executed.
+     * @return An array of command-line arguments that will be passed to {@code
+     *         command} when the proc is executed.
      * 
      */
     public List<String> getArgs() {
@@ -226,7 +263,8 @@ public class CreateProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param args  An array of command-line arguments that will be passed to {@code command} when the proc is executed.
+     * @param args  An array of command-line arguments that will be passed to
+     *              {@code command} when the proc is executed.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -258,7 +296,8 @@ public class CreateProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -269,7 +308,8 @@ public class CreateProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -305,7 +345,8 @@ public class CreateProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

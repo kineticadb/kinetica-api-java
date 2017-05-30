@@ -14,13 +14,18 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
- * <br />
- * <br />Creates a monitor that watches for new records inserted into a particular table (identified by {@code tableName}) and
- * forwards copies to subscribers via ZMQ. After this call completes, subscribe to the returned {@code topicId} on the ZMQ table
- * monitor port (default 9002). Each time an insert operation on the table completes, a multipart message is published for that
- * topic; the first part contains only the topic ID, and each subsequent part contains one binary-encoded Avro object that was
- * inserted. The monitor will continue to run (regardless of whether or not there are any subscribers) until deactivated with {@link
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
+ * <p>
+ * Creates a monitor that watches for new records inserted into a particular
+ * table (identified by {@code tableName}) and forwards copies to subscribers
+ * via ZMQ. After this call completes, subscribe to the returned {@code
+ * topicId} on the ZMQ table monitor port (default 9002). Each time an insert
+ * operation on the table completes, a multipart message is published for that
+ * topic; the first part contains only the topic ID, and each subsequent part
+ * contains one binary-encoded Avro object that was inserted. The monitor will
+ * continue to run (regardless of whether or not there are any subscribers)
+ * until deactivated with {@link
  * com.gpudb.GPUdb#clearTableMonitor(ClearTableMonitorRequest)}.
  */
 public class CreateTableMonitorRequest implements IndexedRecord {
@@ -34,7 +39,8 @@ public class CreateTableMonitorRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -56,9 +62,11 @@ public class CreateTableMonitorRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a CreateTableMonitorRequest object with the specified parameters.
+     * Constructs a CreateTableMonitorRequest object with the specified
+     * parameters.
      * 
-     * @param tableName  Name of the table to monitor. Must not refer to a collection.
+     * @param tableName  Name of the table to monitor. Must not refer to a
+     *                   collection.
      * @param options  Optional parameters.
      * 
      */
@@ -78,7 +86,8 @@ public class CreateTableMonitorRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to monitor. Must not refer to a collection.
+     * @param tableName  Name of the table to monitor. Must not refer to a
+     *                   collection.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -110,7 +119,8 @@ public class CreateTableMonitorRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -121,7 +131,8 @@ public class CreateTableMonitorRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -145,7 +156,8 @@ public class CreateTableMonitorRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

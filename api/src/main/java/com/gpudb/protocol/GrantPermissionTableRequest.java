@@ -14,9 +14,10 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#grantPermissionTable(GrantPermissionTableRequest)}.
- * <br />
- * <br />Grants a table-level permission to a user or role.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#grantPermissionTable(GrantPermissionTableRequest)}.
+ * <p>
+ * Grants a table-level permission to a user or role.
  */
 public class GrantPermissionTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -32,7 +33,8 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -43,9 +45,10 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
 
     /**
-     * Permission to grant to the user or role. Values: table_admin, table_insert, table_update, table_delete, table_read.
-     * <br />
-     * <br />A set of string constants for the parameter {@code permission}.
+     * Permission to grant to the user or role. Values: table_admin,
+     * table_insert, table_update, table_delete, table_read.
+
+     * A set of string constants for the parameter {@code permission}.
      */
     public static final class Permission {
 
@@ -96,13 +99,18 @@ public class GrantPermissionTableRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a GrantPermissionTableRequest object with the specified parameters.
+     * Constructs a GrantPermissionTableRequest object with the specified
+     * parameters.
      * 
-     * @param name  Name of the user or role to which the permission will be granted. Must be an existing user or role.
-     * @param permission  Permission to grant to the user or role. Values: table_admin, table_insert, table_update, table_delete,
-     *                    table_read.
-     * @param tableName  Name of the table to which the permission grants access. Must be an existing table, collection, or view. If
-     *                   a collection, the permission also applies to tables and views in the collection.
+     * @param name  Name of the user or role to which the permission will be
+     *              granted. Must be an existing user or role.
+     * @param permission  Permission to grant to the user or role. Values:
+     *                    table_admin, table_insert, table_update,
+     *                    table_delete, table_read.
+     * @param tableName  Name of the table to which the permission grants
+     *                   access. Must be an existing table, collection, or
+     *                   view. If a collection, the permission also applies to
+     *                   tables and views in the collection.
      * @param filterExpression  Reserved for future use.
      * @param options  Optional parameters.
      * 
@@ -117,7 +125,8 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the user or role to which the permission will be granted. Must be an existing user or role.
+     * @return Name of the user or role to which the permission will be
+     *         granted. Must be an existing user or role.
      * 
      */
     public String getName() {
@@ -126,7 +135,8 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param name  Name of the user or role to which the permission will be granted. Must be an existing user or role.
+     * @param name  Name of the user or role to which the permission will be
+     *              granted. Must be an existing user or role.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -138,7 +148,8 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Permission to grant to the user or role. Values: table_admin, table_insert, table_update, table_delete, table_read.
+     * @return Permission to grant to the user or role. Values: table_admin,
+     *         table_insert, table_update, table_delete, table_read.
      * 
      */
     public String getPermission() {
@@ -147,8 +158,9 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param permission  Permission to grant to the user or role. Values: table_admin, table_insert, table_update, table_delete,
-     *                    table_read.
+     * @param permission  Permission to grant to the user or role. Values:
+     *                    table_admin, table_insert, table_update,
+     *                    table_delete, table_read.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -160,8 +172,9 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to which the permission grants access. Must be an existing table, collection, or view. If a
-     *         collection, the permission also applies to tables and views in the collection.
+     * @return Name of the table to which the permission grants access. Must be
+     *         an existing table, collection, or view. If a collection, the
+     *         permission also applies to tables and views in the collection.
      * 
      */
     public String getTableName() {
@@ -170,8 +183,10 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to which the permission grants access. Must be an existing table, collection, or view. If
-     *                   a collection, the permission also applies to tables and views in the collection.
+     * @param tableName  Name of the table to which the permission grants
+     *                   access. Must be an existing table, collection, or
+     *                   view. If a collection, the permission also applies to
+     *                   tables and views in the collection.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -224,7 +239,8 @@ public class GrantPermissionTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -235,7 +251,8 @@ public class GrantPermissionTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -268,7 +285,8 @@ public class GrantPermissionTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

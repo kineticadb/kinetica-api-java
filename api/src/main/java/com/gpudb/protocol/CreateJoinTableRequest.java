@@ -16,10 +16,12 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#createJoinTable(CreateJoinTableRequest)}.
- * <br />
- * <br />Creates a table that is the result of a SQL JOIN.  For details see: <a href="../../../../../concepts/joins.html"
- * target="_top">join concept documentation</a>.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#createJoinTable(CreateJoinTableRequest)}.
+ * <p>
+ * Creates a table that is the result of a SQL JOIN.  For details see: <a
+ * href="../../../../../concepts/joins.html" target="_top">join concept
+ * documentation</a>.
  */
 public class CreateJoinTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -35,7 +37,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -47,69 +50,81 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * <br /><ul>
-     * <br />  <li> collection_name: Name of a collection which is to contain the join table. If empty, then the join table will be
-     * a top-level table.
-     * <br />  <li> max_query_dimensions: The maximum number of tables in a joined table that can be accessed by a query and are not
-     * equated by a foreign-key to primary-key equality predicate
-     * <br />  <li> optimize_lookups: Use the applied filters to precalculate the lookup table to get data from the primary key sets
-     * <br />  <li> refresh_method: Method by which the join table can be refreshed when underlying member tables have changed.
-     * Values: manual, on_query, on_insert.
-     * <br />
-     * <br />  <li> refresh: Do a manual refresh of the join table if it exists - throws an error otherwise Values: no_refresh,
-     * refresh, full_refresh.
-     * <br />
-     * <br /></ul>
-     * <br />A set of string constants for the parameter {@code options}.
+     * <ul>
+     *         <li> collection_name: Name of a collection which is to contain
+     * the join table. If empty, then the join table will be a top-level table.
+     *         <li> max_query_dimensions: The maximum number of tables in a
+     * joined table that can be accessed by a query and are not equated by a
+     * foreign-key to primary-key equality predicate
+     *         <li> optimize_lookups: Use the applied filters to precalculate
+     * the lookup table to get data from the primary key sets
+     *         <li> refresh_method: Method by which the join table can be
+     * refreshed when underlying member tables have changed. Values: manual,
+     * on_query, on_insert.
+     * <p>
+     *         <li> refresh: Do a manual refresh of the join table if it exists
+     * - throws an error otherwise Values: no_refresh, refresh, full_refresh.
+     * <p>
+     *         <li> ttl: Sets the TTL of the table specified in {@code
+     * joinTableName}. The value must be the desired TTL in minutes.
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the join table. If empty, then the join table will be a top-level table.
+         * Name of a collection which is to contain the join table. If empty,
+         * then the join table will be a top-level table.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * The maximum number of tables in a joined table that can be accessed by a query and are not equated by a foreign-key to
-         * primary-key equality predicate
+         * The maximum number of tables in a joined table that can be accessed
+         * by a query and are not equated by a foreign-key to primary-key
+         * equality predicate
          */
         public static final String MAX_QUERY_DIMENSIONS = "max_query_dimensions";
 
         /**
-         * Use the applied filters to precalculate the lookup table to get data from the primary key sets
+         * Use the applied filters to precalculate the lookup table to get data
+         * from the primary key sets
          */
         public static final String OPTIMIZE_LOOKUPS = "optimize_lookups";
 
         /**
-         * Method by which the join table can be refreshed when underlying member tables have changed. Values: manual, on_query,
-         * on_insert.
-         * <br />
+         * Method by which the join table can be refreshed when underlying
+         * member tables have changed. Values: manual, on_query, on_insert.
          */
         public static final String REFRESH_METHOD = "refresh_method";
 
         /**
-         * refresh only occurs when manually requested by calling this endpoint with refresh option set to 'refresh' or
-         * 'full_refresh'
+         * refresh only occurs when manually requested by calling this endpoint
+         * with refresh option set to 'refresh' or 'full_refresh'
          */
         public static final String MANUAL = "manual";
 
         /**
-         * incrementally refresh (refresh just those records added) whenever a new query is issued and new data is inserted into the
-         * base table.  A full refresh of all the records occurs when a new query is issued and there have been inserts to any
-         * non-base-tables since the last query
+         * incrementally refresh (refresh just those records added) whenever a
+         * new query is issued and new data is inserted into the base table.  A
+         * full refresh of all the records occurs when a new query is issued
+         * and there have been inserts to any non-base-tables since the last
+         * query
          */
         public static final String ON_QUERY = "on_query";
 
         /**
-         * incrementally refresh (refresh just those records added) whenever new data is inserted into a base table.  A full refresh
-         * of all the records occurs when a new query is issued and there have been inserts to any non-base-tables since the last
-         * query
+         * incrementally refresh (refresh just those records added) whenever
+         * new data is inserted into a base table.  A full refresh of all the
+         * records occurs when a new query is issued and there have been
+         * inserts to any non-base-tables since the last query
          */
         public static final String ON_INSERT = "on_insert";
 
         /**
-         * incrementally refresh (refresh just those records added) if new data has been inserted into the base table.  A full
-         * refresh of all the records occurs if there have been inserts to any non-base-tables since the last refresh
+         * incrementally refresh (refresh just those records added) if new data
+         * has been inserted into the base table.  A full refresh of all the
+         * records occurs if there have been inserts to any non-base-tables
+         * since the last refresh
          */
         public static final String REFRESH = "refresh";
 
@@ -119,10 +134,17 @@ public class CreateJoinTableRequest implements IndexedRecord {
         public static final String NO_REFRESH = "no_refresh";
 
         /**
-         * always refresh even if no new records have been added.  Only refresh method guaranteed to do a full refresh (refresh all
-         * the records) if a delete or update has occurred since the last refresh.
+         * always refresh even if no new records have been added.  Only refresh
+         * method guaranteed to do a full refresh (refresh all the records) if
+         * a delete or update has occurred since the last refresh.
          */
         public static final String FULL_REFRESH = "full_refresh";
+
+        /**
+         * Sets the TTL of the table specified in {@code joinTableName}. The
+         * value must be the desired TTL in minutes.
+         */
+        public static final String TTL = "ttl";
 
         private Options() {  }
     }
@@ -146,30 +168,49 @@ public class CreateJoinTableRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a CreateJoinTableRequest object with the specified parameters.
+     * Constructs a CreateJoinTableRequest object with the specified
+     * parameters.
      * 
-     * @param joinTableName  Name of the join table to be created. Must not be the name of a currently existing table or join table.
-     *                       Cannot be an empty string.
-     * @param tableNames  The list of table names making up the joined set.  Corresponds to a SQL statement FROM clause
-     * @param columnNames  List of columns to be included in the join table. Can be the column_names from the member sets if unique
-     *                     or can be prefixed by the table id as <id>.<column_name> where <id> is the table name or alias. Can be
-     *                     specified as aliased via the syntax '<column_name> as <alias>. Can use wild cards as '*' (include all
-     *                     columns), or <id>.* (include all columns from table with name or alias <id>)
-     * @param expressions  An optional list of expressions to combine and filter the joined set.  Corresponds to a SQL statement
-     *                     WHERE clause. For details see: <a href="../../../../../concepts/expressions.html"
+     * @param joinTableName  Name of the join table to be created.  Has the
+     *                       same naming restrictions as <a
+     *                       href="../../../../../concepts/tables.html"
+     *                       target="_top">tables</a>.
+     * @param tableNames  The list of table names making up the joined set.
+     *                    Corresponds to a SQL statement FROM clause
+     * @param columnNames  List of columns to be included in the join table.
+     *                     Can be the column_names from the member sets if
+     *                     unique or can be prefixed by the table id as
+     *                     <id>.<column_name> where <id> is the table name or
+     *                     alias. Can be specified as aliased via the syntax
+     *                     '<column_name> as <alias>. Can use wild cards as '*'
+     *                     (include all columns), or <id>.* (include all
+     *                     columns from table with name or alias <id>)
+     * @param expressions  An optional list of expressions to combine and
+     *                     filter the joined set.  Corresponds to a SQL
+     *                     statement WHERE clause. For details see: <a
+     *                     href="../../../../../concepts/expressions.html"
      *                     target="_top">expressions</a>.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection which is to contain the join table. If empty, then the
-     *                 join table will be a top-level table.
-     *                         <li> max_query_dimensions: The maximum number of tables in a joined table that can be accessed by a
-     *                 query and are not equated by a foreign-key to primary-key equality predicate
-     *                         <li> optimize_lookups: Use the applied filters to precalculate the lookup table to get data from the
+     *                         <li> collection_name: Name of a collection which
+     *                 is to contain the join table. If empty, then the join
+     *                 table will be a top-level table.
+     *                         <li> max_query_dimensions: The maximum number of
+     *                 tables in a joined table that can be accessed by a query
+     *                 and are not equated by a foreign-key to primary-key
+     *                 equality predicate
+     *                         <li> optimize_lookups: Use the applied filters
+     *                 to precalculate the lookup table to get data from the
      *                 primary key sets
-     *                         <li> refresh_method: Method by which the join table can be refreshed when underlying member tables
+     *                         <li> refresh_method: Method by which the join
+     *                 table can be refreshed when underlying member tables
      *                 have changed. Values: manual, on_query, on_insert.
-     *                         <li> refresh: Do a manual refresh of the join table if it exists - throws an error otherwise Values:
+     *                         <li> refresh: Do a manual refresh of the join
+     *                 table if it exists - throws an error otherwise Values:
      *                 no_refresh, refresh, full_refresh.
+     *                         <li> ttl: Sets the TTL of the table specified in
+     *                 {@code joinTableName}. The value must be the desired TTL
+     *                 in minutes.
      *                 </ul>
      * 
      */
@@ -183,8 +224,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the join table to be created. Must not be the name of a currently existing table or join table. Cannot be an
-     *         empty string.
+     * @return Name of the join table to be created.  Has the same naming
+     *         restrictions as <a href="../../../../../concepts/tables.html"
+     *         target="_top">tables</a>.
      * 
      */
     public String getJoinTableName() {
@@ -193,8 +235,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param joinTableName  Name of the join table to be created. Must not be the name of a currently existing table or join table.
-     *                       Cannot be an empty string.
+     * @param joinTableName  Name of the join table to be created.  Has the
+     *                       same naming restrictions as <a
+     *                       href="../../../../../concepts/tables.html"
+     *                       target="_top">tables</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -206,7 +250,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The list of table names making up the joined set.  Corresponds to a SQL statement FROM clause
+     * @return The list of table names making up the joined set.  Corresponds
+     *         to a SQL statement FROM clause
      * 
      */
     public List<String> getTableNames() {
@@ -215,7 +260,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  The list of table names making up the joined set.  Corresponds to a SQL statement FROM clause
+     * @param tableNames  The list of table names making up the joined set.
+     *                    Corresponds to a SQL statement FROM clause
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -227,10 +273,13 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return List of columns to be included in the join table. Can be the column_names from the member sets if unique or can be
-     *         prefixed by the table id as <id>.<column_name> where <id> is the table name or alias. Can be specified as aliased via
-     *         the syntax '<column_name> as <alias>. Can use wild cards as '*' (include all columns), or <id>.* (include all columns
-     *         from table with name or alias <id>)
+     * @return List of columns to be included in the join table. Can be the
+     *         column_names from the member sets if unique or can be prefixed
+     *         by the table id as <id>.<column_name> where <id> is the table
+     *         name or alias. Can be specified as aliased via the syntax
+     *         '<column_name> as <alias>. Can use wild cards as '*' (include
+     *         all columns), or <id>.* (include all columns from table with
+     *         name or alias <id>)
      * 
      */
     public List<String> getColumnNames() {
@@ -239,10 +288,14 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnNames  List of columns to be included in the join table. Can be the column_names from the member sets if unique
-     *                     or can be prefixed by the table id as <id>.<column_name> where <id> is the table name or alias. Can be
-     *                     specified as aliased via the syntax '<column_name> as <alias>. Can use wild cards as '*' (include all
-     *                     columns), or <id>.* (include all columns from table with name or alias <id>)
+     * @param columnNames  List of columns to be included in the join table.
+     *                     Can be the column_names from the member sets if
+     *                     unique or can be prefixed by the table id as
+     *                     <id>.<column_name> where <id> is the table name or
+     *                     alias. Can be specified as aliased via the syntax
+     *                     '<column_name> as <alias>. Can use wild cards as '*'
+     *                     (include all columns), or <id>.* (include all
+     *                     columns from table with name or alias <id>)
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -254,8 +307,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return An optional list of expressions to combine and filter the joined set.  Corresponds to a SQL statement WHERE clause.
-     *         For details see: <a href="../../../../../concepts/expressions.html" target="_top">expressions</a>.
+     * @return An optional list of expressions to combine and filter the joined
+     *         set.  Corresponds to a SQL statement WHERE clause. For details
+     *         see: <a href="../../../../../concepts/expressions.html"
+     *         target="_top">expressions</a>.
      * 
      */
     public List<String> getExpressions() {
@@ -264,8 +319,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param expressions  An optional list of expressions to combine and filter the joined set.  Corresponds to a SQL statement
-     *                     WHERE clause. For details see: <a href="../../../../../concepts/expressions.html"
+     * @param expressions  An optional list of expressions to combine and
+     *                     filter the joined set.  Corresponds to a SQL
+     *                     statement WHERE clause. For details see: <a
+     *                     href="../../../../../concepts/expressions.html"
      *                     target="_top">expressions</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -280,16 +337,23 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> collection_name: Name of a collection which is to contain the join table. If empty, then the join table
-     *         will be a top-level table.
-     *                 <li> max_query_dimensions: The maximum number of tables in a joined table that can be accessed by a query and
-     *         are not equated by a foreign-key to primary-key equality predicate
-     *                 <li> optimize_lookups: Use the applied filters to precalculate the lookup table to get data from the primary
-     *         key sets
-     *                 <li> refresh_method: Method by which the join table can be refreshed when underlying member tables have
-     *         changed. Values: manual, on_query, on_insert.
-     *                 <li> refresh: Do a manual refresh of the join table if it exists - throws an error otherwise Values:
-     *         no_refresh, refresh, full_refresh.
+     *                 <li> collection_name: Name of a collection which is to
+     *         contain the join table. If empty, then the join table will be a
+     *         top-level table.
+     *                 <li> max_query_dimensions: The maximum number of tables
+     *         in a joined table that can be accessed by a query and are not
+     *         equated by a foreign-key to primary-key equality predicate
+     *                 <li> optimize_lookups: Use the applied filters to
+     *         precalculate the lookup table to get data from the primary key
+     *         sets
+     *                 <li> refresh_method: Method by which the join table can
+     *         be refreshed when underlying member tables have changed. Values:
+     *         manual, on_query, on_insert.
+     *                 <li> refresh: Do a manual refresh of the join table if
+     *         it exists - throws an error otherwise Values: no_refresh,
+     *         refresh, full_refresh.
+     *                 <li> ttl: Sets the TTL of the table specified in {@code
+     *         joinTableName}. The value must be the desired TTL in minutes.
      *         </ul>
      * 
      */
@@ -301,16 +365,25 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection which is to contain the join table. If empty, then the
-     *                 join table will be a top-level table.
-     *                         <li> max_query_dimensions: The maximum number of tables in a joined table that can be accessed by a
-     *                 query and are not equated by a foreign-key to primary-key equality predicate
-     *                         <li> optimize_lookups: Use the applied filters to precalculate the lookup table to get data from the
+     *                         <li> collection_name: Name of a collection which
+     *                 is to contain the join table. If empty, then the join
+     *                 table will be a top-level table.
+     *                         <li> max_query_dimensions: The maximum number of
+     *                 tables in a joined table that can be accessed by a query
+     *                 and are not equated by a foreign-key to primary-key
+     *                 equality predicate
+     *                         <li> optimize_lookups: Use the applied filters
+     *                 to precalculate the lookup table to get data from the
      *                 primary key sets
-     *                         <li> refresh_method: Method by which the join table can be refreshed when underlying member tables
+     *                         <li> refresh_method: Method by which the join
+     *                 table can be refreshed when underlying member tables
      *                 have changed. Values: manual, on_query, on_insert.
-     *                         <li> refresh: Do a manual refresh of the join table if it exists - throws an error otherwise Values:
+     *                         <li> refresh: Do a manual refresh of the join
+     *                 table if it exists - throws an error otherwise Values:
      *                 no_refresh, refresh, full_refresh.
+     *                         <li> ttl: Sets the TTL of the table specified in
+     *                 {@code joinTableName}. The value must be the desired TTL
+     *                 in minutes.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -322,7 +395,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -333,7 +407,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -366,7 +441,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

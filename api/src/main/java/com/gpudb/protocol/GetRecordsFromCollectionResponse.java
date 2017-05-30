@@ -11,7 +11,9 @@ import org.apache.avro.generic.GenericData;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#getRecordsFromCollection(Object, GetRecordsFromCollectionRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#getRecordsFromCollection(Object,
+ * GetRecordsFromCollectionRequest)}.
  * 
  * @param <T>  The type of object being processed.
  * 
@@ -24,7 +26,8 @@ public class GetRecordsFromCollectionResponse<T> {
 
 
     /**
-     * Constructs a GetRecordsFromCollectionResponse object with default parameters.
+     * Constructs a GetRecordsFromCollectionResponse object with default
+     * parameters.
      */
     public GetRecordsFromCollectionResponse() {
     }
@@ -52,8 +55,10 @@ public class GetRecordsFromCollectionResponse<T> {
 
     /**
      * 
-     * @return The type IDs of the corresponding records in {@code recordsBinary} or {@code recordsJson}. This is useful when {@code
-     *         tableName} is a heterogeneous collection (collections containing tables of different types).
+     * @return The type IDs of the corresponding records in {@code
+     *         recordsBinary} or {@code recordsJson}. This is useful when
+     *         {@code tableName} is a heterogeneous collection (collections
+     *         containing tables of different types).
      * 
      */
     public List<String> getTypeNames() {
@@ -62,8 +67,10 @@ public class GetRecordsFromCollectionResponse<T> {
 
     /**
      * 
-     * @param typeNames  The type IDs of the corresponding records in {@code recordsBinary} or {@code recordsJson}. This is useful
-     *                   when {@code tableName} is a heterogeneous collection (collections containing tables of different types).
+     * @param typeNames  The type IDs of the corresponding records in {@code
+     *                   recordsBinary} or {@code recordsJson}. This is useful
+     *                   when {@code tableName} is a heterogeneous collection
+     *                   (collections containing tables of different types).
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -75,8 +82,9 @@ public class GetRecordsFromCollectionResponse<T> {
 
     /**
      * 
-     * @return If the encoding parameter of the request was 'binary' then this list contains the binary encoded records retrieved
-     *         from the table/collection. Otherwise, empty list.
+     * @return If the encoding parameter of the request was 'binary' then this
+     *         list contains the binary encoded records retrieved from the
+     *         table/collection. Otherwise, empty list.
      * 
      */
     public List<T> getData() {
@@ -85,8 +93,9 @@ public class GetRecordsFromCollectionResponse<T> {
 
     /**
      * 
-     * @param data  If the encoding parameter of the request was 'binary' then this list contains the binary encoded records
-     *              retrieved from the table/collection. Otherwise, empty list.
+     * @param data  If the encoding parameter of the request was 'binary' then
+     *              this list contains the binary encoded records retrieved
+     *              from the table/collection. Otherwise, empty list.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -98,7 +107,8 @@ public class GetRecordsFromCollectionResponse<T> {
 
     /**
      * 
-     * @return If the 'return_record_ids' option of the request was 'true', then this list contains the internal ID for each object.
+     * @return If the 'return_record_ids' option of the request was 'true',
+     *         then this list contains the internal ID for each object.
      *         Otherwise it will be empty.
      * 
      */
@@ -108,7 +118,8 @@ public class GetRecordsFromCollectionResponse<T> {
 
     /**
      * 
-     * @param recordIds  If the 'return_record_ids' option of the request was 'true', then this list contains the internal ID for
+     * @param recordIds  If the 'return_record_ids' option of the request was
+     *                   'true', then this list contains the internal ID for
      *                   each object. Otherwise it will be empty.
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -15,7 +15,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)}.
  */
 public class RawGetRecordsResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -33,7 +34,8 @@ public class RawGetRecordsResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -104,7 +106,8 @@ public class RawGetRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param typeSchema  Avro schema of {@code recordsBinary} or {@code recordsJson}
+     * @param typeSchema  Avro schema of {@code recordsBinary} or {@code
+     *                    recordsJson}
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -116,8 +119,9 @@ public class RawGetRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return If the {@code encoding} was 'binary', then this list contains the JSON encoded records retrieved from the set,
-     *         otherwise not populated.
+     * @return If the {@code encoding} was 'binary', then this list contains
+     *         the JSON encoded records retrieved from the set, otherwise not
+     *         populated.
      * 
      */
     public List<ByteBuffer> getRecordsBinary() {
@@ -126,8 +130,9 @@ public class RawGetRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param recordsBinary  If the {@code encoding} was 'binary', then this list contains the JSON encoded records retrieved from
-     *                       the set, otherwise not populated.
+     * @param recordsBinary  If the {@code encoding} was 'binary', then this
+     *                       list contains the JSON encoded records retrieved
+     *                       from the set, otherwise not populated.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -139,8 +144,9 @@ public class RawGetRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return If the {@code encoding} was 'json', then this list contains the JSON encoded records retrieved from the set,
-     *         otherwise not populated.
+     * @return If the {@code encoding} was 'json', then this list contains the
+     *         JSON encoded records retrieved from the set, otherwise not
+     *         populated.
      * 
      */
     public List<String> getRecordsJson() {
@@ -149,7 +155,8 @@ public class RawGetRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param recordsJson  If the {@code encoding} was 'json', then this list contains the JSON encoded records retrieved from the
+     * @param recordsJson  If the {@code encoding} was 'json', then this list
+     *                     contains the JSON encoded records retrieved from the
      *                     set, otherwise not populated.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -203,7 +210,8 @@ public class RawGetRecordsResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -214,7 +222,8 @@ public class RawGetRecordsResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -253,7 +262,8 @@ public class RawGetRecordsResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

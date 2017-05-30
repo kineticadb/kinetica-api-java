@@ -14,9 +14,10 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#createRole(CreateRoleRequest)}.
- * <br />
- * <br />Creates a new role.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#createRole(CreateRoleRequest)}.
+ * <p>
+ * Creates a new role.
  */
 public class CreateRoleRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -29,7 +30,8 @@ public class CreateRoleRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -53,8 +55,10 @@ public class CreateRoleRequest implements IndexedRecord {
     /**
      * Constructs a CreateRoleRequest object with the specified parameters.
      * 
-     * @param name  Name of the role to be created. Must contain only lowercase letters, digits, and underscores, and cannot begin
-     *              with a digit. Must not be the same name as an existing user or role.
+     * @param name  Name of the role to be created. Must contain only lowercase
+     *              letters, digits, and underscores, and cannot begin with a
+     *              digit. Must not be the same name as an existing user or
+     *              role.
      * @param options  Optional parameters.
      * 
      */
@@ -65,8 +69,9 @@ public class CreateRoleRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the role to be created. Must contain only lowercase letters, digits, and underscores, and cannot begin with a
-     *         digit. Must not be the same name as an existing user or role.
+     * @return Name of the role to be created. Must contain only lowercase
+     *         letters, digits, and underscores, and cannot begin with a digit.
+     *         Must not be the same name as an existing user or role.
      * 
      */
     public String getName() {
@@ -75,8 +80,10 @@ public class CreateRoleRequest implements IndexedRecord {
 
     /**
      * 
-     * @param name  Name of the role to be created. Must contain only lowercase letters, digits, and underscores, and cannot begin
-     *              with a digit. Must not be the same name as an existing user or role.
+     * @param name  Name of the role to be created. Must contain only lowercase
+     *              letters, digits, and underscores, and cannot begin with a
+     *              digit. Must not be the same name as an existing user or
+     *              role.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -108,7 +115,8 @@ public class CreateRoleRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -119,7 +127,8 @@ public class CreateRoleRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -143,7 +152,8 @@ public class CreateRoleRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

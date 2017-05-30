@@ -14,9 +14,10 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#adminShutdown(AdminShutdownRequest)}.
- * <br />
- * <br />Exits the database server application.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#adminShutdown(AdminShutdownRequest)}.
+ * <p>
+ * Exits the database server application.
  */
 public class AdminShutdownRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -30,7 +31,8 @@ public class AdminShutdownRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -131,7 +133,8 @@ public class AdminShutdownRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -142,7 +145,8 @@ public class AdminShutdownRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -169,7 +173,8 @@ public class AdminShutdownRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

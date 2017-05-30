@@ -14,14 +14,18 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}.
- * <br />
- * <br />Retrieves records from a collection. The operation can optionally return the record IDs which can be used in certain
- * queries such as {@link com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}.
- * <br />
- * <br />This operation supports paging through the data via the {@code offset} and {@code limit} parameters.
- * <br />
- * <br />Note that when using the Java API, it is not possible to retrieve records from join tables using this operation.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}.
+ * <p>
+ * Retrieves records from a collection. The operation can optionally return the
+ * record IDs which can be used in certain queries such as {@link
+ * com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}.
+ * <p>
+ * This operation supports paging through the data via the {@code offset} and
+ * {@code limit} parameters.
+ * <p>
+ * Note that when using the Java API, it is not possible to retrieve records
+ * from join tables using this operation.
  */
 public class GetRecordsFromCollectionRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -37,7 +41,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -48,9 +53,10 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
 
     /**
-     * Specifies the encoding for returned records; either 'binary' or 'json'. Values: binary, json.
-     * <br />
-     * <br />A set of string constants for the parameter {@code encoding}.
+     * Specifies the encoding for returned records; either 'binary' or 'json'.
+     * Values: binary, json.
+
+     * A set of string constants for the parameter {@code encoding}.
      */
     public static final class Encoding {
         public static final String BINARY = "binary";
@@ -61,19 +67,19 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
 
     /**
-
-     * <br /><ul>
-     * <br />  <li> return_record_ids: If 'true' then return the internal record ID along with each returned record. Default is
-     * 'false'. Values: true, false.
-     * <br />
-     * <br /></ul>
-     * <br />A set of string constants for the parameter {@code options}.
+     * <ul>
+     *         <li> return_record_ids: If 'true' then return the internal
+     * record ID along with each returned record. Default is 'false'. Values:
+     * true, false.
+     * <p>
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * If 'true' then return the internal record ID along with each returned record. Default is 'false'. Values: true, false.
-         * <br />
+         * If 'true' then return the internal record ID along with each
+         * returned record. Default is 'false'. Values: true, false.
          */
         public static final String RETURN_RECORD_IDS = "return_record_ids";
         public static final String TRUE = "true";
@@ -90,7 +96,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
 
     /**
-     * Constructs a GetRecordsFromCollectionRequest object with default parameters.
+     * Constructs a GetRecordsFromCollectionRequest object with default
+     * parameters.
      */
     public GetRecordsFromCollectionRequest() {
         tableName = "";
@@ -99,17 +106,23 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a GetRecordsFromCollectionRequest object with the specified parameters.
+     * Constructs a GetRecordsFromCollectionRequest object with the specified
+     * parameters.
      * 
-     * @param tableName  Name of the collection or table from which records are to be retrieved. Must be an existing collection or
+     * @param tableName  Name of the collection or table from which records are
+     *                   to be retrieved. Must be an existing collection or
      *                   table.
-     * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
-     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
-     * @param limit  A positive integer indicating the maximum number of results to be returned, or END_OF_SET (-9999) to indicate
+     * @param offset  A positive integer indicating the number of initial
+     *                results to skip (this can be useful for paging through
+     *                the results).  The minimum allowed value is 0. The
+     *                maximum allowed value is MAX_INT.
+     * @param limit  A positive integer indicating the maximum number of
+     *               results to be returned, or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * @param options
      *                 <ul>
-     *                         <li> return_record_ids: If 'true' then return the internal record ID along with each returned record.
+     *                         <li> return_record_ids: If 'true' then return
+     *                 the internal record ID along with each returned record.
      *                 Default is 'false'. Values: true, false.
      *                 </ul>
      * 
@@ -123,18 +136,25 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a GetRecordsFromCollectionRequest object with the specified parameters.
+     * Constructs a GetRecordsFromCollectionRequest object with the specified
+     * parameters.
      * 
-     * @param tableName  Name of the collection or table from which records are to be retrieved. Must be an existing collection or
+     * @param tableName  Name of the collection or table from which records are
+     *                   to be retrieved. Must be an existing collection or
      *                   table.
-     * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
-     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
-     * @param limit  A positive integer indicating the maximum number of results to be returned, or END_OF_SET (-9999) to indicate
+     * @param offset  A positive integer indicating the number of initial
+     *                results to skip (this can be useful for paging through
+     *                the results).  The minimum allowed value is 0. The
+     *                maximum allowed value is MAX_INT.
+     * @param limit  A positive integer indicating the maximum number of
+     *               results to be returned, or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
-     * @param encoding  Specifies the encoding for returned records; either 'binary' or 'json'. Values: binary, json.
+     * @param encoding  Specifies the encoding for returned records; either
+     *                  'binary' or 'json'. Values: binary, json.
      * @param options
      *                 <ul>
-     *                         <li> return_record_ids: If 'true' then return the internal record ID along with each returned record.
+     *                         <li> return_record_ids: If 'true' then return
+     *                 the internal record ID along with each returned record.
      *                 Default is 'false'. Values: true, false.
      *                 </ul>
      * 
@@ -149,7 +169,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the collection or table from which records are to be retrieved. Must be an existing collection or table.
+     * @return Name of the collection or table from which records are to be
+     *         retrieved. Must be an existing collection or table.
      * 
      */
     public String getTableName() {
@@ -158,7 +179,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the collection or table from which records are to be retrieved. Must be an existing collection or
+     * @param tableName  Name of the collection or table from which records are
+     *                   to be retrieved. Must be an existing collection or
      *                   table.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -171,8 +193,10 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A positive integer indicating the number of initial results to skip (this can be useful for paging through the
-     *         results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
+     * @return A positive integer indicating the number of initial results to
+     *         skip (this can be useful for paging through the results).  The
+     *         minimum allowed value is 0. The maximum allowed value is
+     *         MAX_INT.
      * 
      */
     public long getOffset() {
@@ -181,8 +205,10 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
-     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
+     * @param offset  A positive integer indicating the number of initial
+     *                results to skip (this can be useful for paging through
+     *                the results).  The minimum allowed value is 0. The
+     *                maximum allowed value is MAX_INT.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -194,8 +220,9 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A positive integer indicating the maximum number of results to be returned, or END_OF_SET (-9999) to indicate that
-     *         the max number of results should be returned.
+     * @return A positive integer indicating the maximum number of results to
+     *         be returned, or END_OF_SET (-9999) to indicate that the max
+     *         number of results should be returned.
      * 
      */
     public long getLimit() {
@@ -204,7 +231,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param limit  A positive integer indicating the maximum number of results to be returned, or END_OF_SET (-9999) to indicate
+     * @param limit  A positive integer indicating the maximum number of
+     *               results to be returned, or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -217,7 +245,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Specifies the encoding for returned records; either 'binary' or 'json'. Values: binary, json.
+     * @return Specifies the encoding for returned records; either 'binary' or
+     *         'json'. Values: binary, json.
      * 
      */
     public String getEncoding() {
@@ -226,7 +255,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param encoding  Specifies the encoding for returned records; either 'binary' or 'json'. Values: binary, json.
+     * @param encoding  Specifies the encoding for returned records; either
+     *                  'binary' or 'json'. Values: binary, json.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -240,8 +270,9 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * 
      * @return
      *         <ul>
-     *                 <li> return_record_ids: If 'true' then return the internal record ID along with each returned record. Default
-     *         is 'false'. Values: true, false.
+     *                 <li> return_record_ids: If 'true' then return the
+     *         internal record ID along with each returned record. Default is
+     *         'false'. Values: true, false.
      *         </ul>
      * 
      */
@@ -253,7 +284,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * 
      * @param options
      *                 <ul>
-     *                         <li> return_record_ids: If 'true' then return the internal record ID along with each returned record.
+     *                         <li> return_record_ids: If 'true' then return
+     *                 the internal record ID along with each returned record.
      *                 Default is 'false'. Values: true, false.
      *                 </ul>
      * 
@@ -266,7 +298,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -277,7 +310,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -310,7 +344,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

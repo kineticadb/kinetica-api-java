@@ -14,21 +14,31 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#aggregateStatisticsByRange(AggregateStatisticsByRangeRequest)}.
- * <br />
- * <br />Divides the given set into bins and calculates statistics of the values of a value-column in each bin.  The bins are based
- * on the values of a given binning-column.  The statistics that may be requested are mean, stdv (standard deviation), variance,
- * skew, kurtosis, sum, min, max, first, last and weighted average. In addition to the requested statistics the count of total
- * samples in each bin is returned. This counts vector is just the histogram of the column used to divide the set members into bins.
- * The weighted average statistic requires a weight_column to be specified in {@code options}. The weighted average is then defined
- * as the sum of the products of the value column times the weight column divided by the sum of the weight column.
- * <br />
- * <br />There are two methods for binning the set members. In the first, which can be used for numeric valued binning-columns, a
- * min, max and interval are specified. The number of bins, nbins, is the integer upper bound of (max-min)/interval. Values that
- * fall in the range [min+n\*interval,min+(n+1)\*interval) are placed in the nth bin where n ranges from 0..nbin-2. The final bin is
- * [min+(nbin-1)\*interval,max]. In the second method, {@code options} bin_values specifies a list of binning column values.
- * Binning-columns whose value matches the nth member of the bin_values list are placed in the nth bin. When a list is provided the
- * binning-column must be of type string or int.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#aggregateStatisticsByRange(AggregateStatisticsByRangeRequest)}.
+ * <p>
+ * Divides the given set into bins and calculates statistics of the values of a
+ * value-column in each bin.  The bins are based on the values of a given
+ * binning-column.  The statistics that may be requested are mean, stdv
+ * (standard deviation), variance, skew, kurtosis, sum, min, max, first, last
+ * and weighted average. In addition to the requested statistics the count of
+ * total samples in each bin is returned. This counts vector is just the
+ * histogram of the column used to divide the set members into bins. The
+ * weighted average statistic requires a weight_column to be specified in
+ * {@code options}. The weighted average is then defined as the sum of the
+ * products of the value column times the weight column divided by the sum of
+ * the weight column.
+ * <p>
+ * There are two methods for binning the set members. In the first, which can
+ * be used for numeric valued binning-columns, a min, max and interval are
+ * specified. The number of bins, nbins, is the integer upper bound of
+ * (max-min)/interval. Values that fall in the range
+ * [min+n\*interval,min+(n+1)\*interval) are placed in the nth bin where n
+ * ranges from 0..nbin-2. The final bin is [min+(nbin-1)\*interval,max]. In the
+ * second method, {@code options} bin_values specifies a list of binning column
+ * values. Binning-columns whose value matches the nth member of the bin_values
+ * list are placed in the nth bin. When a list is provided the binning-column
+ * must be of type string or int.
  */
 public class AggregateStatisticsByRangeRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -48,7 +58,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -60,31 +71,37 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
     /**
      * Map of optional parameters:
-     * <br /><ul>
-     * <br />  <li> additional_column_names: A list of comma separated value-column names over which statistics can be accumulated
-     * along with the primary value_column.
-     * <br />  <li> bin_values: A list of comma separated binning-column values. Values that match the nth bin_values value are
-     * placed in the nth bin.
-     * <br />  <li> weight_column_name: Name of the column used as weighting column for the weighted_average statistic.
-     * <br />  <li> order_column_name: Name of the column used for candlestick charting techniques.
-     * <br /></ul>
-     * <br />A set of string constants for the parameter {@code options}.
+     * <ul>
+     *         <li> additional_column_names: A list of comma separated
+     * value-column names over which statistics can be accumulated along with
+     * the primary value_column.
+     *         <li> bin_values: A list of comma separated binning-column
+     * values. Values that match the nth bin_values value are placed in the nth
+     * bin.
+     *         <li> weight_column_name: Name of the column used as weighting
+     * column for the weighted_average statistic.
+     *         <li> order_column_name: Name of the column used for candlestick
+     * charting techniques.
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * A list of comma separated value-column names over which statistics can be accumulated along with the primary
-         * value_column.
+         * A list of comma separated value-column names over which statistics
+         * can be accumulated along with the primary value_column.
          */
         public static final String ADDITIONAL_COLUMN_NAMES = "additional_column_names";
 
         /**
-         * A list of comma separated binning-column values. Values that match the nth bin_values value are placed in the nth bin.
+         * A list of comma separated binning-column values. Values that match
+         * the nth bin_values value are placed in the nth bin.
          */
         public static final String BIN_VALUES = "bin_values";
 
         /**
-         * Name of the column used as weighting column for the weighted_average statistic.
+         * Name of the column used as weighting column for the weighted_average
+         * statistic.
          */
         public static final String WEIGHT_COLUMN_NAME = "weight_column_name";
 
@@ -108,7 +125,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
 
     /**
-     * Constructs an AggregateStatisticsByRangeRequest object with default parameters.
+     * Constructs an AggregateStatisticsByRangeRequest object with default
+     * parameters.
      */
     public AggregateStatisticsByRangeRequest() {
         tableName = "";
@@ -120,28 +138,38 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs an AggregateStatisticsByRangeRequest object with the specified parameters.
+     * Constructs an AggregateStatisticsByRangeRequest object with the
+     * specified parameters.
      * 
-     * @param tableName  Name of the table on which the ranged-statistics operation will be performed.
-     * @param selectExpression  For a non-empty expression statistics are calculated for those records for which the expression is
-     *                          true.
-     * @param columnName  Name of the binning-column used to divide the set samples into bins.
-     * @param valueColumnName  Name of the value-column for which statistics are to be computed.
-     * @param stats  A string of comma separated list of the statistics to calculate, e.g. 'sum,mean'. Available statistics: mean,
+     * @param tableName  Name of the table on which the ranged-statistics
+     *                   operation will be performed.
+     * @param selectExpression  For a non-empty expression statistics are
+     *                          calculated for those records for which the
+     *                          expression is true.
+     * @param columnName  Name of the binning-column used to divide the set
+     *                    samples into bins.
+     * @param valueColumnName  Name of the value-column for which statistics
+     *                         are to be computed.
+     * @param stats  A string of comma separated list of the statistics to
+     *               calculate, e.g. 'sum,mean'. Available statistics: mean,
      *               stdv (standard deviation), variance, skew, kurtosis, sum.
      * @param start  The lower bound of the binning-column.
      * @param end  The upper bound of the binning-column.
-     * @param interval  The interval of a bin. Set members fall into bin i if the binning-column falls in the range
+     * @param interval  The interval of a bin. Set members fall into bin i if
+     *                  the binning-column falls in the range
      *                  [start+interval``*``i, start+interval``*``(i+1)).
      * @param options  Map of optional parameters:
      *                 <ul>
-     *                         <li> additional_column_names: A list of comma separated value-column names over which statistics can
+     *                         <li> additional_column_names: A list of comma
+     *                 separated value-column names over which statistics can
      *                 be accumulated along with the primary value_column.
-     *                         <li> bin_values: A list of comma separated binning-column values. Values that match the nth
+     *                         <li> bin_values: A list of comma separated
+     *                 binning-column values. Values that match the nth
      *                 bin_values value are placed in the nth bin.
-     *                         <li> weight_column_name: Name of the column used as weighting column for the weighted_average
-     *                 statistic.
-     *                         <li> order_column_name: Name of the column used for candlestick charting techniques.
+     *                         <li> weight_column_name: Name of the column used
+     *                 as weighting column for the weighted_average statistic.
+     *                         <li> order_column_name: Name of the column used
+     *                 for candlestick charting techniques.
      *                 </ul>
      * 
      */
@@ -159,7 +187,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the ranged-statistics operation will be performed.
+     * @return Name of the table on which the ranged-statistics operation will
+     *         be performed.
      * 
      */
     public String getTableName() {
@@ -168,7 +197,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the ranged-statistics operation will be performed.
+     * @param tableName  Name of the table on which the ranged-statistics
+     *                   operation will be performed.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -180,7 +210,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return For a non-empty expression statistics are calculated for those records for which the expression is true.
+     * @return For a non-empty expression statistics are calculated for those
+     *         records for which the expression is true.
      * 
      */
     public String getSelectExpression() {
@@ -189,8 +220,9 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param selectExpression  For a non-empty expression statistics are calculated for those records for which the expression is
-     *                          true.
+     * @param selectExpression  For a non-empty expression statistics are
+     *                          calculated for those records for which the
+     *                          expression is true.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -202,7 +234,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the binning-column used to divide the set samples into bins.
+     * @return Name of the binning-column used to divide the set samples into
+     *         bins.
      * 
      */
     public String getColumnName() {
@@ -211,7 +244,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnName  Name of the binning-column used to divide the set samples into bins.
+     * @param columnName  Name of the binning-column used to divide the set
+     *                    samples into bins.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -223,7 +257,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the value-column for which statistics are to be computed.
+     * @return Name of the value-column for which statistics are to be
+     *         computed.
      * 
      */
     public String getValueColumnName() {
@@ -232,7 +267,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param valueColumnName  Name of the value-column for which statistics are to be computed.
+     * @param valueColumnName  Name of the value-column for which statistics
+     *                         are to be computed.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -244,8 +280,9 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A string of comma separated list of the statistics to calculate, e.g. 'sum,mean'. Available statistics: mean, stdv
-     *         (standard deviation), variance, skew, kurtosis, sum.
+     * @return A string of comma separated list of the statistics to calculate,
+     *         e.g. 'sum,mean'. Available statistics: mean, stdv (standard
+     *         deviation), variance, skew, kurtosis, sum.
      * 
      */
     public String getStats() {
@@ -254,7 +291,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param stats  A string of comma separated list of the statistics to calculate, e.g. 'sum,mean'. Available statistics: mean,
+     * @param stats  A string of comma separated list of the statistics to
+     *               calculate, e.g. 'sum,mean'. Available statistics: mean,
      *               stdv (standard deviation), variance, skew, kurtosis, sum.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -309,7 +347,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The interval of a bin. Set members fall into bin i if the binning-column falls in the range [start+interval``*``i,
+     * @return The interval of a bin. Set members fall into bin i if the
+     *         binning-column falls in the range [start+interval``*``i,
      *         start+interval``*``(i+1)).
      * 
      */
@@ -319,7 +358,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param interval  The interval of a bin. Set members fall into bin i if the binning-column falls in the range
+     * @param interval  The interval of a bin. Set members fall into bin i if
+     *                  the binning-column falls in the range
      *                  [start+interval``*``i, start+interval``*``(i+1)).
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -334,12 +374,16 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      * 
      * @return Map of optional parameters:
      *         <ul>
-     *                 <li> additional_column_names: A list of comma separated value-column names over which statistics can be
-     *         accumulated along with the primary value_column.
-     *                 <li> bin_values: A list of comma separated binning-column values. Values that match the nth bin_values value
-     *         are placed in the nth bin.
-     *                 <li> weight_column_name: Name of the column used as weighting column for the weighted_average statistic.
-     *                 <li> order_column_name: Name of the column used for candlestick charting techniques.
+     *                 <li> additional_column_names: A list of comma separated
+     *         value-column names over which statistics can be accumulated
+     *         along with the primary value_column.
+     *                 <li> bin_values: A list of comma separated
+     *         binning-column values. Values that match the nth bin_values
+     *         value are placed in the nth bin.
+     *                 <li> weight_column_name: Name of the column used as
+     *         weighting column for the weighted_average statistic.
+     *                 <li> order_column_name: Name of the column used for
+     *         candlestick charting techniques.
      *         </ul>
      * 
      */
@@ -351,13 +395,16 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      * 
      * @param options  Map of optional parameters:
      *                 <ul>
-     *                         <li> additional_column_names: A list of comma separated value-column names over which statistics can
+     *                         <li> additional_column_names: A list of comma
+     *                 separated value-column names over which statistics can
      *                 be accumulated along with the primary value_column.
-     *                         <li> bin_values: A list of comma separated binning-column values. Values that match the nth
+     *                         <li> bin_values: A list of comma separated
+     *                 binning-column values. Values that match the nth
      *                 bin_values value are placed in the nth bin.
-     *                         <li> weight_column_name: Name of the column used as weighting column for the weighted_average
-     *                 statistic.
-     *                         <li> order_column_name: Name of the column used for candlestick charting techniques.
+     *                         <li> weight_column_name: Name of the column used
+     *                 as weighting column for the weighted_average statistic.
+     *                         <li> order_column_name: Name of the column used
+     *                 for candlestick charting techniques.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -369,7 +416,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -380,7 +428,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -425,7 +474,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

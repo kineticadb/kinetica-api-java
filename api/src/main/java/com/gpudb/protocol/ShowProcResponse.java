@@ -16,7 +16,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#showProc(ShowProcRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#showProc(ShowProcRequest)}.
  */
 public class ShowProcResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -33,7 +34,8 @@ public class ShowProcResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -45,8 +47,8 @@ public class ShowProcResponse implements IndexedRecord {
 
     /**
      * The execution modes of the procs named in {@code procNames}. Values: .
-     * <br />
-     * <br />A set of string constants for the parameter {@code executionModes}.
+
+     * A set of string constants for the parameter {@code executionModes}.
      */
     public static final class ExecutionModes {
 
@@ -100,7 +102,8 @@ public class ShowProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The execution modes of the procs named in {@code procNames}. Values: .
+     * @return The execution modes of the procs named in {@code procNames}.
+     *         Values: .
      * 
      */
     public List<String> getExecutionModes() {
@@ -109,7 +112,8 @@ public class ShowProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @param executionModes  The execution modes of the procs named in {@code procNames}. Values: .
+     * @param executionModes  The execution modes of the procs named in {@code
+     *                        procNames}. Values: .
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -121,7 +125,8 @@ public class ShowProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Maps of the files that make up the procs named in {@code procNames}.
+     * @return Maps of the files that make up the procs named in {@code
+     *         procNames}.
      * 
      */
     public List<Map<String, ByteBuffer>> getFiles() {
@@ -130,7 +135,8 @@ public class ShowProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @param files  Maps of the files that make up the procs named in {@code procNames}.
+     * @param files  Maps of the files that make up the procs named in {@code
+     *               procNames}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -142,7 +148,8 @@ public class ShowProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The commands (excluding arguments) that will be invoked when the procs named in {@code procNames} are executed.
+     * @return The commands (excluding arguments) that will be invoked when the
+     *         procs named in {@code procNames} are executed.
      * 
      */
     public List<String> getCommands() {
@@ -151,8 +158,8 @@ public class ShowProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @param commands  The commands (excluding arguments) that will be invoked when the procs named in {@code procNames} are
-     *                  executed.
+     * @param commands  The commands (excluding arguments) that will be invoked
+     *                  when the procs named in {@code procNames} are executed.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -164,7 +171,8 @@ public class ShowProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Arrays of command-line arguments that will be passed to the procs named in {@code procNames} when executed.
+     * @return Arrays of command-line arguments that will be passed to the
+     *         procs named in {@code procNames} when executed.
      * 
      */
     public List<List<String>> getArgs() {
@@ -173,7 +181,8 @@ public class ShowProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @param args  Arrays of command-line arguments that will be passed to the procs named in {@code procNames} when executed.
+     * @param args  Arrays of command-line arguments that will be passed to the
+     *              procs named in {@code procNames} when executed.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -185,7 +194,8 @@ public class ShowProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The optional parameters for the procs named in {@code procNames}.
+     * @return The optional parameters for the procs named in {@code
+     *         procNames}.
      * 
      */
     public List<Map<String, String>> getOptions() {
@@ -194,7 +204,8 @@ public class ShowProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @param options  The optional parameters for the procs named in {@code procNames}.
+     * @param options  The optional parameters for the procs named in {@code
+     *                 procNames}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -205,7 +216,8 @@ public class ShowProcResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -216,7 +228,8 @@ public class ShowProcResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -252,7 +265,8 @@ public class ShowProcResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

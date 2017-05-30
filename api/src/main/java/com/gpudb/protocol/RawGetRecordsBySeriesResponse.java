@@ -15,7 +15,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#getRecordsBySeriesRaw(GetRecordsBySeriesRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#getRecordsBySeriesRaw(GetRecordsBySeriesRequest)}.
  */
 public class RawGetRecordsBySeriesResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -31,7 +32,8 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -48,14 +50,16 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
 
 
     /**
-     * Constructs a RawGetRecordsBySeriesResponse object with default parameters.
+     * Constructs a RawGetRecordsBySeriesResponse object with default
+     * parameters.
      */
     public RawGetRecordsBySeriesResponse() {
     }
 
     /**
      * 
-     * @return The table name (one per series/track) of the returned series/tracks.
+     * @return The table name (one per series/track) of the returned
+     *         series/tracks.
      * 
      */
     public List<String> getTableNames() {
@@ -64,7 +68,8 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  The table name (one per series/track) of the returned series/tracks.
+     * @param tableNames  The table name (one per series/track) of the returned
+     *                    series/tracks.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -76,8 +81,10 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The type IDs (one per series/track) of the returned series/tracks. This is useful when {@code tableName} is a
-     *         collection and the returned series/tracks belong to tables with different types.
+     * @return The type IDs (one per series/track) of the returned
+     *         series/tracks. This is useful when {@code tableName} is a
+     *         collection and the returned series/tracks belong to tables with
+     *         different types.
      * 
      */
     public List<String> getTypeNames() {
@@ -86,8 +93,10 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param typeNames  The type IDs (one per series/track) of the returned series/tracks. This is useful when {@code tableName} is
-     *                   a collection and the returned series/tracks belong to tables with different types.
+     * @param typeNames  The type IDs (one per series/track) of the returned
+     *                   series/tracks. This is useful when {@code tableName}
+     *                   is a collection and the returned series/tracks belong
+     *                   to tables with different types.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -99,7 +108,8 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The type schemas (one per series/track) of the returned series/tracks.
+     * @return The type schemas (one per series/track) of the returned
+     *         series/tracks.
      * 
      */
     public List<String> getTypeSchemas() {
@@ -108,7 +118,8 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param typeSchemas  The type schemas (one per series/track) of the returned series/tracks.
+     * @param typeSchemas  The type schemas (one per series/track) of the
+     *                     returned series/tracks.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -120,8 +131,10 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
 
     /**
      * 
-     * @return If the encoding parameter of the request was 'binary' then this list-of-lists contains the binary encoded records for
-     *         each object (inner list) in each series/track (outer list). Otherwise, empty list-of-lists.
+     * @return If the encoding parameter of the request was 'binary' then this
+     *         list-of-lists contains the binary encoded records for each
+     *         object (inner list) in each series/track (outer list).
+     *         Otherwise, empty list-of-lists.
      * 
      */
     public List<List<ByteBuffer>> getListRecordsBinary() {
@@ -130,9 +143,11 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param listRecordsBinary  If the encoding parameter of the request was 'binary' then this list-of-lists contains the binary
-     *                           encoded records for each object (inner list) in each series/track (outer list). Otherwise, empty
-     *                           list-of-lists.
+     * @param listRecordsBinary  If the encoding parameter of the request was
+     *                           'binary' then this list-of-lists contains the
+     *                           binary encoded records for each object (inner
+     *                           list) in each series/track (outer list).
+     *                           Otherwise, empty list-of-lists.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -144,8 +159,10 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
 
     /**
      * 
-     * @return If the encoding parameter of the request was 'json' then this list-of-lists contains the json encoded records for
-     *         each object (inner list) in each series/track (outer list). Otherwise, empty list-of-lists.
+     * @return If the encoding parameter of the request was 'json' then this
+     *         list-of-lists contains the json encoded records for each object
+     *         (inner list) in each series/track (outer list). Otherwise, empty
+     *         list-of-lists.
      * 
      */
     public List<List<String>> getListRecordsJson() {
@@ -154,8 +171,10 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param listRecordsJson  If the encoding parameter of the request was 'json' then this list-of-lists contains the json encoded
-     *                         records for each object (inner list) in each series/track (outer list). Otherwise, empty
+     * @param listRecordsJson  If the encoding parameter of the request was
+     *                         'json' then this list-of-lists contains the json
+     *                         encoded records for each object (inner list) in
+     *                         each series/track (outer list). Otherwise, empty
      *                         list-of-lists.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -167,7 +186,8 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -178,7 +198,8 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -211,7 +232,8 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

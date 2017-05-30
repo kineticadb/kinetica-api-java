@@ -12,7 +12,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#grantPermissionTable(GrantPermissionTableRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#grantPermissionTable(GrantPermissionTableRequest)}.
  */
 public class GrantPermissionTableResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -27,7 +28,8 @@ public class GrantPermissionTableResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -43,7 +45,8 @@ public class GrantPermissionTableResponse implements IndexedRecord {
 
 
     /**
-     * Constructs a GrantPermissionTableResponse object with default parameters.
+     * Constructs a GrantPermissionTableResponse object with default
+     * parameters.
      */
     public GrantPermissionTableResponse() {
     }
@@ -133,7 +136,8 @@ public class GrantPermissionTableResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -144,7 +148,8 @@ public class GrantPermissionTableResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -174,7 +179,8 @@ public class GrantPermissionTableResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

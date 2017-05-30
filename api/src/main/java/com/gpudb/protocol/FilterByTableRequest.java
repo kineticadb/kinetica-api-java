@@ -14,13 +14,18 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#filterByTable(FilterByTableRequest)}.
- * <br />
- * <br />Filters objects in one table based on objects in another table. The user must specify matching column types from the two
- * tables (i.e. the target table from which objects will be filtered and the source table based on which the filter will be
- * created); the column names need not be the same. If a {@code viewName} is specified, then the filtered objects will then be put
- * in a newly created view. The operation is synchronous, meaning that a response will not be returned until all objects are fully
- * available in the result view. The return value contains the count (i.e. the size) of the resulting view.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#filterByTable(FilterByTableRequest)}.
+ * <p>
+ * Filters objects in one table based on objects in another table. The user
+ * must specify matching column types from the two tables (i.e. the target
+ * table from which objects will be filtered and the source table based on
+ * which the filter will be created); the column names need not be the same. If
+ * a {@code viewName} is specified, then the filtered objects will then be put
+ * in a newly created view. The operation is synchronous, meaning that a
+ * response will not be returned until all objects are fully available in the
+ * result view. The return value contains the count (i.e. the size) of the
+ * resulting view.
  */
 public class FilterByTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -37,7 +42,8 @@ public class FilterByTableRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -49,48 +55,56 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * <br /><ul>
-     * <br />  <li> filter_mode: String indicating the filter mode, either 'in_table' or 'not_in_table'. Values: in_table,
+     * <ul>
+     *         <li> filter_mode: String indicating the filter mode, either
+     * {@code in_table} or {@code not_in_table}. Values: in_table,
      * not_in_table.
-     * <br />
-     * <br />  <li> mode: Mode - should be either 'spatial' or 'normal'. Values: normal, spatial.
-     * <br />
-     * <br />  <li> buffer: Buffer size, in meters. Only relevant for 'spatial' mode.
-     * <br />  <li> buffer_method: Method used to buffer polygons.  Only relevant for 'spatial' mode. Values: normal, geos.
-     * <br />
-     * <br />  <li> max_partition_size: Maximum number of points in a partition. Only relevant for 'spatial' mode.
-     * <br />  <li> max_partition_score: Maximum number of points * edges in a partition. Only relevant for 'spatial' mode.
-     * <br />  <li> x_column_name: Name of column containing x value of point being filtered in spatial mode.
-     * <br />  <li> y_column_name: Name of column containing x value of point being filtered in spatial mode.
-     * <br /></ul>
-     * <br />A set of string constants for the parameter {@code options}.
+     * <p>
+     *         <li> mode: Mode - should be either {@code spatial} or {@code
+     * normal}. Values: normal, spatial.
+     * <p>
+     *         <li> buffer: Buffer size, in meters. Only relevant for {@code
+     * spatial} mode.
+     *         <li> buffer_method: Method used to buffer polygons.  Only
+     * relevant for {@code spatial} mode. Values: normal, geos.
+     * <p>
+     *         <li> max_partition_size: Maximum number of points in a
+     * partition. Only relevant for {@code spatial} mode.
+     *         <li> max_partition_score: Maximum number of points * edges in a
+     * partition. Only relevant for {@code spatial} mode.
+     *         <li> x_column_name: Name of column containing x value of point
+     * being filtered in {@code spatial} mode.
+     *         <li> y_column_name: Name of column containing y value of point
+     * being filtered in {@code spatial} mode.
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * String indicating the filter mode, either 'in_table' or 'not_in_table'. Values: in_table, not_in_table.
-         * <br />
+         * String indicating the filter mode, either {@code in_table} or {@code
+         * not_in_table}. Values: in_table, not_in_table.
          */
         public static final String FILTER_MODE = "filter_mode";
         public static final String IN_TABLE = "in_table";
         public static final String NOT_IN_TABLE = "not_in_table";
 
         /**
-         * Mode - should be either 'spatial' or 'normal'. Values: normal, spatial.
-         * <br />
+         * Mode - should be either {@code spatial} or {@code normal}. Values:
+         * normal, spatial.
          */
         public static final String MODE = "mode";
         public static final String NORMAL = "normal";
         public static final String SPATIAL = "spatial";
 
         /**
-         * Buffer size, in meters. Only relevant for 'spatial' mode.
+         * Buffer size, in meters. Only relevant for {@code spatial} mode.
          */
         public static final String BUFFER = "buffer";
 
         /**
-         * Method used to buffer polygons.  Only relevant for 'spatial' mode. Values: normal, geos.
-         * <br />
+         * Method used to buffer polygons.  Only relevant for {@code spatial}
+         * mode. Values: normal, geos.
          */
         public static final String BUFFER_METHOD = "buffer_method";
 
@@ -100,22 +114,26 @@ public class FilterByTableRequest implements IndexedRecord {
         public static final String GEOS = "geos";
 
         /**
-         * Maximum number of points in a partition. Only relevant for 'spatial' mode.
+         * Maximum number of points in a partition. Only relevant for {@code
+         * spatial} mode.
          */
         public static final String MAX_PARTITION_SIZE = "max_partition_size";
 
         /**
-         * Maximum number of points * edges in a partition. Only relevant for 'spatial' mode.
+         * Maximum number of points * edges in a partition. Only relevant for
+         * {@code spatial} mode.
          */
         public static final String MAX_PARTITION_SCORE = "max_partition_score";
 
         /**
-         * Name of column containing x value of point being filtered in spatial mode.
+         * Name of column containing x value of point being filtered in {@code
+         * spatial} mode.
          */
         public static final String X_COLUMN_NAME = "x_column_name";
 
         /**
-         * Name of column containing x value of point being filtered in spatial mode.
+         * Name of column containing y value of point being filtered in {@code
+         * spatial} mode.
          */
         public static final String Y_COLUMN_NAME = "y_column_name";
 
@@ -145,28 +163,46 @@ public class FilterByTableRequest implements IndexedRecord {
     /**
      * Constructs a FilterByTableRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table whose data will be filtered. Must be an existing table.
-     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *                  collection, table or view.
-     * @param columnName  Name of the column by whose value the data will be filtered from the table designated by {@code
+     * @param tableName  Name of the table whose data will be filtered. Must be
+     *                   an existing table.
+     * @param viewName  If provided, then this will be the name of the view
+     *                  containing the results. Has the same naming
+     *                  restrictions as <a
+     *                  href="../../../../../concepts/tables.html"
+     *                  target="_top">tables</a>.
+     * @param columnName  Name of the column by whose value the data will be
+     *                    filtered from the table designated by {@code
      *                    tableName}.
-     * @param sourceTableName  Name of the table whose data will be compared against in the table called {@code tableName}. Must be
-     *                         an existing table.
-     * @param sourceTableColumnName  Name of the column in the {@code sourceTableName} whose values will be used as the filter for
-     *                               table {@code tableName}. Must match the type of the {@code columnName}.
+     * @param sourceTableName  Name of the table whose data will be compared
+     *                         against in the table called {@code tableName}.
+     *                         Must be an existing table.
+     * @param sourceTableColumnName  Name of the column in the {@code
+     *                               sourceTableName} whose values will be used
+     *                               as the filter for table {@code tableName}.
+     *                               Must match the type of the {@code
+     *                               columnName}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> filter_mode: String indicating the filter mode, either 'in_table' or 'not_in_table'. Values:
-     *                 in_table, not_in_table.
-     *                         <li> mode: Mode - should be either 'spatial' or 'normal'. Values: normal, spatial.
-     *                         <li> buffer: Buffer size, in meters. Only relevant for 'spatial' mode.
-     *                         <li> buffer_method: Method used to buffer polygons.  Only relevant for 'spatial' mode. Values:
-     *                 normal, geos.
-     *                         <li> max_partition_size: Maximum number of points in a partition. Only relevant for 'spatial' mode.
-     *                         <li> max_partition_score: Maximum number of points * edges in a partition. Only relevant for
-     *                 'spatial' mode.
-     *                         <li> x_column_name: Name of column containing x value of point being filtered in spatial mode.
-     *                         <li> y_column_name: Name of column containing x value of point being filtered in spatial mode.
+     *                         <li> filter_mode: String indicating the filter
+     *                 mode, either {@code in_table} or {@code not_in_table}.
+     *                 Values: in_table, not_in_table.
+     *                         <li> mode: Mode - should be either {@code
+     *                 spatial} or {@code normal}. Values: normal, spatial.
+     *                         <li> buffer: Buffer size, in meters. Only
+     *                 relevant for {@code spatial} mode.
+     *                         <li> buffer_method: Method used to buffer
+     *                 polygons.  Only relevant for {@code spatial} mode.
+     *                 Values: normal, geos.
+     *                         <li> max_partition_size: Maximum number of
+     *                 points in a partition. Only relevant for {@code spatial}
+     *                 mode.
+     *                         <li> max_partition_score: Maximum number of
+     *                 points * edges in a partition. Only relevant for {@code
+     *                 spatial} mode.
+     *                         <li> x_column_name: Name of column containing x
+     *                 value of point being filtered in {@code spatial} mode.
+     *                         <li> y_column_name: Name of column containing y
+     *                 value of point being filtered in {@code spatial} mode.
      *                 </ul>
      * 
      */
@@ -181,7 +217,8 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table whose data will be filtered. Must be an existing table.
+     * @return Name of the table whose data will be filtered. Must be an
+     *         existing table.
      * 
      */
     public String getTableName() {
@@ -190,7 +227,8 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table whose data will be filtered. Must be an existing table.
+     * @param tableName  Name of the table whose data will be filtered. Must be
+     *                   an existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -202,8 +240,10 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *         collection, table or view.
+     * @return If provided, then this will be the name of the view containing
+     *         the results. Has the same naming restrictions as <a
+     *         href="../../../../../concepts/tables.html"
+     *         target="_top">tables</a>.
      * 
      */
     public String getViewName() {
@@ -212,8 +252,11 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *                  collection, table or view.
+     * @param viewName  If provided, then this will be the name of the view
+     *                  containing the results. Has the same naming
+     *                  restrictions as <a
+     *                  href="../../../../../concepts/tables.html"
+     *                  target="_top">tables</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -225,7 +268,8 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the column by whose value the data will be filtered from the table designated by {@code tableName}.
+     * @return Name of the column by whose value the data will be filtered from
+     *         the table designated by {@code tableName}.
      * 
      */
     public String getColumnName() {
@@ -234,7 +278,8 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnName  Name of the column by whose value the data will be filtered from the table designated by {@code
+     * @param columnName  Name of the column by whose value the data will be
+     *                    filtered from the table designated by {@code
      *                    tableName}.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -247,8 +292,8 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table whose data will be compared against in the table called {@code tableName}. Must be an existing
-     *         table.
+     * @return Name of the table whose data will be compared against in the
+     *         table called {@code tableName}. Must be an existing table.
      * 
      */
     public String getSourceTableName() {
@@ -257,8 +302,9 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param sourceTableName  Name of the table whose data will be compared against in the table called {@code tableName}. Must be
-     *                         an existing table.
+     * @param sourceTableName  Name of the table whose data will be compared
+     *                         against in the table called {@code tableName}.
+     *                         Must be an existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -270,8 +316,9 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the column in the {@code sourceTableName} whose values will be used as the filter for table {@code
-     *         tableName}. Must match the type of the {@code columnName}.
+     * @return Name of the column in the {@code sourceTableName} whose values
+     *         will be used as the filter for table {@code tableName}. Must
+     *         match the type of the {@code columnName}.
      * 
      */
     public String getSourceTableColumnName() {
@@ -280,8 +327,11 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param sourceTableColumnName  Name of the column in the {@code sourceTableName} whose values will be used as the filter for
-     *                               table {@code tableName}. Must match the type of the {@code columnName}.
+     * @param sourceTableColumnName  Name of the column in the {@code
+     *                               sourceTableName} whose values will be used
+     *                               as the filter for table {@code tableName}.
+     *                               Must match the type of the {@code
+     *                               columnName}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -295,15 +345,23 @@ public class FilterByTableRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> filter_mode: String indicating the filter mode, either 'in_table' or 'not_in_table'. Values: in_table,
-     *         not_in_table.
-     *                 <li> mode: Mode - should be either 'spatial' or 'normal'. Values: normal, spatial.
-     *                 <li> buffer: Buffer size, in meters. Only relevant for 'spatial' mode.
-     *                 <li> buffer_method: Method used to buffer polygons.  Only relevant for 'spatial' mode. Values: normal, geos.
-     *                 <li> max_partition_size: Maximum number of points in a partition. Only relevant for 'spatial' mode.
-     *                 <li> max_partition_score: Maximum number of points * edges in a partition. Only relevant for 'spatial' mode.
-     *                 <li> x_column_name: Name of column containing x value of point being filtered in spatial mode.
-     *                 <li> y_column_name: Name of column containing x value of point being filtered in spatial mode.
+     *                 <li> filter_mode: String indicating the filter mode,
+     *         either {@code in_table} or {@code not_in_table}. Values:
+     *         in_table, not_in_table.
+     *                 <li> mode: Mode - should be either {@code spatial} or
+     *         {@code normal}. Values: normal, spatial.
+     *                 <li> buffer: Buffer size, in meters. Only relevant for
+     *         {@code spatial} mode.
+     *                 <li> buffer_method: Method used to buffer polygons.
+     *         Only relevant for {@code spatial} mode. Values: normal, geos.
+     *                 <li> max_partition_size: Maximum number of points in a
+     *         partition. Only relevant for {@code spatial} mode.
+     *                 <li> max_partition_score: Maximum number of points *
+     *         edges in a partition. Only relevant for {@code spatial} mode.
+     *                 <li> x_column_name: Name of column containing x value of
+     *         point being filtered in {@code spatial} mode.
+     *                 <li> y_column_name: Name of column containing y value of
+     *         point being filtered in {@code spatial} mode.
      *         </ul>
      * 
      */
@@ -315,17 +373,26 @@ public class FilterByTableRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> filter_mode: String indicating the filter mode, either 'in_table' or 'not_in_table'. Values:
-     *                 in_table, not_in_table.
-     *                         <li> mode: Mode - should be either 'spatial' or 'normal'. Values: normal, spatial.
-     *                         <li> buffer: Buffer size, in meters. Only relevant for 'spatial' mode.
-     *                         <li> buffer_method: Method used to buffer polygons.  Only relevant for 'spatial' mode. Values:
-     *                 normal, geos.
-     *                         <li> max_partition_size: Maximum number of points in a partition. Only relevant for 'spatial' mode.
-     *                         <li> max_partition_score: Maximum number of points * edges in a partition. Only relevant for
-     *                 'spatial' mode.
-     *                         <li> x_column_name: Name of column containing x value of point being filtered in spatial mode.
-     *                         <li> y_column_name: Name of column containing x value of point being filtered in spatial mode.
+     *                         <li> filter_mode: String indicating the filter
+     *                 mode, either {@code in_table} or {@code not_in_table}.
+     *                 Values: in_table, not_in_table.
+     *                         <li> mode: Mode - should be either {@code
+     *                 spatial} or {@code normal}. Values: normal, spatial.
+     *                         <li> buffer: Buffer size, in meters. Only
+     *                 relevant for {@code spatial} mode.
+     *                         <li> buffer_method: Method used to buffer
+     *                 polygons.  Only relevant for {@code spatial} mode.
+     *                 Values: normal, geos.
+     *                         <li> max_partition_size: Maximum number of
+     *                 points in a partition. Only relevant for {@code spatial}
+     *                 mode.
+     *                         <li> max_partition_score: Maximum number of
+     *                 points * edges in a partition. Only relevant for {@code
+     *                 spatial} mode.
+     *                         <li> x_column_name: Name of column containing x
+     *                 value of point being filtered in {@code spatial} mode.
+     *                         <li> y_column_name: Name of column containing y
+     *                 value of point being filtered in {@code spatial} mode.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -337,7 +404,8 @@ public class FilterByTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -348,7 +416,8 @@ public class FilterByTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -384,7 +453,8 @@ public class FilterByTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

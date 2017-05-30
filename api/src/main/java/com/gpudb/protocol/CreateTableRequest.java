@@ -14,15 +14,19 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#createTable(CreateTableRequest)}.
- * <br />
- * <br />Creates a new table or collection. If a new table is being created, the type of the table is given by {@code typeId}, which
- * must the be the ID of a currently registered type (i.e. one created via {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}).
- * The table will be created inside a collection if the option {@code collection_name} is specified. If that collection does not
- * already exist, it will be created.
- * <br />
- * <br />To create a new collection, specify the name of the collection in {@code tableName} and set the {@code is_collection}
- * option to {@code true}; {@code typeId} will be ignored.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#createTable(CreateTableRequest)}.
+ * <p>
+ * Creates a new table or collection. If a new table is being created, the type
+ * of the table is given by {@code typeId}, which must the be the ID of a
+ * currently registered type (i.e. one created via {@link
+ * com.gpudb.GPUdb#createType(CreateTypeRequest)}). The table will be created
+ * inside a collection if the option {@code collection_name} is specified. If
+ * that collection does not already exist, it will be created.
+
+ * To create a new collection, specify the name of the collection in {@code
+ * tableName} and set the {@code is_collection} option to {@code true}; {@code
+ * typeId} will be ignored.
  */
 public class CreateTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -36,7 +40,8 @@ public class CreateTableRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -48,69 +53,98 @@ public class CreateTableRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * <br /><ul>
-     * <br />  <li> no_error_if_exists: If {@code true}, prevents an error from occurring if the table already exists and is of the
-     * given type.  If a table with the same ID but a different type exists, it is still an error. Values: true, false.
-     * <br />
-     * <br />  <li> collection_name: Name of a collection which is to contain the newly created table. If empty, then the newly
-     * created table will be a top-level table. If the collection does not allow duplicate types and it contains a table of the same
-     * type as the given one, then this table creation request will fail.
-     * <br />  <li> is_collection: Indicates whether the new table to be created will be a collection. Values: true, false.
-     * <br />
-     * <br />  <li> disallow_homogeneous_tables: For a collection, indicates whether the collection prohibits containment of
-     * multiple tables of exactly the same data type. Values: true, false.
-     * <br />
-     * <br />  <li> is_replicated: For a table, indicates whether the table is to be replicated to all the database ranks. This may
-     * be necessary when the table is to be joined with other tables in a query. Values: true, false.
-     * <br />
-     * <br />  <li> foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'source_column references
+     * <ul>
+     *         <li> no_error_if_exists: If {@code true}, prevents an error from
+     * occurring if the table already exists and is of the given type.  If a
+     * table with the same ID but a different type exists, it is still an
+     * error. Values: true, false.
+     * <p>
+     *         <li> collection_name: Name of a collection which is to contain
+     * the newly created table. If empty, then the newly created table will be
+     * a top-level table. If the collection does not allow duplicate types and
+     * it contains a table of the same type as the given one, then this table
+     * creation request will fail.
+     *         <li> is_collection: Indicates whether the new table to be
+     * created will be a collection. Values: true, false.
+     * <p>
+     *         <li> disallow_homogeneous_tables: For a collection, indicates
+     * whether the collection prohibits containment of multiple tables of
+     * exactly the same data type. Values: true, false.
+     * <p>
+     *         <li> is_replicated: For a table, indicates whether the table is
+     * to be replicated to all the database ranks. This may be necessary when
+     * the table is to be joined with other tables in a query. Values: true,
+     * false.
+     * <p>
+     *         <li> foreign_keys: Semicolon-separated list of foreign key
+     * constraints, of the format 'source_column references
      * target_table(primary_key_column)'.
-     * <br /></ul>
-     * <br />A set of string constants for the parameter {@code options}.
+     *         <li> foreign_shard_key: Foreign shard key description of the
+     * format: <fk_foreign_key> references <pk_column_name> from
+     * <pk_table_name>(<pk_primary_key>)
+     *         <li> ttl: Sets the TTL of the table or collection specified in
+     * {@code tableName}. The value must be the desired TTL in minutes.
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * If {@code true}, prevents an error from occurring if the table already exists and is of the given type.  If a table with
-         * the same ID but a different type exists, it is still an error. Values: true, false.
-         * <br />
+         * If {@code true}, prevents an error from occurring if the table
+         * already exists and is of the given type.  If a table with the same
+         * ID but a different type exists, it is still an error. Values: true,
+         * false.
          */
         public static final String NO_ERROR_IF_EXISTS = "no_error_if_exists";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
 
         /**
-         * Name of a collection which is to contain the newly created table. If empty, then the newly created table will be a
-         * top-level table. If the collection does not allow duplicate types and it contains a table of the same type as the given
-         * one, then this table creation request will fail.
+         * Name of a collection which is to contain the newly created table. If
+         * empty, then the newly created table will be a top-level table. If
+         * the collection does not allow duplicate types and it contains a
+         * table of the same type as the given one, then this table creation
+         * request will fail.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * Indicates whether the new table to be created will be a collection. Values: true, false.
-         * <br />
+         * Indicates whether the new table to be created will be a collection.
+         * Values: true, false.
          */
         public static final String IS_COLLECTION = "is_collection";
 
         /**
-         * For a collection, indicates whether the collection prohibits containment of multiple tables of exactly the same data
-         * type. Values: true, false.
-         * <br />
+         * For a collection, indicates whether the collection prohibits
+         * containment of multiple tables of exactly the same data type.
+         * Values: true, false.
          */
         public static final String DISALLOW_HOMOGENEOUS_TABLES = "disallow_homogeneous_tables";
 
         /**
-         * For a table, indicates whether the table is to be replicated to all the database ranks. This may be necessary when the
-         * table is to be joined with other tables in a query. Values: true, false.
-         * <br />
+         * For a table, indicates whether the table is to be replicated to all
+         * the database ranks. This may be necessary when the table is to be
+         * joined with other tables in a query. Values: true, false.
          */
         public static final String IS_REPLICATED = "is_replicated";
 
         /**
-         * Semicolon-separated list of foreign key constraints, of the format 'source_column references
-         * target_table(primary_key_column)'.
+         * Semicolon-separated list of foreign key constraints, of the format
+         * 'source_column references target_table(primary_key_column)'.
          */
         public static final String FOREIGN_KEYS = "foreign_keys";
+
+        /**
+         * Foreign shard key description of the format: <fk_foreign_key>
+         * references <pk_column_name> from <pk_table_name>(<pk_primary_key>)
+         */
+        public static final String FOREIGN_SHARD_KEY = "foreign_shard_key";
+
+        /**
+         * Sets the TTL of the table or collection specified in {@code
+         * tableName}. The value must be the desired TTL in minutes.
+         */
+        public static final String TTL = "ttl";
 
         private Options() {  }
     }
@@ -132,30 +166,49 @@ public class CreateTableRequest implements IndexedRecord {
     /**
      * Constructs a CreateTableRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to be created. Must not be the name of a currently existing table of a different type.
-     *                   Error for requests with existing table of the same name and type id may be suppressed by using the {@code
-     *                   no_error_if_exists} option.  Cannot be an empty string.  Valid characters are alphanumeric or any of
-     *                   '_-(){}[] .:' (excluding the single quotes), with the first character being alphanumeric or an underscore.
-     *                   The maximum length is 256 characters.
-     * @param typeId  ID of a currently registered type. All objects added to the newly created table will be of this type.  Ignored
-     *                if {@code is_collection} is {@code true}.
+     * @param tableName  Name of the table to be created. Error for requests
+     *                   with existing table of the same name and type id may
+     *                   be suppressed by using the {@code no_error_if_exists}
+     *                   option.  See <a
+     *                   href="../../../../../concepts/tables.html"
+     *                   target="_top">Tables</a> for naming restrictions.
+     * @param typeId  ID of a currently registered type. All objects added to
+     *                the newly created table will be of this type.  Ignored if
+     *                {@code is_collection} is {@code true}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> no_error_if_exists: If {@code true}, prevents an error from occurring if the table already
-     *                 exists and is of the given type.  If a table with the same ID but a different type exists, it is still an
+     *                         <li> no_error_if_exists: If {@code true},
+     *                 prevents an error from occurring if the table already
+     *                 exists and is of the given type.  If a table with the
+     *                 same ID but a different type exists, it is still an
      *                 error. Values: true, false.
-     *                         <li> collection_name: Name of a collection which is to contain the newly created table. If empty,
-     *                 then the newly created table will be a top-level table. If the collection does not allow duplicate types and
-     *                 it contains a table of the same type as the given one, then this table creation request will fail.
-     *                         <li> is_collection: Indicates whether the new table to be created will be a collection. Values: true,
+     *                         <li> collection_name: Name of a collection which
+     *                 is to contain the newly created table. If empty, then
+     *                 the newly created table will be a top-level table. If
+     *                 the collection does not allow duplicate types and it
+     *                 contains a table of the same type as the given one, then
+     *                 this table creation request will fail.
+     *                         <li> is_collection: Indicates whether the new
+     *                 table to be created will be a collection. Values: true,
      *                 false.
-     *                         <li> disallow_homogeneous_tables: For a collection, indicates whether the collection prohibits
-     *                 containment of multiple tables of exactly the same data type. Values: true, false.
-     *                         <li> is_replicated: For a table, indicates whether the table is to be replicated to all the database
-     *                 ranks. This may be necessary when the table is to be joined with other tables in a query. Values: true,
+     *                         <li> disallow_homogeneous_tables: For a
+     *                 collection, indicates whether the collection prohibits
+     *                 containment of multiple tables of exactly the same data
+     *                 type. Values: true, false.
+     *                         <li> is_replicated: For a table, indicates
+     *                 whether the table is to be replicated to all the
+     *                 database ranks. This may be necessary when the table is
+     *                 to be joined with other tables in a query. Values: true,
      *                 false.
-     *                         <li> foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'source_column
+     *                         <li> foreign_keys: Semicolon-separated list of
+     *                 foreign key constraints, of the format 'source_column
      *                 references target_table(primary_key_column)'.
+     *                         <li> foreign_shard_key: Foreign shard key
+     *                 description of the format: <fk_foreign_key> references
+     *                 <pk_column_name> from <pk_table_name>(<pk_primary_key>)
+     *                         <li> ttl: Sets the TTL of the table or
+     *                 collection specified in {@code tableName}. The value
+     *                 must be the desired TTL in minutes.
      *                 </ul>
      * 
      */
@@ -167,10 +220,11 @@ public class CreateTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to be created. Must not be the name of a currently existing table of a different type.  Error for
-     *         requests with existing table of the same name and type id may be suppressed by using the {@code no_error_if_exists}
-     *         option.  Cannot be an empty string.  Valid characters are alphanumeric or any of '_-(){}[] .:' (excluding the single
-     *         quotes), with the first character being alphanumeric or an underscore.  The maximum length is 256 characters.
+     * @return Name of the table to be created. Error for requests with
+     *         existing table of the same name and type id may be suppressed by
+     *         using the {@code no_error_if_exists} option.  See <a
+     *         href="../../../../../concepts/tables.html"
+     *         target="_top">Tables</a> for naming restrictions.
      * 
      */
     public String getTableName() {
@@ -179,11 +233,12 @@ public class CreateTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to be created. Must not be the name of a currently existing table of a different type.
-     *                   Error for requests with existing table of the same name and type id may be suppressed by using the {@code
-     *                   no_error_if_exists} option.  Cannot be an empty string.  Valid characters are alphanumeric or any of
-     *                   '_-(){}[] .:' (excluding the single quotes), with the first character being alphanumeric or an underscore.
-     *                   The maximum length is 256 characters.
+     * @param tableName  Name of the table to be created. Error for requests
+     *                   with existing table of the same name and type id may
+     *                   be suppressed by using the {@code no_error_if_exists}
+     *                   option.  See <a
+     *                   href="../../../../../concepts/tables.html"
+     *                   target="_top">Tables</a> for naming restrictions.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -195,8 +250,9 @@ public class CreateTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return ID of a currently registered type. All objects added to the newly created table will be of this type.  Ignored if
-     *         {@code is_collection} is {@code true}.
+     * @return ID of a currently registered type. All objects added to the
+     *         newly created table will be of this type.  Ignored if {@code
+     *         is_collection} is {@code true}.
      * 
      */
     public String getTypeId() {
@@ -205,8 +261,9 @@ public class CreateTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param typeId  ID of a currently registered type. All objects added to the newly created table will be of this type.  Ignored
-     *                if {@code is_collection} is {@code true}.
+     * @param typeId  ID of a currently registered type. All objects added to
+     *                the newly created table will be of this type.  Ignored if
+     *                {@code is_collection} is {@code true}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -220,19 +277,35 @@ public class CreateTableRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> no_error_if_exists: If {@code true}, prevents an error from occurring if the table already exists and is
-     *         of the given type.  If a table with the same ID but a different type exists, it is still an error. Values: true,
+     *                 <li> no_error_if_exists: If {@code true}, prevents an
+     *         error from occurring if the table already exists and is of the
+     *         given type.  If a table with the same ID but a different type
+     *         exists, it is still an error. Values: true, false.
+     *                 <li> collection_name: Name of a collection which is to
+     *         contain the newly created table. If empty, then the newly
+     *         created table will be a top-level table. If the collection does
+     *         not allow duplicate types and it contains a table of the same
+     *         type as the given one, then this table creation request will
+     *         fail.
+     *                 <li> is_collection: Indicates whether the new table to
+     *         be created will be a collection. Values: true, false.
+     *                 <li> disallow_homogeneous_tables: For a collection,
+     *         indicates whether the collection prohibits containment of
+     *         multiple tables of exactly the same data type. Values: true,
      *         false.
-     *                 <li> collection_name: Name of a collection which is to contain the newly created table. If empty, then the
-     *         newly created table will be a top-level table. If the collection does not allow duplicate types and it contains a
-     *         table of the same type as the given one, then this table creation request will fail.
-     *                 <li> is_collection: Indicates whether the new table to be created will be a collection. Values: true, false.
-     *                 <li> disallow_homogeneous_tables: For a collection, indicates whether the collection prohibits containment of
-     *         multiple tables of exactly the same data type. Values: true, false.
-     *                 <li> is_replicated: For a table, indicates whether the table is to be replicated to all the database ranks.
-     *         This may be necessary when the table is to be joined with other tables in a query. Values: true, false.
-     *                 <li> foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'source_column
-     *         references target_table(primary_key_column)'.
+     *                 <li> is_replicated: For a table, indicates whether the
+     *         table is to be replicated to all the database ranks. This may be
+     *         necessary when the table is to be joined with other tables in a
+     *         query. Values: true, false.
+     *                 <li> foreign_keys: Semicolon-separated list of foreign
+     *         key constraints, of the format 'source_column references
+     *         target_table(primary_key_column)'.
+     *                 <li> foreign_shard_key: Foreign shard key description of
+     *         the format: <fk_foreign_key> references <pk_column_name> from
+     *         <pk_table_name>(<pk_primary_key>)
+     *                 <li> ttl: Sets the TTL of the table or collection
+     *         specified in {@code tableName}. The value must be the desired
+     *         TTL in minutes.
      *         </ul>
      * 
      */
@@ -244,21 +317,38 @@ public class CreateTableRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> no_error_if_exists: If {@code true}, prevents an error from occurring if the table already
-     *                 exists and is of the given type.  If a table with the same ID but a different type exists, it is still an
+     *                         <li> no_error_if_exists: If {@code true},
+     *                 prevents an error from occurring if the table already
+     *                 exists and is of the given type.  If a table with the
+     *                 same ID but a different type exists, it is still an
      *                 error. Values: true, false.
-     *                         <li> collection_name: Name of a collection which is to contain the newly created table. If empty,
-     *                 then the newly created table will be a top-level table. If the collection does not allow duplicate types and
-     *                 it contains a table of the same type as the given one, then this table creation request will fail.
-     *                         <li> is_collection: Indicates whether the new table to be created will be a collection. Values: true,
+     *                         <li> collection_name: Name of a collection which
+     *                 is to contain the newly created table. If empty, then
+     *                 the newly created table will be a top-level table. If
+     *                 the collection does not allow duplicate types and it
+     *                 contains a table of the same type as the given one, then
+     *                 this table creation request will fail.
+     *                         <li> is_collection: Indicates whether the new
+     *                 table to be created will be a collection. Values: true,
      *                 false.
-     *                         <li> disallow_homogeneous_tables: For a collection, indicates whether the collection prohibits
-     *                 containment of multiple tables of exactly the same data type. Values: true, false.
-     *                         <li> is_replicated: For a table, indicates whether the table is to be replicated to all the database
-     *                 ranks. This may be necessary when the table is to be joined with other tables in a query. Values: true,
+     *                         <li> disallow_homogeneous_tables: For a
+     *                 collection, indicates whether the collection prohibits
+     *                 containment of multiple tables of exactly the same data
+     *                 type. Values: true, false.
+     *                         <li> is_replicated: For a table, indicates
+     *                 whether the table is to be replicated to all the
+     *                 database ranks. This may be necessary when the table is
+     *                 to be joined with other tables in a query. Values: true,
      *                 false.
-     *                         <li> foreign_keys: Semicolon-separated list of foreign key constraints, of the format 'source_column
+     *                         <li> foreign_keys: Semicolon-separated list of
+     *                 foreign key constraints, of the format 'source_column
      *                 references target_table(primary_key_column)'.
+     *                         <li> foreign_shard_key: Foreign shard key
+     *                 description of the format: <fk_foreign_key> references
+     *                 <pk_column_name> from <pk_table_name>(<pk_primary_key>)
+     *                         <li> ttl: Sets the TTL of the table or
+     *                 collection specified in {@code tableName}. The value
+     *                 must be the desired TTL in minutes.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -270,7 +360,8 @@ public class CreateTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -281,7 +372,8 @@ public class CreateTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -308,7 +400,8 @@ public class CreateTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

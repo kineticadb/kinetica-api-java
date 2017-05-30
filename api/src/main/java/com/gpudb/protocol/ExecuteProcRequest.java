@@ -17,9 +17,11 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
- * <br />
- * <br />Executes a proc. This endpoint is asynchronous and does not wait for the proc to complete before returning.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
+ * <p>
+ * Executes a proc. This endpoint is asynchronous and does not wait for the
+ * proc to complete before returning.
  */
 public class ExecuteProcRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -37,7 +39,8 @@ public class ExecuteProcRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -49,39 +52,54 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * <br /><ul>
-     * <br />  <li> cache_input: A comma-delimited list of table names from {@code inputTableNames} from which input data will be
-     * cached for use in subsequent calls to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} with the {@code
-     * use_cached_input} option. Cached input data will be retained until the proc status is cleared with the {@link
-     * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest) clear_complete} option of {@link
-     * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} and all proc instances using the cached data have completed.
-     * <br />  <li> use_cached_input: A comma-delimited list of run IDs (as returned from prior calls to {@link
-     * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}) of running or completed proc instances from which input data cached using
-     * the {@code cache_input} option will be used. Cached input data will not be used for any tables specified in {@code
-     * inputTableNames}, but data from all other tables cached for the specified run IDs will be passed to the proc. If the same
-     * table was cached for multiple specified run IDs, the cached data from the first run ID specified in the list that includes
-     * that table will be used.
-     * <br /></ul>
-     * <br />A set of string constants for the parameter {@code options}.
+     * <ul>
+     *         <li> cache_input: A comma-delimited list of table names from
+     * {@code inputTableNames} from which input data will be cached for use in
+     * subsequent calls to {@link
+     * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} with the {@code
+     * use_cached_input} option. Cached input data will be retained until the
+     * proc status is cleared with the {@link
+     * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest) clear_complete}
+     * option of {@link com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}
+     * and all proc instances using the cached data have completed.
+     *         <li> use_cached_input: A comma-delimited list of run IDs (as
+     * returned from prior calls to {@link
+     * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}) of running or
+     * completed proc instances from which input data cached using the {@code
+     * cache_input} option will be used. Cached input data will not be used for
+     * any tables specified in {@code inputTableNames}, but data from all other
+     * tables cached for the specified run IDs will be passed to the proc. If
+     * the same table was cached for multiple specified run IDs, the cached
+     * data from the first run ID specified in the list that includes that
+     * table will be used.
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * A comma-delimited list of table names from {@code inputTableNames} from which input data will be cached for use in
-         * subsequent calls to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} with the {@code use_cached_input} option.
-         * Cached input data will be retained until the proc status is cleared with the {@link
-         * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest) clear_complete} option of {@link
-         * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} and all proc instances using the cached data have completed.
+         * A comma-delimited list of table names from {@code inputTableNames}
+         * from which input data will be cached for use in subsequent calls to
+         * {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} with the
+         * {@code use_cached_input} option. Cached input data will be retained
+         * until the proc status is cleared with the {@link
+         * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
+         * clear_complete} option of {@link
+         * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} and all proc
+         * instances using the cached data have completed.
          */
         public static final String CACHE_INPUT = "cache_input";
 
         /**
-         * A comma-delimited list of run IDs (as returned from prior calls to {@link
-         * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}) of running or completed proc instances from which input data cached
-         * using the {@code cache_input} option will be used. Cached input data will not be used for any tables specified in {@code
-         * inputTableNames}, but data from all other tables cached for the specified run IDs will be passed to the proc. If the same
-         * table was cached for multiple specified run IDs, the cached data from the first run ID specified in the list that
-         * includes that table will be used.
+         * A comma-delimited list of run IDs (as returned from prior calls to
+         * {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}) of running
+         * or completed proc instances from which input data cached using the
+         * {@code cache_input} option will be used. Cached input data will not
+         * be used for any tables specified in {@code inputTableNames}, but
+         * data from all other tables cached for the specified run IDs will be
+         * passed to the proc. If the same table was cached for multiple
+         * specified run IDs, the cached data from the first run ID specified
+         * in the list that includes that table will be used.
          */
         public static final String USE_CACHED_INPUT = "use_cached_input";
 
@@ -113,35 +131,61 @@ public class ExecuteProcRequest implements IndexedRecord {
     /**
      * Constructs an ExecuteProcRequest object with the specified parameters.
      * 
-     * @param procName  Name of the proc to execute. Must be the name of a currently existing proc.
-     * @param params  A map containing named parameters to pass to the proc. Each key/value pair specifies the name of a parameter
-     *                and its value.
-     * @param binParams  A map containing named binary parameters to pass to the proc. Each key/value pair specifies the name of a
+     * @param procName  Name of the proc to execute. Must be the name of a
+     *                  currently existing proc.
+     * @param params  A map containing named parameters to pass to the proc.
+     *                Each key/value pair specifies the name of a parameter and
+     *                its value.
+     * @param binParams  A map containing named binary parameters to pass to
+     *                   the proc. Each key/value pair specifies the name of a
      *                   parameter and its value.
-     * @param inputTableNames  Names of the tables containing data to be passed to the proc. Each name specified must be the name of
-     *                         a currently existing table. If no table names are specified, no data will be passed to the proc.
-     * @param inputColumnNames  Map of table names from {@code inputTableNames} to lists of names of columns from those tables that
-     *                          will be passed to the proc. Each column name specified must be the name of an existing column in the
-     *                          corresponding table. If a table name from {@code inputTableNames} is not included, all columns from
-     *                          that table will be passed to the proc.
-     * @param outputTableNames  Names of the tables to which output data from the proc will be written. If a specified table does
-     *                          not exist, it will automatically be created with the same schema as the corresponding table (by
-     *                          order) from {@code inputTableNames}, excluding any primary and shard keys. If no table names are
-     *                          specified, no output data can be returned from the proc.
+     * @param inputTableNames  Names of the tables containing data to be passed
+     *                         to the proc. Each name specified must be the
+     *                         name of a currently existing table. If no table
+     *                         names are specified, no data will be passed to
+     *                         the proc.
+     * @param inputColumnNames  Map of table names from {@code inputTableNames}
+     *                          to lists of names of columns from those tables
+     *                          that will be passed to the proc. Each column
+     *                          name specified must be the name of an existing
+     *                          column in the corresponding table. If a table
+     *                          name from {@code inputTableNames} is not
+     *                          included, all columns from that table will be
+     *                          passed to the proc.
+     * @param outputTableNames  Names of the tables to which output data from
+     *                          the proc will be written. If a specified table
+     *                          does not exist, it will automatically be
+     *                          created with the same schema as the
+     *                          corresponding table (by order) from {@code
+     *                          inputTableNames}, excluding any primary and
+     *                          shard keys. If no table names are specified, no
+     *                          output data can be returned from the proc.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> cache_input: A comma-delimited list of table names from {@code inputTableNames} from which input
-     *                 data will be cached for use in subsequent calls to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}
-     *                 with the {@code use_cached_input} option. Cached input data will be retained until the proc status is cleared
-     *                 with the {@link com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest) clear_complete} option of {@link
-     *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} and all proc instances using the cached data have
+     *                         <li> cache_input: A comma-delimited list of
+     *                 table names from {@code inputTableNames} from which
+     *                 input data will be cached for use in subsequent calls to
+     *                 {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}
+     *                 with the {@code use_cached_input} option. Cached input
+     *                 data will be retained until the proc status is cleared
+     *                 with the {@link
+     *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
+     *                 clear_complete} option of {@link
+     *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}
+     *                 and all proc instances using the cached data have
      *                 completed.
-     *                         <li> use_cached_input: A comma-delimited list of run IDs (as returned from prior calls to {@link
-     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}) of running or completed proc instances from which input
-     *                 data cached using the {@code cache_input} option will be used. Cached input data will not be used for any
-     *                 tables specified in {@code inputTableNames}, but data from all other tables cached for the specified run IDs
-     *                 will be passed to the proc. If the same table was cached for multiple specified run IDs, the cached data from
-     *                 the first run ID specified in the list that includes that table will be used.
+     *                         <li> use_cached_input: A comma-delimited list of
+     *                 run IDs (as returned from prior calls to {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}) of
+     *                 running or completed proc instances from which input
+     *                 data cached using the {@code cache_input} option will be
+     *                 used. Cached input data will not be used for any tables
+     *                 specified in {@code inputTableNames}, but data from all
+     *                 other tables cached for the specified run IDs will be
+     *                 passed to the proc. If the same table was cached for
+     *                 multiple specified run IDs, the cached data from the
+     *                 first run ID specified in the list that includes that
+     *                 table will be used.
      *                 </ul>
      * 
      */
@@ -157,7 +201,8 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the proc to execute. Must be the name of a currently existing proc.
+     * @return Name of the proc to execute. Must be the name of a currently
+     *         existing proc.
      * 
      */
     public String getProcName() {
@@ -166,7 +211,8 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param procName  Name of the proc to execute. Must be the name of a currently existing proc.
+     * @param procName  Name of the proc to execute. Must be the name of a
+     *                  currently existing proc.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -178,8 +224,8 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A map containing named parameters to pass to the proc. Each key/value pair specifies the name of a parameter and its
-     *         value.
+     * @return A map containing named parameters to pass to the proc. Each
+     *         key/value pair specifies the name of a parameter and its value.
      * 
      */
     public Map<String, String> getParams() {
@@ -188,8 +234,9 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param params  A map containing named parameters to pass to the proc. Each key/value pair specifies the name of a parameter
-     *                and its value.
+     * @param params  A map containing named parameters to pass to the proc.
+     *                Each key/value pair specifies the name of a parameter and
+     *                its value.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -201,8 +248,9 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A map containing named binary parameters to pass to the proc. Each key/value pair specifies the name of a parameter
-     *         and its value.
+     * @return A map containing named binary parameters to pass to the proc.
+     *         Each key/value pair specifies the name of a parameter and its
+     *         value.
      * 
      */
     public Map<String, ByteBuffer> getBinParams() {
@@ -211,7 +259,8 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param binParams  A map containing named binary parameters to pass to the proc. Each key/value pair specifies the name of a
+     * @param binParams  A map containing named binary parameters to pass to
+     *                   the proc. Each key/value pair specifies the name of a
      *                   parameter and its value.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -224,8 +273,10 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Names of the tables containing data to be passed to the proc. Each name specified must be the name of a currently
-     *         existing table. If no table names are specified, no data will be passed to the proc.
+     * @return Names of the tables containing data to be passed to the proc.
+     *         Each name specified must be the name of a currently existing
+     *         table. If no table names are specified, no data will be passed
+     *         to the proc.
      * 
      */
     public List<String> getInputTableNames() {
@@ -234,8 +285,11 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param inputTableNames  Names of the tables containing data to be passed to the proc. Each name specified must be the name of
-     *                         a currently existing table. If no table names are specified, no data will be passed to the proc.
+     * @param inputTableNames  Names of the tables containing data to be passed
+     *                         to the proc. Each name specified must be the
+     *                         name of a currently existing table. If no table
+     *                         names are specified, no data will be passed to
+     *                         the proc.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -247,9 +301,12 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Map of table names from {@code inputTableNames} to lists of names of columns from those tables that will be passed to
-     *         the proc. Each column name specified must be the name of an existing column in the corresponding table. If a table
-     *         name from {@code inputTableNames} is not included, all columns from that table will be passed to the proc.
+     * @return Map of table names from {@code inputTableNames} to lists of
+     *         names of columns from those tables that will be passed to the
+     *         proc. Each column name specified must be the name of an existing
+     *         column in the corresponding table. If a table name from {@code
+     *         inputTableNames} is not included, all columns from that table
+     *         will be passed to the proc.
      * 
      */
     public Map<String, List<String>> getInputColumnNames() {
@@ -258,10 +315,14 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param inputColumnNames  Map of table names from {@code inputTableNames} to lists of names of columns from those tables that
-     *                          will be passed to the proc. Each column name specified must be the name of an existing column in the
-     *                          corresponding table. If a table name from {@code inputTableNames} is not included, all columns from
-     *                          that table will be passed to the proc.
+     * @param inputColumnNames  Map of table names from {@code inputTableNames}
+     *                          to lists of names of columns from those tables
+     *                          that will be passed to the proc. Each column
+     *                          name specified must be the name of an existing
+     *                          column in the corresponding table. If a table
+     *                          name from {@code inputTableNames} is not
+     *                          included, all columns from that table will be
+     *                          passed to the proc.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -273,9 +334,12 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Names of the tables to which output data from the proc will be written. If a specified table does not exist, it will
-     *         automatically be created with the same schema as the corresponding table (by order) from {@code inputTableNames},
-     *         excluding any primary and shard keys. If no table names are specified, no output data can be returned from the proc.
+     * @return Names of the tables to which output data from the proc will be
+     *         written. If a specified table does not exist, it will
+     *         automatically be created with the same schema as the
+     *         corresponding table (by order) from {@code inputTableNames},
+     *         excluding any primary and shard keys. If no table names are
+     *         specified, no output data can be returned from the proc.
      * 
      */
     public List<String> getOutputTableNames() {
@@ -284,10 +348,14 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param outputTableNames  Names of the tables to which output data from the proc will be written. If a specified table does
-     *                          not exist, it will automatically be created with the same schema as the corresponding table (by
-     *                          order) from {@code inputTableNames}, excluding any primary and shard keys. If no table names are
-     *                          specified, no output data can be returned from the proc.
+     * @param outputTableNames  Names of the tables to which output data from
+     *                          the proc will be written. If a specified table
+     *                          does not exist, it will automatically be
+     *                          created with the same schema as the
+     *                          corresponding table (by order) from {@code
+     *                          inputTableNames}, excluding any primary and
+     *                          shard keys. If no table names are specified, no
+     *                          output data can be returned from the proc.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -301,17 +369,26 @@ public class ExecuteProcRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> cache_input: A comma-delimited list of table names from {@code inputTableNames} from which input data
-     *         will be cached for use in subsequent calls to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} with the {@code
-     *         use_cached_input} option. Cached input data will be retained until the proc status is cleared with the {@link
-     *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest) clear_complete} option of {@link
-     *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} and all proc instances using the cached data have completed.
-     *                 <li> use_cached_input: A comma-delimited list of run IDs (as returned from prior calls to {@link
-     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}) of running or completed proc instances from which input data cached
-     *         using the {@code cache_input} option will be used. Cached input data will not be used for any tables specified in
-     *         {@code inputTableNames}, but data from all other tables cached for the specified run IDs will be passed to the proc.
-     *         If the same table was cached for multiple specified run IDs, the cached data from the first run ID specified in the
-     *         list that includes that table will be used.
+     *                 <li> cache_input: A comma-delimited list of table names
+     *         from {@code inputTableNames} from which input data will be
+     *         cached for use in subsequent calls to {@link
+     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} with the {@code
+     *         use_cached_input} option. Cached input data will be retained
+     *         until the proc status is cleared with the {@link
+     *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
+     *         clear_complete} option of {@link
+     *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} and all
+     *         proc instances using the cached data have completed.
+     *                 <li> use_cached_input: A comma-delimited list of run IDs
+     *         (as returned from prior calls to {@link
+     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}) of running or
+     *         completed proc instances from which input data cached using the
+     *         {@code cache_input} option will be used. Cached input data will
+     *         not be used for any tables specified in {@code inputTableNames},
+     *         but data from all other tables cached for the specified run IDs
+     *         will be passed to the proc. If the same table was cached for
+     *         multiple specified run IDs, the cached data from the first run
+     *         ID specified in the list that includes that table will be used.
      *         </ul>
      * 
      */
@@ -323,18 +400,30 @@ public class ExecuteProcRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> cache_input: A comma-delimited list of table names from {@code inputTableNames} from which input
-     *                 data will be cached for use in subsequent calls to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}
-     *                 with the {@code use_cached_input} option. Cached input data will be retained until the proc status is cleared
-     *                 with the {@link com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest) clear_complete} option of {@link
-     *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} and all proc instances using the cached data have
+     *                         <li> cache_input: A comma-delimited list of
+     *                 table names from {@code inputTableNames} from which
+     *                 input data will be cached for use in subsequent calls to
+     *                 {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}
+     *                 with the {@code use_cached_input} option. Cached input
+     *                 data will be retained until the proc status is cleared
+     *                 with the {@link
+     *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
+     *                 clear_complete} option of {@link
+     *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}
+     *                 and all proc instances using the cached data have
      *                 completed.
-     *                         <li> use_cached_input: A comma-delimited list of run IDs (as returned from prior calls to {@link
-     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}) of running or completed proc instances from which input
-     *                 data cached using the {@code cache_input} option will be used. Cached input data will not be used for any
-     *                 tables specified in {@code inputTableNames}, but data from all other tables cached for the specified run IDs
-     *                 will be passed to the proc. If the same table was cached for multiple specified run IDs, the cached data from
-     *                 the first run ID specified in the list that includes that table will be used.
+     *                         <li> use_cached_input: A comma-delimited list of
+     *                 run IDs (as returned from prior calls to {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}) of
+     *                 running or completed proc instances from which input
+     *                 data cached using the {@code cache_input} option will be
+     *                 used. Cached input data will not be used for any tables
+     *                 specified in {@code inputTableNames}, but data from all
+     *                 other tables cached for the specified run IDs will be
+     *                 passed to the proc. If the same table was cached for
+     *                 multiple specified run IDs, the cached data from the
+     *                 first run ID specified in the list that includes that
+     *                 table will be used.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -346,7 +435,8 @@ public class ExecuteProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -357,7 +447,8 @@ public class ExecuteProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -396,7 +487,8 @@ public class ExecuteProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

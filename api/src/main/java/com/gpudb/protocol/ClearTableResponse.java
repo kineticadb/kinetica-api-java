@@ -12,7 +12,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#clearTable(ClearTableRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#clearTable(ClearTableRequest)}.
  */
 public class ClearTableResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -24,7 +25,8 @@ public class ClearTableResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -44,7 +46,8 @@ public class ClearTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Value of {@code tableName} for a given table, or 'ALL CLEARED' in case of clearing all tables.
+     * @return Value of {@code tableName} for a given table, or 'ALL CLEARED'
+     *         in case of clearing all tables.
      * 
      */
     public String getTableName() {
@@ -53,7 +56,8 @@ public class ClearTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Value of {@code tableName} for a given table, or 'ALL CLEARED' in case of clearing all tables.
+     * @param tableName  Value of {@code tableName} for a given table, or 'ALL
+     *                   CLEARED' in case of clearing all tables.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -64,7 +68,8 @@ public class ClearTableResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -75,7 +80,8 @@ public class ClearTableResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -96,7 +102,8 @@ public class ClearTableResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

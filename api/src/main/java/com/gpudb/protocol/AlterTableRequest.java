@@ -14,22 +14,29 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#alterTable(AlterTableRequest)}.
- * <br />
- * <br />Apply various modifications to a table or collection. Available modifications include:
- * <br />
- * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Creating or deleting an index on a particular column. This can speed up certain search
- * queries (such as {@link com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link
- * com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}, {@link com.gpudb.GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}) when
- * using expressions containing equality or relational operators on indexed columns. This only applies to tables.
- * <br />
- * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Setting the time-to-live (TTL). This can be applied to tables, views, or collections.  When
- * applied to collections, every table & view within the collection will have its TTL set to the given value.
- * <br />
- * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Making a table protected or not. Protected tables have their TTLs set to not automatically
- * expire. This can be applied to tables, views, and collections.
- * <br />
- * <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Allowing homogeneous tables within a collection.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#alterTable(AlterTableRequest)}.
+ * <p>
+ * Apply various modifications to a table or collection. Available
+ * modifications include:
+ * <p>
+ *      Creating or deleting an index on a particular column. This can speed up
+ * certain search queries (such as {@link
+ * com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link
+ * com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}, {@link
+ * com.gpudb.GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}) when using
+ * expressions containing equality or relational operators on indexed columns.
+ * This only applies to tables.
+ * <p>
+ *      Setting the time-to-live (TTL). This can be applied to tables, views,
+ * or collections.  When applied to collections, every table & view within the
+ * collection will have its TTL set to the given value.
+ * <p>
+ *      Making a table protected or not. Protected tables have their TTLs set
+ * to not automatically expire. This can be applied to tables, views, and
+ * collections.
+ * <p>
+ *      Allowing homogeneous tables within a collection.
  */
 public class AlterTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -44,7 +51,8 @@ public class AlterTableRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -55,44 +63,49 @@ public class AlterTableRequest implements IndexedRecord {
 
 
     /**
-     * Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected, ttl,
-     * add_column, delete_column, change_column, rename_table.
-     * <br />
-     * <br />A set of string constants for the parameter {@code action}.
+     * Modification operation to be applied Values: create_index, delete_index,
+     * allow_homogeneous_tables, protected, ttl, add_column, delete_column,
+     * change_column, rename_table.
+
+     * A set of string constants for the parameter {@code action}.
      */
     public static final class Action {
 
         /**
-         * Creates an index on the column name specified in {@code value}. If this column is already indexed, an error will be
-         * returned.
+         * Creates an index on the column name specified in {@code value}. If
+         * this column is already indexed, an error will be returned.
          */
         public static final String CREATE_INDEX = "create_index";
 
         /**
-         * Deletes an existing index on the column name specified in {@code value}. If this column does not have indexing turned on,
-         * an error will be returned.
+         * Deletes an existing index on the column name specified in {@code
+         * value}. If this column does not have indexing turned on, an error
+         * will be returned.
          */
         public static final String DELETE_INDEX = "delete_index";
 
         /**
-         * Sets whether homogeneous tables are allowed in the given collection. This action is only valid if {@code tableName} is a
-         * collection. The {@code value} must be either 'true' or 'false'.
+         * Sets whether homogeneous tables are allowed in the given collection.
+         * This action is only valid if {@code tableName} is a collection. The
+         * {@code value} must be either 'true' or 'false'.
          */
         public static final String ALLOW_HOMOGENEOUS_TABLES = "allow_homogeneous_tables";
 
         /**
-         * Sets whether the given {@code tableName} should be protected or not. The {@code value} must be either 'true' or 'false'.
+         * Sets whether the given {@code tableName} should be protected or not.
+         * The {@code value} must be either 'true' or 'false'.
          */
         public static final String PROTECTED = "protected";
 
         /**
-         * Sets the TTL of the table, view, or collection specified in {@code tableName}. The {@code value} must be the desired TTL
-         * in minutes.
+         * Sets the TTL of the table, view, or collection specified in {@code
+         * tableName}. The {@code value} must be the desired TTL in minutes.
          */
         public static final String TTL = "ttl";
 
         /**
-         * Add a column {@code value} to the table. set the column properties in options
+         * Add a column {@code value} to the table. set the column properties
+         * in options
          */
         public static final String ADD_COLUMN = "add_column";
 
@@ -102,12 +115,15 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String DELETE_COLUMN = "delete_column";
 
         /**
-         * Change properties of a column {@code value} in the table. set the column properties in options
+         * Change properties of a column {@code value} in the table. set the
+         * column properties in options
          */
         public static final String CHANGE_COLUMN = "change_column";
 
         /**
-         * Rename a table {@code value}.
+         * Rename a table, view or collection to {@code value}. Has the same
+         * naming restrictions as <a href="../../../../../concepts/tables.html"
+         * target="_top">tables</a>.
          */
         public static final String RENAME_TABLE = "rename_table";
 
@@ -117,20 +133,26 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * <br /><ul>
-     * <br />  <li> column_default_value: when adding a column: set a default value, for existing data.
-     * <br />  <li> column_properties: when adding or changing a column: set the column properties (strings, separated by a comma:
-     * data, store_only, text_search, char8, int8 etc).
-     * <br />  <li> column_type: when adding or changing a column: set the column type (strings, separated by a comma: int, double,
-     * string, null etc).
-     * <br />  <li> validate_change_column: Validate the type change before applying column_change request. Default is true (if
-     * option is missing). If True, then validate all values. A value too large (or too long) for the new type will prevent any
-     * change. If False, then when a value is too large or long, it will be truncated. Values: true, false.
-     * <br />
-     * <br />  <li> copy_values_from_column: when adding or changing a column: enter column name - from where to copy values.
-     * <br />  <li> rename_column: new column name (using change_column).
-     * <br /></ul>
-     * <br />A set of string constants for the parameter {@code options}.
+     * <ul>
+     *         <li> column_default_value: when adding a column: set a default
+     * value, for existing data.
+     *         <li> column_properties: when adding or changing a column: set
+     * the column properties (strings, separated by a comma: data, store_only,
+     * text_search, char8, int8 etc).
+     *         <li> column_type: when adding or changing a column: set the
+     * column type (strings, separated by a comma: int, double, string, null
+     * etc).
+     *         <li> validate_change_column: Validate the type change before
+     * applying column_change request. Default is true (if option is missing).
+     * If True, then validate all values. A value too large (or too long) for
+     * the new type will prevent any change. If False, then when a value is too
+     * large or long, it will be truncated. Values: true, false.
+     * <p>
+     *         <li> copy_values_from_column: when adding or changing a column:
+     * enter column name - from where to copy values.
+     *         <li> rename_column: new column name (using change_column).
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
@@ -140,21 +162,24 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String COLUMN_DEFAULT_VALUE = "column_default_value";
 
         /**
-         * when adding or changing a column: set the column properties (strings, separated by a comma: data, store_only,
-         * text_search, char8, int8 etc).
+         * when adding or changing a column: set the column properties
+         * (strings, separated by a comma: data, store_only, text_search,
+         * char8, int8 etc).
          */
         public static final String COLUMN_PROPERTIES = "column_properties";
 
         /**
-         * when adding or changing a column: set the column type (strings, separated by a comma: int, double, string, null etc).
+         * when adding or changing a column: set the column type (strings,
+         * separated by a comma: int, double, string, null etc).
          */
         public static final String COLUMN_TYPE = "column_type";
 
         /**
-         * Validate the type change before applying column_change request. Default is true (if option is missing). If True, then
-         * validate all values. A value too large (or too long) for the new type will prevent any change. If False, then when a
-         * value is too large or long, it will be truncated. Values: true, false.
-         * <br />
+         * Validate the type change before applying column_change request.
+         * Default is true (if option is missing). If True, then validate all
+         * values. A value too large (or too long) for the new type will
+         * prevent any change. If False, then when a value is too large or
+         * long, it will be truncated. Values: true, false.
          */
         public static final String VALIDATE_CHANGE_COLUMN = "validate_change_column";
 
@@ -169,7 +194,8 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * when adding or changing a column: enter column name - from where to copy values.
+         * when adding or changing a column: enter column name - from where to
+         * copy values.
          */
         public static final String COPY_VALUES_FROM_COLUMN = "copy_values_from_column";
 
@@ -200,24 +226,37 @@ public class AlterTableRequest implements IndexedRecord {
     /**
      * Constructs an AlterTableRequest object with the specified parameters.
      * 
-     * @param tableName  Table on which the operation will be performed. Must be an existing table, view, or collection.
-     * @param action  Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected,
-     *                ttl, add_column, delete_column, change_column, rename_table.
-     * @param value  The value of the modification. May be a column name, 'true' or 'false', or a TTL depending on {@code action}.
+     * @param tableName  Table on which the operation will be performed. Must
+     *                   be an existing table, view, or collection.
+     * @param action  Modification operation to be applied Values:
+     *                create_index, delete_index, allow_homogeneous_tables,
+     *                protected, ttl, add_column, delete_column, change_column,
+     *                rename_table.
+     * @param value  The value of the modification. May be a column name,
+     *               'true' or 'false', or a TTL depending on {@code action}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> column_default_value: when adding a column: set a default value, for existing data.
-     *                         <li> column_properties: when adding or changing a column: set the column properties (strings,
-     *                 separated by a comma: data, store_only, text_search, char8, int8 etc).
-     *                         <li> column_type: when adding or changing a column: set the column type (strings, separated by a
+     *                         <li> column_default_value: when adding a column:
+     *                 set a default value, for existing data.
+     *                         <li> column_properties: when adding or changing
+     *                 a column: set the column properties (strings, separated
+     *                 by a comma: data, store_only, text_search, char8, int8
+     *                 etc).
+     *                         <li> column_type: when adding or changing a
+     *                 column: set the column type (strings, separated by a
      *                 comma: int, double, string, null etc).
-     *                         <li> validate_change_column: Validate the type change before applying column_change request. Default
-     *                 is true (if option is missing). If True, then validate all values. A value too large (or too long) for the
-     *                 new type will prevent any change. If False, then when a value is too large or long, it will be truncated.
-     *                 Values: true, false.
-     *                         <li> copy_values_from_column: when adding or changing a column: enter column name - from where to
+     *                         <li> validate_change_column: Validate the type
+     *                 change before applying column_change request. Default is
+     *                 true (if option is missing). If True, then validate all
+     *                 values. A value too large (or too long) for the new type
+     *                 will prevent any change. If False, then when a value is
+     *                 too large or long, it will be truncated. Values: true,
+     *                 false.
+     *                         <li> copy_values_from_column: when adding or
+     *                 changing a column: enter column name - from where to
      *                 copy values.
-     *                         <li> rename_column: new column name (using change_column).
+     *                         <li> rename_column: new column name (using
+     *                 change_column).
      *                 </ul>
      * 
      */
@@ -230,7 +269,8 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Table on which the operation will be performed. Must be an existing table, view, or collection.
+     * @return Table on which the operation will be performed. Must be an
+     *         existing table, view, or collection.
      * 
      */
     public String getTableName() {
@@ -239,7 +279,8 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Table on which the operation will be performed. Must be an existing table, view, or collection.
+     * @param tableName  Table on which the operation will be performed. Must
+     *                   be an existing table, view, or collection.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -251,7 +292,8 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected, ttl,
+     * @return Modification operation to be applied Values: create_index,
+     *         delete_index, allow_homogeneous_tables, protected, ttl,
      *         add_column, delete_column, change_column, rename_table.
      * 
      */
@@ -261,8 +303,10 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param action  Modification operation to be applied Values: create_index, delete_index, allow_homogeneous_tables, protected,
-     *                ttl, add_column, delete_column, change_column, rename_table.
+     * @param action  Modification operation to be applied Values:
+     *                create_index, delete_index, allow_homogeneous_tables,
+     *                protected, ttl, add_column, delete_column, change_column,
+     *                rename_table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -274,7 +318,8 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The value of the modification. May be a column name, 'true' or 'false', or a TTL depending on {@code action}.
+     * @return The value of the modification. May be a column name, 'true' or
+     *         'false', or a TTL depending on {@code action}.
      * 
      */
     public String getValue() {
@@ -283,7 +328,8 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param value  The value of the modification. May be a column name, 'true' or 'false', or a TTL depending on {@code action}.
+     * @param value  The value of the modification. May be a column name,
+     *               'true' or 'false', or a TTL depending on {@code action}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -297,17 +343,24 @@ public class AlterTableRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> column_default_value: when adding a column: set a default value, for existing data.
-     *                 <li> column_properties: when adding or changing a column: set the column properties (strings, separated by a
+     *                 <li> column_default_value: when adding a column: set a
+     *         default value, for existing data.
+     *                 <li> column_properties: when adding or changing a
+     *         column: set the column properties (strings, separated by a
      *         comma: data, store_only, text_search, char8, int8 etc).
-     *                 <li> column_type: when adding or changing a column: set the column type (strings, separated by a comma: int,
-     *         double, string, null etc).
-     *                 <li> validate_change_column: Validate the type change before applying column_change request. Default is true
-     *         (if option is missing). If True, then validate all values. A value too large (or too long) for the new type will
-     *         prevent any change. If False, then when a value is too large or long, it will be truncated. Values: true, false.
-     *                 <li> copy_values_from_column: when adding or changing a column: enter column name - from where to copy
-     *         values.
-     *                 <li> rename_column: new column name (using change_column).
+     *                 <li> column_type: when adding or changing a column: set
+     *         the column type (strings, separated by a comma: int, double,
+     *         string, null etc).
+     *                 <li> validate_change_column: Validate the type change
+     *         before applying column_change request. Default is true (if
+     *         option is missing). If True, then validate all values. A value
+     *         too large (or too long) for the new type will prevent any
+     *         change. If False, then when a value is too large or long, it
+     *         will be truncated. Values: true, false.
+     *                 <li> copy_values_from_column: when adding or changing a
+     *         column: enter column name - from where to copy values.
+     *                 <li> rename_column: new column name (using
+     *         change_column).
      *         </ul>
      * 
      */
@@ -319,18 +372,27 @@ public class AlterTableRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> column_default_value: when adding a column: set a default value, for existing data.
-     *                         <li> column_properties: when adding or changing a column: set the column properties (strings,
-     *                 separated by a comma: data, store_only, text_search, char8, int8 etc).
-     *                         <li> column_type: when adding or changing a column: set the column type (strings, separated by a
+     *                         <li> column_default_value: when adding a column:
+     *                 set a default value, for existing data.
+     *                         <li> column_properties: when adding or changing
+     *                 a column: set the column properties (strings, separated
+     *                 by a comma: data, store_only, text_search, char8, int8
+     *                 etc).
+     *                         <li> column_type: when adding or changing a
+     *                 column: set the column type (strings, separated by a
      *                 comma: int, double, string, null etc).
-     *                         <li> validate_change_column: Validate the type change before applying column_change request. Default
-     *                 is true (if option is missing). If True, then validate all values. A value too large (or too long) for the
-     *                 new type will prevent any change. If False, then when a value is too large or long, it will be truncated.
-     *                 Values: true, false.
-     *                         <li> copy_values_from_column: when adding or changing a column: enter column name - from where to
+     *                         <li> validate_change_column: Validate the type
+     *                 change before applying column_change request. Default is
+     *                 true (if option is missing). If True, then validate all
+     *                 values. A value too large (or too long) for the new type
+     *                 will prevent any change. If False, then when a value is
+     *                 too large or long, it will be truncated. Values: true,
+     *                 false.
+     *                         <li> copy_values_from_column: when adding or
+     *                 changing a column: enter column name - from where to
      *                 copy values.
-     *                         <li> rename_column: new column name (using change_column).
+     *                         <li> rename_column: new column name (using
+     *                 change_column).
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -342,7 +404,8 @@ public class AlterTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -353,7 +416,8 @@ public class AlterTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -383,7 +447,8 @@ public class AlterTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

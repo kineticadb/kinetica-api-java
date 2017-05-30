@@ -15,8 +15,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#showProc(ShowProcRequest)}.
- * <br />
- * <br />Shows information about a proc.
+ * <p>
+ * Shows information about a proc.
  */
 public class ShowProcRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -29,7 +29,8 @@ public class ShowProcRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -41,19 +42,20 @@ public class ShowProcRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * <br /><ul>
-     * <br />  <li> include_files: If set to {@code true}, the files that make up the proc will be returned. If set to {@code
-     * false}, the files will not be returned. Values: true, false.
-     * <br />
-     * <br /></ul>
-     * <br />A set of string constants for the parameter {@code options}.
+     * <ul>
+     *         <li> include_files: If set to {@code true}, the files that make
+     * up the proc will be returned. If set to {@code false}, the files will
+     * not be returned. Values: true, false.
+     * <p>
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * If set to {@code true}, the files that make up the proc will be returned. If set to {@code false}, the files will not be
-         * returned. Values: true, false.
-         * <br />
+         * If set to {@code true}, the files that make up the proc will be
+         * returned. If set to {@code false}, the files will not be returned.
+         * Values: true, false.
          */
         public static final String INCLUDE_FILES = "include_files";
         public static final String TRUE = "true";
@@ -77,12 +79,16 @@ public class ShowProcRequest implements IndexedRecord {
     /**
      * Constructs a ShowProcRequest object with the specified parameters.
      * 
-     * @param procName  Name of the proc to show information about. If specified, must be the name of a currently existing proc. If
-     *                  not specified, information about all procs will be returned.
+     * @param procName  Name of the proc to show information about. If
+     *                  specified, must be the name of a currently existing
+     *                  proc. If not specified, information about all procs
+     *                  will be returned.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> include_files: If set to {@code true}, the files that make up the proc will be returned. If set
-     *                 to {@code false}, the files will not be returned. Values: true, false.
+     *                         <li> include_files: If set to {@code true}, the
+     *                 files that make up the proc will be returned. If set to
+     *                 {@code false}, the files will not be returned. Values:
+     *                 true, false.
      *                 </ul>
      * 
      */
@@ -93,8 +99,9 @@ public class ShowProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the proc to show information about. If specified, must be the name of a currently existing proc. If not
-     *         specified, information about all procs will be returned.
+     * @return Name of the proc to show information about. If specified, must
+     *         be the name of a currently existing proc. If not specified,
+     *         information about all procs will be returned.
      * 
      */
     public String getProcName() {
@@ -103,8 +110,10 @@ public class ShowProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param procName  Name of the proc to show information about. If specified, must be the name of a currently existing proc. If
-     *                  not specified, information about all procs will be returned.
+     * @param procName  Name of the proc to show information about. If
+     *                  specified, must be the name of a currently existing
+     *                  proc. If not specified, information about all procs
+     *                  will be returned.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -118,8 +127,9 @@ public class ShowProcRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> include_files: If set to {@code true}, the files that make up the proc will be returned. If set to
-     *         {@code false}, the files will not be returned. Values: true, false.
+     *                 <li> include_files: If set to {@code true}, the files
+     *         that make up the proc will be returned. If set to {@code false},
+     *         the files will not be returned. Values: true, false.
      *         </ul>
      * 
      */
@@ -131,8 +141,10 @@ public class ShowProcRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> include_files: If set to {@code true}, the files that make up the proc will be returned. If set
-     *                 to {@code false}, the files will not be returned. Values: true, false.
+     *                         <li> include_files: If set to {@code true}, the
+     *                 files that make up the proc will be returned. If set to
+     *                 {@code false}, the files will not be returned. Values:
+     *                 true, false.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -144,7 +156,8 @@ public class ShowProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -155,7 +168,8 @@ public class ShowProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -179,7 +193,8 @@ public class ShowProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

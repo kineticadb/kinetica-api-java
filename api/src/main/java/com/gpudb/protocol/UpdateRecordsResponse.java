@@ -14,7 +14,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}.
  */
 public class UpdateRecordsResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -29,7 +30,8 @@ public class UpdateRecordsResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -73,7 +75,8 @@ public class UpdateRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Total number of records updated per predicate in {@code expressions}.
+     * @return Total number of records updated per predicate in {@code
+     *         expressions}.
      * 
      */
     public List<Long> getCountsUpdated() {
@@ -82,7 +85,8 @@ public class UpdateRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param countsUpdated  Total number of records updated per predicate in {@code expressions}.
+     * @param countsUpdated  Total number of records updated per predicate in
+     *                       {@code expressions}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -94,7 +98,8 @@ public class UpdateRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Total number of records inserted (due to expressions not matching any existing records).
+     * @return Total number of records inserted (due to expressions not
+     *         matching any existing records).
      * 
      */
     public long getCountInserted() {
@@ -103,7 +108,8 @@ public class UpdateRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param countInserted  Total number of records inserted (due to expressions not matching any existing records).
+     * @param countInserted  Total number of records inserted (due to
+     *                       expressions not matching any existing records).
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -115,7 +121,8 @@ public class UpdateRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Total number of records inserted per predicate in {@code expressions} (will be either 0 or 1 for each expression).
+     * @return Total number of records inserted per predicate in {@code
+     *         expressions} (will be either 0 or 1 for each expression).
      * 
      */
     public List<Long> getCountsInserted() {
@@ -124,8 +131,9 @@ public class UpdateRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param countsInserted  Total number of records inserted per predicate in {@code expressions} (will be either 0 or 1 for each
-     *                        expression).
+     * @param countsInserted  Total number of records inserted per predicate in
+     *                        {@code expressions} (will be either 0 or 1 for
+     *                        each expression).
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -136,7 +144,8 @@ public class UpdateRecordsResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -147,7 +156,8 @@ public class UpdateRecordsResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -177,7 +187,8 @@ public class UpdateRecordsResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

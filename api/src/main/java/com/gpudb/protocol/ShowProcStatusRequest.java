@@ -14,11 +14,14 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}.
- * <br />
- * <br />Shows the statuses of running or completed proc instances. Results are grouped by run ID (as returned from {@link
- * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}) and data segment ID (each invocation of the proc command on a data segment is
- * assigned a data segment ID).
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}.
+ * <p>
+ * Shows the statuses of running or completed proc instances. Results are
+ * grouped by run ID (as returned from {@link
+ * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}) and data segment ID (each
+ * invocation of the proc command on a data segment is assigned a data segment
+ * ID).
  */
 public class ShowProcStatusRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -31,7 +34,8 @@ public class ShowProcStatusRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -43,19 +47,21 @@ public class ShowProcStatusRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * <br /><ul>
-     * <br />  <li> clear_complete: If set to {@code true}, if a proc instance has completed (either successfully or unsuccessfully)
-     * then its status will be cleared and no longer returned in subsequent calls. Values: true, false.
-     * <br />
-     * <br /></ul>
-     * <br />A set of string constants for the parameter {@code options}.
+     * <ul>
+     *         <li> clear_complete: If set to {@code true}, if a proc instance
+     * has completed (either successfully or unsuccessfully) then its status
+     * will be cleared and no longer returned in subsequent calls. Values:
+     * true, false.
+     * <p>
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * If set to {@code true}, if a proc instance has completed (either successfully or unsuccessfully) then its status will be
-         * cleared and no longer returned in subsequent calls. Values: true, false.
-         * <br />
+         * If set to {@code true}, if a proc instance has completed (either
+         * successfully or unsuccessfully) then its status will be cleared and
+         * no longer returned in subsequent calls. Values: true, false.
          */
         public static final String CLEAR_COMPLETE = "clear_complete";
         public static final String TRUE = "true";
@@ -79,13 +85,17 @@ public class ShowProcStatusRequest implements IndexedRecord {
     /**
      * Constructs a ShowProcStatusRequest object with the specified parameters.
      * 
-     * @param runId  The run ID of a specific running or completed proc instance for which the status will be returned. If the run
-     *               ID is not found, nothing will be returned. If not specified, the statuses of all running and completed proc
+     * @param runId  The run ID of a specific running or completed proc
+     *               instance for which the status will be returned. If the run
+     *               ID is not found, nothing will be returned. If not
+     *               specified, the statuses of all running and completed proc
      *               instances will be returned.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> clear_complete: If set to {@code true}, if a proc instance has completed (either successfully or
-     *                 unsuccessfully) then its status will be cleared and no longer returned in subsequent calls. Values: true,
+     *                         <li> clear_complete: If set to {@code true}, if
+     *                 a proc instance has completed (either successfully or
+     *                 unsuccessfully) then its status will be cleared and no
+     *                 longer returned in subsequent calls. Values: true,
      *                 false.
      *                 </ul>
      * 
@@ -97,9 +107,10 @@ public class ShowProcStatusRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The run ID of a specific running or completed proc instance for which the status will be returned. If the run ID is
-     *         not found, nothing will be returned. If not specified, the statuses of all running and completed proc instances will
-     *         be returned.
+     * @return The run ID of a specific running or completed proc instance for
+     *         which the status will be returned. If the run ID is not found,
+     *         nothing will be returned. If not specified, the statuses of all
+     *         running and completed proc instances will be returned.
      * 
      */
     public String getRunId() {
@@ -108,8 +119,10 @@ public class ShowProcStatusRequest implements IndexedRecord {
 
     /**
      * 
-     * @param runId  The run ID of a specific running or completed proc instance for which the status will be returned. If the run
-     *               ID is not found, nothing will be returned. If not specified, the statuses of all running and completed proc
+     * @param runId  The run ID of a specific running or completed proc
+     *               instance for which the status will be returned. If the run
+     *               ID is not found, nothing will be returned. If not
+     *               specified, the statuses of all running and completed proc
      *               instances will be returned.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -124,8 +137,10 @@ public class ShowProcStatusRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> clear_complete: If set to {@code true}, if a proc instance has completed (either successfully or
-     *         unsuccessfully) then its status will be cleared and no longer returned in subsequent calls. Values: true, false.
+     *                 <li> clear_complete: If set to {@code true}, if a proc
+     *         instance has completed (either successfully or unsuccessfully)
+     *         then its status will be cleared and no longer returned in
+     *         subsequent calls. Values: true, false.
      *         </ul>
      * 
      */
@@ -137,8 +152,10 @@ public class ShowProcStatusRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> clear_complete: If set to {@code true}, if a proc instance has completed (either successfully or
-     *                 unsuccessfully) then its status will be cleared and no longer returned in subsequent calls. Values: true,
+     *                         <li> clear_complete: If set to {@code true}, if
+     *                 a proc instance has completed (either successfully or
+     *                 unsuccessfully) then its status will be cleared and no
+     *                 longer returned in subsequent calls. Values: true,
      *                 false.
      *                 </ul>
      * 
@@ -151,7 +168,8 @@ public class ShowProcStatusRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -162,7 +180,8 @@ public class ShowProcStatusRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -186,7 +205,8 @@ public class ShowProcStatusRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

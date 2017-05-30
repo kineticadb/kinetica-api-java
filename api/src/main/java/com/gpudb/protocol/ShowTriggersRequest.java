@@ -16,9 +16,11 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#showTriggers(ShowTriggersRequest)}.
- * <br />
- * <br />Retrieves information regarding the specified triggers or all existing triggers currently active.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#showTriggers(ShowTriggersRequest)}.
+ * <p>
+ * Retrieves information regarding the specified triggers or all existing
+ * triggers currently active.
  */
 public class ShowTriggersRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -31,7 +33,8 @@ public class ShowTriggersRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -55,7 +58,8 @@ public class ShowTriggersRequest implements IndexedRecord {
     /**
      * Constructs a ShowTriggersRequest object with the specified parameters.
      * 
-     * @param triggerIds  List of IDs of the triggers whose information to be retrieved. Empty list means retrieve information on
+     * @param triggerIds  List of IDs of the triggers whose information to be
+     *                    retrieved. Empty list means retrieve information on
      *                    all active triggers.
      * @param options  Optional parameters.
      * 
@@ -67,8 +71,8 @@ public class ShowTriggersRequest implements IndexedRecord {
 
     /**
      * 
-     * @return List of IDs of the triggers whose information to be retrieved. Empty list means retrieve information on all active
-     *         triggers.
+     * @return List of IDs of the triggers whose information to be retrieved.
+     *         Empty list means retrieve information on all active triggers.
      * 
      */
     public List<String> getTriggerIds() {
@@ -77,7 +81,8 @@ public class ShowTriggersRequest implements IndexedRecord {
 
     /**
      * 
-     * @param triggerIds  List of IDs of the triggers whose information to be retrieved. Empty list means retrieve information on
+     * @param triggerIds  List of IDs of the triggers whose information to be
+     *                    retrieved. Empty list means retrieve information on
      *                    all active triggers.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -110,7 +115,8 @@ public class ShowTriggersRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -121,7 +127,8 @@ public class ShowTriggersRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -145,7 +152,8 @@ public class ShowTriggersRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

@@ -14,14 +14,19 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#filterByValue(FilterByValueRequest)}.
- * <br />
- * <br />Calculates which objects from a table has a particular value for a particular column. The input parameters provide a way to
- * specify either a String or a Double valued column and a desired value for the column on which the filter is performed. The
- * operation is synchronous, meaning that a response will not be returned until all the objects are fully available. The response
- * payload provides the count of the resulting set. A new result view which satisfies the input filter restriction specification is
- * also created with a view name passed in as part of the input payload.  Although this functionality can also be accomplished with
- * the standard filter function, it is more efficient.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#filterByValue(FilterByValueRequest)}.
+ * <p>
+ * Calculates which objects from a table has a particular value for a
+ * particular column. The input parameters provide a way to specify either a
+ * String or a Double valued column and a desired value for the column on which
+ * the filter is performed. The operation is synchronous, meaning that a
+ * response will not be returned until all the objects are fully available. The
+ * response payload provides the count of the resulting set. A new result view
+ * which satisfies the input filter restriction specification is also created
+ * with a view name passed in as part of the input payload.  Although this
+ * functionality can also be accomplished with the standard filter function, it
+ * is more efficient.
  */
 public class FilterByValueRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -39,7 +44,8 @@ public class FilterByValueRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -71,13 +77,19 @@ public class FilterByValueRequest implements IndexedRecord {
     /**
      * Constructs a FilterByValueRequest object with the specified parameters.
      * 
-     * @param tableName  Name of an existing table on which to perform the calculation.
-     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *                  collection, table or view.
-     * @param isString  Indicates whether the value being searched for is string or numeric.
+     * @param tableName  Name of an existing table on which to perform the
+     *                   calculation.
+     * @param viewName  If provided, then this will be the name of the view
+     *                  containing the results. Has the same naming
+     *                  restrictions as <a
+     *                  href="../../../../../concepts/tables.html"
+     *                  target="_top">tables</a>.
+     * @param isString  Indicates whether the value being searched for is
+     *                  string or numeric.
      * @param value  The value to search for.
      * @param valueStr  The string value to search for.
-     * @param columnName  Name of a column on which the filter by value would be applied.
+     * @param columnName  Name of a column on which the filter by value would
+     *                    be applied.
      * @param options  Optional parameters.
      * 
      */
@@ -102,7 +114,8 @@ public class FilterByValueRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of an existing table on which to perform the calculation.
+     * @param tableName  Name of an existing table on which to perform the
+     *                   calculation.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -114,8 +127,10 @@ public class FilterByValueRequest implements IndexedRecord {
 
     /**
      * 
-     * @return If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *         collection, table or view.
+     * @return If provided, then this will be the name of the view containing
+     *         the results. Has the same naming restrictions as <a
+     *         href="../../../../../concepts/tables.html"
+     *         target="_top">tables</a>.
      * 
      */
     public String getViewName() {
@@ -124,8 +139,11 @@ public class FilterByValueRequest implements IndexedRecord {
 
     /**
      * 
-     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *                  collection, table or view.
+     * @param viewName  If provided, then this will be the name of the view
+     *                  containing the results. Has the same naming
+     *                  restrictions as <a
+     *                  href="../../../../../concepts/tables.html"
+     *                  target="_top">tables</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -137,7 +155,8 @@ public class FilterByValueRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates whether the value being searched for is string or numeric.
+     * @return Indicates whether the value being searched for is string or
+     *         numeric.
      * 
      */
     public boolean getIsString() {
@@ -146,7 +165,8 @@ public class FilterByValueRequest implements IndexedRecord {
 
     /**
      * 
-     * @param isString  Indicates whether the value being searched for is string or numeric.
+     * @param isString  Indicates whether the value being searched for is
+     *                  string or numeric.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -209,7 +229,8 @@ public class FilterByValueRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnName  Name of a column on which the filter by value would be applied.
+     * @param columnName  Name of a column on which the filter by value would
+     *                    be applied.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -241,7 +262,8 @@ public class FilterByValueRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -252,7 +274,8 @@ public class FilterByValueRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -291,7 +314,8 @@ public class FilterByValueRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

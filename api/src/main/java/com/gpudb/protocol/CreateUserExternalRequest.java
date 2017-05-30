@@ -14,9 +14,11 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#createUserExternal(CreateUserExternalRequest)}.
- * <br />
- * <br />Creates a new external user (a user whose credentials are managed by an external LDAP).
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#createUserExternal(CreateUserExternalRequest)}.
+ * <p>
+ * Creates a new external user (a user whose credentials are managed by an
+ * external LDAP).
  */
 public class CreateUserExternalRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -29,7 +31,8 @@ public class CreateUserExternalRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -51,9 +54,11 @@ public class CreateUserExternalRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a CreateUserExternalRequest object with the specified parameters.
+     * Constructs a CreateUserExternalRequest object with the specified
+     * parameters.
      * 
-     * @param name  Name of the user to be created. Must exactly match the user's name in the external LDAP, prefixed with a @. Must
+     * @param name  Name of the user to be created. Must exactly match the
+     *              user's name in the external LDAP, prefixed with a @. Must
      *              not be the same name as an existing user.
      * @param options  Optional parameters.
      * 
@@ -65,8 +70,9 @@ public class CreateUserExternalRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the user to be created. Must exactly match the user's name in the external LDAP, prefixed with a @. Must not
-     *         be the same name as an existing user.
+     * @return Name of the user to be created. Must exactly match the user's
+     *         name in the external LDAP, prefixed with a @. Must not be the
+     *         same name as an existing user.
      * 
      */
     public String getName() {
@@ -75,7 +81,8 @@ public class CreateUserExternalRequest implements IndexedRecord {
 
     /**
      * 
-     * @param name  Name of the user to be created. Must exactly match the user's name in the external LDAP, prefixed with a @. Must
+     * @param name  Name of the user to be created. Must exactly match the
+     *              user's name in the external LDAP, prefixed with a @. Must
      *              not be the same name as an existing user.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -108,7 +115,8 @@ public class CreateUserExternalRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -119,7 +127,8 @@ public class CreateUserExternalRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -143,7 +152,8 @@ public class CreateUserExternalRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

@@ -14,7 +14,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#aggregateKMeans(AggregateKMeansRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#aggregateKMeans(AggregateKMeansRequest)}.
  */
 public class AggregateKMeansResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -32,7 +33,8 @@ public class AggregateKMeansResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -79,7 +81,8 @@ public class AggregateKMeansResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The number of elements in the cluster closest the corresponding k-means values.
+     * @return The number of elements in the cluster closest the corresponding
+     *         k-means values.
      * 
      */
     public List<Long> getCounts() {
@@ -88,7 +91,8 @@ public class AggregateKMeansResponse implements IndexedRecord {
 
     /**
      * 
-     * @param counts  The number of elements in the cluster closest the corresponding k-means values.
+     * @param counts  The number of elements in the cluster closest the
+     *                corresponding k-means values.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -100,7 +104,8 @@ public class AggregateKMeansResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The root mean squared distance of the elements in the cluster for each of the k-means values.
+     * @return The root mean squared distance of the elements in the cluster
+     *         for each of the k-means values.
      * 
      */
     public List<Double> getRmsDists() {
@@ -109,7 +114,8 @@ public class AggregateKMeansResponse implements IndexedRecord {
 
     /**
      * 
-     * @param rmsDists  The root mean squared distance of the elements in the cluster for each of the k-means values.
+     * @param rmsDists  The root mean squared distance of the elements in the
+     *                  cluster for each of the k-means values.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -121,7 +127,8 @@ public class AggregateKMeansResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The total count of all the clusters - will be the size of the input table.
+     * @return The total count of all the clusters - will be the size of the
+     *         input table.
      * 
      */
     public long getCount() {
@@ -130,7 +137,8 @@ public class AggregateKMeansResponse implements IndexedRecord {
 
     /**
      * 
-     * @param count  The total count of all the clusters - will be the size of the input table.
+     * @param count  The total count of all the clusters - will be the size of
+     *               the input table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -142,7 +150,8 @@ public class AggregateKMeansResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The sum of all the rms_dists - the value the k-means algorithm is attempting to minimize.
+     * @return The sum of all the rms_dists - the value the k-means algorithm
+     *         is attempting to minimize.
      * 
      */
     public double getRmsDist() {
@@ -151,7 +160,8 @@ public class AggregateKMeansResponse implements IndexedRecord {
 
     /**
      * 
-     * @param rmsDist  The sum of all the rms_dists - the value the k-means algorithm is attempting to minimize.
+     * @param rmsDist  The sum of all the rms_dists - the value the k-means
+     *                 algorithm is attempting to minimize.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -163,7 +173,8 @@ public class AggregateKMeansResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The distance between the last two iterations of the algorithm before it quit.
+     * @return The distance between the last two iterations of the algorithm
+     *         before it quit.
      * 
      */
     public double getTolerance() {
@@ -172,7 +183,8 @@ public class AggregateKMeansResponse implements IndexedRecord {
 
     /**
      * 
-     * @param tolerance  The distance between the last two iterations of the algorithm before it quit.
+     * @param tolerance  The distance between the last two iterations of the
+     *                   algorithm before it quit.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -193,7 +205,8 @@ public class AggregateKMeansResponse implements IndexedRecord {
 
     /**
      * 
-     * @param numIters  The number of iterations the algorithm executed before it quit.
+     * @param numIters  The number of iterations the algorithm executed before
+     *                  it quit.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -204,7 +217,8 @@ public class AggregateKMeansResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -215,7 +229,8 @@ public class AggregateKMeansResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -254,7 +269,8 @@ public class AggregateKMeansResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

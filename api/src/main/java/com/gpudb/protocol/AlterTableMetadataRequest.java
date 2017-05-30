@@ -16,11 +16,13 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#alterTableMetadata(AlterTableMetadataRequest)}.
- * <br />
- * <br />Updates (adds or changes) metadata for tables. The metadata key and values must both be strings. This is an easy way to
- * annotate whole tables rather than single records within tables.  Some examples of metadata are owner of the table, table creation
- * timestamp etc.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#alterTableMetadata(AlterTableMetadataRequest)}.
+ * <p>
+ * Updates (adds or changes) metadata for tables. The metadata key and values
+ * must both be strings. This is an easy way to annotate whole tables rather
+ * than single records within tables.  Some examples of metadata are owner of
+ * the table, table creation timestamp etc.
  */
 public class AlterTableMetadataRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -34,7 +36,8 @@ public class AlterTableMetadataRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -58,13 +61,18 @@ public class AlterTableMetadataRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs an AlterTableMetadataRequest object with the specified parameters.
+     * Constructs an AlterTableMetadataRequest object with the specified
+     * parameters.
      * 
-     * @param tableNames  Names of the tables whose metadata will be updated. All specified tables must exist, or an error will be
+     * @param tableNames  Names of the tables whose metadata will be updated.
+     *                    All specified tables must exist, or an error will be
      *                    returned.
-     * @param metadataMap  A map which contains the metadata of the tables that are to be updated. Note that only one map is
-     *                     provided for all the tables; so the change will be applied to every table. If the provided map is empty,
-     *                     then all existing metadata for the table(s) will be cleared.
+     * @param metadataMap  A map which contains the metadata of the tables that
+     *                     are to be updated. Note that only one map is
+     *                     provided for all the tables; so the change will be
+     *                     applied to every table. If the provided map is
+     *                     empty, then all existing metadata for the table(s)
+     *                     will be cleared.
      * @param options  Optional parameters.
      * 
      */
@@ -76,7 +84,8 @@ public class AlterTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Names of the tables whose metadata will be updated. All specified tables must exist, or an error will be returned.
+     * @return Names of the tables whose metadata will be updated. All
+     *         specified tables must exist, or an error will be returned.
      * 
      */
     public List<String> getTableNames() {
@@ -85,7 +94,8 @@ public class AlterTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  Names of the tables whose metadata will be updated. All specified tables must exist, or an error will be
+     * @param tableNames  Names of the tables whose metadata will be updated.
+     *                    All specified tables must exist, or an error will be
      *                    returned.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -98,9 +108,11 @@ public class AlterTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A map which contains the metadata of the tables that are to be updated. Note that only one map is provided for all
-     *         the tables; so the change will be applied to every table. If the provided map is empty, then all existing metadata
-     *         for the table(s) will be cleared.
+     * @return A map which contains the metadata of the tables that are to be
+     *         updated. Note that only one map is provided for all the tables;
+     *         so the change will be applied to every table. If the provided
+     *         map is empty, then all existing metadata for the table(s) will
+     *         be cleared.
      * 
      */
     public Map<String, String> getMetadataMap() {
@@ -109,9 +121,12 @@ public class AlterTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @param metadataMap  A map which contains the metadata of the tables that are to be updated. Note that only one map is
-     *                     provided for all the tables; so the change will be applied to every table. If the provided map is empty,
-     *                     then all existing metadata for the table(s) will be cleared.
+     * @param metadataMap  A map which contains the metadata of the tables that
+     *                     are to be updated. Note that only one map is
+     *                     provided for all the tables; so the change will be
+     *                     applied to every table. If the provided map is
+     *                     empty, then all existing metadata for the table(s)
+     *                     will be cleared.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -143,7 +158,8 @@ public class AlterTableMetadataRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -154,7 +170,8 @@ public class AlterTableMetadataRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -181,7 +198,8 @@ public class AlterTableMetadataRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

@@ -12,7 +12,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#createJoinTable(CreateJoinTableRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#createJoinTable(CreateJoinTableRequest)}.
  */
 public class CreateJoinTableResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -25,7 +26,8 @@ public class CreateJoinTableResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -67,7 +69,8 @@ public class CreateJoinTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The number of records in the join table filtered by the given select expression.
+     * @return The number of records in the join table filtered by the given
+     *         select expression.
      * 
      */
     public long getCount() {
@@ -76,7 +79,8 @@ public class CreateJoinTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param count  The number of records in the join table filtered by the given select expression.
+     * @param count  The number of records in the join table filtered by the
+     *               given select expression.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -87,7 +91,8 @@ public class CreateJoinTableResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -98,7 +103,8 @@ public class CreateJoinTableResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -122,7 +128,8 @@ public class CreateJoinTableResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

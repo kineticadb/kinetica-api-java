@@ -13,7 +13,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
  */
 public class RawGetRecordsByColumnResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -30,7 +31,8 @@ public class RawGetRecordsByColumnResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -48,7 +50,8 @@ public class RawGetRecordsByColumnResponse implements IndexedRecord {
 
 
     /**
-     * Constructs a RawGetRecordsByColumnResponse object with default parameters.
+     * Constructs a RawGetRecordsByColumnResponse object with default
+     * parameters.
      */
     public RawGetRecordsByColumnResponse() {
     }
@@ -64,7 +67,8 @@ public class RawGetRecordsByColumnResponse implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  The same table name as was passed in the parameter list.
+     * @param tableName  The same table name as was passed in the parameter
+     *                   list.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -76,7 +80,8 @@ public class RawGetRecordsByColumnResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Avro schema of {@code binaryEncodedResponse} or {@code jsonEncodedResponse}.
+     * @return Avro schema of {@code binaryEncodedResponse} or {@code
+     *         jsonEncodedResponse}.
      * 
      */
     public String getResponseSchemaStr() {
@@ -85,7 +90,8 @@ public class RawGetRecordsByColumnResponse implements IndexedRecord {
 
     /**
      * 
-     * @param responseSchemaStr  Avro schema of {@code binaryEncodedResponse} or {@code jsonEncodedResponse}.
+     * @param responseSchemaStr  Avro schema of {@code binaryEncodedResponse}
+     *                           or {@code jsonEncodedResponse}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -180,7 +186,8 @@ public class RawGetRecordsByColumnResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -191,7 +198,8 @@ public class RawGetRecordsByColumnResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -227,7 +235,8 @@ public class RawGetRecordsByColumnResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

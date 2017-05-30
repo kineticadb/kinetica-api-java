@@ -14,9 +14,11 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#aggregateConvexHull(AggregateConvexHullRequest)}.
- * <br />
- * <br />Calculates and returns the convex hull for the values in a table specified by {@code tableName}.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#aggregateConvexHull(AggregateConvexHullRequest)}.
+ * <p>
+ * Calculates and returns the convex hull for the values in a table specified
+ * by {@code tableName}.
  */
 public class AggregateConvexHullRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -31,7 +33,8 @@ public class AggregateConvexHullRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -57,12 +60,16 @@ public class AggregateConvexHullRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs an AggregateConvexHullRequest object with the specified parameters.
+     * Constructs an AggregateConvexHullRequest object with the specified
+     * parameters.
      * 
-     * @param tableName  Name of Table on which the operation will be performed. Must be an existing table.  It can not be a
+     * @param tableName  Name of Table on which the operation will be
+     *                   performed. Must be an existing table.  It can not be a
      *                   collection.
-     * @param xColumnName  Name of the column containing the x coordinates of the points for the operation being performed.
-     * @param yColumnName  Name of the column containing the y coordinates of the points for the operation being performed.
+     * @param xColumnName  Name of the column containing the x coordinates of
+     *                     the points for the operation being performed.
+     * @param yColumnName  Name of the column containing the y coordinates of
+     *                     the points for the operation being performed.
      * @param options  Optional parameters.
      * 
      */
@@ -75,7 +82,8 @@ public class AggregateConvexHullRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of Table on which the operation will be performed. Must be an existing table.  It can not be a collection.
+     * @return Name of Table on which the operation will be performed. Must be
+     *         an existing table.  It can not be a collection.
      * 
      */
     public String getTableName() {
@@ -84,7 +92,8 @@ public class AggregateConvexHullRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of Table on which the operation will be performed. Must be an existing table.  It can not be a
+     * @param tableName  Name of Table on which the operation will be
+     *                   performed. Must be an existing table.  It can not be a
      *                   collection.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -97,7 +106,8 @@ public class AggregateConvexHullRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the column containing the x coordinates of the points for the operation being performed.
+     * @return Name of the column containing the x coordinates of the points
+     *         for the operation being performed.
      * 
      */
     public String getXColumnName() {
@@ -106,7 +116,8 @@ public class AggregateConvexHullRequest implements IndexedRecord {
 
     /**
      * 
-     * @param xColumnName  Name of the column containing the x coordinates of the points for the operation being performed.
+     * @param xColumnName  Name of the column containing the x coordinates of
+     *                     the points for the operation being performed.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -118,7 +129,8 @@ public class AggregateConvexHullRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the column containing the y coordinates of the points for the operation being performed.
+     * @return Name of the column containing the y coordinates of the points
+     *         for the operation being performed.
      * 
      */
     public String getYColumnName() {
@@ -127,7 +139,8 @@ public class AggregateConvexHullRequest implements IndexedRecord {
 
     /**
      * 
-     * @param yColumnName  Name of the column containing the y coordinates of the points for the operation being performed.
+     * @param yColumnName  Name of the column containing the y coordinates of
+     *                     the points for the operation being performed.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -159,7 +172,8 @@ public class AggregateConvexHullRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -170,7 +184,8 @@ public class AggregateConvexHullRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -200,7 +215,8 @@ public class AggregateConvexHullRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

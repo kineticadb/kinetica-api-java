@@ -14,7 +14,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
  */
 public class InsertRecordsResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -28,7 +29,8 @@ public class InsertRecordsResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -50,7 +52,8 @@ public class InsertRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return An array containing the IDs with which the added records are identified internally.
+     * @return An array containing the IDs with which the added records are
+     *         identified internally.
      * 
      */
     public List<String> getRecordIds() {
@@ -59,7 +62,8 @@ public class InsertRecordsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param recordIds  An array containing the IDs with which the added records are identified internally.
+     * @param recordIds  An array containing the IDs with which the added
+     *                   records are identified internally.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -112,7 +116,8 @@ public class InsertRecordsResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -123,7 +128,8 @@ public class InsertRecordsResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -150,7 +156,8 @@ public class InsertRecordsResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

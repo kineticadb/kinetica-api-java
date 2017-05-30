@@ -16,13 +16,17 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#aggregateKMeans(AggregateKMeansRequest)}.
- * <br />
- * <br />This endpoint runs the k-means algorithm - a heuristic algorithm that attempts to do k-means clustering.  An ideal k-means
- * clustering algorithm selects k points such that the sum of the mean squared distances of each member of the set to the nearest of
- * the k points is minimized.  The k-means algorithm however does not necessarily produce such an ideal cluster.   It begins with a
- * randomly selected set of k points and then refines the location of the points iteratively and settles to a local minimum.
- * Various parameters and options are provided to control the heuristic search.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#aggregateKMeans(AggregateKMeansRequest)}.
+ * <p>
+ * This endpoint runs the k-means algorithm - a heuristic algorithm that
+ * attempts to do k-means clustering.  An ideal k-means clustering algorithm
+ * selects k points such that the sum of the mean squared distances of each
+ * member of the set to the nearest of the k points is minimized.  The k-means
+ * algorithm however does not necessarily produce such an ideal cluster.   It
+ * begins with a randomly selected set of k points and then refines the
+ * location of the points iteratively and settles to a local minimum.  Various
+ * parameters and options are provided to control the heuristic search.
  */
 public class AggregateKMeansRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -38,7 +42,8 @@ public class AggregateKMeansRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -50,29 +55,35 @@ public class AggregateKMeansRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * <br /><ul>
-     * <br />  <li> whiten: When set to 1 each of the columns is first normalized by its stdv - default is not to whiten.
-     * <br />  <li> max_iters: Number of times to try to hit the tolerance limit before giving up - default is 10.
-     * <br />  <li> num_tries: Number of times to run the k-means algorithm with a different randomly selected starting points -
-     * helps avoid local minimum. Default is 1.
-     * <br /></ul>
-     * <br />A set of string constants for the parameter {@code options}.
+     * <ul>
+     *         <li> whiten: When set to 1 each of the columns is first
+     * normalized by its stdv - default is not to whiten.
+     *         <li> max_iters: Number of times to try to hit the tolerance
+     * limit before giving up - default is 10.
+     *         <li> num_tries: Number of times to run the k-means algorithm
+     * with a different randomly selected starting points - helps avoid local
+     * minimum. Default is 1.
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * When set to 1 each of the columns is first normalized by its stdv - default is not to whiten.
+         * When set to 1 each of the columns is first normalized by its stdv -
+         * default is not to whiten.
          */
         public static final String WHITEN = "whiten";
 
         /**
-         * Number of times to try to hit the tolerance limit before giving up - default is 10.
+         * Number of times to try to hit the tolerance limit before giving up -
+         * default is 10.
          */
         public static final String MAX_ITERS = "max_iters";
 
         /**
-         * Number of times to run the k-means algorithm with a different randomly selected starting points - helps avoid local
-         * minimum. Default is 1.
+         * Number of times to run the k-means algorithm with a different
+         * randomly selected starting points - helps avoid local minimum.
+         * Default is 1.
          */
         public static final String NUM_TRIES = "num_tries";
 
@@ -96,20 +107,29 @@ public class AggregateKMeansRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs an AggregateKMeansRequest object with the specified parameters.
+     * Constructs an AggregateKMeansRequest object with the specified
+     * parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table or collection.
-     * @param columnNames  List of column names on which the operation would be performed. If n columns are provided then each of
-     *                     the k result points will have n dimensions corresponding to the n columns.
+     * @param tableName  Name of the table on which the operation will be
+     *                   performed. Must be an existing table or collection.
+     * @param columnNames  List of column names on which the operation would be
+     *                     performed. If n columns are provided then each of
+     *                     the k result points will have n dimensions
+     *                     corresponding to the n columns.
      * @param k  The number of mean points to be determined by the algorithm.
-     * @param tolerance  Stop iterating when the distances between successive points is less than the given tolerance.
+     * @param tolerance  Stop iterating when the distances between successive
+     *                   points is less than the given tolerance.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> whiten: When set to 1 each of the columns is first normalized by its stdv - default is not to
+     *                         <li> whiten: When set to 1 each of the columns
+     *                 is first normalized by its stdv - default is not to
      *                 whiten.
-     *                         <li> max_iters: Number of times to try to hit the tolerance limit before giving up - default is 10.
-     *                         <li> num_tries: Number of times to run the k-means algorithm with a different randomly selected
-     *                 starting points - helps avoid local minimum. Default is 1.
+     *                         <li> max_iters: Number of times to try to hit
+     *                 the tolerance limit before giving up - default is 10.
+     *                         <li> num_tries: Number of times to run the
+     *                 k-means algorithm with a different randomly selected
+     *                 starting points - helps avoid local minimum. Default is
+     *                 1.
      *                 </ul>
      * 
      */
@@ -123,7 +143,8 @@ public class AggregateKMeansRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the operation will be performed. Must be an existing table or collection.
+     * @return Name of the table on which the operation will be performed. Must
+     *         be an existing table or collection.
      * 
      */
     public String getTableName() {
@@ -132,7 +153,8 @@ public class AggregateKMeansRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table or collection.
+     * @param tableName  Name of the table on which the operation will be
+     *                   performed. Must be an existing table or collection.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -144,8 +166,9 @@ public class AggregateKMeansRequest implements IndexedRecord {
 
     /**
      * 
-     * @return List of column names on which the operation would be performed. If n columns are provided then each of the k result
-     *         points will have n dimensions corresponding to the n columns.
+     * @return List of column names on which the operation would be performed.
+     *         If n columns are provided then each of the k result points will
+     *         have n dimensions corresponding to the n columns.
      * 
      */
     public List<String> getColumnNames() {
@@ -154,8 +177,10 @@ public class AggregateKMeansRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnNames  List of column names on which the operation would be performed. If n columns are provided then each of
-     *                     the k result points will have n dimensions corresponding to the n columns.
+     * @param columnNames  List of column names on which the operation would be
+     *                     performed. If n columns are provided then each of
+     *                     the k result points will have n dimensions
+     *                     corresponding to the n columns.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -188,7 +213,8 @@ public class AggregateKMeansRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Stop iterating when the distances between successive points is less than the given tolerance.
+     * @return Stop iterating when the distances between successive points is
+     *         less than the given tolerance.
      * 
      */
     public double getTolerance() {
@@ -197,7 +223,8 @@ public class AggregateKMeansRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tolerance  Stop iterating when the distances between successive points is less than the given tolerance.
+     * @param tolerance  Stop iterating when the distances between successive
+     *                   points is less than the given tolerance.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -211,10 +238,13 @@ public class AggregateKMeansRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> whiten: When set to 1 each of the columns is first normalized by its stdv - default is not to whiten.
-     *                 <li> max_iters: Number of times to try to hit the tolerance limit before giving up - default is 10.
-     *                 <li> num_tries: Number of times to run the k-means algorithm with a different randomly selected starting
-     *         points - helps avoid local minimum. Default is 1.
+     *                 <li> whiten: When set to 1 each of the columns is first
+     *         normalized by its stdv - default is not to whiten.
+     *                 <li> max_iters: Number of times to try to hit the
+     *         tolerance limit before giving up - default is 10.
+     *                 <li> num_tries: Number of times to run the k-means
+     *         algorithm with a different randomly selected starting points -
+     *         helps avoid local minimum. Default is 1.
      *         </ul>
      * 
      */
@@ -226,11 +256,15 @@ public class AggregateKMeansRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> whiten: When set to 1 each of the columns is first normalized by its stdv - default is not to
+     *                         <li> whiten: When set to 1 each of the columns
+     *                 is first normalized by its stdv - default is not to
      *                 whiten.
-     *                         <li> max_iters: Number of times to try to hit the tolerance limit before giving up - default is 10.
-     *                         <li> num_tries: Number of times to run the k-means algorithm with a different randomly selected
-     *                 starting points - helps avoid local minimum. Default is 1.
+     *                         <li> max_iters: Number of times to try to hit
+     *                 the tolerance limit before giving up - default is 10.
+     *                         <li> num_tries: Number of times to run the
+     *                 k-means algorithm with a different randomly selected
+     *                 starting points - helps avoid local minimum. Default is
+     *                 1.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -242,7 +276,8 @@ public class AggregateKMeansRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -253,7 +288,8 @@ public class AggregateKMeansRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -286,7 +322,8 @@ public class AggregateKMeansRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

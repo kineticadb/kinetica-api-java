@@ -14,9 +14,11 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#aggregateMinMax(AggregateMinMaxRequest)}.
- * <br />
- * <br />Calculates and returns the minimum and maximum values of a particular column in a table.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#aggregateMinMax(AggregateMinMaxRequest)}.
+ * <p>
+ * Calculates and returns the minimum and maximum values of a particular column
+ * in a table.
  */
 public class AggregateMinMaxRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -30,7 +32,8 @@ public class AggregateMinMaxRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -54,10 +57,13 @@ public class AggregateMinMaxRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs an AggregateMinMaxRequest object with the specified parameters.
+     * Constructs an AggregateMinMaxRequest object with the specified
+     * parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table.
-     * @param columnName  Name of a column or an expression of one or more column on which the min-max will be calculated.
+     * @param tableName  Name of the table on which the operation will be
+     *                   performed. Must be an existing table.
+     * @param columnName  Name of a column or an expression of one or more
+     *                    column on which the min-max will be calculated.
      * @param options  Optional parameters.
      * 
      */
@@ -69,7 +75,8 @@ public class AggregateMinMaxRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the operation will be performed. Must be an existing table.
+     * @return Name of the table on which the operation will be performed. Must
+     *         be an existing table.
      * 
      */
     public String getTableName() {
@@ -78,7 +85,8 @@ public class AggregateMinMaxRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table.
+     * @param tableName  Name of the table on which the operation will be
+     *                   performed. Must be an existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -90,7 +98,8 @@ public class AggregateMinMaxRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of a column or an expression of one or more column on which the min-max will be calculated.
+     * @return Name of a column or an expression of one or more column on which
+     *         the min-max will be calculated.
      * 
      */
     public String getColumnName() {
@@ -99,7 +108,8 @@ public class AggregateMinMaxRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnName  Name of a column or an expression of one or more column on which the min-max will be calculated.
+     * @param columnName  Name of a column or an expression of one or more
+     *                    column on which the min-max will be calculated.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -131,7 +141,8 @@ public class AggregateMinMaxRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -142,7 +153,8 @@ public class AggregateMinMaxRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -169,7 +181,8 @@ public class AggregateMinMaxRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

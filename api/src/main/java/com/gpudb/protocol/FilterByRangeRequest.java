@@ -14,15 +14,19 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#filterByRange(FilterByRangeRequest)}.
- * <br />
- * <br />Calculates which objects from a table have a column that is within the given bounds. An object from the table identified by
- * {@code tableName} is added to the view {@code viewName} if its column is within [{@code lowerBound}, {@code upperBound}]
- * (inclusive). The operation is synchronous. The response provides a count of the number of objects which passed the bound filter.
- * Although this functionality can also be accomplished with the standard filter function, it is more efficient.
- * <br />
- * <br />For track objects, the count reflects how many points fall within the given bounds (which may not include all the track
- * points of any given track).
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#filterByRange(FilterByRangeRequest)}.
+ * <p>
+ * Calculates which objects from a table have a column that is within the given
+ * bounds. An object from the table identified by {@code tableName} is added to
+ * the view {@code viewName} if its column is within [{@code lowerBound},
+ * {@code upperBound}] (inclusive). The operation is synchronous. The response
+ * provides a count of the number of objects which passed the bound filter.
+ * Although this functionality can also be accomplished with the standard
+ * filter function, it is more efficient.
+ * <p>
+ * For track objects, the count reflects how many points fall within the given
+ * bounds (which may not include all the track points of any given track).
  */
 public class FilterByRangeRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -39,7 +43,8 @@ public class FilterByRangeRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -69,10 +74,16 @@ public class FilterByRangeRequest implements IndexedRecord {
     /**
      * Constructs a FilterByRangeRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table on which the filter by range operation will be performed.  Must be an existing table.
-     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *                  collection, table or view.
-     * @param columnName  Name of a column on which the operation would be applied.
+     * @param tableName  Name of the table on which the filter by range
+     *                   operation will be performed.  Must be an existing
+     *                   table.
+     * @param viewName  If provided, then this will be the name of the view
+     *                  containing the results. Has the same naming
+     *                  restrictions as <a
+     *                  href="../../../../../concepts/tables.html"
+     *                  target="_top">tables</a>.
+     * @param columnName  Name of a column on which the operation would be
+     *                    applied.
      * @param lowerBound  Value of the lower bound (inclusive).
      * @param upperBound  Value of the upper bound (inclusive).
      * @param options  Optional parameters.
@@ -89,7 +100,8 @@ public class FilterByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the filter by range operation will be performed.  Must be an existing table.
+     * @return Name of the table on which the filter by range operation will be
+     *         performed.  Must be an existing table.
      * 
      */
     public String getTableName() {
@@ -98,7 +110,9 @@ public class FilterByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the filter by range operation will be performed.  Must be an existing table.
+     * @param tableName  Name of the table on which the filter by range
+     *                   operation will be performed.  Must be an existing
+     *                   table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -110,8 +124,10 @@ public class FilterByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *         collection, table or view.
+     * @return If provided, then this will be the name of the view containing
+     *         the results. Has the same naming restrictions as <a
+     *         href="../../../../../concepts/tables.html"
+     *         target="_top">tables</a>.
      * 
      */
     public String getViewName() {
@@ -120,8 +136,11 @@ public class FilterByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *                  collection, table or view.
+     * @param viewName  If provided, then this will be the name of the view
+     *                  containing the results. Has the same naming
+     *                  restrictions as <a
+     *                  href="../../../../../concepts/tables.html"
+     *                  target="_top">tables</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -142,7 +161,8 @@ public class FilterByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnName  Name of a column on which the operation would be applied.
+     * @param columnName  Name of a column on which the operation would be
+     *                    applied.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -216,7 +236,8 @@ public class FilterByRangeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -227,7 +248,8 @@ public class FilterByRangeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -263,7 +285,8 @@ public class FilterByRangeRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

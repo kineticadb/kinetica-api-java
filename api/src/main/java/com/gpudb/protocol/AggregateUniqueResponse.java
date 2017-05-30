@@ -12,7 +12,8 @@ import org.apache.avro.generic.GenericData;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#aggregateUnique(AggregateUniqueRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#aggregateUnique(AggregateUniqueRequest)}.
  */
 public class AggregateUniqueResponse {
     private String tableName;
@@ -37,7 +38,8 @@ public class AggregateUniqueResponse {
 
     /**
      * 
-     * @param tableName  The same table name as was passed in the parameter list.
+     * @param tableName  The same table name as was passed in the parameter
+     *                   list.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

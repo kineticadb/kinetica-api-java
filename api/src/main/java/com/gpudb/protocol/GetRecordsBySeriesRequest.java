@@ -14,16 +14,21 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#getRecordsBySeriesRaw(GetRecordsBySeriesRequest)}.
- * <br />
- * <br />Retrieves the complete series/track records from the given {@code worldTableName} based on the partial track information
- * contained in the {@code tableName}.
- * <br />
- * <br />This operation supports paging through the data via the {@code offset} and {@code limit} parameters.
- * <br />
- * <br />In contrast to {@link com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)} this returns records grouped by series/track. So if
- * {@code offset} is 0 and {@code limit} is 5 this operation would return the first 5 series/tracks in {@code tableName}. Each
- * series/track will be returned sorted by their TIMESTAMP column.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#getRecordsBySeriesRaw(GetRecordsBySeriesRequest)}.
+ * <p>
+ * Retrieves the complete series/track records from the given {@code
+ * worldTableName} based on the partial track information contained in the
+ * {@code tableName}.
+ * <p>
+ * This operation supports paging through the data via the {@code offset} and
+ * {@code limit} parameters.
+ * <p>
+ * In contrast to {@link com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)} this
+ * returns records grouped by series/track. So if {@code offset} is 0 and
+ * {@code limit} is 5 this operation would return the first 5 series/tracks in
+ * {@code tableName}. Each series/track will be returned sorted by their
+ * TIMESTAMP column.
  */
 public class GetRecordsBySeriesRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -40,7 +45,8 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -51,9 +57,10 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
 
     /**
-     * Specifies the encoding for returned records; either 'binary' or 'json'. Values: binary, json.
-     * <br />
-     * <br />A set of string constants for the parameter {@code encoding}.
+     * Specifies the encoding for returned records; either 'binary' or 'json'.
+     * Values: binary, json.
+
+     * A set of string constants for the parameter {@code encoding}.
      */
     public static final class Encoding {
         public static final String BINARY = "binary";
@@ -81,17 +88,26 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a GetRecordsBySeriesRequest object with the specified parameters.
+     * Constructs a GetRecordsBySeriesRequest object with the specified
+     * parameters.
      * 
-     * @param tableName  Name of the collection/table/view for which series/tracks will be fetched.
-     * @param worldTableName  Name of the table containing the complete series/track information to be returned for the tracks
-     *                        present in the {@code tableName}. Typically this is used when retrieving series/tracks from a view
-     *                        (which contains partial series/tracks) but the user wants to retrieve the entire original
-     *                        series/tracks. Can be blank.
-     * @param offset  A positive integer indicating the number of initial series/tracks to skip (useful for paging through the
-     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
-     * @param limit  A positive integer indicating the maximum number of series/tracks to be returned. Or END_OF_SET (-9999) to
-     *               indicate that the max number of results should be returned.
+     * @param tableName  Name of the collection/table/view for which
+     *                   series/tracks will be fetched.
+     * @param worldTableName  Name of the table containing the complete
+     *                        series/track information to be returned for the
+     *                        tracks present in the {@code tableName}.
+     *                        Typically this is used when retrieving
+     *                        series/tracks from a view (which contains partial
+     *                        series/tracks) but the user wants to retrieve the
+     *                        entire original series/tracks. Can be blank.
+     * @param offset  A positive integer indicating the number of initial
+     *                series/tracks to skip (useful for paging through the
+     *                results).  The minimum allowed value is 0. The maximum
+     *                allowed value is MAX_INT.
+     * @param limit  A positive integer indicating the maximum number of
+     *               series/tracks to be returned. Or END_OF_SET (-9999) to
+     *               indicate that the max number of results should be
+     *               returned.
      * @param options  Optional parameters.
      * 
      */
@@ -105,18 +121,28 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a GetRecordsBySeriesRequest object with the specified parameters.
+     * Constructs a GetRecordsBySeriesRequest object with the specified
+     * parameters.
      * 
-     * @param tableName  Name of the collection/table/view for which series/tracks will be fetched.
-     * @param worldTableName  Name of the table containing the complete series/track information to be returned for the tracks
-     *                        present in the {@code tableName}. Typically this is used when retrieving series/tracks from a view
-     *                        (which contains partial series/tracks) but the user wants to retrieve the entire original
-     *                        series/tracks. Can be blank.
-     * @param offset  A positive integer indicating the number of initial series/tracks to skip (useful for paging through the
-     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
-     * @param limit  A positive integer indicating the maximum number of series/tracks to be returned. Or END_OF_SET (-9999) to
-     *               indicate that the max number of results should be returned.
-     * @param encoding  Specifies the encoding for returned records; either 'binary' or 'json'. Values: binary, json.
+     * @param tableName  Name of the collection/table/view for which
+     *                   series/tracks will be fetched.
+     * @param worldTableName  Name of the table containing the complete
+     *                        series/track information to be returned for the
+     *                        tracks present in the {@code tableName}.
+     *                        Typically this is used when retrieving
+     *                        series/tracks from a view (which contains partial
+     *                        series/tracks) but the user wants to retrieve the
+     *                        entire original series/tracks. Can be blank.
+     * @param offset  A positive integer indicating the number of initial
+     *                series/tracks to skip (useful for paging through the
+     *                results).  The minimum allowed value is 0. The maximum
+     *                allowed value is MAX_INT.
+     * @param limit  A positive integer indicating the maximum number of
+     *               series/tracks to be returned. Or END_OF_SET (-9999) to
+     *               indicate that the max number of results should be
+     *               returned.
+     * @param encoding  Specifies the encoding for returned records; either
+     *                  'binary' or 'json'. Values: binary, json.
      * @param options  Optional parameters.
      * 
      */
@@ -131,7 +157,8 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the collection/table/view for which series/tracks will be fetched.
+     * @return Name of the collection/table/view for which series/tracks will
+     *         be fetched.
      * 
      */
     public String getTableName() {
@@ -140,7 +167,8 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the collection/table/view for which series/tracks will be fetched.
+     * @param tableName  Name of the collection/table/view for which
+     *                   series/tracks will be fetched.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -152,9 +180,12 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table containing the complete series/track information to be returned for the tracks present in the
-     *         {@code tableName}. Typically this is used when retrieving series/tracks from a view (which contains partial
-     *         series/tracks) but the user wants to retrieve the entire original series/tracks. Can be blank.
+     * @return Name of the table containing the complete series/track
+     *         information to be returned for the tracks present in the {@code
+     *         tableName}. Typically this is used when retrieving series/tracks
+     *         from a view (which contains partial series/tracks) but the user
+     *         wants to retrieve the entire original series/tracks. Can be
+     *         blank.
      * 
      */
     public String getWorldTableName() {
@@ -163,10 +194,13 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param worldTableName  Name of the table containing the complete series/track information to be returned for the tracks
-     *                        present in the {@code tableName}. Typically this is used when retrieving series/tracks from a view
-     *                        (which contains partial series/tracks) but the user wants to retrieve the entire original
-     *                        series/tracks. Can be blank.
+     * @param worldTableName  Name of the table containing the complete
+     *                        series/track information to be returned for the
+     *                        tracks present in the {@code tableName}.
+     *                        Typically this is used when retrieving
+     *                        series/tracks from a view (which contains partial
+     *                        series/tracks) but the user wants to retrieve the
+     *                        entire original series/tracks. Can be blank.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -178,8 +212,10 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A positive integer indicating the number of initial series/tracks to skip (useful for paging through the results).
-     *         The minimum allowed value is 0. The maximum allowed value is MAX_INT.
+     * @return A positive integer indicating the number of initial
+     *         series/tracks to skip (useful for paging through the results).
+     *         The minimum allowed value is 0. The maximum allowed value is
+     *         MAX_INT.
      * 
      */
     public int getOffset() {
@@ -188,8 +224,10 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param offset  A positive integer indicating the number of initial series/tracks to skip (useful for paging through the
-     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
+     * @param offset  A positive integer indicating the number of initial
+     *                series/tracks to skip (useful for paging through the
+     *                results).  The minimum allowed value is 0. The maximum
+     *                allowed value is MAX_INT.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -201,7 +239,8 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A positive integer indicating the maximum number of series/tracks to be returned. Or END_OF_SET (-9999) to indicate
+     * @return A positive integer indicating the maximum number of
+     *         series/tracks to be returned. Or END_OF_SET (-9999) to indicate
      *         that the max number of results should be returned.
      * 
      */
@@ -211,8 +250,10 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param limit  A positive integer indicating the maximum number of series/tracks to be returned. Or END_OF_SET (-9999) to
-     *               indicate that the max number of results should be returned.
+     * @param limit  A positive integer indicating the maximum number of
+     *               series/tracks to be returned. Or END_OF_SET (-9999) to
+     *               indicate that the max number of results should be
+     *               returned.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -224,7 +265,8 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Specifies the encoding for returned records; either 'binary' or 'json'. Values: binary, json.
+     * @return Specifies the encoding for returned records; either 'binary' or
+     *         'json'. Values: binary, json.
      * 
      */
     public String getEncoding() {
@@ -233,7 +275,8 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param encoding  Specifies the encoding for returned records; either 'binary' or 'json'. Values: binary, json.
+     * @param encoding  Specifies the encoding for returned records; either
+     *                  'binary' or 'json'. Values: binary, json.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -265,7 +308,8 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -276,7 +320,8 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -312,7 +357,8 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

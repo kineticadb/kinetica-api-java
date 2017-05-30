@@ -15,13 +15,15 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#filter(FilterRequest)}.
- * <br />
- * <br />Filters data based on the specified expression.  The results are stored in a result set with the given {@code viewName}.
- * <br />
- * <br />For details see <a href="../../../../../concepts/expressions.html" target="_top">concepts</a>.
- * <br />
- * <br />The response message contains the number of points for which the expression evaluated to be true, which is equivalent to
- * the size of the result view.
+ * <p>
+ * Filters data based on the specified expression.  The results are stored in a
+ * result set with the given {@code viewName}.
+ * <p>
+ * For details see <a href="../../../../../concepts/expressions.html"
+ * target="_top">concepts</a>.
+ * <p>
+ * The response message contains the number of points for which the expression
+ * evaluated to be true, which is equivalent to the size of the result view.
  */
 public class FilterRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -36,13 +38,47 @@ public class FilterRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
      */
     public static Schema getClassSchema() {
         return schema$;
+    }
+
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> collection_name: Name of a collection which is to contain
+     * the newly created view, otherwise the view will be a top-level table. If
+     * the collection does not allow duplicate types and it contains a table of
+     * the same type as the given one, then this table creation request will
+     * fail.
+     *         <li> ttl: Sets the TTL of the view specified in {@code
+     * viewName}. The value must be the desired TTL in minutes.
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * Name of a collection which is to contain the newly created view,
+         * otherwise the view will be a top-level table. If the collection does
+         * not allow duplicate types and it contains a table of the same type
+         * as the given one, then this table creation request will fail.
+         */
+        public static final String COLLECTION_NAME = "collection_name";
+
+        /**
+         * Sets the TTL of the view specified in {@code viewName}. The value
+         * must be the desired TTL in minutes.
+         */
+        public static final String TTL = "ttl";
+
+        private Options() {  }
     }
 
     private String tableName;
@@ -64,13 +100,31 @@ public class FilterRequest implements IndexedRecord {
     /**
      * Constructs a FilterRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to filter.  This may be the ID of a collection, table or a result set (for chaining
-     *                   queries).  Collections may be filtered only if all tables within the collection have the same type ID.
-     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *                  collection, table or view .
-     * @param expression  The select expression to filter the specified table.  For details see <a
-     *                    href="../../../../../concepts/expressions.html" target="_top">concepts</a>.
+     * @param tableName  Name of the table to filter.  This may be the ID of a
+     *                   collection, table or a result set (for chaining
+     *                   queries).  Collections may be filtered only if all
+     *                   tables within the collection have the same type ID.
+     * @param viewName  If provided, then this will be the name of the view
+     *                  containing the results. Has the same naming
+     *                  restrictions as <a
+     *                  href="../../../../../concepts/tables.html"
+     *                  target="_top">tables</a>.
+     * @param expression  The select expression to filter the specified table.
+     *                    For details see <a
+     *                    href="../../../../../concepts/expressions.html"
+     *                    target="_top">concepts</a>.
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> collection_name: Name of a collection which
+     *                 is to contain the newly created view, otherwise the view
+     *                 will be a top-level table. If the collection does not
+     *                 allow duplicate types and it contains a table of the
+     *                 same type as the given one, then this table creation
+     *                 request will fail.
+     *                         <li> ttl: Sets the TTL of the view specified in
+     *                 {@code viewName}. The value must be the desired TTL in
+     *                 minutes.
+     *                 </ul>
      * 
      */
     public FilterRequest(String tableName, String viewName, String expression, Map<String, String> options) {
@@ -82,8 +136,10 @@ public class FilterRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to filter.  This may be the ID of a collection, table or a result set (for chaining queries).
-     *         Collections may be filtered only if all tables within the collection have the same type ID.
+     * @return Name of the table to filter.  This may be the ID of a
+     *         collection, table or a result set (for chaining queries).
+     *         Collections may be filtered only if all tables within the
+     *         collection have the same type ID.
      * 
      */
     public String getTableName() {
@@ -92,8 +148,10 @@ public class FilterRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to filter.  This may be the ID of a collection, table or a result set (for chaining
-     *                   queries).  Collections may be filtered only if all tables within the collection have the same type ID.
+     * @param tableName  Name of the table to filter.  This may be the ID of a
+     *                   collection, table or a result set (for chaining
+     *                   queries).  Collections may be filtered only if all
+     *                   tables within the collection have the same type ID.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -105,8 +163,10 @@ public class FilterRequest implements IndexedRecord {
 
     /**
      * 
-     * @return If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *         collection, table or view .
+     * @return If provided, then this will be the name of the view containing
+     *         the results. Has the same naming restrictions as <a
+     *         href="../../../../../concepts/tables.html"
+     *         target="_top">tables</a>.
      * 
      */
     public String getViewName() {
@@ -115,8 +175,11 @@ public class FilterRequest implements IndexedRecord {
 
     /**
      * 
-     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *                  collection, table or view .
+     * @param viewName  If provided, then this will be the name of the view
+     *                  containing the results. Has the same naming
+     *                  restrictions as <a
+     *                  href="../../../../../concepts/tables.html"
+     *                  target="_top">tables</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -128,8 +191,9 @@ public class FilterRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The select expression to filter the specified table.  For details see <a
-     *         href="../../../../../concepts/expressions.html" target="_top">concepts</a>.
+     * @return The select expression to filter the specified table.  For
+     *         details see <a href="../../../../../concepts/expressions.html"
+     *         target="_top">concepts</a>.
      * 
      */
     public String getExpression() {
@@ -138,8 +202,10 @@ public class FilterRequest implements IndexedRecord {
 
     /**
      * 
-     * @param expression  The select expression to filter the specified table.  For details see <a
-     *                    href="../../../../../concepts/expressions.html" target="_top">concepts</a>.
+     * @param expression  The select expression to filter the specified table.
+     *                    For details see <a
+     *                    href="../../../../../concepts/expressions.html"
+     *                    target="_top">concepts</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -152,6 +218,15 @@ public class FilterRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> collection_name: Name of a collection which is to
+     *         contain the newly created view, otherwise the view will be a
+     *         top-level table. If the collection does not allow duplicate
+     *         types and it contains a table of the same type as the given one,
+     *         then this table creation request will fail.
+     *                 <li> ttl: Sets the TTL of the view specified in {@code
+     *         viewName}. The value must be the desired TTL in minutes.
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -161,6 +236,17 @@ public class FilterRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> collection_name: Name of a collection which
+     *                 is to contain the newly created view, otherwise the view
+     *                 will be a top-level table. If the collection does not
+     *                 allow duplicate types and it contains a table of the
+     *                 same type as the given one, then this table creation
+     *                 request will fail.
+     *                         <li> ttl: Sets the TTL of the view specified in
+     *                 {@code viewName}. The value must be the desired TTL in
+     *                 minutes.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -171,7 +257,8 @@ public class FilterRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -182,7 +269,8 @@ public class FilterRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -212,7 +300,8 @@ public class FilterRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

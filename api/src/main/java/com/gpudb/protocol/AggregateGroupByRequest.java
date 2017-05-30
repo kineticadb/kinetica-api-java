@@ -16,20 +16,29 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}.
- * <br />
- * <br />Calculates unique combinations (groups) of values for the given columns in a given table/view/collection and computes
- * aggregates on each unique combination. This is somewhat analogous to an SQL-style SELECT...GROUP BY. Any column(s) can be grouped
- * on, but only non-string (i.e. numeric) columns may be used for computing aggregates. The results can be paged via the {@code
- * offset} and {@code limit} parameters. For example, to get 10 groups with the largest counts the inputs would be: limit=10,
- * options={"sort_order":"descending", "sort_by":"value"}. {@code options} can be used to customize behavior of this call e.g.
- * filtering or sorting the results. To group by 'x' and 'y' and compute the number of objects within each group, use
- * column_names=['x','y','count(*)'].  To also compute the sum of 'z' over each group, use
- * column_names=['x','y','count(*)','sum(z)']. Available aggregation functions are: 'count(*)', 'sum', 'min', 'max', 'avg', 'mean',
- * 'stddev', 'stddev_pop', 'stddev_samp', 'var', 'var_pop', 'var_samp', 'arg_min', 'arg_max' and 'count_distinct'. The response is
- * returned as a dynamic schema. For details see: <a href="../../../../../concepts/dynamic_schemas.html" target="_top">dynamic
- * schemas documentation</a>. If the 'result_table' option is provided then the results are stored in a table with the name given in
- * the option and the results are not returned in the response.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}.
+ * <p>
+ * Calculates unique combinations (groups) of values for the given columns in a
+ * given table/view/collection and computes aggregates on each unique
+ * combination. This is somewhat analogous to an SQL-style SELECT...GROUP BY.
+ * Any column(s) can be grouped on, but only non-string (i.e. numeric) columns
+ * may be used for computing aggregates. The results can be paged via the
+ * {@code offset} and {@code limit} parameters. For example, to get 10 groups
+ * with the largest counts the inputs would be: limit=10,
+ * options={"sort_order":"descending", "sort_by":"value"}. {@code options} can
+ * be used to customize behavior of this call e.g. filtering or sorting the
+ * results. To group by 'x' and 'y' and compute the number of objects within
+ * each group, use column_names=['x','y','count(*)'].  To also compute the sum
+ * of 'z' over each group, use column_names=['x','y','count(*)','sum(z)'].
+ * Available aggregation functions are: 'count(*)', 'sum', 'min', 'max', 'avg',
+ * 'mean', 'stddev', 'stddev_pop', 'stddev_samp', 'var', 'var_pop', 'var_samp',
+ * 'arg_min', 'arg_max' and 'count_distinct'. The response is returned as a
+ * dynamic schema. For details see: <a
+ * href="../../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+ * schemas documentation</a>. If the 'result_table' option is provided then the
+ * results are stored in a table with the name given in the option and the
+ * results are not returned in the response.
  */
 public class AggregateGroupByRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -46,7 +55,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -58,8 +68,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * Specifies the encoding for returned records. Values: binary, json.
-     * <br />
-     * <br />A set of string constants for the parameter {@code encoding}.
+
+     * A set of string constants for the parameter {@code encoding}.
      */
     public static final class Encoding {
 
@@ -79,24 +89,52 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * <br /><ul>
-     * <br />  <li> expression: Filter expression to apply to the table prior to computing the aggregate group by.
-     * <br />  <li> having: Filter expression to apply to the aggregated results.
-     * <br />  <li> sort_order: String indicating how the returned values should be sorted - ascending or descending. Values:
-     * ascending, descending.
-     * <br />
-     * <br />  <li> sort_by: String determining how the results are sorted. Values: key, value.
-     * <br />
-     * <br />  <li> result_table: The name of the table used to store the results. Column names (group-by and aggregate fields) need
-     * to be given aliases e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If present, no results are returned in the
-     * response.  This option is not available if one of the grouping attributes is an unrestricted string (i.e.; not charN) type.
-     * <br /></ul>
-     * <br />A set of string constants for the parameter {@code options}.
+     * <ul>
+     *         <li> collection_name: Name of a collection which is to contain
+     * the table specified in 'result_table', otherwise the table will be a
+     * top-level table. If the collection does not allow duplicate types and it
+     * contains a table of the same type as the given one, then this table
+     * creation request will fail. Additionally this option is invalid if
+     * @input{table_name} is a collection.
+     *         <li> expression: Filter expression to apply to the table prior
+     * to computing the aggregate group by.
+     *         <li> having: Filter expression to apply to the aggregated
+     * results.
+     *         <li> sort_order: String indicating how the returned values
+     * should be sorted - ascending or descending. Values: ascending,
+     * descending.
+     * <p>
+     *         <li> sort_by: String determining how the results are sorted.
+     * Values: key, value.
+     * <p>
+     *         <li> result_table: The name of the table used to store the
+     * results. Has the same naming restrictions as <a
+     * href="../../../../../concepts/tables.html" target="_top">tables</a>.
+     * Column names (group-by and aggregate fields) need to be given aliases
+     * e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If present, no
+     * results are returned in the response.  This option is not available if
+     * one of the grouping attributes is an unrestricted string (i.e.; not
+     * charN) type.
+     *         <li> ttl: Sets the TTL of the table specified in 'result_table'.
+     * The value must be the desired TTL in minutes.
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * Filter expression to apply to the table prior to computing the aggregate group by.
+         * Name of a collection which is to contain the table specified in
+         * 'result_table', otherwise the table will be a top-level table. If
+         * the collection does not allow duplicate types and it contains a
+         * table of the same type as the given one, then this table creation
+         * request will fail. Additionally this option is invalid if
+         * @input{table_name} is a collection.
+         */
+        public static final String COLLECTION_NAME = "collection_name";
+
+        /**
+         * Filter expression to apply to the table prior to computing the
+         * aggregate group by.
          */
         public static final String EXPRESSION = "expression";
 
@@ -106,24 +144,25 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String HAVING = "having";
 
         /**
-         * String indicating how the returned values should be sorted - ascending or descending. Values: ascending, descending.
-         * <br />
+         * String indicating how the returned values should be sorted -
+         * ascending or descending. Values: ascending, descending.
          */
         public static final String SORT_ORDER = "sort_order";
 
         /**
-         * Indicates that the returned values should be sorted in ascending order.
+         * Indicates that the returned values should be sorted in ascending
+         * order.
          */
         public static final String ASCENDING = "ascending";
 
         /**
-         * Indicates that the returned values should be sorted in descending order.
+         * Indicates that the returned values should be sorted in descending
+         * order.
          */
         public static final String DESCENDING = "descending";
 
         /**
          * String determining how the results are sorted. Values: key, value.
-         * <br />
          */
         public static final String SORT_BY = "sort_by";
 
@@ -138,11 +177,21 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String VALUE = "value";
 
         /**
-         * The name of the table used to store the results. Column names (group-by and aggregate fields) need to be given aliases
-         * e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If present, no results are returned in the response.  This option
-         * is not available if one of the grouping attributes is an unrestricted string (i.e.; not charN) type.
+         * The name of the table used to store the results. Has the same naming
+         * restrictions as <a href="../../../../../concepts/tables.html"
+         * target="_top">tables</a>. Column names (group-by and aggregate
+         * fields) need to be given aliases e.g. ["FChar256 as fchar256",
+         * "sum(FDouble) as sfd"].  If present, no results are returned in the
+         * response.  This option is not available if one of the grouping
+         * attributes is an unrestricted string (i.e.; not charN) type.
          */
         public static final String RESULT_TABLE = "result_table";
+
+        /**
+         * Sets the TTL of the table specified in 'result_table'. The value
+         * must be the desired TTL in minutes.
+         */
+        public static final String TTL = "ttl";
 
         private Options() {  }
     }
@@ -166,26 +215,53 @@ public class AggregateGroupByRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs an AggregateGroupByRequest object with the specified parameters.
+     * Constructs an AggregateGroupByRequest object with the specified
+     * parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table/view/collection.
-     * @param columnNames  List of one or more column names, expressions, and aggregate expressions. Must include at least one
-     *                     'grouping' column or expression.  If no aggregate is included, count(*) will be computed as a default.
-     * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
-     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
-     * @param limit  A positive integer indicating the maximum number of results to be returned Or END_OF_SET (-9999) to indicate
+     * @param tableName  Name of the table on which the operation will be
+     *                   performed. Must be an existing table/view/collection.
+     * @param columnNames  List of one or more column names, expressions, and
+     *                     aggregate expressions. Must include at least one
+     *                     'grouping' column or expression.  If no aggregate is
+     *                     included, count(*) will be computed as a default.
+     * @param offset  A positive integer indicating the number of initial
+     *                results to skip (this can be useful for paging through
+     *                the results).  The minimum allowed value is 0. The
+     *                maximum allowed value is MAX_INT.
+     * @param limit  A positive integer indicating the maximum number of
+     *               results to be returned Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> expression: Filter expression to apply to the table prior to computing the aggregate group by.
-     *                         <li> having: Filter expression to apply to the aggregated results.
-     *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
+     *                         <li> collection_name: Name of a collection which
+     *                 is to contain the table specified in 'result_table',
+     *                 otherwise the table will be a top-level table. If the
+     *                 collection does not allow duplicate types and it
+     *                 contains a table of the same type as the given one, then
+     *                 this table creation request will fail. Additionally this
+     *                 option is invalid if @input{table_name} is a collection.
+     *                         <li> expression: Filter expression to apply to
+     *                 the table prior to computing the aggregate group by.
+     *                         <li> having: Filter expression to apply to the
+     *                 aggregated results.
+     *                         <li> sort_order: String indicating how the
+     *                 returned values should be sorted - ascending or
      *                 descending. Values: ascending, descending.
-     *                         <li> sort_by: String determining how the results are sorted. Values: key, value.
-     *                         <li> result_table: The name of the table used to store the results. Column names (group-by and
-     *                 aggregate fields) need to be given aliases e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If present,
-     *                 no results are returned in the response.  This option is not available if one of the grouping attributes is
-     *                 an unrestricted string (i.e.; not charN) type.
+     *                         <li> sort_by: String determining how the results
+     *                 are sorted. Values: key, value.
+     *                         <li> result_table: The name of the table used to
+     *                 store the results. Has the same naming restrictions as
+     *                 <a href="../../../../../concepts/tables.html"
+     *                 target="_top">tables</a>. Column names (group-by and
+     *                 aggregate fields) need to be given aliases e.g.
+     *                 ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If
+     *                 present, no results are returned in the response.  This
+     *                 option is not available if one of the grouping
+     *                 attributes is an unrestricted string (i.e.; not charN)
+     *                 type.
+     *                         <li> ttl: Sets the TTL of the table specified in
+     *                 'result_table'. The value must be the desired TTL in
+     *                 minutes.
      *                 </ul>
      * 
      */
@@ -199,27 +275,55 @@ public class AggregateGroupByRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs an AggregateGroupByRequest object with the specified parameters.
+     * Constructs an AggregateGroupByRequest object with the specified
+     * parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table/view/collection.
-     * @param columnNames  List of one or more column names, expressions, and aggregate expressions. Must include at least one
-     *                     'grouping' column or expression.  If no aggregate is included, count(*) will be computed as a default.
-     * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
-     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
-     * @param limit  A positive integer indicating the maximum number of results to be returned Or END_OF_SET (-9999) to indicate
+     * @param tableName  Name of the table on which the operation will be
+     *                   performed. Must be an existing table/view/collection.
+     * @param columnNames  List of one or more column names, expressions, and
+     *                     aggregate expressions. Must include at least one
+     *                     'grouping' column or expression.  If no aggregate is
+     *                     included, count(*) will be computed as a default.
+     * @param offset  A positive integer indicating the number of initial
+     *                results to skip (this can be useful for paging through
+     *                the results).  The minimum allowed value is 0. The
+     *                maximum allowed value is MAX_INT.
+     * @param limit  A positive integer indicating the maximum number of
+     *               results to be returned Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
-     * @param encoding  Specifies the encoding for returned records. Values: binary, json.
+     * @param encoding  Specifies the encoding for returned records. Values:
+     *                  binary, json.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> expression: Filter expression to apply to the table prior to computing the aggregate group by.
-     *                         <li> having: Filter expression to apply to the aggregated results.
-     *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
+     *                         <li> collection_name: Name of a collection which
+     *                 is to contain the table specified in 'result_table',
+     *                 otherwise the table will be a top-level table. If the
+     *                 collection does not allow duplicate types and it
+     *                 contains a table of the same type as the given one, then
+     *                 this table creation request will fail. Additionally this
+     *                 option is invalid if @input{table_name} is a collection.
+     *                         <li> expression: Filter expression to apply to
+     *                 the table prior to computing the aggregate group by.
+     *                         <li> having: Filter expression to apply to the
+     *                 aggregated results.
+     *                         <li> sort_order: String indicating how the
+     *                 returned values should be sorted - ascending or
      *                 descending. Values: ascending, descending.
-     *                         <li> sort_by: String determining how the results are sorted. Values: key, value.
-     *                         <li> result_table: The name of the table used to store the results. Column names (group-by and
-     *                 aggregate fields) need to be given aliases e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If present,
-     *                 no results are returned in the response.  This option is not available if one of the grouping attributes is
-     *                 an unrestricted string (i.e.; not charN) type.
+     *                         <li> sort_by: String determining how the results
+     *                 are sorted. Values: key, value.
+     *                         <li> result_table: The name of the table used to
+     *                 store the results. Has the same naming restrictions as
+     *                 <a href="../../../../../concepts/tables.html"
+     *                 target="_top">tables</a>. Column names (group-by and
+     *                 aggregate fields) need to be given aliases e.g.
+     *                 ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If
+     *                 present, no results are returned in the response.  This
+     *                 option is not available if one of the grouping
+     *                 attributes is an unrestricted string (i.e.; not charN)
+     *                 type.
+     *                         <li> ttl: Sets the TTL of the table specified in
+     *                 'result_table'. The value must be the desired TTL in
+     *                 minutes.
      *                 </ul>
      * 
      */
@@ -234,7 +338,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the operation will be performed. Must be an existing table/view/collection.
+     * @return Name of the table on which the operation will be performed. Must
+     *         be an existing table/view/collection.
      * 
      */
     public String getTableName() {
@@ -243,7 +348,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the operation will be performed. Must be an existing table/view/collection.
+     * @param tableName  Name of the table on which the operation will be
+     *                   performed. Must be an existing table/view/collection.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -255,8 +361,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * 
-     * @return List of one or more column names, expressions, and aggregate expressions. Must include at least one 'grouping' column
-     *         or expression.  If no aggregate is included, count(*) will be computed as a default.
+     * @return List of one or more column names, expressions, and aggregate
+     *         expressions. Must include at least one 'grouping' column or
+     *         expression.  If no aggregate is included, count(*) will be
+     *         computed as a default.
      * 
      */
     public List<String> getColumnNames() {
@@ -265,8 +373,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnNames  List of one or more column names, expressions, and aggregate expressions. Must include at least one
-     *                     'grouping' column or expression.  If no aggregate is included, count(*) will be computed as a default.
+     * @param columnNames  List of one or more column names, expressions, and
+     *                     aggregate expressions. Must include at least one
+     *                     'grouping' column or expression.  If no aggregate is
+     *                     included, count(*) will be computed as a default.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -278,8 +388,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A positive integer indicating the number of initial results to skip (this can be useful for paging through the
-     *         results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
+     * @return A positive integer indicating the number of initial results to
+     *         skip (this can be useful for paging through the results).  The
+     *         minimum allowed value is 0. The maximum allowed value is
+     *         MAX_INT.
      * 
      */
     public long getOffset() {
@@ -288,8 +400,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * 
-     * @param offset  A positive integer indicating the number of initial results to skip (this can be useful for paging through the
-     *                results).  The minimum allowed value is 0. The maximum allowed value is MAX_INT.
+     * @param offset  A positive integer indicating the number of initial
+     *                results to skip (this can be useful for paging through
+     *                the results).  The minimum allowed value is 0. The
+     *                maximum allowed value is MAX_INT.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -301,8 +415,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A positive integer indicating the maximum number of results to be returned Or END_OF_SET (-9999) to indicate that the
-     *         max number of results should be returned.
+     * @return A positive integer indicating the maximum number of results to
+     *         be returned Or END_OF_SET (-9999) to indicate that the max
+     *         number of results should be returned.
      * 
      */
     public long getLimit() {
@@ -311,7 +426,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * 
-     * @param limit  A positive integer indicating the maximum number of results to be returned Or END_OF_SET (-9999) to indicate
+     * @param limit  A positive integer indicating the maximum number of
+     *               results to be returned Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -324,7 +440,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Specifies the encoding for returned records. Values: binary, json.
+     * @return Specifies the encoding for returned records. Values: binary,
+     *         json.
      * 
      */
     public String getEncoding() {
@@ -333,7 +450,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * 
-     * @param encoding  Specifies the encoding for returned records. Values: binary, json.
+     * @param encoding  Specifies the encoding for returned records. Values:
+     *                  binary, json.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -347,15 +465,33 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> expression: Filter expression to apply to the table prior to computing the aggregate group by.
-     *                 <li> having: Filter expression to apply to the aggregated results.
-     *                 <li> sort_order: String indicating how the returned values should be sorted - ascending or descending.
-     *         Values: ascending, descending.
-     *                 <li> sort_by: String determining how the results are sorted. Values: key, value.
-     *                 <li> result_table: The name of the table used to store the results. Column names (group-by and aggregate
-     *         fields) need to be given aliases e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If present, no results are
-     *         returned in the response.  This option is not available if one of the grouping attributes is an unrestricted string
-     *         (i.e.; not charN) type.
+     *                 <li> collection_name: Name of a collection which is to
+     *         contain the table specified in 'result_table', otherwise the
+     *         table will be a top-level table. If the collection does not
+     *         allow duplicate types and it contains a table of the same type
+     *         as the given one, then this table creation request will fail.
+     *         Additionally this option is invalid if @input{table_name} is a
+     *         collection.
+     *                 <li> expression: Filter expression to apply to the table
+     *         prior to computing the aggregate group by.
+     *                 <li> having: Filter expression to apply to the
+     *         aggregated results.
+     *                 <li> sort_order: String indicating how the returned
+     *         values should be sorted - ascending or descending. Values:
+     *         ascending, descending.
+     *                 <li> sort_by: String determining how the results are
+     *         sorted. Values: key, value.
+     *                 <li> result_table: The name of the table used to store
+     *         the results. Has the same naming restrictions as <a
+     *         href="../../../../../concepts/tables.html"
+     *         target="_top">tables</a>. Column names (group-by and aggregate
+     *         fields) need to be given aliases e.g. ["FChar256 as fchar256",
+     *         "sum(FDouble) as sfd"].  If present, no results are returned in
+     *         the response.  This option is not available if one of the
+     *         grouping attributes is an unrestricted string (i.e.; not charN)
+     *         type.
+     *                 <li> ttl: Sets the TTL of the table specified in
+     *         'result_table'. The value must be the desired TTL in minutes.
      *         </ul>
      * 
      */
@@ -367,15 +503,35 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> expression: Filter expression to apply to the table prior to computing the aggregate group by.
-     *                         <li> having: Filter expression to apply to the aggregated results.
-     *                         <li> sort_order: String indicating how the returned values should be sorted - ascending or
+     *                         <li> collection_name: Name of a collection which
+     *                 is to contain the table specified in 'result_table',
+     *                 otherwise the table will be a top-level table. If the
+     *                 collection does not allow duplicate types and it
+     *                 contains a table of the same type as the given one, then
+     *                 this table creation request will fail. Additionally this
+     *                 option is invalid if @input{table_name} is a collection.
+     *                         <li> expression: Filter expression to apply to
+     *                 the table prior to computing the aggregate group by.
+     *                         <li> having: Filter expression to apply to the
+     *                 aggregated results.
+     *                         <li> sort_order: String indicating how the
+     *                 returned values should be sorted - ascending or
      *                 descending. Values: ascending, descending.
-     *                         <li> sort_by: String determining how the results are sorted. Values: key, value.
-     *                         <li> result_table: The name of the table used to store the results. Column names (group-by and
-     *                 aggregate fields) need to be given aliases e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If present,
-     *                 no results are returned in the response.  This option is not available if one of the grouping attributes is
-     *                 an unrestricted string (i.e.; not charN) type.
+     *                         <li> sort_by: String determining how the results
+     *                 are sorted. Values: key, value.
+     *                         <li> result_table: The name of the table used to
+     *                 store the results. Has the same naming restrictions as
+     *                 <a href="../../../../../concepts/tables.html"
+     *                 target="_top">tables</a>. Column names (group-by and
+     *                 aggregate fields) need to be given aliases e.g.
+     *                 ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If
+     *                 present, no results are returned in the response.  This
+     *                 option is not available if one of the grouping
+     *                 attributes is an unrestricted string (i.e.; not charN)
+     *                 type.
+     *                         <li> ttl: Sets the TTL of the table specified in
+     *                 'result_table'. The value must be the desired TTL in
+     *                 minutes.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -387,7 +543,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -398,7 +555,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -434,7 +592,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

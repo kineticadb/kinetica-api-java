@@ -15,8 +15,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#alterUser(AlterUserRequest)}.
- * <br />
- * <br />Alters a user.
+ * <p>
+ * Alters a user.
  */
 public class AlterUserRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -31,7 +31,8 @@ public class AlterUserRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -43,8 +44,8 @@ public class AlterUserRequest implements IndexedRecord {
 
     /**
      * Modification operation to be applied to the user. Values: set_password.
-     * <br />
-     * <br />A set of string constants for the parameter {@code action}.
+
+     * A set of string constants for the parameter {@code action}.
      */
     public static final class Action {
 
@@ -76,8 +77,10 @@ public class AlterUserRequest implements IndexedRecord {
      * Constructs an AlterUserRequest object with the specified parameters.
      * 
      * @param name  Name of the user to be altered. Must be an existing user.
-     * @param action  Modification operation to be applied to the user. Values: set_password.
-     * @param value  The value of the modification, depending on {@code action}.
+     * @param action  Modification operation to be applied to the user. Values:
+     *                set_password.
+     * @param value  The value of the modification, depending on {@code
+     *               action}.
      * @param options  Optional parameters.
      * 
      */
@@ -111,7 +114,8 @@ public class AlterUserRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Modification operation to be applied to the user. Values: set_password.
+     * @return Modification operation to be applied to the user. Values:
+     *         set_password.
      * 
      */
     public String getAction() {
@@ -120,7 +124,8 @@ public class AlterUserRequest implements IndexedRecord {
 
     /**
      * 
-     * @param action  Modification operation to be applied to the user. Values: set_password.
+     * @param action  Modification operation to be applied to the user. Values:
+     *                set_password.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -141,7 +146,8 @@ public class AlterUserRequest implements IndexedRecord {
 
     /**
      * 
-     * @param value  The value of the modification, depending on {@code action}.
+     * @param value  The value of the modification, depending on {@code
+     *               action}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -173,7 +179,8 @@ public class AlterUserRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -184,7 +191,8 @@ public class AlterUserRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -214,7 +222,8 @@ public class AlterUserRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

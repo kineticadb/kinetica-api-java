@@ -14,9 +14,11 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#clearTableMonitor(ClearTableMonitorRequest)}.
- * <br />
- * <br />Deactivates a table monitor previously created with {@link com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#clearTableMonitor(ClearTableMonitorRequest)}.
+ * <p>
+ * Deactivates a table monitor previously created with {@link
+ * com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
  */
 public class ClearTableMonitorRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -29,7 +31,8 @@ public class ClearTableMonitorRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -51,9 +54,11 @@ public class ClearTableMonitorRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a ClearTableMonitorRequest object with the specified parameters.
+     * Constructs a ClearTableMonitorRequest object with the specified
+     * parameters.
      * 
-     * @param topicId  The topic ID returned by {@link com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
+     * @param topicId  The topic ID returned by {@link
+     *                 com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
      * @param options  Optional parameters.
      * 
      */
@@ -64,7 +69,8 @@ public class ClearTableMonitorRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The topic ID returned by {@link com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
+     * @return The topic ID returned by {@link
+     *         com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
      * 
      */
     public String getTopicId() {
@@ -73,7 +79,8 @@ public class ClearTableMonitorRequest implements IndexedRecord {
 
     /**
      * 
-     * @param topicId  The topic ID returned by {@link com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
+     * @param topicId  The topic ID returned by {@link
+     *                 com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -105,7 +112,8 @@ public class ClearTableMonitorRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -116,7 +124,8 @@ public class ClearTableMonitorRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -140,7 +149,8 @@ public class ClearTableMonitorRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

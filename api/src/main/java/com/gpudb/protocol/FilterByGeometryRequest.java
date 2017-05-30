@@ -14,10 +14,12 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#filterByGeometry(FilterByGeometryRequest)}.
- * <br />
- * <br />Applies a geometry filter against a spatial column named WKT in a given table, collection or view. The filtering geometry
- * is provided by {@code inputWkt}.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#filterByGeometry(FilterByGeometryRequest)}.
+ * <p>
+ * Applies a geometry filter against a spatial column named WKT in a given
+ * table, collection or view. The filtering geometry is provided by {@code
+ * inputWkt}.
  */
 public class FilterByGeometryRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -34,7 +36,8 @@ public class FilterByGeometryRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -45,16 +48,16 @@ public class FilterByGeometryRequest implements IndexedRecord {
 
 
     /**
-     * The geometric filtering operation to perform Values: contains, crosses, disjoint, equals, intersects, overlaps, touches,
-     * within.
-     * <br />
-     * <br />A set of string constants for the parameter {@code operation}.
+     * The geometric filtering operation to perform Values: contains, crosses,
+     * disjoint, equals, intersects, overlaps, touches, within.
+
+     * A set of string constants for the parameter {@code operation}.
      */
     public static final class Operation {
 
         /**
-         * Matches records that contain the given WKT in {@code inputWkt}, i.e. the given WKT is within the bounds of a record's
-         * geometry.
+         * Matches records that contain the given WKT in {@code inputWkt}, i.e.
+         * the given WKT is within the bounds of a record's geometry.
          */
         public static final String CONTAINS = "contains";
 
@@ -117,15 +120,23 @@ public class FilterByGeometryRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a FilterByGeometryRequest object with the specified parameters.
+     * Constructs a FilterByGeometryRequest object with the specified
+     * parameters.
      * 
-     * @param tableName  Name of the table on which the filter by geometry will be performed.  Must be an existing table, collection
+     * @param tableName  Name of the table on which the filter by geometry will
+     *                   be performed.  Must be an existing table, collection
      *                   or view containing a column named WKT.
-     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *                  collection, table or view.
-     * @param columnName  Name of the column to be used in the filter. Must be 'WKT'
-     * @param inputWkt  A geometry in WKT format that will be used to filter the objects in {@code tableName}.
-     * @param operation  The geometric filtering operation to perform Values: contains, crosses, disjoint, equals, intersects,
+     * @param viewName  If provided, then this will be the name of the view
+     *                  containing the results. Has the same naming
+     *                  restrictions as <a
+     *                  href="../../../../../concepts/tables.html"
+     *                  target="_top">tables</a>.
+     * @param columnName  Name of the column to be used in the filter. Must be
+     *                    'WKT'
+     * @param inputWkt  A geometry in WKT format that will be used to filter
+     *                  the objects in {@code tableName}.
+     * @param operation  The geometric filtering operation to perform Values:
+     *                   contains, crosses, disjoint, equals, intersects,
      *                   overlaps, touches, within.
      * @param options  Optional parameters.
      * 
@@ -141,7 +152,8 @@ public class FilterByGeometryRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the filter by geometry will be performed.  Must be an existing table, collection or view
+     * @return Name of the table on which the filter by geometry will be
+     *         performed.  Must be an existing table, collection or view
      *         containing a column named WKT.
      * 
      */
@@ -151,7 +163,8 @@ public class FilterByGeometryRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the filter by geometry will be performed.  Must be an existing table, collection
+     * @param tableName  Name of the table on which the filter by geometry will
+     *                   be performed.  Must be an existing table, collection
      *                   or view containing a column named WKT.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -164,8 +177,10 @@ public class FilterByGeometryRequest implements IndexedRecord {
 
     /**
      * 
-     * @return If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *         collection, table or view.
+     * @return If provided, then this will be the name of the view containing
+     *         the results. Has the same naming restrictions as <a
+     *         href="../../../../../concepts/tables.html"
+     *         target="_top">tables</a>.
      * 
      */
     public String getViewName() {
@@ -174,8 +189,11 @@ public class FilterByGeometryRequest implements IndexedRecord {
 
     /**
      * 
-     * @param viewName  If provided, then this will be the name of the view containing the results. Must not be an already existing
-     *                  collection, table or view.
+     * @param viewName  If provided, then this will be the name of the view
+     *                  containing the results. Has the same naming
+     *                  restrictions as <a
+     *                  href="../../../../../concepts/tables.html"
+     *                  target="_top">tables</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -196,7 +214,8 @@ public class FilterByGeometryRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnName  Name of the column to be used in the filter. Must be 'WKT'
+     * @param columnName  Name of the column to be used in the filter. Must be
+     *                    'WKT'
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -208,7 +227,8 @@ public class FilterByGeometryRequest implements IndexedRecord {
 
     /**
      * 
-     * @return A geometry in WKT format that will be used to filter the objects in {@code tableName}.
+     * @return A geometry in WKT format that will be used to filter the objects
+     *         in {@code tableName}.
      * 
      */
     public String getInputWkt() {
@@ -217,7 +237,8 @@ public class FilterByGeometryRequest implements IndexedRecord {
 
     /**
      * 
-     * @param inputWkt  A geometry in WKT format that will be used to filter the objects in {@code tableName}.
+     * @param inputWkt  A geometry in WKT format that will be used to filter
+     *                  the objects in {@code tableName}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -229,8 +250,9 @@ public class FilterByGeometryRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The geometric filtering operation to perform Values: contains, crosses, disjoint, equals, intersects, overlaps,
-     *         touches, within.
+     * @return The geometric filtering operation to perform Values: contains,
+     *         crosses, disjoint, equals, intersects, overlaps, touches,
+     *         within.
      * 
      */
     public String getOperation() {
@@ -239,7 +261,8 @@ public class FilterByGeometryRequest implements IndexedRecord {
 
     /**
      * 
-     * @param operation  The geometric filtering operation to perform Values: contains, crosses, disjoint, equals, intersects,
+     * @param operation  The geometric filtering operation to perform Values:
+     *                   contains, crosses, disjoint, equals, intersects,
      *                   overlaps, touches, within.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -272,7 +295,8 @@ public class FilterByGeometryRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -283,7 +307,8 @@ public class FilterByGeometryRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -319,7 +344,8 @@ public class FilterByGeometryRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

@@ -16,10 +16,13 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#createUnion(CreateUnionRequest)}.
- * <br />
- * <br />Creates a table that is the concatenation of one or more existing tables. It is equivalent to the SQL UNION ALL operator.
- * Non-charN 'string' and 'bytes' column types cannot be included in a union, neither can columns with the property 'store_only'.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#createUnion(CreateUnionRequest)}.
+ * <p>
+ * Creates a table that is the concatenation of one or more existing tables. It
+ * is equivalent to the SQL UNION ALL operator.  Non-charN 'string' and 'bytes'
+ * column types cannot be included in a union, neither can columns with the
+ * property 'store_only'.
  */
 public class CreateUnionRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -35,7 +38,8 @@ public class CreateUnionRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -47,26 +51,43 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * <br /><ul>
-     * <br />  <li> collection_name: Name of a collection which is to contain the union. If empty, then the union will be a
-     * top-level table.
-     * <br />  <li> mode: If 'merge_views' then this operation will merge (i.e. union) the provided views. All 'table_names' must be
-     * views from the same underlying base table. Values: union_all, union, union_distinct, except, intersect, merge_views.
-     * <br />
-     * <br /></ul>
-     * <br />A set of string constants for the parameter {@code options}.
+     * <ul>
+     *         <li> collection_name: Name of a collection which is to contain
+     * the union. If empty, then the union will be a top-level table.
+     *         <li> materialize_on_gpu: If 'true' then the columns of the union
+     * will be cached on the GPU. Values: true, false.
+     * <p>
+     *         <li> mode: If 'merge_views' then this operation will merge (i.e.
+     * union) the provided views. All 'table_names' must be views from the same
+     * underlying base table. Values: union_all, union, union_distinct, except,
+     * intersect, merge_views.
+     * <p>
+     *         <li> ttl: Sets the TTL of the table specified in {@code
+     * tableName}. The value must be the desired TTL in minutes.
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the union. If empty, then the union will be a top-level table.
+         * Name of a collection which is to contain the union. If empty, then
+         * the union will be a top-level table.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * If 'merge_views' then this operation will merge (i.e. union) the provided views. All 'table_names' must be views from the
-         * same underlying base table. Values: union_all, union, union_distinct, except, intersect, merge_views.
-         * <br />
+         * If 'true' then the columns of the union will be cached on the GPU.
+         * Values: true, false.
+         */
+        public static final String MATERIALIZE_ON_GPU = "materialize_on_gpu";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
+         * If 'merge_views' then this operation will merge (i.e. union) the
+         * provided views. All 'table_names' must be views from the same
+         * underlying base table. Values: union_all, union, union_distinct,
+         * except, intersect, merge_views.
          */
         public static final String MODE = "mode";
 
@@ -76,7 +97,8 @@ public class CreateUnionRequest implements IndexedRecord {
         public static final String UNION_ALL = "union_all";
 
         /**
-         * Retains all unique rows from the specified tables (synonym for 'union_distinct').
+         * Retains all unique rows from the specified tables (synonym for
+         * 'union_distinct').
          */
         public static final String UNION = "union";
 
@@ -86,19 +108,28 @@ public class CreateUnionRequest implements IndexedRecord {
         public static final String UNION_DISTINCT = "union_distinct";
 
         /**
-         * Retains all unique rows from the first table that do not appear in the second table (only works on 2 tables).
+         * Retains all unique rows from the first table that do not appear in
+         * the second table (only works on 2 tables).
          */
         public static final String EXCEPT = "except";
 
         /**
-         * Retains all unique rows that appear in both of the specified tables (only works on 2 tables).
+         * Retains all unique rows that appear in both of the specified tables
+         * (only works on 2 tables).
          */
         public static final String INTERSECT = "intersect";
 
         /**
-         * Merge (union) 2 or more views of the same base table into a new view.
+         * Merge (union) 2 or more views of the same base table into a new
+         * view.
          */
         public static final String MERGE_VIEWS = "merge_views";
+
+        /**
+         * Sets the TTL of the table specified in {@code tableName}. The value
+         * must be the desired TTL in minutes.
+         */
+        public static final String TTL = "ttl";
 
         private Options() {  }
     }
@@ -124,18 +155,32 @@ public class CreateUnionRequest implements IndexedRecord {
     /**
      * Constructs a CreateUnionRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to be created. Must not be the name of a currently existing table. Cannot be an empty
-     *                   string.
-     * @param tableNames  The list of table names making up the union. Must contain the names of one or more existing tables.
-     * @param inputColumnNames  The list of columns from each of the corresponding input tables.
-     * @param outputColumnNames  The list of names of the columns to be stored in the union.
+     * @param tableName  Name of the table to be created. Has the same naming
+     *                   restrictions as <a
+     *                   href="../../../../../concepts/tables.html"
+     *                   target="_top">tables</a>.
+     * @param tableNames  The list of table names making up the union. Must
+     *                    contain the names of one or more existing tables.
+     * @param inputColumnNames  The list of columns from each of the
+     *                          corresponding input tables.
+     * @param outputColumnNames  The list of names of the columns to be stored
+     *                           in the union.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection which is to contain the union. If empty, then the union
-     *                 will be a top-level table.
-     *                         <li> mode: If 'merge_views' then this operation will merge (i.e. union) the provided views. All
-     *                 'table_names' must be views from the same underlying base table. Values: union_all, union, union_distinct,
+     *                         <li> collection_name: Name of a collection which
+     *                 is to contain the union. If empty, then the union will
+     *                 be a top-level table.
+     *                         <li> materialize_on_gpu: If 'true' then the
+     *                 columns of the union will be cached on the GPU. Values:
+     *                 true, false.
+     *                         <li> mode: If 'merge_views' then this operation
+     *                 will merge (i.e. union) the provided views. All
+     *                 'table_names' must be views from the same underlying
+     *                 base table. Values: union_all, union, union_distinct,
      *                 except, intersect, merge_views.
+     *                         <li> ttl: Sets the TTL of the table specified in
+     *                 {@code tableName}. The value must be the desired TTL in
+     *                 minutes.
      *                 </ul>
      * 
      */
@@ -149,7 +194,9 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to be created. Must not be the name of a currently existing table. Cannot be an empty string.
+     * @return Name of the table to be created. Has the same naming
+     *         restrictions as <a href="../../../../../concepts/tables.html"
+     *         target="_top">tables</a>.
      * 
      */
     public String getTableName() {
@@ -158,8 +205,10 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to be created. Must not be the name of a currently existing table. Cannot be an empty
-     *                   string.
+     * @param tableName  Name of the table to be created. Has the same naming
+     *                   restrictions as <a
+     *                   href="../../../../../concepts/tables.html"
+     *                   target="_top">tables</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -171,7 +220,8 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The list of table names making up the union. Must contain the names of one or more existing tables.
+     * @return The list of table names making up the union. Must contain the
+     *         names of one or more existing tables.
      * 
      */
     public List<String> getTableNames() {
@@ -180,7 +230,8 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  The list of table names making up the union. Must contain the names of one or more existing tables.
+     * @param tableNames  The list of table names making up the union. Must
+     *                    contain the names of one or more existing tables.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -201,7 +252,8 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param inputColumnNames  The list of columns from each of the corresponding input tables.
+     * @param inputColumnNames  The list of columns from each of the
+     *                          corresponding input tables.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -222,7 +274,8 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param outputColumnNames  The list of names of the columns to be stored in the union.
+     * @param outputColumnNames  The list of names of the columns to be stored
+     *                           in the union.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -236,11 +289,17 @@ public class CreateUnionRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> collection_name: Name of a collection which is to contain the union. If empty, then the union will be a
-     *         top-level table.
-     *                 <li> mode: If 'merge_views' then this operation will merge (i.e. union) the provided views. All 'table_names'
-     *         must be views from the same underlying base table. Values: union_all, union, union_distinct, except, intersect,
-     *         merge_views.
+     *                 <li> collection_name: Name of a collection which is to
+     *         contain the union. If empty, then the union will be a top-level
+     *         table.
+     *                 <li> materialize_on_gpu: If 'true' then the columns of
+     *         the union will be cached on the GPU. Values: true, false.
+     *                 <li> mode: If 'merge_views' then this operation will
+     *         merge (i.e. union) the provided views. All 'table_names' must be
+     *         views from the same underlying base table. Values: union_all,
+     *         union, union_distinct, except, intersect, merge_views.
+     *                 <li> ttl: Sets the TTL of the table specified in {@code
+     *         tableName}. The value must be the desired TTL in minutes.
      *         </ul>
      * 
      */
@@ -252,11 +311,20 @@ public class CreateUnionRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection which is to contain the union. If empty, then the union
-     *                 will be a top-level table.
-     *                         <li> mode: If 'merge_views' then this operation will merge (i.e. union) the provided views. All
-     *                 'table_names' must be views from the same underlying base table. Values: union_all, union, union_distinct,
+     *                         <li> collection_name: Name of a collection which
+     *                 is to contain the union. If empty, then the union will
+     *                 be a top-level table.
+     *                         <li> materialize_on_gpu: If 'true' then the
+     *                 columns of the union will be cached on the GPU. Values:
+     *                 true, false.
+     *                         <li> mode: If 'merge_views' then this operation
+     *                 will merge (i.e. union) the provided views. All
+     *                 'table_names' must be views from the same underlying
+     *                 base table. Values: union_all, union, union_distinct,
      *                 except, intersect, merge_views.
+     *                         <li> ttl: Sets the TTL of the table specified in
+     *                 {@code tableName}. The value must be the desired TTL in
+     *                 minutes.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -268,7 +336,8 @@ public class CreateUnionRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -279,7 +348,8 @@ public class CreateUnionRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -312,7 +382,8 @@ public class CreateUnionRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

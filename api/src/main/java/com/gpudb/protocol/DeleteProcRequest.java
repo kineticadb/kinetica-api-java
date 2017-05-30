@@ -14,9 +14,10 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#deleteProc(DeleteProcRequest)}.
- * <br />
- * <br />Deletes a proc. Any currently running instances of the proc will be killed.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#deleteProc(DeleteProcRequest)}.
+ * <p>
+ * Deletes a proc. Any currently running instances of the proc will be killed.
  */
 public class DeleteProcRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -29,7 +30,8 @@ public class DeleteProcRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -53,7 +55,8 @@ public class DeleteProcRequest implements IndexedRecord {
     /**
      * Constructs a DeleteProcRequest object with the specified parameters.
      * 
-     * @param procName  Name of the proc to be deleted. Must be the name of a currently existing proc.
+     * @param procName  Name of the proc to be deleted. Must be the name of a
+     *                  currently existing proc.
      * @param options  Optional parameters.
      * 
      */
@@ -64,7 +67,8 @@ public class DeleteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the proc to be deleted. Must be the name of a currently existing proc.
+     * @return Name of the proc to be deleted. Must be the name of a currently
+     *         existing proc.
      * 
      */
     public String getProcName() {
@@ -73,7 +77,8 @@ public class DeleteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param procName  Name of the proc to be deleted. Must be the name of a currently existing proc.
+     * @param procName  Name of the proc to be deleted. Must be the name of a
+     *                  currently existing proc.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -105,7 +110,8 @@ public class DeleteProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -116,7 +122,8 @@ public class DeleteProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -140,7 +147,8 @@ public class DeleteProcRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

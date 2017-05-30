@@ -12,7 +12,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
  */
 public class ExecuteProcResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -24,7 +25,8 @@ public class ExecuteProcResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -44,9 +46,11 @@ public class ExecuteProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The run ID of the running proc instance. This may be passed to {@link
-     *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} to obtain status information, or {@link
-     *         com.gpudb.GPUdb#killProc(KillProcRequest)} to kill the proc instance.
+     * @return The run ID of the running proc instance. This may be passed to
+     *         {@link com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} to
+     *         obtain status information, or {@link
+     *         com.gpudb.GPUdb#killProc(KillProcRequest)} to kill the proc
+     *         instance.
      * 
      */
     public String getRunId() {
@@ -55,9 +59,12 @@ public class ExecuteProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @param runId  The run ID of the running proc instance. This may be passed to {@link
-     *               com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} to obtain status information, or {@link
-     *               com.gpudb.GPUdb#killProc(KillProcRequest)} to kill the proc instance.
+     * @param runId  The run ID of the running proc instance. This may be
+     *               passed to {@link
+     *               com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} to
+     *               obtain status information, or {@link
+     *               com.gpudb.GPUdb#killProc(KillProcRequest)} to kill the
+     *               proc instance.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -68,7 +75,8 @@ public class ExecuteProcResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -79,7 +87,8 @@ public class ExecuteProcResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -100,7 +109,8 @@ public class ExecuteProcResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

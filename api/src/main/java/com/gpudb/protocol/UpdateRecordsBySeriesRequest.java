@@ -16,10 +16,12 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#updateRecordsBySeries(UpdateRecordsBySeriesRequest)}.
- * <br />
- * <br />Updates the view specified by {@code tableName} to include full series (track) information from the {@code worldTableName}
- * for the series (tracks) present in the {@code viewName}.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#updateRecordsBySeries(UpdateRecordsBySeriesRequest)}.
+ * <p>
+ * Updates the view specified by {@code tableName} to include full series
+ * (track) information from the {@code worldTableName} for the series (tracks)
+ * present in the {@code viewName}.
  */
 public class UpdateRecordsBySeriesRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -35,7 +37,8 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -52,7 +55,8 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
 
 
     /**
-     * Constructs an UpdateRecordsBySeriesRequest object with default parameters.
+     * Constructs an UpdateRecordsBySeriesRequest object with default
+     * parameters.
      */
     public UpdateRecordsBySeriesRequest() {
         tableName = "";
@@ -63,11 +67,15 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs an UpdateRecordsBySeriesRequest object with the specified parameters.
+     * Constructs an UpdateRecordsBySeriesRequest object with the specified
+     * parameters.
      * 
-     * @param tableName  Name of the view on which the update operation will be performed. Must be an existing view.
-     * @param worldTableName  Name of the table containing the complete series (track) information.
-     * @param viewName  Optional name of the view containing the series (tracks) which have to be updated.
+     * @param tableName  Name of the view on which the update operation will be
+     *                   performed. Must be an existing view.
+     * @param worldTableName  Name of the table containing the complete series
+     *                        (track) information.
+     * @param viewName  Optional name of the view containing the series
+     *                  (tracks) which have to be updated.
      * @param reserved
      * @param options  Optional parameters.
      * 
@@ -82,7 +90,8 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the view on which the update operation will be performed. Must be an existing view.
+     * @return Name of the view on which the update operation will be
+     *         performed. Must be an existing view.
      * 
      */
     public String getTableName() {
@@ -91,7 +100,8 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the view on which the update operation will be performed. Must be an existing view.
+     * @param tableName  Name of the view on which the update operation will be
+     *                   performed. Must be an existing view.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -103,7 +113,8 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table containing the complete series (track) information.
+     * @return Name of the table containing the complete series (track)
+     *         information.
      * 
      */
     public String getWorldTableName() {
@@ -112,7 +123,8 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param worldTableName  Name of the table containing the complete series (track) information.
+     * @param worldTableName  Name of the table containing the complete series
+     *                        (track) information.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -124,7 +136,8 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional name of the view containing the series (tracks) which have to be updated.
+     * @return Optional name of the view containing the series (tracks) which
+     *         have to be updated.
      * 
      */
     public String getViewName() {
@@ -133,7 +146,8 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param viewName  Optional name of the view containing the series (tracks) which have to be updated.
+     * @param viewName  Optional name of the view containing the series
+     *                  (tracks) which have to be updated.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -180,7 +194,8 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -191,7 +206,8 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -224,7 +240,8 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

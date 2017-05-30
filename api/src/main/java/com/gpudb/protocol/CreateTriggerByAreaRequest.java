@@ -16,17 +16,24 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#createTriggerByArea(CreateTriggerByAreaRequest)}.
- * <br />
- * <br />Sets up an area trigger mechanism for two column_names for one or more tables. (This function is essentially the
- * two-dimensional version of {@link com.gpudb.GPUdb#createTriggerByRange(CreateTriggerByRangeRequest)}.) Once the trigger has been
- * activated, any record added to the listed tables(s) via {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} with
- * the chosen columns' values falling within the specified region will trip the trigger. All such records will be queued at the
- * trigger port (by default '9001', but able to be retrieved via {@link com.gpudb.GPUdb#showSystemStatus(ShowSystemStatusRequest)})
- * for any listening client to collect. Active triggers can be cancelled by using the {@link
- * com.gpudb.GPUdb#clearTrigger(ClearTriggerRequest)} endpoint or by clearing all relevant tables.
- * <br />
- * <br />The output returns the trigger handle as well as indicating success or failure of the trigger activation.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#createTriggerByArea(CreateTriggerByAreaRequest)}.
+ * <p>
+ * Sets up an area trigger mechanism for two column_names for one or more
+ * tables. (This function is essentially the two-dimensional version of {@link
+ * com.gpudb.GPUdb#createTriggerByRange(CreateTriggerByRangeRequest)}.) Once
+ * the trigger has been activated, any record added to the listed tables(s) via
+ * {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} with the
+ * chosen columns' values falling within the specified region will trip the
+ * trigger. All such records will be queued at the trigger port (by default
+ * '9001', but able to be retrieved via {@link
+ * com.gpudb.GPUdb#showSystemStatus(ShowSystemStatusRequest)}) for any
+ * listening client to collect. Active triggers can be cancelled by using the
+ * {@link com.gpudb.GPUdb#clearTrigger(ClearTriggerRequest)} endpoint or by
+ * clearing all relevant tables.
+ * <p>
+ * The output returns the trigger handle as well as indicating success or
+ * failure of the trigger activation.
  */
 public class CreateTriggerByAreaRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -44,7 +51,8 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -76,17 +84,24 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a CreateTriggerByAreaRequest object with the specified parameters.
+     * Constructs a CreateTriggerByAreaRequest object with the specified
+     * parameters.
      * 
      * @param requestId  ID for the trigger to be activated.
-     * @param tableNames  Names of the tables on which the trigger will be activated and maintained.
-     * @param xColumnName  Name of a numeric column on which the trigger is activated. Usually 'x' for geospatial data points.
-     * @param xVector  The respective coordinate values for the region on which the trigger is activated. This usually translates to
-     *                 the x-coordinates of a geospatial region.
-     * @param yColumnName  Name of a second numeric column on which the trigger is activated. Usually 'y' for geospatial data
+     * @param tableNames  Names of the tables on which the trigger will be
+     *                    activated and maintained.
+     * @param xColumnName  Name of a numeric column on which the trigger is
+     *                     activated. Usually 'x' for geospatial data points.
+     * @param xVector  The respective coordinate values for the region on which
+     *                 the trigger is activated. This usually translates to the
+     *                 x-coordinates of a geospatial region.
+     * @param yColumnName  Name of a second numeric column on which the trigger
+     *                     is activated. Usually 'y' for geospatial data
      *                     points.
-     * @param yVector  The respective coordinate values for the region on which the trigger is activated. This usually translates to
-     *                 the y-coordinates of a geospatial region. Must be the same length as xvals.
+     * @param yVector  The respective coordinate values for the region on which
+     *                 the trigger is activated. This usually translates to the
+     *                 y-coordinates of a geospatial region. Must be the same
+     *                 length as xvals.
      * @param options  Optional parameters.
      * 
      */
@@ -123,7 +138,8 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Names of the tables on which the trigger will be activated and maintained.
+     * @return Names of the tables on which the trigger will be activated and
+     *         maintained.
      * 
      */
     public List<String> getTableNames() {
@@ -132,7 +148,8 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  Names of the tables on which the trigger will be activated and maintained.
+     * @param tableNames  Names of the tables on which the trigger will be
+     *                    activated and maintained.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -144,7 +161,8 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of a numeric column on which the trigger is activated. Usually 'x' for geospatial data points.
+     * @return Name of a numeric column on which the trigger is activated.
+     *         Usually 'x' for geospatial data points.
      * 
      */
     public String getXColumnName() {
@@ -153,7 +171,8 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @param xColumnName  Name of a numeric column on which the trigger is activated. Usually 'x' for geospatial data points.
+     * @param xColumnName  Name of a numeric column on which the trigger is
+     *                     activated. Usually 'x' for geospatial data points.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -165,7 +184,8 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The respective coordinate values for the region on which the trigger is activated. This usually translates to the
+     * @return The respective coordinate values for the region on which the
+     *         trigger is activated. This usually translates to the
      *         x-coordinates of a geospatial region.
      * 
      */
@@ -175,8 +195,9 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @param xVector  The respective coordinate values for the region on which the trigger is activated. This usually translates to
-     *                 the x-coordinates of a geospatial region.
+     * @param xVector  The respective coordinate values for the region on which
+     *                 the trigger is activated. This usually translates to the
+     *                 x-coordinates of a geospatial region.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -188,7 +209,8 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of a second numeric column on which the trigger is activated. Usually 'y' for geospatial data points.
+     * @return Name of a second numeric column on which the trigger is
+     *         activated. Usually 'y' for geospatial data points.
      * 
      */
     public String getYColumnName() {
@@ -197,7 +219,8 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @param yColumnName  Name of a second numeric column on which the trigger is activated. Usually 'y' for geospatial data
+     * @param yColumnName  Name of a second numeric column on which the trigger
+     *                     is activated. Usually 'y' for geospatial data
      *                     points.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -210,8 +233,10 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The respective coordinate values for the region on which the trigger is activated. This usually translates to the
-     *         y-coordinates of a geospatial region. Must be the same length as xvals.
+     * @return The respective coordinate values for the region on which the
+     *         trigger is activated. This usually translates to the
+     *         y-coordinates of a geospatial region. Must be the same length as
+     *         xvals.
      * 
      */
     public List<Double> getYVector() {
@@ -220,8 +245,10 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @param yVector  The respective coordinate values for the region on which the trigger is activated. This usually translates to
-     *                 the y-coordinates of a geospatial region. Must be the same length as xvals.
+     * @param yVector  The respective coordinate values for the region on which
+     *                 the trigger is activated. This usually translates to the
+     *                 y-coordinates of a geospatial region. Must be the same
+     *                 length as xvals.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -253,7 +280,8 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -264,7 +292,8 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -303,7 +332,8 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

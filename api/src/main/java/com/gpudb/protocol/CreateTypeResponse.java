@@ -15,7 +15,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#createType(CreateTypeRequest)}.
  */
 public class CreateTypeResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -30,7 +31,8 @@ public class CreateTypeResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -53,7 +55,8 @@ public class CreateTypeResponse implements IndexedRecord {
 
     /**
      * 
-     * @return An identifier representing the created type. This type_id can be used in subsequent calls to {@link
+     * @return An identifier representing the created type. This type_id can be
+     *         used in subsequent calls to {@link
      *         com.gpudb.GPUdb#createTable(CreateTableRequest) create a table}
      * 
      */
@@ -63,8 +66,10 @@ public class CreateTypeResponse implements IndexedRecord {
 
     /**
      * 
-     * @param typeId  An identifier representing the created type. This type_id can be used in subsequent calls to {@link
-     *                com.gpudb.GPUdb#createTable(CreateTableRequest) create a table}
+     * @param typeId  An identifier representing the created type. This type_id
+     *                can be used in subsequent calls to {@link
+     *                com.gpudb.GPUdb#createTable(CreateTableRequest) create a
+     *                table}
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -138,7 +143,8 @@ public class CreateTypeResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -149,7 +155,8 @@ public class CreateTypeResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -179,7 +186,8 @@ public class CreateTypeResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

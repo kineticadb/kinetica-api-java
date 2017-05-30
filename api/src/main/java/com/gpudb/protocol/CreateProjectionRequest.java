@@ -16,10 +16,11 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#createProjection(CreateProjectionRequest)}.
- * <br />
- * <br />Creates a new projection of an existing table. A projection represents a subset of the columns (potentially including
- * derived columns) of a table.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#createProjection(CreateProjectionRequest)}.
+ * <p>
+ * Creates a new projection of an existing table.  A projection represents a
+ * subset of the columns (potentially including derived columns) of a table.
  */
 public class CreateProjectionRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -34,7 +35,8 @@ public class CreateProjectionRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -46,23 +48,36 @@ public class CreateProjectionRequest implements IndexedRecord {
 
     /**
      * Optional parameters.
-     * <br /><ul>
-     * <br />  <li> collection_name: Name of a collection to which the projection is to be assigned as a child.
-     * <br />  <li> expression: An optional filter expression to be applied to the source table prior to the projection.
-     * <br />  <li> limit: The number of records to keep.
-     * <br />  <li> order_by: Comma-separated list of the columns to be sorted by; i.e 'timestamp asc, x desc'.
-     * <br /></ul>
-     * <br />A set of string constants for the parameter {@code options}.
+     * <ul>
+     *         <li> collection_name: Name of a collection to which the
+     * projection is to be assigned as a child.
+     *         <li> expression: An optional filter expression to be applied to
+     * the source table prior to the projection.
+     *         <li> limit: The number of records to keep.
+     *         <li> order_by: Comma-separated list of the columns to be sorted
+     * by; e.g. 'timestamp asc, x desc'.  The columns specified must be present
+     * in {@code columnNames}.  If any alias is given for any column name, the
+     * alias must be used, rather than the original column name.
+     *         <li> materialize_on_gpu: If 'true' then the columns of the
+     * projection will be cached on the GPU. Values: true, false.
+     * <p>
+     *         <li> ttl: Sets the TTL of the table, view, or collection
+     * specified in {@code tableName}. The value must be the desired TTL in
+     * minutes.
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * Name of a collection to which the projection is to be assigned as a child.
+         * Name of a collection to which the projection is to be assigned as a
+         * child.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * An optional filter expression to be applied to the source table prior to the projection.
+         * An optional filter expression to be applied to the source table
+         * prior to the projection.
          */
         public static final String EXPRESSION = "expression";
 
@@ -72,9 +87,26 @@ public class CreateProjectionRequest implements IndexedRecord {
         public static final String LIMIT = "limit";
 
         /**
-         * Comma-separated list of the columns to be sorted by; i.e 'timestamp asc, x desc'.
+         * Comma-separated list of the columns to be sorted by; e.g. 'timestamp
+         * asc, x desc'.  The columns specified must be present in {@code
+         * columnNames}.  If any alias is given for any column name, the alias
+         * must be used, rather than the original column name.
          */
         public static final String ORDER_BY = "order_by";
+
+        /**
+         * If 'true' then the columns of the projection will be cached on the
+         * GPU. Values: true, false.
+         */
+        public static final String MATERIALIZE_ON_GPU = "materialize_on_gpu";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
+         * Sets the TTL of the table, view, or collection specified in {@code
+         * tableName}. The value must be the desired TTL in minutes.
+         */
+        public static final String TTL = "ttl";
 
         private Options() {  }
     }
@@ -96,21 +128,39 @@ public class CreateProjectionRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a CreateProjectionRequest object with the specified parameters.
+     * Constructs a CreateProjectionRequest object with the specified
+     * parameters.
      * 
-     * @param tableName  Name of the existing table on which the projection is to be applied.
-     * @param projectionName  Name of the projection to be created. Must not be the name of a currently existing table. Cannot be an
-     *                        empty string. Valid characters are alphanumeric or any of '_-(){}[] .:' (excluding the single quotes),
-     *                        with the first character being alphanumeric or an underscore. The maximum length is 256 characters.
-     * @param columnNames  List of columns from {@code tableName} to be included in the projection. Can include derived columns. Can
-     *                     be specified as aliased via the syntax '<column_name> as <alias>.
+     * @param tableName  Name of the existing table on which the projection is
+     *                   to be applied.
+     * @param projectionName  Name of the projection to be created. Has the
+     *                        same naming restrictions as <a
+     *                        href="../../../../../concepts/tables.html"
+     *                        target="_top">tables</a>.
+     * @param columnNames  List of columns from {@code tableName} to be
+     *                     included in the projection. Can include derived
+     *                     columns. Can be specified as aliased via the syntax
+     *                     '<column_name> as <alias>.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection to which the projection is to be assigned as a child.
-     *                         <li> expression: An optional filter expression to be applied to the source table prior to the
+     *                         <li> collection_name: Name of a collection to
+     *                 which the projection is to be assigned as a child.
+     *                         <li> expression: An optional filter expression
+     *                 to be applied to the source table prior to the
      *                 projection.
      *                         <li> limit: The number of records to keep.
-     *                         <li> order_by: Comma-separated list of the columns to be sorted by; i.e 'timestamp asc, x desc'.
+     *                         <li> order_by: Comma-separated list of the
+     *                 columns to be sorted by; e.g. 'timestamp asc, x desc'.
+     *                 The columns specified must be present in {@code
+     *                 columnNames}.  If any alias is given for any column
+     *                 name, the alias must be used, rather than the original
+     *                 column name.
+     *                         <li> materialize_on_gpu: If 'true' then the
+     *                 columns of the projection will be cached on the GPU.
+     *                 Values: true, false.
+     *                         <li> ttl: Sets the TTL of the table, view, or
+     *                 collection specified in {@code tableName}. The value
+     *                 must be the desired TTL in minutes.
      *                 </ul>
      * 
      */
@@ -123,7 +173,8 @@ public class CreateProjectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the existing table on which the projection is to be applied.
+     * @return Name of the existing table on which the projection is to be
+     *         applied.
      * 
      */
     public String getTableName() {
@@ -132,7 +183,8 @@ public class CreateProjectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the existing table on which the projection is to be applied.
+     * @param tableName  Name of the existing table on which the projection is
+     *                   to be applied.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -144,9 +196,9 @@ public class CreateProjectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the projection to be created. Must not be the name of a currently existing table. Cannot be an empty string.
-     *         Valid characters are alphanumeric or any of '_-(){}[] .:' (excluding the single quotes), with the first character
-     *         being alphanumeric or an underscore. The maximum length is 256 characters.
+     * @return Name of the projection to be created. Has the same naming
+     *         restrictions as <a href="../../../../../concepts/tables.html"
+     *         target="_top">tables</a>.
      * 
      */
     public String getProjectionName() {
@@ -155,9 +207,10 @@ public class CreateProjectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param projectionName  Name of the projection to be created. Must not be the name of a currently existing table. Cannot be an
-     *                        empty string. Valid characters are alphanumeric or any of '_-(){}[] .:' (excluding the single quotes),
-     *                        with the first character being alphanumeric or an underscore. The maximum length is 256 characters.
+     * @param projectionName  Name of the projection to be created. Has the
+     *                        same naming restrictions as <a
+     *                        href="../../../../../concepts/tables.html"
+     *                        target="_top">tables</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -169,8 +222,9 @@ public class CreateProjectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return List of columns from {@code tableName} to be included in the projection. Can include derived columns. Can be
-     *         specified as aliased via the syntax '<column_name> as <alias>.
+     * @return List of columns from {@code tableName} to be included in the
+     *         projection. Can include derived columns. Can be specified as
+     *         aliased via the syntax '<column_name> as <alias>.
      * 
      */
     public List<String> getColumnNames() {
@@ -179,8 +233,10 @@ public class CreateProjectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnNames  List of columns from {@code tableName} to be included in the projection. Can include derived columns. Can
-     *                     be specified as aliased via the syntax '<column_name> as <alias>.
+     * @param columnNames  List of columns from {@code tableName} to be
+     *                     included in the projection. Can include derived
+     *                     columns. Can be specified as aliased via the syntax
+     *                     '<column_name> as <alias>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -194,10 +250,21 @@ public class CreateProjectionRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> collection_name: Name of a collection to which the projection is to be assigned as a child.
-     *                 <li> expression: An optional filter expression to be applied to the source table prior to the projection.
+     *                 <li> collection_name: Name of a collection to which the
+     *         projection is to be assigned as a child.
+     *                 <li> expression: An optional filter expression to be
+     *         applied to the source table prior to the projection.
      *                 <li> limit: The number of records to keep.
-     *                 <li> order_by: Comma-separated list of the columns to be sorted by; i.e 'timestamp asc, x desc'.
+     *                 <li> order_by: Comma-separated list of the columns to be
+     *         sorted by; e.g. 'timestamp asc, x desc'.  The columns specified
+     *         must be present in {@code columnNames}.  If any alias is given
+     *         for any column name, the alias must be used, rather than the
+     *         original column name.
+     *                 <li> materialize_on_gpu: If 'true' then the columns of
+     *         the projection will be cached on the GPU. Values: true, false.
+     *                 <li> ttl: Sets the TTL of the table, view, or collection
+     *         specified in {@code tableName}. The value must be the desired
+     *         TTL in minutes.
      *         </ul>
      * 
      */
@@ -209,11 +276,24 @@ public class CreateProjectionRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection to which the projection is to be assigned as a child.
-     *                         <li> expression: An optional filter expression to be applied to the source table prior to the
+     *                         <li> collection_name: Name of a collection to
+     *                 which the projection is to be assigned as a child.
+     *                         <li> expression: An optional filter expression
+     *                 to be applied to the source table prior to the
      *                 projection.
      *                         <li> limit: The number of records to keep.
-     *                         <li> order_by: Comma-separated list of the columns to be sorted by; i.e 'timestamp asc, x desc'.
+     *                         <li> order_by: Comma-separated list of the
+     *                 columns to be sorted by; e.g. 'timestamp asc, x desc'.
+     *                 The columns specified must be present in {@code
+     *                 columnNames}.  If any alias is given for any column
+     *                 name, the alias must be used, rather than the original
+     *                 column name.
+     *                         <li> materialize_on_gpu: If 'true' then the
+     *                 columns of the projection will be cached on the GPU.
+     *                 Values: true, false.
+     *                         <li> ttl: Sets the TTL of the table, view, or
+     *                 collection specified in {@code tableName}. The value
+     *                 must be the desired TTL in minutes.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -225,7 +305,8 @@ public class CreateProjectionRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -236,7 +317,8 @@ public class CreateProjectionRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -266,7 +348,8 @@ public class CreateProjectionRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

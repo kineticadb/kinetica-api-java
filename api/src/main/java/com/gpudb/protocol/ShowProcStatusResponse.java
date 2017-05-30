@@ -16,7 +16,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}.
  */
 public class ShowProcStatusResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -40,7 +41,8 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -51,9 +53,11 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
 
     /**
-     * Overall statuses for the returned run IDs. Note that these are rollups and individual statuses may differ between data
-     * segments for the same run ID; see {@code statuses} and {@code messages} for statuses from individual data segments.
-     * <br />A set of string constants for the parameter {@code overallStatuses}.
+     * Overall statuses for the returned run IDs. Note that these are rollups
+     * and individual statuses may differ between data segments for the same
+     * run ID; see {@code statuses} and {@code messages} for statuses from
+     * individual data segments.
+     * A set of string constants for the parameter {@code overallStatuses}.
      */
     public static final class OverallStatuses {
 
@@ -83,7 +87,7 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * Statuses for the returned run IDs, grouped by data segment ID.
-     * <br />A set of string constants for the parameter {@code statuses}.
+     * A set of string constants for the parameter {@code statuses}.
      */
     public static final class Statuses {
 
@@ -154,7 +158,9 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The string params passed to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the returned run IDs.
+     * @return The string params passed to {@link
+     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the
+     *         returned run IDs.
      * 
      */
     public Map<String, Map<String, String>> getParams() {
@@ -163,7 +169,9 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @param params  The string params passed to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the returned run IDs.
+     * @param params  The string params passed to {@link
+     *                com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the
+     *                returned run IDs.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -175,7 +183,9 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The binary params passed to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the returned run IDs.
+     * @return The binary params passed to {@link
+     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the
+     *         returned run IDs.
      * 
      */
     public Map<String, Map<String, ByteBuffer>> getBinParams() {
@@ -184,8 +194,9 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @param binParams  The binary params passed to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the returned run
-     *                   IDs.
+     * @param binParams  The binary params passed to {@link
+     *                   com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for
+     *                   the returned run IDs.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -197,7 +208,9 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The input table names passed to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the returned run IDs.
+     * @return The input table names passed to {@link
+     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the
+     *         returned run IDs.
      * 
      */
     public Map<String, List<String>> getInputTableNames() {
@@ -206,8 +219,9 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @param inputTableNames  The input table names passed to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the
-     *                         returned run IDs.
+     * @param inputTableNames  The input table names passed to {@link
+     *                         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}
+     *                         for the returned run IDs.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -219,8 +233,10 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The input column names passed to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the returned run IDs,
-     *         supplemented with the column names for input tables not included in the input column name map.
+     * @return The input column names passed to {@link
+     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the
+     *         returned run IDs, supplemented with the column names for input
+     *         tables not included in the input column name map.
      * 
      */
     public Map<String, Map<String, List<String>>> getInputColumnNames() {
@@ -229,9 +245,11 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @param inputColumnNames  The input column names passed to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the
-     *                          returned run IDs, supplemented with the column names for input tables not included in the input
-     *                          column name map.
+     * @param inputColumnNames  The input column names passed to {@link
+     *                          com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}
+     *                          for the returned run IDs, supplemented with the
+     *                          column names for input tables not included in
+     *                          the input column name map.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -243,7 +261,9 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The output table names passed to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the returned run IDs.
+     * @return The output table names passed to {@link
+     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the
+     *         returned run IDs.
      * 
      */
     public Map<String, List<String>> getOutputTableNames() {
@@ -252,8 +272,9 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @param outputTableNames  The output table names passed to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the
-     *                          returned run IDs.
+     * @param outputTableNames  The output table names passed to {@link
+     *                          com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}
+     *                          for the returned run IDs.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -265,7 +286,9 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The optional parameters passed to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the returned run IDs.
+     * @return The optional parameters passed to {@link
+     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the
+     *         returned run IDs.
      * 
      */
     public Map<String, Map<String, String>> getOptions() {
@@ -274,8 +297,9 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @param options  The optional parameters passed to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the returned
-     *                 run IDs.
+     * @param options  The optional parameters passed to {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} for the
+     *                 returned run IDs.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -287,9 +311,10 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Overall statuses for the returned run IDs. Note that these are rollups and individual statuses may differ between
-     *         data segments for the same run ID; see {@code statuses} and {@code messages} for statuses from individual data
-     *         segments.
+     * @return Overall statuses for the returned run IDs. Note that these are
+     *         rollups and individual statuses may differ between data segments
+     *         for the same run ID; see {@code statuses} and {@code messages}
+     *         for statuses from individual data segments.
      * 
      */
     public Map<String, String> getOverallStatuses() {
@@ -298,9 +323,12 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @param overallStatuses  Overall statuses for the returned run IDs. Note that these are rollups and individual statuses may
-     *                         differ between data segments for the same run ID; see {@code statuses} and {@code messages} for
-     *                         statuses from individual data segments.
+     * @param overallStatuses  Overall statuses for the returned run IDs. Note
+     *                         that these are rollups and individual statuses
+     *                         may differ between data segments for the same
+     *                         run ID; see {@code statuses} and {@code
+     *                         messages} for statuses from individual data
+     *                         segments.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -321,7 +349,8 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @param statuses  Statuses for the returned run IDs, grouped by data segment ID.
+     * @param statuses  Statuses for the returned run IDs, grouped by data
+     *                  segment ID.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -333,7 +362,8 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Messages containing additional status information for the returned run IDs, grouped by data segment ID.
+     * @return Messages containing additional status information for the
+     *         returned run IDs, grouped by data segment ID.
      * 
      */
     public Map<String, Map<String, String>> getMessages() {
@@ -342,7 +372,8 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @param messages  Messages containing additional status information for the returned run IDs, grouped by data segment ID.
+     * @param messages  Messages containing additional status information for
+     *                  the returned run IDs, grouped by data segment ID.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -354,7 +385,8 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @return String results for the returned run IDs, grouped by data segment ID.
+     * @return String results for the returned run IDs, grouped by data segment
+     *         ID.
      * 
      */
     public Map<String, Map<String, Map<String, String>>> getResults() {
@@ -363,7 +395,8 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @param results  String results for the returned run IDs, grouped by data segment ID.
+     * @param results  String results for the returned run IDs, grouped by data
+     *                 segment ID.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -375,7 +408,8 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Binary results for the returned run IDs, grouped by data segment ID.
+     * @return Binary results for the returned run IDs, grouped by data segment
+     *         ID.
      * 
      */
     public Map<String, Map<String, Map<String, ByteBuffer>>> getBinResults() {
@@ -384,7 +418,8 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @param binResults  Binary results for the returned run IDs, grouped by data segment ID.
+     * @param binResults  Binary results for the returned run IDs, grouped by
+     *                    data segment ID.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -396,7 +431,8 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Timing information for the returned run IDs, grouped by data segment ID.
+     * @return Timing information for the returned run IDs, grouped by data
+     *         segment ID.
      * 
      */
     public Map<String, Map<String, Map<String, Long>>> getTimings() {
@@ -405,7 +441,8 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
-     * @param timings  Timing information for the returned run IDs, grouped by data segment ID.
+     * @param timings  Timing information for the returned run IDs, grouped by
+     *                 data segment ID.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -416,7 +453,8 @@ public class ShowProcStatusResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -427,7 +465,8 @@ public class ShowProcStatusResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -484,7 +523,8 @@ public class ShowProcStatusResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

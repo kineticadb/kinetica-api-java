@@ -12,7 +12,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#hasType(HasTypeRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#hasType(HasTypeRequest)}.
  */
 public class HasTypeResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -25,7 +26,8 @@ public class HasTypeResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -37,8 +39,8 @@ public class HasTypeResponse implements IndexedRecord {
 
     /**
      * Indicates whether the type exists or not. Values: true, false.
-     * <br />
-     * <br />A set of string constants for the parameter {@code typeExists}.
+
+     * A set of string constants for the parameter {@code typeExists}.
      */
     public static final class TypeExists {
         public static final String TRUE = "true";
@@ -89,7 +91,8 @@ public class HasTypeResponse implements IndexedRecord {
 
     /**
      * 
-     * @param typeExists  Indicates whether the type exists or not. Values: true, false.
+     * @param typeExists  Indicates whether the type exists or not. Values:
+     *                    true, false.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -100,7 +103,8 @@ public class HasTypeResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -111,7 +115,8 @@ public class HasTypeResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -135,7 +140,8 @@ public class HasTypeResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

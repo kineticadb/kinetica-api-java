@@ -14,9 +14,10 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#revokePermissionTable(RevokePermissionTableRequest)}.
- * <br />
- * <br />Revokes a table-level permission from a user or role.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#revokePermissionTable(RevokePermissionTableRequest)}.
+ * <p>
+ * Revokes a table-level permission from a user or role.
  */
 public class RevokePermissionTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -31,7 +32,8 @@ public class RevokePermissionTableRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -42,9 +44,10 @@ public class RevokePermissionTableRequest implements IndexedRecord {
 
 
     /**
-     * Permission to revoke from the user or role. Values: table_admin, table_insert, table_update, table_delete, table_read.
-     * <br />
-     * <br />A set of string constants for the parameter {@code permission}.
+     * Permission to revoke from the user or role. Values: table_admin,
+     * table_insert, table_update, table_delete, table_read.
+
+     * A set of string constants for the parameter {@code permission}.
      */
     public static final class Permission {
 
@@ -83,7 +86,8 @@ public class RevokePermissionTableRequest implements IndexedRecord {
 
 
     /**
-     * Constructs a RevokePermissionTableRequest object with default parameters.
+     * Constructs a RevokePermissionTableRequest object with default
+     * parameters.
      */
     public RevokePermissionTableRequest() {
         name = "";
@@ -93,12 +97,17 @@ public class RevokePermissionTableRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a RevokePermissionTableRequest object with the specified parameters.
+     * Constructs a RevokePermissionTableRequest object with the specified
+     * parameters.
      * 
-     * @param name  Name of the user or role from which the permission will be revoked. Must be an existing user or role.
-     * @param permission  Permission to revoke from the user or role. Values: table_admin, table_insert, table_update, table_delete,
-     *                    table_read.
-     * @param tableName  Name of the table to which the permission grants access. Must be an existing table, collection, or view.
+     * @param name  Name of the user or role from which the permission will be
+     *              revoked. Must be an existing user or role.
+     * @param permission  Permission to revoke from the user or role. Values:
+     *                    table_admin, table_insert, table_update,
+     *                    table_delete, table_read.
+     * @param tableName  Name of the table to which the permission grants
+     *                   access. Must be an existing table, collection, or
+     *                   view.
      * @param options  Optional parameters.
      * 
      */
@@ -111,7 +120,8 @@ public class RevokePermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the user or role from which the permission will be revoked. Must be an existing user or role.
+     * @return Name of the user or role from which the permission will be
+     *         revoked. Must be an existing user or role.
      * 
      */
     public String getName() {
@@ -120,7 +130,8 @@ public class RevokePermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param name  Name of the user or role from which the permission will be revoked. Must be an existing user or role.
+     * @param name  Name of the user or role from which the permission will be
+     *              revoked. Must be an existing user or role.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -132,8 +143,8 @@ public class RevokePermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Permission to revoke from the user or role. Values: table_admin, table_insert, table_update, table_delete,
-     *         table_read.
+     * @return Permission to revoke from the user or role. Values: table_admin,
+     *         table_insert, table_update, table_delete, table_read.
      * 
      */
     public String getPermission() {
@@ -142,8 +153,9 @@ public class RevokePermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param permission  Permission to revoke from the user or role. Values: table_admin, table_insert, table_update, table_delete,
-     *                    table_read.
+     * @param permission  Permission to revoke from the user or role. Values:
+     *                    table_admin, table_insert, table_update,
+     *                    table_delete, table_read.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -155,7 +167,8 @@ public class RevokePermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to which the permission grants access. Must be an existing table, collection, or view.
+     * @return Name of the table to which the permission grants access. Must be
+     *         an existing table, collection, or view.
      * 
      */
     public String getTableName() {
@@ -164,7 +177,9 @@ public class RevokePermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to which the permission grants access. Must be an existing table, collection, or view.
+     * @param tableName  Name of the table to which the permission grants
+     *                   access. Must be an existing table, collection, or
+     *                   view.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -196,7 +211,8 @@ public class RevokePermissionTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -207,7 +223,8 @@ public class RevokePermissionTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -237,7 +254,8 @@ public class RevokePermissionTableRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

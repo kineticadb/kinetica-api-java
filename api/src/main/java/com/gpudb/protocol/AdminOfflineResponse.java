@@ -12,7 +12,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#adminOffline(AdminOfflineRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#adminOffline(AdminOfflineRequest)}.
  */
 public class AdminOfflineResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -24,7 +25,8 @@ public class AdminOfflineResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -53,7 +55,8 @@ public class AdminOfflineResponse implements IndexedRecord {
 
     /**
      * 
-     * @param isOffline  Returns true if the system is offline, or false otherwise.
+     * @param isOffline  Returns true if the system is offline, or false
+     *                   otherwise.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -64,7 +67,8 @@ public class AdminOfflineResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -75,7 +79,8 @@ public class AdminOfflineResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -96,7 +101,8 @@ public class AdminOfflineResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

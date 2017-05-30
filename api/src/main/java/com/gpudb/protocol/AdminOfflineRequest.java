@@ -14,10 +14,11 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link com.gpudb.GPUdb#adminOffline(AdminOfflineRequest)}.
- * <br />
- * <br />Take the system offline. When the system is offline, no user operations can be performed with the exception of a system
- * shutdown.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#adminOffline(AdminOfflineRequest)}.
+ * <p>
+ * Take the system offline. When the system is offline, no user operations can
+ * be performed with the exception of a system shutdown.
  */
 public class AdminOfflineRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -30,7 +31,8 @@ public class AdminOfflineRequest implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -42,8 +44,8 @@ public class AdminOfflineRequest implements IndexedRecord {
 
     /**
      * Set to true if desired state is offline. Values: true, false.
-     * <br />
-     * <br />A set of string constants for the parameter {@code offline}.
+
+     * A set of string constants for the parameter {@code offline}.
      */
     public static final class Offline {
         public static final String TRUE = "true";
@@ -66,7 +68,8 @@ public class AdminOfflineRequest implements IndexedRecord {
     /**
      * Constructs an AdminOfflineRequest object with the specified parameters.
      * 
-     * @param offline  Set to true if desired state is offline. Values: true, false.
+     * @param offline  Set to true if desired state is offline. Values: true,
+     *                 false.
      * @param options  Optional parameters.
      * 
      */
@@ -86,7 +89,8 @@ public class AdminOfflineRequest implements IndexedRecord {
 
     /**
      * 
-     * @param offline  Set to true if desired state is offline. Values: true, false.
+     * @param offline  Set to true if desired state is offline. Values: true,
+     *                 false.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -118,7 +122,8 @@ public class AdminOfflineRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -129,7 +134,8 @@ public class AdminOfflineRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -153,7 +159,8 @@ public class AdminOfflineRequest implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set

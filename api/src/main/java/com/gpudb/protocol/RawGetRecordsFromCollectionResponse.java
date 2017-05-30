@@ -15,7 +15,8 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}.
  */
 public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -31,7 +32,8 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
 
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return  the schema for the class.
      * 
@@ -48,7 +50,8 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
 
 
     /**
-     * Constructs a RawGetRecordsFromCollectionResponse object with default parameters.
+     * Constructs a RawGetRecordsFromCollectionResponse object with default
+     * parameters.
      */
     public RawGetRecordsFromCollectionResponse() {
     }
@@ -76,8 +79,10 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The type IDs of the corresponding records in {@code recordsBinary} or {@code recordsJson}. This is useful when {@code
-     *         tableName} is a heterogeneous collection (collections containing tables of different types).
+     * @return The type IDs of the corresponding records in {@code
+     *         recordsBinary} or {@code recordsJson}. This is useful when
+     *         {@code tableName} is a heterogeneous collection (collections
+     *         containing tables of different types).
      * 
      */
     public List<String> getTypeNames() {
@@ -86,8 +91,10 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
 
     /**
      * 
-     * @param typeNames  The type IDs of the corresponding records in {@code recordsBinary} or {@code recordsJson}. This is useful
-     *                   when {@code tableName} is a heterogeneous collection (collections containing tables of different types).
+     * @param typeNames  The type IDs of the corresponding records in {@code
+     *                   recordsBinary} or {@code recordsJson}. This is useful
+     *                   when {@code tableName} is a heterogeneous collection
+     *                   (collections containing tables of different types).
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -99,8 +106,9 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
 
     /**
      * 
-     * @return If the encoding parameter of the request was 'binary' then this list contains the binary encoded records retrieved
-     *         from the table/collection. Otherwise, empty list.
+     * @return If the encoding parameter of the request was 'binary' then this
+     *         list contains the binary encoded records retrieved from the
+     *         table/collection. Otherwise, empty list.
      * 
      */
     public List<ByteBuffer> getRecordsBinary() {
@@ -109,8 +117,10 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
 
     /**
      * 
-     * @param recordsBinary  If the encoding parameter of the request was 'binary' then this list contains the binary encoded
-     *                       records retrieved from the table/collection. Otherwise, empty list.
+     * @param recordsBinary  If the encoding parameter of the request was
+     *                       'binary' then this list contains the binary
+     *                       encoded records retrieved from the
+     *                       table/collection. Otherwise, empty list.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -122,8 +132,9 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
 
     /**
      * 
-     * @return If the encoding parameter of the request was 'json', then this list contains the JSON encoded records retrieved from
-     *         the table/collection. Otherwise, empty list.
+     * @return If the encoding parameter of the request was 'json', then this
+     *         list contains the JSON encoded records retrieved from the
+     *         table/collection. Otherwise, empty list.
      * 
      */
     public List<String> getRecordsJson() {
@@ -132,8 +143,10 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
 
     /**
      * 
-     * @param recordsJson  If the encoding parameter of the request was 'json', then this list contains the JSON encoded records
-     *                     retrieved from the table/collection. Otherwise, empty list.
+     * @param recordsJson  If the encoding parameter of the request was 'json',
+     *                     then this list contains the JSON encoded records
+     *                     retrieved from the table/collection. Otherwise,
+     *                     empty list.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -145,7 +158,8 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
 
     /**
      * 
-     * @return If the 'return_record_ids' option of the request was 'true', then this list contains the internal ID for each object.
+     * @return If the 'return_record_ids' option of the request was 'true',
+     *         then this list contains the internal ID for each object.
      *         Otherwise it will be empty.
      * 
      */
@@ -155,7 +169,8 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
 
     /**
      * 
-     * @param recordIds  If the 'return_record_ids' option of the request was 'true', then this list contains the internal ID for
+     * @param recordIds  If the 'return_record_ids' option of the request was
+     *                   'true', then this list contains the internal ID for
      *                   each object. Otherwise it will be empty.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -167,7 +182,8 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @return the schema object describing this class.
      * 
@@ -178,7 +194,8 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to get
      * 
@@ -211,7 +228,8 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
     }
 
     /**
-     * This method supports the Avro framework and is not intended to be called directly by the user.
+     * This method supports the Avro framework and is not intended to be called
+     * directly by the user.
      * 
      * @param index  the position of the field to set
      * @param value  the value to set
