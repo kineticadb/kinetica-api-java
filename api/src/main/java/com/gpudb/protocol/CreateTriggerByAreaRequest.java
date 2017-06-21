@@ -87,7 +87,9 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
      * Constructs a CreateTriggerByAreaRequest object with the specified
      * parameters.
      * 
-     * @param requestId  ID for the trigger to be activated.
+     * @param requestId  User-created ID for the trigger. The ID can be
+     *                   alphanumeric, contain symbols, and must contain at
+     *                   least one character.
      * @param tableNames  Names of the tables on which the trigger will be
      *                    activated and maintained.
      * @param xColumnName  Name of a numeric column on which the trigger is
@@ -117,7 +119,8 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @return ID for the trigger to be activated.
+     * @return User-created ID for the trigger. The ID can be alphanumeric,
+     *         contain symbols, and must contain at least one character.
      * 
      */
     public String getRequestId() {
@@ -126,7 +129,9 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @param requestId  ID for the trigger to be activated.
+     * @param requestId  User-created ID for the trigger. The ID can be
+     *                   alphanumeric, contain symbols, and must contain at
+     *                   least one character.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

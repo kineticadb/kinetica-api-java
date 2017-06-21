@@ -58,9 +58,9 @@ public class ShowTriggersRequest implements IndexedRecord {
     /**
      * Constructs a ShowTriggersRequest object with the specified parameters.
      * 
-     * @param triggerIds  List of IDs of the triggers whose information to be
-     *                    retrieved. Empty list means retrieve information on
-     *                    all active triggers.
+     * @param triggerIds  List of IDs of the triggers whose information is to
+     *                    be retrieved. An empty list means information will be
+     *                    retrieved on all active triggers.
      * @param options  Optional parameters.
      * 
      */
@@ -71,8 +71,9 @@ public class ShowTriggersRequest implements IndexedRecord {
 
     /**
      * 
-     * @return List of IDs of the triggers whose information to be retrieved.
-     *         Empty list means retrieve information on all active triggers.
+     * @return List of IDs of the triggers whose information is to be
+     *         retrieved. An empty list means information will be retrieved on
+     *         all active triggers.
      * 
      */
     public List<String> getTriggerIds() {
@@ -81,9 +82,9 @@ public class ShowTriggersRequest implements IndexedRecord {
 
     /**
      * 
-     * @param triggerIds  List of IDs of the triggers whose information to be
-     *                    retrieved. Empty list means retrieve information on
-     *                    all active triggers.
+     * @param triggerIds  List of IDs of the triggers whose information is to
+     *                    be retrieved. An empty list means information will be
+     *                    retrieved on all active triggers.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

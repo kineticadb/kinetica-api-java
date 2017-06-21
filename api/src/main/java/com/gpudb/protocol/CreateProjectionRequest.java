@@ -50,7 +50,8 @@ public class CreateProjectionRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> collection_name: Name of a collection to which the
-     * projection is to be assigned as a child.
+     * projection is to be assigned as a child. If the collection provided is
+     * non-existent, the collection will be automatically created.
      *         <li> expression: An optional filter expression to be applied to
      * the source table prior to the projection.
      *         <li> limit: The number of records to keep.
@@ -71,7 +72,8 @@ public class CreateProjectionRequest implements IndexedRecord {
 
         /**
          * Name of a collection to which the projection is to be assigned as a
-         * child.
+         * child. If the collection provided is non-existent, the collection
+         * will be automatically created.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -144,7 +146,9 @@ public class CreateProjectionRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> collection_name: Name of a collection to
-     *                 which the projection is to be assigned as a child.
+     *                 which the projection is to be assigned as a child. If
+     *                 the collection provided is non-existent, the collection
+     *                 will be automatically created.
      *                         <li> expression: An optional filter expression
      *                 to be applied to the source table prior to the
      *                 projection.
@@ -251,7 +255,9 @@ public class CreateProjectionRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> collection_name: Name of a collection to which the
-     *         projection is to be assigned as a child.
+     *         projection is to be assigned as a child. If the collection
+     *         provided is non-existent, the collection will be automatically
+     *         created.
      *                 <li> expression: An optional filter expression to be
      *         applied to the source table prior to the projection.
      *                 <li> limit: The number of records to keep.
@@ -277,7 +283,9 @@ public class CreateProjectionRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> collection_name: Name of a collection to
-     *                 which the projection is to be assigned as a child.
+     *                 which the projection is to be assigned as a child. If
+     *                 the collection provided is non-existent, the collection
+     *                 will be automatically created.
      *                         <li> expression: An optional filter expression
      *                 to be applied to the source table prior to the
      *                 projection.

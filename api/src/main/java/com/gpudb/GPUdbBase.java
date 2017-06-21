@@ -1132,7 +1132,7 @@ public abstract class GPUdbBase {
                 connection.disconnect();
                 String response = new String(Arrays.copyOf(buffer, index));
 
-                if (!response.equals("GPUdb is running!")) {
+                if (!response.equals("Kinetica is running!")) {
                     throw new GPUdbException("Server returned invalid response: " + response);
                 }
 

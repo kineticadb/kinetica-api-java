@@ -81,7 +81,9 @@ public class CreateTriggerByRangeRequest implements IndexedRecord {
      * Constructs a CreateTriggerByRangeRequest object with the specified
      * parameters.
      * 
-     * @param requestId  ID for the trigger request.
+     * @param requestId  User-created ID for the trigger. The ID can be
+     *                   alphanumeric, contain symbols, and must contain at
+     *                   least one character.
      * @param tableNames  Tables on which the trigger will be active.
      * @param columnName  Name of a numeric column_name on which the trigger is
      *                    activated.
@@ -101,7 +103,8 @@ public class CreateTriggerByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return ID for the trigger request.
+     * @return User-created ID for the trigger. The ID can be alphanumeric,
+     *         contain symbols, and must contain at least one character.
      * 
      */
     public String getRequestId() {
@@ -110,7 +113,9 @@ public class CreateTriggerByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param requestId  ID for the trigger request.
+     * @param requestId  User-created ID for the trigger. The ID can be
+     *                   alphanumeric, contain symbols, and must contain at
+     *                   least one character.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -53,7 +53,9 @@ public class CreateUnionRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> collection_name: Name of a collection which is to contain
-     * the union. If empty, then the union will be a top-level table.
+     * the union. If the collection provided is non-existent, the collection
+     * will be automatically created. If empty, then the union will be a
+     * top-level table.
      *         <li> materialize_on_gpu: If 'true' then the columns of the union
      * will be cached on the GPU. Values: true, false.
      * <p>
@@ -70,8 +72,10 @@ public class CreateUnionRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the union. If empty, then
-         * the union will be a top-level table.
+         * Name of a collection which is to contain the union. If the
+         * collection provided is non-existent, the collection will be
+         * automatically created. If empty, then the union will be a top-level
+         * table.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -168,8 +172,10 @@ public class CreateUnionRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> collection_name: Name of a collection which
-     *                 is to contain the union. If empty, then the union will
-     *                 be a top-level table.
+     *                 is to contain the union. If the collection provided is
+     *                 non-existent, the collection will be automatically
+     *                 created. If empty, then the union will be a top-level
+     *                 table.
      *                         <li> materialize_on_gpu: If 'true' then the
      *                 columns of the union will be cached on the GPU. Values:
      *                 true, false.
@@ -290,8 +296,9 @@ public class CreateUnionRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> collection_name: Name of a collection which is to
-     *         contain the union. If empty, then the union will be a top-level
-     *         table.
+     *         contain the union. If the collection provided is non-existent,
+     *         the collection will be automatically created. If empty, then the
+     *         union will be a top-level table.
      *                 <li> materialize_on_gpu: If 'true' then the columns of
      *         the union will be cached on the GPU. Values: true, false.
      *                 <li> mode: If 'merge_views' then this operation will
@@ -312,8 +319,10 @@ public class CreateUnionRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> collection_name: Name of a collection which
-     *                 is to contain the union. If empty, then the union will
-     *                 be a top-level table.
+     *                 is to contain the union. If the collection provided is
+     *                 non-existent, the collection will be automatically
+     *                 created. If empty, then the union will be a top-level
+     *                 table.
      *                         <li> materialize_on_gpu: If 'true' then the
      *                 columns of the union will be cached on the GPU. Values:
      *                 true, false.

@@ -36,9 +36,9 @@ import org.apache.avro.generic.IndexedRecord;
  * 'arg_min', 'arg_max' and 'count_distinct'. The response is returned as a
  * dynamic schema. For details see: <a
  * href="../../../../../concepts/dynamic_schemas.html" target="_top">dynamic
- * schemas documentation</a>. If the 'result_table' option is provided then the
- * results are stored in a table with the name given in the option and the
- * results are not returned in the response.
+ * schemas documentation</a>. If the {@code result_table} option is provided
+ * then the results are stored in a table with the name given in the option and
+ * the results are not returned in the response.
  */
 public class AggregateGroupByRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -91,11 +91,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> collection_name: Name of a collection which is to contain
-     * the table specified in 'result_table', otherwise the table will be a
-     * top-level table. If the collection does not allow duplicate types and it
-     * contains a table of the same type as the given one, then this table
+     * the table specified in {@code result_table}, otherwise the table will be
+     * a top-level table. If the collection does not allow duplicate types and
+     * it contains a table of the same type as the given one, then this table
      * creation request will fail. Additionally this option is invalid if
-     * @input{table_name} is a collection.
+     * {@code tableName} is a collection.
      *         <li> expression: Filter expression to apply to the table prior
      * to computing the aggregate group by.
      *         <li> having: Filter expression to apply to the aggregated
@@ -115,8 +115,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * results are returned in the response.  This option is not available if
      * one of the grouping attributes is an unrestricted string (i.e.; not
      * charN) type.
-     *         <li> ttl: Sets the TTL of the table specified in 'result_table'.
-     * The value must be the desired TTL in minutes.
+     *         <li> ttl: Sets the TTL of the table specified in {@code
+     * result_table}. The value must be the desired TTL in minutes.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -124,11 +124,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
         /**
          * Name of a collection which is to contain the table specified in
-         * 'result_table', otherwise the table will be a top-level table. If
-         * the collection does not allow duplicate types and it contains a
+         * {@code result_table}, otherwise the table will be a top-level table.
+         * If the collection does not allow duplicate types and it contains a
          * table of the same type as the given one, then this table creation
-         * request will fail. Additionally this option is invalid if
-         * @input{table_name} is a collection.
+         * request will fail. Additionally this option is invalid if {@code
+         * tableName} is a collection.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -188,8 +188,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String RESULT_TABLE = "result_table";
 
         /**
-         * Sets the TTL of the table specified in 'result_table'. The value
-         * must be the desired TTL in minutes.
+         * Sets the TTL of the table specified in {@code result_table}. The
+         * value must be the desired TTL in minutes.
          */
         public static final String TTL = "ttl";
 
@@ -234,12 +234,13 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> collection_name: Name of a collection which
-     *                 is to contain the table specified in 'result_table',
-     *                 otherwise the table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail. Additionally this
-     *                 option is invalid if @input{table_name} is a collection.
+     *                 is to contain the table specified in {@code
+     *                 result_table}, otherwise the table will be a top-level
+     *                 table. If the collection does not allow duplicate types
+     *                 and it contains a table of the same type as the given
+     *                 one, then this table creation request will fail.
+     *                 Additionally this option is invalid if {@code tableName}
+     *                 is a collection.
      *                         <li> expression: Filter expression to apply to
      *                 the table prior to computing the aggregate group by.
      *                         <li> having: Filter expression to apply to the
@@ -260,8 +261,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 attributes is an unrestricted string (i.e.; not charN)
      *                 type.
      *                         <li> ttl: Sets the TTL of the table specified in
-     *                 'result_table'. The value must be the desired TTL in
-     *                 minutes.
+     *                 {@code result_table}. The value must be the desired TTL
+     *                 in minutes.
      *                 </ul>
      * 
      */
@@ -296,12 +297,13 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> collection_name: Name of a collection which
-     *                 is to contain the table specified in 'result_table',
-     *                 otherwise the table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail. Additionally this
-     *                 option is invalid if @input{table_name} is a collection.
+     *                 is to contain the table specified in {@code
+     *                 result_table}, otherwise the table will be a top-level
+     *                 table. If the collection does not allow duplicate types
+     *                 and it contains a table of the same type as the given
+     *                 one, then this table creation request will fail.
+     *                 Additionally this option is invalid if {@code tableName}
+     *                 is a collection.
      *                         <li> expression: Filter expression to apply to
      *                 the table prior to computing the aggregate group by.
      *                         <li> having: Filter expression to apply to the
@@ -322,8 +324,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 attributes is an unrestricted string (i.e.; not charN)
      *                 type.
      *                         <li> ttl: Sets the TTL of the table specified in
-     *                 'result_table'. The value must be the desired TTL in
-     *                 minutes.
+     *                 {@code result_table}. The value must be the desired TTL
+     *                 in minutes.
      *                 </ul>
      * 
      */
@@ -466,11 +468,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> collection_name: Name of a collection which is to
-     *         contain the table specified in 'result_table', otherwise the
-     *         table will be a top-level table. If the collection does not
+     *         contain the table specified in {@code result_table}, otherwise
+     *         the table will be a top-level table. If the collection does not
      *         allow duplicate types and it contains a table of the same type
      *         as the given one, then this table creation request will fail.
-     *         Additionally this option is invalid if @input{table_name} is a
+     *         Additionally this option is invalid if {@code tableName} is a
      *         collection.
      *                 <li> expression: Filter expression to apply to the table
      *         prior to computing the aggregate group by.
@@ -490,8 +492,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         the response.  This option is not available if one of the
      *         grouping attributes is an unrestricted string (i.e.; not charN)
      *         type.
-     *                 <li> ttl: Sets the TTL of the table specified in
-     *         'result_table'. The value must be the desired TTL in minutes.
+     *                 <li> ttl: Sets the TTL of the table specified in {@code
+     *         result_table}. The value must be the desired TTL in minutes.
      *         </ul>
      * 
      */
@@ -504,12 +506,13 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> collection_name: Name of a collection which
-     *                 is to contain the table specified in 'result_table',
-     *                 otherwise the table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail. Additionally this
-     *                 option is invalid if @input{table_name} is a collection.
+     *                 is to contain the table specified in {@code
+     *                 result_table}, otherwise the table will be a top-level
+     *                 table. If the collection does not allow duplicate types
+     *                 and it contains a table of the same type as the given
+     *                 one, then this table creation request will fail.
+     *                 Additionally this option is invalid if {@code tableName}
+     *                 is a collection.
      *                         <li> expression: Filter expression to apply to
      *                 the table prior to computing the aggregate group by.
      *                         <li> having: Filter expression to apply to the
@@ -530,8 +533,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 attributes is an unrestricted string (i.e.; not charN)
      *                 type.
      *                         <li> ttl: Sets the TTL of the table specified in
-     *                 'result_table'. The value must be the desired TTL in
-     *                 minutes.
+     *                 {@code result_table}. The value must be the desired TTL
+     *                 in minutes.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

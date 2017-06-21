@@ -52,7 +52,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> collection_name: Name of a collection which is to contain
-     * the join table. If empty, then the join table will be a top-level table.
+     * the join table. If the collection provided is non-existent, the
+     * collection will be automatically created. If empty, then the join table
+     * will be a top-level table.
      *         <li> max_query_dimensions: The maximum number of tables in a
      * joined table that can be accessed by a query and are not equated by a
      * foreign-key to primary-key equality predicate
@@ -73,8 +75,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the join table. If empty,
-         * then the join table will be a top-level table.
+         * Name of a collection which is to contain the join table. If the
+         * collection provided is non-existent, the collection will be
+         * automatically created. If empty, then the join table will be a
+         * top-level table.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -193,8 +197,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> collection_name: Name of a collection which
-     *                 is to contain the join table. If empty, then the join
-     *                 table will be a top-level table.
+     *                 is to contain the join table. If the collection provided
+     *                 is non-existent, the collection will be automatically
+     *                 created. If empty, then the join table will be a
+     *                 top-level table.
      *                         <li> max_query_dimensions: The maximum number of
      *                 tables in a joined table that can be accessed by a query
      *                 and are not equated by a foreign-key to primary-key
@@ -338,8 +344,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> collection_name: Name of a collection which is to
-     *         contain the join table. If empty, then the join table will be a
-     *         top-level table.
+     *         contain the join table. If the collection provided is
+     *         non-existent, the collection will be automatically created. If
+     *         empty, then the join table will be a top-level table.
      *                 <li> max_query_dimensions: The maximum number of tables
      *         in a joined table that can be accessed by a query and are not
      *         equated by a foreign-key to primary-key equality predicate
@@ -366,8 +373,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> collection_name: Name of a collection which
-     *                 is to contain the join table. If empty, then the join
-     *                 table will be a top-level table.
+     *                 is to contain the join table. If the collection provided
+     *                 is non-existent, the collection will be automatically
+     *                 created. If empty, then the join table will be a
+     *                 top-level table.
      *                         <li> max_query_dimensions: The maximum number of
      *                 tables in a joined table that can be accessed by a query
      *                 and are not equated by a foreign-key to primary-key
