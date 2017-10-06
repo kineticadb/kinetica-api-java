@@ -43,6 +43,19 @@ public class ShowSecurityResponse implements IndexedRecord {
 
     /**
      * Map of user/role name to the type of that user/role.
+     * Valid values are:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ShowSecurityResponse.Types#INTERNAL_USER
+     * INTERNAL_USER}: A user whose credentials are managed by the database
+     * system.
+     *         <li> {@link
+     * com.gpudb.protocol.ShowSecurityResponse.Types#EXTERNAL_USER
+     * EXTERNAL_USER}: A user whose credentials are managed by an external
+     * LDAP.
+     *         <li> {@link com.gpudb.protocol.ShowSecurityResponse.Types#ROLE
+     * ROLE}: A role.
+     * </ul>
      * A set of string constants for the parameter {@code types}.
      */
     public static final class Types {
@@ -79,6 +92,20 @@ public class ShowSecurityResponse implements IndexedRecord {
     /**
      * 
      * @return Map of user/role name to the type of that user/role.
+     *         Valid values are:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowSecurityResponse.Types#INTERNAL_USER
+     *         INTERNAL_USER}: A user whose credentials are managed by the
+     *         database system.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowSecurityResponse.Types#EXTERNAL_USER
+     *         EXTERNAL_USER}: A user whose credentials are managed by an
+     *         external LDAP.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowSecurityResponse.Types#ROLE ROLE}: A
+     *         role.
+     *         </ul>
      * 
      */
     public Map<String, String> getTypes() {
@@ -88,6 +115,20 @@ public class ShowSecurityResponse implements IndexedRecord {
     /**
      * 
      * @param types  Map of user/role name to the type of that user/role.
+     *               Valid values are:
+     *               <ul>
+     *                       <li> {@link
+     *               com.gpudb.protocol.ShowSecurityResponse.Types#INTERNAL_USER
+     *               INTERNAL_USER}: A user whose credentials are managed by
+     *               the database system.
+     *                       <li> {@link
+     *               com.gpudb.protocol.ShowSecurityResponse.Types#EXTERNAL_USER
+     *               EXTERNAL_USER}: A user whose credentials are managed by an
+     *               external LDAP.
+     *                       <li> {@link
+     *               com.gpudb.protocol.ShowSecurityResponse.Types#ROLE ROLE}:
+     *               A role.
+     *               </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

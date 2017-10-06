@@ -1,6 +1,12 @@
 GPUdb Java API Changelog
 ========================
 
+Version 6.1.0 - 2017-10-05
+--------------------------
+
+-   Improved request submission logic to be faster and use less memory
+
+
 Version 6.0.0 - 2017-01-24
 --------------------------
 
@@ -16,7 +22,8 @@ Version 5.4.0 - 2016-11-29
 Version 5.2.0 - 2016-10-12
 --------------------------
 
--   Record objects now support complex column names (expressions, multipart join names, etc.)
+-   Record objects now support complex column names (expressions, multipart
+    join names, etc.)
 -   Record objects now support access via a Map interface via getDataMap()
 -   Can now pass arbitrary additional HTTP headers to GPUdb
 -   Added nullable column support

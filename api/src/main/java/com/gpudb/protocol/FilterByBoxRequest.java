@@ -85,15 +85,13 @@ public class FilterByBoxRequest implements IndexedRecord {
      *                  href="../../../../../concepts/tables.html"
      *                  target="_top">tables</a>.
      * @param xColumnName  Name of the column on which to perform the bounding
-     *                     box query. If the table's data type is not a shape
-     *                     type, must be a valid numeric column.
+     *                     box query. Must be a valid numeric column.
      * @param minX  Lower bound for the column chosen by {@code xColumnName}.
      *              Must be less than or equal to {@code maxX}.
      * @param maxX  Upper bound for {@code xColumnName}.  Must be greater than
      *              or equal to {@code minX}.
      * @param yColumnName  Name of a column on which to perform the bounding
-     *                     box query. If the table's data type is not a shape
-     *                     type, must be a valid numeric column.
+     *                     box query. Must be a valid numeric column.
      * @param minY  Lower bound for {@code yColumnName}. Must be less than or
      *              equal to {@code maxY}.
      * @param maxY  Upper bound for {@code yColumnName}. Must be greater than
@@ -167,8 +165,7 @@ public class FilterByBoxRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the column on which to perform the bounding box query.
-     *         If the table's data type is not a shape type, must be a valid
-     *         numeric column.
+     *         Must be a valid numeric column.
      * 
      */
     public String getXColumnName() {
@@ -178,8 +175,7 @@ public class FilterByBoxRequest implements IndexedRecord {
     /**
      * 
      * @param xColumnName  Name of the column on which to perform the bounding
-     *                     box query. If the table's data type is not a shape
-     *                     type, must be a valid numeric column.
+     *                     box query. Must be a valid numeric column.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -237,9 +233,8 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of a column on which to perform the bounding box query. If
-     *         the table's data type is not a shape type, must be a valid
-     *         numeric column.
+     * @return Name of a column on which to perform the bounding box query.
+     *         Must be a valid numeric column.
      * 
      */
     public String getYColumnName() {
@@ -249,8 +244,7 @@ public class FilterByBoxRequest implements IndexedRecord {
     /**
      * 
      * @param yColumnName  Name of a column on which to perform the bounding
-     *                     box query. If the table's data type is not a shape
-     *                     type, must be a valid numeric column.
+     *                     box query. Must be a valid numeric column.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -53,9 +53,14 @@ public class InsertSymbolRequest implements IndexedRecord {
 
 
     /**
-     * Specifies the symbol format. Must be either 'svg' or 'svg_path'. Values:
-     * svg, svg_path.
-
+     * Specifies the symbol format. Must be either 'svg' or 'svg_path'.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertSymbolRequest.SymbolFormat#SVG SVG}
+     *         <li> {@link
+     * com.gpudb.protocol.InsertSymbolRequest.SymbolFormat#SVG_PATH SVG_PATH}
+     * </ul>
      * A set of string constants for the parameter {@code symbolFormat}.
      */
     public static final class SymbolFormat {
@@ -69,11 +74,12 @@ public class InsertSymbolRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> color: If {@code symbolFormat} is 'svg' this is ignored. If
-     * {@code symbolFormat} is 'svg_path' then this option specifies the color
-     * (in RRGGBB hex format) of the path. For example, to have the path
-     * rendered in red, used 'FF0000'. If 'color' is not provided then '00FF00'
-     * (i.e. green) is used by default.
+     *         <li> {@link com.gpudb.protocol.InsertSymbolRequest.Options#COLOR
+     * COLOR}: If {@code symbolFormat} is 'svg' this is ignored. If {@code
+     * symbolFormat} is 'svg_path' then this option specifies the color (in
+     * RRGGBB hex format) of the path. For example, to have the path rendered
+     * in red, used 'FF0000'. If 'color' is not provided then '00FF00' (i.e.
+     * green) is used by default.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -114,7 +120,16 @@ public class InsertSymbolRequest implements IndexedRecord {
      *                  that should be in the 'SYMBOLCODE' column for objects
      *                  using this symbol
      * @param symbolFormat  Specifies the symbol format. Must be either 'svg'
-     *                      or 'svg_path'. Values: svg, svg_path.
+     *                      or 'svg_path'.
+     *                      Supported values:
+     *                      <ul>
+     *                              <li> {@link
+     *                      com.gpudb.protocol.InsertSymbolRequest.SymbolFormat#SVG
+     *                      SVG}
+     *                              <li> {@link
+     *                      com.gpudb.protocol.InsertSymbolRequest.SymbolFormat#SVG_PATH
+     *                      SVG_PATH}
+     *                      </ul>
      * @param symbolData  The actual symbol data. If {@code symbolFormat} is
      *                    'svg' then this should be the raw bytes representing
      *                    an svg file. If {@code symbolFormat} is svg path then
@@ -122,12 +137,14 @@ public class InsertSymbolRequest implements IndexedRecord {
      *                    'M25.979,12.896,5.979,12.896,5.979,19.562,25.979,19.562z'
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> color: If {@code symbolFormat} is 'svg'
-     *                 this is ignored. If {@code symbolFormat} is 'svg_path'
-     *                 then this option specifies the color (in RRGGBB hex
-     *                 format) of the path. For example, to have the path
-     *                 rendered in red, used 'FF0000'. If 'color' is not
-     *                 provided then '00FF00' (i.e. green) is used by default.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertSymbolRequest.Options#COLOR
+     *                 COLOR}: If {@code symbolFormat} is 'svg' this is
+     *                 ignored. If {@code symbolFormat} is 'svg_path' then this
+     *                 option specifies the color (in RRGGBB hex format) of the
+     *                 path. For example, to have the path rendered in red,
+     *                 used 'FF0000'. If 'color' is not provided then '00FF00'
+     *                 (i.e. green) is used by default.
      *                 </ul>
      * 
      */
@@ -166,7 +183,14 @@ public class InsertSymbolRequest implements IndexedRecord {
     /**
      * 
      * @return Specifies the symbol format. Must be either 'svg' or 'svg_path'.
-     *         Values: svg, svg_path.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertSymbolRequest.SymbolFormat#SVG SVG}
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertSymbolRequest.SymbolFormat#SVG_PATH
+     *         SVG_PATH}
+     *         </ul>
      * 
      */
     public String getSymbolFormat() {
@@ -176,7 +200,16 @@ public class InsertSymbolRequest implements IndexedRecord {
     /**
      * 
      * @param symbolFormat  Specifies the symbol format. Must be either 'svg'
-     *                      or 'svg_path'. Values: svg, svg_path.
+     *                      or 'svg_path'.
+     *                      Supported values:
+     *                      <ul>
+     *                              <li> {@link
+     *                      com.gpudb.protocol.InsertSymbolRequest.SymbolFormat#SVG
+     *                      SVG}
+     *                              <li> {@link
+     *                      com.gpudb.protocol.InsertSymbolRequest.SymbolFormat#SVG_PATH
+     *                      SVG_PATH}
+     *                      </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -219,12 +252,13 @@ public class InsertSymbolRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> color: If {@code symbolFormat} is 'svg' this is
-     *         ignored. If {@code symbolFormat} is 'svg_path' then this option
-     *         specifies the color (in RRGGBB hex format) of the path. For
-     *         example, to have the path rendered in red, used 'FF0000'. If
-     *         'color' is not provided then '00FF00' (i.e. green) is used by
-     *         default.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertSymbolRequest.Options#COLOR COLOR}: If
+     *         {@code symbolFormat} is 'svg' this is ignored. If {@code
+     *         symbolFormat} is 'svg_path' then this option specifies the color
+     *         (in RRGGBB hex format) of the path. For example, to have the
+     *         path rendered in red, used 'FF0000'. If 'color' is not provided
+     *         then '00FF00' (i.e. green) is used by default.
      *         </ul>
      * 
      */
@@ -236,12 +270,14 @@ public class InsertSymbolRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> color: If {@code symbolFormat} is 'svg'
-     *                 this is ignored. If {@code symbolFormat} is 'svg_path'
-     *                 then this option specifies the color (in RRGGBB hex
-     *                 format) of the path. For example, to have the path
-     *                 rendered in red, used 'FF0000'. If 'color' is not
-     *                 provided then '00FF00' (i.e. green) is used by default.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertSymbolRequest.Options#COLOR
+     *                 COLOR}: If {@code symbolFormat} is 'svg' this is
+     *                 ignored. If {@code symbolFormat} is 'svg_path' then this
+     *                 option specifies the color (in RRGGBB hex format) of the
+     *                 path. For example, to have the path rendered in red,
+     *                 used 'FF0000'. If 'color' is not provided then '00FF00'
+     *                 (i.e. green) is used by default.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

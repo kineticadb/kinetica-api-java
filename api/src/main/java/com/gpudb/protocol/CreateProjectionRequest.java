@@ -19,8 +19,30 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createProjection(CreateProjectionRequest)}.
  * <p>
- * Creates a new projection of an existing table.  A projection represents a
+ * Creates a new <a href="../../../../../concepts/projections.html"
+ * target="_top">projection</a> of an existing table. A projection represents a
  * subset of the columns (potentially including derived columns) of a table.
+ * <p>
+ * Notes:
+ * <p>
+ * A moving average can be calculated on a given column using the following
+ * syntax in the {@code columnNames} parameter:
+ * <p>
+ * 'moving_average(column_name,num_points_before,num_points_after) as
+ * new_column_name'
+ * <p>
+ * For each record in the moving_average function's 'column_name' parameter, it
+ * computes the average over the previous 'num_points_before' records and the
+ * subsequent 'num_points_after' records.
+ * <p>
+ * Note that moving average relies on {@code order_by}, and {@code order_by}
+ * requires that all the data being ordered resides on the same processing
+ * node, so it won't make sense to use {@code order_by} without moving average.
+ * <p>
+ * Also, a projection can be created with a different shard key than the source
+ * table.  By specifying {@code shard_key}, the projection will be sharded
+ * according to the specified columns, regardless of how the source table is
+ * sharded.  The source table can even be unsharded or replicated.
  */
 public class CreateProjectionRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -49,37 +71,89 @@ public class CreateProjectionRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> collection_name: Name of a collection to which the
-     * projection is to be assigned as a child. If the collection provided is
-     * non-existent, the collection will be automatically created.
-     *         <li> expression: An optional filter expression to be applied to
-     * the source table prior to the projection.
-     *         <li> limit: The number of records to keep.
-     *         <li> order_by: Comma-separated list of the columns to be sorted
-     * by; e.g. 'timestamp asc, x desc'.  The columns specified must be present
-     * in {@code columnNames}.  If any alias is given for any column name, the
-     * alias must be used, rather than the original column name.
-     *         <li> materialize_on_gpu: If 'true' then the columns of the
-     * projection will be cached on the GPU. Values: true, false.
-     * <p>
-     *         <li> ttl: Sets the TTL of the table, view, or collection
-     * specified in {@code tableName}. The value must be the desired TTL in
-     * minutes.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#COLLECTION_NAME
+     * COLLECTION_NAME}: Name of a <a
+     * href="../../../../../concepts/collections.html"
+     * target="_top">collection</a> to which the projection is to be assigned
+     * as a child. If the collection provided is non-existent, the collection
+     * will be automatically created.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
+     * EXPRESSION}: An optional filter <a
+     * href="../../../../../concepts/expressions.html"
+     * target="_top">expression</a> to be applied to the source table prior to
+     * the projection.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT LIMIT}: The
+     * number of records to keep.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#ORDER_BY ORDER_BY}:
+     * Comma-separated list of the columns to be sorted by; e.g. 'timestamp
+     * asc, x desc'.  The columns specified must be present in {@code
+     * columnNames}.  If any alias is given for any column name, the alias must
+     * be used, rather than the original column name.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
+     * MATERIALIZE_ON_GPU}: If {@code true} then the columns of the projection
+     * will be cached on the GPU.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
+     * CHUNK_SIZE}: If provided this indicates the chunk size to be used for
+     * this table.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#TTL TTL}: Sets the
+     * TTL of the table, view, or collection specified in {@code
+     * projectionName}. The value must be the desired TTL in minutes.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#SHARD_KEY SHARD_KEY}:
+     * Comma-separated list of the columns to be sharded on; e.g. 'column1,
+     * column2'.  The columns specified must be present in {@code columnNames}.
+     * If any alias is given for any column name, the alias must be used,
+     * rather than the original column name.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#PERSIST PERSIST}: If
+     * {@code true} then the projection will be persisted as a regular table
+     * (it will not be automatically cleared unless a {@code ttl} is provided,
+     * and the table data can be modified in subsequent operations). If {@code
+     * false} then the projection will be a read-only, memory-only temporary
+     * table.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * Name of a collection to which the projection is to be assigned as a
-         * child. If the collection provided is non-existent, the collection
-         * will be automatically created.
+         * Name of a <a href="../../../../../concepts/collections.html"
+         * target="_top">collection</a> to which the projection is to be
+         * assigned as a child. If the collection provided is non-existent, the
+         * collection will be automatically created.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * An optional filter expression to be applied to the source table
-         * prior to the projection.
+         * An optional filter <a
+         * href="../../../../../concepts/expressions.html"
+         * target="_top">expression</a> to be applied to the source table prior
+         * to the projection.
          */
         public static final String EXPRESSION = "expression";
 
@@ -97,18 +171,58 @@ public class CreateProjectionRequest implements IndexedRecord {
         public static final String ORDER_BY = "order_by";
 
         /**
-         * If 'true' then the columns of the projection will be cached on the
-         * GPU. Values: true, false.
+         * If {@code true} then the columns of the projection will be cached on
+         * the GPU.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
          */
         public static final String MATERIALIZE_ON_GPU = "materialize_on_gpu";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
 
         /**
+         * If provided this indicates the chunk size to be used for this table.
+         */
+        public static final String CHUNK_SIZE = "chunk_size";
+
+        /**
          * Sets the TTL of the table, view, or collection specified in {@code
-         * tableName}. The value must be the desired TTL in minutes.
+         * projectionName}. The value must be the desired TTL in minutes.
          */
         public static final String TTL = "ttl";
+
+        /**
+         * Comma-separated list of the columns to be sharded on; e.g. 'column1,
+         * column2'.  The columns specified must be present in {@code
+         * columnNames}.  If any alias is given for any column name, the alias
+         * must be used, rather than the original column name.
+         */
+        public static final String SHARD_KEY = "shard_key";
+
+        /**
+         * If {@code true} then the projection will be persisted as a regular
+         * table (it will not be automatically cleared unless a {@code ttl} is
+         * provided, and the table data can be modified in subsequent
+         * operations). If {@code false} then the projection will be a
+         * read-only, memory-only temporary table.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+         */
+        public static final String PERSIST = "persist";
 
         private Options() {  }
     }
@@ -142,29 +256,85 @@ public class CreateProjectionRequest implements IndexedRecord {
      * @param columnNames  List of columns from {@code tableName} to be
      *                     included in the projection. Can include derived
      *                     columns. Can be specified as aliased via the syntax
-     *                     '<column_name> as <alias>.
+     *                     'column_name as alias'.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection to
-     *                 which the projection is to be assigned as a child. If
-     *                 the collection provided is non-existent, the collection
-     *                 will be automatically created.
-     *                         <li> expression: An optional filter expression
-     *                 to be applied to the source table prior to the
-     *                 projection.
-     *                         <li> limit: The number of records to keep.
-     *                         <li> order_by: Comma-separated list of the
-     *                 columns to be sorted by; e.g. 'timestamp asc, x desc'.
-     *                 The columns specified must be present in {@code
-     *                 columnNames}.  If any alias is given for any column
-     *                 name, the alias must be used, rather than the original
-     *                 column name.
-     *                         <li> materialize_on_gpu: If 'true' then the
-     *                 columns of the projection will be cached on the GPU.
-     *                 Values: true, false.
-     *                         <li> ttl: Sets the TTL of the table, view, or
-     *                 collection specified in {@code tableName}. The value
-     *                 must be the desired TTL in minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a <a
+     *                 href="../../../../../concepts/collections.html"
+     *                 target="_top">collection</a> to which the projection is
+     *                 to be assigned as a child. If the collection provided is
+     *                 non-existent, the collection will be automatically
+     *                 created.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
+     *                 EXPRESSION}: An optional filter <a
+     *                 href="../../../../../concepts/expressions.html"
+     *                 target="_top">expression</a> to be applied to the source
+     *                 table prior to the projection.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT
+     *                 LIMIT}: The number of records to keep.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#ORDER_BY
+     *                 ORDER_BY}: Comma-separated list of the columns to be
+     *                 sorted by; e.g. 'timestamp asc, x desc'.  The columns
+     *                 specified must be present in {@code columnNames}.  If
+     *                 any alias is given for any column name, the alias must
+     *                 be used, rather than the original column name.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
+     *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
+     *                 the projection will be cached on the GPU.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
+     *                 CHUNK_SIZE}: If provided this indicates the chunk size
+     *                 to be used for this table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TTL
+     *                 TTL}: Sets the TTL of the table, view, or collection
+     *                 specified in {@code projectionName}. The value must be
+     *                 the desired TTL in minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#SHARD_KEY
+     *                 SHARD_KEY}: Comma-separated list of the columns to be
+     *                 sharded on; e.g. 'column1, column2'.  The columns
+     *                 specified must be present in {@code columnNames}.  If
+     *                 any alias is given for any column name, the alias must
+     *                 be used, rather than the original column name.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#PERSIST
+     *                 PERSIST}: If {@code true} then the projection will be
+     *                 persisted as a regular table (it will not be
+     *                 automatically cleared unless a {@code ttl} is provided,
+     *                 and the table data can be modified in subsequent
+     *                 operations). If {@code false} then the projection will
+     *                 be a read-only, memory-only temporary table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      */
@@ -228,7 +398,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      * 
      * @return List of columns from {@code tableName} to be included in the
      *         projection. Can include derived columns. Can be specified as
-     *         aliased via the syntax '<column_name> as <alias>.
+     *         aliased via the syntax 'column_name as alias'.
      * 
      */
     public List<String> getColumnNames() {
@@ -240,7 +410,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      * @param columnNames  List of columns from {@code tableName} to be
      *                     included in the projection. Can include derived
      *                     columns. Can be specified as aliased via the syntax
-     *                     '<column_name> as <alias>.
+     *                     'column_name as alias'.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -254,23 +424,74 @@ public class CreateProjectionRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> collection_name: Name of a collection to which the
-     *         projection is to be assigned as a child. If the collection
-     *         provided is non-existent, the collection will be automatically
-     *         created.
-     *                 <li> expression: An optional filter expression to be
-     *         applied to the source table prior to the projection.
-     *                 <li> limit: The number of records to keep.
-     *                 <li> order_by: Comma-separated list of the columns to be
-     *         sorted by; e.g. 'timestamp asc, x desc'.  The columns specified
-     *         must be present in {@code columnNames}.  If any alias is given
-     *         for any column name, the alias must be used, rather than the
-     *         original column name.
-     *                 <li> materialize_on_gpu: If 'true' then the columns of
-     *         the projection will be cached on the GPU. Values: true, false.
-     *                 <li> ttl: Sets the TTL of the table, view, or collection
-     *         specified in {@code tableName}. The value must be the desired
-     *         TTL in minutes.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#COLLECTION_NAME
+     *         COLLECTION_NAME}: Name of a <a
+     *         href="../../../../../concepts/collections.html"
+     *         target="_top">collection</a> to which the projection is to be
+     *         assigned as a child. If the collection provided is non-existent,
+     *         the collection will be automatically created.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
+     *         EXPRESSION}: An optional filter <a
+     *         href="../../../../../concepts/expressions.html"
+     *         target="_top">expression</a> to be applied to the source table
+     *         prior to the projection.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT LIMIT}:
+     *         The number of records to keep.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#ORDER_BY
+     *         ORDER_BY}: Comma-separated list of the columns to be sorted by;
+     *         e.g. 'timestamp asc, x desc'.  The columns specified must be
+     *         present in {@code columnNames}.  If any alias is given for any
+     *         column name, the alias must be used, rather than the original
+     *         column name.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
+     *         MATERIALIZE_ON_GPU}: If {@code true} then the columns of the
+     *         projection will be cached on the GPU.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
+     *         CHUNK_SIZE}: If provided this indicates the chunk size to be
+     *         used for this table.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#TTL TTL}:
+     *         Sets the TTL of the table, view, or collection specified in
+     *         {@code projectionName}. The value must be the desired TTL in
+     *         minutes.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#SHARD_KEY
+     *         SHARD_KEY}: Comma-separated list of the columns to be sharded
+     *         on; e.g. 'column1, column2'.  The columns specified must be
+     *         present in {@code columnNames}.  If any alias is given for any
+     *         column name, the alias must be used, rather than the original
+     *         column name.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#PERSIST
+     *         PERSIST}: If {@code true} then the projection will be persisted
+     *         as a regular table (it will not be automatically cleared unless
+     *         a {@code ttl} is provided, and the table data can be modified in
+     *         subsequent operations). If {@code false} then the projection
+     *         will be a read-only, memory-only temporary table.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *         </ul>
      * 
      */
@@ -282,26 +503,82 @@ public class CreateProjectionRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection to
-     *                 which the projection is to be assigned as a child. If
-     *                 the collection provided is non-existent, the collection
-     *                 will be automatically created.
-     *                         <li> expression: An optional filter expression
-     *                 to be applied to the source table prior to the
-     *                 projection.
-     *                         <li> limit: The number of records to keep.
-     *                         <li> order_by: Comma-separated list of the
-     *                 columns to be sorted by; e.g. 'timestamp asc, x desc'.
-     *                 The columns specified must be present in {@code
-     *                 columnNames}.  If any alias is given for any column
-     *                 name, the alias must be used, rather than the original
-     *                 column name.
-     *                         <li> materialize_on_gpu: If 'true' then the
-     *                 columns of the projection will be cached on the GPU.
-     *                 Values: true, false.
-     *                         <li> ttl: Sets the TTL of the table, view, or
-     *                 collection specified in {@code tableName}. The value
-     *                 must be the desired TTL in minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a <a
+     *                 href="../../../../../concepts/collections.html"
+     *                 target="_top">collection</a> to which the projection is
+     *                 to be assigned as a child. If the collection provided is
+     *                 non-existent, the collection will be automatically
+     *                 created.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
+     *                 EXPRESSION}: An optional filter <a
+     *                 href="../../../../../concepts/expressions.html"
+     *                 target="_top">expression</a> to be applied to the source
+     *                 table prior to the projection.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT
+     *                 LIMIT}: The number of records to keep.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#ORDER_BY
+     *                 ORDER_BY}: Comma-separated list of the columns to be
+     *                 sorted by; e.g. 'timestamp asc, x desc'.  The columns
+     *                 specified must be present in {@code columnNames}.  If
+     *                 any alias is given for any column name, the alias must
+     *                 be used, rather than the original column name.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
+     *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
+     *                 the projection will be cached on the GPU.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
+     *                 CHUNK_SIZE}: If provided this indicates the chunk size
+     *                 to be used for this table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TTL
+     *                 TTL}: Sets the TTL of the table, view, or collection
+     *                 specified in {@code projectionName}. The value must be
+     *                 the desired TTL in minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#SHARD_KEY
+     *                 SHARD_KEY}: Comma-separated list of the columns to be
+     *                 sharded on; e.g. 'column1, column2'.  The columns
+     *                 specified must be present in {@code columnNames}.  If
+     *                 any alias is given for any column name, the alias must
+     *                 be used, rather than the original column name.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#PERSIST
+     *                 PERSIST}: If {@code true} then the projection will be
+     *                 persisted as a regular table (it will not be
+     *                 automatically cleared unless a {@code ttl} is provided,
+     *                 and the table data can be modified in subsequent
+     *                 operations). If {@code false} then the projection will
+     *                 be a read-only, memory-only temporary table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

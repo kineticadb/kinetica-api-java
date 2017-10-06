@@ -17,26 +17,39 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#alterTable(AlterTableRequest)}.
  * <p>
- * Apply various modifications to a table or collection. Available
- * modifications include:
+ * Apply various modifications to a table, view, or collection.  The availble
+ * modifications include the following:
  * <p>
- *      Creating or deleting an index on a particular column. This can speed up
- * certain search queries (such as {@link
- * com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link
+ * Create or delete an index on a particular column. This can speed up certain
+ * search queries
+ * (such as {@link com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link
  * com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}, {@link
- * com.gpudb.GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}) when using
- * expressions containing equality or relational operators on indexed columns.
- * This only applies to tables.
+ * com.gpudb.GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)})
+ * when using expressions containing equality or relational operators on
+ * indexed columns. This
+ * only applies to tables.
  * <p>
- *      Setting the time-to-live (TTL). This can be applied to tables, views,
- * or collections.  When applied to collections, every table & view within the
- * collection will have its TTL set to the given value.
+ * Set the time-to-live (TTL). This can be applied to tables, views, or
+ * collections.  When
+ * applied to collections, every table & view within the collection will have
+ * its TTL set to the
+ * given value.
  * <p>
- *      Making a table protected or not. Protected tables have their TTLs set
- * to not automatically expire. This can be applied to tables, views, and
- * collections.
+ * Set the global access mode (i.e. locking) for a table. The mode can be set
+ * to 'no-access', 'read-only',
+ * 'write-only' or 'read-write'.
  * <p>
- *      Allowing homogeneous tables within a collection.
+ * Make a table protected or not. Protected tables have their TTLs set to not
+ * automatically
+ * expire. This can be applied to tables, views, and collections.
+ * <p>
+ * Allow homogeneous tables within a collection.
+ * <p>
+ * Manage a table's columns--a column can be added, removed, or have its
+ * <a href="../../../../../concepts/types.html" target="_top">type and
+ * properties</a> modified.
+ * <p>
+ * Set or unset compression for a column.
  */
 public class AlterTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -63,13 +76,82 @@ public class AlterTableRequest implements IndexedRecord {
 
 
     /**
-     * Modification operation to be applied Values: create_index, delete_index,
-     * allow_homogeneous_tables, protected, ttl, add_column, delete_column,
-     * change_column, rename_table.
-
+     * Modification operation to be applied
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#ALLOW_HOMOGENEOUS_TABLES
+     * ALLOW_HOMOGENEOUS_TABLES}: Sets whether homogeneous tables are allowed
+     * in the given collection. This action is only valid if {@code tableName}
+     * is a collection. The {@code value} must be either 'true' or 'false'.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX CREATE_INDEX}:
+     * Creates an index on the column name specified in {@code value}. If this
+     * column is already indexed, an error will be returned.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX DELETE_INDEX}:
+     * Deletes an existing index on the column name specified in {@code value}.
+     * If this column does not have indexing turned on, an error will be
+     * returned.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
+     * MOVE_TO_COLLECTION}: Move a table into a collection {@code value}.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#PROTECTED PROTECTED}: Sets
+     * whether the given {@code tableName} should be protected or not. The
+     * {@code value} must be either 'true' or 'false'.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE RENAME_TABLE}:
+     * Rename a table, view or collection to {@code value}. Has the same naming
+     * restrictions as <a href="../../../../../concepts/tables.html"
+     * target="_top">tables</a>.
+     *         <li> {@link com.gpudb.protocol.AlterTableRequest.Action#TTL
+     * TTL}: Sets the TTL of the table, view, or collection specified in {@code
+     * tableName}. The {@code value} must be the desired TTL in minutes.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN ADD_COLUMN}: Add
+     * the column specified in {@code value} to the table specified in {@code
+     * tableName}.  Use {@code column_type} and {@code column_properties} in
+     * {@code options} to set the column's type and properties, respectively.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#CHANGE_COLUMN
+     * CHANGE_COLUMN}: Change type and properties of the column specified in
+     * {@code value}.  Use {@code column_type} and {@code column_properties} in
+     * {@code options} to set the column's type and properties, respectively.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
+     * SET_COLUMN_COMPRESSION}: Modify the compression setting on the column
+     * specified in {@code value}.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#DELETE_COLUMN
+     * DELETE_COLUMN}: Delete the column specified in {@code value} from the
+     * table specified in {@code tableName}.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
+     * CREATE_FOREIGN_KEY}: Create a foreign key using the format
+     * 'source_column references target_table(primary_key_column) [ as
+     * <foreign_key_name> ]'.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
+     * DELETE_FOREIGN_KEY}: Delete a foreign key.  The {@code value} should be
+     * the <foreign_key_name> or the string used to define the foreign key.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
+     * SET_GLOBAL_ACCESS_MODE}: Set the global access mode (i.e. locking) for
+     * the table specified in {@code tableName}. Specify the access mode in
+     * {@code value}. Valid modes are 'no-access', 'read-only', 'write-only'
+     * and 'read-write'.
+     * </ul>
      * A set of string constants for the parameter {@code action}.
      */
     public static final class Action {
+
+        /**
+         * Sets whether homogeneous tables are allowed in the given collection.
+         * This action is only valid if {@code tableName} is a collection. The
+         * {@code value} must be either 'true' or 'false'.
+         */
+        public static final String ALLOW_HOMOGENEOUS_TABLES = "allow_homogeneous_tables";
 
         /**
          * Creates an index on the column name specified in {@code value}. If
@@ -85,11 +167,9 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String DELETE_INDEX = "delete_index";
 
         /**
-         * Sets whether homogeneous tables are allowed in the given collection.
-         * This action is only valid if {@code tableName} is a collection. The
-         * {@code value} must be either 'true' or 'false'.
+         * Move a table into a collection {@code value}.
          */
-        public static final String ALLOW_HOMOGENEOUS_TABLES = "allow_homogeneous_tables";
+        public static final String MOVE_TO_COLLECTION = "move_to_collection";
 
         /**
          * Sets whether the given {@code tableName} should be protected or not.
@@ -98,34 +178,63 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String PROTECTED = "protected";
 
         /**
+         * Rename a table, view or collection to {@code value}. Has the same
+         * naming restrictions as <a href="../../../../../concepts/tables.html"
+         * target="_top">tables</a>.
+         */
+        public static final String RENAME_TABLE = "rename_table";
+
+        /**
          * Sets the TTL of the table, view, or collection specified in {@code
          * tableName}. The {@code value} must be the desired TTL in minutes.
          */
         public static final String TTL = "ttl";
 
         /**
-         * Add a column {@code value} to the table. set the column properties
-         * in options
+         * Add the column specified in {@code value} to the table specified in
+         * {@code tableName}.  Use {@code column_type} and {@code
+         * column_properties} in {@code options} to set the column's type and
+         * properties, respectively.
          */
         public static final String ADD_COLUMN = "add_column";
 
         /**
-         * Delete a column {@code value} from the table
-         */
-        public static final String DELETE_COLUMN = "delete_column";
-
-        /**
-         * Change properties of a column {@code value} in the table. set the
-         * column properties in options
+         * Change type and properties of the column specified in {@code value}.
+         * Use {@code column_type} and {@code column_properties} in {@code
+         * options} to set the column's type and properties, respectively.
          */
         public static final String CHANGE_COLUMN = "change_column";
 
         /**
-         * Rename a table, view or collection to {@code value}. Has the same
-         * naming restrictions as <a href="../../../../../concepts/tables.html"
-         * target="_top">tables</a>.
+         * Modify the compression setting on the column specified in {@code
+         * value}.
          */
-        public static final String RENAME_TABLE = "rename_table";
+        public static final String SET_COLUMN_COMPRESSION = "set_column_compression";
+
+        /**
+         * Delete the column specified in {@code value} from the table
+         * specified in {@code tableName}.
+         */
+        public static final String DELETE_COLUMN = "delete_column";
+
+        /**
+         * Create a foreign key using the format 'source_column references
+         * target_table(primary_key_column) [ as <foreign_key_name> ]'.
+         */
+        public static final String CREATE_FOREIGN_KEY = "create_foreign_key";
+
+        /**
+         * Delete a foreign key.  The {@code value} should be the
+         * <foreign_key_name> or the string used to define the foreign key.
+         */
+        public static final String DELETE_FOREIGN_KEY = "delete_foreign_key";
+
+        /**
+         * Set the global access mode (i.e. locking) for the table specified in
+         * {@code tableName}. Specify the access mode in {@code value}. Valid
+         * modes are 'no-access', 'read-only', 'write-only' and 'read-write'.
+         */
+        public static final String SET_GLOBAL_ACCESS_MODE = "set_global_access_mode";
 
         private Action() {  }
     }
@@ -134,52 +243,136 @@ public class AlterTableRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> column_default_value: when adding a column: set a default
-     * value, for existing data.
-     *         <li> column_properties: when adding or changing a column: set
-     * the column properties (strings, separated by a comma: data, store_only,
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#COLUMN_DEFAULT_VALUE
+     * COLUMN_DEFAULT_VALUE}: When adding a column, set a default value for
+     * existing records.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#COLUMN_PROPERTIES
+     * COLUMN_PROPERTIES}: When adding or changing a column, set the column
+     * properties (strings, separated by a comma: data, store_only,
      * text_search, char8, int8 etc).
-     *         <li> column_type: when adding or changing a column: set the
-     * column type (strings, separated by a comma: int, double, string, null
-     * etc).
-     *         <li> validate_change_column: Validate the type change before
-     * applying column_change request. Default is true (if option is missing).
-     * If True, then validate all values. A value too large (or too long) for
-     * the new type will prevent any change. If False, then when a value is too
-     * large or long, it will be truncated. Values: true, false.
-     * <p>
-     *         <li> copy_values_from_column: when adding or changing a column:
-     * enter column name - from where to copy values.
-     *         <li> rename_column: new column name (using change_column).
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#COLUMN_TYPE COLUMN_TYPE}:
+     * When adding or changing a column, set the column type (strings,
+     * separated by a comma: int, double, string, null etc).
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#COMPRESSION_TYPE
+     * COMPRESSION_TYPE}: When setting column compression ({@code
+     * set_column_compression} for {@code action}), compression type to use:
+     * {@code none} (to use no compression) or a valid compression type.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#NONE
+     * NONE}
+     *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#SNAPPY
+     * SNAPPY}
+     *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#LZ4
+     * LZ4}
+     *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#LZ4HC
+     * LZ4HC}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#SNAPPY SNAPPY}.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#COPY_VALUES_FROM_COLUMN
+     * COPY_VALUES_FROM_COLUMN}: When adding or changing a column, enter a
+     * column name from the same table being altered to use as a source for the
+     * column being added/changed; values will be copied from this source
+     * column into the new/modified column.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#RENAME_COLUMN
+     * RENAME_COLUMN}: When changing a column, specify new column name.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#VALIDATE_CHANGE_COLUMN
+     * VALIDATE_CHANGE_COLUMN}: When changing a column, validate the change
+     * before applying it. If {@code true}, then validate all values. A value
+     * too large (or too long) for the new type will prevent any change. If
+     * {@code false}, then when a value is too large or long, it will be
+     * truncated.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#TRUE
+     * TRUE}: true
+     *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#FALSE
+     * FALSE}: false
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * when adding a column: set a default value, for existing data.
+         * When adding a column, set a default value for existing records.
          */
         public static final String COLUMN_DEFAULT_VALUE = "column_default_value";
 
         /**
-         * when adding or changing a column: set the column properties
+         * When adding or changing a column, set the column properties
          * (strings, separated by a comma: data, store_only, text_search,
          * char8, int8 etc).
          */
         public static final String COLUMN_PROPERTIES = "column_properties";
 
         /**
-         * when adding or changing a column: set the column type (strings,
+         * When adding or changing a column, set the column type (strings,
          * separated by a comma: int, double, string, null etc).
          */
         public static final String COLUMN_TYPE = "column_type";
 
         /**
-         * Validate the type change before applying column_change request.
-         * Default is true (if option is missing). If True, then validate all
-         * values. A value too large (or too long) for the new type will
-         * prevent any change. If False, then when a value is too large or
-         * long, it will be truncated. Values: true, false.
+         * When setting column compression ({@code set_column_compression} for
+         * {@code action}), compression type to use: {@code none} (to use no
+         * compression) or a valid compression type.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AlterTableRequest.Options#NONE NONE}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterTableRequest.Options#SNAPPY SNAPPY}
+         *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#LZ4
+         * LZ4}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterTableRequest.Options#LZ4HC LZ4HC}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AlterTableRequest.Options#SNAPPY SNAPPY}.
+         */
+        public static final String COMPRESSION_TYPE = "compression_type";
+        public static final String NONE = "none";
+        public static final String SNAPPY = "snappy";
+        public static final String LZ4 = "lz4";
+        public static final String LZ4HC = "lz4hc";
+
+        /**
+         * When adding or changing a column, enter a column name from the same
+         * table being altered to use as a source for the column being
+         * added/changed; values will be copied from this source column into
+         * the new/modified column.
+         */
+        public static final String COPY_VALUES_FROM_COLUMN = "copy_values_from_column";
+
+        /**
+         * When changing a column, specify new column name.
+         */
+        public static final String RENAME_COLUMN = "rename_column";
+
+        /**
+         * When changing a column, validate the change before applying it. If
+         * {@code true}, then validate all values. A value too large (or too
+         * long) for the new type will prevent any change. If {@code false},
+         * then when a value is too large or long, it will be truncated.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}: true
+         *         <li> {@link
+         * com.gpudb.protocol.AlterTableRequest.Options#FALSE FALSE}: false
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
          */
         public static final String VALIDATE_CHANGE_COLUMN = "validate_change_column";
 
@@ -192,17 +385,6 @@ public class AlterTableRequest implements IndexedRecord {
          * false
          */
         public static final String FALSE = "false";
-
-        /**
-         * when adding or changing a column: enter column name - from where to
-         * copy values.
-         */
-        public static final String COPY_VALUES_FROM_COLUMN = "copy_values_from_column";
-
-        /**
-         * new column name (using change_column).
-         */
-        public static final String RENAME_COLUMN = "rename_column";
 
         private Options() {  }
     }
@@ -228,35 +410,155 @@ public class AlterTableRequest implements IndexedRecord {
      * 
      * @param tableName  Table on which the operation will be performed. Must
      *                   be an existing table, view, or collection.
-     * @param action  Modification operation to be applied Values:
-     *                create_index, delete_index, allow_homogeneous_tables,
-     *                protected, ttl, add_column, delete_column, change_column,
-     *                rename_table.
+     * @param action  Modification operation to be applied
+     *                Supported values:
+     *                <ul>
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#ALLOW_HOMOGENEOUS_TABLES
+     *                ALLOW_HOMOGENEOUS_TABLES}: Sets whether homogeneous
+     *                tables are allowed in the given collection. This action
+     *                is only valid if {@code tableName} is a collection. The
+     *                {@code value} must be either 'true' or 'false'.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
+     *                CREATE_INDEX}: Creates an index on the column name
+     *                specified in {@code value}. If this column is already
+     *                indexed, an error will be returned.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
+     *                DELETE_INDEX}: Deletes an existing index on the column
+     *                name specified in {@code value}. If this column does not
+     *                have indexing turned on, an error will be returned.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
+     *                MOVE_TO_COLLECTION}: Move a table into a collection
+     *                {@code value}.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#PROTECTED
+     *                PROTECTED}: Sets whether the given {@code tableName}
+     *                should be protected or not. The {@code value} must be
+     *                either 'true' or 'false'.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE
+     *                RENAME_TABLE}: Rename a table, view or collection to
+     *                {@code value}. Has the same naming restrictions as <a
+     *                href="../../../../../concepts/tables.html"
+     *                target="_top">tables</a>.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}:
+     *                Sets the TTL of the table, view, or collection specified
+     *                in {@code tableName}. The {@code value} must be the
+     *                desired TTL in minutes.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
+     *                ADD_COLUMN}: Add the column specified in {@code value} to
+     *                the table specified in {@code tableName}.  Use {@code
+     *                column_type} and {@code column_properties} in {@code
+     *                options} to set the column's type and properties,
+     *                respectively.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#CHANGE_COLUMN
+     *                CHANGE_COLUMN}: Change type and properties of the column
+     *                specified in {@code value}.  Use {@code column_type} and
+     *                {@code column_properties} in {@code options} to set the
+     *                column's type and properties, respectively.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
+     *                SET_COLUMN_COMPRESSION}: Modify the compression setting
+     *                on the column specified in {@code value}.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_COLUMN
+     *                DELETE_COLUMN}: Delete the column specified in {@code
+     *                value} from the table specified in {@code tableName}.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
+     *                CREATE_FOREIGN_KEY}: Create a foreign key using the
+     *                format 'source_column references
+     *                target_table(primary_key_column) [ as <foreign_key_name>
+     *                ]'.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
+     *                DELETE_FOREIGN_KEY}: Delete a foreign key.  The {@code
+     *                value} should be the <foreign_key_name> or the string
+     *                used to define the foreign key.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
+     *                SET_GLOBAL_ACCESS_MODE}: Set the global access mode (i.e.
+     *                locking) for the table specified in {@code tableName}.
+     *                Specify the access mode in {@code value}. Valid modes are
+     *                'no-access', 'read-only', 'write-only' and 'read-write'.
+     *                </ul>
      * @param value  The value of the modification. May be a column name,
-     *               'true' or 'false', or a TTL depending on {@code action}.
+     *               'true' or 'false', a TTL, or the global access mode
+     *               depending on {@code action}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> column_default_value: when adding a column:
-     *                 set a default value, for existing data.
-     *                         <li> column_properties: when adding or changing
-     *                 a column: set the column properties (strings, separated
-     *                 by a comma: data, store_only, text_search, char8, int8
-     *                 etc).
-     *                         <li> column_type: when adding or changing a
-     *                 column: set the column type (strings, separated by a
-     *                 comma: int, double, string, null etc).
-     *                         <li> validate_change_column: Validate the type
-     *                 change before applying column_change request. Default is
-     *                 true (if option is missing). If True, then validate all
-     *                 values. A value too large (or too long) for the new type
-     *                 will prevent any change. If False, then when a value is
-     *                 too large or long, it will be truncated. Values: true,
-     *                 false.
-     *                         <li> copy_values_from_column: when adding or
-     *                 changing a column: enter column name - from where to
-     *                 copy values.
-     *                         <li> rename_column: new column name (using
-     *                 change_column).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN_DEFAULT_VALUE
+     *                 COLUMN_DEFAULT_VALUE}: When adding a column, set a
+     *                 default value for existing records.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN_PROPERTIES
+     *                 COLUMN_PROPERTIES}: When adding or changing a column,
+     *                 set the column properties (strings, separated by a
+     *                 comma: data, store_only, text_search, char8, int8 etc).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN_TYPE
+     *                 COLUMN_TYPE}: When adding or changing a column, set the
+     *                 column type (strings, separated by a comma: int, double,
+     *                 string, null etc).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COMPRESSION_TYPE
+     *                 COMPRESSION_TYPE}: When setting column compression
+     *                 ({@code set_column_compression} for {@code action}),
+     *                 compression type to use: {@code none} (to use no
+     *                 compression) or a valid compression type.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#NONE NONE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#SNAPPY
+     *                 SNAPPY}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#LZ4 LZ4}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#LZ4HC
+     *                 LZ4HC}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#SNAPPY
+     *                 SNAPPY}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COPY_VALUES_FROM_COLUMN
+     *                 COPY_VALUES_FROM_COLUMN}: When adding or changing a
+     *                 column, enter a column name from the same table being
+     *                 altered to use as a source for the column being
+     *                 added/changed; values will be copied from this source
+     *                 column into the new/modified column.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#RENAME_COLUMN
+     *                 RENAME_COLUMN}: When changing a column, specify new
+     *                 column name.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#VALIDATE_CHANGE_COLUMN
+     *                 VALIDATE_CHANGE_COLUMN}: When changing a column,
+     *                 validate the change before applying it. If {@code true},
+     *                 then validate all values. A value too large (or too
+     *                 long) for the new type will prevent any change. If
+     *                 {@code false}, then when a value is too large or long,
+     *                 it will be truncated.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}:
+     *                 true
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#FALSE
+     *                 FALSE}: false
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
      *                 </ul>
      * 
      */
@@ -292,9 +594,82 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Modification operation to be applied Values: create_index,
-     *         delete_index, allow_homogeneous_tables, protected, ttl,
-     *         add_column, delete_column, change_column, rename_table.
+     * @return Modification operation to be applied
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#ALLOW_HOMOGENEOUS_TABLES
+     *         ALLOW_HOMOGENEOUS_TABLES}: Sets whether homogeneous tables are
+     *         allowed in the given collection. This action is only valid if
+     *         {@code tableName} is a collection. The {@code value} must be
+     *         either 'true' or 'false'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
+     *         CREATE_INDEX}: Creates an index on the column name specified in
+     *         {@code value}. If this column is already indexed, an error will
+     *         be returned.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
+     *         DELETE_INDEX}: Deletes an existing index on the column name
+     *         specified in {@code value}. If this column does not have
+     *         indexing turned on, an error will be returned.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
+     *         MOVE_TO_COLLECTION}: Move a table into a collection {@code
+     *         value}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#PROTECTED
+     *         PROTECTED}: Sets whether the given {@code tableName} should be
+     *         protected or not. The {@code value} must be either 'true' or
+     *         'false'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE
+     *         RENAME_TABLE}: Rename a table, view or collection to {@code
+     *         value}. Has the same naming restrictions as <a
+     *         href="../../../../../concepts/tables.html"
+     *         target="_top">tables</a>.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}: Sets the
+     *         TTL of the table, view, or collection specified in {@code
+     *         tableName}. The {@code value} must be the desired TTL in
+     *         minutes.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
+     *         ADD_COLUMN}: Add the column specified in {@code value} to the
+     *         table specified in {@code tableName}.  Use {@code column_type}
+     *         and {@code column_properties} in {@code options} to set the
+     *         column's type and properties, respectively.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#CHANGE_COLUMN
+     *         CHANGE_COLUMN}: Change type and properties of the column
+     *         specified in {@code value}.  Use {@code column_type} and {@code
+     *         column_properties} in {@code options} to set the column's type
+     *         and properties, respectively.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
+     *         SET_COLUMN_COMPRESSION}: Modify the compression setting on the
+     *         column specified in {@code value}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#DELETE_COLUMN
+     *         DELETE_COLUMN}: Delete the column specified in {@code value}
+     *         from the table specified in {@code tableName}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
+     *         CREATE_FOREIGN_KEY}: Create a foreign key using the format
+     *         'source_column references target_table(primary_key_column) [ as
+     *         <foreign_key_name> ]'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
+     *         DELETE_FOREIGN_KEY}: Delete a foreign key.  The {@code value}
+     *         should be the <foreign_key_name> or the string used to define
+     *         the foreign key.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
+     *         SET_GLOBAL_ACCESS_MODE}: Set the global access mode (i.e.
+     *         locking) for the table specified in {@code tableName}. Specify
+     *         the access mode in {@code value}. Valid modes are 'no-access',
+     *         'read-only', 'write-only' and 'read-write'.
+     *         </ul>
      * 
      */
     public String getAction() {
@@ -303,10 +678,84 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param action  Modification operation to be applied Values:
-     *                create_index, delete_index, allow_homogeneous_tables,
-     *                protected, ttl, add_column, delete_column, change_column,
-     *                rename_table.
+     * @param action  Modification operation to be applied
+     *                Supported values:
+     *                <ul>
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#ALLOW_HOMOGENEOUS_TABLES
+     *                ALLOW_HOMOGENEOUS_TABLES}: Sets whether homogeneous
+     *                tables are allowed in the given collection. This action
+     *                is only valid if {@code tableName} is a collection. The
+     *                {@code value} must be either 'true' or 'false'.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
+     *                CREATE_INDEX}: Creates an index on the column name
+     *                specified in {@code value}. If this column is already
+     *                indexed, an error will be returned.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
+     *                DELETE_INDEX}: Deletes an existing index on the column
+     *                name specified in {@code value}. If this column does not
+     *                have indexing turned on, an error will be returned.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
+     *                MOVE_TO_COLLECTION}: Move a table into a collection
+     *                {@code value}.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#PROTECTED
+     *                PROTECTED}: Sets whether the given {@code tableName}
+     *                should be protected or not. The {@code value} must be
+     *                either 'true' or 'false'.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE
+     *                RENAME_TABLE}: Rename a table, view or collection to
+     *                {@code value}. Has the same naming restrictions as <a
+     *                href="../../../../../concepts/tables.html"
+     *                target="_top">tables</a>.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}:
+     *                Sets the TTL of the table, view, or collection specified
+     *                in {@code tableName}. The {@code value} must be the
+     *                desired TTL in minutes.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
+     *                ADD_COLUMN}: Add the column specified in {@code value} to
+     *                the table specified in {@code tableName}.  Use {@code
+     *                column_type} and {@code column_properties} in {@code
+     *                options} to set the column's type and properties,
+     *                respectively.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#CHANGE_COLUMN
+     *                CHANGE_COLUMN}: Change type and properties of the column
+     *                specified in {@code value}.  Use {@code column_type} and
+     *                {@code column_properties} in {@code options} to set the
+     *                column's type and properties, respectively.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
+     *                SET_COLUMN_COMPRESSION}: Modify the compression setting
+     *                on the column specified in {@code value}.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_COLUMN
+     *                DELETE_COLUMN}: Delete the column specified in {@code
+     *                value} from the table specified in {@code tableName}.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
+     *                CREATE_FOREIGN_KEY}: Create a foreign key using the
+     *                format 'source_column references
+     *                target_table(primary_key_column) [ as <foreign_key_name>
+     *                ]'.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
+     *                DELETE_FOREIGN_KEY}: Delete a foreign key.  The {@code
+     *                value} should be the <foreign_key_name> or the string
+     *                used to define the foreign key.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
+     *                SET_GLOBAL_ACCESS_MODE}: Set the global access mode (i.e.
+     *                locking) for the table specified in {@code tableName}.
+     *                Specify the access mode in {@code value}. Valid modes are
+     *                'no-access', 'read-only', 'write-only' and 'read-write'.
+     *                </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -319,7 +768,8 @@ public class AlterTableRequest implements IndexedRecord {
     /**
      * 
      * @return The value of the modification. May be a column name, 'true' or
-     *         'false', or a TTL depending on {@code action}.
+     *         'false', a TTL, or the global access mode depending on {@code
+     *         action}.
      * 
      */
     public String getValue() {
@@ -329,7 +779,8 @@ public class AlterTableRequest implements IndexedRecord {
     /**
      * 
      * @param value  The value of the modification. May be a column name,
-     *               'true' or 'false', or a TTL depending on {@code action}.
+     *               'true' or 'false', a TTL, or the global access mode
+     *               depending on {@code action}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -343,24 +794,64 @@ public class AlterTableRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> column_default_value: when adding a column: set a
-     *         default value, for existing data.
-     *                 <li> column_properties: when adding or changing a
-     *         column: set the column properties (strings, separated by a
-     *         comma: data, store_only, text_search, char8, int8 etc).
-     *                 <li> column_type: when adding or changing a column: set
-     *         the column type (strings, separated by a comma: int, double,
-     *         string, null etc).
-     *                 <li> validate_change_column: Validate the type change
-     *         before applying column_change request. Default is true (if
-     *         option is missing). If True, then validate all values. A value
-     *         too large (or too long) for the new type will prevent any
-     *         change. If False, then when a value is too large or long, it
-     *         will be truncated. Values: true, false.
-     *                 <li> copy_values_from_column: when adding or changing a
-     *         column: enter column name - from where to copy values.
-     *                 <li> rename_column: new column name (using
-     *         change_column).
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#COLUMN_DEFAULT_VALUE
+     *         COLUMN_DEFAULT_VALUE}: When adding a column, set a default value
+     *         for existing records.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#COLUMN_PROPERTIES
+     *         COLUMN_PROPERTIES}: When adding or changing a column, set the
+     *         column properties (strings, separated by a comma: data,
+     *         store_only, text_search, char8, int8 etc).
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#COLUMN_TYPE
+     *         COLUMN_TYPE}: When adding or changing a column, set the column
+     *         type (strings, separated by a comma: int, double, string, null
+     *         etc).
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#COMPRESSION_TYPE
+     *         COMPRESSION_TYPE}: When setting column compression ({@code
+     *         set_column_compression} for {@code action}), compression type to
+     *         use: {@code none} (to use no compression) or a valid compression
+     *         type.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#NONE NONE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#SNAPPY SNAPPY}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#LZ4 LZ4}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#LZ4HC LZ4HC}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#SNAPPY SNAPPY}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#COPY_VALUES_FROM_COLUMN
+     *         COPY_VALUES_FROM_COLUMN}: When adding or changing a column,
+     *         enter a column name from the same table being altered to use as
+     *         a source for the column being added/changed; values will be
+     *         copied from this source column into the new/modified column.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#RENAME_COLUMN
+     *         RENAME_COLUMN}: When changing a column, specify new column name.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#VALIDATE_CHANGE_COLUMN
+     *         VALIDATE_CHANGE_COLUMN}: When changing a column, validate the
+     *         change before applying it. If {@code true}, then validate all
+     *         values. A value too large (or too long) for the new type will
+     *         prevent any change. If {@code false}, then when a value is too
+     *         large or long, it will be truncated.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}: true
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#FALSE FALSE}: false
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
      *         </ul>
      * 
      */
@@ -372,27 +863,72 @@ public class AlterTableRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> column_default_value: when adding a column:
-     *                 set a default value, for existing data.
-     *                         <li> column_properties: when adding or changing
-     *                 a column: set the column properties (strings, separated
-     *                 by a comma: data, store_only, text_search, char8, int8
-     *                 etc).
-     *                         <li> column_type: when adding or changing a
-     *                 column: set the column type (strings, separated by a
-     *                 comma: int, double, string, null etc).
-     *                         <li> validate_change_column: Validate the type
-     *                 change before applying column_change request. Default is
-     *                 true (if option is missing). If True, then validate all
-     *                 values. A value too large (or too long) for the new type
-     *                 will prevent any change. If False, then when a value is
-     *                 too large or long, it will be truncated. Values: true,
-     *                 false.
-     *                         <li> copy_values_from_column: when adding or
-     *                 changing a column: enter column name - from where to
-     *                 copy values.
-     *                         <li> rename_column: new column name (using
-     *                 change_column).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN_DEFAULT_VALUE
+     *                 COLUMN_DEFAULT_VALUE}: When adding a column, set a
+     *                 default value for existing records.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN_PROPERTIES
+     *                 COLUMN_PROPERTIES}: When adding or changing a column,
+     *                 set the column properties (strings, separated by a
+     *                 comma: data, store_only, text_search, char8, int8 etc).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN_TYPE
+     *                 COLUMN_TYPE}: When adding or changing a column, set the
+     *                 column type (strings, separated by a comma: int, double,
+     *                 string, null etc).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COMPRESSION_TYPE
+     *                 COMPRESSION_TYPE}: When setting column compression
+     *                 ({@code set_column_compression} for {@code action}),
+     *                 compression type to use: {@code none} (to use no
+     *                 compression) or a valid compression type.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#NONE NONE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#SNAPPY
+     *                 SNAPPY}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#LZ4 LZ4}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#LZ4HC
+     *                 LZ4HC}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#SNAPPY
+     *                 SNAPPY}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COPY_VALUES_FROM_COLUMN
+     *                 COPY_VALUES_FROM_COLUMN}: When adding or changing a
+     *                 column, enter a column name from the same table being
+     *                 altered to use as a source for the column being
+     *                 added/changed; values will be copied from this source
+     *                 column into the new/modified column.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#RENAME_COLUMN
+     *                 RENAME_COLUMN}: When changing a column, specify new
+     *                 column name.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#VALIDATE_CHANGE_COLUMN
+     *                 VALIDATE_CHANGE_COLUMN}: When changing a column,
+     *                 validate the change before applying it. If {@code true},
+     *                 then validate all values. A value too large (or too
+     *                 long) for the new type will prevent any change. If
+     *                 {@code false}, then when a value is too large or long,
+     *                 it will be truncated.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}:
+     *                 true
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#FALSE
+     *                 FALSE}: false
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

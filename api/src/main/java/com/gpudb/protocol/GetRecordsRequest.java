@@ -54,8 +54,16 @@ public class GetRecordsRequest implements IndexedRecord {
 
 
     /**
-     * Specifies the encoding for returned records. Values: binary, json.
-
+     * Specifies the encoding for returned records.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.GetRecordsRequest.Encoding#BINARY
+     * BINARY}
+     *         <li> {@link com.gpudb.protocol.GetRecordsRequest.Encoding#JSON
+     * JSON}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.GetRecordsRequest.Encoding#BINARY BINARY}.
      * A set of string constants for the parameter {@code encoding}.
      */
     public static final class Encoding {
@@ -68,19 +76,41 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * <ul>
-     *         <li> expression: Optional filter expression to apply to the
-     * table.
-     *         <li> fast_index_lookup: Indicates if indexes should be used to
-     * perform the lookup for a given expression if possible. Only applicable
-     * if there is no sorting, the expression contains only equivalence
-     * comparisons based on existing tables indexes and the range of requested
-     * values is from [0 to END_OF_SET]. The default value is true.
-     *         <li> sort_by: Optional column that the data should be sorted by.
-     * Empty by default (i.e. no sorting is applied).
-     *         <li> sort_order: String indicating how the returned values
-     * should be sorted - ascending or descending. If sort_order is provided,
-     * sort_by has to be provided. Values: ascending, descending.
-     * <p>
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsRequest.Options#EXPRESSION EXPRESSION}:
+     * Optional filter expression to apply to the table.
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsRequest.Options#FAST_INDEX_LOOKUP
+     * FAST_INDEX_LOOKUP}: Indicates if indexes should be used to perform the
+     * lookup for a given expression if possible. Only applicable if there is
+     * no sorting, the expression contains only equivalence comparisons based
+     * on existing tables indexes and the range of requested values is from [0
+     * to END_OF_SET].
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.GetRecordsRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.GetRecordsRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.GetRecordsRequest.Options#TRUE TRUE}.
+     *         <li> {@link com.gpudb.protocol.GetRecordsRequest.Options#SORT_BY
+     * SORT_BY}: Optional column that the data should be sorted by. Empty by
+     * default (i.e. no sorting is applied).
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsRequest.Options#SORT_ORDER SORT_ORDER}:
+     * String indicating how the returned values should be sorted - ascending
+     * or descending. If sort_order is provided, sort_by has to be provided.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING ASCENDING}
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsRequest.Options#DESCENDING DESCENDING}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING ASCENDING}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -96,9 +126,20 @@ public class GetRecordsRequest implements IndexedRecord {
          * given expression if possible. Only applicable if there is no
          * sorting, the expression contains only equivalence comparisons based
          * on existing tables indexes and the range of requested values is from
-         * [0 to END_OF_SET]. The default value is true.
+         * [0 to END_OF_SET].
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.GetRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.GetRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.GetRecordsRequest.Options#TRUE TRUE}.
          */
         public static final String FAST_INDEX_LOOKUP = "fast_index_lookup";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         /**
          * Optional column that the data should be sorted by. Empty by default
@@ -109,7 +150,16 @@ public class GetRecordsRequest implements IndexedRecord {
         /**
          * String indicating how the returned values should be sorted -
          * ascending or descending. If sort_order is provided, sort_by has to
-         * be provided. Values: ascending, descending.
+         * be provided.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING ASCENDING}
+         *         <li> {@link
+         * com.gpudb.protocol.GetRecordsRequest.Options#DESCENDING DESCENDING}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING ASCENDING}.
          */
         public static final String SORT_ORDER = "sort_order";
         public static final String ASCENDING = "ascending";
@@ -149,22 +199,49 @@ public class GetRecordsRequest implements IndexedRecord {
      *               that the max number of results should be returned.
      * @param options
      *                 <ul>
-     *                         <li> expression: Optional filter expression to
-     *                 apply to the table.
-     *                         <li> fast_index_lookup: Indicates if indexes
-     *                 should be used to perform the lookup for a given
-     *                 expression if possible. Only applicable if there is no
-     *                 sorting, the expression contains only equivalence
-     *                 comparisons based on existing tables indexes and the
-     *                 range of requested values is from [0 to END_OF_SET]. The
-     *                 default value is true.
-     *                         <li> sort_by: Optional column that the data
-     *                 should be sorted by. Empty by default (i.e. no sorting
-     *                 is applied).
-     *                         <li> sort_order: String indicating how the
-     *                 returned values should be sorted - ascending or
-     *                 descending. If sort_order is provided, sort_by has to be
-     *                 provided. Values: ascending, descending.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Optional filter expression to apply to the
+     *                 table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#FAST_INDEX_LOOKUP
+     *                 FAST_INDEX_LOOKUP}: Indicates if indexes should be used
+     *                 to perform the lookup for a given expression if
+     *                 possible. Only applicable if there is no sorting, the
+     *                 expression contains only equivalence comparisons based
+     *                 on existing tables indexes and the range of requested
+     *                 values is from [0 to END_OF_SET].
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#SORT_BY
+     *                 SORT_BY}: Optional column that the data should be sorted
+     *                 by. Empty by default (i.e. no sorting is applied).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#SORT_ORDER
+     *                 SORT_ORDER}: String indicating how the returned values
+     *                 should be sorted - ascending or descending. If
+     *                 sort_order is provided, sort_by has to be provided.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING
+     *                 ASCENDING}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#DESCENDING
+     *                 DESCENDING}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING
+     *                 ASCENDING}.
      *                 </ul>
      * 
      */
@@ -189,26 +266,64 @@ public class GetRecordsRequest implements IndexedRecord {
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
-     * @param encoding  Specifies the encoding for returned records. Values:
-     *                  binary, json.
+     * @param encoding  Specifies the encoding for returned records.
+     *                  Supported values:
+     *                  <ul>
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsRequest.Encoding#BINARY
+     *                  BINARY}
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsRequest.Encoding#JSON
+     *                  JSON}
+     *                  </ul>
+     *                  The default value is {@link
+     *                  com.gpudb.protocol.GetRecordsRequest.Encoding#BINARY
+     *                  BINARY}.
      * @param options
      *                 <ul>
-     *                         <li> expression: Optional filter expression to
-     *                 apply to the table.
-     *                         <li> fast_index_lookup: Indicates if indexes
-     *                 should be used to perform the lookup for a given
-     *                 expression if possible. Only applicable if there is no
-     *                 sorting, the expression contains only equivalence
-     *                 comparisons based on existing tables indexes and the
-     *                 range of requested values is from [0 to END_OF_SET]. The
-     *                 default value is true.
-     *                         <li> sort_by: Optional column that the data
-     *                 should be sorted by. Empty by default (i.e. no sorting
-     *                 is applied).
-     *                         <li> sort_order: String indicating how the
-     *                 returned values should be sorted - ascending or
-     *                 descending. If sort_order is provided, sort_by has to be
-     *                 provided. Values: ascending, descending.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Optional filter expression to apply to the
+     *                 table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#FAST_INDEX_LOOKUP
+     *                 FAST_INDEX_LOOKUP}: Indicates if indexes should be used
+     *                 to perform the lookup for a given expression if
+     *                 possible. Only applicable if there is no sorting, the
+     *                 expression contains only equivalence comparisons based
+     *                 on existing tables indexes and the range of requested
+     *                 values is from [0 to END_OF_SET].
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#SORT_BY
+     *                 SORT_BY}: Optional column that the data should be sorted
+     *                 by. Empty by default (i.e. no sorting is applied).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#SORT_ORDER
+     *                 SORT_ORDER}: String indicating how the returned values
+     *                 should be sorted - ascending or descending. If
+     *                 sort_order is provided, sort_by has to be provided.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING
+     *                 ASCENDING}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#DESCENDING
+     *                 DESCENDING}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING
+     *                 ASCENDING}.
      *                 </ul>
      * 
      */
@@ -298,8 +413,16 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Specifies the encoding for returned records. Values: binary,
-     *         json.
+     * @return Specifies the encoding for returned records.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsRequest.Encoding#BINARY BINARY}
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsRequest.Encoding#JSON JSON}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.GetRecordsRequest.Encoding#BINARY BINARY}.
      * 
      */
     public String getEncoding() {
@@ -308,8 +431,19 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param encoding  Specifies the encoding for returned records. Values:
-     *                  binary, json.
+     * @param encoding  Specifies the encoding for returned records.
+     *                  Supported values:
+     *                  <ul>
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsRequest.Encoding#BINARY
+     *                  BINARY}
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsRequest.Encoding#JSON
+     *                  JSON}
+     *                  </ul>
+     *                  The default value is {@link
+     *                  com.gpudb.protocol.GetRecordsRequest.Encoding#BINARY
+     *                  BINARY}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -323,20 +457,46 @@ public class GetRecordsRequest implements IndexedRecord {
      * 
      * @return
      *         <ul>
-     *                 <li> expression: Optional filter expression to apply to
-     *         the table.
-     *                 <li> fast_index_lookup: Indicates if indexes should be
-     *         used to perform the lookup for a given expression if possible.
-     *         Only applicable if there is no sorting, the expression contains
-     *         only equivalence comparisons based on existing tables indexes
-     *         and the range of requested values is from [0 to END_OF_SET]. The
-     *         default value is true.
-     *                 <li> sort_by: Optional column that the data should be
-     *         sorted by. Empty by default (i.e. no sorting is applied).
-     *                 <li> sort_order: String indicating how the returned
-     *         values should be sorted - ascending or descending. If sort_order
-     *         is provided, sort_by has to be provided. Values: ascending,
-     *         descending.
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsRequest.Options#EXPRESSION
+     *         EXPRESSION}: Optional filter expression to apply to the table.
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsRequest.Options#FAST_INDEX_LOOKUP
+     *         FAST_INDEX_LOOKUP}: Indicates if indexes should be used to
+     *         perform the lookup for a given expression if possible. Only
+     *         applicable if there is no sorting, the expression contains only
+     *         equivalence comparisons based on existing tables indexes and the
+     *         range of requested values is from [0 to END_OF_SET].
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.GetRecordsRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsRequest.Options#SORT_BY SORT_BY}:
+     *         Optional column that the data should be sorted by. Empty by
+     *         default (i.e. no sorting is applied).
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsRequest.Options#SORT_ORDER
+     *         SORT_ORDER}: String indicating how the returned values should be
+     *         sorted - ascending or descending. If sort_order is provided,
+     *         sort_by has to be provided.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING
+     *         ASCENDING}
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsRequest.Options#DESCENDING
+     *         DESCENDING}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING
+     *         ASCENDING}.
      *         </ul>
      * 
      */
@@ -348,22 +508,49 @@ public class GetRecordsRequest implements IndexedRecord {
      * 
      * @param options
      *                 <ul>
-     *                         <li> expression: Optional filter expression to
-     *                 apply to the table.
-     *                         <li> fast_index_lookup: Indicates if indexes
-     *                 should be used to perform the lookup for a given
-     *                 expression if possible. Only applicable if there is no
-     *                 sorting, the expression contains only equivalence
-     *                 comparisons based on existing tables indexes and the
-     *                 range of requested values is from [0 to END_OF_SET]. The
-     *                 default value is true.
-     *                         <li> sort_by: Optional column that the data
-     *                 should be sorted by. Empty by default (i.e. no sorting
-     *                 is applied).
-     *                         <li> sort_order: String indicating how the
-     *                 returned values should be sorted - ascending or
-     *                 descending. If sort_order is provided, sort_by has to be
-     *                 provided. Values: ascending, descending.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Optional filter expression to apply to the
+     *                 table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#FAST_INDEX_LOOKUP
+     *                 FAST_INDEX_LOOKUP}: Indicates if indexes should be used
+     *                 to perform the lookup for a given expression if
+     *                 possible. Only applicable if there is no sorting, the
+     *                 expression contains only equivalence comparisons based
+     *                 on existing tables indexes and the range of requested
+     *                 values is from [0 to END_OF_SET].
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#SORT_BY
+     *                 SORT_BY}: Optional column that the data should be sorted
+     *                 by. Empty by default (i.e. no sorting is applied).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#SORT_ORDER
+     *                 SORT_ORDER}: String indicating how the returned values
+     *                 should be sorted - ascending or descending. If
+     *                 sort_order is provided, sort_by has to be provided.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING
+     *                 ASCENDING}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#DESCENDING
+     *                 DESCENDING}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING
+     *                 ASCENDING}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

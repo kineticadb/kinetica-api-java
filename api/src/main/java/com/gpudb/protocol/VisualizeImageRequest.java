@@ -27,6 +27,7 @@ public class VisualizeImageRequest implements IndexedRecord {
                 .name("worldTableNames").type().array().items().stringType().noDefault()
                 .name("xColumnName").type().stringType().noDefault()
                 .name("yColumnName").type().stringType().noDefault()
+                .name("geometryColumnName").type().stringType().noDefault()
                 .name("trackIds").type().array().items().array().items().stringType().noDefault()
                 .name("minX").type().doubleType().noDefault()
                 .name("maxX").type().doubleType().noDefault()
@@ -123,6 +124,10 @@ public class VisualizeImageRequest implements IndexedRecord {
 
         public static final String TRACKMARKERSHAPES = "trackmarkershapes";
 
+        public static final String ORIENTED_ARROW = "oriented_arrow";
+
+        public static final String ORIENTED_TRIANGLE = "oriented_triangle";
+
         public static final String TRACKHEADCOLORS = "trackheadcolors";
 
         public static final String TRACKHEADSIZES = "trackheadsizes";
@@ -138,6 +143,7 @@ public class VisualizeImageRequest implements IndexedRecord {
     private List<String> worldTableNames;
     private String xColumnName;
     private String yColumnName;
+    private String geometryColumnName;
     private List<List<String>> trackIds;
     private double minX;
     private double maxX;
@@ -156,17 +162,19 @@ public class VisualizeImageRequest implements IndexedRecord {
         worldTableNames = new ArrayList<>();
         xColumnName = "";
         yColumnName = "";
+        geometryColumnName = "";
         trackIds = new ArrayList<>();
         projection = "";
         styleOptions = new LinkedHashMap<>();
         options = new LinkedHashMap<>();
     }
 
-    public VisualizeImageRequest(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, List<List<String>> trackIds, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) {
+    public VisualizeImageRequest(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) {
         this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
         this.worldTableNames = (worldTableNames == null) ? new ArrayList<String>() : worldTableNames;
         this.xColumnName = (xColumnName == null) ? "" : xColumnName;
         this.yColumnName = (yColumnName == null) ? "" : yColumnName;
+        this.geometryColumnName = (geometryColumnName == null) ? "" : geometryColumnName;
         this.trackIds = (trackIds == null) ? new ArrayList<List<String>>() : trackIds;
         this.minX = minX;
         this.maxX = maxX;
@@ -213,6 +221,15 @@ public class VisualizeImageRequest implements IndexedRecord {
 
     public VisualizeImageRequest setYColumnName(String yColumnName) {
         this.yColumnName = (yColumnName == null) ? "" : yColumnName;
+        return this;
+    }
+
+    public String getGeometryColumnName() {
+        return geometryColumnName;
+    }
+
+    public VisualizeImageRequest setGeometryColumnName(String geometryColumnName) {
+        this.geometryColumnName = (geometryColumnName == null) ? "" : geometryColumnName;
         return this;
     }
 
@@ -336,36 +353,39 @@ public class VisualizeImageRequest implements IndexedRecord {
                 return this.yColumnName;
 
             case 4:
-                return this.trackIds;
+                return this.geometryColumnName;
 
             case 5:
-                return this.minX;
+                return this.trackIds;
 
             case 6:
-                return this.maxX;
+                return this.minX;
 
             case 7:
-                return this.minY;
+                return this.maxX;
 
             case 8:
-                return this.maxY;
+                return this.minY;
 
             case 9:
-                return this.width;
+                return this.maxY;
 
             case 10:
-                return this.height;
+                return this.width;
 
             case 11:
-                return this.projection;
+                return this.height;
 
             case 12:
-                return this.bgColor;
+                return this.projection;
 
             case 13:
-                return this.styleOptions;
+                return this.bgColor;
 
             case 14:
+                return this.styleOptions;
+
+            case 15:
                 return this.options;
 
             default:
@@ -394,46 +414,50 @@ public class VisualizeImageRequest implements IndexedRecord {
                 break;
 
             case 4:
-                this.trackIds = (List<List<String>>)value;
+                this.geometryColumnName = (String)value;
                 break;
 
             case 5:
-                this.minX = (Double)value;
+                this.trackIds = (List<List<String>>)value;
                 break;
 
             case 6:
-                this.maxX = (Double)value;
+                this.minX = (Double)value;
                 break;
 
             case 7:
-                this.minY = (Double)value;
+                this.maxX = (Double)value;
                 break;
 
             case 8:
-                this.maxY = (Double)value;
+                this.minY = (Double)value;
                 break;
 
             case 9:
-                this.width = (Integer)value;
+                this.maxY = (Double)value;
                 break;
 
             case 10:
-                this.height = (Integer)value;
+                this.width = (Integer)value;
                 break;
 
             case 11:
-                this.projection = (String)value;
+                this.height = (Integer)value;
                 break;
 
             case 12:
-                this.bgColor = (Long)value;
+                this.projection = (String)value;
                 break;
 
             case 13:
-                this.styleOptions = (Map<String, List<String>>)value;
+                this.bgColor = (Long)value;
                 break;
 
             case 14:
+                this.styleOptions = (Map<String, List<String>>)value;
+                break;
+
+            case 15:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -459,6 +483,7 @@ public class VisualizeImageRequest implements IndexedRecord {
                  && this.worldTableNames.equals( that.worldTableNames )
                  && this.xColumnName.equals( that.xColumnName )
                  && this.yColumnName.equals( that.yColumnName )
+                 && this.geometryColumnName.equals( that.geometryColumnName )
                  && this.trackIds.equals( that.trackIds )
                  && ( (Double)this.minX ).equals( (Double)that.minX )
                  && ( (Double)this.maxX ).equals( (Double)that.maxX )
@@ -493,6 +518,10 @@ public class VisualizeImageRequest implements IndexedRecord {
         builder.append( gd.toString( "yColumnName" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.yColumnName ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "geometryColumnName" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.geometryColumnName ) );
         builder.append( ", " );
         builder.append( gd.toString( "trackIds" ) );
         builder.append( ": " );
@@ -550,6 +579,7 @@ public class VisualizeImageRequest implements IndexedRecord {
         hashCode = (31 * hashCode) + this.worldTableNames.hashCode();
         hashCode = (31 * hashCode) + this.xColumnName.hashCode();
         hashCode = (31 * hashCode) + this.yColumnName.hashCode();
+        hashCode = (31 * hashCode) + this.geometryColumnName.hashCode();
         hashCode = (31 * hashCode) + this.trackIds.hashCode();
         hashCode = (31 * hashCode) + ((Double)this.minX).hashCode();
         hashCode = (31 * hashCode) + ((Double)this.maxX).hashCode();

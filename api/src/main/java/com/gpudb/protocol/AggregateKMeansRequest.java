@@ -56,13 +56,18 @@ public class AggregateKMeansRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> whiten: When set to 1 each of the columns is first
-     * normalized by its stdv - default is not to whiten.
-     *         <li> max_iters: Number of times to try to hit the tolerance
-     * limit before giving up - default is 10.
-     *         <li> num_tries: Number of times to run the k-means algorithm
-     * with a different randomly selected starting points - helps avoid local
-     * minimum. Default is 1.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateKMeansRequest.Options#WHITEN WHITEN}: When
+     * set to 1 each of the columns is first normalized by its stdv - default
+     * is not to whiten.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateKMeansRequest.Options#MAX_ITERS MAX_ITERS}:
+     * Number of times to try to hit the tolerance limit before giving up -
+     * default is 10.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateKMeansRequest.Options#NUM_TRIES NUM_TRIES}:
+     * Number of times to run the k-means algorithm with a different randomly
+     * selected starting points - helps avoid local minimum. Default is 1.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -121,15 +126,19 @@ public class AggregateKMeansRequest implements IndexedRecord {
      *                   points is less than the given tolerance.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> whiten: When set to 1 each of the columns
-     *                 is first normalized by its stdv - default is not to
-     *                 whiten.
-     *                         <li> max_iters: Number of times to try to hit
-     *                 the tolerance limit before giving up - default is 10.
-     *                         <li> num_tries: Number of times to run the
-     *                 k-means algorithm with a different randomly selected
-     *                 starting points - helps avoid local minimum. Default is
-     *                 1.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#WHITEN
+     *                 WHITEN}: When set to 1 each of the columns is first
+     *                 normalized by its stdv - default is not to whiten.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#MAX_ITERS
+     *                 MAX_ITERS}: Number of times to try to hit the tolerance
+     *                 limit before giving up - default is 10.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#NUM_TRIES
+     *                 NUM_TRIES}: Number of times to run the k-means algorithm
+     *                 with a different randomly selected starting points -
+     *                 helps avoid local minimum. Default is 1.
      *                 </ul>
      * 
      */
@@ -238,13 +247,19 @@ public class AggregateKMeansRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> whiten: When set to 1 each of the columns is first
-     *         normalized by its stdv - default is not to whiten.
-     *                 <li> max_iters: Number of times to try to hit the
-     *         tolerance limit before giving up - default is 10.
-     *                 <li> num_tries: Number of times to run the k-means
-     *         algorithm with a different randomly selected starting points -
-     *         helps avoid local minimum. Default is 1.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateKMeansRequest.Options#WHITEN
+     *         WHITEN}: When set to 1 each of the columns is first normalized
+     *         by its stdv - default is not to whiten.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateKMeansRequest.Options#MAX_ITERS
+     *         MAX_ITERS}: Number of times to try to hit the tolerance limit
+     *         before giving up - default is 10.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateKMeansRequest.Options#NUM_TRIES
+     *         NUM_TRIES}: Number of times to run the k-means algorithm with a
+     *         different randomly selected starting points - helps avoid local
+     *         minimum. Default is 1.
      *         </ul>
      * 
      */
@@ -256,15 +271,19 @@ public class AggregateKMeansRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> whiten: When set to 1 each of the columns
-     *                 is first normalized by its stdv - default is not to
-     *                 whiten.
-     *                         <li> max_iters: Number of times to try to hit
-     *                 the tolerance limit before giving up - default is 10.
-     *                         <li> num_tries: Number of times to run the
-     *                 k-means algorithm with a different randomly selected
-     *                 starting points - helps avoid local minimum. Default is
-     *                 1.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#WHITEN
+     *                 WHITEN}: When set to 1 each of the columns is first
+     *                 normalized by its stdv - default is not to whiten.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#MAX_ITERS
+     *                 MAX_ITERS}: Number of times to try to hit the tolerance
+     *                 limit before giving up - default is 10.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateKMeansRequest.Options#NUM_TRIES
+     *                 NUM_TRIES}: Number of times to run the k-means algorithm
+     *                 with a different randomly selected starting points -
+     *                 helps avoid local minimum. Default is 1.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

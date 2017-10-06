@@ -1,6 +1,6 @@
 package com.gpudb;
 
-import com.gpudb.protocol.AdminGetShardAssignmentsRequest;
+import com.gpudb.protocol.AdminShowShardsRequest;
 import com.gpudb.protocol.InsertRecordsRequest;
 import com.gpudb.protocol.InsertRecordsResponse;
 import com.gpudb.protocol.RawInsertRecordsRequest;
@@ -267,6 +267,7 @@ public class BulkInserter<T> {
 
     private static final class RecordKey {
         private static final Pattern DATE_REGEX = Pattern.compile("\\A(\\d{4})-(\\d{2})-(\\d{2})$");
+        private static final Pattern DATETIME_REGEX = Pattern.compile("\\A(\\d{4})-(\\d{2})-(\\d{2}) (\\d{1,2}):(\\d{2}):(\\d{2})(?:\\.(\\d{3}))?$");
         private static final Pattern DECIMAL_REGEX = Pattern.compile("\\A\\s*[+-]?(\\d+(\\.\\d{0,4})?|\\.\\d{1,4})$");
         private static final Date MIN_DATE = new Date(Long.MIN_VALUE);
         private static final Pattern IPV4_REGEX = Pattern.compile("\\A(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$");
@@ -352,6 +353,69 @@ public class BulkInserter<T> {
                     | (day << 12)
                     | (calendar.get(Calendar.DAY_OF_YEAR) << 3)
                     | calendar.get(Calendar.DAY_OF_WEEK));
+        }
+
+        public void addDateTime(String value) {
+            if (value == null) {
+                buffer.putLong(0);
+                return;
+            }
+
+            Matcher matcher = DATETIME_REGEX.matcher(value);
+
+            if (!matcher.matches()) {
+                buffer.putLong(0);
+                isValid = false;
+                return;
+            }
+
+            int year;
+            int month;
+            int day;
+            int hour;
+            int minute;
+            int second;
+            int millisecond;
+            GregorianCalendar calendar;
+
+            try {
+                year = Integer.parseInt(matcher.group(1));
+                month = Integer.parseInt(matcher.group(2));
+                day = Integer.parseInt(matcher.group(3));
+                hour = Integer.parseInt(matcher.group(4));
+                minute = Integer.parseInt(matcher.group(5));
+                second = Integer.parseInt(matcher.group(6));
+
+                if (matcher.group(7) != null) {
+                    millisecond = Integer.parseInt(matcher.group(7));
+                } else {
+                    millisecond = 0;
+                }
+
+                calendar = new GregorianCalendar();
+                calendar.setGregorianChange(MIN_DATE);
+                calendar.set(year, month - 1, day, hour, minute, second);
+            } catch (Exception ex) {
+                buffer.putLong(0);
+                isValid = false;
+                return;
+            }
+
+            if (year < 1000 || year > 2900) {
+                buffer.putLong(0);
+                isValid = false;
+                return;
+            }
+
+            buffer.putLong(((long)(year - 1900) << 53)
+                    | ((long)month << 49)
+                    | ((long)day << 44)
+                    | ((long)hour << 39)
+                    | ((long)minute << 33)
+                    | ((long)second << 27)
+                    | (millisecond << 17)
+                    | (calendar.get(Calendar.DAY_OF_YEAR) << 8)
+                    | (calendar.get(Calendar.DAY_OF_WEEK) << 5));
         }
 
         public void addDecimal(String value) {
@@ -604,6 +668,7 @@ public class BulkInserter<T> {
             CHAR128,
             CHAR256,
             DATE,
+            DATETIME,
             DECIMAL,
             DOUBLE,
             FLOAT,
@@ -743,6 +808,9 @@ public class BulkInserter<T> {
                     } else if (typeColumn.getProperties().contains(ColumnProperty.DATE)) {
                         columnTypes.add(ColumnType.DATE);
                         size += 4;
+                    } else if (typeColumn.getProperties().contains(ColumnProperty.DATETIME)) {
+                        columnTypes.add(ColumnType.DATETIME);
+                        size += 8;
                     } else if (typeColumn.getProperties().contains(ColumnProperty.DECIMAL)) {
                         columnTypes.add(ColumnType.DECIMAL);
                         size += 8;
@@ -827,6 +895,10 @@ public class BulkInserter<T> {
 
                     case DATE:
                         key.addDate((String)value);
+                        break;
+
+                    case DATETIME:
+                        key.addDateTime((String)value);
                         break;
 
                     case DECIMAL:
@@ -961,7 +1033,6 @@ public class BulkInserter<T> {
     private final Map<String, String> options;
     private final RecordKeyBuilder<T> primaryKeyBuilder;
     private final RecordKeyBuilder<T> shardKeyBuilder;
-    private final int numRanks;
     private final List<Integer> routingTable;
     private final List<WorkerQueue<T>> workerQueues;
     private final AtomicLong countInserted = new AtomicLong();
@@ -1118,12 +1189,12 @@ public class BulkInserter<T> {
                     this.workerQueues.add(new WorkerQueue<T>(GPUdbBase.appendPathToURL(url, "/insert/records"), batchSize, primaryKeyBuilder != null, updateOnExistingPk));
                 }
 
-                numRanks = workers.size();
+                routingTable = gpudb.adminShowShards(new AdminShowShardsRequest()).getRank();
 
-                if (primaryKeyBuilder != null || shardKeyBuilder != null) {
-                    routingTable = gpudb.adminGetShardAssignments(new AdminGetShardAssignmentsRequest()).getShardAssignmentsRank();
-                } else {
-                    routingTable = null;
+                for (int i = 0; i < routingTable.size(); i++) {
+                    if (routingTable.get(i) > this.workerQueues.size()) {
+                        throw new IllegalArgumentException("Too few worker URLs specified.");
+                    }
                 }
             } else {
                 if (gpudb.getURLs().size() == 1) {
@@ -1132,7 +1203,6 @@ public class BulkInserter<T> {
                     this.workerQueues.add(new WorkerQueue<T>(null, batchSize, primaryKeyBuilder != null, updateOnExistingPk));
                 }
 
-                numRanks = 1;
                 routingTable = null;
             }
         } catch (MalformedURLException ex) {
@@ -1286,8 +1356,10 @@ public class BulkInserter<T> {
 
         WorkerQueue<T> workerQueue;
 
-        if (shardKey == null || routingTable == null) {
-            workerQueue = workerQueues.get(ThreadLocalRandom.current().nextInt(numRanks));
+        if (routingTable == null) {
+            workerQueue = workerQueues.get(0);
+        } else if (shardKey == null) {
+            workerQueue = workerQueues.get(routingTable.get(ThreadLocalRandom.current().nextInt(routingTable.size())) - 1);
         } else {
             workerQueue = workerQueues.get(shardKey.route(routingTable));
         }

@@ -1,5 +1,7 @@
 package com.gpudb;
 
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +9,9 @@ import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.IndexedRecord;
 
-final class DynamicTableRecord extends RecordBase {
+final class DynamicTableRecord extends RecordBase implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @SuppressWarnings("unchecked")
     public static List<Record> transpose(String schemaString, ByteBuffer encodedData) throws GPUdbException {
         Schema schema;
@@ -172,6 +176,17 @@ final class DynamicTableRecord extends RecordBase {
         this.type = type;
         this.data = data;
         this.recordIndex = recordIndex;
+    }
+
+    private Object writeReplace() throws ObjectStreamException {
+        GenericRecord gr = new GenericRecord(type);
+        int columnCount = type.getColumnCount();
+
+        for (int i = 0; i < columnCount; i++) {
+            gr.put(i, get(i));
+        }
+
+        return gr;
     }
 
     @Override

@@ -43,8 +43,14 @@ public class AdminOfflineRequest implements IndexedRecord {
 
 
     /**
-     * Set to true if desired state is offline. Values: true, false.
-
+     * Set to true if desired state is offline.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AdminOfflineRequest.Offline#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.AdminOfflineRequest.Offline#FALSE
+     * FALSE}
+     * </ul>
      * A set of string constants for the parameter {@code offline}.
      */
     public static final class Offline {
@@ -68,8 +74,16 @@ public class AdminOfflineRequest implements IndexedRecord {
     /**
      * Constructs an AdminOfflineRequest object with the specified parameters.
      * 
-     * @param offline  Set to true if desired state is offline. Values: true,
-     *                 false.
+     * @param offline  Set to true if desired state is offline.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminOfflineRequest.Offline#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminOfflineRequest.Offline#FALSE
+     *                 FALSE}
+     *                 </ul>
      * @param options  Optional parameters.
      * 
      */
@@ -80,7 +94,14 @@ public class AdminOfflineRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Set to true if desired state is offline. Values: true, false.
+     * @return Set to true if desired state is offline.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminOfflineRequest.Offline#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminOfflineRequest.Offline#FALSE FALSE}
+     *         </ul>
      * 
      */
     public boolean getOffline() {
@@ -89,8 +110,16 @@ public class AdminOfflineRequest implements IndexedRecord {
 
     /**
      * 
-     * @param offline  Set to true if desired state is offline. Values: true,
-     *                 false.
+     * @param offline  Set to true if desired state is offline.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminOfflineRequest.Offline#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminOfflineRequest.Offline#FALSE
+     *                 FALSE}
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

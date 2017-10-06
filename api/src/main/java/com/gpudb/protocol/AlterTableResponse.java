@@ -5,6 +5,9 @@
  */
 package com.gpudb.protocol;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -23,6 +26,10 @@ public class AlterTableResponse implements IndexedRecord {
                 .name("tableName").type().stringType().noDefault()
                 .name("action").type().stringType().noDefault()
                 .name("value").type().stringType().noDefault()
+                .name("typeId").type().stringType().noDefault()
+                .name("typeDefinition").type().stringType().noDefault()
+                .name("properties").type().map().values().array().items().stringType().noDefault()
+                .name("label").type().stringType().noDefault()
             .endRecord();
 
 
@@ -40,6 +47,10 @@ public class AlterTableResponse implements IndexedRecord {
     private String tableName;
     private String action;
     private String value;
+    private String typeId;
+    private String typeDefinition;
+    private Map<String, List<String>> properties;
+    private String label;
 
 
     /**
@@ -112,6 +123,98 @@ public class AlterTableResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return return the type_id (when changing a table, a new type may be
+     *         created)
+     * 
+     */
+    public String getTypeId() {
+        return typeId;
+    }
+
+    /**
+     * 
+     * @param typeId  return the type_id (when changing a table, a new type may
+     *                be created)
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AlterTableResponse setTypeId(String typeId) {
+        this.typeId = (typeId == null) ? "" : typeId;
+        return this;
+    }
+
+    /**
+     * 
+     * @return return the type_definition  (when changing a table, a new type
+     *         may be created)
+     * 
+     */
+    public String getTypeDefinition() {
+        return typeDefinition;
+    }
+
+    /**
+     * 
+     * @param typeDefinition  return the type_definition  (when changing a
+     *                        table, a new type may be created)
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AlterTableResponse setTypeDefinition(String typeDefinition) {
+        this.typeDefinition = (typeDefinition == null) ? "" : typeDefinition;
+        return this;
+    }
+
+    /**
+     * 
+     * @return return the type properties  (when changing a table, a new type
+     *         may be created)
+     * 
+     */
+    public Map<String, List<String>> getProperties() {
+        return properties;
+    }
+
+    /**
+     * 
+     * @param properties  return the type properties  (when changing a table, a
+     *                    new type may be created)
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AlterTableResponse setProperties(Map<String, List<String>> properties) {
+        this.properties = (properties == null) ? new LinkedHashMap<String, List<String>>() : properties;
+        return this;
+    }
+
+    /**
+     * 
+     * @return return the type label  (when changing a table, a new type may be
+     *         created)
+     * 
+     */
+    public String getLabel() {
+        return label;
+    }
+
+    /**
+     * 
+     * @param label  return the type label  (when changing a table, a new type
+     *               may be created)
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AlterTableResponse setLabel(String label) {
+        this.label = (label == null) ? "" : label;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -146,6 +249,18 @@ public class AlterTableResponse implements IndexedRecord {
             case 2:
                 return this.value;
 
+            case 3:
+                return this.typeId;
+
+            case 4:
+                return this.typeDefinition;
+
+            case 5:
+                return this.properties;
+
+            case 6:
+                return this.label;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -177,6 +292,22 @@ public class AlterTableResponse implements IndexedRecord {
                 this.value = (String)value;
                 break;
 
+            case 3:
+                this.typeId = (String)value;
+                break;
+
+            case 4:
+                this.typeDefinition = (String)value;
+                break;
+
+            case 5:
+                this.properties = (Map<String, List<String>>)value;
+                break;
+
+            case 6:
+                this.label = (String)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -196,7 +327,11 @@ public class AlterTableResponse implements IndexedRecord {
 
         return ( this.tableName.equals( that.tableName )
                  && this.action.equals( that.action )
-                 && this.value.equals( that.value ) );
+                 && this.value.equals( that.value )
+                 && this.typeId.equals( that.typeId )
+                 && this.typeDefinition.equals( that.typeDefinition )
+                 && this.properties.equals( that.properties )
+                 && this.label.equals( that.label ) );
     }
 
     @Override
@@ -215,6 +350,22 @@ public class AlterTableResponse implements IndexedRecord {
         builder.append( gd.toString( "value" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.value ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "typeId" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.typeId ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "typeDefinition" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.typeDefinition ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "properties" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.properties ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "label" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.label ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -226,6 +377,10 @@ public class AlterTableResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.tableName.hashCode();
         hashCode = (31 * hashCode) + this.action.hashCode();
         hashCode = (31 * hashCode) + this.value.hashCode();
+        hashCode = (31 * hashCode) + this.typeId.hashCode();
+        hashCode = (31 * hashCode) + this.typeDefinition.hashCode();
+        hashCode = (31 * hashCode) + this.properties.hashCode();
+        hashCode = (31 * hashCode) + this.label.hashCode();
         return hashCode;
     }
 

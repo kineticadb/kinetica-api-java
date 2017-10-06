@@ -19,10 +19,15 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createUnion(CreateUnionRequest)}.
  * <p>
- * Creates a table that is the concatenation of one or more existing tables. It
- * is equivalent to the SQL UNION ALL operator.  Non-charN 'string' and 'bytes'
- * column types cannot be included in a union, neither can columns with the
- * property 'store_only'.
+ * Performs a <a href="../../../../../concepts/unions.html"
+ * target="_top">union</a> (concatenation) of one or more existing tables or
+ * views, the results of which are stored in a new view. It is equivalent to
+ * the SQL UNION ALL operator.  Non-charN 'string' and 'bytes' column types
+ * cannot be included in a union, neither can columns with the property
+ * 'store_only'. Though not explicitly unions, <a
+ * href="../../../../../concepts/intersect.html" target="_top">intersect</a>
+ * and <a href="../../../../../concepts/except.html" target="_top">except</a>
+ * are also available from this endpoint.
  */
 public class CreateUnionRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -52,20 +57,80 @@ public class CreateUnionRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> collection_name: Name of a collection which is to contain
-     * the union. If the collection provided is non-existent, the collection
-     * will be automatically created. If empty, then the union will be a
-     * top-level table.
-     *         <li> materialize_on_gpu: If 'true' then the columns of the union
-     * will be cached on the GPU. Values: true, false.
-     * <p>
-     *         <li> mode: If 'merge_views' then this operation will merge (i.e.
-     * union) the provided views. All 'table_names' must be views from the same
-     * underlying base table. Values: union_all, union, union_distinct, except,
-     * intersect, merge_views.
-     * <p>
-     *         <li> ttl: Sets the TTL of the table specified in {@code
-     * tableName}. The value must be the desired TTL in minutes.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
+     * COLLECTION_NAME}: Name of a collection which is to contain the union. If
+     * the collection provided is non-existent, the collection will be
+     * automatically created. If empty, then the union will be a top-level
+     * table.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
+     * MATERIALIZE_ON_GPU}: If 'true' then the columns of the union will be
+     * cached on the GPU.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
+     *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#MODE
+     * MODE}: If 'merge_views' then this operation will merge (i.e. union) the
+     * provided views. All 'table_names' must be views from the same underlying
+     * base table.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL UNION_ALL}:
+     * Retains all rows from the specified tables.
+     *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#UNION
+     * UNION}: Retains all unique rows from the specified tables (synonym for
+     * 'union_distinct').
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#UNION_DISTINCT
+     * UNION_DISTINCT}: Retains all unique rows from the specified tables.
+     *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#EXCEPT
+     * EXCEPT}: Retains all unique rows from the first table that do not appear
+     * in the second table (only works on 2 tables).
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT INTERSECT}:
+     * Retains all unique rows that appear in both of the specified tables
+     * (only works on 2 tables).
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS MERGE_VIEWS}:
+     * Merge two or more views (or views of views) of the same base data set
+     * into a new view. The resulting view would match the results of a SQL OR
+     * operation, e.g., if filter 1 creates a view using the expression 'x =
+     * 10' and filter 2 creates a view using the expression 'x <= 10', then the
+     * merge views operation creates a new view using the expression 'x = 10 OR
+     * x <= 10'.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL UNION_ALL}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE CHUNK_SIZE}: If
+     * provided this indicates the chunk size to be used for this table.
+     *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#TTL
+     * TTL}: Sets the TTL of the table specified in {@code tableName}. The
+     * value must be the desired TTL in minutes.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#PERSIST PERSIST}: If
+     * {@code true} then the union will be persisted as a regular table (it
+     * will not be automatically cleared unless a {@code ttl} is provided, and
+     * the table data can be modified in subsequent operations). If {@code
+     * false} (the default) then the union will be a read-only, memory-only
+     * temporary table.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -81,7 +146,15 @@ public class CreateUnionRequest implements IndexedRecord {
 
         /**
          * If 'true' then the columns of the union will be cached on the GPU.
-         * Values: true, false.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
          */
         public static final String MATERIALIZE_ON_GPU = "materialize_on_gpu";
         public static final String TRUE = "true";
@@ -90,8 +163,38 @@ public class CreateUnionRequest implements IndexedRecord {
         /**
          * If 'merge_views' then this operation will merge (i.e. union) the
          * provided views. All 'table_names' must be views from the same
-         * underlying base table. Values: union_all, union, union_distinct,
-         * except, intersect, merge_views.
+         * underlying base table.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL UNION_ALL}:
+         * Retains all rows from the specified tables.
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#UNION UNION}: Retains
+         * all unique rows from the specified tables (synonym for
+         * 'union_distinct').
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#UNION_DISTINCT
+         * UNION_DISTINCT}: Retains all unique rows from the specified tables.
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#EXCEPT EXCEPT}:
+         * Retains all unique rows from the first table that do not appear in
+         * the second table (only works on 2 tables).
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT INTERSECT}:
+         * Retains all unique rows that appear in both of the specified tables
+         * (only works on 2 tables).
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
+         * MERGE_VIEWS}: Merge two or more views (or views of views) of the
+         * same base data set into a new view. The resulting view would match
+         * the results of a SQL OR operation, e.g., if filter 1 creates a view
+         * using the expression 'x = 10' and filter 2 creates a view using the
+         * expression 'x <= 10', then the merge views operation creates a new
+         * view using the expression 'x = 10 OR x <= 10'.
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL UNION_ALL}.
          */
         public static final String MODE = "mode";
 
@@ -124,16 +227,43 @@ public class CreateUnionRequest implements IndexedRecord {
         public static final String INTERSECT = "intersect";
 
         /**
-         * Merge (union) 2 or more views of the same base table into a new
-         * view.
+         * Merge two or more views (or views of views) of the same base data
+         * set into a new view. The resulting view would match the results of a
+         * SQL OR operation, e.g., if filter 1 creates a view using the
+         * expression 'x = 10' and filter 2 creates a view using the expression
+         * 'x <= 10', then the merge views operation creates a new view using
+         * the expression 'x = 10 OR x <= 10'.
          */
         public static final String MERGE_VIEWS = "merge_views";
+
+        /**
+         * If provided this indicates the chunk size to be used for this table.
+         */
+        public static final String CHUNK_SIZE = "chunk_size";
 
         /**
          * Sets the TTL of the table specified in {@code tableName}. The value
          * must be the desired TTL in minutes.
          */
         public static final String TTL = "ttl";
+
+        /**
+         * If {@code true} then the union will be persisted as a regular table
+         * (it will not be automatically cleared unless a {@code ttl} is
+         * provided, and the table data can be modified in subsequent
+         * operations). If {@code false} (the default) then the union will be a
+         * read-only, memory-only temporary table.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
+         */
+        public static final String PERSIST = "persist";
 
         private Options() {  }
     }
@@ -171,22 +301,97 @@ public class CreateUnionRequest implements IndexedRecord {
      *                           in the union.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection which
-     *                 is to contain the union. If the collection provided is
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a collection which is to
+     *                 contain the union. If the collection provided is
      *                 non-existent, the collection will be automatically
      *                 created. If empty, then the union will be a top-level
      *                 table.
-     *                         <li> materialize_on_gpu: If 'true' then the
-     *                 columns of the union will be cached on the GPU. Values:
-     *                 true, false.
-     *                         <li> mode: If 'merge_views' then this operation
-     *                 will merge (i.e. union) the provided views. All
-     *                 'table_names' must be views from the same underlying
-     *                 base table. Values: union_all, union, union_distinct,
-     *                 except, intersect, merge_views.
-     *                         <li> ttl: Sets the TTL of the table specified in
-     *                 {@code tableName}. The value must be the desired TTL in
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
+     *                 MATERIALIZE_ON_GPU}: If 'true' then the columns of the
+     *                 union will be cached on the GPU.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#MODE
+     *                 MODE}: If 'merge_views' then this operation will merge
+     *                 (i.e. union) the provided views. All 'table_names' must
+     *                 be views from the same underlying base table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
+     *                 UNION_ALL}: Retains all rows from the specified tables.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION
+     *                 UNION}: Retains all unique rows from the specified
+     *                 tables (synonym for 'union_distinct').
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_DISTINCT
+     *                 UNION_DISTINCT}: Retains all unique rows from the
+     *                 specified tables.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#EXCEPT
+     *                 EXCEPT}: Retains all unique rows from the first table
+     *                 that do not appear in the second table (only works on 2
+     *                 tables).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT
+     *                 INTERSECT}: Retains all unique rows that appear in both
+     *                 of the specified tables (only works on 2 tables).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
+     *                 MERGE_VIEWS}: Merge two or more views (or views of
+     *                 views) of the same base data set into a new view. The
+     *                 resulting view would match the results of a SQL OR
+     *                 operation, e.g., if filter 1 creates a view using the
+     *                 expression 'x = 10' and filter 2 creates a view using
+     *                 the expression 'x <= 10', then the merge views operation
+     *                 creates a new view using the expression 'x = 10 OR x <=
+     *                 10'.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
+     *                 UNION_ALL}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE
+     *                 CHUNK_SIZE}: If provided this indicates the chunk size
+     *                 to be used for this table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}:
+     *                 Sets the TTL of the table specified in {@code
+     *                 tableName}. The value must be the desired TTL in
      *                 minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#PERSIST
+     *                 PERSIST}: If {@code true} then the union will be
+     *                 persisted as a regular table (it will not be
+     *                 automatically cleared unless a {@code ttl} is provided,
+     *                 and the table data can be modified in subsequent
+     *                 operations). If {@code false} (the default) then the
+     *                 union will be a read-only, memory-only temporary table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      */
@@ -295,18 +500,88 @@ public class CreateUnionRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> collection_name: Name of a collection which is to
-     *         contain the union. If the collection provided is non-existent,
-     *         the collection will be automatically created. If empty, then the
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
+     *         COLLECTION_NAME}: Name of a collection which is to contain the
+     *         union. If the collection provided is non-existent, the
+     *         collection will be automatically created. If empty, then the
      *         union will be a top-level table.
-     *                 <li> materialize_on_gpu: If 'true' then the columns of
-     *         the union will be cached on the GPU. Values: true, false.
-     *                 <li> mode: If 'merge_views' then this operation will
-     *         merge (i.e. union) the provided views. All 'table_names' must be
-     *         views from the same underlying base table. Values: union_all,
-     *         union, union_distinct, except, intersect, merge_views.
-     *                 <li> ttl: Sets the TTL of the table specified in {@code
-     *         tableName}. The value must be the desired TTL in minutes.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
+     *         MATERIALIZE_ON_GPU}: If 'true' then the columns of the union
+     *         will be cached on the GPU.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#MODE MODE}: If
+     *         'merge_views' then this operation will merge (i.e. union) the
+     *         provided views. All 'table_names' must be views from the same
+     *         underlying base table.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
+     *         UNION_ALL}: Retains all rows from the specified tables.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#UNION UNION}:
+     *         Retains all unique rows from the specified tables (synonym for
+     *         'union_distinct').
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#UNION_DISTINCT
+     *         UNION_DISTINCT}: Retains all unique rows from the specified
+     *         tables.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#EXCEPT EXCEPT}:
+     *         Retains all unique rows from the first table that do not appear
+     *         in the second table (only works on 2 tables).
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT
+     *         INTERSECT}: Retains all unique rows that appear in both of the
+     *         specified tables (only works on 2 tables).
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
+     *         MERGE_VIEWS}: Merge two or more views (or views of views) of the
+     *         same base data set into a new view. The resulting view would
+     *         match the results of a SQL OR operation, e.g., if filter 1
+     *         creates a view using the expression 'x = 10' and filter 2
+     *         creates a view using the expression 'x <= 10', then the merge
+     *         views operation creates a new view using the expression 'x = 10
+     *         OR x <= 10'.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
+     *         UNION_ALL}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE
+     *         CHUNK_SIZE}: If provided this indicates the chunk size to be
+     *         used for this table.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}: Sets the
+     *         TTL of the table specified in {@code tableName}. The value must
+     *         be the desired TTL in minutes.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#PERSIST PERSIST}:
+     *         If {@code true} then the union will be persisted as a regular
+     *         table (it will not be automatically cleared unless a {@code ttl}
+     *         is provided, and the table data can be modified in subsequent
+     *         operations). If {@code false} (the default) then the union will
+     *         be a read-only, memory-only temporary table.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
      *         </ul>
      * 
      */
@@ -318,22 +593,97 @@ public class CreateUnionRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection which
-     *                 is to contain the union. If the collection provided is
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a collection which is to
+     *                 contain the union. If the collection provided is
      *                 non-existent, the collection will be automatically
      *                 created. If empty, then the union will be a top-level
      *                 table.
-     *                         <li> materialize_on_gpu: If 'true' then the
-     *                 columns of the union will be cached on the GPU. Values:
-     *                 true, false.
-     *                         <li> mode: If 'merge_views' then this operation
-     *                 will merge (i.e. union) the provided views. All
-     *                 'table_names' must be views from the same underlying
-     *                 base table. Values: union_all, union, union_distinct,
-     *                 except, intersect, merge_views.
-     *                         <li> ttl: Sets the TTL of the table specified in
-     *                 {@code tableName}. The value must be the desired TTL in
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
+     *                 MATERIALIZE_ON_GPU}: If 'true' then the columns of the
+     *                 union will be cached on the GPU.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#MODE
+     *                 MODE}: If 'merge_views' then this operation will merge
+     *                 (i.e. union) the provided views. All 'table_names' must
+     *                 be views from the same underlying base table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
+     *                 UNION_ALL}: Retains all rows from the specified tables.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION
+     *                 UNION}: Retains all unique rows from the specified
+     *                 tables (synonym for 'union_distinct').
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_DISTINCT
+     *                 UNION_DISTINCT}: Retains all unique rows from the
+     *                 specified tables.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#EXCEPT
+     *                 EXCEPT}: Retains all unique rows from the first table
+     *                 that do not appear in the second table (only works on 2
+     *                 tables).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT
+     *                 INTERSECT}: Retains all unique rows that appear in both
+     *                 of the specified tables (only works on 2 tables).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
+     *                 MERGE_VIEWS}: Merge two or more views (or views of
+     *                 views) of the same base data set into a new view. The
+     *                 resulting view would match the results of a SQL OR
+     *                 operation, e.g., if filter 1 creates a view using the
+     *                 expression 'x = 10' and filter 2 creates a view using
+     *                 the expression 'x <= 10', then the merge views operation
+     *                 creates a new view using the expression 'x = 10 OR x <=
+     *                 10'.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
+     *                 UNION_ALL}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE
+     *                 CHUNK_SIZE}: If provided this indicates the chunk size
+     *                 to be used for this table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}:
+     *                 Sets the TTL of the table specified in {@code
+     *                 tableName}. The value must be the desired TTL in
      *                 minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#PERSIST
+     *                 PERSIST}: If {@code true} then the union will be
+     *                 persisted as a regular table (it will not be
+     *                 automatically cleared unless a {@code ttl} is provided,
+     *                 and the table data can be modified in subsequent
+     *                 operations). If {@code false} (the default) then the
+     *                 union will be a read-only, memory-only temporary table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -23,7 +23,7 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#createType(CreateTypeRequest)}). The table will be created
  * inside a collection if the option {@code collection_name} is specified. If
  * that collection does not already exist, it will be created.
-
+ * <p>
  * To create a new collection, specify the name of the collection in {@code
  * tableName} and set the {@code is_collection} option to {@code true}; {@code
  * typeId} will be ignored.
@@ -54,36 +54,101 @@ public class CreateTableRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> no_error_if_exists: If {@code true}, prevents an error from
-     * occurring if the table already exists and is of the given type.  If a
-     * table with the same ID but a different type exists, it is still an
-     * error. Values: true, false.
-     * <p>
-     *         <li> collection_name: Name of a collection which is to contain
-     * the newly created table. If empty, then the newly created table will be
-     * a top-level table. If the collection does not allow duplicate types and
-     * it contains a table of the same type as the given one, then this table
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#NO_ERROR_IF_EXISTS
+     * NO_ERROR_IF_EXISTS}: If {@code true}, prevents an error from occurring
+     * if the table already exists and is of the given type.  If a table with
+     * the same ID but a different type exists, it is still an error.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#COLLECTION_NAME
+     * COLLECTION_NAME}: Name of a collection which is to contain the newly
+     * created table. If empty, then the newly created table will be a
+     * top-level table. If the collection does not allow duplicate types and it
+     * contains a table of the same type as the given one, then this table
      * creation request will fail.
-     *         <li> is_collection: Indicates whether the new table to be
-     * created will be a collection. Values: true, false.
-     * <p>
-     *         <li> disallow_homogeneous_tables: For a collection, indicates
-     * whether the collection prohibits containment of multiple tables of
-     * exactly the same data type. Values: true, false.
-     * <p>
-     *         <li> is_replicated: For a table, indicates whether the table is
-     * to be replicated to all the database ranks. This may be necessary when
-     * the table is to be joined with other tables in a query. Values: true,
-     * false.
-     * <p>
-     *         <li> foreign_keys: Semicolon-separated list of foreign key
-     * constraints, of the format 'source_column references
-     * target_table(primary_key_column)'.
-     *         <li> foreign_shard_key: Foreign shard key description of the
-     * format: <fk_foreign_key> references <pk_column_name> from
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#IS_COLLECTION
+     * IS_COLLECTION}: Indicates whether the new table to be created will be a
+     * collection.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#DISALLOW_HOMOGENEOUS_TABLES
+     * DISALLOW_HOMOGENEOUS_TABLES}: For a collection, indicates whether the
+     * collection prohibits containment of multiple tables of exactly the same
+     * data type.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
+     * IS_REPLICATED}: For a table, indicates whether the table is to be
+     * replicated to all the database ranks. This may be necessary when the
+     * table is to be joined with other tables in a query.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
+     * FOREIGN_KEYS}: Semicolon-separated list of foreign key constraints, of
+     * the format 'source_column references target_table(primary_key_column) [
+     * as <foreign_key_name> ]'.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
+     * FOREIGN_SHARD_KEY}: Foreign shard key description of the format:
+     * <fk_foreign_key> references <pk_column_name> from
      * <pk_table_name>(<pk_primary_key>)
-     *         <li> ttl: Sets the TTL of the table or collection specified in
-     * {@code tableName}. The value must be the desired TTL in minutes.
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TTL
+     * TTL}: Sets the TTL of the table or collection specified in {@code
+     * tableName}. The value must be the desired TTL in minutes.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE CHUNK_SIZE}: If
+     * provided this indicates the chunk size to be used for this table.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
+     * IS_RESULT_TABLE}: For a table, indicates whether the table is a
+     * non-persistent, memory-only table that will store the output of a proc
+     * executed with {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. A
+     * result table cannot contain store_only, text_search, or string columns
+     * (char columns are acceptable), records cannot be inserted into it
+     * directly, and it will not be retained if the server is restarted.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -92,8 +157,16 @@ public class CreateTableRequest implements IndexedRecord {
         /**
          * If {@code true}, prevents an error from occurring if the table
          * already exists and is of the given type.  If a table with the same
-         * ID but a different type exists, it is still an error. Values: true,
-         * false.
+         * ID but a different type exists, it is still an error.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
          */
         public static final String NO_ERROR_IF_EXISTS = "no_error_if_exists";
         public static final String TRUE = "true";
@@ -110,27 +183,53 @@ public class CreateTableRequest implements IndexedRecord {
 
         /**
          * Indicates whether the new table to be created will be a collection.
-         * Values: true, false.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
          */
         public static final String IS_COLLECTION = "is_collection";
 
         /**
          * For a collection, indicates whether the collection prohibits
          * containment of multiple tables of exactly the same data type.
-         * Values: true, false.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
          */
         public static final String DISALLOW_HOMOGENEOUS_TABLES = "disallow_homogeneous_tables";
 
         /**
          * For a table, indicates whether the table is to be replicated to all
          * the database ranks. This may be necessary when the table is to be
-         * joined with other tables in a query. Values: true, false.
+         * joined with other tables in a query.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
          */
         public static final String IS_REPLICATED = "is_replicated";
 
         /**
          * Semicolon-separated list of foreign key constraints, of the format
-         * 'source_column references target_table(primary_key_column)'.
+         * 'source_column references target_table(primary_key_column) [ as
+         * <foreign_key_name> ]'.
          */
         public static final String FOREIGN_KEYS = "foreign_keys";
 
@@ -145,6 +244,30 @@ public class CreateTableRequest implements IndexedRecord {
          * tableName}. The value must be the desired TTL in minutes.
          */
         public static final String TTL = "ttl";
+
+        /**
+         * If provided this indicates the chunk size to be used for this table.
+         */
+        public static final String CHUNK_SIZE = "chunk_size";
+
+        /**
+         * For a table, indicates whether the table is a non-persistent,
+         * memory-only table that will store the output of a proc executed with
+         * {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. A result
+         * table cannot contain store_only, text_search, or string columns
+         * (char columns are acceptable), records cannot be inserted into it
+         * directly, and it will not be retained if the server is restarted.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
+         */
+        public static final String IS_RESULT_TABLE = "is_result_table";
 
         private Options() {  }
     }
@@ -177,38 +300,120 @@ public class CreateTableRequest implements IndexedRecord {
      *                {@code is_collection} is {@code true}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> no_error_if_exists: If {@code true},
-     *                 prevents an error from occurring if the table already
-     *                 exists and is of the given type.  If a table with the
-     *                 same ID but a different type exists, it is still an
-     *                 error. Values: true, false.
-     *                         <li> collection_name: Name of a collection which
-     *                 is to contain the newly created table. If empty, then
-     *                 the newly created table will be a top-level table. If
-     *                 the collection does not allow duplicate types and it
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#NO_ERROR_IF_EXISTS
+     *                 NO_ERROR_IF_EXISTS}: If {@code true}, prevents an error
+     *                 from occurring if the table already exists and is of the
+     *                 given type.  If a table with the same ID but a different
+     *                 type exists, it is still an error.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a collection which is to
+     *                 contain the newly created table. If empty, then the
+     *                 newly created table will be a top-level table. If the
+     *                 collection does not allow duplicate types and it
      *                 contains a table of the same type as the given one, then
      *                 this table creation request will fail.
-     *                         <li> is_collection: Indicates whether the new
-     *                 table to be created will be a collection. Values: true,
-     *                 false.
-     *                         <li> disallow_homogeneous_tables: For a
-     *                 collection, indicates whether the collection prohibits
-     *                 containment of multiple tables of exactly the same data
-     *                 type. Values: true, false.
-     *                         <li> is_replicated: For a table, indicates
-     *                 whether the table is to be replicated to all the
-     *                 database ranks. This may be necessary when the table is
-     *                 to be joined with other tables in a query. Values: true,
-     *                 false.
-     *                         <li> foreign_keys: Semicolon-separated list of
-     *                 foreign key constraints, of the format 'source_column
-     *                 references target_table(primary_key_column)'.
-     *                         <li> foreign_shard_key: Foreign shard key
-     *                 description of the format: <fk_foreign_key> references
-     *                 <pk_column_name> from <pk_table_name>(<pk_primary_key>)
-     *                         <li> ttl: Sets the TTL of the table or
-     *                 collection specified in {@code tableName}. The value
-     *                 must be the desired TTL in minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#IS_COLLECTION
+     *                 IS_COLLECTION}: Indicates whether the new table to be
+     *                 created will be a collection.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#DISALLOW_HOMOGENEOUS_TABLES
+     *                 DISALLOW_HOMOGENEOUS_TABLES}: For a collection,
+     *                 indicates whether the collection prohibits containment
+     *                 of multiple tables of exactly the same data type.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
+     *                 IS_REPLICATED}: For a table, indicates whether the table
+     *                 is to be replicated to all the database ranks. This may
+     *                 be necessary when the table is to be joined with other
+     *                 tables in a query.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
+     *                 FOREIGN_KEYS}: Semicolon-separated list of foreign key
+     *                 constraints, of the format 'source_column references
+     *                 target_table(primary_key_column) [ as <foreign_key_name>
+     *                 ]'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
+     *                 FOREIGN_SHARD_KEY}: Foreign shard key description of the
+     *                 format: <fk_foreign_key> references <pk_column_name>
+     *                 from <pk_table_name>(<pk_primary_key>)
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}:
+     *                 Sets the TTL of the table or collection specified in
+     *                 {@code tableName}. The value must be the desired TTL in
+     *                 minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE
+     *                 CHUNK_SIZE}: If provided this indicates the chunk size
+     *                 to be used for this table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
+     *                 IS_RESULT_TABLE}: For a table, indicates whether the
+     *                 table is a non-persistent, memory-only table that will
+     *                 store the output of a proc executed with {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. A
+     *                 result table cannot contain store_only, text_search, or
+     *                 string columns (char columns are acceptable), records
+     *                 cannot be inserted into it directly, and it will not be
+     *                 retained if the server is restarted.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      */
@@ -277,35 +482,106 @@ public class CreateTableRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> no_error_if_exists: If {@code true}, prevents an
-     *         error from occurring if the table already exists and is of the
-     *         given type.  If a table with the same ID but a different type
-     *         exists, it is still an error. Values: true, false.
-     *                 <li> collection_name: Name of a collection which is to
-     *         contain the newly created table. If empty, then the newly
-     *         created table will be a top-level table. If the collection does
-     *         not allow duplicate types and it contains a table of the same
-     *         type as the given one, then this table creation request will
-     *         fail.
-     *                 <li> is_collection: Indicates whether the new table to
-     *         be created will be a collection. Values: true, false.
-     *                 <li> disallow_homogeneous_tables: For a collection,
-     *         indicates whether the collection prohibits containment of
-     *         multiple tables of exactly the same data type. Values: true,
-     *         false.
-     *                 <li> is_replicated: For a table, indicates whether the
-     *         table is to be replicated to all the database ranks. This may be
-     *         necessary when the table is to be joined with other tables in a
-     *         query. Values: true, false.
-     *                 <li> foreign_keys: Semicolon-separated list of foreign
-     *         key constraints, of the format 'source_column references
-     *         target_table(primary_key_column)'.
-     *                 <li> foreign_shard_key: Foreign shard key description of
-     *         the format: <fk_foreign_key> references <pk_column_name> from
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#NO_ERROR_IF_EXISTS
+     *         NO_ERROR_IF_EXISTS}: If {@code true}, prevents an error from
+     *         occurring if the table already exists and is of the given type.
+     *         If a table with the same ID but a different type exists, it is
+     *         still an error.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#COLLECTION_NAME
+     *         COLLECTION_NAME}: Name of a collection which is to contain the
+     *         newly created table. If empty, then the newly created table will
+     *         be a top-level table. If the collection does not allow duplicate
+     *         types and it contains a table of the same type as the given one,
+     *         then this table creation request will fail.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#IS_COLLECTION
+     *         IS_COLLECTION}: Indicates whether the new table to be created
+     *         will be a collection.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#DISALLOW_HOMOGENEOUS_TABLES
+     *         DISALLOW_HOMOGENEOUS_TABLES}: For a collection, indicates
+     *         whether the collection prohibits containment of multiple tables
+     *         of exactly the same data type.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
+     *         IS_REPLICATED}: For a table, indicates whether the table is to
+     *         be replicated to all the database ranks. This may be necessary
+     *         when the table is to be joined with other tables in a query.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
+     *         FOREIGN_KEYS}: Semicolon-separated list of foreign key
+     *         constraints, of the format 'source_column references
+     *         target_table(primary_key_column) [ as <foreign_key_name> ]'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
+     *         FOREIGN_SHARD_KEY}: Foreign shard key description of the format:
+     *         <fk_foreign_key> references <pk_column_name> from
      *         <pk_table_name>(<pk_primary_key>)
-     *                 <li> ttl: Sets the TTL of the table or collection
-     *         specified in {@code tableName}. The value must be the desired
-     *         TTL in minutes.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}: Sets the
+     *         TTL of the table or collection specified in {@code tableName}.
+     *         The value must be the desired TTL in minutes.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE
+     *         CHUNK_SIZE}: If provided this indicates the chunk size to be
+     *         used for this table.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
+     *         IS_RESULT_TABLE}: For a table, indicates whether the table is a
+     *         non-persistent, memory-only table that will store the output of
+     *         a proc executed with {@link
+     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. A result table
+     *         cannot contain store_only, text_search, or string columns (char
+     *         columns are acceptable), records cannot be inserted into it
+     *         directly, and it will not be retained if the server is
+     *         restarted.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *         </ul>
      * 
      */
@@ -317,38 +593,120 @@ public class CreateTableRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> no_error_if_exists: If {@code true},
-     *                 prevents an error from occurring if the table already
-     *                 exists and is of the given type.  If a table with the
-     *                 same ID but a different type exists, it is still an
-     *                 error. Values: true, false.
-     *                         <li> collection_name: Name of a collection which
-     *                 is to contain the newly created table. If empty, then
-     *                 the newly created table will be a top-level table. If
-     *                 the collection does not allow duplicate types and it
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#NO_ERROR_IF_EXISTS
+     *                 NO_ERROR_IF_EXISTS}: If {@code true}, prevents an error
+     *                 from occurring if the table already exists and is of the
+     *                 given type.  If a table with the same ID but a different
+     *                 type exists, it is still an error.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a collection which is to
+     *                 contain the newly created table. If empty, then the
+     *                 newly created table will be a top-level table. If the
+     *                 collection does not allow duplicate types and it
      *                 contains a table of the same type as the given one, then
      *                 this table creation request will fail.
-     *                         <li> is_collection: Indicates whether the new
-     *                 table to be created will be a collection. Values: true,
-     *                 false.
-     *                         <li> disallow_homogeneous_tables: For a
-     *                 collection, indicates whether the collection prohibits
-     *                 containment of multiple tables of exactly the same data
-     *                 type. Values: true, false.
-     *                         <li> is_replicated: For a table, indicates
-     *                 whether the table is to be replicated to all the
-     *                 database ranks. This may be necessary when the table is
-     *                 to be joined with other tables in a query. Values: true,
-     *                 false.
-     *                         <li> foreign_keys: Semicolon-separated list of
-     *                 foreign key constraints, of the format 'source_column
-     *                 references target_table(primary_key_column)'.
-     *                         <li> foreign_shard_key: Foreign shard key
-     *                 description of the format: <fk_foreign_key> references
-     *                 <pk_column_name> from <pk_table_name>(<pk_primary_key>)
-     *                         <li> ttl: Sets the TTL of the table or
-     *                 collection specified in {@code tableName}. The value
-     *                 must be the desired TTL in minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#IS_COLLECTION
+     *                 IS_COLLECTION}: Indicates whether the new table to be
+     *                 created will be a collection.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#DISALLOW_HOMOGENEOUS_TABLES
+     *                 DISALLOW_HOMOGENEOUS_TABLES}: For a collection,
+     *                 indicates whether the collection prohibits containment
+     *                 of multiple tables of exactly the same data type.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
+     *                 IS_REPLICATED}: For a table, indicates whether the table
+     *                 is to be replicated to all the database ranks. This may
+     *                 be necessary when the table is to be joined with other
+     *                 tables in a query.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
+     *                 FOREIGN_KEYS}: Semicolon-separated list of foreign key
+     *                 constraints, of the format 'source_column references
+     *                 target_table(primary_key_column) [ as <foreign_key_name>
+     *                 ]'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
+     *                 FOREIGN_SHARD_KEY}: Foreign shard key description of the
+     *                 format: <fk_foreign_key> references <pk_column_name>
+     *                 from <pk_table_name>(<pk_primary_key>)
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}:
+     *                 Sets the TTL of the table or collection specified in
+     *                 {@code tableName}. The value must be the desired TTL in
+     *                 minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE
+     *                 CHUNK_SIZE}: If provided this indicates the chunk size
+     *                 to be used for this table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
+     *                 IS_RESULT_TABLE}: For a table, indicates whether the
+     *                 table is a non-persistent, memory-only table that will
+     *                 store the output of a proc executed with {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. A
+     *                 result table cannot contain store_only, text_search, or
+     *                 string columns (char columns are acceptable), records
+     *                 cannot be inserted into it directly, and it will not be
+     *                 retained if the server is restarted.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

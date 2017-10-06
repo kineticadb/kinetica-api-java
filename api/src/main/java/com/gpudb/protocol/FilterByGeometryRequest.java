@@ -17,7 +17,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#filterByGeometry(FilterByGeometryRequest)}.
  * <p>
- * Applies a geometry filter against a spatial column named WKT in a given
+ * Applies a geometry filter against a geospatial geometry column in a given
  * table, collection or view. The filtering geometry is provided by {@code
  * inputWkt}.
  */
@@ -48,9 +48,35 @@ public class FilterByGeometryRequest implements IndexedRecord {
 
 
     /**
-     * The geometric filtering operation to perform Values: contains, crosses,
-     * disjoint, equals, intersects, overlaps, touches, within.
-
+     * The geometric filtering operation to perform
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByGeometryRequest.Operation#CONTAINS CONTAINS}:
+     * Matches records that contain the given WKT in {@code inputWkt}, i.e. the
+     * given WKT is within the bounds of a record's geometry.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByGeometryRequest.Operation#CROSSES CROSSES}:
+     * Matches records that cross the given WKT.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByGeometryRequest.Operation#DISJOINT DISJOINT}:
+     * Matches records that are disjoint from the given WKT.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByGeometryRequest.Operation#EQUALS EQUALS}:
+     * Matches records that are the same as the given WKT.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByGeometryRequest.Operation#INTERSECTS
+     * INTERSECTS}: Matches records that intersect the given WKT.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByGeometryRequest.Operation#OVERLAPS OVERLAPS}:
+     * Matches records that overlap the given WKT.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByGeometryRequest.Operation#TOUCHES TOUCHES}:
+     * Matches records that touch the given WKT.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByGeometryRequest.Operation#WITHIN WITHIN}:
+     * Matches records that are within the given WKT.
+     * </ul>
      * A set of string constants for the parameter {@code operation}.
      */
     public static final class Operation {
@@ -125,19 +151,50 @@ public class FilterByGeometryRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table on which the filter by geometry will
      *                   be performed.  Must be an existing table, collection
-     *                   or view containing a column named WKT.
+     *                   or view containing a geospatial geometry column.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results. Has the same naming
      *                  restrictions as <a
      *                  href="../../../../../concepts/tables.html"
      *                  target="_top">tables</a>.
      * @param columnName  Name of the column to be used in the filter. Must be
-     *                    'WKT'
+     *                    a geospatial geometry column.
      * @param inputWkt  A geometry in WKT format that will be used to filter
      *                  the objects in {@code tableName}.
-     * @param operation  The geometric filtering operation to perform Values:
-     *                   contains, crosses, disjoint, equals, intersects,
-     *                   overlaps, touches, within.
+     * @param operation  The geometric filtering operation to perform
+     *                   Supported values:
+     *                   <ul>
+     *                           <li> {@link
+     *                   com.gpudb.protocol.FilterByGeometryRequest.Operation#CONTAINS
+     *                   CONTAINS}: Matches records that contain the given WKT
+     *                   in {@code inputWkt}, i.e. the given WKT is within the
+     *                   bounds of a record's geometry.
+     *                           <li> {@link
+     *                   com.gpudb.protocol.FilterByGeometryRequest.Operation#CROSSES
+     *                   CROSSES}: Matches records that cross the given WKT.
+     *                           <li> {@link
+     *                   com.gpudb.protocol.FilterByGeometryRequest.Operation#DISJOINT
+     *                   DISJOINT}: Matches records that are disjoint from the
+     *                   given WKT.
+     *                           <li> {@link
+     *                   com.gpudb.protocol.FilterByGeometryRequest.Operation#EQUALS
+     *                   EQUALS}: Matches records that are the same as the
+     *                   given WKT.
+     *                           <li> {@link
+     *                   com.gpudb.protocol.FilterByGeometryRequest.Operation#INTERSECTS
+     *                   INTERSECTS}: Matches records that intersect the given
+     *                   WKT.
+     *                           <li> {@link
+     *                   com.gpudb.protocol.FilterByGeometryRequest.Operation#OVERLAPS
+     *                   OVERLAPS}: Matches records that overlap the given WKT.
+     *                           <li> {@link
+     *                   com.gpudb.protocol.FilterByGeometryRequest.Operation#TOUCHES
+     *                   TOUCHES}: Matches records that touch the given WKT.
+     *                           <li> {@link
+     *                   com.gpudb.protocol.FilterByGeometryRequest.Operation#WITHIN
+     *                   WITHIN}: Matches records that are within the given
+     *                   WKT.
+     *                   </ul>
      * @param options  Optional parameters.
      * 
      */
@@ -154,7 +211,7 @@ public class FilterByGeometryRequest implements IndexedRecord {
      * 
      * @return Name of the table on which the filter by geometry will be
      *         performed.  Must be an existing table, collection or view
-     *         containing a column named WKT.
+     *         containing a geospatial geometry column.
      * 
      */
     public String getTableName() {
@@ -165,7 +222,7 @@ public class FilterByGeometryRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table on which the filter by geometry will
      *                   be performed.  Must be an existing table, collection
-     *                   or view containing a column named WKT.
+     *                   or view containing a geospatial geometry column.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -205,7 +262,8 @@ public class FilterByGeometryRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the column to be used in the filter. Must be 'WKT'
+     * @return Name of the column to be used in the filter. Must be a
+     *         geospatial geometry column.
      * 
      */
     public String getColumnName() {
@@ -215,7 +273,7 @@ public class FilterByGeometryRequest implements IndexedRecord {
     /**
      * 
      * @param columnName  Name of the column to be used in the filter. Must be
-     *                    'WKT'
+     *                    a geospatial geometry column.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -250,9 +308,36 @@ public class FilterByGeometryRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The geometric filtering operation to perform Values: contains,
-     *         crosses, disjoint, equals, intersects, overlaps, touches,
-     *         within.
+     * @return The geometric filtering operation to perform
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByGeometryRequest.Operation#CONTAINS
+     *         CONTAINS}: Matches records that contain the given WKT in {@code
+     *         inputWkt}, i.e. the given WKT is within the bounds of a record's
+     *         geometry.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByGeometryRequest.Operation#CROSSES
+     *         CROSSES}: Matches records that cross the given WKT.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByGeometryRequest.Operation#DISJOINT
+     *         DISJOINT}: Matches records that are disjoint from the given WKT.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByGeometryRequest.Operation#EQUALS
+     *         EQUALS}: Matches records that are the same as the given WKT.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByGeometryRequest.Operation#INTERSECTS
+     *         INTERSECTS}: Matches records that intersect the given WKT.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByGeometryRequest.Operation#OVERLAPS
+     *         OVERLAPS}: Matches records that overlap the given WKT.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByGeometryRequest.Operation#TOUCHES
+     *         TOUCHES}: Matches records that touch the given WKT.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByGeometryRequest.Operation#WITHIN
+     *         WITHIN}: Matches records that are within the given WKT.
+     *         </ul>
      * 
      */
     public String getOperation() {
@@ -261,9 +346,40 @@ public class FilterByGeometryRequest implements IndexedRecord {
 
     /**
      * 
-     * @param operation  The geometric filtering operation to perform Values:
-     *                   contains, crosses, disjoint, equals, intersects,
-     *                   overlaps, touches, within.
+     * @param operation  The geometric filtering operation to perform
+     *                   Supported values:
+     *                   <ul>
+     *                           <li> {@link
+     *                   com.gpudb.protocol.FilterByGeometryRequest.Operation#CONTAINS
+     *                   CONTAINS}: Matches records that contain the given WKT
+     *                   in {@code inputWkt}, i.e. the given WKT is within the
+     *                   bounds of a record's geometry.
+     *                           <li> {@link
+     *                   com.gpudb.protocol.FilterByGeometryRequest.Operation#CROSSES
+     *                   CROSSES}: Matches records that cross the given WKT.
+     *                           <li> {@link
+     *                   com.gpudb.protocol.FilterByGeometryRequest.Operation#DISJOINT
+     *                   DISJOINT}: Matches records that are disjoint from the
+     *                   given WKT.
+     *                           <li> {@link
+     *                   com.gpudb.protocol.FilterByGeometryRequest.Operation#EQUALS
+     *                   EQUALS}: Matches records that are the same as the
+     *                   given WKT.
+     *                           <li> {@link
+     *                   com.gpudb.protocol.FilterByGeometryRequest.Operation#INTERSECTS
+     *                   INTERSECTS}: Matches records that intersect the given
+     *                   WKT.
+     *                           <li> {@link
+     *                   com.gpudb.protocol.FilterByGeometryRequest.Operation#OVERLAPS
+     *                   OVERLAPS}: Matches records that overlap the given WKT.
+     *                           <li> {@link
+     *                   com.gpudb.protocol.FilterByGeometryRequest.Operation#TOUCHES
+     *                   TOUCHES}: Matches records that touch the given WKT.
+     *                           <li> {@link
+     *                   com.gpudb.protocol.FilterByGeometryRequest.Operation#WITHIN
+     *                   WITHIN}: Matches records that are within the given
+     *                   WKT.
+     *                   </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

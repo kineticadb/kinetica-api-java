@@ -57,6 +57,21 @@ public class ShowProcStatusResponse implements IndexedRecord {
      * and individual statuses may differ between data segments for the same
      * run ID; see {@code statuses} and {@code messages} for statuses from
      * individual data segments.
+     * Valid values are:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#RUNNING
+     * RUNNING}: The proc instance is currently running.
+     *         <li> {@link
+     * com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#COMPLETE
+     * COMPLETE}: The proc instance completed with no errors.
+     *         <li> {@link
+     * com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#KILLED
+     * KILLED}: The proc instance was killed before completion.
+     *         <li> {@link
+     * com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#ERROR ERROR}:
+     * The proc instance failed with an error.
+     * </ul>
      * A set of string constants for the parameter {@code overallStatuses}.
      */
     public static final class OverallStatuses {
@@ -87,6 +102,9 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * Statuses for the returned run IDs, grouped by data segment ID.
+     * Valid values are:
+     * <ul>
+     * </ul>
      * A set of string constants for the parameter {@code statuses}.
      */
     public static final class Statuses {
@@ -315,6 +333,21 @@ public class ShowProcStatusResponse implements IndexedRecord {
      *         rollups and individual statuses may differ between data segments
      *         for the same run ID; see {@code statuses} and {@code messages}
      *         for statuses from individual data segments.
+     *         Valid values are:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#RUNNING
+     *         RUNNING}: The proc instance is currently running.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#COMPLETE
+     *         COMPLETE}: The proc instance completed with no errors.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#KILLED
+     *         KILLED}: The proc instance was killed before completion.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#ERROR
+     *         ERROR}: The proc instance failed with an error.
+     *         </ul>
      * 
      */
     public Map<String, String> getOverallStatuses() {
@@ -329,6 +362,24 @@ public class ShowProcStatusResponse implements IndexedRecord {
      *                         run ID; see {@code statuses} and {@code
      *                         messages} for statuses from individual data
      *                         segments.
+     *                         Valid values are:
+     *                         <ul>
+     *                                 <li> {@link
+     *                         com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#RUNNING
+     *                         RUNNING}: The proc instance is currently
+     *                         running.
+     *                                 <li> {@link
+     *                         com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#COMPLETE
+     *                         COMPLETE}: The proc instance completed with no
+     *                         errors.
+     *                                 <li> {@link
+     *                         com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#KILLED
+     *                         KILLED}: The proc instance was killed before
+     *                         completion.
+     *                                 <li> {@link
+     *                         com.gpudb.protocol.ShowProcStatusResponse.OverallStatuses#ERROR
+     *                         ERROR}: The proc instance failed with an error.
+     *                         </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -341,6 +392,9 @@ public class ShowProcStatusResponse implements IndexedRecord {
     /**
      * 
      * @return Statuses for the returned run IDs, grouped by data segment ID.
+     *         Valid values are:
+     *         <ul>
+     *         </ul>
      * 
      */
     public Map<String, Map<String, String>> getStatuses() {
@@ -351,6 +405,9 @@ public class ShowProcStatusResponse implements IndexedRecord {
      * 
      * @param statuses  Statuses for the returned run IDs, grouped by data
      *                  segment ID.
+     *                  Valid values are:
+     *                  <ul>
+     *                  </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

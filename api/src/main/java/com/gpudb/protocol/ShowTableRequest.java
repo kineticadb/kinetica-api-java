@@ -58,20 +58,62 @@ public class ShowTableRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> get_sizes: If {@code true} then the table sizes will be
-     * returned; blank, otherwise. Values: true, false.
-     * <p>
-     *         <li> show_children: If {@code tableName} is a collection, then
-     * {@code true} will return information about the children of the
-     * collection, and {@code false} will return information about the
-     * collection itself. If {@code tableName} is a table or view, {@code
-     * show_children} must be {@code false}. If {@code tableName} is empty,
-     * then {@code show_children} must be {@code true}. Values: true, false.
-     * <p>
-     *         <li> no_error_if_not_exists: If {@code false} will return an
-     * error if the provided {@code tableName} does not exist. If {@code true}
-     * then it will return an empty result. Values: true, false.
-     * <p>
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTableRequest.Options#GET_SIZES GET_SIZES}: If
+     * {@code true} then the table sizes will be returned; blank, otherwise.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTableRequest.Options#SHOW_CHILDREN
+     * SHOW_CHILDREN}: If {@code tableName} is a collection, then {@code true}
+     * will return information about the children of the collection, and {@code
+     * false} will return information about the collection itself. If {@code
+     * tableName} is a table or view, {@code show_children} must be {@code
+     * false}. If {@code tableName} is empty, then {@code show_children} must
+     * be {@code true}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTableRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     * NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an error if the
+     * provided {@code tableName} does not exist. If {@code true} then it will
+     * return an empty result.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTableRequest.Options#GET_COLUMN_INFO
+     * GET_COLUMN_INFO}: If {@code true} then column info (memory usage, etc)
+     * will be returned.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -79,7 +121,16 @@ public class ShowTableRequest implements IndexedRecord {
 
         /**
          * If {@code true} then the table sizes will be returned; blank,
-         * otherwise. Values: true, false.
+         * otherwise.
+         * Supported values:
+         * <ul>
+         *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
          */
         public static final String GET_SIZES = "get_sizes";
         public static final String TRUE = "true";
@@ -91,16 +142,49 @@ public class ShowTableRequest implements IndexedRecord {
          * will return information about the collection itself. If {@code
          * tableName} is a table or view, {@code show_children} must be {@code
          * false}. If {@code tableName} is empty, then {@code show_children}
-         * must be {@code true}. Values: true, false.
+         * must be {@code true}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}.
          */
         public static final String SHOW_CHILDREN = "show_children";
 
         /**
          * If {@code false} will return an error if the provided {@code
          * tableName} does not exist. If {@code true} then it will return an
-         * empty result. Values: true, false.
+         * empty result.
+         * Supported values:
+         * <ul>
+         *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
          */
         public static final String NO_ERROR_IF_NOT_EXISTS = "no_error_if_not_exists";
+
+        /**
+         * If {@code true} then column info (memory usage, etc) will be
+         * returned.
+         * Supported values:
+         * <ul>
+         *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
+         */
+        public static final String GET_COLUMN_INFO = "get_column_info";
 
         private Options() {  }
     }
@@ -126,21 +210,68 @@ public class ShowTableRequest implements IndexedRecord {
      *                   returned.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> get_sizes: If {@code true} then the table
-     *                 sizes will be returned; blank, otherwise. Values: true,
-     *                 false.
-     *                         <li> show_children: If {@code tableName} is a
-     *                 collection, then {@code true} will return information
-     *                 about the children of the collection, and {@code false}
-     *                 will return information about the collection itself. If
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#GET_SIZES
+     *                 GET_SIZES}: If {@code true} then the table sizes will be
+     *                 returned; blank, otherwise.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#SHOW_CHILDREN
+     *                 SHOW_CHILDREN}: If {@code tableName} is a collection,
+     *                 then {@code true} will return information about the
+     *                 children of the collection, and {@code false} will
+     *                 return information about the collection itself. If
      *                 {@code tableName} is a table or view, {@code
      *                 show_children} must be {@code false}. If {@code
      *                 tableName} is empty, then {@code show_children} must be
-     *                 {@code true}. Values: true, false.
-     *                         <li> no_error_if_not_exists: If {@code false}
-     *                 will return an error if the provided {@code tableName}
-     *                 does not exist. If {@code true} then it will return an
-     *                 empty result. Values: true, false.
+     *                 {@code true}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an
+     *                 error if the provided {@code tableName} does not exist.
+     *                 If {@code true} then it will return an empty result.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#GET_COLUMN_INFO
+     *                 GET_COLUMN_INFO}: If {@code true} then column info
+     *                 (memory usage, etc) will be returned.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      */
@@ -179,19 +310,64 @@ public class ShowTableRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> get_sizes: If {@code true} then the table sizes
-     *         will be returned; blank, otherwise. Values: true, false.
-     *                 <li> show_children: If {@code tableName} is a
-     *         collection, then {@code true} will return information about the
-     *         children of the collection, and {@code false} will return
-     *         information about the collection itself. If {@code tableName} is
-     *         a table or view, {@code show_children} must be {@code false}. If
-     *         {@code tableName} is empty, then {@code show_children} must be
-     *         {@code true}. Values: true, false.
-     *                 <li> no_error_if_not_exists: If {@code false} will
-     *         return an error if the provided {@code tableName} does not
-     *         exist. If {@code true} then it will return an empty result.
-     *         Values: true, false.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#GET_SIZES
+     *         GET_SIZES}: If {@code true} then the table sizes will be
+     *         returned; blank, otherwise.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#SHOW_CHILDREN
+     *         SHOW_CHILDREN}: If {@code tableName} is a collection, then
+     *         {@code true} will return information about the children of the
+     *         collection, and {@code false} will return information about the
+     *         collection itself. If {@code tableName} is a table or view,
+     *         {@code show_children} must be {@code false}. If {@code
+     *         tableName} is empty, then {@code show_children} must be {@code
+     *         true}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     *         NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an error
+     *         if the provided {@code tableName} does not exist. If {@code
+     *         true} then it will return an empty result.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#GET_COLUMN_INFO
+     *         GET_COLUMN_INFO}: If {@code true} then column info (memory
+     *         usage, etc) will be returned.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
      *         </ul>
      * 
      */
@@ -203,21 +379,68 @@ public class ShowTableRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> get_sizes: If {@code true} then the table
-     *                 sizes will be returned; blank, otherwise. Values: true,
-     *                 false.
-     *                         <li> show_children: If {@code tableName} is a
-     *                 collection, then {@code true} will return information
-     *                 about the children of the collection, and {@code false}
-     *                 will return information about the collection itself. If
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#GET_SIZES
+     *                 GET_SIZES}: If {@code true} then the table sizes will be
+     *                 returned; blank, otherwise.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#SHOW_CHILDREN
+     *                 SHOW_CHILDREN}: If {@code tableName} is a collection,
+     *                 then {@code true} will return information about the
+     *                 children of the collection, and {@code false} will
+     *                 return information about the collection itself. If
      *                 {@code tableName} is a table or view, {@code
      *                 show_children} must be {@code false}. If {@code
      *                 tableName} is empty, then {@code show_children} must be
-     *                 {@code true}. Values: true, false.
-     *                         <li> no_error_if_not_exists: If {@code false}
-     *                 will return an error if the provided {@code tableName}
-     *                 does not exist. If {@code true} then it will return an
-     *                 empty result. Values: true, false.
+     *                 {@code true}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an
+     *                 error if the provided {@code tableName} does not exist.
+     *                 If {@code true} then it will return an empty result.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#GET_COLUMN_INFO
+     *                 GET_COLUMN_INFO}: If {@code true} then column info
+     *                 (memory usage, etc) will be returned.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

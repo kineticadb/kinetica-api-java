@@ -56,26 +56,63 @@ public class FilterByTableRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> filter_mode: String indicating the filter mode, either
-     * {@code in_table} or {@code not_in_table}. Values: in_table,
-     * not_in_table.
-     * <p>
-     *         <li> mode: Mode - should be either {@code spatial} or {@code
-     * normal}. Values: normal, spatial.
-     * <p>
-     *         <li> buffer: Buffer size, in meters. Only relevant for {@code
-     * spatial} mode.
-     *         <li> buffer_method: Method used to buffer polygons.  Only
-     * relevant for {@code spatial} mode. Values: normal, geos.
-     * <p>
-     *         <li> max_partition_size: Maximum number of points in a
-     * partition. Only relevant for {@code spatial} mode.
-     *         <li> max_partition_score: Maximum number of points * edges in a
-     * partition. Only relevant for {@code spatial} mode.
-     *         <li> x_column_name: Name of column containing x value of point
-     * being filtered in {@code spatial} mode.
-     *         <li> y_column_name: Name of column containing y value of point
-     * being filtered in {@code spatial} mode.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#FILTER_MODE
+     * FILTER_MODE}: String indicating the filter mode, either {@code in_table}
+     * or {@code not_in_table}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#IN_TABLE IN_TABLE}
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#NOT_IN_TABLE
+     * NOT_IN_TABLE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#IN_TABLE IN_TABLE}.
+     *         <li> {@link com.gpudb.protocol.FilterByTableRequest.Options#MODE
+     * MODE}: Mode - should be either {@code spatial} or {@code normal}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#NORMAL NORMAL}
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#SPATIAL SPATIAL}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#NORMAL NORMAL}.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#BUFFER BUFFER}: Buffer
+     * size, in meters. Only relevant for {@code spatial} mode.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#BUFFER_METHOD
+     * BUFFER_METHOD}: Method used to buffer polygons.  Only relevant for
+     * {@code spatial} mode.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#NORMAL NORMAL}
+     *         <li> {@link com.gpudb.protocol.FilterByTableRequest.Options#GEOS
+     * GEOS}: Use geos 1 edge per corner algorithm
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#NORMAL NORMAL}.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#MAX_PARTITION_SIZE
+     * MAX_PARTITION_SIZE}: Maximum number of points in a partition. Only
+     * relevant for {@code spatial} mode.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#MAX_PARTITION_SCORE
+     * MAX_PARTITION_SCORE}: Maximum number of points * edges in a partition.
+     * Only relevant for {@code spatial} mode.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#X_COLUMN_NAME
+     * X_COLUMN_NAME}: Name of column containing x value of point being
+     * filtered in {@code spatial} mode.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#Y_COLUMN_NAME
+     * Y_COLUMN_NAME}: Name of column containing y value of point being
+     * filtered in {@code spatial} mode.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -83,15 +120,33 @@ public class FilterByTableRequest implements IndexedRecord {
 
         /**
          * String indicating the filter mode, either {@code in_table} or {@code
-         * not_in_table}. Values: in_table, not_in_table.
+         * not_in_table}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.FilterByTableRequest.Options#IN_TABLE IN_TABLE}
+         *         <li> {@link
+         * com.gpudb.protocol.FilterByTableRequest.Options#NOT_IN_TABLE
+         * NOT_IN_TABLE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.FilterByTableRequest.Options#IN_TABLE IN_TABLE}.
          */
         public static final String FILTER_MODE = "filter_mode";
         public static final String IN_TABLE = "in_table";
         public static final String NOT_IN_TABLE = "not_in_table";
 
         /**
-         * Mode - should be either {@code spatial} or {@code normal}. Values:
-         * normal, spatial.
+         * Mode - should be either {@code spatial} or {@code normal}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.FilterByTableRequest.Options#NORMAL NORMAL}
+         *         <li> {@link
+         * com.gpudb.protocol.FilterByTableRequest.Options#SPATIAL SPATIAL}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.FilterByTableRequest.Options#NORMAL NORMAL}.
          */
         public static final String MODE = "mode";
         public static final String NORMAL = "normal";
@@ -104,7 +159,17 @@ public class FilterByTableRequest implements IndexedRecord {
 
         /**
          * Method used to buffer polygons.  Only relevant for {@code spatial}
-         * mode. Values: normal, geos.
+         * mode.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.FilterByTableRequest.Options#NORMAL NORMAL}
+         *         <li> {@link
+         * com.gpudb.protocol.FilterByTableRequest.Options#GEOS GEOS}: Use geos
+         * 1 edge per corner algorithm
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.FilterByTableRequest.Options#NORMAL NORMAL}.
          */
         public static final String BUFFER_METHOD = "buffer_method";
 
@@ -179,30 +244,79 @@ public class FilterByTableRequest implements IndexedRecord {
      * @param sourceTableColumnName  Name of the column in the {@code
      *                               sourceTableName} whose values will be used
      *                               as the filter for table {@code tableName}.
-     *                               Must match the type of the {@code
-     *                               columnName}.
+     *                               Must be a geospatial geometry column if in
+     *                               'spatial' mode; otherwise, Must match the
+     *                               type of the {@code columnName}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> filter_mode: String indicating the filter
-     *                 mode, either {@code in_table} or {@code not_in_table}.
-     *                 Values: in_table, not_in_table.
-     *                         <li> mode: Mode - should be either {@code
-     *                 spatial} or {@code normal}. Values: normal, spatial.
-     *                         <li> buffer: Buffer size, in meters. Only
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#FILTER_MODE
+     *                 FILTER_MODE}: String indicating the filter mode, either
+     *                 {@code in_table} or {@code not_in_table}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#IN_TABLE
+     *                 IN_TABLE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#NOT_IN_TABLE
+     *                 NOT_IN_TABLE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#IN_TABLE
+     *                 IN_TABLE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#MODE
+     *                 MODE}: Mode - should be either {@code spatial} or {@code
+     *                 normal}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#NORMAL
+     *                 NORMAL}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#SPATIAL
+     *                 SPATIAL}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#NORMAL
+     *                 NORMAL}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#BUFFER
+     *                 BUFFER}: Buffer size, in meters. Only relevant for
+     *                 {@code spatial} mode.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#BUFFER_METHOD
+     *                 BUFFER_METHOD}: Method used to buffer polygons.  Only
      *                 relevant for {@code spatial} mode.
-     *                         <li> buffer_method: Method used to buffer
-     *                 polygons.  Only relevant for {@code spatial} mode.
-     *                 Values: normal, geos.
-     *                         <li> max_partition_size: Maximum number of
-     *                 points in a partition. Only relevant for {@code spatial}
-     *                 mode.
-     *                         <li> max_partition_score: Maximum number of
-     *                 points * edges in a partition. Only relevant for {@code
-     *                 spatial} mode.
-     *                         <li> x_column_name: Name of column containing x
-     *                 value of point being filtered in {@code spatial} mode.
-     *                         <li> y_column_name: Name of column containing y
-     *                 value of point being filtered in {@code spatial} mode.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#NORMAL
+     *                 NORMAL}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#GEOS
+     *                 GEOS}: Use geos 1 edge per corner algorithm
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#NORMAL
+     *                 NORMAL}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#MAX_PARTITION_SIZE
+     *                 MAX_PARTITION_SIZE}: Maximum number of points in a
+     *                 partition. Only relevant for {@code spatial} mode.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#MAX_PARTITION_SCORE
+     *                 MAX_PARTITION_SCORE}: Maximum number of points * edges
+     *                 in a partition. Only relevant for {@code spatial} mode.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#X_COLUMN_NAME
+     *                 X_COLUMN_NAME}: Name of column containing x value of
+     *                 point being filtered in {@code spatial} mode.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#Y_COLUMN_NAME
+     *                 Y_COLUMN_NAME}: Name of column containing y value of
+     *                 point being filtered in {@code spatial} mode.
      *                 </ul>
      * 
      */
@@ -317,8 +431,9 @@ public class FilterByTableRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the column in the {@code sourceTableName} whose values
-     *         will be used as the filter for table {@code tableName}. Must
-     *         match the type of the {@code columnName}.
+     *         will be used as the filter for table {@code tableName}. Must be
+     *         a geospatial geometry column if in 'spatial' mode; otherwise,
+     *         Must match the type of the {@code columnName}.
      * 
      */
     public String getSourceTableColumnName() {
@@ -330,8 +445,9 @@ public class FilterByTableRequest implements IndexedRecord {
      * @param sourceTableColumnName  Name of the column in the {@code
      *                               sourceTableName} whose values will be used
      *                               as the filter for table {@code tableName}.
-     *                               Must match the type of the {@code
-     *                               columnName}.
+     *                               Must be a geospatial geometry column if in
+     *                               'spatial' mode; otherwise, Must match the
+     *                               type of the {@code columnName}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -345,23 +461,67 @@ public class FilterByTableRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> filter_mode: String indicating the filter mode,
-     *         either {@code in_table} or {@code not_in_table}. Values:
-     *         in_table, not_in_table.
-     *                 <li> mode: Mode - should be either {@code spatial} or
-     *         {@code normal}. Values: normal, spatial.
-     *                 <li> buffer: Buffer size, in meters. Only relevant for
-     *         {@code spatial} mode.
-     *                 <li> buffer_method: Method used to buffer polygons.
-     *         Only relevant for {@code spatial} mode. Values: normal, geos.
-     *                 <li> max_partition_size: Maximum number of points in a
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#FILTER_MODE
+     *         FILTER_MODE}: String indicating the filter mode, either {@code
+     *         in_table} or {@code not_in_table}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#IN_TABLE
+     *         IN_TABLE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#NOT_IN_TABLE
+     *         NOT_IN_TABLE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#IN_TABLE
+     *         IN_TABLE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#MODE MODE}: Mode
+     *         - should be either {@code spatial} or {@code normal}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#NORMAL NORMAL}
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#SPATIAL SPATIAL}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#NORMAL NORMAL}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#BUFFER BUFFER}:
+     *         Buffer size, in meters. Only relevant for {@code spatial} mode.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#BUFFER_METHOD
+     *         BUFFER_METHOD}: Method used to buffer polygons.  Only relevant
+     *         for {@code spatial} mode.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#NORMAL NORMAL}
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#GEOS GEOS}: Use
+     *         geos 1 edge per corner algorithm
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#NORMAL NORMAL}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#MAX_PARTITION_SIZE
+     *         MAX_PARTITION_SIZE}: Maximum number of points in a partition.
+     *         Only relevant for {@code spatial} mode.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#MAX_PARTITION_SCORE
+     *         MAX_PARTITION_SCORE}: Maximum number of points * edges in a
      *         partition. Only relevant for {@code spatial} mode.
-     *                 <li> max_partition_score: Maximum number of points *
-     *         edges in a partition. Only relevant for {@code spatial} mode.
-     *                 <li> x_column_name: Name of column containing x value of
-     *         point being filtered in {@code spatial} mode.
-     *                 <li> y_column_name: Name of column containing y value of
-     *         point being filtered in {@code spatial} mode.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#X_COLUMN_NAME
+     *         X_COLUMN_NAME}: Name of column containing x value of point being
+     *         filtered in {@code spatial} mode.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#Y_COLUMN_NAME
+     *         Y_COLUMN_NAME}: Name of column containing y value of point being
+     *         filtered in {@code spatial} mode.
      *         </ul>
      * 
      */
@@ -373,26 +533,74 @@ public class FilterByTableRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> filter_mode: String indicating the filter
-     *                 mode, either {@code in_table} or {@code not_in_table}.
-     *                 Values: in_table, not_in_table.
-     *                         <li> mode: Mode - should be either {@code
-     *                 spatial} or {@code normal}. Values: normal, spatial.
-     *                         <li> buffer: Buffer size, in meters. Only
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#FILTER_MODE
+     *                 FILTER_MODE}: String indicating the filter mode, either
+     *                 {@code in_table} or {@code not_in_table}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#IN_TABLE
+     *                 IN_TABLE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#NOT_IN_TABLE
+     *                 NOT_IN_TABLE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#IN_TABLE
+     *                 IN_TABLE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#MODE
+     *                 MODE}: Mode - should be either {@code spatial} or {@code
+     *                 normal}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#NORMAL
+     *                 NORMAL}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#SPATIAL
+     *                 SPATIAL}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#NORMAL
+     *                 NORMAL}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#BUFFER
+     *                 BUFFER}: Buffer size, in meters. Only relevant for
+     *                 {@code spatial} mode.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#BUFFER_METHOD
+     *                 BUFFER_METHOD}: Method used to buffer polygons.  Only
      *                 relevant for {@code spatial} mode.
-     *                         <li> buffer_method: Method used to buffer
-     *                 polygons.  Only relevant for {@code spatial} mode.
-     *                 Values: normal, geos.
-     *                         <li> max_partition_size: Maximum number of
-     *                 points in a partition. Only relevant for {@code spatial}
-     *                 mode.
-     *                         <li> max_partition_score: Maximum number of
-     *                 points * edges in a partition. Only relevant for {@code
-     *                 spatial} mode.
-     *                         <li> x_column_name: Name of column containing x
-     *                 value of point being filtered in {@code spatial} mode.
-     *                         <li> y_column_name: Name of column containing y
-     *                 value of point being filtered in {@code spatial} mode.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#NORMAL
+     *                 NORMAL}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#GEOS
+     *                 GEOS}: Use geos 1 edge per corner algorithm
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#NORMAL
+     *                 NORMAL}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#MAX_PARTITION_SIZE
+     *                 MAX_PARTITION_SIZE}: Maximum number of points in a
+     *                 partition. Only relevant for {@code spatial} mode.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#MAX_PARTITION_SCORE
+     *                 MAX_PARTITION_SCORE}: Maximum number of points * edges
+     *                 in a partition. Only relevant for {@code spatial} mode.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#X_COLUMN_NAME
+     *                 X_COLUMN_NAME}: Name of column containing x value of
+     *                 point being filtered in {@code spatial} mode.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#Y_COLUMN_NAME
+     *                 Y_COLUMN_NAME}: Name of column containing y value of
+     *                 point being filtered in {@code spatial} mode.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

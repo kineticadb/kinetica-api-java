@@ -72,16 +72,23 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
     /**
      * Map of optional parameters:
      * <ul>
-     *         <li> additional_column_names: A list of comma separated
-     * value-column names over which statistics can be accumulated along with
-     * the primary value_column.
-     *         <li> bin_values: A list of comma separated binning-column
-     * values. Values that match the nth bin_values value are placed in the nth
-     * bin.
-     *         <li> weight_column_name: Name of the column used as weighting
-     * column for the weighted_average statistic.
-     *         <li> order_column_name: Name of the column used for candlestick
-     * charting techniques.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateStatisticsByRangeRequest.Options#ADDITIONAL_COLUMN_NAMES
+     * ADDITIONAL_COLUMN_NAMES}: A list of comma separated value-column names
+     * over which statistics can be accumulated along with the primary
+     * value_column.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateStatisticsByRangeRequest.Options#BIN_VALUES
+     * BIN_VALUES}: A list of comma separated binning-column values. Values
+     * that match the nth bin_values value are placed in the nth bin.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateStatisticsByRangeRequest.Options#WEIGHT_COLUMN_NAME
+     * WEIGHT_COLUMN_NAME}: Name of the column used as weighting column for the
+     * weighted_average statistic.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateStatisticsByRangeRequest.Options#ORDER_COLUMN_NAME
+     * ORDER_COLUMN_NAME}: Name of the column used for candlestick charting
+     * techniques.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -160,16 +167,24 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      *                  [start+interval``*``i, start+interval``*``(i+1)).
      * @param options  Map of optional parameters:
      *                 <ul>
-     *                         <li> additional_column_names: A list of comma
-     *                 separated value-column names over which statistics can
-     *                 be accumulated along with the primary value_column.
-     *                         <li> bin_values: A list of comma separated
-     *                 binning-column values. Values that match the nth
-     *                 bin_values value are placed in the nth bin.
-     *                         <li> weight_column_name: Name of the column used
-     *                 as weighting column for the weighted_average statistic.
-     *                         <li> order_column_name: Name of the column used
-     *                 for candlestick charting techniques.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateStatisticsByRangeRequest.Options#ADDITIONAL_COLUMN_NAMES
+     *                 ADDITIONAL_COLUMN_NAMES}: A list of comma separated
+     *                 value-column names over which statistics can be
+     *                 accumulated along with the primary value_column.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateStatisticsByRangeRequest.Options#BIN_VALUES
+     *                 BIN_VALUES}: A list of comma separated binning-column
+     *                 values. Values that match the nth bin_values value are
+     *                 placed in the nth bin.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateStatisticsByRangeRequest.Options#WEIGHT_COLUMN_NAME
+     *                 WEIGHT_COLUMN_NAME}: Name of the column used as
+     *                 weighting column for the weighted_average statistic.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateStatisticsByRangeRequest.Options#ORDER_COLUMN_NAME
+     *                 ORDER_COLUMN_NAME}: Name of the column used for
+     *                 candlestick charting techniques.
      *                 </ul>
      * 
      */
@@ -374,16 +389,24 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      * 
      * @return Map of optional parameters:
      *         <ul>
-     *                 <li> additional_column_names: A list of comma separated
-     *         value-column names over which statistics can be accumulated
-     *         along with the primary value_column.
-     *                 <li> bin_values: A list of comma separated
-     *         binning-column values. Values that match the nth bin_values
-     *         value are placed in the nth bin.
-     *                 <li> weight_column_name: Name of the column used as
-     *         weighting column for the weighted_average statistic.
-     *                 <li> order_column_name: Name of the column used for
-     *         candlestick charting techniques.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateStatisticsByRangeRequest.Options#ADDITIONAL_COLUMN_NAMES
+     *         ADDITIONAL_COLUMN_NAMES}: A list of comma separated value-column
+     *         names over which statistics can be accumulated along with the
+     *         primary value_column.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateStatisticsByRangeRequest.Options#BIN_VALUES
+     *         BIN_VALUES}: A list of comma separated binning-column values.
+     *         Values that match the nth bin_values value are placed in the nth
+     *         bin.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateStatisticsByRangeRequest.Options#WEIGHT_COLUMN_NAME
+     *         WEIGHT_COLUMN_NAME}: Name of the column used as weighting column
+     *         for the weighted_average statistic.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateStatisticsByRangeRequest.Options#ORDER_COLUMN_NAME
+     *         ORDER_COLUMN_NAME}: Name of the column used for candlestick
+     *         charting techniques.
      *         </ul>
      * 
      */
@@ -395,16 +418,24 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      * 
      * @param options  Map of optional parameters:
      *                 <ul>
-     *                         <li> additional_column_names: A list of comma
-     *                 separated value-column names over which statistics can
-     *                 be accumulated along with the primary value_column.
-     *                         <li> bin_values: A list of comma separated
-     *                 binning-column values. Values that match the nth
-     *                 bin_values value are placed in the nth bin.
-     *                         <li> weight_column_name: Name of the column used
-     *                 as weighting column for the weighted_average statistic.
-     *                         <li> order_column_name: Name of the column used
-     *                 for candlestick charting techniques.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateStatisticsByRangeRequest.Options#ADDITIONAL_COLUMN_NAMES
+     *                 ADDITIONAL_COLUMN_NAMES}: A list of comma separated
+     *                 value-column names over which statistics can be
+     *                 accumulated along with the primary value_column.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateStatisticsByRangeRequest.Options#BIN_VALUES
+     *                 BIN_VALUES}: A list of comma separated binning-column
+     *                 values. Values that match the nth bin_values value are
+     *                 placed in the nth bin.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateStatisticsByRangeRequest.Options#WEIGHT_COLUMN_NAME
+     *                 WEIGHT_COLUMN_NAME}: Name of the column used as
+     *                 weighting column for the weighted_average statistic.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateStatisticsByRangeRequest.Options#ORDER_COLUMN_NAME
+     *                 ORDER_COLUMN_NAME}: Name of the column used for
+     *                 candlestick charting techniques.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -52,8 +52,24 @@ public class CreateProcRequest implements IndexedRecord {
 
 
     /**
-     * The execution mode of the proc. Values: distributed, nondistributed.
-
+     * The execution mode of the proc.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProcRequest.ExecutionMode#DISTRIBUTED
+     * DISTRIBUTED}: Input table data will be divided into data segments that
+     * are distributed across all nodes in the cluster, and the proc command
+     * will be invoked once per data segment in parallel. Output table data
+     * from each invocation will be saved to the same node as the corresponding
+     * input data.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProcRequest.ExecutionMode#NONDISTRIBUTED
+     * NONDISTRIBUTED}: The proc command will be invoked only once per
+     * execution, and will not have access to any input or output table data.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateProcRequest.ExecutionMode#DISTRIBUTED
+     * DISTRIBUTED}.
      * A set of string constants for the parameter {@code executionMode}.
      */
     public static final class ExecutionMode {
@@ -101,8 +117,26 @@ public class CreateProcRequest implements IndexedRecord {
      * 
      * @param procName  Name of the proc to be created. Must not be the name of
      *                  a currently existing proc.
-     * @param executionMode  The execution mode of the proc. Values:
-     *                       distributed, nondistributed.
+     * @param executionMode  The execution mode of the proc.
+     *                       Supported values:
+     *                       <ul>
+     *                               <li> {@link
+     *                       com.gpudb.protocol.CreateProcRequest.ExecutionMode#DISTRIBUTED
+     *                       DISTRIBUTED}: Input table data will be divided
+     *                       into data segments that are distributed across all
+     *                       nodes in the cluster, and the proc command will be
+     *                       invoked once per data segment in parallel. Output
+     *                       table data from each invocation will be saved to
+     *                       the same node as the corresponding input data.
+     *                               <li> {@link
+     *                       com.gpudb.protocol.CreateProcRequest.ExecutionMode#NONDISTRIBUTED
+     *                       NONDISTRIBUTED}: The proc command will be invoked
+     *                       only once per execution, and will not have access
+     *                       to any input or output table data.
+     *                       </ul>
+     *                       The default value is {@link
+     *                       com.gpudb.protocol.CreateProcRequest.ExecutionMode#DISTRIBUTED
+     *                       DISTRIBUTED}.
      * @param files  A map of the files that make up the proc. The keys of the
      *               map are file names, and the values are the binary contents
      *               of the files. The file names may include subdirectory
@@ -159,8 +193,25 @@ public class CreateProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The execution mode of the proc. Values: distributed,
-     *         nondistributed.
+     * @return The execution mode of the proc.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProcRequest.ExecutionMode#DISTRIBUTED
+     *         DISTRIBUTED}: Input table data will be divided into data
+     *         segments that are distributed across all nodes in the cluster,
+     *         and the proc command will be invoked once per data segment in
+     *         parallel. Output table data from each invocation will be saved
+     *         to the same node as the corresponding input data.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProcRequest.ExecutionMode#NONDISTRIBUTED
+     *         NONDISTRIBUTED}: The proc command will be invoked only once per
+     *         execution, and will not have access to any input or output table
+     *         data.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateProcRequest.ExecutionMode#DISTRIBUTED
+     *         DISTRIBUTED}.
      * 
      */
     public String getExecutionMode() {
@@ -169,8 +220,26 @@ public class CreateProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param executionMode  The execution mode of the proc. Values:
-     *                       distributed, nondistributed.
+     * @param executionMode  The execution mode of the proc.
+     *                       Supported values:
+     *                       <ul>
+     *                               <li> {@link
+     *                       com.gpudb.protocol.CreateProcRequest.ExecutionMode#DISTRIBUTED
+     *                       DISTRIBUTED}: Input table data will be divided
+     *                       into data segments that are distributed across all
+     *                       nodes in the cluster, and the proc command will be
+     *                       invoked once per data segment in parallel. Output
+     *                       table data from each invocation will be saved to
+     *                       the same node as the corresponding input data.
+     *                               <li> {@link
+     *                       com.gpudb.protocol.CreateProcRequest.ExecutionMode#NONDISTRIBUTED
+     *                       NONDISTRIBUTED}: The proc command will be invoked
+     *                       only once per execution, and will not have access
+     *                       to any input or output table data.
+     *                       </ul>
+     *                       The default value is {@link
+     *                       com.gpudb.protocol.CreateProcRequest.ExecutionMode#DISTRIBUTED
+     *                       DISTRIBUTED}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

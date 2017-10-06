@@ -52,13 +52,15 @@ public class FilterRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> collection_name: Name of a collection which is to contain
-     * the newly created view, otherwise the view will be a top-level table. If
-     * the collection does not allow duplicate types and it contains a table of
-     * the same type as the given one, then this table creation request will
-     * fail.
-     *         <li> ttl: Sets the TTL of the view specified in {@code
-     * viewName}. The value must be the desired TTL in minutes.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterRequest.Options#COLLECTION_NAME
+     * COLLECTION_NAME}: Name of a collection which is to contain the newly
+     * created view, otherwise the view will be a top-level table. If the
+     * collection does not allow duplicate types and it contains a table of the
+     * same type as the given one, then this table creation request will fail.
+     *         <li> {@link com.gpudb.protocol.FilterRequest.Options#TTL TTL}:
+     * Sets the TTL of the view specified in {@code viewName}. The value must
+     * be the desired TTL in minutes.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -115,15 +117,18 @@ public class FilterRequest implements IndexedRecord {
      *                    target="_top">concepts</a>.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection which
-     *                 is to contain the newly created view, otherwise the view
-     *                 will be a top-level table. If the collection does not
-     *                 allow duplicate types and it contains a table of the
-     *                 same type as the given one, then this table creation
-     *                 request will fail.
-     *                         <li> ttl: Sets the TTL of the view specified in
-     *                 {@code viewName}. The value must be the desired TTL in
-     *                 minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a collection which is to
+     *                 contain the newly created view, otherwise the view will
+     *                 be a top-level table. If the collection does not allow
+     *                 duplicate types and it contains a table of the same type
+     *                 as the given one, then this table creation request will
+     *                 fail.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterRequest.Options#TTL TTL}: Sets
+     *                 the TTL of the view specified in {@code viewName}. The
+     *                 value must be the desired TTL in minutes.
      *                 </ul>
      * 
      */
@@ -219,13 +224,16 @@ public class FilterRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> collection_name: Name of a collection which is to
-     *         contain the newly created view, otherwise the view will be a
-     *         top-level table. If the collection does not allow duplicate
-     *         types and it contains a table of the same type as the given one,
-     *         then this table creation request will fail.
-     *                 <li> ttl: Sets the TTL of the view specified in {@code
-     *         viewName}. The value must be the desired TTL in minutes.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterRequest.Options#COLLECTION_NAME
+     *         COLLECTION_NAME}: Name of a collection which is to contain the
+     *         newly created view, otherwise the view will be a top-level
+     *         table. If the collection does not allow duplicate types and it
+     *         contains a table of the same type as the given one, then this
+     *         table creation request will fail.
+     *                 <li> {@link com.gpudb.protocol.FilterRequest.Options#TTL
+     *         TTL}: Sets the TTL of the view specified in {@code viewName}.
+     *         The value must be the desired TTL in minutes.
      *         </ul>
      * 
      */
@@ -237,15 +245,18 @@ public class FilterRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection which
-     *                 is to contain the newly created view, otherwise the view
-     *                 will be a top-level table. If the collection does not
-     *                 allow duplicate types and it contains a table of the
-     *                 same type as the given one, then this table creation
-     *                 request will fail.
-     *                         <li> ttl: Sets the TTL of the view specified in
-     *                 {@code viewName}. The value must be the desired TTL in
-     *                 minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a collection which is to
+     *                 contain the newly created view, otherwise the view will
+     *                 be a top-level table. If the collection does not allow
+     *                 duplicate types and it contains a table of the same type
+     *                 as the given one, then this table creation request will
+     *                 fail.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterRequest.Options#TTL TTL}: Sets
+     *                 the TTL of the view specified in {@code viewName}. The
+     *                 value must be the desired TTL in minutes.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

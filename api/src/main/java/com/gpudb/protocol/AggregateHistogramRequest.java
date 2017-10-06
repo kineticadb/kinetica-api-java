@@ -56,9 +56,11 @@ public class AggregateHistogramRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> value_column: The name of the column to use when
-     * calculating the bin values (values are summed).  The column must be a
-     * numerical type (int, double, long, float).
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateHistogramRequest.Options#VALUE_COLUMN
+     * VALUE_COLUMN}: The name of the column to use when calculating the bin
+     * values (values are summed).  The column must be a numerical type (int,
+     * double, long, float).
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -106,9 +108,11 @@ public class AggregateHistogramRequest implements IndexedRecord {
      *                  parameters.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> value_column: The name of the column to use
-     *                 when calculating the bin values (values are summed).
-     *                 The column must be a numerical type (int, double, long,
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateHistogramRequest.Options#VALUE_COLUMN
+     *                 VALUE_COLUMN}: The name of the column to use when
+     *                 calculating the bin values (values are summed).  The
+     *                 column must be a numerical type (int, double, long,
      *                 float).
      *                 </ul>
      * 
@@ -237,9 +241,11 @@ public class AggregateHistogramRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> value_column: The name of the column to use when
-     *         calculating the bin values (values are summed).  The column must
-     *         be a numerical type (int, double, long, float).
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateHistogramRequest.Options#VALUE_COLUMN
+     *         VALUE_COLUMN}: The name of the column to use when calculating
+     *         the bin values (values are summed).  The column must be a
+     *         numerical type (int, double, long, float).
      *         </ul>
      * 
      */
@@ -251,9 +257,11 @@ public class AggregateHistogramRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> value_column: The name of the column to use
-     *                 when calculating the bin values (values are summed).
-     *                 The column must be a numerical type (int, double, long,
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateHistogramRequest.Options#VALUE_COLUMN
+     *                 VALUE_COLUMN}: The name of the column to use when
+     *                 calculating the bin values (values are summed).  The
+     *                 column must be a numerical type (int, double, long,
      *                 float).
      *                 </ul>
      * 

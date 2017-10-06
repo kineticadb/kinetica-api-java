@@ -53,25 +53,27 @@ public class ExecuteProcRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> cache_input: A comma-delimited list of table names from
-     * {@code inputTableNames} from which input data will be cached for use in
-     * subsequent calls to {@link
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteProcRequest.Options#CACHE_INPUT CACHE_INPUT}:
+     * A comma-delimited list of table names from {@code inputTableNames} from
+     * which input data will be cached for use in subsequent calls to {@link
      * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} with the {@code
      * use_cached_input} option. Cached input data will be retained until the
      * proc status is cleared with the {@link
      * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest) clear_complete}
      * option of {@link com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}
      * and all proc instances using the cached data have completed.
-     *         <li> use_cached_input: A comma-delimited list of run IDs (as
-     * returned from prior calls to {@link
-     * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}) of running or
-     * completed proc instances from which input data cached using the {@code
-     * cache_input} option will be used. Cached input data will not be used for
-     * any tables specified in {@code inputTableNames}, but data from all other
-     * tables cached for the specified run IDs will be passed to the proc. If
-     * the same table was cached for multiple specified run IDs, the cached
-     * data from the first run ID specified in the list that includes that
-     * table will be used.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteProcRequest.Options#USE_CACHED_INPUT
+     * USE_CACHED_INPUT}: A comma-delimited list of run IDs (as returned from
+     * prior calls to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)})
+     * of running or completed proc instances from which input data cached
+     * using the {@code cache_input} option will be used. Cached input data
+     * will not be used for any tables specified in {@code inputTableNames},
+     * but data from all other tables cached for the specified run IDs will be
+     * passed to the proc. If the same table was cached for multiple specified
+     * run IDs, the cached data from the first run ID specified in the list
+     * that includes that table will be used.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -158,24 +160,31 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                          created with the same schema as the
      *                          corresponding table (by order) from {@code
      *                          inputTableNames}, excluding any primary and
-     *                          shard keys. If no table names are specified, no
-     *                          output data can be returned from the proc.
+     *                          shard keys. If a specified table is a
+     *                          non-persistent result table, it must not have
+     *                          primary or shard keys. If no table names are
+     *                          specified, no output data can be returned from
+     *                          the proc.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> cache_input: A comma-delimited list of
-     *                 table names from {@code inputTableNames} from which
-     *                 input data will be cached for use in subsequent calls to
-     *                 {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}
-     *                 with the {@code use_cached_input} option. Cached input
-     *                 data will be retained until the proc status is cleared
-     *                 with the {@link
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#CACHE_INPUT
+     *                 CACHE_INPUT}: A comma-delimited list of table names from
+     *                 {@code inputTableNames} from which input data will be
+     *                 cached for use in subsequent calls to {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} with
+     *                 the {@code use_cached_input} option. Cached input data
+     *                 will be retained until the proc status is cleared with
+     *                 the {@link
      *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
      *                 clear_complete} option of {@link
      *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}
      *                 and all proc instances using the cached data have
      *                 completed.
-     *                         <li> use_cached_input: A comma-delimited list of
-     *                 run IDs (as returned from prior calls to {@link
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#USE_CACHED_INPUT
+     *                 USE_CACHED_INPUT}: A comma-delimited list of run IDs (as
+     *                 returned from prior calls to {@link
      *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}) of
      *                 running or completed proc instances from which input
      *                 data cached using the {@code cache_input} option will be
@@ -338,8 +347,10 @@ public class ExecuteProcRequest implements IndexedRecord {
      *         written. If a specified table does not exist, it will
      *         automatically be created with the same schema as the
      *         corresponding table (by order) from {@code inputTableNames},
-     *         excluding any primary and shard keys. If no table names are
-     *         specified, no output data can be returned from the proc.
+     *         excluding any primary and shard keys. If a specified table is a
+     *         non-persistent result table, it must not have primary or shard
+     *         keys. If no table names are specified, no output data can be
+     *         returned from the proc.
      * 
      */
     public List<String> getOutputTableNames() {
@@ -354,8 +365,11 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                          created with the same schema as the
      *                          corresponding table (by order) from {@code
      *                          inputTableNames}, excluding any primary and
-     *                          shard keys. If no table names are specified, no
-     *                          output data can be returned from the proc.
+     *                          shard keys. If a specified table is a
+     *                          non-persistent result table, it must not have
+     *                          primary or shard keys. If no table names are
+     *                          specified, no output data can be returned from
+     *                          the proc.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -369,9 +383,11 @@ public class ExecuteProcRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> cache_input: A comma-delimited list of table names
-     *         from {@code inputTableNames} from which input data will be
-     *         cached for use in subsequent calls to {@link
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteProcRequest.Options#CACHE_INPUT
+     *         CACHE_INPUT}: A comma-delimited list of table names from {@code
+     *         inputTableNames} from which input data will be cached for use in
+     *         subsequent calls to {@link
      *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} with the {@code
      *         use_cached_input} option. Cached input data will be retained
      *         until the proc status is cleared with the {@link
@@ -379,8 +395,10 @@ public class ExecuteProcRequest implements IndexedRecord {
      *         clear_complete} option of {@link
      *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} and all
      *         proc instances using the cached data have completed.
-     *                 <li> use_cached_input: A comma-delimited list of run IDs
-     *         (as returned from prior calls to {@link
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteProcRequest.Options#USE_CACHED_INPUT
+     *         USE_CACHED_INPUT}: A comma-delimited list of run IDs (as
+     *         returned from prior calls to {@link
      *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}) of running or
      *         completed proc instances from which input data cached using the
      *         {@code cache_input} option will be used. Cached input data will
@@ -400,20 +418,24 @@ public class ExecuteProcRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> cache_input: A comma-delimited list of
-     *                 table names from {@code inputTableNames} from which
-     *                 input data will be cached for use in subsequent calls to
-     *                 {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}
-     *                 with the {@code use_cached_input} option. Cached input
-     *                 data will be retained until the proc status is cleared
-     *                 with the {@link
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#CACHE_INPUT
+     *                 CACHE_INPUT}: A comma-delimited list of table names from
+     *                 {@code inputTableNames} from which input data will be
+     *                 cached for use in subsequent calls to {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)} with
+     *                 the {@code use_cached_input} option. Cached input data
+     *                 will be retained until the proc status is cleared with
+     *                 the {@link
      *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
      *                 clear_complete} option of {@link
      *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}
      *                 and all proc instances using the cached data have
      *                 completed.
-     *                         <li> use_cached_input: A comma-delimited list of
-     *                 run IDs (as returned from prior calls to {@link
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#USE_CACHED_INPUT
+     *                 USE_CACHED_INPUT}: A comma-delimited list of run IDs (as
+     *                 returned from prior calls to {@link
      *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}) of
      *                 running or completed proc instances from which input
      *                 data cached using the {@code cache_input} option will be

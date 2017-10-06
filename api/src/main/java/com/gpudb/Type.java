@@ -3,11 +3,15 @@ package com.gpudb;
 import com.gpudb.protocol.ShowTableResponse;
 import com.gpudb.protocol.ShowTypesResponse;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,18 +27,22 @@ import org.codehaus.jackson.node.ObjectNode;
 /**
  * Immutable collection of metadata about a GPUdb type.
  */
-public final class Type {
+public final class Type implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     /**
      * Immutable collection of metadata about a column that is part of a GPUdb
      * type.
      */
-    public static final class Column {
-        private String name;
-        private Class<?> type;
-        private boolean isNullable;
-        private List<String> properties;
+    public static final class Column implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        private transient String name;
+        private transient Class<?> type;
+        private transient boolean isNullable;
+        private transient List<String> properties;
 
         /**
          * Creates a {@link Column} object with the specified metadata.
@@ -71,6 +79,36 @@ public final class Type {
          * @see ColumnProperty
          */
         public Column(String name, Class<?> type, List<String> properties) {
+            this.name = name;
+            this.type = type;
+            this.properties = properties == null ? new ArrayList<String>() : new ArrayList<>(properties);
+            init();
+        }
+
+        private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException {
+            name = (String)stream.readObject();
+            type = (Class<?>)stream.readObject();
+            int propertyCount = stream.readInt();
+            properties = new ArrayList<>(propertyCount);
+
+            for (int i = 0; i < propertyCount; i++) {
+                properties.add((String)stream.readObject());
+            }
+
+            init();
+        }
+
+        private void writeObject(ObjectOutputStream stream) throws IOException {
+            stream.writeObject(name);
+            stream.writeObject(type);
+            stream.writeInt(properties.size());
+
+            for (String property : properties) {
+                stream.writeObject(property);
+            }
+        }
+
+        private void init() {
             if (name.isEmpty()) {
                 throw new IllegalArgumentException("Name must not be empty.");
             }
@@ -81,25 +119,21 @@ public final class Type {
                 throw new IllegalArgumentException("Column " + name + " must be of type ByteBuffer, Double, Float, Integer, Long or String.");
             }
 
-            if (properties != null) {
-                for (String property : properties) {
-                    if (property == null) {
-                        throw new IllegalArgumentException("Properties must not be null.");
-                    }
+            for (String property : properties) {
+                if (property == null) {
+                    throw new IllegalArgumentException("Properties must not be null.");
+                }
 
-                    if (property.isEmpty()) {
-                        throw new IllegalArgumentException("Properties must not be empty.");
-                    }
+                if (property.isEmpty()) {
+                    throw new IllegalArgumentException("Properties must not be empty.");
+                }
 
-                    if (!isNullable && property.equals("nullable")) {
-                        isNullable = true;
-                    }
+                if (!isNullable && property.equals(ColumnProperty.NULLABLE)) {
+                    isNullable = true;
                 }
             }
 
-            this.name = name;
-            this.type = type;
-            this.properties = Collections.unmodifiableList(properties == null || properties.isEmpty() ? new ArrayList<String>() : new ArrayList<>(properties));
+            properties = Collections.unmodifiableList(properties);
         }
 
         /**
@@ -242,10 +276,10 @@ public final class Type {
         return new Type(response.getLabels().get(0), response.getTypeSchemas().get(0), response.getProperties().get(0));
     }
 
-    private String label;
-    private List<Column> columns;
-    private Map<String, Integer> columnMap;
-    private Schema schema;
+    private transient String label;
+    private transient List<Column> columns;
+    private transient Map<String, Integer> columnMap;
+    private transient Schema schema;
 
     /**
      * Creates a {@link Type} object with the specified column metadata and an
@@ -296,12 +330,37 @@ public final class Type {
      * @throws IllegalArgumentException if no columns are specified
      */
     public Type(String label, List<Column> columns) {
-        if (columns == null || columns.isEmpty()) {
+        this.label = label;
+        this.columns = columns == null ? new ArrayList<Column>() : new ArrayList<>(columns);
+        init();
+    }
+
+    private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException {
+        label = (String)stream.readObject();
+        int columnCount = stream.readInt();
+        columns = new ArrayList<>(columnCount);
+
+        for (int i = 0; i < columnCount; i++) {
+            columns.add((Column)stream.readObject());
+        }
+
+        init();
+    }
+
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        stream.writeObject(label);
+        stream.writeInt(columns.size());
+
+        for (Column column : columns) {
+            stream.writeObject(column);
+        }
+    }
+
+    private void init() {
+        if (columns.isEmpty()) {
             throw new IllegalArgumentException("At least one column must be specified.");
         }
 
-        this.label = label;
-        this.columns = Collections.unmodifiableList(new ArrayList<>(columns));
         columnMap = new HashMap<>();
 
         for (int i = 0; i < columns.size(); i++) {
@@ -315,6 +374,7 @@ public final class Type {
             columnMap.put(columnName, i);
         }
 
+        columns = Collections.unmodifiableList(columns);
         createSchema();
     }
 
@@ -402,6 +462,7 @@ public final class Type {
             }
 
             String fieldTypeString = null;
+            boolean isNullable = false;
 
             if (fieldType.isTextual()) {
                 fieldTypeString = fieldType.getTextValue();
@@ -417,6 +478,7 @@ public final class Type {
 
                         if (fieldTypeString != null && fieldTypeElementString.equals("null")) {
                             valid = true;
+                            isNullable = true;
                         } else if (fieldTypeString == null) {
                             fieldTypeString = fieldTypeElementString;
                             valid = true;
@@ -464,7 +526,19 @@ public final class Type {
                     throw new IllegalArgumentException("Field " + columnName + " must be of type bytes, double, float, int, long or string.");
             }
 
-            columns.add(new Column(columnName, columnType, properties != null ? properties.get(columnName) : null));
+            List<String> columnProperties = properties != null ? properties.get(columnName) : null;
+
+            if (isNullable) {
+                if (columnProperties == null) {
+                    columnProperties = new ArrayList<>();
+                    columnProperties.add(ColumnProperty.NULLABLE);
+                } else if (!columnProperties.contains(ColumnProperty.NULLABLE)) {
+                    columnProperties = new ArrayList<>(columnProperties);
+                    columnProperties.add(ColumnProperty.NULLABLE);
+                }
+            }
+
+            columns.add(new Column(columnName, columnType, columnProperties));
             columnMap.put(columnName, columns.size() - 1);
         }
 
@@ -475,6 +549,7 @@ public final class Type {
     private void createSchema() {
         schema = Schema.createRecord("type_name", null, null, false);
         List<Field> fields = new ArrayList<>();
+        HashSet<String> fieldNames = new HashSet<>();
 
         for (int i = 0; i < columns.size(); i++) {
             Column column = columns.get(i);
@@ -496,29 +571,10 @@ public final class Type {
 
             for (int n = 1; ; n++) {
                 fieldName = fieldNameBuilder.toString() + (n > 1 ? "_" + n : "");
-                boolean found = false;
+                Integer columnIndex = columnMap.get(fieldName);
 
-                for (int j = 0; j < columns.size(); j++) {
-                    if (j == i) {
-                        continue;
-                    }
-
-                    if (columns.get(j).getName().equals(fieldName)) {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    for (Field field : fields) {
-                        if (field.name().equals(fieldName)) {
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!found) {
+                if ((columnIndex == null || columnIndex == i)
+                        && !fieldNames.contains(fieldName)) {
                     break;
                 }
             }
@@ -548,6 +604,7 @@ public final class Type {
 
             Field field = new Field(fieldName, fieldSchema, null, (Object)null);
             fields.add(field);
+            fieldNames.add(fieldName);
         }
 
         schema.setFields(fields);

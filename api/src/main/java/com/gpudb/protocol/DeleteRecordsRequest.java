@@ -54,10 +54,13 @@ public class DeleteRecordsRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> global_expression: An optional global expression to reduce
-     * the search space of the {@code expressions}.
-     *         <li> record_id: A record id identifying a single record,
-     * obtained at the time of {@link
+     *         <li> {@link
+     * com.gpudb.protocol.DeleteRecordsRequest.Options#GLOBAL_EXPRESSION
+     * GLOBAL_EXPRESSION}: An optional global expression to reduce the search
+     * space of the {@code expressions}.
+     *         <li> {@link
+     * com.gpudb.protocol.DeleteRecordsRequest.Options#RECORD_ID RECORD_ID}: A
+     * record id identifying a single record, obtained at the time of {@link
      * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest) insertion of
      * the record} or by calling {@link
      * com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
@@ -113,11 +116,14 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *                     in the {@code options}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> global_expression: An optional global
-     *                 expression to reduce the search space of the {@code
-     *                 expressions}.
-     *                         <li> record_id: A record id identifying a single
-     *                 record, obtained at the time of {@link
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteRecordsRequest.Options#GLOBAL_EXPRESSION
+     *                 GLOBAL_EXPRESSION}: An optional global expression to
+     *                 reduce the search space of the {@code expressions}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteRecordsRequest.Options#RECORD_ID
+     *                 RECORD_ID}: A record id identifying a single record,
+     *                 obtained at the time of {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)
      *                 insertion of the record} or by calling {@link
      *                 com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
@@ -189,10 +195,14 @@ public class DeleteRecordsRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> global_expression: An optional global expression to
-     *         reduce the search space of the {@code expressions}.
-     *                 <li> record_id: A record id identifying a single record,
-     *         obtained at the time of {@link
+     *                 <li> {@link
+     *         com.gpudb.protocol.DeleteRecordsRequest.Options#GLOBAL_EXPRESSION
+     *         GLOBAL_EXPRESSION}: An optional global expression to reduce the
+     *         search space of the {@code expressions}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.DeleteRecordsRequest.Options#RECORD_ID
+     *         RECORD_ID}: A record id identifying a single record, obtained at
+     *         the time of {@link
      *         com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)
      *         insertion of the record} or by calling {@link
      *         com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
@@ -208,11 +218,14 @@ public class DeleteRecordsRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> global_expression: An optional global
-     *                 expression to reduce the search space of the {@code
-     *                 expressions}.
-     *                         <li> record_id: A record id identifying a single
-     *                 record, obtained at the time of {@link
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteRecordsRequest.Options#GLOBAL_EXPRESSION
+     *                 GLOBAL_EXPRESSION}: An optional global expression to
+     *                 reduce the search space of the {@code expressions}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteRecordsRequest.Options#RECORD_ID
+     *                 RECORD_ID}: A record id identifying a single record,
+     *                 obtained at the time of {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)
      *                 insertion of the record} or by calling {@link
      *                 com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}

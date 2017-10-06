@@ -46,8 +46,10 @@ public class ShowProcResponse implements IndexedRecord {
 
 
     /**
-     * The execution modes of the procs named in {@code procNames}. Values: .
-
+     * The execution modes of the procs named in {@code procNames}.
+     * Supported values:
+     * <ul>
+     * </ul>
      * A set of string constants for the parameter {@code executionModes}.
      */
     public static final class ExecutionModes {
@@ -103,7 +105,9 @@ public class ShowProcResponse implements IndexedRecord {
     /**
      * 
      * @return The execution modes of the procs named in {@code procNames}.
-     *         Values: .
+     *         Supported values:
+     *         <ul>
+     *         </ul>
      * 
      */
     public List<String> getExecutionModes() {
@@ -113,7 +117,10 @@ public class ShowProcResponse implements IndexedRecord {
     /**
      * 
      * @param executionModes  The execution modes of the procs named in {@code
-     *                        procNames}. Values: .
+     *                        procNames}.
+     *                        Supported values:
+     *                        <ul>
+     *                        </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

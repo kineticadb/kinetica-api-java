@@ -43,9 +43,19 @@ public class RevokePermissionSystemRequest implements IndexedRecord {
 
 
     /**
-     * Permission to revoke from the user or role. Values: system_admin,
-     * system_write, system_read.
-
+     * Permission to revoke from the user or role.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_ADMIN
+     * SYSTEM_ADMIN}: Full access to all data and system functions.
+     *         <li> {@link
+     * com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_WRITE
+     * SYSTEM_WRITE}: Read and write access to all tables.
+     *         <li> {@link
+     * com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_READ
+     * SYSTEM_READ}: Read-only access to all tables.
+     * </ul>
      * A set of string constants for the parameter {@code permission}.
      */
     public static final class Permission {
@@ -89,8 +99,20 @@ public class RevokePermissionSystemRequest implements IndexedRecord {
      * 
      * @param name  Name of the user or role from which the permission will be
      *              revoked. Must be an existing user or role.
-     * @param permission  Permission to revoke from the user or role. Values:
-     *                    system_admin, system_write, system_read.
+     * @param permission  Permission to revoke from the user or role.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_ADMIN
+     *                    SYSTEM_ADMIN}: Full access to all data and system
+     *                    functions.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_WRITE
+     *                    SYSTEM_WRITE}: Read and write access to all tables.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_READ
+     *                    SYSTEM_READ}: Read-only access to all tables.
+     *                    </ul>
      * @param options  Optional parameters.
      * 
      */
@@ -125,8 +147,19 @@ public class RevokePermissionSystemRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Permission to revoke from the user or role. Values:
-     *         system_admin, system_write, system_read.
+     * @return Permission to revoke from the user or role.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_ADMIN
+     *         SYSTEM_ADMIN}: Full access to all data and system functions.
+     *                 <li> {@link
+     *         com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_WRITE
+     *         SYSTEM_WRITE}: Read and write access to all tables.
+     *                 <li> {@link
+     *         com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_READ
+     *         SYSTEM_READ}: Read-only access to all tables.
+     *         </ul>
      * 
      */
     public String getPermission() {
@@ -135,8 +168,20 @@ public class RevokePermissionSystemRequest implements IndexedRecord {
 
     /**
      * 
-     * @param permission  Permission to revoke from the user or role. Values:
-     *                    system_admin, system_write, system_read.
+     * @param permission  Permission to revoke from the user or role.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_ADMIN
+     *                    SYSTEM_ADMIN}: Full access to all data and system
+     *                    functions.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_WRITE
+     *                    SYSTEM_WRITE}: Read and write access to all tables.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_READ
+     *                    SYSTEM_READ}: Read-only access to all tables.
+     *                    </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

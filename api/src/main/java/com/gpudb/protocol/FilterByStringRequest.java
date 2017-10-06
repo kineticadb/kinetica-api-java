@@ -53,9 +53,31 @@ public class FilterByStringRequest implements IndexedRecord {
 
 
     /**
-     * The string filtering mode to apply. See below for details. Values:
-     * search, equals, contains, starts_with, regex.
-
+     * The string filtering mode to apply. See below for details.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.FilterByStringRequest.Mode#SEARCH
+     * SEARCH}: Full text search query with wildcards and boolean operators.
+     * Note that for this mode, no column can be specified in {@code
+     * columnNames}; all string columns of the table that have text search
+     * enabled will be searched.
+     *         <li> {@link com.gpudb.protocol.FilterByStringRequest.Mode#EQUALS
+     * EQUALS}: Exact whole-string match (accelerated).
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByStringRequest.Mode#CONTAINS CONTAINS}:
+     * Partial substring match (not accelerated).  If the column is a string
+     * type (non-charN) and the number of records is too large, it will return
+     * 0.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByStringRequest.Mode#STARTS_WITH STARTS_WITH}:
+     * Strings that start with the given expression (not accelerated). If the
+     * column is a string type (non-charN) and the number of records is too
+     * large, it will return 0.
+     *         <li> {@link com.gpudb.protocol.FilterByStringRequest.Mode#REGEX
+     * REGEX}: Full regular expression search (not accelerated). If the column
+     * is a string type (non-charN) and the number of records is too large, it
+     * will return 0.
+     * </ul>
      * A set of string constants for the parameter {@code mode}.
      */
     public static final class Mode {
@@ -101,9 +123,19 @@ public class FilterByStringRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> case_sensitive: If 'false' then string filtering will
-     * ignore case. Does not apply to 'search' mode. Values: true, false.
-     * <p>
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByStringRequest.Options#CASE_SENSITIVE
+     * CASE_SENSITIVE}: If 'false' then string filtering will ignore case. Does
+     * not apply to 'search' mode.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByStringRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByStringRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.FilterByStringRequest.Options#TRUE TRUE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -111,7 +143,16 @@ public class FilterByStringRequest implements IndexedRecord {
 
         /**
          * If 'false' then string filtering will ignore case. Does not apply to
-         * 'search' mode. Values: true, false.
+         * 'search' mode.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.FilterByStringRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.FilterByStringRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.FilterByStringRequest.Options#TRUE TRUE}.
          */
         public static final String CASE_SENSITIVE = "case_sensitive";
         public static final String TRUE = "true";
@@ -153,14 +194,54 @@ public class FilterByStringRequest implements IndexedRecord {
      *                  target="_top">tables</a>.
      * @param expression  The expression with which to filter the table.
      * @param mode  The string filtering mode to apply. See below for details.
-     *              Values: search, equals, contains, starts_with, regex.
+     *              Supported values:
+     *              <ul>
+     *                      <li> {@link
+     *              com.gpudb.protocol.FilterByStringRequest.Mode#SEARCH
+     *              SEARCH}: Full text search query with wildcards and boolean
+     *              operators. Note that for this mode, no column can be
+     *              specified in {@code columnNames}; all string columns of the
+     *              table that have text search enabled will be searched.
+     *                      <li> {@link
+     *              com.gpudb.protocol.FilterByStringRequest.Mode#EQUALS
+     *              EQUALS}: Exact whole-string match (accelerated).
+     *                      <li> {@link
+     *              com.gpudb.protocol.FilterByStringRequest.Mode#CONTAINS
+     *              CONTAINS}: Partial substring match (not accelerated).  If
+     *              the column is a string type (non-charN) and the number of
+     *              records is too large, it will return 0.
+     *                      <li> {@link
+     *              com.gpudb.protocol.FilterByStringRequest.Mode#STARTS_WITH
+     *              STARTS_WITH}: Strings that start with the given expression
+     *              (not accelerated). If the column is a string type
+     *              (non-charN) and the number of records is too large, it will
+     *              return 0.
+     *                      <li> {@link
+     *              com.gpudb.protocol.FilterByStringRequest.Mode#REGEX REGEX}:
+     *              Full regular expression search (not accelerated). If the
+     *              column is a string type (non-charN) and the number of
+     *              records is too large, it will return 0.
+     *              </ul>
      * @param columnNames  List of columns on which to apply the filter.
      *                     Ignored for 'search' mode.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> case_sensitive: If 'false' then string
-     *                 filtering will ignore case. Does not apply to 'search'
-     *                 mode. Values: true, false.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByStringRequest.Options#CASE_SENSITIVE
+     *                 CASE_SENSITIVE}: If 'false' then string filtering will
+     *                 ignore case. Does not apply to 'search' mode.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByStringRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByStringRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.FilterByStringRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      * 
      */
@@ -249,7 +330,33 @@ public class FilterByStringRequest implements IndexedRecord {
     /**
      * 
      * @return The string filtering mode to apply. See below for details.
-     *         Values: search, equals, contains, starts_with, regex.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByStringRequest.Mode#SEARCH SEARCH}:
+     *         Full text search query with wildcards and boolean operators.
+     *         Note that for this mode, no column can be specified in {@code
+     *         columnNames}; all string columns of the table that have text
+     *         search enabled will be searched.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByStringRequest.Mode#EQUALS EQUALS}:
+     *         Exact whole-string match (accelerated).
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByStringRequest.Mode#CONTAINS
+     *         CONTAINS}: Partial substring match (not accelerated).  If the
+     *         column is a string type (non-charN) and the number of records is
+     *         too large, it will return 0.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByStringRequest.Mode#STARTS_WITH
+     *         STARTS_WITH}: Strings that start with the given expression (not
+     *         accelerated). If the column is a string type (non-charN) and the
+     *         number of records is too large, it will return 0.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByStringRequest.Mode#REGEX REGEX}: Full
+     *         regular expression search (not accelerated). If the column is a
+     *         string type (non-charN) and the number of records is too large,
+     *         it will return 0.
+     *         </ul>
      * 
      */
     public String getMode() {
@@ -259,7 +366,34 @@ public class FilterByStringRequest implements IndexedRecord {
     /**
      * 
      * @param mode  The string filtering mode to apply. See below for details.
-     *              Values: search, equals, contains, starts_with, regex.
+     *              Supported values:
+     *              <ul>
+     *                      <li> {@link
+     *              com.gpudb.protocol.FilterByStringRequest.Mode#SEARCH
+     *              SEARCH}: Full text search query with wildcards and boolean
+     *              operators. Note that for this mode, no column can be
+     *              specified in {@code columnNames}; all string columns of the
+     *              table that have text search enabled will be searched.
+     *                      <li> {@link
+     *              com.gpudb.protocol.FilterByStringRequest.Mode#EQUALS
+     *              EQUALS}: Exact whole-string match (accelerated).
+     *                      <li> {@link
+     *              com.gpudb.protocol.FilterByStringRequest.Mode#CONTAINS
+     *              CONTAINS}: Partial substring match (not accelerated).  If
+     *              the column is a string type (non-charN) and the number of
+     *              records is too large, it will return 0.
+     *                      <li> {@link
+     *              com.gpudb.protocol.FilterByStringRequest.Mode#STARTS_WITH
+     *              STARTS_WITH}: Strings that start with the given expression
+     *              (not accelerated). If the column is a string type
+     *              (non-charN) and the number of records is too large, it will
+     *              return 0.
+     *                      <li> {@link
+     *              com.gpudb.protocol.FilterByStringRequest.Mode#REGEX REGEX}:
+     *              Full regular expression search (not accelerated). If the
+     *              column is a string type (non-charN) and the number of
+     *              records is too large, it will return 0.
+     *              </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -296,9 +430,19 @@ public class FilterByStringRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> case_sensitive: If 'false' then string filtering
-     *         will ignore case. Does not apply to 'search' mode. Values: true,
-     *         false.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByStringRequest.Options#CASE_SENSITIVE
+     *         CASE_SENSITIVE}: If 'false' then string filtering will ignore
+     *         case. Does not apply to 'search' mode.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByStringRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByStringRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.FilterByStringRequest.Options#TRUE TRUE}.
      *         </ul>
      * 
      */
@@ -310,9 +454,22 @@ public class FilterByStringRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> case_sensitive: If 'false' then string
-     *                 filtering will ignore case. Does not apply to 'search'
-     *                 mode. Values: true, false.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByStringRequest.Options#CASE_SENSITIVE
+     *                 CASE_SENSITIVE}: If 'false' then string filtering will
+     *                 ignore case. Does not apply to 'search' mode.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByStringRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByStringRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.FilterByStringRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

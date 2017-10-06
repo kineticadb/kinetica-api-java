@@ -38,8 +38,14 @@ public class HasTableResponse implements IndexedRecord {
 
 
     /**
-     * Indicates whether the table exists or not. Values: true, false.
-
+     * Indicates whether the table exists or not.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.HasTableResponse.TableExists#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.HasTableResponse.TableExists#FALSE FALSE}
+     * </ul>
      * A set of string constants for the parameter {@code tableExists}.
      */
     public static final class TableExists {
@@ -82,7 +88,14 @@ public class HasTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates whether the table exists or not. Values: true, false.
+     * @return Indicates whether the table exists or not.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.HasTableResponse.TableExists#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.HasTableResponse.TableExists#FALSE FALSE}
+     *         </ul>
      * 
      */
     public boolean getTableExists() {
@@ -91,8 +104,16 @@ public class HasTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param tableExists  Indicates whether the table exists or not. Values:
-     *                     true, false.
+     * @param tableExists  Indicates whether the table exists or not.
+     *                     Supported values:
+     *                     <ul>
+     *                             <li> {@link
+     *                     com.gpudb.protocol.HasTableResponse.TableExists#TRUE
+     *                     TRUE}
+     *                             <li> {@link
+     *                     com.gpudb.protocol.HasTableResponse.TableExists#FALSE
+     *                     FALSE}
+     *                     </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

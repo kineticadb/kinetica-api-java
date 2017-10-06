@@ -48,11 +48,20 @@ public class ShowProcStatusRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> clear_complete: If set to {@code true}, if a proc instance
-     * has completed (either successfully or unsuccessfully) then its status
-     * will be cleared and no longer returned in subsequent calls. Values:
-     * true, false.
-     * <p>
+     *         <li> {@link
+     * com.gpudb.protocol.ShowProcStatusRequest.Options#CLEAR_COMPLETE
+     * CLEAR_COMPLETE}: If set to {@code true}, if a proc instance has
+     * completed (either successfully or unsuccessfully) then its status will
+     * be cleared and no longer returned in subsequent calls.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ShowProcStatusRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE FALSE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -61,7 +70,16 @@ public class ShowProcStatusRequest implements IndexedRecord {
         /**
          * If set to {@code true}, if a proc instance has completed (either
          * successfully or unsuccessfully) then its status will be cleared and
-         * no longer returned in subsequent calls. Values: true, false.
+         * no longer returned in subsequent calls.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ShowProcStatusRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE FALSE}.
          */
         public static final String CLEAR_COMPLETE = "clear_complete";
         public static final String TRUE = "true";
@@ -92,11 +110,24 @@ public class ShowProcStatusRequest implements IndexedRecord {
      *               instances will be returned.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> clear_complete: If set to {@code true}, if
-     *                 a proc instance has completed (either successfully or
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowProcStatusRequest.Options#CLEAR_COMPLETE
+     *                 CLEAR_COMPLETE}: If set to {@code true}, if a proc
+     *                 instance has completed (either successfully or
      *                 unsuccessfully) then its status will be cleared and no
-     *                 longer returned in subsequent calls. Values: true,
-     *                 false.
+     *                 longer returned in subsequent calls.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowProcStatusRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      */
@@ -137,10 +168,21 @@ public class ShowProcStatusRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> clear_complete: If set to {@code true}, if a proc
-     *         instance has completed (either successfully or unsuccessfully)
-     *         then its status will be cleared and no longer returned in
-     *         subsequent calls. Values: true, false.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowProcStatusRequest.Options#CLEAR_COMPLETE
+     *         CLEAR_COMPLETE}: If set to {@code true}, if a proc instance has
+     *         completed (either successfully or unsuccessfully) then its
+     *         status will be cleared and no longer returned in subsequent
+     *         calls.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowProcStatusRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE FALSE}.
      *         </ul>
      * 
      */
@@ -152,11 +194,24 @@ public class ShowProcStatusRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> clear_complete: If set to {@code true}, if
-     *                 a proc instance has completed (either successfully or
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowProcStatusRequest.Options#CLEAR_COMPLETE
+     *                 CLEAR_COMPLETE}: If set to {@code true}, if a proc
+     *                 instance has completed (either successfully or
      *                 unsuccessfully) then its status will be cleared and no
-     *                 longer returned in subsequent calls. Values: true,
-     *                 false.
+     *                 longer returned in subsequent calls.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowProcStatusRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

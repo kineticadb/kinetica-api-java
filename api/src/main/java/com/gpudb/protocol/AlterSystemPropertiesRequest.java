@@ -51,51 +51,115 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * Map containing the properties of the system to be updated. Error if
      * empty.
      * <ul>
-     *         <li> sm_omp_threads: Set the number of OpenMP threads that will
-     * be used to service filter & aggregation requests against collections to
-     * the specified integer value.
-     *         <li> kernel_omp_threads: Set the number of kernel OpenMP threads
-     * to the specified integer value.
-     *         <li> concurrent_kernel_execution: Enables concurrent kernel
-     * execution if the value is {@code true} and disables it if the value is
-     * {@code false}. Values: true, false.
-     * <p>
-     *         <li> chunk_size: Sets the chunk size of all new sets to the
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SM_OMP_THREADS
+     * SM_OMP_THREADS}: Set the number of OpenMP threads that will be used to
+     * service filter & aggregation requests against collections to the
      * specified integer value.
-     *         <li> flush_to_disk: Flushes any changes to any tables to the
-     * persistent store.  These changes include updates to the vector store,
-     * object store, and text search store, Value string is ignored
-     *         <li> clear_cache: Clears cached results.  Useful to allow
-     * repeated timing of endpoints. Value string is ignored
-     *         <li> communicator_test: Invoke the communicator test and report
-     * timing results. Value string is is a comma separated list of
-     * <key>=<value> expressions.  Expressions are: num_transactions=<num>
-     * where num is the number of request reply transactions to invoke per
-     * test; message_size=<bytes> where bytes is the size of the messages to
-     * send in bytes; check_values=<enabled> where if enabled is true the value
-     * of the messages received are verified.
-     *         <li> set_message_timers_enabled: Enables the communicator test
-     * to collect additional timing statistics when the value string is {@code
-     * true}. Disables the collection when the value string is {@code false}
-     * Values: true, false.
-     * <p>
-     *         <li> bulk_add_test: Invoke the bulk add test and report timing
-     * results. Value string is ignored.
-     *         <li> network_speed: Invoke the network speed test and report
-     * timing results. Value string is a semicolon-separated list of
-     * <key>=<value> expressions.  Valid expressions are: seconds=<time> where
-     * time is the time in seconds to run the test; data_size=<size> where size
-     * is the size in bytes of the block to be transferred; threads=<number of
-     * threads>; to_ranks=<space-separated list of ranks> where the list of
-     * ranks is the ranks that rank 0 will send data to and get data from. If
-     * to_ranks is unspecified then all worker ranks are used.
-     *         <li> request_timeout: Number of minutes after which filtering
-     * (e.g., {@link com.gpudb.GPUdb#filter(FilterRequest)}) and aggregating
-     * (e.g., {@link
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KERNEL_OMP_THREADS
+     * KERNEL_OMP_THREADS}: Set the number of kernel OpenMP threads to the
+     * specified integer value.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CONCURRENT_KERNEL_EXECUTION
+     * CONCURRENT_KERNEL_EXECUTION}: Enables concurrent kernel execution if the
+     * value is {@code true} and disables it if the value is {@code false}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
+     * FALSE}
+     * </ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_SIZE
+     * CHUNK_SIZE}: Sets the chunk size of all new sets to the specified
+     * integer value.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EXECUTION_MODE
+     * EXECUTION_MODE}: Sets the execution_mode for kernel executions to the
+     * specified string value. Possible values are host, device, default
+     * (engine decides) or an integer value that indicates max chunk size to
+     * exec on host
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FLUSH_TO_DISK
+     * FLUSH_TO_DISK}: Flushes any changes to any tables to the persistent
+     * store.  These changes include updates to the vector store, object store,
+     * and text search store, Value string is ignored
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CLEAR_CACHE
+     * CLEAR_CACHE}: Clears cached results.  Useful to allow repeated timing of
+     * endpoints. Value string is ignored
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#COMMUNICATOR_TEST
+     * COMMUNICATOR_TEST}: Invoke the communicator test and report timing
+     * results. Value string is is a comma separated list of <key>=<value>
+     * expressions.  Expressions are: num_transactions=<num> where num is the
+     * number of request reply transactions to invoke per test;
+     * message_size=<bytes> where bytes is the size of the messages to send in
+     * bytes; check_values=<enabled> where if enabled is true the value of the
+     * messages received are verified.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SET_MESSAGE_TIMERS_ENABLED
+     * SET_MESSAGE_TIMERS_ENABLED}: Enables the communicator test to collect
+     * additional timing statistics when the value string is {@code true}.
+     * Disables the collection when the value string is {@code false}
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
+     * FALSE}
+     * </ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#BULK_ADD_TEST
+     * BULK_ADD_TEST}: Invoke the bulk add test and report timing results.
+     * Value string is ignored.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
+     * NETWORK_SPEED}: Invoke the network speed test and report timing results.
+     * Value string is a semicolon-separated list of <key>=<value> expressions.
+     * Valid expressions are: seconds=<time> where time is the time in seconds
+     * to run the test; data_size=<size> where size is the size in bytes of the
+     * block to be transferred; threads=<number of threads>;
+     * to_ranks=<space-separated list of ranks> where the list of ranks is the
+     * ranks that rank 0 will send data to and get data from. If to_ranks is
+     * unspecified then all worker ranks are used.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#REQUEST_TIMEOUT
+     * REQUEST_TIMEOUT}: Number of minutes after which filtering (e.g., {@link
+     * com.gpudb.GPUdb#filter(FilterRequest)}) and aggregating (e.g., {@link
      * com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}) queries
      * will timeout.
-     *         <li> max_get_records_size: The maximum number of records the
-     * database will serve for a given data retrieval call
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_GET_RECORDS_SIZE
+     * MAX_GET_RECORDS_SIZE}: The maximum number of records the database will
+     * serve for a given data retrieval call
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MEMORY_ALLOCATION_LIMIT_MB
+     * MEMORY_ALLOCATION_LIMIT_MB}: Set the memory allocation limit for all
+     * rank processes in megabytes, 0 means no limit. Overrides any individual
+     * rank memory allocation limits.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
+     * ENABLE_AUDIT}: Enable or disable auditing.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_HEADERS
+     * AUDIT_HEADERS}: Enable or disable auditing of request headers.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_BODY
+     * AUDIT_BODY}: Enable or disable auditing of request bodies.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_DATA
+     * AUDIT_DATA}: Enable or disable auditing of request data.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_JOB_MANAGER
+     * ENABLE_JOB_MANAGER}: Enable JobManager to enforce processing of requests
+     * in the order received.
      * </ul>
      * A set of string constants for the parameter {@code propertyUpdatesMap}.
      */
@@ -116,7 +180,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
         /**
          * Enables concurrent kernel execution if the value is {@code true} and
-         * disables it if the value is {@code false}. Values: true, false.
+         * disables it if the value is {@code false}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
+         * FALSE}
+         * </ul>
          */
         public static final String CONCURRENT_KERNEL_EXECUTION = "concurrent_kernel_execution";
         public static final String TRUE = "true";
@@ -126,6 +199,14 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * Sets the chunk size of all new sets to the specified integer value.
          */
         public static final String CHUNK_SIZE = "chunk_size";
+
+        /**
+         * Sets the execution_mode for kernel executions to the specified
+         * string value. Possible values are host, device, default (engine
+         * decides) or an integer value that indicates max chunk size to exec
+         * on host
+         */
+        public static final String EXECUTION_MODE = "execution_mode";
 
         /**
          * Flushes any changes to any tables to the persistent store.  These
@@ -154,8 +235,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         /**
          * Enables the communicator test to collect additional timing
          * statistics when the value string is {@code true}. Disables the
-         * collection when the value string is {@code false} Values: true,
-         * false.
+         * collection when the value string is {@code false}
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
+         * FALSE}
+         * </ul>
          */
         public static final String SET_MESSAGE_TIMERS_ENABLED = "set_message_timers_enabled";
 
@@ -192,6 +281,39 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          */
         public static final String MAX_GET_RECORDS_SIZE = "max_get_records_size";
 
+        /**
+         * Set the memory allocation limit for all rank processes in megabytes,
+         * 0 means no limit. Overrides any individual rank memory allocation
+         * limits.
+         */
+        public static final String MEMORY_ALLOCATION_LIMIT_MB = "memory_allocation_limit_mb";
+
+        /**
+         * Enable or disable auditing.
+         */
+        public static final String ENABLE_AUDIT = "enable_audit";
+
+        /**
+         * Enable or disable auditing of request headers.
+         */
+        public static final String AUDIT_HEADERS = "audit_headers";
+
+        /**
+         * Enable or disable auditing of request bodies.
+         */
+        public static final String AUDIT_BODY = "audit_body";
+
+        /**
+         * Enable or disable auditing of request data.
+         */
+        public static final String AUDIT_DATA = "audit_data";
+
+        /**
+         * Enable JobManager to enforce processing of requests in the order
+         * received.
+         */
+        public static final String ENABLE_JOB_MANAGER = "enable_job_manager";
+
         private PropertyUpdatesMap() {  }
     }
 
@@ -215,32 +337,61 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * @param propertyUpdatesMap  Map containing the properties of the system
      *                            to be updated. Error if empty.
      *                            <ul>
-     *                                    <li> sm_omp_threads: Set the number
-     *                            of OpenMP threads that will be used to
-     *                            service filter & aggregation requests against
-     *                            collections to the specified integer value.
-     *                                    <li> kernel_omp_threads: Set the
-     *                            number of kernel OpenMP threads to the
-     *                            specified integer value.
-     *                                    <li> concurrent_kernel_execution:
-     *                            Enables concurrent kernel execution if the
-     *                            value is {@code true} and disables it if the
-     *                            value is {@code false}. Values: true, false.
-     *                                    <li> chunk_size: Sets the chunk size
-     *                            of all new sets to the specified integer
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SM_OMP_THREADS
+     *                            SM_OMP_THREADS}: Set the number of OpenMP
+     *                            threads that will be used to service filter &
+     *                            aggregation requests against collections to
+     *                            the specified integer value.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KERNEL_OMP_THREADS
+     *                            KERNEL_OMP_THREADS}: Set the number of kernel
+     *                            OpenMP threads to the specified integer
      *                            value.
-     *                                    <li> flush_to_disk: Flushes any
-     *                            changes to any tables to the persistent
-     *                            store.  These changes include updates to the
-     *                            vector store, object store, and text search
-     *                            store, Value string is ignored
-     *                                    <li> clear_cache: Clears cached
-     *                            results.  Useful to allow repeated timing of
-     *                            endpoints. Value string is ignored
-     *                                    <li> communicator_test: Invoke the
-     *                            communicator test and report timing results.
-     *                            Value string is is a comma separated list of
-     *                            <key>=<value> expressions.  Expressions are:
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CONCURRENT_KERNEL_EXECUTION
+     *                            CONCURRENT_KERNEL_EXECUTION}: Enables
+     *                            concurrent kernel execution if the value is
+     *                            {@code true} and disables it if the value is
+     *                            {@code false}.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_SIZE
+     *                            CHUNK_SIZE}: Sets the chunk size of all new
+     *                            sets to the specified integer value.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EXECUTION_MODE
+     *                            EXECUTION_MODE}: Sets the execution_mode for
+     *                            kernel executions to the specified string
+     *                            value. Possible values are host, device,
+     *                            default (engine decides) or an integer value
+     *                            that indicates max chunk size to exec on host
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FLUSH_TO_DISK
+     *                            FLUSH_TO_DISK}: Flushes any changes to any
+     *                            tables to the persistent store.  These
+     *                            changes include updates to the vector store,
+     *                            object store, and text search store, Value
+     *                            string is ignored
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CLEAR_CACHE
+     *                            CLEAR_CACHE}: Clears cached results.  Useful
+     *                            to allow repeated timing of endpoints. Value
+     *                            string is ignored
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#COMMUNICATOR_TEST
+     *                            COMMUNICATOR_TEST}: Invoke the communicator
+     *                            test and report timing results. Value string
+     *                            is is a comma separated list of <key>=<value>
+     *                            expressions.  Expressions are:
      *                            num_transactions=<num> where num is the
      *                            number of request reply transactions to
      *                            invoke per test; message_size=<bytes> where
@@ -248,20 +399,34 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            bytes; check_values=<enabled> where if
      *                            enabled is true the value of the messages
      *                            received are verified.
-     *                                    <li> set_message_timers_enabled:
-     *                            Enables the communicator test to collect
-     *                            additional timing statistics when the value
-     *                            string is {@code true}. Disables the
-     *                            collection when the value string is {@code
-     *                            false} Values: true, false.
-     *                                    <li> bulk_add_test: Invoke the bulk
-     *                            add test and report timing results. Value
-     *                            string is ignored.
-     *                                    <li> network_speed: Invoke the
-     *                            network speed test and report timing results.
-     *                            Value string is a semicolon-separated list of
-     *                            <key>=<value> expressions.  Valid expressions
-     *                            are: seconds=<time> where time is the time in
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SET_MESSAGE_TIMERS_ENABLED
+     *                            SET_MESSAGE_TIMERS_ENABLED}: Enables the
+     *                            communicator test to collect additional
+     *                            timing statistics when the value string is
+     *                            {@code true}. Disables the collection when
+     *                            the value string is {@code false}
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#BULK_ADD_TEST
+     *                            BULK_ADD_TEST}: Invoke the bulk add test and
+     *                            report timing results. Value string is
+     *                            ignored.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
+     *                            NETWORK_SPEED}: Invoke the network speed test
+     *                            and report timing results. Value string is a
+     *                            semicolon-separated list of <key>=<value>
+     *                            expressions.  Valid expressions are:
+     *                            seconds=<time> where time is the time in
      *                            seconds to run the test; data_size=<size>
      *                            where size is the size in bytes of the block
      *                            to be transferred; threads=<number of
@@ -270,15 +435,45 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            that rank 0 will send data to and get data
      *                            from. If to_ranks is unspecified then all
      *                            worker ranks are used.
-     *                                    <li> request_timeout: Number of
-     *                            minutes after which filtering (e.g., {@link
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#REQUEST_TIMEOUT
+     *                            REQUEST_TIMEOUT}: Number of minutes after
+     *                            which filtering (e.g., {@link
      *                            com.gpudb.GPUdb#filter(FilterRequest)}) and
      *                            aggregating (e.g., {@link
      *                            com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)})
      *                            queries will timeout.
-     *                                    <li> max_get_records_size: The
-     *                            maximum number of records the database will
-     *                            serve for a given data retrieval call
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_GET_RECORDS_SIZE
+     *                            MAX_GET_RECORDS_SIZE}: The maximum number of
+     *                            records the database will serve for a given
+     *                            data retrieval call
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MEMORY_ALLOCATION_LIMIT_MB
+     *                            MEMORY_ALLOCATION_LIMIT_MB}: Set the memory
+     *                            allocation limit for all rank processes in
+     *                            megabytes, 0 means no limit. Overrides any
+     *                            individual rank memory allocation limits.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
+     *                            ENABLE_AUDIT}: Enable or disable auditing.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_HEADERS
+     *                            AUDIT_HEADERS}: Enable or disable auditing of
+     *                            request headers.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_BODY
+     *                            AUDIT_BODY}: Enable or disable auditing of
+     *                            request bodies.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_DATA
+     *                            AUDIT_DATA}: Enable or disable auditing of
+     *                            request data.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_JOB_MANAGER
+     *                            ENABLE_JOB_MANAGER}: Enable JobManager to
+     *                            enforce processing of requests in the order
+     *                            received.
      *                            </ul>
      * @param options  Optional parameters.
      * 
@@ -293,52 +488,121 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * @return Map containing the properties of the system to be updated. Error
      *         if empty.
      *         <ul>
-     *                 <li> sm_omp_threads: Set the number of OpenMP threads
-     *         that will be used to service filter & aggregation requests
-     *         against collections to the specified integer value.
-     *                 <li> kernel_omp_threads: Set the number of kernel OpenMP
-     *         threads to the specified integer value.
-     *                 <li> concurrent_kernel_execution: Enables concurrent
-     *         kernel execution if the value is {@code true} and disables it if
-     *         the value is {@code false}. Values: true, false.
-     *                 <li> chunk_size: Sets the chunk size of all new sets to
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SM_OMP_THREADS
+     *         SM_OMP_THREADS}: Set the number of OpenMP threads that will be
+     *         used to service filter & aggregation requests against
+     *         collections to the specified integer value.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KERNEL_OMP_THREADS
+     *         KERNEL_OMP_THREADS}: Set the number of kernel OpenMP threads to
      *         the specified integer value.
-     *                 <li> flush_to_disk: Flushes any changes to any tables to
-     *         the persistent store.  These changes include updates to the
-     *         vector store, object store, and text search store, Value string
-     *         is ignored
-     *                 <li> clear_cache: Clears cached results.  Useful to
-     *         allow repeated timing of endpoints. Value string is ignored
-     *                 <li> communicator_test: Invoke the communicator test and
-     *         report timing results. Value string is is a comma separated list
-     *         of <key>=<value> expressions.  Expressions are:
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CONCURRENT_KERNEL_EXECUTION
+     *         CONCURRENT_KERNEL_EXECUTION}: Enables concurrent kernel
+     *         execution if the value is {@code true} and disables it if the
+     *         value is {@code false}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
+     *         FALSE}
+     *         </ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_SIZE
+     *         CHUNK_SIZE}: Sets the chunk size of all new sets to the
+     *         specified integer value.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EXECUTION_MODE
+     *         EXECUTION_MODE}: Sets the execution_mode for kernel executions
+     *         to the specified string value. Possible values are host, device,
+     *         default (engine decides) or an integer value that indicates max
+     *         chunk size to exec on host
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FLUSH_TO_DISK
+     *         FLUSH_TO_DISK}: Flushes any changes to any tables to the
+     *         persistent store.  These changes include updates to the vector
+     *         store, object store, and text search store, Value string is
+     *         ignored
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CLEAR_CACHE
+     *         CLEAR_CACHE}: Clears cached results.  Useful to allow repeated
+     *         timing of endpoints. Value string is ignored
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#COMMUNICATOR_TEST
+     *         COMMUNICATOR_TEST}: Invoke the communicator test and report
+     *         timing results. Value string is is a comma separated list of
+     *         <key>=<value> expressions.  Expressions are:
      *         num_transactions=<num> where num is the number of request reply
      *         transactions to invoke per test; message_size=<bytes> where
      *         bytes is the size of the messages to send in bytes;
      *         check_values=<enabled> where if enabled is true the value of the
      *         messages received are verified.
-     *                 <li> set_message_timers_enabled: Enables the
-     *         communicator test to collect additional timing statistics when
-     *         the value string is {@code true}. Disables the collection when
-     *         the value string is {@code false} Values: true, false.
-     *                 <li> bulk_add_test: Invoke the bulk add test and report
-     *         timing results. Value string is ignored.
-     *                 <li> network_speed: Invoke the network speed test and
-     *         report timing results. Value string is a semicolon-separated
-     *         list of <key>=<value> expressions.  Valid expressions are:
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SET_MESSAGE_TIMERS_ENABLED
+     *         SET_MESSAGE_TIMERS_ENABLED}: Enables the communicator test to
+     *         collect additional timing statistics when the value string is
+     *         {@code true}. Disables the collection when the value string is
+     *         {@code false}
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
+     *         FALSE}
+     *         </ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#BULK_ADD_TEST
+     *         BULK_ADD_TEST}: Invoke the bulk add test and report timing
+     *         results. Value string is ignored.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
+     *         NETWORK_SPEED}: Invoke the network speed test and report timing
+     *         results. Value string is a semicolon-separated list of
+     *         <key>=<value> expressions.  Valid expressions are:
      *         seconds=<time> where time is the time in seconds to run the
      *         test; data_size=<size> where size is the size in bytes of the
      *         block to be transferred; threads=<number of threads>;
      *         to_ranks=<space-separated list of ranks> where the list of ranks
      *         is the ranks that rank 0 will send data to and get data from. If
      *         to_ranks is unspecified then all worker ranks are used.
-     *                 <li> request_timeout: Number of minutes after which
-     *         filtering (e.g., {@link com.gpudb.GPUdb#filter(FilterRequest)})
-     *         and aggregating (e.g., {@link
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#REQUEST_TIMEOUT
+     *         REQUEST_TIMEOUT}: Number of minutes after which filtering (e.g.,
+     *         {@link com.gpudb.GPUdb#filter(FilterRequest)}) and aggregating
+     *         (e.g., {@link
      *         com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)})
      *         queries will timeout.
-     *                 <li> max_get_records_size: The maximum number of records
-     *         the database will serve for a given data retrieval call
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_GET_RECORDS_SIZE
+     *         MAX_GET_RECORDS_SIZE}: The maximum number of records the
+     *         database will serve for a given data retrieval call
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MEMORY_ALLOCATION_LIMIT_MB
+     *         MEMORY_ALLOCATION_LIMIT_MB}: Set the memory allocation limit for
+     *         all rank processes in megabytes, 0 means no limit. Overrides any
+     *         individual rank memory allocation limits.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
+     *         ENABLE_AUDIT}: Enable or disable auditing.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_HEADERS
+     *         AUDIT_HEADERS}: Enable or disable auditing of request headers.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_BODY
+     *         AUDIT_BODY}: Enable or disable auditing of request bodies.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_DATA
+     *         AUDIT_DATA}: Enable or disable auditing of request data.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_JOB_MANAGER
+     *         ENABLE_JOB_MANAGER}: Enable JobManager to enforce processing of
+     *         requests in the order received.
      *         </ul>
      * 
      */
@@ -351,32 +615,61 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * @param propertyUpdatesMap  Map containing the properties of the system
      *                            to be updated. Error if empty.
      *                            <ul>
-     *                                    <li> sm_omp_threads: Set the number
-     *                            of OpenMP threads that will be used to
-     *                            service filter & aggregation requests against
-     *                            collections to the specified integer value.
-     *                                    <li> kernel_omp_threads: Set the
-     *                            number of kernel OpenMP threads to the
-     *                            specified integer value.
-     *                                    <li> concurrent_kernel_execution:
-     *                            Enables concurrent kernel execution if the
-     *                            value is {@code true} and disables it if the
-     *                            value is {@code false}. Values: true, false.
-     *                                    <li> chunk_size: Sets the chunk size
-     *                            of all new sets to the specified integer
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SM_OMP_THREADS
+     *                            SM_OMP_THREADS}: Set the number of OpenMP
+     *                            threads that will be used to service filter &
+     *                            aggregation requests against collections to
+     *                            the specified integer value.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KERNEL_OMP_THREADS
+     *                            KERNEL_OMP_THREADS}: Set the number of kernel
+     *                            OpenMP threads to the specified integer
      *                            value.
-     *                                    <li> flush_to_disk: Flushes any
-     *                            changes to any tables to the persistent
-     *                            store.  These changes include updates to the
-     *                            vector store, object store, and text search
-     *                            store, Value string is ignored
-     *                                    <li> clear_cache: Clears cached
-     *                            results.  Useful to allow repeated timing of
-     *                            endpoints. Value string is ignored
-     *                                    <li> communicator_test: Invoke the
-     *                            communicator test and report timing results.
-     *                            Value string is is a comma separated list of
-     *                            <key>=<value> expressions.  Expressions are:
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CONCURRENT_KERNEL_EXECUTION
+     *                            CONCURRENT_KERNEL_EXECUTION}: Enables
+     *                            concurrent kernel execution if the value is
+     *                            {@code true} and disables it if the value is
+     *                            {@code false}.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_SIZE
+     *                            CHUNK_SIZE}: Sets the chunk size of all new
+     *                            sets to the specified integer value.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EXECUTION_MODE
+     *                            EXECUTION_MODE}: Sets the execution_mode for
+     *                            kernel executions to the specified string
+     *                            value. Possible values are host, device,
+     *                            default (engine decides) or an integer value
+     *                            that indicates max chunk size to exec on host
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FLUSH_TO_DISK
+     *                            FLUSH_TO_DISK}: Flushes any changes to any
+     *                            tables to the persistent store.  These
+     *                            changes include updates to the vector store,
+     *                            object store, and text search store, Value
+     *                            string is ignored
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CLEAR_CACHE
+     *                            CLEAR_CACHE}: Clears cached results.  Useful
+     *                            to allow repeated timing of endpoints. Value
+     *                            string is ignored
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#COMMUNICATOR_TEST
+     *                            COMMUNICATOR_TEST}: Invoke the communicator
+     *                            test and report timing results. Value string
+     *                            is is a comma separated list of <key>=<value>
+     *                            expressions.  Expressions are:
      *                            num_transactions=<num> where num is the
      *                            number of request reply transactions to
      *                            invoke per test; message_size=<bytes> where
@@ -384,20 +677,34 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            bytes; check_values=<enabled> where if
      *                            enabled is true the value of the messages
      *                            received are verified.
-     *                                    <li> set_message_timers_enabled:
-     *                            Enables the communicator test to collect
-     *                            additional timing statistics when the value
-     *                            string is {@code true}. Disables the
-     *                            collection when the value string is {@code
-     *                            false} Values: true, false.
-     *                                    <li> bulk_add_test: Invoke the bulk
-     *                            add test and report timing results. Value
-     *                            string is ignored.
-     *                                    <li> network_speed: Invoke the
-     *                            network speed test and report timing results.
-     *                            Value string is a semicolon-separated list of
-     *                            <key>=<value> expressions.  Valid expressions
-     *                            are: seconds=<time> where time is the time in
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SET_MESSAGE_TIMERS_ENABLED
+     *                            SET_MESSAGE_TIMERS_ENABLED}: Enables the
+     *                            communicator test to collect additional
+     *                            timing statistics when the value string is
+     *                            {@code true}. Disables the collection when
+     *                            the value string is {@code false}
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#BULK_ADD_TEST
+     *                            BULK_ADD_TEST}: Invoke the bulk add test and
+     *                            report timing results. Value string is
+     *                            ignored.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
+     *                            NETWORK_SPEED}: Invoke the network speed test
+     *                            and report timing results. Value string is a
+     *                            semicolon-separated list of <key>=<value>
+     *                            expressions.  Valid expressions are:
+     *                            seconds=<time> where time is the time in
      *                            seconds to run the test; data_size=<size>
      *                            where size is the size in bytes of the block
      *                            to be transferred; threads=<number of
@@ -406,15 +713,45 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            that rank 0 will send data to and get data
      *                            from. If to_ranks is unspecified then all
      *                            worker ranks are used.
-     *                                    <li> request_timeout: Number of
-     *                            minutes after which filtering (e.g., {@link
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#REQUEST_TIMEOUT
+     *                            REQUEST_TIMEOUT}: Number of minutes after
+     *                            which filtering (e.g., {@link
      *                            com.gpudb.GPUdb#filter(FilterRequest)}) and
      *                            aggregating (e.g., {@link
      *                            com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)})
      *                            queries will timeout.
-     *                                    <li> max_get_records_size: The
-     *                            maximum number of records the database will
-     *                            serve for a given data retrieval call
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_GET_RECORDS_SIZE
+     *                            MAX_GET_RECORDS_SIZE}: The maximum number of
+     *                            records the database will serve for a given
+     *                            data retrieval call
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MEMORY_ALLOCATION_LIMIT_MB
+     *                            MEMORY_ALLOCATION_LIMIT_MB}: Set the memory
+     *                            allocation limit for all rank processes in
+     *                            megabytes, 0 means no limit. Overrides any
+     *                            individual rank memory allocation limits.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
+     *                            ENABLE_AUDIT}: Enable or disable auditing.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_HEADERS
+     *                            AUDIT_HEADERS}: Enable or disable auditing of
+     *                            request headers.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_BODY
+     *                            AUDIT_BODY}: Enable or disable auditing of
+     *                            request bodies.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_DATA
+     *                            AUDIT_DATA}: Enable or disable auditing of
+     *                            request data.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_JOB_MANAGER
+     *                            ENABLE_JOB_MANAGER}: Enable JobManager to
+     *                            enforce processing of requests in the order
+     *                            received.
      *                            </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

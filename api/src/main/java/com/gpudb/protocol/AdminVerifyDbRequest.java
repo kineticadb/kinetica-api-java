@@ -41,6 +41,70 @@ public class AdminVerifyDbRequest implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#REBUILD_ON_ERROR
+     * REBUILD_ON_ERROR}:
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_PERSIST
+     * VERIFY_PERSIST}:
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
+         */
+        public static final String REBUILD_ON_ERROR = "rebuild_on_error";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
+         */
+        public static final String VERIFY_PERSIST = "verify_persist";
+
+        private Options() {  }
+    }
+
     private Map<String, String> options;
 
 
@@ -55,6 +119,38 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      * Constructs an AdminVerifyDbRequest object with the specified parameters.
      * 
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#REBUILD_ON_ERROR
+     *                 REBUILD_ON_ERROR}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_PERSIST
+     *                 VERIFY_PERSIST}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
      * 
      */
     public AdminVerifyDbRequest(Map<String, String> options) {
@@ -64,6 +160,32 @@ public class AdminVerifyDbRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#REBUILD_ON_ERROR
+     *         REBUILD_ON_ERROR}:
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_PERSIST
+     *         VERIFY_PERSIST}:
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -73,6 +195,38 @@ public class AdminVerifyDbRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#REBUILD_ON_ERROR
+     *                 REBUILD_ON_ERROR}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_PERSIST
+     *                 VERIFY_PERSIST}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

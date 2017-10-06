@@ -43,10 +43,19 @@ public class ShowProcRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> include_files: If set to {@code true}, the files that make
-     * up the proc will be returned. If set to {@code false}, the files will
-     * not be returned. Values: true, false.
-     * <p>
+     *         <li> {@link
+     * com.gpudb.protocol.ShowProcRequest.Options#INCLUDE_FILES INCLUDE_FILES}:
+     * If set to {@code true}, the files that make up the proc will be
+     * returned. If set to {@code false}, the files will not be returned.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ShowProcRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ShowProcRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ShowProcRequest.Options#FALSE FALSE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -55,7 +64,15 @@ public class ShowProcRequest implements IndexedRecord {
         /**
          * If set to {@code true}, the files that make up the proc will be
          * returned. If set to {@code false}, the files will not be returned.
-         * Values: true, false.
+         * Supported values:
+         * <ul>
+         *         <li> {@link com.gpudb.protocol.ShowProcRequest.Options#TRUE
+         * TRUE}
+         *         <li> {@link com.gpudb.protocol.ShowProcRequest.Options#FALSE
+         * FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ShowProcRequest.Options#FALSE FALSE}.
          */
         public static final String INCLUDE_FILES = "include_files";
         public static final String TRUE = "true";
@@ -85,10 +102,20 @@ public class ShowProcRequest implements IndexedRecord {
      *                  will be returned.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> include_files: If set to {@code true}, the
-     *                 files that make up the proc will be returned. If set to
-     *                 {@code false}, the files will not be returned. Values:
-     *                 true, false.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowProcRequest.Options#INCLUDE_FILES
+     *                 INCLUDE_FILES}: If set to {@code true}, the files that
+     *                 make up the proc will be returned. If set to {@code
+     *                 false}, the files will not be returned.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowProcRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowProcRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowProcRequest.Options#FALSE FALSE}.
      *                 </ul>
      * 
      */
@@ -127,9 +154,20 @@ public class ShowProcRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> include_files: If set to {@code true}, the files
-     *         that make up the proc will be returned. If set to {@code false},
-     *         the files will not be returned. Values: true, false.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowProcRequest.Options#INCLUDE_FILES
+     *         INCLUDE_FILES}: If set to {@code true}, the files that make up
+     *         the proc will be returned. If set to {@code false}, the files
+     *         will not be returned.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowProcRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowProcRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ShowProcRequest.Options#FALSE FALSE}.
      *         </ul>
      * 
      */
@@ -141,10 +179,20 @@ public class ShowProcRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> include_files: If set to {@code true}, the
-     *                 files that make up the proc will be returned. If set to
-     *                 {@code false}, the files will not be returned. Values:
-     *                 true, false.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowProcRequest.Options#INCLUDE_FILES
+     *                 INCLUDE_FILES}: If set to {@code true}, the files that
+     *                 make up the proc will be returned. If set to {@code
+     *                 false}, the files will not be returned.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowProcRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowProcRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowProcRequest.Options#FALSE FALSE}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

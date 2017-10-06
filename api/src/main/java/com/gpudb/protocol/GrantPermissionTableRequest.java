@@ -45,9 +45,25 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
 
     /**
-     * Permission to grant to the user or role. Values: table_admin,
-     * table_insert, table_update, table_delete, table_read.
-
+     * Permission to grant to the user or role.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_ADMIN
+     * TABLE_ADMIN}: Full read/write and administrative access to the table.
+     *         <li> {@link
+     * com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_INSERT
+     * TABLE_INSERT}: Insert access to the table.
+     *         <li> {@link
+     * com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_UPDATE
+     * TABLE_UPDATE}: Update access to the table.
+     *         <li> {@link
+     * com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_DELETE
+     * TABLE_DELETE}: Delete access to the table.
+     *         <li> {@link
+     * com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_READ
+     * TABLE_READ}: Read access to the table.
+     * </ul>
      * A set of string constants for the parameter {@code permission}.
      */
     public static final class Permission {
@@ -104,9 +120,26 @@ public class GrantPermissionTableRequest implements IndexedRecord {
      * 
      * @param name  Name of the user or role to which the permission will be
      *              granted. Must be an existing user or role.
-     * @param permission  Permission to grant to the user or role. Values:
-     *                    table_admin, table_insert, table_update,
-     *                    table_delete, table_read.
+     * @param permission  Permission to grant to the user or role.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_ADMIN
+     *                    TABLE_ADMIN}: Full read/write and administrative
+     *                    access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_INSERT
+     *                    TABLE_INSERT}: Insert access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_UPDATE
+     *                    TABLE_UPDATE}: Update access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_DELETE
+     *                    TABLE_DELETE}: Delete access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_READ
+     *                    TABLE_READ}: Read access to the table.
+     *                    </ul>
      * @param tableName  Name of the table to which the permission grants
      *                   access. Must be an existing table, collection, or
      *                   view. If a collection, the permission also applies to
@@ -148,8 +181,26 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Permission to grant to the user or role. Values: table_admin,
-     *         table_insert, table_update, table_delete, table_read.
+     * @return Permission to grant to the user or role.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_ADMIN
+     *         TABLE_ADMIN}: Full read/write and administrative access to the
+     *         table.
+     *                 <li> {@link
+     *         com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_INSERT
+     *         TABLE_INSERT}: Insert access to the table.
+     *                 <li> {@link
+     *         com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_UPDATE
+     *         TABLE_UPDATE}: Update access to the table.
+     *                 <li> {@link
+     *         com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_DELETE
+     *         TABLE_DELETE}: Delete access to the table.
+     *                 <li> {@link
+     *         com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_READ
+     *         TABLE_READ}: Read access to the table.
+     *         </ul>
      * 
      */
     public String getPermission() {
@@ -158,9 +209,26 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param permission  Permission to grant to the user or role. Values:
-     *                    table_admin, table_insert, table_update,
-     *                    table_delete, table_read.
+     * @param permission  Permission to grant to the user or role.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_ADMIN
+     *                    TABLE_ADMIN}: Full read/write and administrative
+     *                    access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_INSERT
+     *                    TABLE_INSERT}: Insert access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_UPDATE
+     *                    TABLE_UPDATE}: Update access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_DELETE
+     *                    TABLE_DELETE}: Delete access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionTableRequest.Permission#TABLE_READ
+     *                    TABLE_READ}: Read access to the table.
+     *                    </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

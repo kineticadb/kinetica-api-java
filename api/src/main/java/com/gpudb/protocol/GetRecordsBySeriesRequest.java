@@ -58,8 +58,15 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * Specifies the encoding for returned records; either 'binary' or 'json'.
-     * Values: binary, json.
-
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsBySeriesRequest.Encoding#BINARY BINARY}
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsBySeriesRequest.Encoding#JSON JSON}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.GetRecordsBySeriesRequest.Encoding#BINARY BINARY}.
      * A set of string constants for the parameter {@code encoding}.
      */
     public static final class Encoding {
@@ -142,7 +149,19 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      *               indicate that the max number of results should be
      *               returned.
      * @param encoding  Specifies the encoding for returned records; either
-     *                  'binary' or 'json'. Values: binary, json.
+     *                  'binary' or 'json'.
+     *                  Supported values:
+     *                  <ul>
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsBySeriesRequest.Encoding#BINARY
+     *                  BINARY}
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsBySeriesRequest.Encoding#JSON
+     *                  JSON}
+     *                  </ul>
+     *                  The default value is {@link
+     *                  com.gpudb.protocol.GetRecordsBySeriesRequest.Encoding#BINARY
+     *                  BINARY}.
      * @param options  Optional parameters.
      * 
      */
@@ -266,7 +285,18 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
     /**
      * 
      * @return Specifies the encoding for returned records; either 'binary' or
-     *         'json'. Values: binary, json.
+     *         'json'.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsBySeriesRequest.Encoding#BINARY
+     *         BINARY}
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsBySeriesRequest.Encoding#JSON JSON}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.GetRecordsBySeriesRequest.Encoding#BINARY
+     *         BINARY}.
      * 
      */
     public String getEncoding() {
@@ -276,7 +306,19 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
     /**
      * 
      * @param encoding  Specifies the encoding for returned records; either
-     *                  'binary' or 'json'. Values: binary, json.
+     *                  'binary' or 'json'.
+     *                  Supported values:
+     *                  <ul>
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsBySeriesRequest.Encoding#BINARY
+     *                  BINARY}
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsBySeriesRequest.Encoding#JSON
+     *                  JSON}
+     *                  </ul>
+     *                  The default value is {@link
+     *                  com.gpudb.protocol.GetRecordsBySeriesRequest.Encoding#BINARY
+     *                  BINARY}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

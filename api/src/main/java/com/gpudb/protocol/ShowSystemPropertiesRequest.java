@@ -44,8 +44,10 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> properties: A list of comma separated names of properties
-     * requested. If not specified, all properties will be returned.
+     *         <li> {@link
+     * com.gpudb.protocol.ShowSystemPropertiesRequest.Options#PROPERTIES
+     * PROPERTIES}: A list of comma separated names of properties requested. If
+     * not specified, all properties will be returned.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -76,9 +78,11 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> properties: A list of comma separated names
-     *                 of properties requested. If not specified, all
-     *                 properties will be returned.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowSystemPropertiesRequest.Options#PROPERTIES
+     *                 PROPERTIES}: A list of comma separated names of
+     *                 properties requested. If not specified, all properties
+     *                 will be returned.
      *                 </ul>
      * 
      */
@@ -90,9 +94,10 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> properties: A list of comma separated names of
-     *         properties requested. If not specified, all properties will be
-     *         returned.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowSystemPropertiesRequest.Options#PROPERTIES
+     *         PROPERTIES}: A list of comma separated names of properties
+     *         requested. If not specified, all properties will be returned.
      *         </ul>
      * 
      */
@@ -104,9 +109,11 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> properties: A list of comma separated names
-     *                 of properties requested. If not specified, all
-     *                 properties will be returned.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowSystemPropertiesRequest.Options#PROPERTIES
+     *                 PROPERTIES}: A list of comma separated names of
+     *                 properties requested. If not specified, all properties
+     *                 will be returned.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

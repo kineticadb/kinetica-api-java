@@ -38,8 +38,14 @@ public class HasProcResponse implements IndexedRecord {
 
 
     /**
-     * Indicates whether the proc exists or not. Values: true, false.
-
+     * Indicates whether the proc exists or not.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.HasProcResponse.ProcExists#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.HasProcResponse.ProcExists#FALSE
+     * FALSE}
+     * </ul>
      * A set of string constants for the parameter {@code procExists}.
      */
     public static final class ProcExists {
@@ -82,7 +88,14 @@ public class HasProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates whether the proc exists or not. Values: true, false.
+     * @return Indicates whether the proc exists or not.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.HasProcResponse.ProcExists#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.HasProcResponse.ProcExists#FALSE FALSE}
+     *         </ul>
      * 
      */
     public boolean getProcExists() {
@@ -91,8 +104,16 @@ public class HasProcResponse implements IndexedRecord {
 
     /**
      * 
-     * @param procExists  Indicates whether the proc exists or not. Values:
-     *                    true, false.
+     * @param procExists  Indicates whether the proc exists or not.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasProcResponse.ProcExists#TRUE
+     *                    TRUE}
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasProcResponse.ProcExists#FALSE
+     *                    FALSE}
+     *                    </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -43,8 +43,13 @@ public class AlterUserRequest implements IndexedRecord {
 
 
     /**
-     * Modification operation to be applied to the user. Values: set_password.
-
+     * Modification operation to be applied to the user.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AlterUserRequest.Action#SET_PASSWORD SET_PASSWORD}:
+     * Sets the password of the user. The user must be an internal user.
+     * </ul>
      * A set of string constants for the parameter {@code action}.
      */
     public static final class Action {
@@ -77,8 +82,14 @@ public class AlterUserRequest implements IndexedRecord {
      * Constructs an AlterUserRequest object with the specified parameters.
      * 
      * @param name  Name of the user to be altered. Must be an existing user.
-     * @param action  Modification operation to be applied to the user. Values:
-     *                set_password.
+     * @param action  Modification operation to be applied to the user.
+     *                Supported values:
+     *                <ul>
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterUserRequest.Action#SET_PASSWORD
+     *                SET_PASSWORD}: Sets the password of the user. The user
+     *                must be an internal user.
+     *                </ul>
      * @param value  The value of the modification, depending on {@code
      *               action}.
      * @param options  Optional parameters.
@@ -114,8 +125,14 @@ public class AlterUserRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Modification operation to be applied to the user. Values:
-     *         set_password.
+     * @return Modification operation to be applied to the user.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterUserRequest.Action#SET_PASSWORD
+     *         SET_PASSWORD}: Sets the password of the user. The user must be
+     *         an internal user.
+     *         </ul>
      * 
      */
     public String getAction() {
@@ -124,8 +141,14 @@ public class AlterUserRequest implements IndexedRecord {
 
     /**
      * 
-     * @param action  Modification operation to be applied to the user. Values:
-     *                set_password.
+     * @param action  Modification operation to be applied to the user.
+     *                Supported values:
+     *                <ul>
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterUserRequest.Action#SET_PASSWORD
+     *                SET_PASSWORD}: Sets the password of the user. The user
+     *                must be an internal user.
+     *                </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -17,10 +17,10 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link com.gpudb.GPUdb#lockTable(LockTableRequest)}.
  * <p>
  * Manages global access to a table's data.  By default a table has a {@code
- * lockType} of {@code unlock}, indicating all operations are permitted.  A
+ * lockType} of {@code read-write}, indicating all operations are permitted.  A
  * user may request a {@code read-only} or a {@code write-only} lock, after
  * which only read or write operations, respectively, are permitted on the
- * table until the lock is removed.  When {@code lockType} is {@code disable}
+ * table until the lock is removed.  When {@code lockType} is {@code no-access}
  * then no operations are permitted on the table.  The lock status can be
  * queried by setting {@code lockType} to {@code status}.
  */
@@ -50,8 +50,26 @@ public class LockTableRequest implements IndexedRecord {
     /**
      * The type of lock being applied to the table. Setting it to {@code
      * status} will return the current lock status of the table without
-     * changing it. Values: status, disable, read-only, write-only, unlock.
-
+     * changing it.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.LockTableRequest.LockType#STATUS
+     * STATUS}: Show locked status
+     *         <li> {@link
+     * com.gpudb.protocol.LockTableRequest.LockType#NO_ACCESS NO_ACCESS}: Allow
+     * no read/write operations
+     *         <li> {@link
+     * com.gpudb.protocol.LockTableRequest.LockType#READ_ONLY READ_ONLY}: Allow
+     * only read operations
+     *         <li> {@link
+     * com.gpudb.protocol.LockTableRequest.LockType#WRITE_ONLY WRITE_ONLY}:
+     * Allow only write operations
+     *         <li> {@link
+     * com.gpudb.protocol.LockTableRequest.LockType#READ_WRITE READ_WRITE}:
+     * Allow all read/write operations
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.LockTableRequest.LockType#STATUS STATUS}.
      * A set of string constants for the parameter {@code lockType}.
      */
     public static final class LockType {
@@ -64,7 +82,7 @@ public class LockTableRequest implements IndexedRecord {
         /**
          * Allow no read/write operations
          */
-        public static final String DISABLE = "disable";
+        public static final String NO_ACCESS = "no-access";
 
         /**
          * Allow only read operations
@@ -79,7 +97,7 @@ public class LockTableRequest implements IndexedRecord {
         /**
          * Allow all read/write operations
          */
-        public static final String UNLOCK = "unlock";
+        public static final String READ_WRITE = "read-write";
 
         private LockType() {  }
     }
@@ -105,8 +123,28 @@ public class LockTableRequest implements IndexedRecord {
      *                   existing table, collection, or view.
      * @param lockType  The type of lock being applied to the table. Setting it
      *                  to {@code status} will return the current lock status
-     *                  of the table without changing it. Values: status,
-     *                  disable, read-only, write-only, unlock.
+     *                  of the table without changing it.
+     *                  Supported values:
+     *                  <ul>
+     *                          <li> {@link
+     *                  com.gpudb.protocol.LockTableRequest.LockType#STATUS
+     *                  STATUS}: Show locked status
+     *                          <li> {@link
+     *                  com.gpudb.protocol.LockTableRequest.LockType#NO_ACCESS
+     *                  NO_ACCESS}: Allow no read/write operations
+     *                          <li> {@link
+     *                  com.gpudb.protocol.LockTableRequest.LockType#READ_ONLY
+     *                  READ_ONLY}: Allow only read operations
+     *                          <li> {@link
+     *                  com.gpudb.protocol.LockTableRequest.LockType#WRITE_ONLY
+     *                  WRITE_ONLY}: Allow only write operations
+     *                          <li> {@link
+     *                  com.gpudb.protocol.LockTableRequest.LockType#READ_WRITE
+     *                  READ_WRITE}: Allow all read/write operations
+     *                  </ul>
+     *                  The default value is {@link
+     *                  com.gpudb.protocol.LockTableRequest.LockType#STATUS
+     *                  STATUS}.
      * @param options  Optional parameters.
      * 
      */
@@ -143,8 +181,27 @@ public class LockTableRequest implements IndexedRecord {
      * 
      * @return The type of lock being applied to the table. Setting it to
      *         {@code status} will return the current lock status of the table
-     *         without changing it. Values: status, disable, read-only,
-     *         write-only, unlock.
+     *         without changing it.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.LockTableRequest.LockType#STATUS STATUS}:
+     *         Show locked status
+     *                 <li> {@link
+     *         com.gpudb.protocol.LockTableRequest.LockType#NO_ACCESS
+     *         NO_ACCESS}: Allow no read/write operations
+     *                 <li> {@link
+     *         com.gpudb.protocol.LockTableRequest.LockType#READ_ONLY
+     *         READ_ONLY}: Allow only read operations
+     *                 <li> {@link
+     *         com.gpudb.protocol.LockTableRequest.LockType#WRITE_ONLY
+     *         WRITE_ONLY}: Allow only write operations
+     *                 <li> {@link
+     *         com.gpudb.protocol.LockTableRequest.LockType#READ_WRITE
+     *         READ_WRITE}: Allow all read/write operations
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.LockTableRequest.LockType#STATUS STATUS}.
      * 
      */
     public String getLockType() {
@@ -155,8 +212,28 @@ public class LockTableRequest implements IndexedRecord {
      * 
      * @param lockType  The type of lock being applied to the table. Setting it
      *                  to {@code status} will return the current lock status
-     *                  of the table without changing it. Values: status,
-     *                  disable, read-only, write-only, unlock.
+     *                  of the table without changing it.
+     *                  Supported values:
+     *                  <ul>
+     *                          <li> {@link
+     *                  com.gpudb.protocol.LockTableRequest.LockType#STATUS
+     *                  STATUS}: Show locked status
+     *                          <li> {@link
+     *                  com.gpudb.protocol.LockTableRequest.LockType#NO_ACCESS
+     *                  NO_ACCESS}: Allow no read/write operations
+     *                          <li> {@link
+     *                  com.gpudb.protocol.LockTableRequest.LockType#READ_ONLY
+     *                  READ_ONLY}: Allow only read operations
+     *                          <li> {@link
+     *                  com.gpudb.protocol.LockTableRequest.LockType#WRITE_ONLY
+     *                  WRITE_ONLY}: Allow only write operations
+     *                          <li> {@link
+     *                  com.gpudb.protocol.LockTableRequest.LockType#READ_WRITE
+     *                  READ_WRITE}: Allow all read/write operations
+     *                  </ul>
+     *                  The default value is {@link
+     *                  com.gpudb.protocol.LockTableRequest.LockType#STATUS
+     *                  STATUS}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

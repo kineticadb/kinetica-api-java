@@ -27,6 +27,7 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
                 .name("worldTableNames").type().array().items().stringType().noDefault()
                 .name("xColumnName").type().stringType().noDefault()
                 .name("yColumnName").type().stringType().noDefault()
+                .name("geometryColumnName").type().stringType().noDefault()
                 .name("trackIds").type().array().items().array().items().stringType().noDefault()
                 .name("cbColumnName1").type().stringType().noDefault()
                 .name("cbVals1").type().array().items().stringType().noDefault()
@@ -142,6 +143,7 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
     private List<String> worldTableNames;
     private String xColumnName;
     private String yColumnName;
+    private String geometryColumnName;
     private List<List<String>> trackIds;
     private String cbColumnName1;
     private List<String> cbVals1;
@@ -164,6 +166,7 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         worldTableNames = new ArrayList<>();
         xColumnName = "";
         yColumnName = "";
+        geometryColumnName = "";
         trackIds = new ArrayList<>();
         cbColumnName1 = "";
         cbVals1 = new ArrayList<>();
@@ -174,11 +177,12 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         options = new LinkedHashMap<>();
     }
 
-    public VisualizeImageClassbreakRequest(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, List<List<String>> trackIds, String cbColumnName1, List<String> cbVals1, List<String> cbColumnName2, List<List<String>> cbVals2, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) {
+    public VisualizeImageClassbreakRequest(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbColumnName1, List<String> cbVals1, List<String> cbColumnName2, List<List<String>> cbVals2, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) {
         this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
         this.worldTableNames = (worldTableNames == null) ? new ArrayList<String>() : worldTableNames;
         this.xColumnName = (xColumnName == null) ? "" : xColumnName;
         this.yColumnName = (yColumnName == null) ? "" : yColumnName;
+        this.geometryColumnName = (geometryColumnName == null) ? "" : geometryColumnName;
         this.trackIds = (trackIds == null) ? new ArrayList<List<String>>() : trackIds;
         this.cbColumnName1 = (cbColumnName1 == null) ? "" : cbColumnName1;
         this.cbVals1 = (cbVals1 == null) ? new ArrayList<String>() : cbVals1;
@@ -229,6 +233,15 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
 
     public VisualizeImageClassbreakRequest setYColumnName(String yColumnName) {
         this.yColumnName = (yColumnName == null) ? "" : yColumnName;
+        return this;
+    }
+
+    public String getGeometryColumnName() {
+        return geometryColumnName;
+    }
+
+    public VisualizeImageClassbreakRequest setGeometryColumnName(String geometryColumnName) {
+        this.geometryColumnName = (geometryColumnName == null) ? "" : geometryColumnName;
         return this;
     }
 
@@ -388,48 +401,51 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
                 return this.yColumnName;
 
             case 4:
-                return this.trackIds;
+                return this.geometryColumnName;
 
             case 5:
-                return this.cbColumnName1;
+                return this.trackIds;
 
             case 6:
-                return this.cbVals1;
+                return this.cbColumnName1;
 
             case 7:
-                return this.cbColumnName2;
+                return this.cbVals1;
 
             case 8:
-                return this.cbVals2;
+                return this.cbColumnName2;
 
             case 9:
-                return this.minX;
+                return this.cbVals2;
 
             case 10:
-                return this.maxX;
+                return this.minX;
 
             case 11:
-                return this.minY;
+                return this.maxX;
 
             case 12:
-                return this.maxY;
+                return this.minY;
 
             case 13:
-                return this.width;
+                return this.maxY;
 
             case 14:
-                return this.height;
+                return this.width;
 
             case 15:
-                return this.projection;
+                return this.height;
 
             case 16:
-                return this.bgColor;
+                return this.projection;
 
             case 17:
-                return this.styleOptions;
+                return this.bgColor;
 
             case 18:
+                return this.styleOptions;
+
+            case 19:
                 return this.options;
 
             default:
@@ -458,62 +474,66 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
                 break;
 
             case 4:
-                this.trackIds = (List<List<String>>)value;
+                this.geometryColumnName = (String)value;
                 break;
 
             case 5:
-                this.cbColumnName1 = (String)value;
+                this.trackIds = (List<List<String>>)value;
                 break;
 
             case 6:
-                this.cbVals1 = (List<String>)value;
+                this.cbColumnName1 = (String)value;
                 break;
 
             case 7:
-                this.cbColumnName2 = (List<String>)value;
+                this.cbVals1 = (List<String>)value;
                 break;
 
             case 8:
-                this.cbVals2 = (List<List<String>>)value;
+                this.cbColumnName2 = (List<String>)value;
                 break;
 
             case 9:
-                this.minX = (Double)value;
+                this.cbVals2 = (List<List<String>>)value;
                 break;
 
             case 10:
-                this.maxX = (Double)value;
+                this.minX = (Double)value;
                 break;
 
             case 11:
-                this.minY = (Double)value;
+                this.maxX = (Double)value;
                 break;
 
             case 12:
-                this.maxY = (Double)value;
+                this.minY = (Double)value;
                 break;
 
             case 13:
-                this.width = (Integer)value;
+                this.maxY = (Double)value;
                 break;
 
             case 14:
-                this.height = (Integer)value;
+                this.width = (Integer)value;
                 break;
 
             case 15:
-                this.projection = (String)value;
+                this.height = (Integer)value;
                 break;
 
             case 16:
-                this.bgColor = (Long)value;
+                this.projection = (String)value;
                 break;
 
             case 17:
-                this.styleOptions = (Map<String, List<String>>)value;
+                this.bgColor = (Long)value;
                 break;
 
             case 18:
+                this.styleOptions = (Map<String, List<String>>)value;
+                break;
+
+            case 19:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -539,6 +559,7 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
                  && this.worldTableNames.equals( that.worldTableNames )
                  && this.xColumnName.equals( that.xColumnName )
                  && this.yColumnName.equals( that.yColumnName )
+                 && this.geometryColumnName.equals( that.geometryColumnName )
                  && this.trackIds.equals( that.trackIds )
                  && this.cbColumnName1.equals( that.cbColumnName1 )
                  && this.cbVals1.equals( that.cbVals1 )
@@ -577,6 +598,10 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         builder.append( gd.toString( "yColumnName" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.yColumnName ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "geometryColumnName" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.geometryColumnName ) );
         builder.append( ", " );
         builder.append( gd.toString( "trackIds" ) );
         builder.append( ": " );
@@ -650,6 +675,7 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         hashCode = (31 * hashCode) + this.worldTableNames.hashCode();
         hashCode = (31 * hashCode) + this.xColumnName.hashCode();
         hashCode = (31 * hashCode) + this.yColumnName.hashCode();
+        hashCode = (31 * hashCode) + this.geometryColumnName.hashCode();
         hashCode = (31 * hashCode) + this.trackIds.hashCode();
         hashCode = (31 * hashCode) + this.cbColumnName1.hashCode();
         hashCode = (31 * hashCode) + this.cbVals1.hashCode();

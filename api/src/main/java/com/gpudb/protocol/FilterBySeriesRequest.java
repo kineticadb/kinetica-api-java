@@ -62,19 +62,30 @@ public class FilterBySeriesRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> spatial_radius: A positive number passed as a string
-     * representing the radius of the search area centered around each track
-     * point's geospatial coordinates. The value is interpreted in meters.
-     * Required parameter.
-     *         <li> time_radius: A positive number passed as a string
-     * representing the maximum allowable time difference between the
-     * timestamps of a filtered object and the given track's points. The value
-     * is interpreted in seconds. Required parameter.
-     *         <li> spatial_distance_metric: A string representing the
-     * coordinate system to use for the spatial search criteria. Acceptable
-     * values are 'euclidean' and 'great_circle'. Optional parameter; default
-     * is 'euclidean'. Values: euclidean, great_circle.
-     * <p>
+     *         <li> {@link
+     * com.gpudb.protocol.FilterBySeriesRequest.Options#SPATIAL_RADIUS
+     * SPATIAL_RADIUS}: A positive number passed as a string representing the
+     * radius of the search area centered around each track point's geospatial
+     * coordinates. The value is interpreted in meters. Required parameter.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterBySeriesRequest.Options#TIME_RADIUS
+     * TIME_RADIUS}: A positive number passed as a string representing the
+     * maximum allowable time difference between the timestamps of a filtered
+     * object and the given track's points. The value is interpreted in
+     * seconds. Required parameter.
+     *         <li> {@link
+     * com.gpudb.protocol.FilterBySeriesRequest.Options#SPATIAL_DISTANCE_METRIC
+     * SPATIAL_DISTANCE_METRIC}: A string representing the coordinate system to
+     * use for the spatial search criteria. Acceptable values are 'euclidean'
+     * and 'great_circle'. Optional parameter; default is 'euclidean'.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.FilterBySeriesRequest.Options#EUCLIDEAN EUCLIDEAN}
+     *         <li> {@link
+     * com.gpudb.protocol.FilterBySeriesRequest.Options#GREAT_CIRCLE
+     * GREAT_CIRCLE}
+     * </ul>
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -98,8 +109,16 @@ public class FilterBySeriesRequest implements IndexedRecord {
         /**
          * A string representing the coordinate system to use for the spatial
          * search criteria. Acceptable values are 'euclidean' and
-         * 'great_circle'. Optional parameter; default is 'euclidean'. Values:
-         * euclidean, great_circle.
+         * 'great_circle'. Optional parameter; default is 'euclidean'.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.FilterBySeriesRequest.Options#EUCLIDEAN
+         * EUCLIDEAN}
+         *         <li> {@link
+         * com.gpudb.protocol.FilterBySeriesRequest.Options#GREAT_CIRCLE
+         * GREAT_CIRCLE}
+         * </ul>
          */
         public static final String SPATIAL_DISTANCE_METRIC = "spatial_distance_metric";
         public static final String EUCLIDEAN = "euclidean";
@@ -145,21 +164,35 @@ public class FilterBySeriesRequest implements IndexedRecord {
      *                        ID within the given set.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> spatial_radius: A positive number passed as
-     *                 a string representing the radius of the search area
-     *                 centered around each track point's geospatial
-     *                 coordinates. The value is interpreted in meters.
-     *                 Required parameter.
-     *                         <li> time_radius: A positive number passed as a
-     *                 string representing the maximum allowable time
-     *                 difference between the timestamps of a filtered object
-     *                 and the given track's points. The value is interpreted
-     *                 in seconds. Required parameter.
-     *                         <li> spatial_distance_metric: A string
-     *                 representing the coordinate system to use for the
-     *                 spatial search criteria. Acceptable values are
-     *                 'euclidean' and 'great_circle'. Optional parameter;
-     *                 default is 'euclidean'. Values: euclidean, great_circle.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterBySeriesRequest.Options#SPATIAL_RADIUS
+     *                 SPATIAL_RADIUS}: A positive number passed as a string
+     *                 representing the radius of the search area centered
+     *                 around each track point's geospatial coordinates. The
+     *                 value is interpreted in meters. Required parameter.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterBySeriesRequest.Options#TIME_RADIUS
+     *                 TIME_RADIUS}: A positive number passed as a string
+     *                 representing the maximum allowable time difference
+     *                 between the timestamps of a filtered object and the
+     *                 given track's points. The value is interpreted in
+     *                 seconds. Required parameter.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterBySeriesRequest.Options#SPATIAL_DISTANCE_METRIC
+     *                 SPATIAL_DISTANCE_METRIC}: A string representing the
+     *                 coordinate system to use for the spatial search
+     *                 criteria. Acceptable values are 'euclidean' and
+     *                 'great_circle'. Optional parameter; default is
+     *                 'euclidean'.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterBySeriesRequest.Options#EUCLIDEAN
+     *                 EUCLIDEAN}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterBySeriesRequest.Options#GREAT_CIRCLE
+     *                 GREAT_CIRCLE}
+     *                 </ul>
      *                 </ul>
      * 
      */
@@ -276,19 +309,33 @@ public class FilterBySeriesRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> spatial_radius: A positive number passed as a
-     *         string representing the radius of the search area centered
-     *         around each track point's geospatial coordinates. The value is
-     *         interpreted in meters. Required parameter.
-     *                 <li> time_radius: A positive number passed as a string
-     *         representing the maximum allowable time difference between the
-     *         timestamps of a filtered object and the given track's points.
-     *         The value is interpreted in seconds. Required parameter.
-     *                 <li> spatial_distance_metric: A string representing the
-     *         coordinate system to use for the spatial search criteria.
-     *         Acceptable values are 'euclidean' and 'great_circle'. Optional
-     *         parameter; default is 'euclidean'. Values: euclidean,
-     *         great_circle.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterBySeriesRequest.Options#SPATIAL_RADIUS
+     *         SPATIAL_RADIUS}: A positive number passed as a string
+     *         representing the radius of the search area centered around each
+     *         track point's geospatial coordinates. The value is interpreted
+     *         in meters. Required parameter.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterBySeriesRequest.Options#TIME_RADIUS
+     *         TIME_RADIUS}: A positive number passed as a string representing
+     *         the maximum allowable time difference between the timestamps of
+     *         a filtered object and the given track's points. The value is
+     *         interpreted in seconds. Required parameter.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterBySeriesRequest.Options#SPATIAL_DISTANCE_METRIC
+     *         SPATIAL_DISTANCE_METRIC}: A string representing the coordinate
+     *         system to use for the spatial search criteria. Acceptable values
+     *         are 'euclidean' and 'great_circle'. Optional parameter; default
+     *         is 'euclidean'.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterBySeriesRequest.Options#EUCLIDEAN
+     *         EUCLIDEAN}
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterBySeriesRequest.Options#GREAT_CIRCLE
+     *         GREAT_CIRCLE}
+     *         </ul>
      *         </ul>
      * 
      */
@@ -300,21 +347,35 @@ public class FilterBySeriesRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> spatial_radius: A positive number passed as
-     *                 a string representing the radius of the search area
-     *                 centered around each track point's geospatial
-     *                 coordinates. The value is interpreted in meters.
-     *                 Required parameter.
-     *                         <li> time_radius: A positive number passed as a
-     *                 string representing the maximum allowable time
-     *                 difference between the timestamps of a filtered object
-     *                 and the given track's points. The value is interpreted
-     *                 in seconds. Required parameter.
-     *                         <li> spatial_distance_metric: A string
-     *                 representing the coordinate system to use for the
-     *                 spatial search criteria. Acceptable values are
-     *                 'euclidean' and 'great_circle'. Optional parameter;
-     *                 default is 'euclidean'. Values: euclidean, great_circle.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterBySeriesRequest.Options#SPATIAL_RADIUS
+     *                 SPATIAL_RADIUS}: A positive number passed as a string
+     *                 representing the radius of the search area centered
+     *                 around each track point's geospatial coordinates. The
+     *                 value is interpreted in meters. Required parameter.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterBySeriesRequest.Options#TIME_RADIUS
+     *                 TIME_RADIUS}: A positive number passed as a string
+     *                 representing the maximum allowable time difference
+     *                 between the timestamps of a filtered object and the
+     *                 given track's points. The value is interpreted in
+     *                 seconds. Required parameter.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterBySeriesRequest.Options#SPATIAL_DISTANCE_METRIC
+     *                 SPATIAL_DISTANCE_METRIC}: A string representing the
+     *                 coordinate system to use for the spatial search
+     *                 criteria. Acceptable values are 'euclidean' and
+     *                 'great_circle'. Optional parameter; default is
+     *                 'euclidean'.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterBySeriesRequest.Options#EUCLIDEAN
+     *                 EUCLIDEAN}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterBySeriesRequest.Options#GREAT_CIRCLE
+     *                 GREAT_CIRCLE}
+     *                 </ul>
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -22,23 +22,41 @@ import org.apache.avro.generic.IndexedRecord;
  * Calculates unique combinations (groups) of values for the given columns in a
  * given table/view/collection and computes aggregates on each unique
  * combination. This is somewhat analogous to an SQL-style SELECT...GROUP BY.
- * Any column(s) can be grouped on, but only non-string (i.e. numeric) columns
- * may be used for computing aggregates. The results can be paged via the
- * {@code offset} and {@code limit} parameters. For example, to get 10 groups
- * with the largest counts the inputs would be: limit=10,
- * options={"sort_order":"descending", "sort_by":"value"}. {@code options} can
- * be used to customize behavior of this call e.g. filtering or sorting the
- * results. To group by 'x' and 'y' and compute the number of objects within
- * each group, use column_names=['x','y','count(*)'].  To also compute the sum
- * of 'z' over each group, use column_names=['x','y','count(*)','sum(z)'].
- * Available aggregation functions are: 'count(*)', 'sum', 'min', 'max', 'avg',
- * 'mean', 'stddev', 'stddev_pop', 'stddev_samp', 'var', 'var_pop', 'var_samp',
- * 'arg_min', 'arg_max' and 'count_distinct'. The response is returned as a
- * dynamic schema. For details see: <a
+ * <p>
+ * Any column(s) can be grouped on, and all column types except
+ * unrestricted-length strings may be used for computing applicable aggregates.
+ * <p>
+ * The results can be paged via the {@code offset} and {@code limit}
+ * parameters. For example, to get 10 groups with the largest counts the inputs
+ * would be: limit=10, options={"sort_order":"descending", "sort_by":"value"}.
+ * <p>
+ * {@code options} can be used to customize behavior of this call e.g.
+ * filtering or sorting the results.
+ * <p>
+ * To group by columns 'x' and 'y' and compute the number of objects within
+ * each group, use:  column_names=['x','y','count(*)'].
+ * <p>
+ * To also compute the sum of 'z' over each group, use:
+ * column_names=['x','y','count(*)','sum(z)'].
+ * <p>
+ * Available <a
+ * href="../../../../../concepts/expressions.html#aggregate-expressions"
+ * target="_top">aggregation functions</a> are: count(*), sum, min, max, avg,
+ * mean, stddev, stddev_pop, stddev_samp, var, var_pop, var_samp, arg_min,
+ * arg_max and count_distinct.
+ * <p>
+ * The response is returned as a dynamic schema. For details see: <a
  * href="../../../../../concepts/dynamic_schemas.html" target="_top">dynamic
- * schemas documentation</a>. If the {@code result_table} option is provided
- * then the results are stored in a table with the name given in the option and
- * the results are not returned in the response.
+ * schemas documentation</a>.
+ * <p>
+ * If a {@code result_table} name is specified in the options, the results are
+ * stored in a new table with that name.  No results are returned in the
+ * response.  If the source table's <a
+ * href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
+ * key</a> is used as the grouping column(s), the result table will be sharded,
+ * in all other cases it will be replicated.  Sorting will properly function
+ * only if the result table is replicated or if there is only one processing
+ * node and should not be relied upon in other cases.
  */
 public class AggregateGroupByRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -67,8 +85,18 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
 
     /**
-     * Specifies the encoding for returned records. Values: binary, json.
-
+     * Specifies the encoding for returned records.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Encoding#BINARY BINARY}:
+     * Indicates that the returned records should be binary encoded.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Encoding#JSON JSON}:
+     * Indicates that the returned records should be json encoded.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Encoding#BINARY BINARY}.
      * A set of string constants for the parameter {@code encoding}.
      */
     public static final class Encoding {
@@ -90,33 +118,103 @@ public class AggregateGroupByRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> collection_name: Name of a collection which is to contain
-     * the table specified in {@code result_table}, otherwise the table will be
-     * a top-level table. If the collection does not allow duplicate types and
-     * it contains a table of the same type as the given one, then this table
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#COLLECTION_NAME
+     * COLLECTION_NAME}: Name of a collection which is to contain the table
+     * specified in {@code result_table}, otherwise the table will be a
+     * top-level table. If the collection does not allow duplicate types and it
+     * contains a table of the same type as the given one, then this table
      * creation request will fail. Additionally this option is invalid if
      * {@code tableName} is a collection.
-     *         <li> expression: Filter expression to apply to the table prior
-     * to computing the aggregate group by.
-     *         <li> having: Filter expression to apply to the aggregated
-     * results.
-     *         <li> sort_order: String indicating how the returned values
-     * should be sorted - ascending or descending. Values: ascending,
-     * descending.
-     * <p>
-     *         <li> sort_by: String determining how the results are sorted.
-     * Values: key, value.
-     * <p>
-     *         <li> result_table: The name of the table used to store the
-     * results. Has the same naming restrictions as <a
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
+     * EXPRESSION}: Filter expression to apply to the table prior to computing
+     * the aggregate group by.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#HAVING HAVING}:
+     * Filter expression to apply to the aggregated results.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#SORT_ORDER
+     * SORT_ORDER}: String indicating how the returned values should be sorted
+     * - ascending or descending.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#ASCENDING ASCENDING}:
+     * Indicates that the returned values should be sorted in ascending order.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#DESCENDING
+     * DESCENDING}: Indicates that the returned values should be sorted in
+     * descending order.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#ASCENDING ASCENDING}.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#SORT_BY SORT_BY}:
+     * String determining how the results are sorted.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#KEY KEY}: Indicates
+     * that the returned values should be sorted by key, which corresponds to
+     * the grouping columns. If you have multiple grouping columns (and are
+     * sorting by key), it will first sort the first grouping column, then the
+     * second grouping column, etc.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE VALUE}:
+     * Indicates that the returned values should be sorted by value, which
+     * corresponds to the aggregates. If you have multiple aggregates (and are
+     * sorting by value), it will first sort by the first aggregate, then the
+     * second aggregate, etc.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#KEY KEY}.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
+     * RESULT_TABLE}: The name of the table used to store the results. Has the
+     * same naming restrictions as <a
      * href="../../../../../concepts/tables.html" target="_top">tables</a>.
      * Column names (group-by and aggregate fields) need to be given aliases
      * e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If present, no
      * results are returned in the response.  This option is not available if
      * one of the grouping attributes is an unrestricted string (i.e.; not
      * charN) type.
-     *         <li> ttl: Sets the TTL of the table specified in {@code
-     * result_table}. The value must be the desired TTL in minutes.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
+     * RESULT_TABLE_PERSIST}: If {@code true} then the result table specified
+     * in {result_table}@{key of input.options} will be persisted as a regular
+     * table (it will not be automatically cleared unless a {@code ttl} is
+     * provided, and the table data can be modified in subsequent operations).
+     * If {@code false} (the default) then the result table will be a
+     * read-only, memory-only temporary table.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_FORCE_REPLICATED
+     * RESULT_TABLE_FORCE_REPLICATED}: Force the result table to be replicated
+     * (ignores any sharding). Must be used in combination with the {@code
+     * result_table} option.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_GENERATE_PK
+     * RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary key for the
+     * result table. Must be used in combination with the {@code result_table}
+     * option.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#TTL TTL}: Sets the
+     * TTL of the table specified in {@code result_table}. The value must be
+     * the desired TTL in minutes.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
+     * CHUNK_SIZE}: If provided this indicates the chunk size to be used for
+     * the result table. Must be used in combination with the {@code
+     * result_table} option.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -145,7 +243,21 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
         /**
          * String indicating how the returned values should be sorted -
-         * ascending or descending. Values: ascending, descending.
+         * ascending or descending.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#ASCENDING
+         * ASCENDING}: Indicates that the returned values should be sorted in
+         * ascending order.
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#DESCENDING
+         * DESCENDING}: Indicates that the returned values should be sorted in
+         * descending order.
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#ASCENDING
+         * ASCENDING}.
          */
         public static final String SORT_ORDER = "sort_order";
 
@@ -162,17 +274,40 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String DESCENDING = "descending";
 
         /**
-         * String determining how the results are sorted. Values: key, value.
+         * String determining how the results are sorted.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#KEY KEY}:
+         * Indicates that the returned values should be sorted by key, which
+         * corresponds to the grouping columns. If you have multiple grouping
+         * columns (and are sorting by key), it will first sort the first
+         * grouping column, then the second grouping column, etc.
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE VALUE}:
+         * Indicates that the returned values should be sorted by value, which
+         * corresponds to the aggregates. If you have multiple aggregates (and
+         * are sorting by value), it will first sort by the first aggregate,
+         * then the second aggregate, etc.
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#KEY KEY}.
          */
         public static final String SORT_BY = "sort_by";
 
         /**
-         * Indicates that the returned values should be sorted by key
+         * Indicates that the returned values should be sorted by key, which
+         * corresponds to the grouping columns. If you have multiple grouping
+         * columns (and are sorting by key), it will first sort the first
+         * grouping column, then the second grouping column, etc.
          */
         public static final String KEY = "key";
 
         /**
-         * Indicates that the returned values should be sorted by value
+         * Indicates that the returned values should be sorted by value, which
+         * corresponds to the aggregates. If you have multiple aggregates (and
+         * are sorting by value), it will first sort by the first aggregate,
+         * then the second aggregate, etc.
          */
         public static final String VALUE = "value";
 
@@ -188,10 +323,50 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String RESULT_TABLE = "result_table";
 
         /**
+         * If {@code true} then the result table specified in
+         * {result_table}@{key of input.options} will be persisted as a regular
+         * table (it will not be automatically cleared unless a {@code ttl} is
+         * provided, and the table data can be modified in subsequent
+         * operations). If {@code false} (the default) then the result table
+         * will be a read-only, memory-only temporary table.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
+         */
+        public static final String RESULT_TABLE_PERSIST = "result_table_persist";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
+         * Force the result table to be replicated (ignores any sharding). Must
+         * be used in combination with the {@code result_table} option.
+         */
+        public static final String RESULT_TABLE_FORCE_REPLICATED = "result_table_force_replicated";
+
+        /**
+         * If 'true' then set a primary key for the result table. Must be used
+         * in combination with the {@code result_table} option.
+         */
+        public static final String RESULT_TABLE_GENERATE_PK = "result_table_generate_pk";
+
+        /**
          * Sets the TTL of the table specified in {@code result_table}. The
          * value must be the desired TTL in minutes.
          */
         public static final String TTL = "ttl";
+
+        /**
+         * If provided this indicates the chunk size to be used for the result
+         * table. Must be used in combination with the {@code result_table}
+         * option.
+         */
+        public static final String CHUNK_SIZE = "chunk_size";
 
         private Options() {  }
     }
@@ -233,26 +408,69 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *               that the max number of results should be returned.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection which
-     *                 is to contain the table specified in {@code
-     *                 result_table}, otherwise the table will be a top-level
-     *                 table. If the collection does not allow duplicate types
-     *                 and it contains a table of the same type as the given
-     *                 one, then this table creation request will fail.
-     *                 Additionally this option is invalid if {@code tableName}
-     *                 is a collection.
-     *                         <li> expression: Filter expression to apply to
-     *                 the table prior to computing the aggregate group by.
-     *                         <li> having: Filter expression to apply to the
-     *                 aggregated results.
-     *                         <li> sort_order: String indicating how the
-     *                 returned values should be sorted - ascending or
-     *                 descending. Values: ascending, descending.
-     *                         <li> sort_by: String determining how the results
-     *                 are sorted. Values: key, value.
-     *                         <li> result_table: The name of the table used to
-     *                 store the results. Has the same naming restrictions as
-     *                 <a href="../../../../../concepts/tables.html"
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a collection which is to
+     *                 contain the table specified in {@code result_table},
+     *                 otherwise the table will be a top-level table. If the
+     *                 collection does not allow duplicate types and it
+     *                 contains a table of the same type as the given one, then
+     *                 this table creation request will fail. Additionally this
+     *                 option is invalid if {@code tableName} is a collection.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Filter expression to apply to the table
+     *                 prior to computing the aggregate group by.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#HAVING
+     *                 HAVING}: Filter expression to apply to the aggregated
+     *                 results.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SORT_ORDER
+     *                 SORT_ORDER}: String indicating how the returned values
+     *                 should be sorted - ascending or descending.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#ASCENDING
+     *                 ASCENDING}: Indicates that the returned values should be
+     *                 sorted in ascending order.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#DESCENDING
+     *                 DESCENDING}: Indicates that the returned values should
+     *                 be sorted in descending order.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#ASCENDING
+     *                 ASCENDING}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SORT_BY
+     *                 SORT_BY}: String determining how the results are sorted.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#KEY
+     *                 KEY}: Indicates that the returned values should be
+     *                 sorted by key, which corresponds to the grouping
+     *                 columns. If you have multiple grouping columns (and are
+     *                 sorting by key), it will first sort the first grouping
+     *                 column, then the second grouping column, etc.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE
+     *                 VALUE}: Indicates that the returned values should be
+     *                 sorted by value, which corresponds to the aggregates. If
+     *                 you have multiple aggregates (and are sorting by value),
+     *                 it will first sort by the first aggregate, then the
+     *                 second aggregate, etc.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#KEY
+     *                 KEY}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
+     *                 RESULT_TABLE}: The name of the table used to store the
+     *                 results. Has the same naming restrictions as <a
+     *                 href="../../../../../concepts/tables.html"
      *                 target="_top">tables</a>. Column names (group-by and
      *                 aggregate fields) need to be given aliases e.g.
      *                 ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If
@@ -260,9 +478,48 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 option is not available if one of the grouping
      *                 attributes is an unrestricted string (i.e.; not charN)
      *                 type.
-     *                         <li> ttl: Sets the TTL of the table specified in
-     *                 {@code result_table}. The value must be the desired TTL
-     *                 in minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
+     *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
+     *                 table specified in {result_table}@{key of input.options}
+     *                 will be persisted as a regular table (it will not be
+     *                 automatically cleared unless a {@code ttl} is provided,
+     *                 and the table data can be modified in subsequent
+     *                 operations). If {@code false} (the default) then the
+     *                 result table will be a read-only, memory-only temporary
+     *                 table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_FORCE_REPLICATED
+     *                 RESULT_TABLE_FORCE_REPLICATED}: Force the result table
+     *                 to be replicated (ignores any sharding). Must be used in
+     *                 combination with the {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_GENERATE_PK
+     *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
+     *                 key for the result table. Must be used in combination
+     *                 with the {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TTL
+     *                 TTL}: Sets the TTL of the table specified in {@code
+     *                 result_table}. The value must be the desired TTL in
+     *                 minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
+     *                 CHUNK_SIZE}: If provided this indicates the chunk size
+     *                 to be used for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                 </ul>
      * 
      */
@@ -292,30 +549,86 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
-     * @param encoding  Specifies the encoding for returned records. Values:
-     *                  binary, json.
+     * @param encoding  Specifies the encoding for returned records.
+     *                  Supported values:
+     *                  <ul>
+     *                          <li> {@link
+     *                  com.gpudb.protocol.AggregateGroupByRequest.Encoding#BINARY
+     *                  BINARY}: Indicates that the returned records should be
+     *                  binary encoded.
+     *                          <li> {@link
+     *                  com.gpudb.protocol.AggregateGroupByRequest.Encoding#JSON
+     *                  JSON}: Indicates that the returned records should be
+     *                  json encoded.
+     *                  </ul>
+     *                  The default value is {@link
+     *                  com.gpudb.protocol.AggregateGroupByRequest.Encoding#BINARY
+     *                  BINARY}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection which
-     *                 is to contain the table specified in {@code
-     *                 result_table}, otherwise the table will be a top-level
-     *                 table. If the collection does not allow duplicate types
-     *                 and it contains a table of the same type as the given
-     *                 one, then this table creation request will fail.
-     *                 Additionally this option is invalid if {@code tableName}
-     *                 is a collection.
-     *                         <li> expression: Filter expression to apply to
-     *                 the table prior to computing the aggregate group by.
-     *                         <li> having: Filter expression to apply to the
-     *                 aggregated results.
-     *                         <li> sort_order: String indicating how the
-     *                 returned values should be sorted - ascending or
-     *                 descending. Values: ascending, descending.
-     *                         <li> sort_by: String determining how the results
-     *                 are sorted. Values: key, value.
-     *                         <li> result_table: The name of the table used to
-     *                 store the results. Has the same naming restrictions as
-     *                 <a href="../../../../../concepts/tables.html"
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a collection which is to
+     *                 contain the table specified in {@code result_table},
+     *                 otherwise the table will be a top-level table. If the
+     *                 collection does not allow duplicate types and it
+     *                 contains a table of the same type as the given one, then
+     *                 this table creation request will fail. Additionally this
+     *                 option is invalid if {@code tableName} is a collection.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Filter expression to apply to the table
+     *                 prior to computing the aggregate group by.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#HAVING
+     *                 HAVING}: Filter expression to apply to the aggregated
+     *                 results.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SORT_ORDER
+     *                 SORT_ORDER}: String indicating how the returned values
+     *                 should be sorted - ascending or descending.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#ASCENDING
+     *                 ASCENDING}: Indicates that the returned values should be
+     *                 sorted in ascending order.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#DESCENDING
+     *                 DESCENDING}: Indicates that the returned values should
+     *                 be sorted in descending order.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#ASCENDING
+     *                 ASCENDING}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SORT_BY
+     *                 SORT_BY}: String determining how the results are sorted.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#KEY
+     *                 KEY}: Indicates that the returned values should be
+     *                 sorted by key, which corresponds to the grouping
+     *                 columns. If you have multiple grouping columns (and are
+     *                 sorting by key), it will first sort the first grouping
+     *                 column, then the second grouping column, etc.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE
+     *                 VALUE}: Indicates that the returned values should be
+     *                 sorted by value, which corresponds to the aggregates. If
+     *                 you have multiple aggregates (and are sorting by value),
+     *                 it will first sort by the first aggregate, then the
+     *                 second aggregate, etc.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#KEY
+     *                 KEY}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
+     *                 RESULT_TABLE}: The name of the table used to store the
+     *                 results. Has the same naming restrictions as <a
+     *                 href="../../../../../concepts/tables.html"
      *                 target="_top">tables</a>. Column names (group-by and
      *                 aggregate fields) need to be given aliases e.g.
      *                 ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If
@@ -323,9 +636,48 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 option is not available if one of the grouping
      *                 attributes is an unrestricted string (i.e.; not charN)
      *                 type.
-     *                         <li> ttl: Sets the TTL of the table specified in
-     *                 {@code result_table}. The value must be the desired TTL
-     *                 in minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
+     *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
+     *                 table specified in {result_table}@{key of input.options}
+     *                 will be persisted as a regular table (it will not be
+     *                 automatically cleared unless a {@code ttl} is provided,
+     *                 and the table data can be modified in subsequent
+     *                 operations). If {@code false} (the default) then the
+     *                 result table will be a read-only, memory-only temporary
+     *                 table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_FORCE_REPLICATED
+     *                 RESULT_TABLE_FORCE_REPLICATED}: Force the result table
+     *                 to be replicated (ignores any sharding). Must be used in
+     *                 combination with the {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_GENERATE_PK
+     *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
+     *                 key for the result table. Must be used in combination
+     *                 with the {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TTL
+     *                 TTL}: Sets the TTL of the table specified in {@code
+     *                 result_table}. The value must be the desired TTL in
+     *                 minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
+     *                 CHUNK_SIZE}: If provided this indicates the chunk size
+     *                 to be used for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                 </ul>
      * 
      */
@@ -442,8 +794,20 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Specifies the encoding for returned records. Values: binary,
-     *         json.
+     * @return Specifies the encoding for returned records.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Encoding#BINARY
+     *         BINARY}: Indicates that the returned records should be binary
+     *         encoded.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Encoding#JSON JSON}:
+     *         Indicates that the returned records should be json encoded.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Encoding#BINARY
+     *         BINARY}.
      * 
      */
     public String getEncoding() {
@@ -452,8 +816,21 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * 
-     * @param encoding  Specifies the encoding for returned records. Values:
-     *                  binary, json.
+     * @param encoding  Specifies the encoding for returned records.
+     *                  Supported values:
+     *                  <ul>
+     *                          <li> {@link
+     *                  com.gpudb.protocol.AggregateGroupByRequest.Encoding#BINARY
+     *                  BINARY}: Indicates that the returned records should be
+     *                  binary encoded.
+     *                          <li> {@link
+     *                  com.gpudb.protocol.AggregateGroupByRequest.Encoding#JSON
+     *                  JSON}: Indicates that the returned records should be
+     *                  json encoded.
+     *                  </ul>
+     *                  The default value is {@link
+     *                  com.gpudb.protocol.AggregateGroupByRequest.Encoding#BINARY
+     *                  BINARY}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -467,24 +844,64 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> collection_name: Name of a collection which is to
-     *         contain the table specified in {@code result_table}, otherwise
-     *         the table will be a top-level table. If the collection does not
-     *         allow duplicate types and it contains a table of the same type
-     *         as the given one, then this table creation request will fail.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#COLLECTION_NAME
+     *         COLLECTION_NAME}: Name of a collection which is to contain the
+     *         table specified in {@code result_table}, otherwise the table
+     *         will be a top-level table. If the collection does not allow
+     *         duplicate types and it contains a table of the same type as the
+     *         given one, then this table creation request will fail.
      *         Additionally this option is invalid if {@code tableName} is a
      *         collection.
-     *                 <li> expression: Filter expression to apply to the table
-     *         prior to computing the aggregate group by.
-     *                 <li> having: Filter expression to apply to the
-     *         aggregated results.
-     *                 <li> sort_order: String indicating how the returned
-     *         values should be sorted - ascending or descending. Values:
-     *         ascending, descending.
-     *                 <li> sort_by: String determining how the results are
-     *         sorted. Values: key, value.
-     *                 <li> result_table: The name of the table used to store
-     *         the results. Has the same naming restrictions as <a
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
+     *         EXPRESSION}: Filter expression to apply to the table prior to
+     *         computing the aggregate group by.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#HAVING
+     *         HAVING}: Filter expression to apply to the aggregated results.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#SORT_ORDER
+     *         SORT_ORDER}: String indicating how the returned values should be
+     *         sorted - ascending or descending.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#ASCENDING
+     *         ASCENDING}: Indicates that the returned values should be sorted
+     *         in ascending order.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#DESCENDING
+     *         DESCENDING}: Indicates that the returned values should be sorted
+     *         in descending order.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#ASCENDING
+     *         ASCENDING}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#SORT_BY
+     *         SORT_BY}: String determining how the results are sorted.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#KEY KEY}:
+     *         Indicates that the returned values should be sorted by key,
+     *         which corresponds to the grouping columns. If you have multiple
+     *         grouping columns (and are sorting by key), it will first sort
+     *         the first grouping column, then the second grouping column, etc.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE VALUE}:
+     *         Indicates that the returned values should be sorted by value,
+     *         which corresponds to the aggregates. If you have multiple
+     *         aggregates (and are sorting by value), it will first sort by the
+     *         first aggregate, then the second aggregate, etc.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#KEY KEY}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
+     *         RESULT_TABLE}: The name of the table used to store the results.
+     *         Has the same naming restrictions as <a
      *         href="../../../../../concepts/tables.html"
      *         target="_top">tables</a>. Column names (group-by and aggregate
      *         fields) need to be given aliases e.g. ["FChar256 as fchar256",
@@ -492,8 +909,43 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         the response.  This option is not available if one of the
      *         grouping attributes is an unrestricted string (i.e.; not charN)
      *         type.
-     *                 <li> ttl: Sets the TTL of the table specified in {@code
-     *         result_table}. The value must be the desired TTL in minutes.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
+     *         RESULT_TABLE_PERSIST}: If {@code true} then the result table
+     *         specified in {result_table}@{key of input.options} will be
+     *         persisted as a regular table (it will not be automatically
+     *         cleared unless a {@code ttl} is provided, and the table data can
+     *         be modified in subsequent operations). If {@code false} (the
+     *         default) then the result table will be a read-only, memory-only
+     *         temporary table.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_FORCE_REPLICATED
+     *         RESULT_TABLE_FORCE_REPLICATED}: Force the result table to be
+     *         replicated (ignores any sharding). Must be used in combination
+     *         with the {@code result_table} option.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_GENERATE_PK
+     *         RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary key for
+     *         the result table. Must be used in combination with the {@code
+     *         result_table} option.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#TTL TTL}:
+     *         Sets the TTL of the table specified in {@code result_table}. The
+     *         value must be the desired TTL in minutes.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
+     *         CHUNK_SIZE}: If provided this indicates the chunk size to be
+     *         used for the result table. Must be used in combination with the
+     *         {@code result_table} option.
      *         </ul>
      * 
      */
@@ -505,26 +957,69 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> collection_name: Name of a collection which
-     *                 is to contain the table specified in {@code
-     *                 result_table}, otherwise the table will be a top-level
-     *                 table. If the collection does not allow duplicate types
-     *                 and it contains a table of the same type as the given
-     *                 one, then this table creation request will fail.
-     *                 Additionally this option is invalid if {@code tableName}
-     *                 is a collection.
-     *                         <li> expression: Filter expression to apply to
-     *                 the table prior to computing the aggregate group by.
-     *                         <li> having: Filter expression to apply to the
-     *                 aggregated results.
-     *                         <li> sort_order: String indicating how the
-     *                 returned values should be sorted - ascending or
-     *                 descending. Values: ascending, descending.
-     *                         <li> sort_by: String determining how the results
-     *                 are sorted. Values: key, value.
-     *                         <li> result_table: The name of the table used to
-     *                 store the results. Has the same naming restrictions as
-     *                 <a href="../../../../../concepts/tables.html"
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a collection which is to
+     *                 contain the table specified in {@code result_table},
+     *                 otherwise the table will be a top-level table. If the
+     *                 collection does not allow duplicate types and it
+     *                 contains a table of the same type as the given one, then
+     *                 this table creation request will fail. Additionally this
+     *                 option is invalid if {@code tableName} is a collection.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Filter expression to apply to the table
+     *                 prior to computing the aggregate group by.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#HAVING
+     *                 HAVING}: Filter expression to apply to the aggregated
+     *                 results.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SORT_ORDER
+     *                 SORT_ORDER}: String indicating how the returned values
+     *                 should be sorted - ascending or descending.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#ASCENDING
+     *                 ASCENDING}: Indicates that the returned values should be
+     *                 sorted in ascending order.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#DESCENDING
+     *                 DESCENDING}: Indicates that the returned values should
+     *                 be sorted in descending order.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#ASCENDING
+     *                 ASCENDING}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SORT_BY
+     *                 SORT_BY}: String determining how the results are sorted.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#KEY
+     *                 KEY}: Indicates that the returned values should be
+     *                 sorted by key, which corresponds to the grouping
+     *                 columns. If you have multiple grouping columns (and are
+     *                 sorting by key), it will first sort the first grouping
+     *                 column, then the second grouping column, etc.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE
+     *                 VALUE}: Indicates that the returned values should be
+     *                 sorted by value, which corresponds to the aggregates. If
+     *                 you have multiple aggregates (and are sorting by value),
+     *                 it will first sort by the first aggregate, then the
+     *                 second aggregate, etc.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#KEY
+     *                 KEY}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
+     *                 RESULT_TABLE}: The name of the table used to store the
+     *                 results. Has the same naming restrictions as <a
+     *                 href="../../../../../concepts/tables.html"
      *                 target="_top">tables</a>. Column names (group-by and
      *                 aggregate fields) need to be given aliases e.g.
      *                 ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If
@@ -532,9 +1027,48 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 option is not available if one of the grouping
      *                 attributes is an unrestricted string (i.e.; not charN)
      *                 type.
-     *                         <li> ttl: Sets the TTL of the table specified in
-     *                 {@code result_table}. The value must be the desired TTL
-     *                 in minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
+     *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
+     *                 table specified in {result_table}@{key of input.options}
+     *                 will be persisted as a regular table (it will not be
+     *                 automatically cleared unless a {@code ttl} is provided,
+     *                 and the table data can be modified in subsequent
+     *                 operations). If {@code false} (the default) then the
+     *                 result table will be a read-only, memory-only temporary
+     *                 table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_FORCE_REPLICATED
+     *                 RESULT_TABLE_FORCE_REPLICATED}: Force the result table
+     *                 to be replicated (ignores any sharding). Must be used in
+     *                 combination with the {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_GENERATE_PK
+     *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
+     *                 key for the result table. Must be used in combination
+     *                 with the {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TTL
+     *                 TTL}: Sets the TTL of the table specified in {@code
+     *                 result_table}. The value must be the desired TTL in
+     *                 minutes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
+     *                 CHUNK_SIZE}: If provided this indicates the chunk size
+     *                 to be used for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

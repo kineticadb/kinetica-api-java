@@ -44,6 +44,52 @@ public class ClearTableRequest implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ClearTableRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     * NO_ERROR_IF_NOT_EXISTS}: If {@code true} and if the table specified in
+     * {@code tableName} does not exist no error is returned. If {@code false}
+     * and if the table specified in {@code tableName} does not exist then an
+     * error is returned.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ClearTableRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ClearTableRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ClearTableRequest.Options#FALSE FALSE}.
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * If {@code true} and if the table specified in {@code tableName} does
+         * not exist no error is returned. If {@code false} and if the table
+         * specified in {@code tableName} does not exist then an error is
+         * returned.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ClearTableRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ClearTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ClearTableRequest.Options#FALSE FALSE}.
+         */
+        public static final String NO_ERROR_IF_NOT_EXISTS = "no_error_if_not_exists";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private Options() {  }
+    }
+
     private String tableName;
     private String authorization;
     private Map<String, String> options;
@@ -65,6 +111,26 @@ public class ClearTableRequest implements IndexedRecord {
      *                   table. Empty string clears all available tables.
      * @param authorization  No longer used. User can pass an empty string.
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ClearTableRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code true} and if the
+     *                 table specified in {@code tableName} does not exist no
+     *                 error is returned. If {@code false} and if the table
+     *                 specified in {@code tableName} does not exist then an
+     *                 error is returned.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ClearTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ClearTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ClearTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
      * 
      */
     public ClearTableRequest(String tableName, String authorization, Map<String, String> options) {
@@ -120,6 +186,23 @@ public class ClearTableRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ClearTableRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     *         NO_ERROR_IF_NOT_EXISTS}: If {@code true} and if the table
+     *         specified in {@code tableName} does not exist no error is
+     *         returned. If {@code false} and if the table specified in {@code
+     *         tableName} does not exist then an error is returned.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ClearTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ClearTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ClearTableRequest.Options#FALSE FALSE}.
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -129,6 +212,26 @@ public class ClearTableRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ClearTableRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code true} and if the
+     *                 table specified in {@code tableName} does not exist no
+     *                 error is returned. If {@code false} and if the table
+     *                 specified in {@code tableName} does not exist then an
+     *                 error is returned.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ClearTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ClearTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ClearTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

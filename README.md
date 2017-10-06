@@ -19,11 +19,11 @@ install the jar in the local repository:
 > mvn install
 
 
-The documentation can be found at http://www.kinetica.com/docs/6.0/index.html.
+The documentation can be found at http://www.kinetica.com/docs/6.1/index.html.
 The Java specific documentation can be found at:
 
-*   http://www.kinetica.com/docs/6.0/tutorials/java_guide.html
-*   http://www.kinetica.com/docs/6.0/api/java/index.html
+*   http://www.kinetica.com/docs/6.1/tutorials/java_guide.html
+*   http://www.kinetica.com/docs/6.1/api/java/index.html
 
 
 For changes to the client-side API, please see CHANGELOG.md.  For changes
@@ -39,7 +39,7 @@ To build the jar, run the following command in the example directory:
 > mvn clean package
 
 
-Then, to run the example, in the target directory, run the following ocmmand:
+Then, to run the example, in the target directory, run the following command:
 
 > java -jar gpudb-api-example-1.0-jar-with-dependencies.jar
 

@@ -41,16 +41,28 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
     /**
      * A map of server configuration parameters and version information.
      * <ul>
-     *         <li> conf.enable_worker_http_servers: Boolean value indicating
-     * whether the system is configured for multi-head ingestion. Values: TRUE,
-     * FALSE.
-     * <p>
-     *         <li> conf.worker_http_server_ips: Semicolon (';') separated
-     * string of IP addresses of all the ingestion-enabled worker heads of the
-     * system.
-     *         <li> conf.worker_http_server_ports: Semicolon (';') separated
-     * string of the port numbers of all the ingestion-enabled worker ranks of
-     * the system.
+     *         <li> {@link
+     * com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_ENABLE_WORKER_HTTP_SERVERS
+     * CONF_ENABLE_WORKER_HTTP_SERVERS}: Boolean value indicating whether the
+     * system is configured for multi-head ingestion.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#TRUE TRUE}:
+     * Indicates that the system is configured for multi-head ingestion.
+     *         <li> {@link
+     * com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#FALSE
+     * FALSE}: Indicates that the system is NOT configured for multi-head
+     * ingestion.
+     * </ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_WORKER_HTTP_SERVER_IPS
+     * CONF_WORKER_HTTP_SERVER_IPS}: Semicolon (';') separated string of IP
+     * addresses of all the ingestion-enabled worker heads of the system.
+     *         <li> {@link
+     * com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_WORKER_HTTP_SERVER_PORTS
+     * CONF_WORKER_HTTP_SERVER_PORTS}: Semicolon (';') separated string of the
+     * port numbers of all the ingestion-enabled worker ranks of the system.
      * </ul>
      * A set of string constants for the parameter {@code propertyMap}.
      */
@@ -58,7 +70,18 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
 
         /**
          * Boolean value indicating whether the system is configured for
-         * multi-head ingestion. Values: TRUE, FALSE.
+         * multi-head ingestion.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#TRUE
+         * TRUE}: Indicates that the system is configured for multi-head
+         * ingestion.
+         *         <li> {@link
+         * com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#FALSE
+         * FALSE}: Indicates that the system is NOT configured for multi-head
+         * ingestion.
+         * </ul>
          */
         public static final String CONF_ENABLE_WORKER_HTTP_SERVERS = "conf.enable_worker_http_servers";
 
@@ -103,15 +126,31 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
      * @return A map of server configuration parameters and version
      *         information.
      *         <ul>
-     *                 <li> conf.enable_worker_http_servers: Boolean value
-     *         indicating whether the system is configured for multi-head
-     *         ingestion. Values: TRUE, FALSE.
-     *                 <li> conf.worker_http_server_ips: Semicolon (';')
-     *         separated string of IP addresses of all the ingestion-enabled
-     *         worker heads of the system.
-     *                 <li> conf.worker_http_server_ports: Semicolon (';')
-     *         separated string of the port numbers of all the
-     *         ingestion-enabled worker ranks of the system.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_ENABLE_WORKER_HTTP_SERVERS
+     *         CONF_ENABLE_WORKER_HTTP_SERVERS}: Boolean value indicating
+     *         whether the system is configured for multi-head ingestion.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#TRUE
+     *         TRUE}: Indicates that the system is configured for multi-head
+     *         ingestion.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#FALSE
+     *         FALSE}: Indicates that the system is NOT configured for
+     *         multi-head ingestion.
+     *         </ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_WORKER_HTTP_SERVER_IPS
+     *         CONF_WORKER_HTTP_SERVER_IPS}: Semicolon (';') separated string
+     *         of IP addresses of all the ingestion-enabled worker heads of the
+     *         system.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_WORKER_HTTP_SERVER_PORTS
+     *         CONF_WORKER_HTTP_SERVER_PORTS}: Semicolon (';') separated string
+     *         of the port numbers of all the ingestion-enabled worker ranks of
+     *         the system.
      *         </ul>
      * 
      */
@@ -124,17 +163,32 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
      * @param propertyMap  A map of server configuration parameters and version
      *                     information.
      *                     <ul>
-     *                             <li> conf.enable_worker_http_servers:
-     *                     Boolean value indicating whether the system is
-     *                     configured for multi-head ingestion. Values: TRUE,
-     *                     FALSE.
-     *                             <li> conf.worker_http_server_ips: Semicolon
-     *                     (';') separated string of IP addresses of all the
+     *                             <li> {@link
+     *                     com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_ENABLE_WORKER_HTTP_SERVERS
+     *                     CONF_ENABLE_WORKER_HTTP_SERVERS}: Boolean value
+     *                     indicating whether the system is configured for
+     *                     multi-head ingestion.
+     *                     Supported values:
+     *                     <ul>
+     *                             <li> {@link
+     *                     com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#TRUE
+     *                     TRUE}: Indicates that the system is configured for
+     *                     multi-head ingestion.
+     *                             <li> {@link
+     *                     com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#FALSE
+     *                     FALSE}: Indicates that the system is NOT configured
+     *                     for multi-head ingestion.
+     *                     </ul>
+     *                             <li> {@link
+     *                     com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_WORKER_HTTP_SERVER_IPS
+     *                     CONF_WORKER_HTTP_SERVER_IPS}: Semicolon (';')
+     *                     separated string of IP addresses of all the
      *                     ingestion-enabled worker heads of the system.
-     *                             <li> conf.worker_http_server_ports:
-     *                     Semicolon (';') separated string of the port numbers
-     *                     of all the ingestion-enabled worker ranks of the
-     *                     system.
+     *                             <li> {@link
+     *                     com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_WORKER_HTTP_SERVER_PORTS
+     *                     CONF_WORKER_HTTP_SERVER_PORTS}: Semicolon (';')
+     *                     separated string of the port numbers of all the
+     *                     ingestion-enabled worker ranks of the system.
      *                     </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

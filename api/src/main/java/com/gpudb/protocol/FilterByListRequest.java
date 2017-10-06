@@ -28,9 +28,10 @@ import org.apache.avro.generic.IndexedRecord;
  * For example, if a type definition has the columns 'x' and 'y', then a filter
  * by list query with the column map {"x":["10.1", "2.3"], "y":["0.0", "-31.5",
  * "42.0"]} will return the count of all data points whose x and y values match
- * one of the values in the respective x- and y-lists. If the filter_mode
- * option is set to 'not_in_list' then the filter will match all items that are
- * not in the provided list(s).
+ * both in the respective x- and y-lists, e.g., "x = 10.1 and y = 0.0", "x =
+ * 2.3 and y = -31.5", etc. However, a record with "x = 10.1 and y = -31.5" or
+ * "x = 2.3 and y = 0.0" would not be returned because the values in the given
+ * lists do not correspond.
  */
 public class FilterByListRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -59,9 +60,20 @@ public class FilterByListRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> filter_mode: String indicating the filter mode, either
-     * 'in_list' or 'not_in_list'. Values: in_list, not_in_list.
-     * <p>
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByListRequest.Options#FILTER_MODE FILTER_MODE}:
+     * String indicating the filter mode, either 'in_list' or 'not_in_list'.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByListRequest.Options#IN_LIST IN_LIST}: The
+     * filter will match all items that are in the provided list(s).
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByListRequest.Options#NOT_IN_LIST NOT_IN_LIST}:
+     * The filter will match all items that are not in the provided list(s).
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.FilterByListRequest.Options#IN_LIST IN_LIST}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -69,10 +81,31 @@ public class FilterByListRequest implements IndexedRecord {
 
         /**
          * String indicating the filter mode, either 'in_list' or
-         * 'not_in_list'. Values: in_list, not_in_list.
+         * 'not_in_list'.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.FilterByListRequest.Options#IN_LIST IN_LIST}: The
+         * filter will match all items that are in the provided list(s).
+         *         <li> {@link
+         * com.gpudb.protocol.FilterByListRequest.Options#NOT_IN_LIST
+         * NOT_IN_LIST}: The filter will match all items that are not in the
+         * provided list(s).
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.FilterByListRequest.Options#IN_LIST IN_LIST}.
          */
         public static final String FILTER_MODE = "filter_mode";
+
+        /**
+         * The filter will match all items that are in the provided list(s).
+         */
         public static final String IN_LIST = "in_list";
+
+        /**
+         * The filter will match all items that are not in the provided
+         * list(s).
+         */
         public static final String NOT_IN_LIST = "not_in_list";
 
         private Options() {  }
@@ -110,9 +143,24 @@ public class FilterByListRequest implements IndexedRecord {
      *                         the table
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> filter_mode: String indicating the filter
-     *                 mode, either 'in_list' or 'not_in_list'. Values:
-     *                 in_list, not_in_list.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByListRequest.Options#FILTER_MODE
+     *                 FILTER_MODE}: String indicating the filter mode, either
+     *                 'in_list' or 'not_in_list'.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByListRequest.Options#IN_LIST
+     *                 IN_LIST}: The filter will match all items that are in
+     *                 the provided list(s).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByListRequest.Options#NOT_IN_LIST
+     *                 NOT_IN_LIST}: The filter will match all items that are
+     *                 not in the provided list(s).
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.FilterByListRequest.Options#IN_LIST
+     *                 IN_LIST}.
      *                 </ul>
      * 
      */
@@ -204,8 +252,23 @@ public class FilterByListRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> filter_mode: String indicating the filter mode,
-     *         either 'in_list' or 'not_in_list'. Values: in_list, not_in_list.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByListRequest.Options#FILTER_MODE
+     *         FILTER_MODE}: String indicating the filter mode, either
+     *         'in_list' or 'not_in_list'.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByListRequest.Options#IN_LIST IN_LIST}:
+     *         The filter will match all items that are in the provided
+     *         list(s).
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByListRequest.Options#NOT_IN_LIST
+     *         NOT_IN_LIST}: The filter will match all items that are not in
+     *         the provided list(s).
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.FilterByListRequest.Options#IN_LIST IN_LIST}.
      *         </ul>
      * 
      */
@@ -217,9 +280,24 @@ public class FilterByListRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> filter_mode: String indicating the filter
-     *                 mode, either 'in_list' or 'not_in_list'. Values:
-     *                 in_list, not_in_list.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByListRequest.Options#FILTER_MODE
+     *                 FILTER_MODE}: String indicating the filter mode, either
+     *                 'in_list' or 'not_in_list'.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByListRequest.Options#IN_LIST
+     *                 IN_LIST}: The filter will match all items that are in
+     *                 the provided list(s).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByListRequest.Options#NOT_IN_LIST
+     *                 NOT_IN_LIST}: The filter will match all items that are
+     *                 not in the provided list(s).
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.FilterByListRequest.Options#IN_LIST
+     *                 IN_LIST}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -7,21 +7,20 @@
 package com.gpudb.protocol;
 
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 
 
-public class AdminGetShardAssignmentsRequest implements IndexedRecord {
+public class AdminReplaceTomResponse implements IndexedRecord {
 
     private static final Schema schema$ = SchemaBuilder
-            .record("AdminGetShardAssignmentsRequest")
+            .record("AdminReplaceTomResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("options").type().map().values().stringType().noDefault()
+                .name("oldRankTom").type().longType().noDefault()
+                .name("newRankTom").type().longType().noDefault()
             .endRecord();
 
 
@@ -30,23 +29,28 @@ public class AdminGetShardAssignmentsRequest implements IndexedRecord {
     }
 
 
-    private Map<String, String> options;
+    private long oldRankTom;
+    private long newRankTom;
 
 
-    public AdminGetShardAssignmentsRequest() {
-        options = new LinkedHashMap<>();
+    public AdminReplaceTomResponse() {
     }
 
-    public AdminGetShardAssignmentsRequest(Map<String, String> options) {
-        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
+    public long getOldRankTom() {
+        return oldRankTom;
     }
 
-    public Map<String, String> getOptions() {
-        return options;
+    public AdminReplaceTomResponse setOldRankTom(long oldRankTom) {
+        this.oldRankTom = oldRankTom;
+        return this;
     }
 
-    public AdminGetShardAssignmentsRequest setOptions(Map<String, String> options) {
-        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
+    public long getNewRankTom() {
+        return newRankTom;
+    }
+
+    public AdminReplaceTomResponse setNewRankTom(long newRankTom) {
+        this.newRankTom = newRankTom;
         return this;
     }
 
@@ -59,7 +63,10 @@ public class AdminGetShardAssignmentsRequest implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.options;
+                return this.oldRankTom;
+
+            case 1:
+                return this.newRankTom;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -71,7 +78,11 @@ public class AdminGetShardAssignmentsRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.options = (Map<String, String>)value;
+                this.oldRankTom = (Long)value;
+                break;
+
+            case 1:
+                this.newRankTom = (Long)value;
                 break;
 
             default:
@@ -90,9 +101,10 @@ public class AdminGetShardAssignmentsRequest implements IndexedRecord {
             return false;
         }
 
-        AdminGetShardAssignmentsRequest that = (AdminGetShardAssignmentsRequest)obj;
+        AdminReplaceTomResponse that = (AdminReplaceTomResponse)obj;
 
-        return ( this.options.equals( that.options ) );
+        return ( ( this.oldRankTom == that.oldRankTom )
+                 && ( this.newRankTom == that.newRankTom ) );
     }
 
 
@@ -101,9 +113,13 @@ public class AdminGetShardAssignmentsRequest implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "options" ) );
+        builder.append( gd.toString( "oldRankTom" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.options ) );
+        builder.append( gd.toString( this.oldRankTom ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "newRankTom" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.newRankTom ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -113,7 +129,8 @@ public class AdminGetShardAssignmentsRequest implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.options.hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.oldRankTom).hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.newRankTom).hashCode();
         return hashCode;
     }
 

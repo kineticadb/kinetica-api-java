@@ -54,8 +54,17 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
     /**
      * Specifies the encoding for returned records; either 'binary' or 'json'.
-     * Values: binary, json.
-
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsFromCollectionRequest.Encoding#BINARY
+     * BINARY}
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsFromCollectionRequest.Encoding#JSON JSON}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.GetRecordsFromCollectionRequest.Encoding#BINARY
+     * BINARY}.
      * A set of string constants for the parameter {@code encoding}.
      */
     public static final class Encoding {
@@ -68,10 +77,19 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
     /**
      * <ul>
-     *         <li> return_record_ids: If 'true' then return the internal
-     * record ID along with each returned record. Default is 'false'. Values:
-     * true, false.
-     * <p>
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#RETURN_RECORD_IDS
+     * RETURN_RECORD_IDS}: If 'true' then return the internal record ID along
+     * with each returned record. Default is 'false'.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE FALSE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -79,7 +97,19 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
         /**
          * If 'true' then return the internal record ID along with each
-         * returned record. Default is 'false'. Values: true, false.
+         * returned record. Default is 'false'.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
+         * FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
+         * FALSE}.
          */
         public static final String RETURN_RECORD_IDS = "return_record_ids";
         public static final String TRUE = "true";
@@ -121,9 +151,23 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *               that the max number of results should be returned.
      * @param options
      *                 <ul>
-     *                         <li> return_record_ids: If 'true' then return
-     *                 the internal record ID along with each returned record.
-     *                 Default is 'false'. Values: true, false.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#RETURN_RECORD_IDS
+     *                 RETURN_RECORD_IDS}: If 'true' then return the internal
+     *                 record ID along with each returned record. Default is
+     *                 'false'.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      */
@@ -150,12 +194,38 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *               results to be returned, or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.
      * @param encoding  Specifies the encoding for returned records; either
-     *                  'binary' or 'json'. Values: binary, json.
+     *                  'binary' or 'json'.
+     *                  Supported values:
+     *                  <ul>
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsFromCollectionRequest.Encoding#BINARY
+     *                  BINARY}
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsFromCollectionRequest.Encoding#JSON
+     *                  JSON}
+     *                  </ul>
+     *                  The default value is {@link
+     *                  com.gpudb.protocol.GetRecordsFromCollectionRequest.Encoding#BINARY
+     *                  BINARY}.
      * @param options
      *                 <ul>
-     *                         <li> return_record_ids: If 'true' then return
-     *                 the internal record ID along with each returned record.
-     *                 Default is 'false'. Values: true, false.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#RETURN_RECORD_IDS
+     *                 RETURN_RECORD_IDS}: If 'true' then return the internal
+     *                 record ID along with each returned record. Default is
+     *                 'false'.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      */
@@ -246,7 +316,19 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     /**
      * 
      * @return Specifies the encoding for returned records; either 'binary' or
-     *         'json'. Values: binary, json.
+     *         'json'.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsFromCollectionRequest.Encoding#BINARY
+     *         BINARY}
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsFromCollectionRequest.Encoding#JSON
+     *         JSON}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.GetRecordsFromCollectionRequest.Encoding#BINARY
+     *         BINARY}.
      * 
      */
     public String getEncoding() {
@@ -256,7 +338,19 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     /**
      * 
      * @param encoding  Specifies the encoding for returned records; either
-     *                  'binary' or 'json'. Values: binary, json.
+     *                  'binary' or 'json'.
+     *                  Supported values:
+     *                  <ul>
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsFromCollectionRequest.Encoding#BINARY
+     *                  BINARY}
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsFromCollectionRequest.Encoding#JSON
+     *                  JSON}
+     *                  </ul>
+     *                  The default value is {@link
+     *                  com.gpudb.protocol.GetRecordsFromCollectionRequest.Encoding#BINARY
+     *                  BINARY}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -270,9 +364,22 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * 
      * @return
      *         <ul>
-     *                 <li> return_record_ids: If 'true' then return the
-     *         internal record ID along with each returned record. Default is
-     *         'false'. Values: true, false.
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#RETURN_RECORD_IDS
+     *         RETURN_RECORD_IDS}: If 'true' then return the internal record ID
+     *         along with each returned record. Default is 'false'.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
+     *         FALSE}.
      *         </ul>
      * 
      */
@@ -284,9 +391,23 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * 
      * @param options
      *                 <ul>
-     *                         <li> return_record_ids: If 'true' then return
-     *                 the internal record ID along with each returned record.
-     *                 Default is 'false'. Values: true, false.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#RETURN_RECORD_IDS
+     *                 RETURN_RECORD_IDS}: If 'true' then return the internal
+     *                 record ID along with each returned record. Default is
+     *                 'false'.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

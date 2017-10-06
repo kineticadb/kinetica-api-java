@@ -65,8 +65,15 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * Specifies the encoding for returned records; either 'binary' or 'json'.
-     * Values: binary, json.
-
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsByColumnRequest.Encoding#BINARY BINARY}
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsByColumnRequest.Encoding#JSON JSON}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.GetRecordsByColumnRequest.Encoding#BINARY BINARY}.
      * A set of string constants for the parameter {@code encoding}.
      */
     public static final class Encoding {
@@ -79,19 +86,36 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * <ul>
-     *         <li> expression: Optional filter expression to apply to the
-     * table.
-     *         <li> sort_by: Optional column that the data should be sorted by.
-     * Empty by default (i.e. no sorting is applied).
-     *         <li> sort_order: String indicating how the returned values
-     * should be sorted - ascending or descending. Default is 'ascending'. If
-     * sort_order is provided, sort_by has to be provided. Values: ascending,
-     * descending.
-     * <p>
-     *         <li> order_by: Comma-separated list of the columns to be sorted
-     * by; e.g. 'timestamp asc, x desc'.  The columns specified must be present
-     * in {@code columnNames}.  If any alias is given for any column name, the
-     * alias must be used, rather than the original column name.
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsByColumnRequest.Options#EXPRESSION
+     * EXPRESSION}: Optional filter expression to apply to the table.
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_BY SORT_BY}:
+     * Optional column that the data should be sorted by. Empty by default
+     * (i.e. no sorting is applied).
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
+     * SORT_ORDER}: String indicating how the returned values should be sorted
+     * - ascending or descending. Default is 'ascending'. If sort_order is
+     * provided, sort_by has to be provided.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsByColumnRequest.Options#ASCENDING
+     * ASCENDING}
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsByColumnRequest.Options#DESCENDING
+     * DESCENDING}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.GetRecordsByColumnRequest.Options#ASCENDING
+     * ASCENDING}.
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsByColumnRequest.Options#ORDER_BY ORDER_BY}:
+     * Comma-separated list of the columns to be sorted by; e.g. 'timestamp
+     * asc, x desc'.  The columns specified must be present in {@code
+     * columnNames}.  If any alias is given for any column name, the alias must
+     * be used, rather than the original column name.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -111,7 +135,19 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
         /**
          * String indicating how the returned values should be sorted -
          * ascending or descending. Default is 'ascending'. If sort_order is
-         * provided, sort_by has to be provided. Values: ascending, descending.
+         * provided, sort_by has to be provided.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.GetRecordsByColumnRequest.Options#ASCENDING
+         * ASCENDING}
+         *         <li> {@link
+         * com.gpudb.protocol.GetRecordsByColumnRequest.Options#DESCENDING
+         * DESCENDING}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.GetRecordsByColumnRequest.Options#ASCENDING
+         * ASCENDING}.
          */
         public static final String SORT_ORDER = "sort_order";
         public static final String ASCENDING = "ascending";
@@ -164,22 +200,39 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *               returned.
      * @param options
      *                 <ul>
-     *                         <li> expression: Optional filter expression to
-     *                 apply to the table.
-     *                         <li> sort_by: Optional column that the data
-     *                 should be sorted by. Empty by default (i.e. no sorting
-     *                 is applied).
-     *                         <li> sort_order: String indicating how the
-     *                 returned values should be sorted - ascending or
-     *                 descending. Default is 'ascending'. If sort_order is
-     *                 provided, sort_by has to be provided. Values: ascending,
-     *                 descending.
-     *                         <li> order_by: Comma-separated list of the
-     *                 columns to be sorted by; e.g. 'timestamp asc, x desc'.
-     *                 The columns specified must be present in {@code
-     *                 columnNames}.  If any alias is given for any column
-     *                 name, the alias must be used, rather than the original
-     *                 column name.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Optional filter expression to apply to the
+     *                 table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_BY
+     *                 SORT_BY}: Optional column that the data should be sorted
+     *                 by. Empty by default (i.e. no sorting is applied).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
+     *                 SORT_ORDER}: String indicating how the returned values
+     *                 should be sorted - ascending or descending. Default is
+     *                 'ascending'. If sort_order is provided, sort_by has to
+     *                 be provided.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#ASCENDING
+     *                 ASCENDING}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#DESCENDING
+     *                 DESCENDING}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#ASCENDING
+     *                 ASCENDING}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#ORDER_BY
+     *                 ORDER_BY}: Comma-separated list of the columns to be
+     *                 sorted by; e.g. 'timestamp asc, x desc'.  The columns
+     *                 specified must be present in {@code columnNames}.  If
+     *                 any alias is given for any column name, the alias must
+     *                 be used, rather than the original column name.
      *                 </ul>
      * 
      */
@@ -209,25 +262,54 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *               number of results allowed by the server should be
      *               returned.
      * @param encoding  Specifies the encoding for returned records; either
-     *                  'binary' or 'json'. Values: binary, json.
+     *                  'binary' or 'json'.
+     *                  Supported values:
+     *                  <ul>
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsByColumnRequest.Encoding#BINARY
+     *                  BINARY}
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsByColumnRequest.Encoding#JSON
+     *                  JSON}
+     *                  </ul>
+     *                  The default value is {@link
+     *                  com.gpudb.protocol.GetRecordsByColumnRequest.Encoding#BINARY
+     *                  BINARY}.
      * @param options
      *                 <ul>
-     *                         <li> expression: Optional filter expression to
-     *                 apply to the table.
-     *                         <li> sort_by: Optional column that the data
-     *                 should be sorted by. Empty by default (i.e. no sorting
-     *                 is applied).
-     *                         <li> sort_order: String indicating how the
-     *                 returned values should be sorted - ascending or
-     *                 descending. Default is 'ascending'. If sort_order is
-     *                 provided, sort_by has to be provided. Values: ascending,
-     *                 descending.
-     *                         <li> order_by: Comma-separated list of the
-     *                 columns to be sorted by; e.g. 'timestamp asc, x desc'.
-     *                 The columns specified must be present in {@code
-     *                 columnNames}.  If any alias is given for any column
-     *                 name, the alias must be used, rather than the original
-     *                 column name.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Optional filter expression to apply to the
+     *                 table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_BY
+     *                 SORT_BY}: Optional column that the data should be sorted
+     *                 by. Empty by default (i.e. no sorting is applied).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
+     *                 SORT_ORDER}: String indicating how the returned values
+     *                 should be sorted - ascending or descending. Default is
+     *                 'ascending'. If sort_order is provided, sort_by has to
+     *                 be provided.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#ASCENDING
+     *                 ASCENDING}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#DESCENDING
+     *                 DESCENDING}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#ASCENDING
+     *                 ASCENDING}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#ORDER_BY
+     *                 ORDER_BY}: Comma-separated list of the columns to be
+     *                 sorted by; e.g. 'timestamp asc, x desc'.  The columns
+     *                 specified must be present in {@code columnNames}.  If
+     *                 any alias is given for any column name, the alias must
+     *                 be used, rather than the original column name.
      *                 </ul>
      * 
      */
@@ -342,7 +424,18 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
     /**
      * 
      * @return Specifies the encoding for returned records; either 'binary' or
-     *         'json'. Values: binary, json.
+     *         'json'.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsByColumnRequest.Encoding#BINARY
+     *         BINARY}
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsByColumnRequest.Encoding#JSON JSON}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.GetRecordsByColumnRequest.Encoding#BINARY
+     *         BINARY}.
      * 
      */
     public String getEncoding() {
@@ -352,7 +445,19 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
     /**
      * 
      * @param encoding  Specifies the encoding for returned records; either
-     *                  'binary' or 'json'. Values: binary, json.
+     *                  'binary' or 'json'.
+     *                  Supported values:
+     *                  <ul>
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsByColumnRequest.Encoding#BINARY
+     *                  BINARY}
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsByColumnRequest.Encoding#JSON
+     *                  JSON}
+     *                  </ul>
+     *                  The default value is {@link
+     *                  com.gpudb.protocol.GetRecordsByColumnRequest.Encoding#BINARY
+     *                  BINARY}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -366,19 +471,37 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * 
      * @return
      *         <ul>
-     *                 <li> expression: Optional filter expression to apply to
-     *         the table.
-     *                 <li> sort_by: Optional column that the data should be
-     *         sorted by. Empty by default (i.e. no sorting is applied).
-     *                 <li> sort_order: String indicating how the returned
-     *         values should be sorted - ascending or descending. Default is
-     *         'ascending'. If sort_order is provided, sort_by has to be
-     *         provided. Values: ascending, descending.
-     *                 <li> order_by: Comma-separated list of the columns to be
-     *         sorted by; e.g. 'timestamp asc, x desc'.  The columns specified
-     *         must be present in {@code columnNames}.  If any alias is given
-     *         for any column name, the alias must be used, rather than the
-     *         original column name.
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#EXPRESSION
+     *         EXPRESSION}: Optional filter expression to apply to the table.
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_BY
+     *         SORT_BY}: Optional column that the data should be sorted by.
+     *         Empty by default (i.e. no sorting is applied).
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
+     *         SORT_ORDER}: String indicating how the returned values should be
+     *         sorted - ascending or descending. Default is 'ascending'. If
+     *         sort_order is provided, sort_by has to be provided.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#ASCENDING
+     *         ASCENDING}
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#DESCENDING
+     *         DESCENDING}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#ASCENDING
+     *         ASCENDING}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#ORDER_BY
+     *         ORDER_BY}: Comma-separated list of the columns to be sorted by;
+     *         e.g. 'timestamp asc, x desc'.  The columns specified must be
+     *         present in {@code columnNames}.  If any alias is given for any
+     *         column name, the alias must be used, rather than the original
+     *         column name.
      *         </ul>
      * 
      */
@@ -390,22 +513,39 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * 
      * @param options
      *                 <ul>
-     *                         <li> expression: Optional filter expression to
-     *                 apply to the table.
-     *                         <li> sort_by: Optional column that the data
-     *                 should be sorted by. Empty by default (i.e. no sorting
-     *                 is applied).
-     *                         <li> sort_order: String indicating how the
-     *                 returned values should be sorted - ascending or
-     *                 descending. Default is 'ascending'. If sort_order is
-     *                 provided, sort_by has to be provided. Values: ascending,
-     *                 descending.
-     *                         <li> order_by: Comma-separated list of the
-     *                 columns to be sorted by; e.g. 'timestamp asc, x desc'.
-     *                 The columns specified must be present in {@code
-     *                 columnNames}.  If any alias is given for any column
-     *                 name, the alias must be used, rather than the original
-     *                 column name.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Optional filter expression to apply to the
+     *                 table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_BY
+     *                 SORT_BY}: Optional column that the data should be sorted
+     *                 by. Empty by default (i.e. no sorting is applied).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
+     *                 SORT_ORDER}: String indicating how the returned values
+     *                 should be sorted - ascending or descending. Default is
+     *                 'ascending'. If sort_order is provided, sort_by has to
+     *                 be provided.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#ASCENDING
+     *                 ASCENDING}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#DESCENDING
+     *                 DESCENDING}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#ASCENDING
+     *                 ASCENDING}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#ORDER_BY
+     *                 ORDER_BY}: Comma-separated list of the columns to be
+     *                 sorted by; e.g. 'timestamp asc, x desc'.  The columns
+     *                 specified must be present in {@code columnNames}.  If
+     *                 any alias is given for any column name, the alias must
+     *                 be used, rather than the original column name.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

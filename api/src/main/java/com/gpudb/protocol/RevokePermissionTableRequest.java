@@ -44,9 +44,25 @@ public class RevokePermissionTableRequest implements IndexedRecord {
 
 
     /**
-     * Permission to revoke from the user or role. Values: table_admin,
-     * table_insert, table_update, table_delete, table_read.
-
+     * Permission to revoke from the user or role.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_ADMIN
+     * TABLE_ADMIN}: Full read/write and administrative access to the table.
+     *         <li> {@link
+     * com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_INSERT
+     * TABLE_INSERT}: Insert access to the table.
+     *         <li> {@link
+     * com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_UPDATE
+     * TABLE_UPDATE}: Update access to the table.
+     *         <li> {@link
+     * com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_DELETE
+     * TABLE_DELETE}: Delete access to the table.
+     *         <li> {@link
+     * com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_READ
+     * TABLE_READ}: Read access to the table.
+     * </ul>
      * A set of string constants for the parameter {@code permission}.
      */
     public static final class Permission {
@@ -102,9 +118,26 @@ public class RevokePermissionTableRequest implements IndexedRecord {
      * 
      * @param name  Name of the user or role from which the permission will be
      *              revoked. Must be an existing user or role.
-     * @param permission  Permission to revoke from the user or role. Values:
-     *                    table_admin, table_insert, table_update,
-     *                    table_delete, table_read.
+     * @param permission  Permission to revoke from the user or role.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_ADMIN
+     *                    TABLE_ADMIN}: Full read/write and administrative
+     *                    access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_INSERT
+     *                    TABLE_INSERT}: Insert access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_UPDATE
+     *                    TABLE_UPDATE}: Update access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_DELETE
+     *                    TABLE_DELETE}: Delete access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_READ
+     *                    TABLE_READ}: Read access to the table.
+     *                    </ul>
      * @param tableName  Name of the table to which the permission grants
      *                   access. Must be an existing table, collection, or
      *                   view.
@@ -143,8 +176,26 @@ public class RevokePermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Permission to revoke from the user or role. Values: table_admin,
-     *         table_insert, table_update, table_delete, table_read.
+     * @return Permission to revoke from the user or role.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_ADMIN
+     *         TABLE_ADMIN}: Full read/write and administrative access to the
+     *         table.
+     *                 <li> {@link
+     *         com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_INSERT
+     *         TABLE_INSERT}: Insert access to the table.
+     *                 <li> {@link
+     *         com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_UPDATE
+     *         TABLE_UPDATE}: Update access to the table.
+     *                 <li> {@link
+     *         com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_DELETE
+     *         TABLE_DELETE}: Delete access to the table.
+     *                 <li> {@link
+     *         com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_READ
+     *         TABLE_READ}: Read access to the table.
+     *         </ul>
      * 
      */
     public String getPermission() {
@@ -153,9 +204,26 @@ public class RevokePermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param permission  Permission to revoke from the user or role. Values:
-     *                    table_admin, table_insert, table_update,
-     *                    table_delete, table_read.
+     * @param permission  Permission to revoke from the user or role.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_ADMIN
+     *                    TABLE_ADMIN}: Full read/write and administrative
+     *                    access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_INSERT
+     *                    TABLE_INSERT}: Insert access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_UPDATE
+     *                    TABLE_UPDATE}: Update access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_DELETE
+     *                    TABLE_DELETE}: Delete access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionTableRequest.Permission#TABLE_READ
+     *                    TABLE_READ}: Read access to the table.
+     *                    </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -53,8 +53,22 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * List of descriptions for the respective tables in {@code tableNames}.
-     * Values: COLLECTION, VIEW, REPLICATED, JOIN, RESULT_TABLE.
-
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTableResponse.TableDescriptions#COLLECTION
+     * COLLECTION}
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTableResponse.TableDescriptions#VIEW VIEW}
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTableResponse.TableDescriptions#REPLICATED
+     * REPLICATED}
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTableResponse.TableDescriptions#JOIN JOIN}
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTableResponse.TableDescriptions#RESULT_TABLE
+     * RESULT_TABLE}
+     * </ul>
      * A set of string constants for the parameter {@code tableDescriptions}.
      */
     public static final class TableDescriptions {
@@ -70,8 +84,10 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * Additional information about the respective tables in {@code
-     * tableNames}. Values: .
-
+     * tableNames}.
+     * Supported values:
+     * <ul>
+     * </ul>
      * A set of string constants for the parameter {@code additionalInfo}.
      */
     public static final class AdditionalInfo {
@@ -79,17 +95,36 @@ public class ShowTableResponse implements IndexedRecord {
         /**
          * Only present if the respective table is a collection. The value
          * indicates whether the collection is allowed to contain multiple
-         * tables or views of the same type or not. Values: true, false.
+         * tables or views of the same type or not.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#FALSE FALSE}
+         * </ul>
          */
         public static final String ALLOW_HOMOGENEOUS_TABLES = "allow_homogeneous_tables";
-        public static final String FALSE = "false";
         public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         /**
-         * Indicates whether the respective table is protected or not. Values:
-         * true, false.
+         * Indicates whether the respective table is protected or not.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#FALSE FALSE}
+         * </ul>
          */
         public static final String PROTECTED = "protected";
+
+        /**
+         * The number of in-memory bytes per record which is the sum of the
+         * byte sizes of all columns with property  'data'.
+         */
+        public static final String RECORD_BYTES = "record_bytes";
 
         /**
          * The value of TTL setting, in minutes, for the respective table (-1
@@ -124,6 +159,59 @@ public class ShowTableResponse implements IndexedRecord {
          * present for collections.
          */
         public static final String ATTRIBUTE_INDEXES = "attribute_indexes";
+
+        /**
+         * Semicolon-separated list of - compressed_columns:
+         * {I1,snappy};{L1,lz4hc}. Not present for collections.
+         */
+        public static final String COMPRESSED_COLUMNS = "compressed_columns";
+
+        /**
+         * JSON-encoded string representing a map of column name to information
+         * including memory usage if if the {@code get_column_info} option is
+         * {@code true}.
+         */
+        public static final String COLUMN_INFO = "column_info";
+
+        /**
+         * Returns the global access mode (i.e. lock status) for the table.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#NO_ACCESS
+         * NO_ACCESS}: No read/write operations are allowed on this table.
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#READ_ONLY
+         * READ_ONLY}: Only read operations are allowed on this table.
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#WRITE_ONLY
+         * WRITE_ONLY}: Only write operations are allowed on this table.
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#READ_WRITE
+         * READ_WRITE}: All read/write operations are allowed on this table.
+         * </ul>
+         */
+        public static final String GLOBAL_ACCESS_MODE = "global_access_mode";
+
+        /**
+         * No read/write operations are allowed on this table.
+         */
+        public static final String NO_ACCESS = "no-access";
+
+        /**
+         * Only read operations are allowed on this table.
+         */
+        public static final String READ_ONLY = "read-only";
+
+        /**
+         * Only write operations are allowed on this table.
+         */
+        public static final String WRITE_ONLY = "write-only";
+
+        /**
+         * All read/write operations are allowed on this table.
+         */
+        public static final String READ_WRITE = "read-write";
 
         private AdditionalInfo() {  }
     }
@@ -212,8 +300,25 @@ public class ShowTableResponse implements IndexedRecord {
     /**
      * 
      * @return List of descriptions for the respective tables in {@code
-     *         tableNames}. Values: COLLECTION, VIEW, REPLICATED, JOIN,
-     *         RESULT_TABLE.
+     *         tableNames}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#COLLECTION
+     *         COLLECTION}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#VIEW
+     *         VIEW}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#REPLICATED
+     *         REPLICATED}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#JOIN
+     *         JOIN}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#RESULT_TABLE
+     *         RESULT_TABLE}
+     *         </ul>
      * 
      */
     public List<List<String>> getTableDescriptions() {
@@ -223,8 +328,25 @@ public class ShowTableResponse implements IndexedRecord {
     /**
      * 
      * @param tableDescriptions  List of descriptions for the respective tables
-     *                           in {@code tableNames}. Values: COLLECTION,
-     *                           VIEW, REPLICATED, JOIN, RESULT_TABLE.
+     *                           in {@code tableNames}.
+     *                           Supported values:
+     *                           <ul>
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#COLLECTION
+     *                           COLLECTION}
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#VIEW
+     *                           VIEW}
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#REPLICATED
+     *                           REPLICATED}
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#JOIN
+     *                           JOIN}
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#RESULT_TABLE
+     *                           RESULT_TABLE}
+     *                           </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -324,7 +446,10 @@ public class ShowTableResponse implements IndexedRecord {
     /**
      * 
      * @return Additional information about the respective tables in {@code
-     *         tableNames}. Values: .
+     *         tableNames}.
+     *         Supported values:
+     *         <ul>
+     *         </ul>
      * 
      */
     public List<Map<String, String>> getAdditionalInfo() {
@@ -334,7 +459,10 @@ public class ShowTableResponse implements IndexedRecord {
     /**
      * 
      * @param additionalInfo  Additional information about the respective
-     *                        tables in {@code tableNames}. Values: .
+     *                        tables in {@code tableNames}.
+     *                        Supported values:
+     *                        <ul>
+     *                        </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

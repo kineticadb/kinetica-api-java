@@ -1,6 +1,5 @@
 package com.gpudb;
 
-import com.gpudb.protocol.GpudbResponse;
 import com.gpudb.protocol.ShowTableRequest;
 import com.gpudb.protocol.ShowTableResponse;
 import com.gpudb.protocol.ShowTypesRequest;
@@ -23,7 +22,12 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.IndexedRecord;
+import org.apache.avro.io.BinaryDecoder;
+import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.DecoderFactory;
+import org.apache.avro.io.EncoderFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.xerial.snappy.Snappy;
 
@@ -343,12 +347,58 @@ public abstract class GPUdbBase {
         }
 
         /**
-         * Gets the size in bytes of the encoded failed request.
+         * Gets the size in bytes of the encoded failed request, or -1 if the
+         * request was not yet encoded at the time of failure.
          *
          * @return  the size of the encoded request
          */
         public int getRequestSize() {
             return requestSize;
+        }
+    }
+
+    /**
+     * Pass-through OutputStream that counts the number of bytes written to it
+     * (for diagnostic purposes).
+     */
+    private static final class CountingOutputStream extends OutputStream {
+        private final OutputStream outputStream;
+        private int byteCount = 0;
+
+        public CountingOutputStream(OutputStream outputStream) {
+            this.outputStream = outputStream;
+        }
+
+        public int getByteCount() {
+            return byteCount;
+        }
+
+        @Override
+        public void close() throws IOException {
+            outputStream.close();
+        }
+
+        @Override
+        public void flush() throws IOException {
+            outputStream.flush();
+        }
+
+        @Override
+        public void write(byte[] b) throws IOException {
+            outputStream.write(b);
+            byteCount += b.length;
+        }
+
+        @Override
+        public void write(byte[] b, int off, int len) throws IOException {
+            outputStream.write(b, off, len);
+            byteCount += len;
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            outputStream.write(b);
+            byteCount++;
         }
     }
 
@@ -920,9 +970,9 @@ public abstract class GPUdbBase {
      * @param response  the response object
      * @return          the response object (same as {@code response} parameter)
      *
-     * @throws GPUdbException if an error occurs during the request
+     * @throws SubmitException if an error occurs while submitting the request
      */
-    public <T extends IndexedRecord> T submitRequest(String endpoint, IndexedRecord request, T response) throws GPUdbException {
+    public <T extends IndexedRecord> T submitRequest(String endpoint, IndexedRecord request, T response) throws SubmitException {
         return submitRequest(endpoint, request, response, false);
     }
 
@@ -944,9 +994,9 @@ public abstract class GPUdbBase {
      * @return                   the response object (same as {@code response}
      *                           parameter)
      *
-     * @throws GPUdbException if an error occurs during the request
+     * @throws SubmitException if an error occurs while submitting the request
      */
-    public <T extends IndexedRecord> T submitRequest(String endpoint, IndexedRecord request, T response, boolean enableCompression) throws GPUdbException {
+    public <T extends IndexedRecord> T submitRequest(String endpoint, IndexedRecord request, T response, boolean enableCompression) throws SubmitException {
         URL url = getURL();
         URL originalURL = url;
 
@@ -954,7 +1004,7 @@ public abstract class GPUdbBase {
             try {
                 return submitRequest(appendPathToURL(url, endpoint), request, response, enableCompression);
             } catch (MalformedURLException ex) {
-                throw new GPUdbException(ex.getMessage(), ex);
+                throw new GPUdbRuntimeException(ex.getMessage(), ex);
             } catch (SubmitException ex) {
                 if (urls.size() == 1) {
                     throw ex;
@@ -989,28 +1039,14 @@ public abstract class GPUdbBase {
      * @return                   the response object (same as {@code response}
      *                           parameter)
      *
-     * @throws GPUdbException if an error occurs while preparing the request
-     *
      * @throws SubmitException if an error occurs while submitting the request
      */
-    public <T extends IndexedRecord> T submitRequest(URL url, IndexedRecord request, T response, boolean enableCompression) throws GPUdbException {
-        enableCompression = enableCompression && useSnappy;
-        byte[] encodedRequest;
-
-        if (enableCompression) {
-            try {
-                encodedRequest = Snappy.compress(Avro.encode(request).array());
-            } catch (IOException ex) {
-                throw new GPUdbException(ex.getMessage(), ex);
-            }
-        } else {
-            encodedRequest = Avro.encode(request).array();
-        }
-
-        int requestSize = encodedRequest.length;
+    public <T extends IndexedRecord> T submitRequest(URL url, IndexedRecord request, T response, boolean enableCompression) throws SubmitException {
+        int requestSize = -1;
+        HttpURLConnection connection = null;
 
         try {
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            connection = (HttpURLConnection)url.openConnection();
             connection.setConnectTimeout(timeout);
             connection.setReadTimeout(timeout);
             connection.setRequestMethod("POST");
@@ -1020,62 +1056,91 @@ public abstract class GPUdbBase {
                 connection.setRequestProperty(entry.getKey(), entry.getValue());
             }
 
-            if (enableCompression) {
-                connection.setRequestProperty("Content-type", "application/x-snappy");
-            } else {
-                connection.setRequestProperty("Content-type", "application/octet-stream");
-            }
-
             if (authorization != null) {
-                connection.setRequestProperty("Authorization", authorization);
+                connection.setRequestProperty ("Authorization", authorization);
             }
 
-            connection.setFixedLengthStreamingMode(requestSize);
+            if (enableCompression && useSnappy) {
+                byte[] encodedRequest = Snappy.compress(Avro.encode(request).array());
+                requestSize = encodedRequest.length;
+                connection.setRequestProperty("Content-type", "application/x-snappy");
+                connection.setFixedLengthStreamingMode(requestSize);
 
-            try (OutputStream outputStream = connection.getOutputStream()) {
-                outputStream.write(encodedRequest);
+                try (OutputStream outputStream = connection.getOutputStream()) {
+                    outputStream.write(encodedRequest);
+                }
+            } else {
+                byte[] encodedRequest = Avro.encode(request).array();
+                requestSize = encodedRequest.length;
+                connection.setRequestProperty("Content-type", "application/octet-stream");
+                connection.setFixedLengthStreamingMode(requestSize);
+
+                try (OutputStream outputStream = connection.getOutputStream()) {
+                    outputStream.write(encodedRequest);
+                }
+
+                /*
+                connection.setRequestProperty("Content-type", "application/octet-stream");
+                connection.setChunkedStreamingMode(1024);
+
+                try (OutputStream outputStream = connection.getOutputStream()) {
+                    // Manually encode the request directly into the stream to
+                    // avoid allocation of intermediate buffers
+
+                    CountingOutputStream countingOutputStream = new CountingOutputStream(outputStream);
+                    BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(countingOutputStream, null);
+                    new GenericDatumWriter<>(request.getSchema()).write(request, encoder);
+                    encoder.flush();
+                    requestSize = countingOutputStream.getByteCount();
+                }
+                */
             }
-
-            byte[] buffer = new byte[1024];
 
             try (InputStream inputStream = connection.getResponseCode() < 400 ? connection.getInputStream() : connection.getErrorStream()) {
                 if (inputStream == null) {
                     throw new IOException("Server returned HTTP " + connection.getResponseCode() + " (" + connection.getResponseMessage() + ").");
                 }
 
-                int index = 0;
+                try {
+                    // Manually decode the GpudbResponse wrapper directly from
+                    // the stream to avoid allocation of intermediate buffers
 
-                while (true) {
-                    int count = inputStream.read(buffer, index, buffer.length - index);
+                    BinaryDecoder decoder = DecoderFactory.get().binaryDecoder(inputStream, null);
+                    String status = decoder.readString();
+                    String message = decoder.readString();
 
-                    if (count == -1) {
-                        break;
+                    if (status.equals("ERROR")) {
+                        throw new SubmitException(url, request, requestSize, message);
                     }
 
-                    index += count;
+                    // Skip over data_type field
 
-                    if (index == buffer.length) {
-                        buffer = Arrays.copyOf(buffer, buffer.length * 2);
+                    decoder.skipString();
+
+                    // Decode data field
+
+                    decoder.readInt();
+                    return new Avro.DatumReader<T>(response.getSchema()).read(response, decoder);
+                } finally {
+                    // Attempt to read any remaining data in the stream
+
+                    try {
+                        inputStream.skip(Long.MAX_VALUE);
+                    } catch (Exception ex) {
                     }
                 }
             }
-
-            connection.disconnect();
-            GpudbResponse gpudbResponse = new GpudbResponse();
-
-            try {
-                Avro.decode(gpudbResponse, ByteBuffer.wrap(buffer));
-            } catch (Exception ex) {
-                throw new SubmitException(url, request, requestSize, "Server returned invalid response.", ex);
-            }
-
-            if (gpudbResponse.getStatus().equals("ERROR")) {
-                throw new SubmitException(url, request, requestSize, gpudbResponse.getMessage());
-            }
-
-            return Avro.decode(response, gpudbResponse.getData());
-        } catch (IOException ex) {
+        } catch (SubmitException ex) {
+            throw ex;
+        } catch (Exception ex) {
             throw new SubmitException(url, request, requestSize, ex.getMessage(), ex);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.disconnect();
+                } catch (Exception ex) {
+                }
+            }
         }
     }
 
@@ -1092,8 +1157,10 @@ public abstract class GPUdbBase {
         URL originalURL = url;
 
         while (true) {
+            HttpURLConnection connection = null;
+
             try {
-                HttpURLConnection connection = (HttpURLConnection)getURL().openConnection();
+                connection = (HttpURLConnection)getURL().openConnection();
                 connection.setConnectTimeout(timeout);
                 connection.setReadTimeout(timeout);
                 connection.setRequestMethod("GET");
@@ -1114,13 +1181,9 @@ public abstract class GPUdbBase {
                         throw new IOException("Server returned HTTP " + connection.getResponseCode() + " (" + connection.getResponseMessage() + ").");
                     }
 
-                    while (true) {
-                        int count = inputStream.read(buffer, index, buffer.length - index);
+                    int count;
 
-                        if (count == -1) {
-                            break;
-                        }
-
+                    while ((count = inputStream.read(buffer, index, buffer.length - index)) > -1) {
                         index += count;
 
                         if (index == buffer.length) {
@@ -1129,7 +1192,6 @@ public abstract class GPUdbBase {
                     }
                 }
 
-                connection.disconnect();
                 String response = new String(Arrays.copyOf(buffer, index));
 
                 if (!response.equals("Kinetica is running!")) {
@@ -1147,6 +1209,13 @@ public abstract class GPUdbBase {
 
                     if (url == originalURL) {
                         throw new GPUdbException(ex.getMessage(), ex);
+                    }
+                }
+            } finally {
+                if (connection != null) {
+                    try {
+                        connection.disconnect();
+                    } catch (Exception ex) {
                     }
                 }
             }

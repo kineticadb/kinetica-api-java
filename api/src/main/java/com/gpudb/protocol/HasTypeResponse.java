@@ -38,8 +38,14 @@ public class HasTypeResponse implements IndexedRecord {
 
 
     /**
-     * Indicates whether the type exists or not. Values: true, false.
-
+     * Indicates whether the type exists or not.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.HasTypeResponse.TypeExists#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.HasTypeResponse.TypeExists#FALSE
+     * FALSE}
+     * </ul>
      * A set of string constants for the parameter {@code typeExists}.
      */
     public static final class TypeExists {
@@ -82,7 +88,14 @@ public class HasTypeResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates whether the type exists or not. Values: true, false.
+     * @return Indicates whether the type exists or not.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.HasTypeResponse.TypeExists#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.HasTypeResponse.TypeExists#FALSE FALSE}
+     *         </ul>
      * 
      */
     public boolean getTypeExists() {
@@ -91,8 +104,16 @@ public class HasTypeResponse implements IndexedRecord {
 
     /**
      * 
-     * @param typeExists  Indicates whether the type exists or not. Values:
-     *                    true, false.
+     * @param typeExists  Indicates whether the type exists or not.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasTypeResponse.TypeExists#TRUE
+     *                    TRUE}
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasTypeResponse.TypeExists#FALSE
+     *                    FALSE}
+     *                    </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

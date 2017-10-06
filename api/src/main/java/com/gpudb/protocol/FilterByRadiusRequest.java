@@ -27,9 +27,7 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * For track data, all track points that lie within the circle plus one point
  * on either side of the circle (if the track goes beyond the circle) will be
- * included in the result. For shapes, e.g. polygons, all polygons that
- * intersect the circle will be included (even if none of the points of the
- * polygon fall within the circle).
+ * included in the result.
  */
 public class FilterByRadiusRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

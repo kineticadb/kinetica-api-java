@@ -69,8 +69,17 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * Identifies which of {@code recordsToInsert} and {@code
-     * recordsToInsertStr} should be used. Values: binary, json.
-
+     * recordsToInsertStr} should be used.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.RecordEncoding#BINARY BINARY}
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.RecordEncoding#JSON JSON}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.RecordEncoding#BINARY
+     * BINARY}.
      * A set of string constants for the parameter {@code recordEncoding}.
      */
     public static final class RecordEncoding {
@@ -84,23 +93,45 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
-     *         <li> global_expression: An optional global expression to reduce
-     * the search space of the predicates listed in {@code expressions}.
-     *         <li> bypass_safety_checks: When set to 'true', all predicates
-     * are available for primary key updates.  Keep in mind that it is possible
-     * to destroy data in this case, since a single predicate may match
-     * multiple objects (potentially all of records of a table), and then
-     * updating all of those records to have the same primary key will, due to
-     * the primary key uniqueness constraints, effectively delete all but one
-     * of those updated records. Values: true, false.
-     * <p>
-     *         <li> update_on_existing_pk: Can be used to customize behavior
-     * when the updated primary key value already exists, as described in
-     * {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
-     * Values: true, false.
-     * <p>
-     *         <li> record_id: ID of a single record to be updated (returned in
-     * the call to {@link
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#GLOBAL_EXPRESSION
+     * GLOBAL_EXPRESSION}: An optional global expression to reduce the search
+     * space of the predicates listed in {@code expressions}.
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#BYPASS_SAFETY_CHECKS
+     * BYPASS_SAFETY_CHECKS}: When set to 'true', all predicates are available
+     * for primary key updates.  Keep in mind that it is possible to destroy
+     * data in this case, since a single predicate may match multiple objects
+     * (potentially all of records of a table), and then updating all of those
+     * records to have the same primary key will, due to the primary key
+     * uniqueness constraints, effectively delete all but one of those updated
+     * records.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
+     * UPDATE_ON_EXISTING_PK}: Can be used to customize behavior when the
+     * updated primary key value already exists, as described in {@link
+     * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#RECORD_ID RECORD_ID}:
+     * ID of a single record to be updated (returned in the call to {@link
      * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} or {@link
      * com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}).
      * </ul>
@@ -121,7 +152,16 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
          * (potentially all of records of a table), and then updating all of
          * those records to have the same primary key will, due to the primary
          * key uniqueness constraints, effectively delete all but one of those
-         * updated records. Values: true, false.
+         * updated records.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
          */
         public static final String BYPASS_SAFETY_CHECKS = "bypass_safety_checks";
         public static final String TRUE = "true";
@@ -130,8 +170,16 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
         /**
          * Can be used to customize behavior when the updated primary key value
          * already exists, as described in {@link
-         * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}. Values:
-         * true, false.
+         * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
          */
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
 
@@ -190,25 +238,56 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                         table.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> global_expression: An optional global
-     *                 expression to reduce the search space of the predicates
-     *                 listed in {@code expressions}.
-     *                         <li> bypass_safety_checks: When set to 'true',
-     *                 all predicates are available for primary key updates.
-     *                 Keep in mind that it is possible to destroy data in this
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#GLOBAL_EXPRESSION
+     *                 GLOBAL_EXPRESSION}: An optional global expression to
+     *                 reduce the search space of the predicates listed in
+     *                 {@code expressions}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#BYPASS_SAFETY_CHECKS
+     *                 BYPASS_SAFETY_CHECKS}: When set to 'true', all
+     *                 predicates are available for primary key updates.  Keep
+     *                 in mind that it is possible to destroy data in this
      *                 case, since a single predicate may match multiple
      *                 objects (potentially all of records of a table), and
      *                 then updating all of those records to have the same
      *                 primary key will, due to the primary key uniqueness
      *                 constraints, effectively delete all but one of those
-     *                 updated records. Values: true, false.
-     *                         <li> update_on_existing_pk: Can be used to
-     *                 customize behavior when the updated primary key value
-     *                 already exists, as described in {@link
+     *                 updated records.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
+     *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
+     *                 behavior when the updated primary key value already
+     *                 exists, as described in {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
-     *                 Values: true, false.
-     *                         <li> record_id: ID of a single record to be
-     *                 updated (returned in the call to {@link
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#RECORD_ID
+     *                 RECORD_ID}: ID of a single record to be updated
+     *                 (returned in the call to {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}
      *                 or {@link
      *                 com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}).
@@ -252,28 +331,70 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                            not affect any objects.
      * @param recordEncoding  Identifies which of {@code recordsToInsert} and
      *                        {@code recordsToInsertStr} should be used.
-     *                        Values: binary, json.
+     *                        Supported values:
+     *                        <ul>
+     *                                <li> {@link
+     *                        com.gpudb.protocol.RawUpdateRecordsRequest.RecordEncoding#BINARY
+     *                        BINARY}
+     *                                <li> {@link
+     *                        com.gpudb.protocol.RawUpdateRecordsRequest.RecordEncoding#JSON
+     *                        JSON}
+     *                        </ul>
+     *                        The default value is {@link
+     *                        com.gpudb.protocol.RawUpdateRecordsRequest.RecordEncoding#BINARY
+     *                        BINARY}.
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> global_expression: An optional global
-     *                 expression to reduce the search space of the predicates
-     *                 listed in {@code expressions}.
-     *                         <li> bypass_safety_checks: When set to 'true',
-     *                 all predicates are available for primary key updates.
-     *                 Keep in mind that it is possible to destroy data in this
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#GLOBAL_EXPRESSION
+     *                 GLOBAL_EXPRESSION}: An optional global expression to
+     *                 reduce the search space of the predicates listed in
+     *                 {@code expressions}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#BYPASS_SAFETY_CHECKS
+     *                 BYPASS_SAFETY_CHECKS}: When set to 'true', all
+     *                 predicates are available for primary key updates.  Keep
+     *                 in mind that it is possible to destroy data in this
      *                 case, since a single predicate may match multiple
      *                 objects (potentially all of records of a table), and
      *                 then updating all of those records to have the same
      *                 primary key will, due to the primary key uniqueness
      *                 constraints, effectively delete all but one of those
-     *                 updated records. Values: true, false.
-     *                         <li> update_on_existing_pk: Can be used to
-     *                 customize behavior when the updated primary key value
-     *                 already exists, as described in {@link
+     *                 updated records.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
+     *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
+     *                 behavior when the updated primary key value already
+     *                 exists, as described in {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
-     *                 Values: true, false.
-     *                         <li> record_id: ID of a single record to be
-     *                 updated (returned in the call to {@link
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#RECORD_ID
+     *                 RECORD_ID}: ID of a single record to be updated
+     *                 (returned in the call to {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}
      *                 or {@link
      *                 com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}).
@@ -426,7 +547,19 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
     /**
      * 
      * @return Identifies which of {@code recordsToInsert} and {@code
-     *         recordsToInsertStr} should be used. Values: binary, json.
+     *         recordsToInsertStr} should be used.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.RecordEncoding#BINARY
+     *         BINARY}
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.RecordEncoding#JSON
+     *         JSON}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.RecordEncoding#BINARY
+     *         BINARY}.
      * 
      */
     public String getRecordEncoding() {
@@ -437,7 +570,18 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      * 
      * @param recordEncoding  Identifies which of {@code recordsToInsert} and
      *                        {@code recordsToInsertStr} should be used.
-     *                        Values: binary, json.
+     *                        Supported values:
+     *                        <ul>
+     *                                <li> {@link
+     *                        com.gpudb.protocol.RawUpdateRecordsRequest.RecordEncoding#BINARY
+     *                        BINARY}
+     *                                <li> {@link
+     *                        com.gpudb.protocol.RawUpdateRecordsRequest.RecordEncoding#JSON
+     *                        JSON}
+     *                        </ul>
+     *                        The default value is {@link
+     *                        com.gpudb.protocol.RawUpdateRecordsRequest.RecordEncoding#BINARY
+     *                        BINARY}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -451,24 +595,47 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
-     *                 <li> global_expression: An optional global expression to
-     *         reduce the search space of the predicates listed in {@code
-     *         expressions}.
-     *                 <li> bypass_safety_checks: When set to 'true', all
-     *         predicates are available for primary key updates.  Keep in mind
-     *         that it is possible to destroy data in this case, since a single
-     *         predicate may match multiple objects (potentially all of records
-     *         of a table), and then updating all of those records to have the
-     *         same primary key will, due to the primary key uniqueness
-     *         constraints, effectively delete all but one of those updated
-     *         records. Values: true, false.
-     *                 <li> update_on_existing_pk: Can be used to customize
-     *         behavior when the updated primary key value already exists, as
-     *         described in {@link
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#GLOBAL_EXPRESSION
+     *         GLOBAL_EXPRESSION}: An optional global expression to reduce the
+     *         search space of the predicates listed in {@code expressions}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#BYPASS_SAFETY_CHECKS
+     *         BYPASS_SAFETY_CHECKS}: When set to 'true', all predicates are
+     *         available for primary key updates.  Keep in mind that it is
+     *         possible to destroy data in this case, since a single predicate
+     *         may match multiple objects (potentially all of records of a
+     *         table), and then updating all of those records to have the same
+     *         primary key will, due to the primary key uniqueness constraints,
+     *         effectively delete all but one of those updated records.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
+     *         UPDATE_ON_EXISTING_PK}: Can be used to customize behavior when
+     *         the updated primary key value already exists, as described in
+     *         {@link
      *         com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
-     *         Values: true, false.
-     *                 <li> record_id: ID of a single record to be updated
-     *         (returned in the call to {@link
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#RECORD_ID
+     *         RECORD_ID}: ID of a single record to be updated (returned in the
+     *         call to {@link
      *         com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} or
      *         {@link
      *         com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}).
@@ -483,25 +650,56 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
-     *                         <li> global_expression: An optional global
-     *                 expression to reduce the search space of the predicates
-     *                 listed in {@code expressions}.
-     *                         <li> bypass_safety_checks: When set to 'true',
-     *                 all predicates are available for primary key updates.
-     *                 Keep in mind that it is possible to destroy data in this
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#GLOBAL_EXPRESSION
+     *                 GLOBAL_EXPRESSION}: An optional global expression to
+     *                 reduce the search space of the predicates listed in
+     *                 {@code expressions}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#BYPASS_SAFETY_CHECKS
+     *                 BYPASS_SAFETY_CHECKS}: When set to 'true', all
+     *                 predicates are available for primary key updates.  Keep
+     *                 in mind that it is possible to destroy data in this
      *                 case, since a single predicate may match multiple
      *                 objects (potentially all of records of a table), and
      *                 then updating all of those records to have the same
      *                 primary key will, due to the primary key uniqueness
      *                 constraints, effectively delete all but one of those
-     *                 updated records. Values: true, false.
-     *                         <li> update_on_existing_pk: Can be used to
-     *                 customize behavior when the updated primary key value
-     *                 already exists, as described in {@link
+     *                 updated records.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
+     *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
+     *                 behavior when the updated primary key value already
+     *                 exists, as described in {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
-     *                 Values: true, false.
-     *                         <li> record_id: ID of a single record to be
-     *                 updated (returned in the call to {@link
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#RECORD_ID
+     *                 RECORD_ID}: ID of a single record to be updated
+     *                 (returned in the call to {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}
      *                 or {@link
      *                 com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}).

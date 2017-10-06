@@ -38,6 +38,7 @@ public class VisualizeImageLabelsRequest implements IndexedRecord {
                 .name("fillColor").type().stringType().noDefault()
                 .name("leaderXColumnName").type().stringType().noDefault()
                 .name("leaderYColumnName").type().stringType().noDefault()
+                .name("filter").type().stringType().noDefault()
                 .name("minX").type().doubleType().noDefault()
                 .name("maxX").type().doubleType().noDefault()
                 .name("minY").type().doubleType().noDefault()
@@ -96,6 +97,7 @@ public class VisualizeImageLabelsRequest implements IndexedRecord {
     private String fillColor;
     private String leaderXColumnName;
     private String leaderYColumnName;
+    private String filter;
     private double minX;
     private double maxX;
     private double minY;
@@ -124,11 +126,12 @@ public class VisualizeImageLabelsRequest implements IndexedRecord {
         fillColor = "";
         leaderXColumnName = "";
         leaderYColumnName = "";
+        filter = "";
         projection = "";
         options = new LinkedHashMap<>();
     }
 
-    public VisualizeImageLabelsRequest(String tableName, String xColumnName, String yColumnName, String xOffset, String yOffset, String textString, String font, String textColor, String textAngle, String textScale, String drawBox, String drawLeader, String lineWidth, String lineColor, String fillColor, String leaderXColumnName, String leaderYColumnName, double minX, double maxX, double minY, double maxY, int width, int height, String projection, Map<String, String> options) {
+    public VisualizeImageLabelsRequest(String tableName, String xColumnName, String yColumnName, String xOffset, String yOffset, String textString, String font, String textColor, String textAngle, String textScale, String drawBox, String drawLeader, String lineWidth, String lineColor, String fillColor, String leaderXColumnName, String leaderYColumnName, String filter, double minX, double maxX, double minY, double maxY, int width, int height, String projection, Map<String, String> options) {
         this.tableName = (tableName == null) ? "" : tableName;
         this.xColumnName = (xColumnName == null) ? "" : xColumnName;
         this.yColumnName = (yColumnName == null) ? "" : yColumnName;
@@ -146,6 +149,7 @@ public class VisualizeImageLabelsRequest implements IndexedRecord {
         this.fillColor = (fillColor == null) ? "" : fillColor;
         this.leaderXColumnName = (leaderXColumnName == null) ? "" : leaderXColumnName;
         this.leaderYColumnName = (leaderYColumnName == null) ? "" : leaderYColumnName;
+        this.filter = (filter == null) ? "" : filter;
         this.minX = minX;
         this.maxX = maxX;
         this.minY = minY;
@@ -309,6 +313,15 @@ public class VisualizeImageLabelsRequest implements IndexedRecord {
         return this;
     }
 
+    public String getFilter() {
+        return filter;
+    }
+
+    public VisualizeImageLabelsRequest setFilter(String filter) {
+        this.filter = (filter == null) ? "" : filter;
+        return this;
+    }
+
     public double getMinX() {
         return minX;
     }
@@ -441,27 +454,30 @@ public class VisualizeImageLabelsRequest implements IndexedRecord {
                 return this.leaderYColumnName;
 
             case 17:
-                return this.minX;
+                return this.filter;
 
             case 18:
-                return this.maxX;
+                return this.minX;
 
             case 19:
-                return this.minY;
+                return this.maxX;
 
             case 20:
-                return this.maxY;
+                return this.minY;
 
             case 21:
-                return this.width;
+                return this.maxY;
 
             case 22:
-                return this.height;
+                return this.width;
 
             case 23:
-                return this.projection;
+                return this.height;
 
             case 24:
+                return this.projection;
+
+            case 25:
                 return this.options;
 
             default:
@@ -542,34 +558,38 @@ public class VisualizeImageLabelsRequest implements IndexedRecord {
                 break;
 
             case 17:
-                this.minX = (Double)value;
+                this.filter = (String)value;
                 break;
 
             case 18:
-                this.maxX = (Double)value;
+                this.minX = (Double)value;
                 break;
 
             case 19:
-                this.minY = (Double)value;
+                this.maxX = (Double)value;
                 break;
 
             case 20:
-                this.maxY = (Double)value;
+                this.minY = (Double)value;
                 break;
 
             case 21:
-                this.width = (Integer)value;
+                this.maxY = (Double)value;
                 break;
 
             case 22:
-                this.height = (Integer)value;
+                this.width = (Integer)value;
                 break;
 
             case 23:
-                this.projection = (String)value;
+                this.height = (Integer)value;
                 break;
 
             case 24:
+                this.projection = (String)value;
+                break;
+
+            case 25:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -608,6 +628,7 @@ public class VisualizeImageLabelsRequest implements IndexedRecord {
                  && this.fillColor.equals( that.fillColor )
                  && this.leaderXColumnName.equals( that.leaderXColumnName )
                  && this.leaderYColumnName.equals( that.leaderYColumnName )
+                 && this.filter.equals( that.filter )
                  && ( (Double)this.minX ).equals( (Double)that.minX )
                  && ( (Double)this.maxX ).equals( (Double)that.maxX )
                  && ( (Double)this.minY ).equals( (Double)that.minY )
@@ -692,6 +713,10 @@ public class VisualizeImageLabelsRequest implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.leaderYColumnName ) );
         builder.append( ", " );
+        builder.append( gd.toString( "filter" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.filter ) );
+        builder.append( ", " );
         builder.append( gd.toString( "minX" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.minX ) );
@@ -749,6 +774,7 @@ public class VisualizeImageLabelsRequest implements IndexedRecord {
         hashCode = (31 * hashCode) + this.fillColor.hashCode();
         hashCode = (31 * hashCode) + this.leaderXColumnName.hashCode();
         hashCode = (31 * hashCode) + this.leaderYColumnName.hashCode();
+        hashCode = (31 * hashCode) + this.filter.hashCode();
         hashCode = (31 * hashCode) + ((Double)this.minX).hashCode();
         hashCode = (31 * hashCode) + ((Double)this.maxX).hashCode();
         hashCode = (31 * hashCode) + ((Double)this.minY).hashCode();

@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.avro.Schema;
+import org.apache.avro.UnresolvedUnionException;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
@@ -100,7 +101,7 @@ public final class Avro {
     /**
      * Avro reader for generic objects that uses String for string values.
      */
-    private static final class DatumReader<T> extends GenericDatumReader<T> {
+    static final class DatumReader<T> extends GenericDatumReader<T> {
         public DatumReader(Schema schema) {
             super(schema);
         }
@@ -578,7 +579,9 @@ public final class Avro {
                 stream.close();
                 encodedObjects.add(ByteBuffer.wrap(stream.toByteArray()));
             }
-        } catch (ClassCastException | IOException ex) {
+        } catch (ClassCastException | UnresolvedUnionException ex) {
+            throw new GPUdbException("Could not encode object: Field has incorrect data type.", ex);
+        } catch (IOException ex) {
             if (ex.getMessage() == null) {
                 throw new GPUdbException("Could not encode object", ex);
             } else {
