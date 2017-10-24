@@ -39,10 +39,12 @@ import org.apache.avro.generic.IndexedRecord;
  * requires that all the data being ordered resides on the same processing
  * node, so it won't make sense to use {@code order_by} without moving average.
  * <p>
- * Also, a projection can be created with a different shard key than the source
- * table.  By specifying {@code shard_key}, the projection will be sharded
- * according to the specified columns, regardless of how the source table is
- * sharded.  The source table can even be unsharded or replicated.
+ * Also, a projection can be created with a different <a
+ * href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
+ * key</a> than the source table.  By specifying {@code shard_key}, the
+ * projection will be sharded according to the specified columns, regardless of
+ * how the source table is sharded.  The source table can even be unsharded or
+ * replicated.
  */
 public class CreateProjectionRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

@@ -17,7 +17,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#alterTable(AlterTableRequest)}.
  * <p>
- * Apply various modifications to a table, view, or collection.  The availble
+ * Apply various modifications to a table, view, or collection.  The available
  * modifications include the following:
  * <p>
  * Create or delete an index on a particular column. This can speed up certain

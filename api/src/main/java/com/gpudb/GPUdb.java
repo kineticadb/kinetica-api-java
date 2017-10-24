@@ -914,7 +914,10 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * Any column(s) can be grouped on, and all column types except
      * unrestricted-length strings may be used for computing applicable
-     * aggregates.
+     * aggregates; columns marked as <a
+     * href="../../../../concepts/types.html#data-handling"
+     * target="_top">store-only</a> are unable to be used in grouping or
+     * aggregation.
      * <p>
      * The results can be paged via the {@code offset} and {@code limit}
      * parameters. For example, to get 10 groups with the largest counts the
@@ -940,14 +943,19 @@ public class GPUdb extends GPUdbBase {
      * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
      * schemas documentation</a>.
      * <p>
-     * If a {@code result_table} name is specified in the options, the results
-     * are stored in a new table with that name.  No results are returned in
-     * the response.  If the source table's <a
+     * If a {@code result_table} name is specified in the {@code options}, the
+     * results are stored in a new table with that name--no results are
+     * returned in the response.  Both the table name and resulting column
+     * names must adhere to <a href="../../../../concepts/tables.html#table"
+     * target="_top">standard naming conventions</a>; column/aggregation
+     * expressions will need to be aliased.  If the source table's <a
      * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
      * key</a> is used as the grouping column(s), the result table will be
      * sharded, in all other cases it will be replicated.  Sorting will
      * properly function only if the result table is replicated or if there is
      * only one processing node and should not be relied upon in other cases.
+     * Not available when any of the values of {@code columnNames} is an
+     * unrestricted-length string.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -975,7 +983,10 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * Any column(s) can be grouped on, and all column types except
      * unrestricted-length strings may be used for computing applicable
-     * aggregates.
+     * aggregates; columns marked as <a
+     * href="../../../../concepts/types.html#data-handling"
+     * target="_top">store-only</a> are unable to be used in grouping or
+     * aggregation.
      * <p>
      * The results can be paged via the {@code offset} and {@code limit}
      * parameters. For example, to get 10 groups with the largest counts the
@@ -1001,14 +1012,19 @@ public class GPUdb extends GPUdbBase {
      * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
      * schemas documentation</a>.
      * <p>
-     * If a {@code result_table} name is specified in the options, the results
-     * are stored in a new table with that name.  No results are returned in
-     * the response.  If the source table's <a
+     * If a {@code result_table} name is specified in the {@code options}, the
+     * results are stored in a new table with that name--no results are
+     * returned in the response.  Both the table name and resulting column
+     * names must adhere to <a href="../../../../concepts/tables.html#table"
+     * target="_top">standard naming conventions</a>; column/aggregation
+     * expressions will need to be aliased.  If the source table's <a
      * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
      * key</a> is used as the grouping column(s), the result table will be
      * sharded, in all other cases it will be replicated.  Sorting will
      * properly function only if the result table is replicated or if there is
      * only one processing node and should not be relied upon in other cases.
+     * Not available when any of the values of {@code columnNames} is an
+     * unrestricted-length string.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -1043,7 +1059,10 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * Any column(s) can be grouped on, and all column types except
      * unrestricted-length strings may be used for computing applicable
-     * aggregates.
+     * aggregates; columns marked as <a
+     * href="../../../../concepts/types.html#data-handling"
+     * target="_top">store-only</a> are unable to be used in grouping or
+     * aggregation.
      * <p>
      * The results can be paged via the {@code offset} and {@code limit}
      * parameters. For example, to get 10 groups with the largest counts the
@@ -1069,21 +1088,24 @@ public class GPUdb extends GPUdbBase {
      * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
      * schemas documentation</a>.
      * <p>
-     * If a {@code result_table} name is specified in the options, the results
-     * are stored in a new table with that name.  No results are returned in
-     * the response.  If the source table's <a
+     * If a {@code result_table} name is specified in the {@code options}, the
+     * results are stored in a new table with that name--no results are
+     * returned in the response.  Both the table name and resulting column
+     * names must adhere to <a href="../../../../concepts/tables.html#table"
+     * target="_top">standard naming conventions</a>; column/aggregation
+     * expressions will need to be aliased.  If the source table's <a
      * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
      * key</a> is used as the grouping column(s), the result table will be
      * sharded, in all other cases it will be replicated.  Sorting will
      * properly function only if the result table is replicated or if there is
      * only one processing node and should not be relied upon in other cases.
+     * Not available when any of the values of {@code columnNames} is an
+     * unrestricted-length string.
      * 
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table/view/collection.
      * @param columnNames  List of one or more column names, expressions, and
-     *                     aggregate expressions. Must include at least one
-     *                     'grouping' column or expression.  If no aggregate is
-     *                     included, count(*) will be computed as a default.
+     *                     aggregate expressions.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
      *                the results).  The minimum allowed value is 0. The
@@ -1166,8 +1188,8 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
-     *                 table specified in {result_table}@{key of input.options}
-     *                 will be persisted as a regular table (it will not be
+     *                 table specified in {@code result_table} will be
+     *                 persisted as a regular table (it will not be
      *                 automatically cleared unless a {@code ttl} is provided,
      *                 and the table data can be modified in subsequent
      *                 operations). If {@code false} (the default) then the
@@ -1481,29 +1503,42 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Calculates the requested statistics of a given column in a given table.
+     * Calculates the requested statistics of the given column(s) in a given
+     * table.
      * <p>
-     * The available statistics are count (number of total objects), mean, stdv
-     * (standard deviation), variance, skew, kurtosis, sum, sum_of_squares,
-     * min, max, weighted_average, cardinality (unique count), estimated
-     * cardinality, percentile and percentile_rank.
+     * The available statistics are {@code count} (number of total objects),
+     * {@code mean}, {@code stdv} (standard deviation), {@code variance},
+     * {@code skew}, {@code kurtosis}, {@code sum}, {@code min}, {@code max},
+     * {@code weighted_average}, {@code cardinality} (unique count), {@code
+     * estimated_cardinality}, {@code percentile} and {@code percentile_rank}.
      * <p>
      * Estimated cardinality is calculated by using the hyperloglog
      * approximation technique.
      * <p>
-     * Percentiles and percentile_ranks are approximate and are calculated
-     * using the t-digest algorithm. They must include the desired
-     * percentile/percentile_rank. To compute multiple percentiles each value
-     * must be specified separately (i.e.
+     * Percentiles and percentile ranks are approximate and are calculated
+     * using the t-digest algorithm. They must include the desired {@code
+     * percentile}/{@code percentile_rank}. To compute multiple percentiles
+     * each value must be specified separately (i.e.
      * 'percentile(75.0),percentile(99.0),percentile_rank(1234.56),percentile_rank(-5)').
      * <p>
-     * The weighted average statistic requires a weight_attribute to be
-     * specified in {@code options}. The weighted average is then defined as
-     * the sum of the products of {@code columnName} times the weight attribute
-     * divided by the sum of the weight attribute.
+     * The weighted average statistic requires a {@code weight_column_name} to
+     * be specified in {@code options}. The weighted average is then defined as
+     * the sum of the products of {@code columnName} times the {@code
+     * weight_column_name} values divided by the sum of the {@code
+     * weight_column_name} values.
      * <p>
-     * The response includes a list of the statistics requested along with the
-     * count of the number of items in the given set.
+     * Additional columns can be used in the calculation of statistics via the
+     * {@code additional_column_names} option.  Values in these columns will be
+     * included in the overall aggregate calculation--individual aggregates
+     * will not be calculated per additional column.  For instance, requesting
+     * the {@code count} & {@code mean} of {@code columnName} x and {@code
+     * additional_column_names} y & z, where x holds the numbers 1-10, y holds
+     * 11-20, and z holds 21-30, would return the total number of x, y, & z
+     * values (30), and the single average value across all x, y, & z values
+     * (15.5).
+     * <p>
+     * The response includes a list of key/value pairs of each statistic
+     * requested and its corresponding value.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -1524,34 +1559,47 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Calculates the requested statistics of a given column in a given table.
+     * Calculates the requested statistics of the given column(s) in a given
+     * table.
      * <p>
-     * The available statistics are count (number of total objects), mean, stdv
-     * (standard deviation), variance, skew, kurtosis, sum, sum_of_squares,
-     * min, max, weighted_average, cardinality (unique count), estimated
-     * cardinality, percentile and percentile_rank.
+     * The available statistics are {@code count} (number of total objects),
+     * {@code mean}, {@code stdv} (standard deviation), {@code variance},
+     * {@code skew}, {@code kurtosis}, {@code sum}, {@code min}, {@code max},
+     * {@code weighted_average}, {@code cardinality} (unique count), {@code
+     * estimated_cardinality}, {@code percentile} and {@code percentile_rank}.
      * <p>
      * Estimated cardinality is calculated by using the hyperloglog
      * approximation technique.
      * <p>
-     * Percentiles and percentile_ranks are approximate and are calculated
-     * using the t-digest algorithm. They must include the desired
-     * percentile/percentile_rank. To compute multiple percentiles each value
-     * must be specified separately (i.e.
+     * Percentiles and percentile ranks are approximate and are calculated
+     * using the t-digest algorithm. They must include the desired {@code
+     * percentile}/{@code percentile_rank}. To compute multiple percentiles
+     * each value must be specified separately (i.e.
      * 'percentile(75.0),percentile(99.0),percentile_rank(1234.56),percentile_rank(-5)').
      * <p>
-     * The weighted average statistic requires a weight_attribute to be
-     * specified in {@code options}. The weighted average is then defined as
-     * the sum of the products of {@code columnName} times the weight attribute
-     * divided by the sum of the weight attribute.
+     * The weighted average statistic requires a {@code weight_column_name} to
+     * be specified in {@code options}. The weighted average is then defined as
+     * the sum of the products of {@code columnName} times the {@code
+     * weight_column_name} values divided by the sum of the {@code
+     * weight_column_name} values.
      * <p>
-     * The response includes a list of the statistics requested along with the
-     * count of the number of items in the given set.
+     * Additional columns can be used in the calculation of statistics via the
+     * {@code additional_column_names} option.  Values in these columns will be
+     * included in the overall aggregate calculation--individual aggregates
+     * will not be calculated per additional column.  For instance, requesting
+     * the {@code count} & {@code mean} of {@code columnName} x and {@code
+     * additional_column_names} y & z, where x holds the numbers 1-10, y holds
+     * 11-20, and z holds 21-30, would return the total number of x, y, & z
+     * values (30), and the single average value across all x, y, & z values
+     * (15.5).
+     * <p>
+     * The response includes a list of key/value pairs of each statistic
+     * requested and its corresponding value.
      * 
      * @param tableName  Name of the table on which the statistics operation
      *                   will be performed.
-     * @param columnName  Name of the column for which the statistics are to be
-     *                    calculated.
+     * @param columnName  Name of the primary column for which the statistics
+     *                    are to be calculated.
      * @param stats  Comma separated list of the statistics to calculate, e.g.
      *               "sum,mean".
      *               Supported values:
@@ -1559,7 +1607,7 @@ public class GPUdb extends GPUdbBase {
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#COUNT
      *               COUNT}: Number of objects (independent of the given
-     *               column).
+     *               column(s)).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#MEAN
      *               MEAN}: Arithmetic mean (average), equivalent to sum/count.
@@ -1578,39 +1626,37 @@ public class GPUdb extends GPUdbBase {
      *               KURTOSIS}: Kurtosis (fourth standardized moment).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#SUM
-     *               SUM}: Sum of all values in the column.
-     *                       <li> {@link
-     *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#SUM_OF_SQUARES
-     *               SUM_OF_SQUARES}: Sum of the squares of all values in the
-     *               column.
+     *               SUM}: Sum of all values in the column(s).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#MIN
-     *               MIN}: Minimum value of the column.
+     *               MIN}: Minimum value of the column(s).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#MAX
-     *               MAX}: Maximum value of the column.
+     *               MAX}: Maximum value of the column(s).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#WEIGHTED_AVERAGE
      *               WEIGHTED_AVERAGE}: Weighted arithmetic mean (using the
-     *               option 'weight_column_name' as the weighting column).
+     *               option {@code weight_column_name} as the weighting
+     *               column).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#CARDINALITY
-     *               CARDINALITY}: Number of unique values in the column.
+     *               CARDINALITY}: Number of unique values in the column(s).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#ESTIMATED_CARDINALITY
      *               ESTIMATED_CARDINALITY}: Estimate (via hyperloglog
-     *               technique) of the number of unique values in the column.
+     *               technique) of the number of unique values in the
+     *               column(s).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE
      *               PERCENTILE}: Estimate (via t-digest) of the given
-     *               percentile of the column (percentile(50.0) will be an
+     *               percentile of the column(s) (percentile(50.0) will be an
      *               approximation of the median).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE_RANK
      *               PERCENTILE_RANK}: Estimate (via t-digest) of the
-     *               percentile rank of the given value in the column (if the
-     *               given value is the median of the column,
-     *               percentile_rank([median]) will return approximately 50.0).
+     *               percentile rank of the given value in the column(s) (if
+     *               the given value is the median of the column(s),
+     *               percentile_rank(<median>) will return approximately 50.0).
      *               </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -1618,7 +1664,10 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.AggregateStatisticsRequest.Options#ADDITIONAL_COLUMN_NAMES
      *                 ADDITIONAL_COLUMN_NAMES}: A list of comma separated
      *                 column names over which statistics can be accumulated
-     *                 along with the primary column.
+     *                 along with the primary column.  All columns listed and
+     *                 {@code columnName} must be of the same type.  Must not
+     *                 include the column specified in {@code columnName} and
+     *                 no column can be listed twice.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateStatisticsRequest.Options#WEIGHT_COLUMN_NAME
      *                 WEIGHT_COLUMN_NAME}: Name of column used as weighting
@@ -1767,10 +1816,16 @@ public class GPUdb extends GPUdbBase {
      * {@code columnName}) of a particular table (specified by {@code
      * tableName}). If {@code columnName} is a numeric column the values will
      * be in {@code binaryEncodedResponse}. Otherwise if {@code columnName} is
-     * a string column the values will be in {@code jsonEncodedResponse}.
-     * {@code offset} and {@code limit} are used to page through the results if
-     * there are large numbers of unique values. To get the first 10 unique
-     * values sorted in descending order {@code options} would be::
+     * a string column the values will be in {@code jsonEncodedResponse}.  The
+     * results can be paged via the {@code offset} and {@code limit}
+     * parameters.
+     * <p>
+     * Columns marked as <a
+     * href="../../../../concepts/types.html#data-handling"
+     * target="_top">store-only</a> are unable to be used with this function.
+     * <p>
+     * To get the first 10 unique values sorted in descending order {@code
+     * options} would be::
      * <p>
      * {"limit":"10","sort_order":"descending"}.
      * <p>
@@ -1778,14 +1833,19 @@ public class GPUdb extends GPUdbBase {
      * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
      * schemas documentation</a>.
      * <p>
-     * If a {@code result_table} name is specified in the options, the results
-     * are stored in a new table with that name.  No results are returned in
-     * the response.  If the source table's <a
+     * If a {@code result_table} name is specified in the {@code options}, the
+     * results are stored in a new table with that name--no results are
+     * returned in the response.  Both the table name and resulting column name
+     * must adhere to <a href="../../../../concepts/tables.html#table"
+     * target="_top">standard naming conventions</a>; any column expression
+     * will need to be aliased.  If the source table's <a
      * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
      * key</a> is used as the {@code columnName}, the result table will be
      * sharded, in all other cases it will be replicated.  Sorting will
      * properly function only if the result table is replicated or if there is
      * only one processing node and should not be relied upon in other cases.
+     * Not available when the value of {@code columnName} is an
+     * unrestricted-length string.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -1810,10 +1870,16 @@ public class GPUdb extends GPUdbBase {
      * {@code columnName}) of a particular table (specified by {@code
      * tableName}). If {@code columnName} is a numeric column the values will
      * be in {@code binaryEncodedResponse}. Otherwise if {@code columnName} is
-     * a string column the values will be in {@code jsonEncodedResponse}.
-     * {@code offset} and {@code limit} are used to page through the results if
-     * there are large numbers of unique values. To get the first 10 unique
-     * values sorted in descending order {@code options} would be::
+     * a string column the values will be in {@code jsonEncodedResponse}.  The
+     * results can be paged via the {@code offset} and {@code limit}
+     * parameters.
+     * <p>
+     * Columns marked as <a
+     * href="../../../../concepts/types.html#data-handling"
+     * target="_top">store-only</a> are unable to be used with this function.
+     * <p>
+     * To get the first 10 unique values sorted in descending order {@code
+     * options} would be::
      * <p>
      * {"limit":"10","sort_order":"descending"}.
      * <p>
@@ -1821,14 +1887,19 @@ public class GPUdb extends GPUdbBase {
      * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
      * schemas documentation</a>.
      * <p>
-     * If a {@code result_table} name is specified in the options, the results
-     * are stored in a new table with that name.  No results are returned in
-     * the response.  If the source table's <a
+     * If a {@code result_table} name is specified in the {@code options}, the
+     * results are stored in a new table with that name--no results are
+     * returned in the response.  Both the table name and resulting column name
+     * must adhere to <a href="../../../../concepts/tables.html#table"
+     * target="_top">standard naming conventions</a>; any column expression
+     * will need to be aliased.  If the source table's <a
      * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
      * key</a> is used as the {@code columnName}, the result table will be
      * sharded, in all other cases it will be replicated.  Sorting will
      * properly function only if the result table is replicated or if there is
      * only one processing node and should not be relied upon in other cases.
+     * Not available when the value of {@code columnName} is an
+     * unrestricted-length string.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -1860,10 +1931,16 @@ public class GPUdb extends GPUdbBase {
      * {@code columnName}) of a particular table (specified by {@code
      * tableName}). If {@code columnName} is a numeric column the values will
      * be in {@code binaryEncodedResponse}. Otherwise if {@code columnName} is
-     * a string column the values will be in {@code jsonEncodedResponse}.
-     * {@code offset} and {@code limit} are used to page through the results if
-     * there are large numbers of unique values. To get the first 10 unique
-     * values sorted in descending order {@code options} would be::
+     * a string column the values will be in {@code jsonEncodedResponse}.  The
+     * results can be paged via the {@code offset} and {@code limit}
+     * parameters.
+     * <p>
+     * Columns marked as <a
+     * href="../../../../concepts/types.html#data-handling"
+     * target="_top">store-only</a> are unable to be used with this function.
+     * <p>
+     * To get the first 10 unique values sorted in descending order {@code
+     * options} would be::
      * <p>
      * {"limit":"10","sort_order":"descending"}.
      * <p>
@@ -1871,14 +1948,19 @@ public class GPUdb extends GPUdbBase {
      * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
      * schemas documentation</a>.
      * <p>
-     * If a {@code result_table} name is specified in the options, the results
-     * are stored in a new table with that name.  No results are returned in
-     * the response.  If the source table's <a
+     * If a {@code result_table} name is specified in the {@code options}, the
+     * results are stored in a new table with that name--no results are
+     * returned in the response.  Both the table name and resulting column name
+     * must adhere to <a href="../../../../concepts/tables.html#table"
+     * target="_top">standard naming conventions</a>; any column expression
+     * will need to be aliased.  If the source table's <a
      * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
      * key</a> is used as the {@code columnName}, the result table will be
      * sharded, in all other cases it will be replicated.  Sorting will
      * properly function only if the result table is replicated or if there is
      * only one processing node and should not be relied upon in other cases.
+     * Not available when the value of {@code columnName} is an
+     * unrestricted-length string.
      * 
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table.
@@ -1925,7 +2007,7 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of the table used to store the
-     *                 results. If present no results are returned in the
+     *                 results. If present, no results are returned in the
      *                 response. Has the same naming restrictions as <a
      *                 href="../../../../concepts/tables.html"
      *                 target="_top">tables</a>.
@@ -2371,7 +2453,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Apply various modifications to a table, view, or collection.  The
-     * availble
+     * available
      * modifications include the following:
      * <p>
      * Create or delete an index on a particular column. This can speed up
@@ -2425,7 +2507,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Apply various modifications to a table, view, or collection.  The
-     * availble
+     * available
      * modifications include the following:
      * <p>
      * Create or delete an index on a particular column. This can speed up
@@ -3293,10 +3375,12 @@ public class GPUdb extends GPUdbBase {
      * processing node, so it won't make sense to use {@code order_by} without
      * moving average.
      * <p>
-     * Also, a projection can be created with a different shard key than the
-     * source table.  By specifying {@code shard_key}, the projection will be
-     * sharded according to the specified columns, regardless of how the source
-     * table is sharded.  The source table can even be unsharded or replicated.
+     * Also, a projection can be created with a different <a
+     * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
+     * key</a> than the source table.  By specifying {@code shard_key}, the
+     * projection will be sharded according to the specified columns,
+     * regardless of how the source table is sharded.  The source table can
+     * even be unsharded or replicated.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -3339,10 +3423,12 @@ public class GPUdb extends GPUdbBase {
      * processing node, so it won't make sense to use {@code order_by} without
      * moving average.
      * <p>
-     * Also, a projection can be created with a different shard key than the
-     * source table.  By specifying {@code shard_key}, the projection will be
-     * sharded according to the specified columns, regardless of how the source
-     * table is sharded.  The source table can even be unsharded or replicated.
+     * Also, a projection can be created with a different <a
+     * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
+     * key</a> than the source table.  By specifying {@code shard_key}, the
+     * projection will be sharded according to the specified columns,
+     * regardless of how the source table is sharded.  The source table can
+     * even be unsharded or replicated.
      * 
      * @param tableName  Name of the existing table on which the projection is
      *                   to be applied.
@@ -3624,15 +3710,15 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
-     *                 FOREIGN_KEYS}: Semicolon-separated list of foreign key
-     *                 constraints, of the format 'source_column references
+     *                 FOREIGN_KEYS}: Semicolon-separated list of foreign keys,
+     *                 of the format 'source_column references
      *                 target_table(primary_key_column) [ as <foreign_key_name>
      *                 ]'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
-     *                 FOREIGN_SHARD_KEY}: Foreign shard key description of the
-     *                 format: <fk_foreign_key> references <pk_column_name>
-     *                 from <pk_table_name>(<pk_primary_key>)
+     *                 FOREIGN_SHARD_KEY}: Foreign shard key of the format
+     *                 'source_column references shard_by_column from
+     *                 target_table(primary_key_column)'
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}:
      *                 Sets the TTL of the table or collection specified in
@@ -9734,8 +9820,8 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    public VisualizeImageHeatmapResponse visualizeImageHeatmap(List<String> tableNames, String xColumnName, String yColumnName, String valueColumnName, double minX, double maxX, double minY, double maxY, int width, int height, String projection, Map<String, String> styleOptions, Map<String, String> options) throws GPUdbException {
-        VisualizeImageHeatmapRequest actualRequest_ = new VisualizeImageHeatmapRequest(tableNames, xColumnName, yColumnName, valueColumnName, minX, maxX, minY, maxY, width, height, projection, styleOptions, options);
+    public VisualizeImageHeatmapResponse visualizeImageHeatmap(List<String> tableNames, String xColumnName, String yColumnName, String valueColumnName, String geometryColumnName, double minX, double maxX, double minY, double maxY, int width, int height, String projection, Map<String, String> styleOptions, Map<String, String> options) throws GPUdbException {
+        VisualizeImageHeatmapRequest actualRequest_ = new VisualizeImageHeatmapRequest(tableNames, xColumnName, yColumnName, valueColumnName, geometryColumnName, minX, maxX, minY, maxY, width, height, projection, styleOptions, options);
         VisualizeImageHeatmapResponse actualResponse_ = new VisualizeImageHeatmapResponse();
         submitRequest("/visualize/image/heatmap", actualRequest_, actualResponse_, false);
         return actualResponse_;

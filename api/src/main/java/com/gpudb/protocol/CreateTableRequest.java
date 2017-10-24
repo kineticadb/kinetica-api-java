@@ -118,14 +118,13 @@ public class CreateTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
-     * FOREIGN_KEYS}: Semicolon-separated list of foreign key constraints, of
-     * the format 'source_column references target_table(primary_key_column) [
-     * as <foreign_key_name> ]'.
+     * FOREIGN_KEYS}: Semicolon-separated list of foreign keys, of the format
+     * 'source_column references target_table(primary_key_column) [ as
+     * <foreign_key_name> ]'.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
-     * FOREIGN_SHARD_KEY}: Foreign shard key description of the format:
-     * <fk_foreign_key> references <pk_column_name> from
-     * <pk_table_name>(<pk_primary_key>)
+     * FOREIGN_SHARD_KEY}: Foreign shard key of the format 'source_column
+     * references shard_by_column from target_table(primary_key_column)'
      *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TTL
      * TTL}: Sets the TTL of the table or collection specified in {@code
      * tableName}. The value must be the desired TTL in minutes.
@@ -227,15 +226,15 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String IS_REPLICATED = "is_replicated";
 
         /**
-         * Semicolon-separated list of foreign key constraints, of the format
+         * Semicolon-separated list of foreign keys, of the format
          * 'source_column references target_table(primary_key_column) [ as
          * <foreign_key_name> ]'.
          */
         public static final String FOREIGN_KEYS = "foreign_keys";
 
         /**
-         * Foreign shard key description of the format: <fk_foreign_key>
-         * references <pk_column_name> from <pk_table_name>(<pk_primary_key>)
+         * Foreign shard key of the format 'source_column references
+         * shard_by_column from target_table(primary_key_column)'
          */
         public static final String FOREIGN_SHARD_KEY = "foreign_shard_key";
 
@@ -375,15 +374,15 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
-     *                 FOREIGN_KEYS}: Semicolon-separated list of foreign key
-     *                 constraints, of the format 'source_column references
+     *                 FOREIGN_KEYS}: Semicolon-separated list of foreign keys,
+     *                 of the format 'source_column references
      *                 target_table(primary_key_column) [ as <foreign_key_name>
      *                 ]'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
-     *                 FOREIGN_SHARD_KEY}: Foreign shard key description of the
-     *                 format: <fk_foreign_key> references <pk_column_name>
-     *                 from <pk_table_name>(<pk_primary_key>)
+     *                 FOREIGN_SHARD_KEY}: Foreign shard key of the format
+     *                 'source_column references shard_by_column from
+     *                 target_table(primary_key_column)'
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}:
      *                 Sets the TTL of the table or collection specified in
@@ -547,14 +546,14 @@ public class CreateTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
-     *         FOREIGN_KEYS}: Semicolon-separated list of foreign key
-     *         constraints, of the format 'source_column references
+     *         FOREIGN_KEYS}: Semicolon-separated list of foreign keys, of the
+     *         format 'source_column references
      *         target_table(primary_key_column) [ as <foreign_key_name> ]'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
-     *         FOREIGN_SHARD_KEY}: Foreign shard key description of the format:
-     *         <fk_foreign_key> references <pk_column_name> from
-     *         <pk_table_name>(<pk_primary_key>)
+     *         FOREIGN_SHARD_KEY}: Foreign shard key of the format
+     *         'source_column references shard_by_column from
+     *         target_table(primary_key_column)'
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}: Sets the
      *         TTL of the table or collection specified in {@code tableName}.
@@ -668,15 +667,15 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
-     *                 FOREIGN_KEYS}: Semicolon-separated list of foreign key
-     *                 constraints, of the format 'source_column references
+     *                 FOREIGN_KEYS}: Semicolon-separated list of foreign keys,
+     *                 of the format 'source_column references
      *                 target_table(primary_key_column) [ as <foreign_key_name>
      *                 ]'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
-     *                 FOREIGN_SHARD_KEY}: Foreign shard key description of the
-     *                 format: <fk_foreign_key> references <pk_column_name>
-     *                 from <pk_table_name>(<pk_primary_key>)
+     *                 FOREIGN_SHARD_KEY}: Foreign shard key of the format
+     *                 'source_column references shard_by_column from
+     *                 target_table(primary_key_column)'
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}:
      *                 Sets the TTL of the table or collection specified in

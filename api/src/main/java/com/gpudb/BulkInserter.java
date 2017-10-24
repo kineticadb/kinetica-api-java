@@ -1035,6 +1035,7 @@ public class BulkInserter<T> {
     private final RecordKeyBuilder<T> shardKeyBuilder;
     private final List<Integer> routingTable;
     private final List<WorkerQueue<T>> workerQueues;
+    private volatile int retryCount;
     private final AtomicLong countInserted = new AtomicLong();
     private final AtomicLong countUpdated = new AtomicLong();
 
@@ -1252,6 +1253,38 @@ public class BulkInserter<T> {
     }
 
     /**
+     * Gets the number of times inserts into GPUdb will be retried in the event
+     * of an error. After this many retries, {@link InsertException} will be
+     * thrown.
+     *
+     * @return  the number of retries
+     *
+     * @see #setRetryCount(int)
+     */
+    public int getRetryCount() {
+        return retryCount;
+    }
+
+    /**
+     * Sets the number of times inserts into GPUdb will be retried in the event
+     * of an error. After this many retries, {@link InsertException} will be
+     * thrown.
+     *
+     * @param value  the number of retries
+     *
+     * @throws IllegalArgumentException if {@code value} is less than zero
+     *
+     * @see #getRetryCount()
+     */
+    public void setRetryCount(int value) {
+        if (value < 0) {
+            throw new IllegalArgumentException("Retry count must not be negative.");
+        }
+
+        retryCount = value;
+    }
+
+    /**
      * Gets the number of records inserted into GPUdb. Excludes records that
      * are currently queued but not yet inserted and records not inserted due to
      * primary key conflicts.
@@ -1310,11 +1343,24 @@ public class BulkInserter<T> {
             }
 
             InsertRecordsResponse response = new InsertRecordsResponse();
+            int retries = retryCount;
 
-            if (url == null) {
-                gpudb.submitRequest("/insert/records", request, response, true);
-            } else {
-                gpudb.submitRequest(url, request, response, true);
+            while (true) {
+                try {
+                    if (url == null) {
+                        gpudb.submitRequest("/insert/records", request, response, true);
+                    } else {
+                        gpudb.submitRequest(url, request, response, true);
+                    }
+
+                    break;
+                } catch (Exception ex) {
+                    if (retries > 0) {
+                        retries--;
+                    } else {
+                        throw ex;
+                    }
+                }
             }
 
             countInserted.addAndGet(response.getCountInserted());

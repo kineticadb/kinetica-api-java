@@ -24,7 +24,10 @@ import org.apache.avro.generic.IndexedRecord;
  * combination. This is somewhat analogous to an SQL-style SELECT...GROUP BY.
  * <p>
  * Any column(s) can be grouped on, and all column types except
- * unrestricted-length strings may be used for computing applicable aggregates.
+ * unrestricted-length strings may be used for computing applicable aggregates;
+ * columns marked as <a href="../../../../../concepts/types.html#data-handling"
+ * target="_top">store-only</a> are unable to be used in grouping or
+ * aggregation.
  * <p>
  * The results can be paged via the {@code offset} and {@code limit}
  * parameters. For example, to get 10 groups with the largest counts the inputs
@@ -49,14 +52,18 @@ import org.apache.avro.generic.IndexedRecord;
  * href="../../../../../concepts/dynamic_schemas.html" target="_top">dynamic
  * schemas documentation</a>.
  * <p>
- * If a {@code result_table} name is specified in the options, the results are
- * stored in a new table with that name.  No results are returned in the
- * response.  If the source table's <a
+ * If a {@code result_table} name is specified in the {@code options}, the
+ * results are stored in a new table with that name--no results are returned in
+ * the response.  Both the table name and resulting column names must adhere to
+ * <a href="../../../../../concepts/tables.html#table" target="_top">standard
+ * naming conventions</a>; column/aggregation expressions will need to be
+ * aliased.  If the source table's <a
  * href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
  * key</a> is used as the grouping column(s), the result table will be sharded,
  * in all other cases it will be replicated.  Sorting will properly function
  * only if the result table is replicated or if there is only one processing
- * node and should not be relied upon in other cases.
+ * node and should not be relied upon in other cases.  Not available when any
+ * of the values of {@code columnNames} is an unrestricted-length string.
  */
 public class AggregateGroupByRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -182,11 +189,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
      * RESULT_TABLE_PERSIST}: If {@code true} then the result table specified
-     * in {result_table}@{key of input.options} will be persisted as a regular
-     * table (it will not be automatically cleared unless a {@code ttl} is
-     * provided, and the table data can be modified in subsequent operations).
-     * If {@code false} (the default) then the result table will be a
-     * read-only, memory-only temporary table.
+     * in {@code result_table} will be persisted as a regular table (it will
+     * not be automatically cleared unless a {@code ttl} is provided, and the
+     * table data can be modified in subsequent operations). If {@code false}
+     * (the default) then the result table will be a read-only, memory-only
+     * temporary table.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -323,12 +330,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String RESULT_TABLE = "result_table";
 
         /**
-         * If {@code true} then the result table specified in
-         * {result_table}@{key of input.options} will be persisted as a regular
-         * table (it will not be automatically cleared unless a {@code ttl} is
-         * provided, and the table data can be modified in subsequent
-         * operations). If {@code false} (the default) then the result table
-         * will be a read-only, memory-only temporary table.
+         * If {@code true} then the result table specified in {@code
+         * result_table} will be persisted as a regular table (it will not be
+         * automatically cleared unless a {@code ttl} is provided, and the
+         * table data can be modified in subsequent operations). If {@code
+         * false} (the default) then the result table will be a read-only,
+         * memory-only temporary table.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -396,9 +403,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table/view/collection.
      * @param columnNames  List of one or more column names, expressions, and
-     *                     aggregate expressions. Must include at least one
-     *                     'grouping' column or expression.  If no aggregate is
-     *                     included, count(*) will be computed as a default.
+     *                     aggregate expressions.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
      *                the results).  The minimum allowed value is 0. The
@@ -481,8 +486,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
-     *                 table specified in {result_table}@{key of input.options}
-     *                 will be persisted as a regular table (it will not be
+     *                 table specified in {@code result_table} will be
+     *                 persisted as a regular table (it will not be
      *                 automatically cleared unless a {@code ttl} is provided,
      *                 and the table data can be modified in subsequent
      *                 operations). If {@code false} (the default) then the
@@ -539,9 +544,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table/view/collection.
      * @param columnNames  List of one or more column names, expressions, and
-     *                     aggregate expressions. Must include at least one
-     *                     'grouping' column or expression.  If no aggregate is
-     *                     included, count(*) will be computed as a default.
+     *                     aggregate expressions.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
      *                the results).  The minimum allowed value is 0. The
@@ -639,8 +642,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
-     *                 table specified in {result_table}@{key of input.options}
-     *                 will be persisted as a regular table (it will not be
+     *                 table specified in {@code result_table} will be
+     *                 persisted as a regular table (it will not be
      *                 automatically cleared unless a {@code ttl} is provided,
      *                 and the table data can be modified in subsequent
      *                 operations). If {@code false} (the default) then the
@@ -716,9 +719,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
     /**
      * 
      * @return List of one or more column names, expressions, and aggregate
-     *         expressions. Must include at least one 'grouping' column or
-     *         expression.  If no aggregate is included, count(*) will be
-     *         computed as a default.
+     *         expressions.
      * 
      */
     public List<String> getColumnNames() {
@@ -728,9 +729,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
     /**
      * 
      * @param columnNames  List of one or more column names, expressions, and
-     *                     aggregate expressions. Must include at least one
-     *                     'grouping' column or expression.  If no aggregate is
-     *                     included, count(*) will be computed as a default.
+     *                     aggregate expressions.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -912,12 +911,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
      *         RESULT_TABLE_PERSIST}: If {@code true} then the result table
-     *         specified in {result_table}@{key of input.options} will be
-     *         persisted as a regular table (it will not be automatically
-     *         cleared unless a {@code ttl} is provided, and the table data can
-     *         be modified in subsequent operations). If {@code false} (the
-     *         default) then the result table will be a read-only, memory-only
-     *         temporary table.
+     *         specified in {@code result_table} will be persisted as a regular
+     *         table (it will not be automatically cleared unless a {@code ttl}
+     *         is provided, and the table data can be modified in subsequent
+     *         operations). If {@code false} (the default) then the result
+     *         table will be a read-only, memory-only temporary table.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -1030,8 +1028,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
-     *                 table specified in {result_table}@{key of input.options}
-     *                 will be persisted as a regular table (it will not be
+     *                 table specified in {@code result_table} will be
+     *                 persisted as a regular table (it will not be
      *                 automatically cleared unless a {@code ttl} is provided,
      *                 and the table data can be modified in subsequent
      *                 operations). If {@code false} (the default) then the

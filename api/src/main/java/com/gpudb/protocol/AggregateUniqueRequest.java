@@ -21,10 +21,14 @@ import org.apache.avro.generic.IndexedRecord;
  * columnName}) of a particular table (specified by {@code tableName}). If
  * {@code columnName} is a numeric column the values will be in {@code
  * binaryEncodedResponse}. Otherwise if {@code columnName} is a string column
- * the values will be in {@code jsonEncodedResponse}.  {@code offset} and
- * {@code limit} are used to page through the results if there are large
- * numbers of unique values. To get the first 10 unique values sorted in
- * descending order {@code options} would be::
+ * the values will be in {@code jsonEncodedResponse}.  The results can be paged
+ * via the {@code offset} and {@code limit} parameters.
+ * <p>
+ * Columns marked as <a href="../../../../../concepts/types.html#data-handling"
+ * target="_top">store-only</a> are unable to be used with this function.
+ * <p>
+ * To get the first 10 unique values sorted in descending order {@code options}
+ * would be::
  * <p>
  * {"limit":"10","sort_order":"descending"}.
  * <p>
@@ -32,14 +36,18 @@ import org.apache.avro.generic.IndexedRecord;
  * href="../../../../../concepts/dynamic_schemas.html" target="_top">dynamic
  * schemas documentation</a>.
  * <p>
- * If a {@code result_table} name is specified in the options, the results are
- * stored in a new table with that name.  No results are returned in the
- * response.  If the source table's <a
- * href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
- * key</a> is used as the {@code columnName}, the result table will be sharded,
- * in all other cases it will be replicated.  Sorting will properly function
- * only if the result table is replicated or if there is only one processing
- * node and should not be relied upon in other cases.
+ * If a {@code result_table} name is specified in the {@code options}, the
+ * results are stored in a new table with that name--no results are returned in
+ * the response.  Both the table name and resulting column name must adhere to
+ * <a href="../../../../../concepts/tables.html#table" target="_top">standard
+ * naming conventions</a>; any column expression will need to be aliased.  If
+ * the source table's <a href="../../../../../concepts/tables.html#shard-keys"
+ * target="_top">shard key</a> is used as the {@code columnName}, the result
+ * table will be sharded, in all other cases it will be replicated.  Sorting
+ * will properly function only if the result table is replicated or if there is
+ * only one processing node and should not be relied upon in other cases.  Not
+ * available when the value of {@code columnName} is an unrestricted-length
+ * string.
  */
 public class AggregateUniqueRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -126,7 +134,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE
      * RESULT_TABLE}: The name of the table used to store the results. If
-     * present no results are returned in the response. Has the same naming
+     * present, no results are returned in the response. Has the same naming
      * restrictions as <a href="../../../../../concepts/tables.html"
      * target="_top">tables</a>.
      *         <li> {@link
@@ -204,7 +212,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
         public static final String DESCENDING = "descending";
 
         /**
-         * The name of the table used to store the results. If present no
+         * The name of the table used to store the results. If present, no
          * results are returned in the response. Has the same naming
          * restrictions as <a href="../../../../../concepts/tables.html"
          * target="_top">tables</a>.
@@ -327,7 +335,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of the table used to store the
-     *                 results. If present no results are returned in the
+     *                 results. If present, no results are returned in the
      *                 response. Has the same naming restrictions as <a
      *                 href="../../../../../concepts/tables.html"
      *                 target="_top">tables</a>.
@@ -449,7 +457,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of the table used to store the
-     *                 results. If present no results are returned in the
+     *                 results. If present, no results are returned in the
      *                 response. Has the same naming restrictions as <a
      *                 href="../../../../../concepts/tables.html"
      *                 target="_top">tables</a>.
@@ -687,8 +695,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE
      *         RESULT_TABLE}: The name of the table used to store the results.
-     *         If present no results are returned in the response. Has the same
-     *         naming restrictions as <a
+     *         If present, no results are returned in the response. Has the
+     *         same naming restrictions as <a
      *         href="../../../../../concepts/tables.html"
      *         target="_top">tables</a>.
      *                 <li> {@link
@@ -769,7 +777,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of the table used to store the
-     *                 results. If present no results are returned in the
+     *                 results. If present, no results are returned in the
      *                 response. Has the same naming restrictions as <a
      *                 href="../../../../../concepts/tables.html"
      *                 target="_top">tables</a>.

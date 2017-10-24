@@ -27,6 +27,7 @@ public class VisualizeImageHeatmapRequest implements IndexedRecord {
                 .name("xColumnName").type().stringType().noDefault()
                 .name("yColumnName").type().stringType().noDefault()
                 .name("valueColumnName").type().stringType().noDefault()
+                .name("geometryColumnName").type().stringType().noDefault()
                 .name("minX").type().doubleType().noDefault()
                 .name("maxX").type().doubleType().noDefault()
                 .name("minY").type().doubleType().noDefault()
@@ -112,6 +113,7 @@ public class VisualizeImageHeatmapRequest implements IndexedRecord {
     private String xColumnName;
     private String yColumnName;
     private String valueColumnName;
+    private String geometryColumnName;
     private double minX;
     private double maxX;
     private double minY;
@@ -128,16 +130,18 @@ public class VisualizeImageHeatmapRequest implements IndexedRecord {
         xColumnName = "";
         yColumnName = "";
         valueColumnName = "";
+        geometryColumnName = "";
         projection = "";
         styleOptions = new LinkedHashMap<>();
         options = new LinkedHashMap<>();
     }
 
-    public VisualizeImageHeatmapRequest(List<String> tableNames, String xColumnName, String yColumnName, String valueColumnName, double minX, double maxX, double minY, double maxY, int width, int height, String projection, Map<String, String> styleOptions, Map<String, String> options) {
+    public VisualizeImageHeatmapRequest(List<String> tableNames, String xColumnName, String yColumnName, String valueColumnName, String geometryColumnName, double minX, double maxX, double minY, double maxY, int width, int height, String projection, Map<String, String> styleOptions, Map<String, String> options) {
         this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
         this.xColumnName = (xColumnName == null) ? "" : xColumnName;
         this.yColumnName = (yColumnName == null) ? "" : yColumnName;
         this.valueColumnName = (valueColumnName == null) ? "" : valueColumnName;
+        this.geometryColumnName = (geometryColumnName == null) ? "" : geometryColumnName;
         this.minX = minX;
         this.maxX = maxX;
         this.minY = minY;
@@ -182,6 +186,15 @@ public class VisualizeImageHeatmapRequest implements IndexedRecord {
 
     public VisualizeImageHeatmapRequest setValueColumnName(String valueColumnName) {
         this.valueColumnName = (valueColumnName == null) ? "" : valueColumnName;
+        return this;
+    }
+
+    public String getGeometryColumnName() {
+        return geometryColumnName;
+    }
+
+    public VisualizeImageHeatmapRequest setGeometryColumnName(String geometryColumnName) {
+        this.geometryColumnName = (geometryColumnName == null) ? "" : geometryColumnName;
         return this;
     }
 
@@ -287,30 +300,33 @@ public class VisualizeImageHeatmapRequest implements IndexedRecord {
                 return this.valueColumnName;
 
             case 4:
-                return this.minX;
+                return this.geometryColumnName;
 
             case 5:
-                return this.maxX;
+                return this.minX;
 
             case 6:
-                return this.minY;
+                return this.maxX;
 
             case 7:
-                return this.maxY;
+                return this.minY;
 
             case 8:
-                return this.width;
+                return this.maxY;
 
             case 9:
-                return this.height;
+                return this.width;
 
             case 10:
-                return this.projection;
+                return this.height;
 
             case 11:
-                return this.styleOptions;
+                return this.projection;
 
             case 12:
+                return this.styleOptions;
+
+            case 13:
                 return this.options;
 
             default:
@@ -339,38 +355,42 @@ public class VisualizeImageHeatmapRequest implements IndexedRecord {
                 break;
 
             case 4:
-                this.minX = (Double)value;
+                this.geometryColumnName = (String)value;
                 break;
 
             case 5:
-                this.maxX = (Double)value;
+                this.minX = (Double)value;
                 break;
 
             case 6:
-                this.minY = (Double)value;
+                this.maxX = (Double)value;
                 break;
 
             case 7:
-                this.maxY = (Double)value;
+                this.minY = (Double)value;
                 break;
 
             case 8:
-                this.width = (Integer)value;
+                this.maxY = (Double)value;
                 break;
 
             case 9:
-                this.height = (Integer)value;
+                this.width = (Integer)value;
                 break;
 
             case 10:
-                this.projection = (String)value;
+                this.height = (Integer)value;
                 break;
 
             case 11:
-                this.styleOptions = (Map<String, String>)value;
+                this.projection = (String)value;
                 break;
 
             case 12:
+                this.styleOptions = (Map<String, String>)value;
+                break;
+
+            case 13:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -396,6 +416,7 @@ public class VisualizeImageHeatmapRequest implements IndexedRecord {
                  && this.xColumnName.equals( that.xColumnName )
                  && this.yColumnName.equals( that.yColumnName )
                  && this.valueColumnName.equals( that.valueColumnName )
+                 && this.geometryColumnName.equals( that.geometryColumnName )
                  && ( (Double)this.minX ).equals( (Double)that.minX )
                  && ( (Double)this.maxX ).equals( (Double)that.maxX )
                  && ( (Double)this.minY ).equals( (Double)that.minY )
@@ -428,6 +449,10 @@ public class VisualizeImageHeatmapRequest implements IndexedRecord {
         builder.append( gd.toString( "valueColumnName" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.valueColumnName ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "geometryColumnName" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.geometryColumnName ) );
         builder.append( ", " );
         builder.append( gd.toString( "minX" ) );
         builder.append( ": " );
@@ -477,6 +502,7 @@ public class VisualizeImageHeatmapRequest implements IndexedRecord {
         hashCode = (31 * hashCode) + this.xColumnName.hashCode();
         hashCode = (31 * hashCode) + this.yColumnName.hashCode();
         hashCode = (31 * hashCode) + this.valueColumnName.hashCode();
+        hashCode = (31 * hashCode) + this.geometryColumnName.hashCode();
         hashCode = (31 * hashCode) + ((Double)this.minX).hashCode();
         hashCode = (31 * hashCode) + ((Double)this.maxX).hashCode();
         hashCode = (31 * hashCode) + ((Double)this.minY).hashCode();

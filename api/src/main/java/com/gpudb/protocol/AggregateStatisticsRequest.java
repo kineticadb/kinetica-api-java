@@ -17,29 +17,40 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#aggregateStatistics(AggregateStatisticsRequest)}.
  * <p>
- * Calculates the requested statistics of a given column in a given table.
+ * Calculates the requested statistics of the given column(s) in a given table.
  * <p>
- * The available statistics are count (number of total objects), mean, stdv
- * (standard deviation), variance, skew, kurtosis, sum, sum_of_squares, min,
- * max, weighted_average, cardinality (unique count), estimated cardinality,
- * percentile and percentile_rank.
+ * The available statistics are {@code count} (number of total objects), {@code
+ * mean}, {@code stdv} (standard deviation), {@code variance}, {@code skew},
+ * {@code kurtosis}, {@code sum}, {@code min}, {@code max}, {@code
+ * weighted_average}, {@code cardinality} (unique count), {@code
+ * estimated_cardinality}, {@code percentile} and {@code percentile_rank}.
  * <p>
  * Estimated cardinality is calculated by using the hyperloglog approximation
  * technique.
  * <p>
- * Percentiles and percentile_ranks are approximate and are calculated using
- * the t-digest algorithm. They must include the desired
- * percentile/percentile_rank. To compute multiple percentiles each value must
- * be specified separately (i.e.
+ * Percentiles and percentile ranks are approximate and are calculated using
+ * the t-digest algorithm. They must include the desired {@code
+ * percentile}/{@code percentile_rank}. To compute multiple percentiles each
+ * value must be specified separately (i.e.
  * 'percentile(75.0),percentile(99.0),percentile_rank(1234.56),percentile_rank(-5)').
  * <p>
- * The weighted average statistic requires a weight_attribute to be specified
- * in {@code options}. The weighted average is then defined as the sum of the
- * products of {@code columnName} times the weight attribute divided by the sum
- * of the weight attribute.
+ * The weighted average statistic requires a {@code weight_column_name} to be
+ * specified in {@code options}. The weighted average is then defined as the
+ * sum of the products of {@code columnName} times the {@code
+ * weight_column_name} values divided by the sum of the {@code
+ * weight_column_name} values.
  * <p>
- * The response includes a list of the statistics requested along with the
- * count of the number of items in the given set.
+ * Additional columns can be used in the calculation of statistics via the
+ * {@code additional_column_names} option.  Values in these columns will be
+ * included in the overall aggregate calculation--individual aggregates will
+ * not be calculated per additional column.  For instance, requesting the
+ * {@code count} & {@code mean} of {@code columnName} x and {@code
+ * additional_column_names} y & z, where x holds the numbers 1-10, y holds
+ * 11-20, and z holds 21-30, would return the total number of x, y, & z values
+ * (30), and the single average value across all x, y, & z values (15.5).
+ * <p>
+ * The response includes a list of key/value pairs of each statistic requested
+ * and its corresponding value.
  */
 public class AggregateStatisticsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -71,7 +82,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Stats#COUNT COUNT}: Number
-     * of objects (independent of the given column).
+     * of objects (independent of the given column(s)).
      *         <li> {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Stats#MEAN MEAN}:
      * Arithmetic mean (average), equivalent to sum/count.
@@ -89,43 +100,40 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      * Kurtosis (fourth standardized moment).
      *         <li> {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Stats#SUM SUM}: Sum of all
-     * values in the column.
-     *         <li> {@link
-     * com.gpudb.protocol.AggregateStatisticsRequest.Stats#SUM_OF_SQUARES
-     * SUM_OF_SQUARES}: Sum of the squares of all values in the column.
+     * values in the column(s).
      *         <li> {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Stats#MIN MIN}: Minimum
-     * value of the column.
+     * value of the column(s).
      *         <li> {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Stats#MAX MAX}: Maximum
-     * value of the column.
+     * value of the column(s).
      *         <li> {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Stats#WEIGHTED_AVERAGE
-     * WEIGHTED_AVERAGE}: Weighted arithmetic mean (using the option
-     * 'weight_column_name' as the weighting column).
+     * WEIGHTED_AVERAGE}: Weighted arithmetic mean (using the option {@code
+     * weight_column_name} as the weighting column).
      *         <li> {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Stats#CARDINALITY
-     * CARDINALITY}: Number of unique values in the column.
+     * CARDINALITY}: Number of unique values in the column(s).
      *         <li> {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Stats#ESTIMATED_CARDINALITY
      * ESTIMATED_CARDINALITY}: Estimate (via hyperloglog technique) of the
-     * number of unique values in the column.
+     * number of unique values in the column(s).
      *         <li> {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE
      * PERCENTILE}: Estimate (via t-digest) of the given percentile of the
-     * column (percentile(50.0) will be an approximation of the median).
+     * column(s) (percentile(50.0) will be an approximation of the median).
      *         <li> {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE_RANK
      * PERCENTILE_RANK}: Estimate (via t-digest) of the percentile rank of the
-     * given value in the column (if the given value is the median of the
-     * column, percentile_rank([median]) will return approximately 50.0).
+     * given value in the column(s) (if the given value is the median of the
+     * column(s), percentile_rank(<median>) will return approximately 50.0).
      * </ul>
      * A set of string constants for the parameter {@code stats}.
      */
     public static final class Stats {
 
         /**
-         * Number of objects (independent of the given column).
+         * Number of objects (independent of the given column(s)).
          */
         public static final String COUNT = "count";
 
@@ -155,52 +163,47 @@ public class AggregateStatisticsRequest implements IndexedRecord {
         public static final String KURTOSIS = "kurtosis";
 
         /**
-         * Sum of all values in the column.
+         * Sum of all values in the column(s).
          */
         public static final String SUM = "sum";
 
         /**
-         * Sum of the squares of all values in the column.
-         */
-        public static final String SUM_OF_SQUARES = "sum_of_squares";
-
-        /**
-         * Minimum value of the column.
+         * Minimum value of the column(s).
          */
         public static final String MIN = "min";
 
         /**
-         * Maximum value of the column.
+         * Maximum value of the column(s).
          */
         public static final String MAX = "max";
 
         /**
-         * Weighted arithmetic mean (using the option 'weight_column_name' as
-         * the weighting column).
+         * Weighted arithmetic mean (using the option {@code
+         * weight_column_name} as the weighting column).
          */
         public static final String WEIGHTED_AVERAGE = "weighted_average";
 
         /**
-         * Number of unique values in the column.
+         * Number of unique values in the column(s).
          */
         public static final String CARDINALITY = "cardinality";
 
         /**
          * Estimate (via hyperloglog technique) of the number of unique values
-         * in the column.
+         * in the column(s).
          */
         public static final String ESTIMATED_CARDINALITY = "estimated_cardinality";
 
         /**
-         * Estimate (via t-digest) of the given percentile of the column
+         * Estimate (via t-digest) of the given percentile of the column(s)
          * (percentile(50.0) will be an approximation of the median).
          */
         public static final String PERCENTILE = "percentile";
 
         /**
          * Estimate (via t-digest) of the percentile rank of the given value in
-         * the column (if the given value is the median of the column,
-         * percentile_rank([median]) will return approximately 50.0).
+         * the column(s) (if the given value is the median of the column(s),
+         * percentile_rank(<median>) will return approximately 50.0).
          */
         public static final String PERCENTILE_RANK = "percentile_rank";
 
@@ -214,7 +217,10 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Options#ADDITIONAL_COLUMN_NAMES
      * ADDITIONAL_COLUMN_NAMES}: A list of comma separated column names over
-     * which statistics can be accumulated along with the primary column.
+     * which statistics can be accumulated along with the primary column.  All
+     * columns listed and {@code columnName} must be of the same type.  Must
+     * not include the column specified in {@code columnName} and no column can
+     * be listed twice.
      *         <li> {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Options#WEIGHT_COLUMN_NAME
      * WEIGHT_COLUMN_NAME}: Name of column used as weighting attribute for the
@@ -226,7 +232,10 @@ public class AggregateStatisticsRequest implements IndexedRecord {
 
         /**
          * A list of comma separated column names over which statistics can be
-         * accumulated along with the primary column.
+         * accumulated along with the primary column.  All columns listed and
+         * {@code columnName} must be of the same type.  Must not include the
+         * column specified in {@code columnName} and no column can be listed
+         * twice.
          */
         public static final String ADDITIONAL_COLUMN_NAMES = "additional_column_names";
 
@@ -261,8 +270,8 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table on which the statistics operation
      *                   will be performed.
-     * @param columnName  Name of the column for which the statistics are to be
-     *                    calculated.
+     * @param columnName  Name of the primary column for which the statistics
+     *                    are to be calculated.
      * @param stats  Comma separated list of the statistics to calculate, e.g.
      *               "sum,mean".
      *               Supported values:
@@ -270,7 +279,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#COUNT
      *               COUNT}: Number of objects (independent of the given
-     *               column).
+     *               column(s)).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#MEAN
      *               MEAN}: Arithmetic mean (average), equivalent to sum/count.
@@ -289,39 +298,37 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *               KURTOSIS}: Kurtosis (fourth standardized moment).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#SUM
-     *               SUM}: Sum of all values in the column.
-     *                       <li> {@link
-     *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#SUM_OF_SQUARES
-     *               SUM_OF_SQUARES}: Sum of the squares of all values in the
-     *               column.
+     *               SUM}: Sum of all values in the column(s).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#MIN
-     *               MIN}: Minimum value of the column.
+     *               MIN}: Minimum value of the column(s).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#MAX
-     *               MAX}: Maximum value of the column.
+     *               MAX}: Maximum value of the column(s).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#WEIGHTED_AVERAGE
      *               WEIGHTED_AVERAGE}: Weighted arithmetic mean (using the
-     *               option 'weight_column_name' as the weighting column).
+     *               option {@code weight_column_name} as the weighting
+     *               column).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#CARDINALITY
-     *               CARDINALITY}: Number of unique values in the column.
+     *               CARDINALITY}: Number of unique values in the column(s).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#ESTIMATED_CARDINALITY
      *               ESTIMATED_CARDINALITY}: Estimate (via hyperloglog
-     *               technique) of the number of unique values in the column.
+     *               technique) of the number of unique values in the
+     *               column(s).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE
      *               PERCENTILE}: Estimate (via t-digest) of the given
-     *               percentile of the column (percentile(50.0) will be an
+     *               percentile of the column(s) (percentile(50.0) will be an
      *               approximation of the median).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE_RANK
      *               PERCENTILE_RANK}: Estimate (via t-digest) of the
-     *               percentile rank of the given value in the column (if the
-     *               given value is the median of the column,
-     *               percentile_rank([median]) will return approximately 50.0).
+     *               percentile rank of the given value in the column(s) (if
+     *               the given value is the median of the column(s),
+     *               percentile_rank(<median>) will return approximately 50.0).
      *               </ul>
      * @param options  Optional parameters.
      *                 <ul>
@@ -329,7 +336,10 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateStatisticsRequest.Options#ADDITIONAL_COLUMN_NAMES
      *                 ADDITIONAL_COLUMN_NAMES}: A list of comma separated
      *                 column names over which statistics can be accumulated
-     *                 along with the primary column.
+     *                 along with the primary column.  All columns listed and
+     *                 {@code columnName} must be of the same type.  Must not
+     *                 include the column specified in {@code columnName} and
+     *                 no column can be listed twice.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateStatisticsRequest.Options#WEIGHT_COLUMN_NAME
      *                 WEIGHT_COLUMN_NAME}: Name of column used as weighting
@@ -369,7 +379,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the column for which the statistics are to be
+     * @return Name of the primary column for which the statistics are to be
      *         calculated.
      * 
      */
@@ -379,8 +389,8 @@ public class AggregateStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnName  Name of the column for which the statistics are to be
-     *                    calculated.
+     * @param columnName  Name of the primary column for which the statistics
+     *                    are to be calculated.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -398,7 +408,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateStatisticsRequest.Stats#COUNT
-     *         COUNT}: Number of objects (independent of the given column).
+     *         COUNT}: Number of objects (independent of the given column(s)).
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateStatisticsRequest.Stats#MEAN MEAN}:
      *         Arithmetic mean (average), equivalent to sum/count.
@@ -416,37 +426,34 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *         KURTOSIS}: Kurtosis (fourth standardized moment).
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateStatisticsRequest.Stats#SUM SUM}:
-     *         Sum of all values in the column.
-     *                 <li> {@link
-     *         com.gpudb.protocol.AggregateStatisticsRequest.Stats#SUM_OF_SQUARES
-     *         SUM_OF_SQUARES}: Sum of the squares of all values in the column.
+     *         Sum of all values in the column(s).
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateStatisticsRequest.Stats#MIN MIN}:
-     *         Minimum value of the column.
+     *         Minimum value of the column(s).
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateStatisticsRequest.Stats#MAX MAX}:
-     *         Maximum value of the column.
+     *         Maximum value of the column(s).
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateStatisticsRequest.Stats#WEIGHTED_AVERAGE
      *         WEIGHTED_AVERAGE}: Weighted arithmetic mean (using the option
-     *         'weight_column_name' as the weighting column).
+     *         {@code weight_column_name} as the weighting column).
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateStatisticsRequest.Stats#CARDINALITY
-     *         CARDINALITY}: Number of unique values in the column.
+     *         CARDINALITY}: Number of unique values in the column(s).
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateStatisticsRequest.Stats#ESTIMATED_CARDINALITY
      *         ESTIMATED_CARDINALITY}: Estimate (via hyperloglog technique) of
-     *         the number of unique values in the column.
+     *         the number of unique values in the column(s).
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE
      *         PERCENTILE}: Estimate (via t-digest) of the given percentile of
-     *         the column (percentile(50.0) will be an approximation of the
+     *         the column(s) (percentile(50.0) will be an approximation of the
      *         median).
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE_RANK
      *         PERCENTILE_RANK}: Estimate (via t-digest) of the percentile rank
-     *         of the given value in the column (if the given value is the
-     *         median of the column, percentile_rank([median]) will return
+     *         of the given value in the column(s) (if the given value is the
+     *         median of the column(s), percentile_rank(<median>) will return
      *         approximately 50.0).
      *         </ul>
      * 
@@ -464,7 +471,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#COUNT
      *               COUNT}: Number of objects (independent of the given
-     *               column).
+     *               column(s)).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#MEAN
      *               MEAN}: Arithmetic mean (average), equivalent to sum/count.
@@ -483,39 +490,37 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *               KURTOSIS}: Kurtosis (fourth standardized moment).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#SUM
-     *               SUM}: Sum of all values in the column.
-     *                       <li> {@link
-     *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#SUM_OF_SQUARES
-     *               SUM_OF_SQUARES}: Sum of the squares of all values in the
-     *               column.
+     *               SUM}: Sum of all values in the column(s).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#MIN
-     *               MIN}: Minimum value of the column.
+     *               MIN}: Minimum value of the column(s).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#MAX
-     *               MAX}: Maximum value of the column.
+     *               MAX}: Maximum value of the column(s).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#WEIGHTED_AVERAGE
      *               WEIGHTED_AVERAGE}: Weighted arithmetic mean (using the
-     *               option 'weight_column_name' as the weighting column).
+     *               option {@code weight_column_name} as the weighting
+     *               column).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#CARDINALITY
-     *               CARDINALITY}: Number of unique values in the column.
+     *               CARDINALITY}: Number of unique values in the column(s).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#ESTIMATED_CARDINALITY
      *               ESTIMATED_CARDINALITY}: Estimate (via hyperloglog
-     *               technique) of the number of unique values in the column.
+     *               technique) of the number of unique values in the
+     *               column(s).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE
      *               PERCENTILE}: Estimate (via t-digest) of the given
-     *               percentile of the column (percentile(50.0) will be an
+     *               percentile of the column(s) (percentile(50.0) will be an
      *               approximation of the median).
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE_RANK
      *               PERCENTILE_RANK}: Estimate (via t-digest) of the
-     *               percentile rank of the given value in the column (if the
-     *               given value is the median of the column,
-     *               percentile_rank([median]) will return approximately 50.0).
+     *               percentile rank of the given value in the column(s) (if
+     *               the given value is the median of the column(s),
+     *               percentile_rank(<median>) will return approximately 50.0).
      *               </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -534,7 +539,9 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *         com.gpudb.protocol.AggregateStatisticsRequest.Options#ADDITIONAL_COLUMN_NAMES
      *         ADDITIONAL_COLUMN_NAMES}: A list of comma separated column names
      *         over which statistics can be accumulated along with the primary
-     *         column.
+     *         column.  All columns listed and {@code columnName} must be of
+     *         the same type.  Must not include the column specified in {@code
+     *         columnName} and no column can be listed twice.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateStatisticsRequest.Options#WEIGHT_COLUMN_NAME
      *         WEIGHT_COLUMN_NAME}: Name of column used as weighting attribute
@@ -554,7 +561,10 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateStatisticsRequest.Options#ADDITIONAL_COLUMN_NAMES
      *                 ADDITIONAL_COLUMN_NAMES}: A list of comma separated
      *                 column names over which statistics can be accumulated
-     *                 along with the primary column.
+     *                 along with the primary column.  All columns listed and
+     *                 {@code columnName} must be of the same type.  Must not
+     *                 include the column specified in {@code columnName} and
+     *                 no column can be listed twice.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateStatisticsRequest.Options#WEIGHT_COLUMN_NAME
      *                 WEIGHT_COLUMN_NAME}: Name of column used as weighting
