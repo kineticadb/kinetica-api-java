@@ -21,7 +21,7 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * Performs a <a href="../../../../../concepts/unions.html"
  * target="_top">union</a> (concatenation) of one or more existing tables or
- * views, the results of which are stored in a new view. It is equivalent to
+ * views, the results of which are stored in a new table. It is equivalent to
  * the SQL UNION ALL operator.  Non-charN 'string' and 'bytes' column types
  * cannot be included in a union, neither can columns with the property
  * 'store_only'. Though not explicitly unions, <a
@@ -101,27 +101,28 @@ public class CreateUnionRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS MERGE_VIEWS}:
      * Merge two or more views (or views of views) of the same base data set
-     * into a new view. The resulting view would match the results of a SQL OR
-     * operation, e.g., if filter 1 creates a view using the expression 'x =
-     * 10' and filter 2 creates a view using the expression 'x <= 10', then the
-     * merge views operation creates a new view using the expression 'x = 10 OR
-     * x <= 10'.
+     * into a new view. If this mode is selected
+     *                                       {@code inputColumnNames} AND
+     * {@code outputColumnNames} are ignored The resulting view would match the
+     * results of a SQL OR operation, e.g., if filter 1 creates a view using
+     * the expression 'x = 10' and filter 2 creates a view using the expression
+     * 'x <= 10', then the merge views operation creates a new view using the
+     * expression 'x = 10 OR x <= 10'.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL UNION_ALL}.
      *         <li> {@link
-     * com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE CHUNK_SIZE}: If
-     * provided this indicates the chunk size to be used for this table.
+     * com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE CHUNK_SIZE}:
+     * Indicates the chunk size to be used for this table.
      *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#TTL
-     * TTL}: Sets the TTL of the table specified in {@code tableName}. The
-     * value must be the desired TTL in minutes.
+     * TTL}: Sets the <a href="../../../../../concepts/ttl.html"
+     * target="_top">TTL</a> of the table specified in {@code tableName}.
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#PERSIST PERSIST}: If
-     * {@code true} then the union will be persisted as a regular table (it
-     * will not be automatically cleared unless a {@code ttl} is provided, and
-     * the table data can be modified in subsequent operations). If {@code
-     * false} (the default) then the union will be a read-only, memory-only
-     * temporary table.
+     * {@code true}, then the union specified in {@code tableName} will be
+     * persisted and will not expire unless a {@code ttl} is specified.   If
+     * {@code false}, then the union will be an in-memory table and will expire
+     * unless a {@code ttl} is specified otherwise.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#TRUE
@@ -187,7 +188,9 @@ public class CreateUnionRequest implements IndexedRecord {
          *         <li> {@link
          * com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
          * MERGE_VIEWS}: Merge two or more views (or views of views) of the
-         * same base data set into a new view. The resulting view would match
+         * same base data set into a new view. If this mode is selected
+         *                                       {@code inputColumnNames} AND
+         * {@code outputColumnNames} are ignored The resulting view would match
          * the results of a SQL OR operation, e.g., if filter 1 creates a view
          * using the expression 'x = 10' and filter 2 creates a view using the
          * expression 'x <= 10', then the merge views operation creates a new
@@ -228,31 +231,32 @@ public class CreateUnionRequest implements IndexedRecord {
 
         /**
          * Merge two or more views (or views of views) of the same base data
-         * set into a new view. The resulting view would match the results of a
-         * SQL OR operation, e.g., if filter 1 creates a view using the
-         * expression 'x = 10' and filter 2 creates a view using the expression
-         * 'x <= 10', then the merge views operation creates a new view using
-         * the expression 'x = 10 OR x <= 10'.
+         * set into a new view. If this mode is selected
+         *                                       {@code inputColumnNames} AND
+         * {@code outputColumnNames} are ignored The resulting view would match
+         * the results of a SQL OR operation, e.g., if filter 1 creates a view
+         * using the expression 'x = 10' and filter 2 creates a view using the
+         * expression 'x <= 10', then the merge views operation creates a new
+         * view using the expression 'x = 10 OR x <= 10'.
          */
         public static final String MERGE_VIEWS = "merge_views";
 
         /**
-         * If provided this indicates the chunk size to be used for this table.
+         * Indicates the chunk size to be used for this table.
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
         /**
-         * Sets the TTL of the table specified in {@code tableName}. The value
-         * must be the desired TTL in minutes.
+         * Sets the <a href="../../../../../concepts/ttl.html"
+         * target="_top">TTL</a> of the table specified in {@code tableName}.
          */
         public static final String TTL = "ttl";
 
         /**
-         * If {@code true} then the union will be persisted as a regular table
-         * (it will not be automatically cleared unless a {@code ttl} is
-         * provided, and the table data can be modified in subsequent
-         * operations). If {@code false} (the default) then the union will be a
-         * read-only, memory-only temporary table.
+         * If {@code true}, then the union specified in {@code tableName} will
+         * be persisted and will not expire unless a {@code ttl} is specified.
+         * If {@code false}, then the union will be an in-memory table and will
+         * expire unless a {@code ttl} is specified otherwise.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -353,34 +357,36 @@ public class CreateUnionRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
      *                 MERGE_VIEWS}: Merge two or more views (or views of
-     *                 views) of the same base data set into a new view. The
-     *                 resulting view would match the results of a SQL OR
-     *                 operation, e.g., if filter 1 creates a view using the
-     *                 expression 'x = 10' and filter 2 creates a view using
-     *                 the expression 'x <= 10', then the merge views operation
-     *                 creates a new view using the expression 'x = 10 OR x <=
-     *                 10'.
+     *                 views) of the same base data set into a new view. If
+     *                 this mode is selected
+     *                                                       {@code
+     *                 inputColumnNames} AND {@code outputColumnNames} are
+     *                 ignored The resulting view would match the results of a
+     *                 SQL OR operation, e.g., if filter 1 creates a view using
+     *                 the expression 'x = 10' and filter 2 creates a view
+     *                 using the expression 'x <= 10', then the merge views
+     *                 operation creates a new view using the expression 'x =
+     *                 10 OR x <= 10'.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
      *                 UNION_ALL}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for this table.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
+     *                 this table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}:
-     *                 Sets the TTL of the table specified in {@code
-     *                 tableName}. The value must be the desired TTL in
-     *                 minutes.
+     *                 Sets the <a href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#PERSIST
-     *                 PERSIST}: If {@code true} then the union will be
-     *                 persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} (the default) then the
-     *                 union will be a read-only, memory-only temporary table.
+     *                 PERSIST}: If {@code true}, then the union specified in
+     *                 {@code tableName} will be persisted and will not expire
+     *                 unless a {@code ttl} is specified.   If {@code false},
+     *                 then the union will be an in-memory table and will
+     *                 expire unless a {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -548,8 +554,10 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
      *         MERGE_VIEWS}: Merge two or more views (or views of views) of the
-     *         same base data set into a new view. The resulting view would
-     *         match the results of a SQL OR operation, e.g., if filter 1
+     *         same base data set into a new view. If this mode is selected
+     *                                               {@code inputColumnNames}
+     *         AND {@code outputColumnNames} are ignored The resulting view
+     *         would match the results of a SQL OR operation, e.g., if filter 1
      *         creates a view using the expression 'x = 10' and filter 2
      *         creates a view using the expression 'x <= 10', then the merge
      *         views operation creates a new view using the expression 'x = 10
@@ -560,19 +568,18 @@ public class CreateUnionRequest implements IndexedRecord {
      *         UNION_ALL}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE
-     *         CHUNK_SIZE}: If provided this indicates the chunk size to be
-     *         used for this table.
+     *         CHUNK_SIZE}: Indicates the chunk size to be used for this table.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}: Sets the
-     *         TTL of the table specified in {@code tableName}. The value must
-     *         be the desired TTL in minutes.
+     *         <a href="../../../../../concepts/ttl.html" target="_top">TTL</a>
+     *         of the table specified in {@code tableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#PERSIST PERSIST}:
-     *         If {@code true} then the union will be persisted as a regular
-     *         table (it will not be automatically cleared unless a {@code ttl}
-     *         is provided, and the table data can be modified in subsequent
-     *         operations). If {@code false} (the default) then the union will
-     *         be a read-only, memory-only temporary table.
+     *         If {@code true}, then the union specified in {@code tableName}
+     *         will be persisted and will not expire unless a {@code ttl} is
+     *         specified.   If {@code false}, then the union will be an
+     *         in-memory table and will expire unless a {@code ttl} is
+     *         specified otherwise.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -645,34 +652,36 @@ public class CreateUnionRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
      *                 MERGE_VIEWS}: Merge two or more views (or views of
-     *                 views) of the same base data set into a new view. The
-     *                 resulting view would match the results of a SQL OR
-     *                 operation, e.g., if filter 1 creates a view using the
-     *                 expression 'x = 10' and filter 2 creates a view using
-     *                 the expression 'x <= 10', then the merge views operation
-     *                 creates a new view using the expression 'x = 10 OR x <=
-     *                 10'.
+     *                 views) of the same base data set into a new view. If
+     *                 this mode is selected
+     *                                                       {@code
+     *                 inputColumnNames} AND {@code outputColumnNames} are
+     *                 ignored The resulting view would match the results of a
+     *                 SQL OR operation, e.g., if filter 1 creates a view using
+     *                 the expression 'x = 10' and filter 2 creates a view
+     *                 using the expression 'x <= 10', then the merge views
+     *                 operation creates a new view using the expression 'x =
+     *                 10 OR x <= 10'.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
      *                 UNION_ALL}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for this table.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
+     *                 this table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}:
-     *                 Sets the TTL of the table specified in {@code
-     *                 tableName}. The value must be the desired TTL in
-     *                 minutes.
+     *                 Sets the <a href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#PERSIST
-     *                 PERSIST}: If {@code true} then the union will be
-     *                 persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} (the default) then the
-     *                 union will be a read-only, memory-only temporary table.
+     *                 PERSIST}: If {@code true}, then the union specified in
+     *                 {@code tableName} will be persisted and will not expire
+     *                 unless a {@code ttl} is specified.   If {@code false},
+     *                 then the union will be an in-memory table and will
+     *                 expire unless a {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

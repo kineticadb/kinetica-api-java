@@ -128,11 +128,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#COLLECTION_NAME
      * COLLECTION_NAME}: Name of a collection which is to contain the table
-     * specified in {@code result_table}, otherwise the table will be a
-     * top-level table. If the collection does not allow duplicate types and it
-     * contains a table of the same type as the given one, then this table
-     * creation request will fail. Additionally this option is invalid if
-     * {@code tableName} is a collection.
+     * specified in {@code result_table}. If the collection provided is
+     * non-existent, the collection will be automatically created. If empty,
+     * then the table will be a top-level table.  Additionally this option is
+     * invalid if {@code tableName} is a collection.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
      * EXPRESSION}: Filter expression to apply to the table prior to computing
@@ -188,12 +187,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * charN) type.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
-     * RESULT_TABLE_PERSIST}: If {@code true} then the result table specified
-     * in {@code result_table} will be persisted as a regular table (it will
-     * not be automatically cleared unless a {@code ttl} is provided, and the
-     * table data can be modified in subsequent operations). If {@code false}
-     * (the default) then the result table will be a read-only, memory-only
-     * temporary table.
+     * RESULT_TABLE_PERSIST}: If {@code true}, then the result table specified
+     * in {@code result_table} will be persisted and will not expire unless a
+     * {@code ttl} is specified.   If {@code false}, then the result table will
+     * be an in-memory table and will expire unless a {@code ttl} is specified
+     * otherwise.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -214,14 +212,27 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * result table. Must be used in combination with the {@code result_table}
      * option.
      *         <li> {@link
-     * com.gpudb.protocol.AggregateGroupByRequest.Options#TTL TTL}: Sets the
-     * TTL of the table specified in {@code result_table}. The value must be
-     * the desired TTL in minutes.
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#TTL TTL}: Sets the <a
+     * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
+     * table specified in {@code result_table}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
-     * CHUNK_SIZE}: If provided this indicates the chunk size to be used for
-     * the result table. Must be used in combination with the {@code
-     * result_table} option.
+     * CHUNK_SIZE}: Indicates the chunk size to be used for the result table.
+     * Must be used in combination with the {@code result_table} option.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
+     * MATERIALIZE_ON_GPU}: If {@code true} then the columns of the groupby
+     * result table will be cached on the GPU. Must be used in combination with
+     * the {@code result_table} option.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -229,11 +240,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
         /**
          * Name of a collection which is to contain the table specified in
-         * {@code result_table}, otherwise the table will be a top-level table.
-         * If the collection does not allow duplicate types and it contains a
-         * table of the same type as the given one, then this table creation
-         * request will fail. Additionally this option is invalid if {@code
-         * tableName} is a collection.
+         * {@code result_table}. If the collection provided is non-existent,
+         * the collection will be automatically created. If empty, then the
+         * table will be a top-level table.  Additionally this option is
+         * invalid if {@code tableName} is a collection.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -330,12 +340,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String RESULT_TABLE = "result_table";
 
         /**
-         * If {@code true} then the result table specified in {@code
-         * result_table} will be persisted as a regular table (it will not be
-         * automatically cleared unless a {@code ttl} is provided, and the
-         * table data can be modified in subsequent operations). If {@code
-         * false} (the default) then the result table will be a read-only,
-         * memory-only temporary table.
+         * If {@code true}, then the result table specified in {@code
+         * result_table} will be persisted and will not expire unless a {@code
+         * ttl} is specified.   If {@code false}, then the result table will be
+         * an in-memory table and will expire unless a {@code ttl} is specified
+         * otherwise.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -363,17 +372,33 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String RESULT_TABLE_GENERATE_PK = "result_table_generate_pk";
 
         /**
-         * Sets the TTL of the table specified in {@code result_table}. The
-         * value must be the desired TTL in minutes.
+         * Sets the <a href="../../../../../concepts/ttl.html"
+         * target="_top">TTL</a> of the table specified in {@code
+         * result_table}.
          */
         public static final String TTL = "ttl";
 
         /**
-         * If provided this indicates the chunk size to be used for the result
-         * table. Must be used in combination with the {@code result_table}
-         * option.
+         * Indicates the chunk size to be used for the result table. Must be
+         * used in combination with the {@code result_table} option.
          */
         public static final String CHUNK_SIZE = "chunk_size";
+
+        /**
+         * If {@code true} then the columns of the groupby result table will be
+         * cached on the GPU. Must be used in combination with the {@code
+         * result_table} option.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
+         */
+        public static final String MATERIALIZE_ON_GPU = "materialize_on_gpu";
 
         private Options() {  }
     }
@@ -416,12 +441,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table},
-     *                 otherwise the table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail. Additionally this
-     *                 option is invalid if {@code tableName} is a collection.
+     *                 contain the table specified in {@code result_table}. If
+     *                 the collection provided is non-existent, the collection
+     *                 will be automatically created. If empty, then the table
+     *                 will be a top-level table.  Additionally this option is
+     *                 invalid if {@code tableName} is a collection.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
      *                 EXPRESSION}: Filter expression to apply to the table
@@ -485,14 +509,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 type.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
-     *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
+     *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
      *                 table specified in {@code result_table} will be
-     *                 persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} (the default) then the
-     *                 result table will be a read-only, memory-only temporary
-     *                 table.
+     *                 persisted and will not expire unless a {@code ttl} is
+     *                 specified.   If {@code false}, then the result table
+     *                 will be an in-memory table and will expire unless a
+     *                 {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -517,14 +539,33 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table specified in {@code
-     *                 result_table}. The value must be the desired TTL in
-     *                 minutes.
+     *                 TTL}: Sets the <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for the result table. Must be used in
-     *                 combination with the {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
+     *                 result table. Must be used in combination with the
+     *                 {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
+     *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
+     *                 the groupby result table will be cached on the GPU. Must
+     *                 be used in combination with the {@code result_table}
+     *                 option.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      */
@@ -572,12 +613,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table},
-     *                 otherwise the table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail. Additionally this
-     *                 option is invalid if {@code tableName} is a collection.
+     *                 contain the table specified in {@code result_table}. If
+     *                 the collection provided is non-existent, the collection
+     *                 will be automatically created. If empty, then the table
+     *                 will be a top-level table.  Additionally this option is
+     *                 invalid if {@code tableName} is a collection.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
      *                 EXPRESSION}: Filter expression to apply to the table
@@ -641,14 +681,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 type.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
-     *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
+     *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
      *                 table specified in {@code result_table} will be
-     *                 persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} (the default) then the
-     *                 result table will be a read-only, memory-only temporary
-     *                 table.
+     *                 persisted and will not expire unless a {@code ttl} is
+     *                 specified.   If {@code false}, then the result table
+     *                 will be an in-memory table and will expire unless a
+     *                 {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -673,14 +711,33 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table specified in {@code
-     *                 result_table}. The value must be the desired TTL in
-     *                 minutes.
+     *                 TTL}: Sets the <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for the result table. Must be used in
-     *                 combination with the {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
+     *                 result table. Must be used in combination with the
+     *                 {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
+     *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
+     *                 the groupby result table will be cached on the GPU. Must
+     *                 be used in combination with the {@code result_table}
+     *                 option.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      */
@@ -846,10 +903,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#COLLECTION_NAME
      *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         table specified in {@code result_table}, otherwise the table
-     *         will be a top-level table. If the collection does not allow
-     *         duplicate types and it contains a table of the same type as the
-     *         given one, then this table creation request will fail.
+     *         table specified in {@code result_table}. If the collection
+     *         provided is non-existent, the collection will be automatically
+     *         created. If empty, then the table will be a top-level table.
      *         Additionally this option is invalid if {@code tableName} is a
      *         collection.
      *                 <li> {@link
@@ -910,12 +966,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         type.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
-     *         RESULT_TABLE_PERSIST}: If {@code true} then the result table
-     *         specified in {@code result_table} will be persisted as a regular
-     *         table (it will not be automatically cleared unless a {@code ttl}
-     *         is provided, and the table data can be modified in subsequent
-     *         operations). If {@code false} (the default) then the result
-     *         table will be a read-only, memory-only temporary table.
+     *         RESULT_TABLE_PERSIST}: If {@code true}, then the result table
+     *         specified in {@code result_table} will be persisted and will not
+     *         expire unless a {@code ttl} is specified.   If {@code false},
+     *         then the result table will be an in-memory table and will expire
+     *         unless a {@code ttl} is specified otherwise.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -937,13 +992,28 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         result_table} option.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#TTL TTL}:
-     *         Sets the TTL of the table specified in {@code result_table}. The
-     *         value must be the desired TTL in minutes.
+     *         Sets the <a href="../../../../../concepts/ttl.html"
+     *         target="_top">TTL</a> of the table specified in {@code
+     *         result_table}.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
-     *         CHUNK_SIZE}: If provided this indicates the chunk size to be
-     *         used for the result table. Must be used in combination with the
-     *         {@code result_table} option.
+     *         CHUNK_SIZE}: Indicates the chunk size to be used for the result
+     *         table. Must be used in combination with the {@code result_table}
+     *         option.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
+     *         MATERIALIZE_ON_GPU}: If {@code true} then the columns of the
+     *         groupby result table will be cached on the GPU. Must be used in
+     *         combination with the {@code result_table} option.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
      *         </ul>
      * 
      */
@@ -958,12 +1028,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table},
-     *                 otherwise the table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail. Additionally this
-     *                 option is invalid if {@code tableName} is a collection.
+     *                 contain the table specified in {@code result_table}. If
+     *                 the collection provided is non-existent, the collection
+     *                 will be automatically created. If empty, then the table
+     *                 will be a top-level table.  Additionally this option is
+     *                 invalid if {@code tableName} is a collection.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
      *                 EXPRESSION}: Filter expression to apply to the table
@@ -1027,14 +1096,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 type.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
-     *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
+     *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
      *                 table specified in {@code result_table} will be
-     *                 persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} (the default) then the
-     *                 result table will be a read-only, memory-only temporary
-     *                 table.
+     *                 persisted and will not expire unless a {@code ttl} is
+     *                 specified.   If {@code false}, then the result table
+     *                 will be an in-memory table and will expire unless a
+     *                 {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1059,14 +1126,33 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table specified in {@code
-     *                 result_table}. The value must be the desired TTL in
-     *                 minutes.
+     *                 TTL}: Sets the <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for the result table. Must be used in
-     *                 combination with the {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
+     *                 result table. Must be used in combination with the
+     *                 {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
+     *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
+     *                 the groupby result table will be cached on the GPU. Must
+     *                 be used in combination with the {@code result_table}
+     *                 option.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

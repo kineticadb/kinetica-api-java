@@ -19,19 +19,16 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
  * <p>
- * For a given table, retrieves the values of the given columns within a given
- * range. It returns maps of column name to the vector of values for each
- * supported data type (double, float, long, int and string). This operation
- * supports pagination feature, i.e. values that are retrieved are those
- * associated with the indices between the start (offset) and end value (offset
- * + limit) parameters (inclusive). If there are num_points values in the table
- * then each of the indices between 0 and num_points-1 retrieves a unique
- * value.
+ * For a given table, retrieves the values from the requested column(s). Maps
+ * of column name to the array of values as well as the column data type are
+ * returned. This endpoint supports pagination with the {@code offset} and
+ * {@code limit} parameters.
  * <p>
- * Note that when using the pagination feature, if the table (or the underlying
- * table in case of a view) is updated (records are inserted, deleted or
- * modified) the records or values retrieved may differ between calls
- * (discontiguous or overlap) based on the type of the update.
+ * When using pagination, if the table (or the underlying table in the case of
+ * a view) is modified (records are inserted, updated, or deleted) during a
+ * call to the endpoint, the records or values retrieved may differ between
+ * calls based on the type of the update, e.g., the contiguity across pages
+ * cannot be relied upon.
  * <p>
  * The response is returned as a dynamic schema. For details see: <a
  * href="../../../../../concepts/dynamic_schemas.html" target="_top">dynamic

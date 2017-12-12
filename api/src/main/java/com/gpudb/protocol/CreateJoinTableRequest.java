@@ -122,9 +122,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateJoinTableRequest.Options#NO_REFRESH
      * NO_REFRESH}.
      *         <li> {@link
-     * com.gpudb.protocol.CreateJoinTableRequest.Options#TTL TTL}: Sets the TTL
-     * of the table specified in {@code joinTableName}. The value must be the
-     * desired TTL in minutes.
+     * com.gpudb.protocol.CreateJoinTableRequest.Options#TTL TTL}: Sets the <a
+     * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
+     * join table specified in {@code joinTableName}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -232,8 +232,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
         public static final String FULL_REFRESH = "full_refresh";
 
         /**
-         * Sets the TTL of the table specified in {@code joinTableName}. The
-         * value must be the desired TTL in minutes.
+         * Sets the <a href="../../../../../concepts/ttl.html"
+         * target="_top">TTL</a> of the join table specified in {@code
+         * joinTableName}.
          */
         public static final String TTL = "ttl";
 
@@ -267,7 +268,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                       href="../../../../../concepts/tables.html"
      *                       target="_top">tables</a>.
      * @param tableNames  The list of table names composing the join.
-     *                    Corresponds to a SQL statement FROM clause
+     *                    Corresponds to a SQL statement FROM clause.
      * @param columnNames  List of member table columns or column expressions
      *                     to be included in the join. Columns can be prefixed
      *                     with 'table_id.column_name', where 'table_id' is the
@@ -373,9 +374,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 NO_REFRESH}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table specified in {@code
-     *                 joinTableName}. The value must be the desired TTL in
-     *                 minutes.
+     *                 TTL}: Sets the <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the join table specified in
+     *                 {@code joinTableName}.
      *                 </ul>
      * 
      */
@@ -416,7 +418,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
     /**
      * 
      * @return The list of table names composing the join.  Corresponds to a
-     *         SQL statement FROM clause
+     *         SQL statement FROM clause.
      * 
      */
     public List<String> getTableNames() {
@@ -426,7 +428,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
     /**
      * 
      * @param tableNames  The list of table names composing the join.
-     *                    Corresponds to a SQL statement FROM clause
+     *                    Corresponds to a SQL statement FROM clause.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -587,8 +589,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         NO_REFRESH}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#TTL TTL}: Sets
-     *         the TTL of the table specified in {@code joinTableName}. The
-     *         value must be the desired TTL in minutes.
+     *         the <a href="../../../../../concepts/ttl.html"
+     *         target="_top">TTL</a> of the join table specified in {@code
+     *         joinTableName}.
      *         </ul>
      * 
      */
@@ -687,9 +690,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 NO_REFRESH}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table specified in {@code
-     *                 joinTableName}. The value must be the desired TTL in
-     *                 minutes.
+     *                 TTL}: Sets the <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the join table specified in
+     *                 {@code joinTableName}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

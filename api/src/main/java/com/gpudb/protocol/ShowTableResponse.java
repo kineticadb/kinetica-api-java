@@ -109,7 +109,9 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Indicates whether the respective table is protected or not.
+         * Indicates whether the respective table is <a
+         * href="../../../../../concepts/protection.html"
+         * target="_top">protected</a> or not.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -127,23 +129,26 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String RECORD_BYTES = "record_bytes";
 
         /**
-         * The value of TTL setting, in minutes, for the respective table (-1
-         * if it will never expire).  This is not the remaining amount of time
-         * before the table expires. Not present for collections.
+         * The value of the <a href="../../../../../concepts/ttl.html"
+         * target="_top">time-to-live</a> setting.  Not present for
+         * collections.
          */
         public static final String TABLE_TTL = "table_ttl";
 
         /**
-         * The remaining amount of minutes before the respective table expires
-         * (-1 if it will never expire).  This value may be different from the
-         * table's TTL setting. Not present for collections.
+         * The remaining <a href="../../../../../concepts/ttl.html"
+         * target="_top">time-to-live</a>, in minutes, before the respective
+         * table expires (-1 if it will never expire).  Not present for
+         * collections.
          */
         public static final String REMAINING_TABLE_TTL = "remaining_table_ttl";
 
         /**
-         * Semicolon-separated list of foreign key constraints, of the format
-         * 'source_column references target_table(primary_key_column)'. Not
-         * present for collections.
+         * Semicolon-separated list of <a
+         * href="../../../../../concepts/tables.html#foreign-key"
+         * target="_top">foreign keys</a>, of the format 'source_column
+         * references target_table(primary_key_column)'. Not present for
+         * collections.
          */
         public static final String FOREIGN_KEYS = "foreign_keys";
 
@@ -155,14 +160,18 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String FOREIGN_SHARD_KEY = "foreign_shard_key";
 
         /**
-         * Semicolon-separated list of columns that have attribute indexes. Not
-         * present for collections.
+         * Semicolon-separated list of columns that have <a
+         * href="../../../../../concepts/indexes.html#column-index"
+         * target="_top">indexes</a>. Not present for collections.
          */
         public static final String ATTRIBUTE_INDEXES = "attribute_indexes";
 
         /**
-         * Semicolon-separated list of - compressed_columns:
-         * {I1,snappy};{L1,lz4hc}. Not present for collections.
+         * Semicolon-separated list of <a
+         * href="../../../../../concepts/compression.html"
+         * target="_top">compressed</a> columns with the corresponding
+         * compression type for each; e.g.:
+         * {first_name,snappy};{last_name,lz4hc}. Not present for collections.
          */
         public static final String COMPRESSED_COLUMNS = "compressed_columns";
 
@@ -196,22 +205,22 @@ public class ShowTableResponse implements IndexedRecord {
         /**
          * No read/write operations are allowed on this table.
          */
-        public static final String NO_ACCESS = "no-access";
+        public static final String NO_ACCESS = "no_access";
 
         /**
          * Only read operations are allowed on this table.
          */
-        public static final String READ_ONLY = "read-only";
+        public static final String READ_ONLY = "read_only";
 
         /**
          * Only write operations are allowed on this table.
          */
-        public static final String WRITE_ONLY = "write-only";
+        public static final String WRITE_ONLY = "write_only";
 
         /**
          * All read/write operations are allowed on this table.
          */
-        public static final String READ_WRITE = "read-write";
+        public static final String READ_WRITE = "read_write";
 
         private AdditionalInfo() {  }
     }

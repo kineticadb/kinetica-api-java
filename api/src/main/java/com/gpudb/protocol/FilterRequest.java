@@ -55,28 +55,28 @@ public class FilterRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.FilterRequest.Options#COLLECTION_NAME
      * COLLECTION_NAME}: Name of a collection which is to contain the newly
-     * created view, otherwise the view will be a top-level table. If the
-     * collection does not allow duplicate types and it contains a table of the
-     * same type as the given one, then this table creation request will fail.
+     * created view. If the collection provided is non-existent, the collection
+     * will be automatically created. If empty, then the newly created view
+     * will be top-level.
      *         <li> {@link com.gpudb.protocol.FilterRequest.Options#TTL TTL}:
-     * Sets the TTL of the view specified in {@code viewName}. The value must
-     * be the desired TTL in minutes.
+     * Sets the <a href="../../../../../concepts/ttl.html"
+     * target="_top">TTL</a> of the view specified in {@code viewName}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the newly created view,
-         * otherwise the view will be a top-level table. If the collection does
-         * not allow duplicate types and it contains a table of the same type
-         * as the given one, then this table creation request will fail.
+         * Name of a collection which is to contain the newly created view. If
+         * the collection provided is non-existent, the collection will be
+         * automatically created. If empty, then the newly created view will be
+         * top-level.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * Sets the TTL of the view specified in {@code viewName}. The value
-         * must be the desired TTL in minutes.
+         * Sets the <a href="../../../../../concepts/ttl.html"
+         * target="_top">TTL</a> of the view specified in {@code viewName}.
          */
         public static final String TTL = "ttl";
 
@@ -120,15 +120,15 @@ public class FilterRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view, otherwise the view will
-     *                 be a top-level table. If the collection does not allow
-     *                 duplicate types and it contains a table of the same type
-     *                 as the given one, then this table creation request will
-     *                 fail.
+     *                 contain the newly created view. If the collection
+     *                 provided is non-existent, the collection will be
+     *                 automatically created. If empty, then the newly created
+     *                 view will be top-level.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterRequest.Options#TTL TTL}: Sets
-     *                 the TTL of the view specified in {@code viewName}. The
-     *                 value must be the desired TTL in minutes.
+     *                 the <a href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the view specified in {@code
+     *                 viewName}.
      *                 </ul>
      * 
      */
@@ -227,13 +227,12 @@ public class FilterRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.FilterRequest.Options#COLLECTION_NAME
      *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         newly created view, otherwise the view will be a top-level
-     *         table. If the collection does not allow duplicate types and it
-     *         contains a table of the same type as the given one, then this
-     *         table creation request will fail.
+     *         newly created view. If the collection provided is non-existent,
+     *         the collection will be automatically created. If empty, then the
+     *         newly created view will be top-level.
      *                 <li> {@link com.gpudb.protocol.FilterRequest.Options#TTL
-     *         TTL}: Sets the TTL of the view specified in {@code viewName}.
-     *         The value must be the desired TTL in minutes.
+     *         TTL}: Sets the <a href="../../../../../concepts/ttl.html"
+     *         target="_top">TTL</a> of the view specified in {@code viewName}.
      *         </ul>
      * 
      */
@@ -248,15 +247,15 @@ public class FilterRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view, otherwise the view will
-     *                 be a top-level table. If the collection does not allow
-     *                 duplicate types and it contains a table of the same type
-     *                 as the given one, then this table creation request will
-     *                 fail.
+     *                 contain the newly created view. If the collection
+     *                 provided is non-existent, the collection will be
+     *                 automatically created. If empty, then the newly created
+     *                 view will be top-level.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterRequest.Options#TTL TTL}: Sets
-     *                 the TTL of the view specified in {@code viewName}. The
-     *                 value must be the desired TTL in minutes.
+     *                 the <a href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the view specified in {@code
+     *                 viewName}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -23,7 +23,11 @@ import org.apache.avro.generic.IndexedRecord;
  * all records from source tables (specified by {@code sourceTableNames}) based
  * on the field mapping information (specified by {@code fieldMaps}). The field
  * map (specified by {@code fieldMaps}) holds the user specified maps of target
- * table column names to source table columns.
+ * table column names to source table columns. The array of {@code fieldMaps}
+ * must match one-to-one with the {@code sourceTableNames}, e.g., there's a map
+ * present in {@code fieldMaps} for each table listed in {@code
+ * sourceTableNames}. Read more about Merge Records <a
+ * href="../../../../../concepts/merge_records.html" target="_top">here</a>.
  */
 public class MergeRecordsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -55,16 +59,19 @@ public class MergeRecordsRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.MergeRecordsRequest.Options#COLLECTION_NAME
      * COLLECTION_NAME}: Name of a collection which is to contain the newly
-     * created merged table (specified by {@code tableName}). If empty, then
-     * the newly created merged table will be a top-level table. If the
-     * collection does not allow duplicate types and it contains a table of the
-     * same type as the given one, then this table creation request will fail.
+     * created merged table specified by {@code tableName}. If the collection
+     * provided is non-existent, the collection will be automatically created.
+     * If empty, then the newly created merged table will be a top-level table.
      *         <li> {@link
      * com.gpudb.protocol.MergeRecordsRequest.Options#IS_REPLICATED
-     * IS_REPLICATED}: For a merged table (specified by {@code tableName}),
-     * indicates whether the table is to be replicated to all the database
-     * ranks. This may be necessary when the table is to be joined with other
-     * tables in a query.
+     * IS_REPLICATED}: Indicates the <a
+     * href="../../../../../concepts/tables.html#distribution"
+     * target="_top">distribution scheme</a> for the data of the merged table
+     * specified in {@code tableName}.  If true, the table will be <a
+     * href="../../../../../concepts/tables.html#replication"
+     * target="_top">replicated</a>.  If false, the table will be <a
+     * href="../../../../../concepts/tables.html#random-sharding"
+     * target="_top">randomly sharded</a>.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.MergeRecordsRequest.Options#TRUE
@@ -75,12 +82,13 @@ public class MergeRecordsRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.MergeRecordsRequest.Options#FALSE FALSE}.
      *         <li> {@link com.gpudb.protocol.MergeRecordsRequest.Options#TTL
-     * TTL}: Sets the TTL of the merged table or collection (specified by
-     * {@code tableName}). The value must be the desired TTL in minutes.
+     * TTL}: Sets the <a href="../../../../../concepts/ttl.html"
+     * target="_top">TTL</a> of the merged table specified in {@code
+     * tableName}.
      *         <li> {@link
      * com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE CHUNK_SIZE}:
-     * If provided this indicates the chunk size to be used for the merged
-     * table.
+     * Indicates the chunk size to be used for the merged table specified in
+     * {@code tableName}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -88,18 +96,22 @@ public class MergeRecordsRequest implements IndexedRecord {
 
         /**
          * Name of a collection which is to contain the newly created merged
-         * table (specified by {@code tableName}). If empty, then the newly
-         * created merged table will be a top-level table. If the collection
-         * does not allow duplicate types and it contains a table of the same
-         * type as the given one, then this table creation request will fail.
+         * table specified by {@code tableName}. If the collection provided is
+         * non-existent, the collection will be automatically created. If
+         * empty, then the newly created merged table will be a top-level
+         * table.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * For a merged table (specified by {@code tableName}), indicates
-         * whether the table is to be replicated to all the database ranks.
-         * This may be necessary when the table is to be joined with other
-         * tables in a query.
+         * Indicates the <a
+         * href="../../../../../concepts/tables.html#distribution"
+         * target="_top">distribution scheme</a> for the data of the merged
+         * table specified in {@code tableName}.  If true, the table will be <a
+         * href="../../../../../concepts/tables.html#replication"
+         * target="_top">replicated</a>.  If false, the table will be <a
+         * href="../../../../../concepts/tables.html#random-sharding"
+         * target="_top">randomly sharded</a>.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -115,14 +127,15 @@ public class MergeRecordsRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Sets the TTL of the merged table or collection (specified by {@code
-         * tableName}). The value must be the desired TTL in minutes.
+         * Sets the <a href="../../../../../concepts/ttl.html"
+         * target="_top">TTL</a> of the merged table specified in {@code
+         * tableName}.
          */
         public static final String TTL = "ttl";
 
         /**
-         * If provided this indicates the chunk size to be used for the merged
-         * table.
+         * Indicates the chunk size to be used for the merged table specified
+         * in {@code tableName}.
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
@@ -152,30 +165,37 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                   merged.  Must NOT be an existing table.
      * @param sourceTableNames  The list of source table names to get the
      *                          records from. Must be existing table names.
-     * @param fieldMaps  Contains the mapping of column names from result table
-     *                   (specified by {@code tableName}) as the keys, and
-     *                   corresponding column names from a table from source
-     *                   tables (specified by {@code sourceTableNames}). Must
-     *                   be existing column names in source table and target
-     *                   table, and their types must be matched.
+     * @param fieldMaps  Contains a list of source/target column mappings, one
+     *                   mapping for each source table listed in {@code
+     *                   sourceTableNames} being merged into the target table
+     *                   specified by {@code tableName}.  Each mapping contains
+     *                   the target column names (as keys) that the data in the
+     *                   mapped source columns (as values) will be merged into.
+     *                   All of the source columns being merged into a given
+     *                   target column must match in type, as that type will
+     *                   determine the type of the new target column.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created merged table (specified by
-     *                 {@code tableName}). If empty, then the newly created
-     *                 merged table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail.
+     *                 contain the newly created merged table specified by
+     *                 {@code tableName}. If the collection provided is
+     *                 non-existent, the collection will be automatically
+     *                 created. If empty, then the newly created merged table
+     *                 will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#IS_REPLICATED
-     *                 IS_REPLICATED}: For a merged table (specified by {@code
-     *                 tableName}), indicates whether the table is to be
-     *                 replicated to all the database ranks. This may be
-     *                 necessary when the table is to be joined with other
-     *                 tables in a query.
+     *                 IS_REPLICATED}: Indicates the <a
+     *                 href="../../../../../concepts/tables.html#distribution"
+     *                 target="_top">distribution scheme</a> for the data of
+     *                 the merged table specified in {@code tableName}.  If
+     *                 true, the table will be <a
+     *                 href="../../../../../concepts/tables.html#replication"
+     *                 target="_top">replicated</a>.  If false, the table will
+     *                 be <a
+     *                 href="../../../../../concepts/tables.html#random-sharding"
+     *                 target="_top">randomly sharded</a>.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -190,13 +210,13 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#TTL TTL}:
-     *                 Sets the TTL of the merged table or collection
-     *                 (specified by {@code tableName}). The value must be the
-     *                 desired TTL in minutes.
+     *                 Sets the <a href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the merged table specified in
+     *                 {@code tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for the merged table.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
+     *                 merged table specified in {@code tableName}.
      *                 </ul>
      * 
      */
@@ -255,11 +275,14 @@ public class MergeRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Contains the mapping of column names from result table
-     *         (specified by {@code tableName}) as the keys, and corresponding
-     *         column names from a table from source tables (specified by
-     *         {@code sourceTableNames}). Must be existing column names in
-     *         source table and target table, and their types must be matched.
+     * @return Contains a list of source/target column mappings, one mapping
+     *         for each source table listed in {@code sourceTableNames} being
+     *         merged into the target table specified by {@code tableName}.
+     *         Each mapping contains the target column names (as keys) that the
+     *         data in the mapped source columns (as values) will be merged
+     *         into.  All of the source columns being merged into a given
+     *         target column must match in type, as that type will determine
+     *         the type of the new target column.
      * 
      */
     public List<Map<String, String>> getFieldMaps() {
@@ -268,12 +291,15 @@ public class MergeRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param fieldMaps  Contains the mapping of column names from result table
-     *                   (specified by {@code tableName}) as the keys, and
-     *                   corresponding column names from a table from source
-     *                   tables (specified by {@code sourceTableNames}). Must
-     *                   be existing column names in source table and target
-     *                   table, and their types must be matched.
+     * @param fieldMaps  Contains a list of source/target column mappings, one
+     *                   mapping for each source table listed in {@code
+     *                   sourceTableNames} being merged into the target table
+     *                   specified by {@code tableName}.  Each mapping contains
+     *                   the target column names (as keys) that the data in the
+     *                   mapped source columns (as values) will be merged into.
+     *                   All of the source columns being merged into a given
+     *                   target column must match in type, as that type will
+     *                   determine the type of the new target column.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -290,17 +316,20 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.MergeRecordsRequest.Options#COLLECTION_NAME
      *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         newly created merged table (specified by {@code tableName}). If
-     *         empty, then the newly created merged table will be a top-level
-     *         table. If the collection does not allow duplicate types and it
-     *         contains a table of the same type as the given one, then this
-     *         table creation request will fail.
+     *         newly created merged table specified by {@code tableName}. If
+     *         the collection provided is non-existent, the collection will be
+     *         automatically created. If empty, then the newly created merged
+     *         table will be a top-level table.
      *                 <li> {@link
      *         com.gpudb.protocol.MergeRecordsRequest.Options#IS_REPLICATED
-     *         IS_REPLICATED}: For a merged table (specified by {@code
-     *         tableName}), indicates whether the table is to be replicated to
-     *         all the database ranks. This may be necessary when the table is
-     *         to be joined with other tables in a query.
+     *         IS_REPLICATED}: Indicates the <a
+     *         href="../../../../../concepts/tables.html#distribution"
+     *         target="_top">distribution scheme</a> for the data of the merged
+     *         table specified in {@code tableName}.  If true, the table will
+     *         be <a href="../../../../../concepts/tables.html#replication"
+     *         target="_top">replicated</a>.  If false, the table will be <a
+     *         href="../../../../../concepts/tables.html#random-sharding"
+     *         target="_top">randomly sharded</a>.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -312,12 +341,13 @@ public class MergeRecordsRequest implements IndexedRecord {
      *         com.gpudb.protocol.MergeRecordsRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.MergeRecordsRequest.Options#TTL TTL}: Sets
-     *         the TTL of the merged table or collection (specified by {@code
-     *         tableName}). The value must be the desired TTL in minutes.
+     *         the <a href="../../../../../concepts/ttl.html"
+     *         target="_top">TTL</a> of the merged table specified in {@code
+     *         tableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE
-     *         CHUNK_SIZE}: If provided this indicates the chunk size to be
-     *         used for the merged table.
+     *         CHUNK_SIZE}: Indicates the chunk size to be used for the merged
+     *         table specified in {@code tableName}.
      *         </ul>
      * 
      */
@@ -332,19 +362,23 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created merged table (specified by
-     *                 {@code tableName}). If empty, then the newly created
-     *                 merged table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail.
+     *                 contain the newly created merged table specified by
+     *                 {@code tableName}. If the collection provided is
+     *                 non-existent, the collection will be automatically
+     *                 created. If empty, then the newly created merged table
+     *                 will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#IS_REPLICATED
-     *                 IS_REPLICATED}: For a merged table (specified by {@code
-     *                 tableName}), indicates whether the table is to be
-     *                 replicated to all the database ranks. This may be
-     *                 necessary when the table is to be joined with other
-     *                 tables in a query.
+     *                 IS_REPLICATED}: Indicates the <a
+     *                 href="../../../../../concepts/tables.html#distribution"
+     *                 target="_top">distribution scheme</a> for the data of
+     *                 the merged table specified in {@code tableName}.  If
+     *                 true, the table will be <a
+     *                 href="../../../../../concepts/tables.html#replication"
+     *                 target="_top">replicated</a>.  If false, the table will
+     *                 be <a
+     *                 href="../../../../../concepts/tables.html#random-sharding"
+     *                 target="_top">randomly sharded</a>.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -359,13 +393,13 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#TTL TTL}:
-     *                 Sets the TTL of the merged table or collection
-     *                 (specified by {@code tableName}). The value must be the
-     *                 desired TTL in minutes.
+     *                 Sets the <a href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the merged table specified in
+     *                 {@code tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for the merged table.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
+     *                 merged table specified in {@code tableName}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

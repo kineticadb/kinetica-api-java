@@ -79,7 +79,8 @@ public class CreateProjectionRequest implements IndexedRecord {
      * href="../../../../../concepts/collections.html"
      * target="_top">collection</a> to which the projection is to be assigned
      * as a child. If the collection provided is non-existent, the collection
-     * will be automatically created.
+     * will be automatically created. If empty, then the projection will be at
+     * the top level.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      * EXPRESSION}: An optional filter <a
@@ -110,12 +111,11 @@ public class CreateProjectionRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
-     * CHUNK_SIZE}: If provided this indicates the chunk size to be used for
-     * this table.
+     * CHUNK_SIZE}: Indicates the chunk size to be used for this table.
      *         <li> {@link
-     * com.gpudb.protocol.CreateProjectionRequest.Options#TTL TTL}: Sets the
-     * TTL of the table, view, or collection specified in {@code
-     * projectionName}. The value must be the desired TTL in minutes.
+     * com.gpudb.protocol.CreateProjectionRequest.Options#TTL TTL}: Sets the <a
+     * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
+     * projection specified in {@code projectionName}.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#SHARD_KEY SHARD_KEY}:
      * Comma-separated list of the columns to be sharded on; e.g. 'column1,
@@ -124,11 +124,10 @@ public class CreateProjectionRequest implements IndexedRecord {
      * rather than the original column name.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#PERSIST PERSIST}: If
-     * {@code true} then the projection will be persisted as a regular table
-     * (it will not be automatically cleared unless a {@code ttl} is provided,
-     * and the table data can be modified in subsequent operations). If {@code
-     * false} then the projection will be a read-only, memory-only temporary
-     * table.
+     * {@code true}, then the projection specified in {@code projectionName}
+     * will be persisted and will not expire unless a {@code ttl} is specified.
+     * If {@code false}, then the projection will be an in-memory table and
+     * will expire unless a {@code ttl} is specified otherwise.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -147,7 +146,8 @@ public class CreateProjectionRequest implements IndexedRecord {
          * Name of a <a href="../../../../../concepts/collections.html"
          * target="_top">collection</a> to which the projection is to be
          * assigned as a child. If the collection provided is non-existent, the
-         * collection will be automatically created.
+         * collection will be automatically created. If empty, then the
+         * projection will be at the top level.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -190,13 +190,14 @@ public class CreateProjectionRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * If provided this indicates the chunk size to be used for this table.
+         * Indicates the chunk size to be used for this table.
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
         /**
-         * Sets the TTL of the table, view, or collection specified in {@code
-         * projectionName}. The value must be the desired TTL in minutes.
+         * Sets the <a href="../../../../../concepts/ttl.html"
+         * target="_top">TTL</a> of the projection specified in {@code
+         * projectionName}.
          */
         public static final String TTL = "ttl";
 
@@ -209,11 +210,11 @@ public class CreateProjectionRequest implements IndexedRecord {
         public static final String SHARD_KEY = "shard_key";
 
         /**
-         * If {@code true} then the projection will be persisted as a regular
-         * table (it will not be automatically cleared unless a {@code ttl} is
-         * provided, and the table data can be modified in subsequent
-         * operations). If {@code false} then the projection will be a
-         * read-only, memory-only temporary table.
+         * If {@code true}, then the projection specified in {@code
+         * projectionName} will be persisted and will not expire unless a
+         * {@code ttl} is specified.   If {@code false}, then the projection
+         * will be an in-memory table and will expire unless a {@code ttl} is
+         * specified otherwise.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -268,7 +269,8 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 target="_top">collection</a> to which the projection is
      *                 to be assigned as a child. If the collection provided is
      *                 non-existent, the collection will be automatically
-     *                 created.
+     *                 created. If empty, then the projection will be at the
+     *                 top level.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      *                 EXPRESSION}: An optional filter <a
@@ -303,13 +305,14 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for this table.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
+     *                 this table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table, view, or collection
-     *                 specified in {@code projectionName}. The value must be
-     *                 the desired TTL in minutes.
+     *                 TTL}: Sets the <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the projection specified in
+     *                 {@code projectionName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#SHARD_KEY
      *                 SHARD_KEY}: Comma-separated list of the columns to be
@@ -319,12 +322,12 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 be used, rather than the original column name.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#PERSIST
-     *                 PERSIST}: If {@code true} then the projection will be
-     *                 persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} then the projection will
-     *                 be a read-only, memory-only temporary table.
+     *                 PERSIST}: If {@code true}, then the projection specified
+     *                 in {@code projectionName} will be persisted and will not
+     *                 expire unless a {@code ttl} is specified.   If {@code
+     *                 false}, then the projection will be an in-memory table
+     *                 and will expire unless a {@code ttl} is specified
+     *                 otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -432,7 +435,8 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         href="../../../../../concepts/collections.html"
      *         target="_top">collection</a> to which the projection is to be
      *         assigned as a child. If the collection provided is non-existent,
-     *         the collection will be automatically created.
+     *         the collection will be automatically created. If empty, then the
+     *         projection will be at the top level.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      *         EXPRESSION}: An optional filter <a
@@ -464,13 +468,12 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
-     *         CHUNK_SIZE}: If provided this indicates the chunk size to be
-     *         used for this table.
+     *         CHUNK_SIZE}: Indicates the chunk size to be used for this table.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#TTL TTL}:
-     *         Sets the TTL of the table, view, or collection specified in
-     *         {@code projectionName}. The value must be the desired TTL in
-     *         minutes.
+     *         Sets the <a href="../../../../../concepts/ttl.html"
+     *         target="_top">TTL</a> of the projection specified in {@code
+     *         projectionName}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#SHARD_KEY
      *         SHARD_KEY}: Comma-separated list of the columns to be sharded
@@ -480,11 +483,11 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         column name.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#PERSIST
-     *         PERSIST}: If {@code true} then the projection will be persisted
-     *         as a regular table (it will not be automatically cleared unless
-     *         a {@code ttl} is provided, and the table data can be modified in
-     *         subsequent operations). If {@code false} then the projection
-     *         will be a read-only, memory-only temporary table.
+     *         PERSIST}: If {@code true}, then the projection specified in
+     *         {@code projectionName} will be persisted and will not expire
+     *         unless a {@code ttl} is specified.   If {@code false}, then the
+     *         projection will be an in-memory table and will expire unless a
+     *         {@code ttl} is specified otherwise.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -512,7 +515,8 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 target="_top">collection</a> to which the projection is
      *                 to be assigned as a child. If the collection provided is
      *                 non-existent, the collection will be automatically
-     *                 created.
+     *                 created. If empty, then the projection will be at the
+     *                 top level.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      *                 EXPRESSION}: An optional filter <a
@@ -547,13 +551,14 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for this table.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
+     *                 this table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table, view, or collection
-     *                 specified in {@code projectionName}. The value must be
-     *                 the desired TTL in minutes.
+     *                 TTL}: Sets the <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the projection specified in
+     *                 {@code projectionName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#SHARD_KEY
      *                 SHARD_KEY}: Comma-separated list of the columns to be
@@ -563,12 +568,12 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 be used, rather than the original column name.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#PERSIST
-     *                 PERSIST}: If {@code true} then the projection will be
-     *                 persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} then the projection will
-     *                 be a read-only, memory-only temporary table.
+     *                 PERSIST}: If {@code true}, then the projection specified
+     *                 in {@code projectionName} will be persisted and will not
+     *                 expire unless a {@code ttl} is specified.   If {@code
+     *                 false}, then the projection will be an in-memory table
+     *                 and will expire unless a {@code ttl} is specified
+     *                 otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

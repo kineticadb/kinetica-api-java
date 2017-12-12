@@ -60,6 +60,42 @@ public class AdminOfflineRequest implements IndexedRecord {
         private Offline() {  }
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminOfflineRequest.Options#FLUSH_TO_DISK
+     * FLUSH_TO_DISK}: Flush to disk when going offline
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AdminOfflineRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.AdminOfflineRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * Flush to disk when going offline
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AdminOfflineRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AdminOfflineRequest.Options#FALSE FALSE}
+         * </ul>
+         */
+        public static final String FLUSH_TO_DISK = "flush_to_disk";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private Options() {  }
+    }
+
     private boolean offline;
     private Map<String, String> options;
 
@@ -85,6 +121,20 @@ public class AdminOfflineRequest implements IndexedRecord {
      *                 FALSE}
      *                 </ul>
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminOfflineRequest.Options#FLUSH_TO_DISK
+     *                 FLUSH_TO_DISK}: Flush to disk when going offline
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminOfflineRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminOfflineRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 </ul>
      * 
      */
     public AdminOfflineRequest(boolean offline, Map<String, String> options) {
@@ -132,6 +182,18 @@ public class AdminOfflineRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminOfflineRequest.Options#FLUSH_TO_DISK
+     *         FLUSH_TO_DISK}: Flush to disk when going offline
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminOfflineRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminOfflineRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -141,6 +203,20 @@ public class AdminOfflineRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminOfflineRequest.Options#FLUSH_TO_DISK
+     *                 FLUSH_TO_DISK}: Flush to disk when going offline
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminOfflineRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminOfflineRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -20,28 +20,28 @@ import org.apache.avro.generic.IndexedRecord;
  * Apply various modifications to a table, view, or collection.  The available
  * modifications include the following:
  * <p>
- * Create or delete an index on a particular column. This can speed up certain
- * search queries
- * (such as {@link com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link
- * com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}, {@link
- * com.gpudb.GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)})
- * when using expressions containing equality or relational operators on
- * indexed columns. This
- * only applies to tables.
+ * Create or delete an <a
+ * href="../../../../../concepts/indexes.html#column-index"
+ * target="_top">index</a> on a
+ * particular column. This can speed up certain operations when using
+ * expressions
+ * containing equality or relational operators on indexed columns. This only
+ * applies to tables.
  * <p>
- * Set the time-to-live (TTL). This can be applied to tables, views, or
- * collections.  When
- * applied to collections, every table & view within the collection will have
- * its TTL set to the
- * given value.
+ * Set the <a href="../../../../../concepts/ttl.html"
+ * target="_top">time-to-live (TTL)</a>. This can be applied
+ * to tables, views, or collections.  When applied to collections, every
+ * contained
+ * table & view that is not protected will have its TTL set to the given value.
  * <p>
  * Set the global access mode (i.e. locking) for a table. The mode can be set
- * to 'no-access', 'read-only',
- * 'write-only' or 'read-write'.
+ * to
+ * 'no_access', 'read_only', 'write_only' or 'read_write'.
  * <p>
- * Make a table protected or not. Protected tables have their TTLs set to not
- * automatically
- * expire. This can be applied to tables, views, and collections.
+ * Change the <a href="../../../../../concepts/protection.html"
+ * target="_top">protection</a> mode to prevent or
+ * allow automatic expiration. This can be applied to tables, views, and
+ * collections.
  * <p>
  * Allow homogeneous tables within a collection.
  * <p>
@@ -49,7 +49,8 @@ import org.apache.avro.generic.IndexedRecord;
  * <a href="../../../../../concepts/types.html" target="_top">type and
  * properties</a> modified.
  * <p>
- * Set or unset compression for a column.
+ * Set or unset <a href="../../../../../concepts/compression.html"
+ * target="_top">compression</a> for a column.
  */
 public class AlterTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -86,61 +87,73 @@ public class AlterTableRequest implements IndexedRecord {
      * is a collection. The {@code value} must be either 'true' or 'false'.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX CREATE_INDEX}:
-     * Creates an index on the column name specified in {@code value}. If this
-     * column is already indexed, an error will be returned.
+     * Creates an <a href="../../../../../concepts/indexes.html#column-index"
+     * target="_top">index</a> on the column name specified in {@code value}.
+     * If this column is already indexed, an error will be returned.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX DELETE_INDEX}:
-     * Deletes an existing index on the column name specified in {@code value}.
+     * Deletes an existing <a
+     * href="../../../../../concepts/indexes.html#column-index"
+     * target="_top">index</a> on the column name specified in {@code value}.
      * If this column does not have indexing turned on, an error will be
      * returned.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
-     * MOVE_TO_COLLECTION}: Move a table into a collection {@code value}.
+     * MOVE_TO_COLLECTION}: Moves a table into a collection {@code value}.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#PROTECTED PROTECTED}: Sets
-     * whether the given {@code tableName} should be protected or not. The
-     * {@code value} must be either 'true' or 'false'.
+     * whether the given {@code tableName} should be <a
+     * href="../../../../../concepts/protection.html"
+     * target="_top">protected</a> or not. The {@code value} must be either
+     * 'true' or 'false'.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE RENAME_TABLE}:
-     * Rename a table, view or collection to {@code value}. Has the same naming
-     * restrictions as <a href="../../../../../concepts/tables.html"
+     * Renames a table, view or collection to {@code value}. Has the same
+     * naming restrictions as <a href="../../../../../concepts/tables.html"
      * target="_top">tables</a>.
      *         <li> {@link com.gpudb.protocol.AlterTableRequest.Action#TTL
-     * TTL}: Sets the TTL of the table, view, or collection specified in {@code
-     * tableName}. The {@code value} must be the desired TTL in minutes.
+     * TTL}: Sets the <a href="../../../../../concepts/ttl.html"
+     * target="_top">TTL</a> of the table, view, or collection specified in
+     * {@code tableName}.
      *         <li> {@link
-     * com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN ADD_COLUMN}: Add
+     * com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN ADD_COLUMN}: Adds
      * the column specified in {@code value} to the table specified in {@code
      * tableName}.  Use {@code column_type} and {@code column_properties} in
      * {@code options} to set the column's type and properties, respectively.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#CHANGE_COLUMN
-     * CHANGE_COLUMN}: Change type and properties of the column specified in
+     * CHANGE_COLUMN}: Changes type and properties of the column specified in
      * {@code value}.  Use {@code column_type} and {@code column_properties} in
      * {@code options} to set the column's type and properties, respectively.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
-     * SET_COLUMN_COMPRESSION}: Modify the compression setting on the column
-     * specified in {@code value}.
+     * SET_COLUMN_COMPRESSION}: Modifies the <a
+     * href="../../../../../concepts/compression.html"
+     * target="_top">compression</a> setting on the column specified in {@code
+     * value}.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#DELETE_COLUMN
-     * DELETE_COLUMN}: Delete the column specified in {@code value} from the
+     * DELETE_COLUMN}: Deletes the column specified in {@code value} from the
      * table specified in {@code tableName}.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
-     * CREATE_FOREIGN_KEY}: Create a foreign key using the format
-     * 'source_column references target_table(primary_key_column) [ as
-     * <foreign_key_name> ]'.
+     * CREATE_FOREIGN_KEY}: Creates a <a
+     * href="../../../../../concepts/tables.html#foreign-key"
+     * target="_top">foreign key</a> using the format 'source_column references
+     * target_table(primary_key_column) [ as <foreign_key_name> ]'.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
-     * DELETE_FOREIGN_KEY}: Delete a foreign key.  The {@code value} should be
-     * the <foreign_key_name> or the string used to define the foreign key.
+     * DELETE_FOREIGN_KEY}: Deletes a <a
+     * href="../../../../../concepts/tables.html#foreign-key"
+     * target="_top">foreign key</a>.  The {@code value} should be the
+     * <foreign_key_name> specified when creating the key or the complete
+     * string used to define it.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
-     * SET_GLOBAL_ACCESS_MODE}: Set the global access mode (i.e. locking) for
+     * SET_GLOBAL_ACCESS_MODE}: Sets the global access mode (i.e. locking) for
      * the table specified in {@code tableName}. Specify the access mode in
-     * {@code value}. Valid modes are 'no-access', 'read-only', 'write-only'
-     * and 'read-write'.
+     * {@code value}. Valid modes are 'no_access', 'read_only', 'write_only'
+     * and 'read_write'.
      * </ul>
      * A set of string constants for the parameter {@code action}.
      */
@@ -154,44 +167,52 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String ALLOW_HOMOGENEOUS_TABLES = "allow_homogeneous_tables";
 
         /**
-         * Creates an index on the column name specified in {@code value}. If
-         * this column is already indexed, an error will be returned.
+         * Creates an <a
+         * href="../../../../../concepts/indexes.html#column-index"
+         * target="_top">index</a> on the column name specified in {@code
+         * value}. If this column is already indexed, an error will be
+         * returned.
          */
         public static final String CREATE_INDEX = "create_index";
 
         /**
-         * Deletes an existing index on the column name specified in {@code
+         * Deletes an existing <a
+         * href="../../../../../concepts/indexes.html#column-index"
+         * target="_top">index</a> on the column name specified in {@code
          * value}. If this column does not have indexing turned on, an error
          * will be returned.
          */
         public static final String DELETE_INDEX = "delete_index";
 
         /**
-         * Move a table into a collection {@code value}.
+         * Moves a table into a collection {@code value}.
          */
         public static final String MOVE_TO_COLLECTION = "move_to_collection";
 
         /**
-         * Sets whether the given {@code tableName} should be protected or not.
-         * The {@code value} must be either 'true' or 'false'.
+         * Sets whether the given {@code tableName} should be <a
+         * href="../../../../../concepts/protection.html"
+         * target="_top">protected</a> or not. The {@code value} must be either
+         * 'true' or 'false'.
          */
         public static final String PROTECTED = "protected";
 
         /**
-         * Rename a table, view or collection to {@code value}. Has the same
+         * Renames a table, view or collection to {@code value}. Has the same
          * naming restrictions as <a href="../../../../../concepts/tables.html"
          * target="_top">tables</a>.
          */
         public static final String RENAME_TABLE = "rename_table";
 
         /**
-         * Sets the TTL of the table, view, or collection specified in {@code
-         * tableName}. The {@code value} must be the desired TTL in minutes.
+         * Sets the <a href="../../../../../concepts/ttl.html"
+         * target="_top">TTL</a> of the table, view, or collection specified in
+         * {@code tableName}.
          */
         public static final String TTL = "ttl";
 
         /**
-         * Add the column specified in {@code value} to the table specified in
+         * Adds the column specified in {@code value} to the table specified in
          * {@code tableName}.  Use {@code column_type} and {@code
          * column_properties} in {@code options} to set the column's type and
          * properties, respectively.
@@ -199,40 +220,47 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String ADD_COLUMN = "add_column";
 
         /**
-         * Change type and properties of the column specified in {@code value}.
-         * Use {@code column_type} and {@code column_properties} in {@code
-         * options} to set the column's type and properties, respectively.
+         * Changes type and properties of the column specified in {@code
+         * value}.  Use {@code column_type} and {@code column_properties} in
+         * {@code options} to set the column's type and properties,
+         * respectively.
          */
         public static final String CHANGE_COLUMN = "change_column";
 
         /**
-         * Modify the compression setting on the column specified in {@code
-         * value}.
+         * Modifies the <a href="../../../../../concepts/compression.html"
+         * target="_top">compression</a> setting on the column specified in
+         * {@code value}.
          */
         public static final String SET_COLUMN_COMPRESSION = "set_column_compression";
 
         /**
-         * Delete the column specified in {@code value} from the table
+         * Deletes the column specified in {@code value} from the table
          * specified in {@code tableName}.
          */
         public static final String DELETE_COLUMN = "delete_column";
 
         /**
-         * Create a foreign key using the format 'source_column references
-         * target_table(primary_key_column) [ as <foreign_key_name> ]'.
+         * Creates a <a href="../../../../../concepts/tables.html#foreign-key"
+         * target="_top">foreign key</a> using the format 'source_column
+         * references target_table(primary_key_column) [ as <foreign_key_name>
+         * ]'.
          */
         public static final String CREATE_FOREIGN_KEY = "create_foreign_key";
 
         /**
-         * Delete a foreign key.  The {@code value} should be the
-         * <foreign_key_name> or the string used to define the foreign key.
+         * Deletes a <a href="../../../../../concepts/tables.html#foreign-key"
+         * target="_top">foreign key</a>.  The {@code value} should be the
+         * <foreign_key_name> specified when creating the key or the complete
+         * string used to define it.
          */
         public static final String DELETE_FOREIGN_KEY = "delete_foreign_key";
 
         /**
-         * Set the global access mode (i.e. locking) for the table specified in
-         * {@code tableName}. Specify the access mode in {@code value}. Valid
-         * modes are 'no-access', 'read-only', 'write-only' and 'read-write'.
+         * Sets the global access mode (i.e. locking) for the table specified
+         * in {@code tableName}. Specify the access mode in {@code value}.
+         * Valid modes are 'no_access', 'read_only', 'write_only' and
+         * 'read_write'.
          */
         public static final String SET_GLOBAL_ACCESS_MODE = "set_global_access_mode";
 
@@ -421,72 +449,85 @@ public class AlterTableRequest implements IndexedRecord {
      *                {@code value} must be either 'true' or 'false'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
-     *                CREATE_INDEX}: Creates an index on the column name
-     *                specified in {@code value}. If this column is already
-     *                indexed, an error will be returned.
+     *                CREATE_INDEX}: Creates an <a
+     *                href="../../../../../concepts/indexes.html#column-index"
+     *                target="_top">index</a> on the column name specified in
+     *                {@code value}. If this column is already indexed, an
+     *                error will be returned.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
-     *                DELETE_INDEX}: Deletes an existing index on the column
-     *                name specified in {@code value}. If this column does not
-     *                have indexing turned on, an error will be returned.
+     *                DELETE_INDEX}: Deletes an existing <a
+     *                href="../../../../../concepts/indexes.html#column-index"
+     *                target="_top">index</a> on the column name specified in
+     *                {@code value}. If this column does not have indexing
+     *                turned on, an error will be returned.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
-     *                MOVE_TO_COLLECTION}: Move a table into a collection
+     *                MOVE_TO_COLLECTION}: Moves a table into a collection
      *                {@code value}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#PROTECTED
      *                PROTECTED}: Sets whether the given {@code tableName}
-     *                should be protected or not. The {@code value} must be
-     *                either 'true' or 'false'.
+     *                should be <a
+     *                href="../../../../../concepts/protection.html"
+     *                target="_top">protected</a> or not. The {@code value}
+     *                must be either 'true' or 'false'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE
-     *                RENAME_TABLE}: Rename a table, view or collection to
+     *                RENAME_TABLE}: Renames a table, view or collection to
      *                {@code value}. Has the same naming restrictions as <a
      *                href="../../../../../concepts/tables.html"
      *                target="_top">tables</a>.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}:
-     *                Sets the TTL of the table, view, or collection specified
-     *                in {@code tableName}. The {@code value} must be the
-     *                desired TTL in minutes.
+     *                Sets the <a href="../../../../../concepts/ttl.html"
+     *                target="_top">TTL</a> of the table, view, or collection
+     *                specified in {@code tableName}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
-     *                ADD_COLUMN}: Add the column specified in {@code value} to
-     *                the table specified in {@code tableName}.  Use {@code
+     *                ADD_COLUMN}: Adds the column specified in {@code value}
+     *                to the table specified in {@code tableName}.  Use {@code
      *                column_type} and {@code column_properties} in {@code
      *                options} to set the column's type and properties,
      *                respectively.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CHANGE_COLUMN
-     *                CHANGE_COLUMN}: Change type and properties of the column
+     *                CHANGE_COLUMN}: Changes type and properties of the column
      *                specified in {@code value}.  Use {@code column_type} and
      *                {@code column_properties} in {@code options} to set the
      *                column's type and properties, respectively.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
-     *                SET_COLUMN_COMPRESSION}: Modify the compression setting
-     *                on the column specified in {@code value}.
+     *                SET_COLUMN_COMPRESSION}: Modifies the <a
+     *                href="../../../../../concepts/compression.html"
+     *                target="_top">compression</a> setting on the column
+     *                specified in {@code value}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_COLUMN
-     *                DELETE_COLUMN}: Delete the column specified in {@code
+     *                DELETE_COLUMN}: Deletes the column specified in {@code
      *                value} from the table specified in {@code tableName}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
-     *                CREATE_FOREIGN_KEY}: Create a foreign key using the
-     *                format 'source_column references
+     *                CREATE_FOREIGN_KEY}: Creates a <a
+     *                href="../../../../../concepts/tables.html#foreign-key"
+     *                target="_top">foreign key</a> using the format
+     *                'source_column references
      *                target_table(primary_key_column) [ as <foreign_key_name>
      *                ]'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
-     *                DELETE_FOREIGN_KEY}: Delete a foreign key.  The {@code
-     *                value} should be the <foreign_key_name> or the string
-     *                used to define the foreign key.
+     *                DELETE_FOREIGN_KEY}: Deletes a <a
+     *                href="../../../../../concepts/tables.html#foreign-key"
+     *                target="_top">foreign key</a>.  The {@code value} should
+     *                be the <foreign_key_name> specified when creating the key
+     *                or the complete string used to define it.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
-     *                SET_GLOBAL_ACCESS_MODE}: Set the global access mode (i.e.
-     *                locking) for the table specified in {@code tableName}.
-     *                Specify the access mode in {@code value}. Valid modes are
-     *                'no-access', 'read-only', 'write-only' and 'read-write'.
+     *                SET_GLOBAL_ACCESS_MODE}: Sets the global access mode
+     *                (i.e. locking) for the table specified in {@code
+     *                tableName}. Specify the access mode in {@code value}.
+     *                Valid modes are 'no_access', 'read_only', 'write_only'
+     *                and 'read_write'.
      *                </ul>
      * @param value  The value of the modification. May be a column name,
      *               'true' or 'false', a TTL, or the global access mode
@@ -605,70 +646,81 @@ public class AlterTableRequest implements IndexedRecord {
      *         either 'true' or 'false'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
-     *         CREATE_INDEX}: Creates an index on the column name specified in
-     *         {@code value}. If this column is already indexed, an error will
-     *         be returned.
+     *         CREATE_INDEX}: Creates an <a
+     *         href="../../../../../concepts/indexes.html#column-index"
+     *         target="_top">index</a> on the column name specified in {@code
+     *         value}. If this column is already indexed, an error will be
+     *         returned.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
-     *         DELETE_INDEX}: Deletes an existing index on the column name
-     *         specified in {@code value}. If this column does not have
-     *         indexing turned on, an error will be returned.
+     *         DELETE_INDEX}: Deletes an existing <a
+     *         href="../../../../../concepts/indexes.html#column-index"
+     *         target="_top">index</a> on the column name specified in {@code
+     *         value}. If this column does not have indexing turned on, an
+     *         error will be returned.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
-     *         MOVE_TO_COLLECTION}: Move a table into a collection {@code
+     *         MOVE_TO_COLLECTION}: Moves a table into a collection {@code
      *         value}.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#PROTECTED
      *         PROTECTED}: Sets whether the given {@code tableName} should be
-     *         protected or not. The {@code value} must be either 'true' or
-     *         'false'.
+     *         <a href="../../../../../concepts/protection.html"
+     *         target="_top">protected</a> or not. The {@code value} must be
+     *         either 'true' or 'false'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE
-     *         RENAME_TABLE}: Rename a table, view or collection to {@code
+     *         RENAME_TABLE}: Renames a table, view or collection to {@code
      *         value}. Has the same naming restrictions as <a
      *         href="../../../../../concepts/tables.html"
      *         target="_top">tables</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}: Sets the
-     *         TTL of the table, view, or collection specified in {@code
-     *         tableName}. The {@code value} must be the desired TTL in
-     *         minutes.
+     *         <a href="../../../../../concepts/ttl.html" target="_top">TTL</a>
+     *         of the table, view, or collection specified in {@code
+     *         tableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
-     *         ADD_COLUMN}: Add the column specified in {@code value} to the
+     *         ADD_COLUMN}: Adds the column specified in {@code value} to the
      *         table specified in {@code tableName}.  Use {@code column_type}
      *         and {@code column_properties} in {@code options} to set the
      *         column's type and properties, respectively.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#CHANGE_COLUMN
-     *         CHANGE_COLUMN}: Change type and properties of the column
+     *         CHANGE_COLUMN}: Changes type and properties of the column
      *         specified in {@code value}.  Use {@code column_type} and {@code
      *         column_properties} in {@code options} to set the column's type
      *         and properties, respectively.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
-     *         SET_COLUMN_COMPRESSION}: Modify the compression setting on the
-     *         column specified in {@code value}.
+     *         SET_COLUMN_COMPRESSION}: Modifies the <a
+     *         href="../../../../../concepts/compression.html"
+     *         target="_top">compression</a> setting on the column specified in
+     *         {@code value}.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#DELETE_COLUMN
-     *         DELETE_COLUMN}: Delete the column specified in {@code value}
+     *         DELETE_COLUMN}: Deletes the column specified in {@code value}
      *         from the table specified in {@code tableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
-     *         CREATE_FOREIGN_KEY}: Create a foreign key using the format
-     *         'source_column references target_table(primary_key_column) [ as
+     *         CREATE_FOREIGN_KEY}: Creates a <a
+     *         href="../../../../../concepts/tables.html#foreign-key"
+     *         target="_top">foreign key</a> using the format 'source_column
+     *         references target_table(primary_key_column) [ as
      *         <foreign_key_name> ]'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
-     *         DELETE_FOREIGN_KEY}: Delete a foreign key.  The {@code value}
-     *         should be the <foreign_key_name> or the string used to define
-     *         the foreign key.
+     *         DELETE_FOREIGN_KEY}: Deletes a <a
+     *         href="../../../../../concepts/tables.html#foreign-key"
+     *         target="_top">foreign key</a>.  The {@code value} should be the
+     *         <foreign_key_name> specified when creating the key or the
+     *         complete string used to define it.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
-     *         SET_GLOBAL_ACCESS_MODE}: Set the global access mode (i.e.
+     *         SET_GLOBAL_ACCESS_MODE}: Sets the global access mode (i.e.
      *         locking) for the table specified in {@code tableName}. Specify
-     *         the access mode in {@code value}. Valid modes are 'no-access',
-     *         'read-only', 'write-only' and 'read-write'.
+     *         the access mode in {@code value}. Valid modes are 'no_access',
+     *         'read_only', 'write_only' and 'read_write'.
      *         </ul>
      * 
      */
@@ -689,72 +741,85 @@ public class AlterTableRequest implements IndexedRecord {
      *                {@code value} must be either 'true' or 'false'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
-     *                CREATE_INDEX}: Creates an index on the column name
-     *                specified in {@code value}. If this column is already
-     *                indexed, an error will be returned.
+     *                CREATE_INDEX}: Creates an <a
+     *                href="../../../../../concepts/indexes.html#column-index"
+     *                target="_top">index</a> on the column name specified in
+     *                {@code value}. If this column is already indexed, an
+     *                error will be returned.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
-     *                DELETE_INDEX}: Deletes an existing index on the column
-     *                name specified in {@code value}. If this column does not
-     *                have indexing turned on, an error will be returned.
+     *                DELETE_INDEX}: Deletes an existing <a
+     *                href="../../../../../concepts/indexes.html#column-index"
+     *                target="_top">index</a> on the column name specified in
+     *                {@code value}. If this column does not have indexing
+     *                turned on, an error will be returned.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
-     *                MOVE_TO_COLLECTION}: Move a table into a collection
+     *                MOVE_TO_COLLECTION}: Moves a table into a collection
      *                {@code value}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#PROTECTED
      *                PROTECTED}: Sets whether the given {@code tableName}
-     *                should be protected or not. The {@code value} must be
-     *                either 'true' or 'false'.
+     *                should be <a
+     *                href="../../../../../concepts/protection.html"
+     *                target="_top">protected</a> or not. The {@code value}
+     *                must be either 'true' or 'false'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE
-     *                RENAME_TABLE}: Rename a table, view or collection to
+     *                RENAME_TABLE}: Renames a table, view or collection to
      *                {@code value}. Has the same naming restrictions as <a
      *                href="../../../../../concepts/tables.html"
      *                target="_top">tables</a>.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}:
-     *                Sets the TTL of the table, view, or collection specified
-     *                in {@code tableName}. The {@code value} must be the
-     *                desired TTL in minutes.
+     *                Sets the <a href="../../../../../concepts/ttl.html"
+     *                target="_top">TTL</a> of the table, view, or collection
+     *                specified in {@code tableName}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
-     *                ADD_COLUMN}: Add the column specified in {@code value} to
-     *                the table specified in {@code tableName}.  Use {@code
+     *                ADD_COLUMN}: Adds the column specified in {@code value}
+     *                to the table specified in {@code tableName}.  Use {@code
      *                column_type} and {@code column_properties} in {@code
      *                options} to set the column's type and properties,
      *                respectively.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CHANGE_COLUMN
-     *                CHANGE_COLUMN}: Change type and properties of the column
+     *                CHANGE_COLUMN}: Changes type and properties of the column
      *                specified in {@code value}.  Use {@code column_type} and
      *                {@code column_properties} in {@code options} to set the
      *                column's type and properties, respectively.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
-     *                SET_COLUMN_COMPRESSION}: Modify the compression setting
-     *                on the column specified in {@code value}.
+     *                SET_COLUMN_COMPRESSION}: Modifies the <a
+     *                href="../../../../../concepts/compression.html"
+     *                target="_top">compression</a> setting on the column
+     *                specified in {@code value}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_COLUMN
-     *                DELETE_COLUMN}: Delete the column specified in {@code
+     *                DELETE_COLUMN}: Deletes the column specified in {@code
      *                value} from the table specified in {@code tableName}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
-     *                CREATE_FOREIGN_KEY}: Create a foreign key using the
-     *                format 'source_column references
+     *                CREATE_FOREIGN_KEY}: Creates a <a
+     *                href="../../../../../concepts/tables.html#foreign-key"
+     *                target="_top">foreign key</a> using the format
+     *                'source_column references
      *                target_table(primary_key_column) [ as <foreign_key_name>
      *                ]'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
-     *                DELETE_FOREIGN_KEY}: Delete a foreign key.  The {@code
-     *                value} should be the <foreign_key_name> or the string
-     *                used to define the foreign key.
+     *                DELETE_FOREIGN_KEY}: Deletes a <a
+     *                href="../../../../../concepts/tables.html#foreign-key"
+     *                target="_top">foreign key</a>.  The {@code value} should
+     *                be the <foreign_key_name> specified when creating the key
+     *                or the complete string used to define it.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
-     *                SET_GLOBAL_ACCESS_MODE}: Set the global access mode (i.e.
-     *                locking) for the table specified in {@code tableName}.
-     *                Specify the access mode in {@code value}. Valid modes are
-     *                'no-access', 'read-only', 'write-only' and 'read-write'.
+     *                SET_GLOBAL_ACCESS_MODE}: Sets the global access mode
+     *                (i.e. locking) for the table specified in {@code
+     *                tableName}. Specify the access mode in {@code value}.
+     *                Valid modes are 'no_access', 'read_only', 'write_only'
+     *                and 'read_write'.
      *                </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

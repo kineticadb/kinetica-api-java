@@ -17,10 +17,10 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link com.gpudb.GPUdb#lockTable(LockTableRequest)}.
  * <p>
  * Manages global access to a table's data.  By default a table has a {@code
- * lockType} of {@code read-write}, indicating all operations are permitted.  A
- * user may request a {@code read-only} or a {@code write-only} lock, after
+ * lockType} of {@code read_write}, indicating all operations are permitted.  A
+ * user may request a {@code read_only} or a {@code write_only} lock, after
  * which only read or write operations, respectively, are permitted on the
- * table until the lock is removed.  When {@code lockType} is {@code no-access}
+ * table until the lock is removed.  When {@code lockType} is {@code no_access}
  * then no operations are permitted on the table.  The lock status can be
  * queried by setting {@code lockType} to {@code status}.
  */
@@ -82,22 +82,22 @@ public class LockTableRequest implements IndexedRecord {
         /**
          * Allow no read/write operations
          */
-        public static final String NO_ACCESS = "no-access";
+        public static final String NO_ACCESS = "no_access";
 
         /**
          * Allow only read operations
          */
-        public static final String READ_ONLY = "read-only";
+        public static final String READ_ONLY = "read_only";
 
         /**
          * Allow only write operations
          */
-        public static final String WRITE_ONLY = "write-only";
+        public static final String WRITE_ONLY = "write_only";
 
         /**
          * Allow all read/write operations
          */
-        public static final String READ_WRITE = "read-write";
+        public static final String READ_WRITE = "read_write";
 
         private LockType() {  }
     }

@@ -29,10 +29,8 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
                 .name("yColumnName").type().stringType().noDefault()
                 .name("geometryColumnName").type().stringType().noDefault()
                 .name("trackIds").type().array().items().array().items().stringType().noDefault()
-                .name("cbColumnName1").type().stringType().noDefault()
-                .name("cbVals1").type().array().items().stringType().noDefault()
-                .name("cbColumnName2").type().array().items().stringType().noDefault()
-                .name("cbVals2").type().array().items().array().items().stringType().noDefault()
+                .name("cbColumnName").type().stringType().noDefault()
+                .name("cbVals").type().array().items().stringType().noDefault()
                 .name("minX").type().doubleType().noDefault()
                 .name("maxX").type().doubleType().noDefault()
                 .name("minY").type().doubleType().noDefault()
@@ -94,6 +92,10 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
 
         public static final String POINTSIZES = "pointsizes";
 
+        public static final String POINTOFFSET_X = "pointoffset_x";
+
+        public static final String POINTOFFSET_Y = "pointoffset_y";
+
         public static final String POINTSHAPES = "pointshapes";
 
         public static final String NONE = "none";
@@ -115,6 +117,10 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         public static final String SHAPELINEWIDTHS = "shapelinewidths";
 
         public static final String SHAPELINECOLORS = "shapelinecolors";
+
+        public static final String SHAPELINEPATTERNS = "shapelinepatterns";
+
+        public static final String SHAPELINEPATTERNLEN = "shapelinepatternlen";
 
         public static final String SHAPEFILLCOLORS = "shapefillcolors";
 
@@ -145,10 +151,8 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
     private String yColumnName;
     private String geometryColumnName;
     private List<List<String>> trackIds;
-    private String cbColumnName1;
-    private List<String> cbVals1;
-    private List<String> cbColumnName2;
-    private List<List<String>> cbVals2;
+    private String cbColumnName;
+    private List<String> cbVals;
     private double minX;
     private double maxX;
     private double minY;
@@ -168,26 +172,22 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         yColumnName = "";
         geometryColumnName = "";
         trackIds = new ArrayList<>();
-        cbColumnName1 = "";
-        cbVals1 = new ArrayList<>();
-        cbColumnName2 = new ArrayList<>();
-        cbVals2 = new ArrayList<>();
+        cbColumnName = "";
+        cbVals = new ArrayList<>();
         projection = "";
         styleOptions = new LinkedHashMap<>();
         options = new LinkedHashMap<>();
     }
 
-    public VisualizeImageClassbreakRequest(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbColumnName1, List<String> cbVals1, List<String> cbColumnName2, List<List<String>> cbVals2, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) {
+    public VisualizeImageClassbreakRequest(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbColumnName, List<String> cbVals, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) {
         this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
         this.worldTableNames = (worldTableNames == null) ? new ArrayList<String>() : worldTableNames;
         this.xColumnName = (xColumnName == null) ? "" : xColumnName;
         this.yColumnName = (yColumnName == null) ? "" : yColumnName;
         this.geometryColumnName = (geometryColumnName == null) ? "" : geometryColumnName;
         this.trackIds = (trackIds == null) ? new ArrayList<List<String>>() : trackIds;
-        this.cbColumnName1 = (cbColumnName1 == null) ? "" : cbColumnName1;
-        this.cbVals1 = (cbVals1 == null) ? new ArrayList<String>() : cbVals1;
-        this.cbColumnName2 = (cbColumnName2 == null) ? new ArrayList<String>() : cbColumnName2;
-        this.cbVals2 = (cbVals2 == null) ? new ArrayList<List<String>>() : cbVals2;
+        this.cbColumnName = (cbColumnName == null) ? "" : cbColumnName;
+        this.cbVals = (cbVals == null) ? new ArrayList<String>() : cbVals;
         this.minX = minX;
         this.maxX = maxX;
         this.minY = minY;
@@ -254,39 +254,21 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         return this;
     }
 
-    public String getCbColumnName1() {
-        return cbColumnName1;
+    public String getCbColumnName() {
+        return cbColumnName;
     }
 
-    public VisualizeImageClassbreakRequest setCbColumnName1(String cbColumnName1) {
-        this.cbColumnName1 = (cbColumnName1 == null) ? "" : cbColumnName1;
+    public VisualizeImageClassbreakRequest setCbColumnName(String cbColumnName) {
+        this.cbColumnName = (cbColumnName == null) ? "" : cbColumnName;
         return this;
     }
 
-    public List<String> getCbVals1() {
-        return cbVals1;
+    public List<String> getCbVals() {
+        return cbVals;
     }
 
-    public VisualizeImageClassbreakRequest setCbVals1(List<String> cbVals1) {
-        this.cbVals1 = (cbVals1 == null) ? new ArrayList<String>() : cbVals1;
-        return this;
-    }
-
-    public List<String> getCbColumnName2() {
-        return cbColumnName2;
-    }
-
-    public VisualizeImageClassbreakRequest setCbColumnName2(List<String> cbColumnName2) {
-        this.cbColumnName2 = (cbColumnName2 == null) ? new ArrayList<String>() : cbColumnName2;
-        return this;
-    }
-
-    public List<List<String>> getCbVals2() {
-        return cbVals2;
-    }
-
-    public VisualizeImageClassbreakRequest setCbVals2(List<List<String>> cbVals2) {
-        this.cbVals2 = (cbVals2 == null) ? new ArrayList<List<String>>() : cbVals2;
+    public VisualizeImageClassbreakRequest setCbVals(List<String> cbVals) {
+        this.cbVals = (cbVals == null) ? new ArrayList<String>() : cbVals;
         return this;
     }
 
@@ -407,45 +389,39 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
                 return this.trackIds;
 
             case 6:
-                return this.cbColumnName1;
+                return this.cbColumnName;
 
             case 7:
-                return this.cbVals1;
+                return this.cbVals;
 
             case 8:
-                return this.cbColumnName2;
-
-            case 9:
-                return this.cbVals2;
-
-            case 10:
                 return this.minX;
 
-            case 11:
+            case 9:
                 return this.maxX;
 
-            case 12:
+            case 10:
                 return this.minY;
 
-            case 13:
+            case 11:
                 return this.maxY;
 
-            case 14:
+            case 12:
                 return this.width;
 
-            case 15:
+            case 13:
                 return this.height;
 
-            case 16:
+            case 14:
                 return this.projection;
 
-            case 17:
+            case 15:
                 return this.bgColor;
 
-            case 18:
+            case 16:
                 return this.styleOptions;
 
-            case 19:
+            case 17:
                 return this.options;
 
             default:
@@ -482,58 +458,50 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
                 break;
 
             case 6:
-                this.cbColumnName1 = (String)value;
+                this.cbColumnName = (String)value;
                 break;
 
             case 7:
-                this.cbVals1 = (List<String>)value;
+                this.cbVals = (List<String>)value;
                 break;
 
             case 8:
-                this.cbColumnName2 = (List<String>)value;
-                break;
-
-            case 9:
-                this.cbVals2 = (List<List<String>>)value;
-                break;
-
-            case 10:
                 this.minX = (Double)value;
                 break;
 
-            case 11:
+            case 9:
                 this.maxX = (Double)value;
                 break;
 
-            case 12:
+            case 10:
                 this.minY = (Double)value;
                 break;
 
-            case 13:
+            case 11:
                 this.maxY = (Double)value;
                 break;
 
-            case 14:
+            case 12:
                 this.width = (Integer)value;
                 break;
 
-            case 15:
+            case 13:
                 this.height = (Integer)value;
                 break;
 
-            case 16:
+            case 14:
                 this.projection = (String)value;
                 break;
 
-            case 17:
+            case 15:
                 this.bgColor = (Long)value;
                 break;
 
-            case 18:
+            case 16:
                 this.styleOptions = (Map<String, List<String>>)value;
                 break;
 
-            case 19:
+            case 17:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -561,10 +529,8 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
                  && this.yColumnName.equals( that.yColumnName )
                  && this.geometryColumnName.equals( that.geometryColumnName )
                  && this.trackIds.equals( that.trackIds )
-                 && this.cbColumnName1.equals( that.cbColumnName1 )
-                 && this.cbVals1.equals( that.cbVals1 )
-                 && this.cbColumnName2.equals( that.cbColumnName2 )
-                 && this.cbVals2.equals( that.cbVals2 )
+                 && this.cbColumnName.equals( that.cbColumnName )
+                 && this.cbVals.equals( that.cbVals )
                  && ( (Double)this.minX ).equals( (Double)that.minX )
                  && ( (Double)this.maxX ).equals( (Double)that.maxX )
                  && ( (Double)this.minY ).equals( (Double)that.minY )
@@ -607,21 +573,13 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.trackIds ) );
         builder.append( ", " );
-        builder.append( gd.toString( "cbColumnName1" ) );
+        builder.append( gd.toString( "cbColumnName" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.cbColumnName1 ) );
+        builder.append( gd.toString( this.cbColumnName ) );
         builder.append( ", " );
-        builder.append( gd.toString( "cbVals1" ) );
+        builder.append( gd.toString( "cbVals" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.cbVals1 ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "cbColumnName2" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.cbColumnName2 ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "cbVals2" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.cbVals2 ) );
+        builder.append( gd.toString( this.cbVals ) );
         builder.append( ", " );
         builder.append( gd.toString( "minX" ) );
         builder.append( ": " );
@@ -677,10 +635,8 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         hashCode = (31 * hashCode) + this.yColumnName.hashCode();
         hashCode = (31 * hashCode) + this.geometryColumnName.hashCode();
         hashCode = (31 * hashCode) + this.trackIds.hashCode();
-        hashCode = (31 * hashCode) + this.cbColumnName1.hashCode();
-        hashCode = (31 * hashCode) + this.cbVals1.hashCode();
-        hashCode = (31 * hashCode) + this.cbColumnName2.hashCode();
-        hashCode = (31 * hashCode) + this.cbVals2.hashCode();
+        hashCode = (31 * hashCode) + this.cbColumnName.hashCode();
+        hashCode = (31 * hashCode) + this.cbVals.hashCode();
         hashCode = (31 * hashCode) + ((Double)this.minX).hashCode();
         hashCode = (31 * hashCode) + ((Double)this.maxX).hashCode();
         hashCode = (31 * hashCode) + ((Double)this.minY).hashCode();

@@ -395,6 +395,20 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}
      *                 </ul>
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminOfflineRequest.Options#FLUSH_TO_DISK
+     *                 FLUSH_TO_DISK}: Flush to disk when going offline
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminOfflineRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminOfflineRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -1118,12 +1132,11 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table},
-     *                 otherwise the table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail. Additionally this
-     *                 option is invalid if {@code tableName} is a collection.
+     *                 contain the table specified in {@code result_table}. If
+     *                 the collection provided is non-existent, the collection
+     *                 will be automatically created. If empty, then the table
+     *                 will be a top-level table.  Additionally this option is
+     *                 invalid if {@code tableName} is a collection.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
      *                 EXPRESSION}: Filter expression to apply to the table
@@ -1187,14 +1200,12 @@ public class GPUdb extends GPUdbBase {
      *                 type.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
-     *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
+     *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
      *                 table specified in {@code result_table} will be
-     *                 persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} (the default) then the
-     *                 result table will be a read-only, memory-only temporary
-     *                 table.
+     *                 persisted and will not expire unless a {@code ttl} is
+     *                 specified.   If {@code false}, then the result table
+     *                 will be an in-memory table and will expire unless a
+     *                 {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1219,14 +1230,32 @@ public class GPUdb extends GPUdbBase {
      *                 with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table specified in {@code
-     *                 result_table}. The value must be the desired TTL in
-     *                 minutes.
+     *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for the result table. Must be used in
-     *                 combination with the {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
+     *                 result table. Must be used in combination with the
+     *                 {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
+     *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
+     *                 the groupby result table will be cached on the GPU. Must
+     *                 be used in combination with the {@code result_table}
+     *                 option.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -1979,11 +2008,11 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in 'result_table', otherwise
-     *                 the table will be a top-level table. If the collection
-     *                 does not allow duplicate types and it contains a table
-     *                 of the same type as the given one, then this table
-     *                 creation request will fail.
+     *                 contain the table specified in {@code result_table}. If
+     *                 the collection provided is non-existent, the collection
+     *                 will be automatically created. If empty, then the table
+     *                 will be a top-level table.  Additionally this option is
+     *                 invalid if {@code tableName} is a collection.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
@@ -2013,14 +2042,12 @@ public class GPUdb extends GPUdbBase {
      *                 target="_top">tables</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
-     *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
+     *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
      *                 table specified in {@code result_table} will be
-     *                 persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} (the default) then the
-     *                 result table will be a read-only, memory-only temporary
-     *                 table.
+     *                 persisted and will not expire unless a {@code ttl} is
+     *                 specified.   If {@code false}, then the result table
+     *                 will be an in-memory table and will expire unless a
+     *                 {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -2037,22 +2064,22 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_FORCE_REPLICATED
      *                 RESULT_TABLE_FORCE_REPLICATED}: Force the result table
      *                 to be replicated (ignores any sharding). Must be used in
-     *                 combination with the 'result_table' option.
+     *                 combination with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_GENERATE_PK
      *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
      *                 key for the result table. Must be used in combination
-     *                 with the 'result_table' option.
+     *                 with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table specified in
-     *                 'result_table'. The value must be the desired TTL in
-     *                 minutes.
+     *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for the result table. Must be used in
-     *                 combination with the {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
+     *                 result table. Must be used in combination with the
+     *                 {@code result_table} option.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -2176,12 +2203,10 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table},
-     *                 otherwise the table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail. Additionally this
-     *                 option is invalid if {@code tableName} is a collection.
+     *                 contain the table specified in {@code result_table}. If
+     *                 the collection provided is non-existent, the collection
+     *                 will be automatically created. If empty, then the table
+     *                 will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of the table used to store the
@@ -2191,14 +2216,12 @@ public class GPUdb extends GPUdbBase {
      *                 returned in the response.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_PERSIST
-     *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
-     *                 table specified in {result_table}@{key of input.options}
-     *                 will be persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} (the default) then the
-     *                 result table will be a read-only, memory-only temporary
-     *                 table.
+     *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
+     *                 table specified in {@code result_table} will be
+     *                 persisted and will not expire unless a {@code ttl} is
+     *                 specified.   If {@code false}, then the result table
+     *                 will be an in-memory table and will expire unless a
+     *                 {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -2224,17 +2247,17 @@ public class GPUdb extends GPUdbBase {
      *                 rather than the original column name.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for the result table. Must be used in
-     *                 combination with the {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
+     *                 result table. Must be used in combination with the
+     *                 {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT
      *                 LIMIT}: The number of records to keep.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table specified in {@code
-     *                 result_table}. The value must be the desired TTL in
-     *                 minutes.
+     *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 result_table}.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -2456,28 +2479,30 @@ public class GPUdb extends GPUdbBase {
      * available
      * modifications include the following:
      * <p>
-     * Create or delete an index on a particular column. This can speed up
-     * certain search queries
-     * (such as {@link GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link
-     * GPUdb#deleteRecords(DeleteRecordsRequest)}, {@link
-     * GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)})
-     * when using expressions containing equality or relational operators on
-     * indexed columns. This
-     * only applies to tables.
+     * Create or delete an <a
+     * href="../../../../concepts/indexes.html#column-index"
+     * target="_top">index</a> on a
+     * particular column. This can speed up certain operations when using
+     * expressions
+     * containing equality or relational operators on indexed columns. This
+     * only
+     * applies to tables.
      * <p>
-     * Set the time-to-live (TTL). This can be applied to tables, views, or
-     * collections.  When
-     * applied to collections, every table & view within the collection will
-     * have its TTL set to the
-     * given value.
+     * Set the <a href="../../../../concepts/ttl.html"
+     * target="_top">time-to-live (TTL)</a>. This can be applied
+     * to tables, views, or collections.  When applied to collections, every
+     * contained
+     * table & view that is not protected will have its TTL set to the given
+     * value.
      * <p>
      * Set the global access mode (i.e. locking) for a table. The mode can be
-     * set to 'no-access', 'read-only',
-     * 'write-only' or 'read-write'.
+     * set to
+     * 'no_access', 'read_only', 'write_only' or 'read_write'.
      * <p>
-     * Make a table protected or not. Protected tables have their TTLs set to
-     * not automatically
-     * expire. This can be applied to tables, views, and collections.
+     * Change the <a href="../../../../concepts/protection.html"
+     * target="_top">protection</a> mode to prevent or
+     * allow automatic expiration. This can be applied to tables, views, and
+     * collections.
      * <p>
      * Allow homogeneous tables within a collection.
      * <p>
@@ -2485,7 +2510,8 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../concepts/types.html" target="_top">type and
      * properties</a> modified.
      * <p>
-     * Set or unset compression for a column.
+     * Set or unset <a href="../../../../concepts/compression.html"
+     * target="_top">compression</a> for a column.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -2510,28 +2536,30 @@ public class GPUdb extends GPUdbBase {
      * available
      * modifications include the following:
      * <p>
-     * Create or delete an index on a particular column. This can speed up
-     * certain search queries
-     * (such as {@link GPUdb#getRecordsRaw(GetRecordsRequest)}, {@link
-     * GPUdb#deleteRecords(String, List, Map)}, {@link
-     * GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)})
-     * when using expressions containing equality or relational operators on
-     * indexed columns. This
-     * only applies to tables.
+     * Create or delete an <a
+     * href="../../../../concepts/indexes.html#column-index"
+     * target="_top">index</a> on a
+     * particular column. This can speed up certain operations when using
+     * expressions
+     * containing equality or relational operators on indexed columns. This
+     * only
+     * applies to tables.
      * <p>
-     * Set the time-to-live (TTL). This can be applied to tables, views, or
-     * collections.  When
-     * applied to collections, every table & view within the collection will
-     * have its TTL set to the
-     * given value.
+     * Set the <a href="../../../../concepts/ttl.html"
+     * target="_top">time-to-live (TTL)</a>. This can be applied
+     * to tables, views, or collections.  When applied to collections, every
+     * contained
+     * table & view that is not protected will have its TTL set to the given
+     * value.
      * <p>
      * Set the global access mode (i.e. locking) for a table. The mode can be
-     * set to 'no-access', 'read-only',
-     * 'write-only' or 'read-write'.
+     * set to
+     * 'no_access', 'read_only', 'write_only' or 'read_write'.
      * <p>
-     * Make a table protected or not. Protected tables have their TTLs set to
-     * not automatically
-     * expire. This can be applied to tables, views, and collections.
+     * Change the <a href="../../../../concepts/protection.html"
+     * target="_top">protection</a> mode to prevent or
+     * allow automatic expiration. This can be applied to tables, views, and
+     * collections.
      * <p>
      * Allow homogeneous tables within a collection.
      * <p>
@@ -2539,7 +2567,8 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../concepts/types.html" target="_top">type and
      * properties</a> modified.
      * <p>
-     * Set or unset compression for a column.
+     * Set or unset <a href="../../../../concepts/compression.html"
+     * target="_top">compression</a> for a column.
      * 
      * @param tableName  Table on which the operation will be performed. Must
      *                   be an existing table, view, or collection.
@@ -2554,72 +2583,84 @@ public class GPUdb extends GPUdbBase {
      *                {@code value} must be either 'true' or 'false'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
-     *                CREATE_INDEX}: Creates an index on the column name
-     *                specified in {@code value}. If this column is already
-     *                indexed, an error will be returned.
+     *                CREATE_INDEX}: Creates an <a
+     *                href="../../../../concepts/indexes.html#column-index"
+     *                target="_top">index</a> on the column name specified in
+     *                {@code value}. If this column is already indexed, an
+     *                error will be returned.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
-     *                DELETE_INDEX}: Deletes an existing index on the column
-     *                name specified in {@code value}. If this column does not
-     *                have indexing turned on, an error will be returned.
+     *                DELETE_INDEX}: Deletes an existing <a
+     *                href="../../../../concepts/indexes.html#column-index"
+     *                target="_top">index</a> on the column name specified in
+     *                {@code value}. If this column does not have indexing
+     *                turned on, an error will be returned.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
-     *                MOVE_TO_COLLECTION}: Move a table into a collection
+     *                MOVE_TO_COLLECTION}: Moves a table into a collection
      *                {@code value}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#PROTECTED
      *                PROTECTED}: Sets whether the given {@code tableName}
-     *                should be protected or not. The {@code value} must be
-     *                either 'true' or 'false'.
+     *                should be <a href="../../../../concepts/protection.html"
+     *                target="_top">protected</a> or not. The {@code value}
+     *                must be either 'true' or 'false'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE
-     *                RENAME_TABLE}: Rename a table, view or collection to
+     *                RENAME_TABLE}: Renames a table, view or collection to
      *                {@code value}. Has the same naming restrictions as <a
      *                href="../../../../concepts/tables.html"
      *                target="_top">tables</a>.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}:
-     *                Sets the TTL of the table, view, or collection specified
-     *                in {@code tableName}. The {@code value} must be the
-     *                desired TTL in minutes.
+     *                Sets the <a href="../../../../concepts/ttl.html"
+     *                target="_top">TTL</a> of the table, view, or collection
+     *                specified in {@code tableName}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
-     *                ADD_COLUMN}: Add the column specified in {@code value} to
-     *                the table specified in {@code tableName}.  Use {@code
+     *                ADD_COLUMN}: Adds the column specified in {@code value}
+     *                to the table specified in {@code tableName}.  Use {@code
      *                column_type} and {@code column_properties} in {@code
      *                options} to set the column's type and properties,
      *                respectively.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CHANGE_COLUMN
-     *                CHANGE_COLUMN}: Change type and properties of the column
+     *                CHANGE_COLUMN}: Changes type and properties of the column
      *                specified in {@code value}.  Use {@code column_type} and
      *                {@code column_properties} in {@code options} to set the
      *                column's type and properties, respectively.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
-     *                SET_COLUMN_COMPRESSION}: Modify the compression setting
-     *                on the column specified in {@code value}.
+     *                SET_COLUMN_COMPRESSION}: Modifies the <a
+     *                href="../../../../concepts/compression.html"
+     *                target="_top">compression</a> setting on the column
+     *                specified in {@code value}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_COLUMN
-     *                DELETE_COLUMN}: Delete the column specified in {@code
+     *                DELETE_COLUMN}: Deletes the column specified in {@code
      *                value} from the table specified in {@code tableName}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
-     *                CREATE_FOREIGN_KEY}: Create a foreign key using the
-     *                format 'source_column references
+     *                CREATE_FOREIGN_KEY}: Creates a <a
+     *                href="../../../../concepts/tables.html#foreign-key"
+     *                target="_top">foreign key</a> using the format
+     *                'source_column references
      *                target_table(primary_key_column) [ as <foreign_key_name>
      *                ]'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
-     *                DELETE_FOREIGN_KEY}: Delete a foreign key.  The {@code
-     *                value} should be the <foreign_key_name> or the string
-     *                used to define the foreign key.
+     *                DELETE_FOREIGN_KEY}: Deletes a <a
+     *                href="../../../../concepts/tables.html#foreign-key"
+     *                target="_top">foreign key</a>.  The {@code value} should
+     *                be the <foreign_key_name> specified when creating the key
+     *                or the complete string used to define it.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
-     *                SET_GLOBAL_ACCESS_MODE}: Set the global access mode (i.e.
-     *                locking) for the table specified in {@code tableName}.
-     *                Specify the access mode in {@code value}. Valid modes are
-     *                'no-access', 'read-only', 'write-only' and 'read-write'.
+     *                SET_GLOBAL_ACCESS_MODE}: Sets the global access mode
+     *                (i.e. locking) for the table specified in {@code
+     *                tableName}. Specify the access mode in {@code value}.
+     *                Valid modes are 'no_access', 'read_only', 'write_only'
+     *                and 'read_write'.
      *                </ul>
      * @param value  The value of the modification. May be a column name,
      *               'true' or 'false', a TTL, or the global access mode
@@ -2877,7 +2918,7 @@ public class GPUdb extends GPUdbBase {
      *                 of results to be returned from source table (specified
      *                 by {@code sourceTableName}). Or END_OF_SET (-9999) to
      *                 indicate that the max number of results should be
-     *                 returned. Default value is END_OF_SET (-9999).
+     *                 returned.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
@@ -3134,7 +3175,7 @@ public class GPUdb extends GPUdbBase {
      *                       href="../../../../concepts/tables.html"
      *                       target="_top">tables</a>.
      * @param tableNames  The list of table names composing the join.
-     *                    Corresponds to a SQL statement FROM clause
+     *                    Corresponds to a SQL statement FROM clause.
      * @param columnNames  List of member table columns or column expressions
      *                     to be included in the join. Columns can be prefixed
      *                     with 'table_id.column_name', where 'table_id' is the
@@ -3240,9 +3281,9 @@ public class GPUdb extends GPUdbBase {
      *                 NO_REFRESH}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table specified in {@code
-     *                 joinTableName}. The value must be the desired TTL in
-     *                 minutes.
+     *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the join table specified in
+     *                 {@code joinTableName}.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -3449,7 +3490,8 @@ public class GPUdb extends GPUdbBase {
      *                 target="_top">collection</a> to which the projection is
      *                 to be assigned as a child. If the collection provided is
      *                 non-existent, the collection will be automatically
-     *                 created.
+     *                 created. If empty, then the projection will be at the
+     *                 top level.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      *                 EXPRESSION}: An optional filter <a
@@ -3484,13 +3526,13 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for this table.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
+     *                 this table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table, view, or collection
-     *                 specified in {@code projectionName}. The value must be
-     *                 the desired TTL in minutes.
+     *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the projection specified in
+     *                 {@code projectionName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#SHARD_KEY
      *                 SHARD_KEY}: Comma-separated list of the columns to be
@@ -3500,12 +3542,12 @@ public class GPUdb extends GPUdbBase {
      *                 be used, rather than the original column name.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#PERSIST
-     *                 PERSIST}: If {@code true} then the projection will be
-     *                 persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} then the projection will
-     *                 be a read-only, memory-only temporary table.
+     *                 PERSIST}: If {@code true}, then the projection specified
+     *                 in {@code projectionName} will be persisted and will not
+     *                 expire unless a {@code ttl} is specified.   If {@code
+     *                 false}, then the projection will be an in-memory table
+     *                 and will expire unless a {@code ttl} is specified
+     *                 otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -3655,11 +3697,10 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created table. If empty, then the
-     *                 newly created table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail.
+     *                 contain the newly created table. If the collection
+     *                 provided is non-existent, the collection will be
+     *                 automatically created. If empty, then the newly created
+     *                 table will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_COLLECTION
      *                 IS_COLLECTION}: Indicates whether the new table to be
@@ -3693,10 +3734,20 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
-     *                 IS_REPLICATED}: For a table, indicates whether the table
-     *                 is to be replicated to all the database ranks. This may
-     *                 be necessary when the table is to be joined with other
-     *                 tables in a query.
+     *                 IS_REPLICATED}: For a table, indicates the <a
+     *                 href="../../../../concepts/tables.html#distribution"
+     *                 target="_top">distribution scheme</a> for the table's
+     *                 data.  If true, the table will be <a
+     *                 href="../../../../concepts/tables.html#replication"
+     *                 target="_top">replicated</a>.  If false, the table will
+     *                 be <a href="../../../../concepts/tables.html#sharding"
+     *                 target="_top">sharded</a> according to the <a
+     *                 href="../../../../concepts/tables.html#shard-keys"
+     *                 target="_top">shard key</a> specified in the given
+     *                 {@code typeId}, or <a
+     *                 href="../../../../concepts/tables.html#random-sharding"
+     *                 target="_top">randomly sharded</a>, if no shard key is
+     *                 specified.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -3710,8 +3761,10 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
-     *                 FOREIGN_KEYS}: Semicolon-separated list of foreign keys,
-     *                 of the format 'source_column references
+     *                 FOREIGN_KEYS}: Semicolon-separated list of <a
+     *                 href="../../../../concepts/tables.html#foreign-keys"
+     *                 target="_top">foreign keys</a>, of the format
+     *                 'source_column references
      *                 target_table(primary_key_column) [ as <foreign_key_name>
      *                 ]'.
      *                         <li> {@link
@@ -3721,24 +3774,21 @@ public class GPUdb extends GPUdbBase {
      *                 target_table(primary_key_column)'
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}:
-     *                 Sets the TTL of the table or collection specified in
-     *                 {@code tableName}. The value must be the desired TTL in
-     *                 minutes.
+     *                 For a table, sets the <a
+     *                 href="../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for this table.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
+     *                 this table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
      *                 IS_RESULT_TABLE}: For a table, indicates whether the
-     *                 table is a non-persistent, memory-only table that will
-     *                 store the output of a proc executed with {@link
-     *                 GPUdb#executeProc(String, Map, Map, List, Map, List,
-     *                 Map)}. A result table cannot contain store_only,
-     *                 text_search, or string columns (char columns are
-     *                 acceptable), records cannot be inserted into it
-     *                 directly, and it will not be retained if the server is
-     *                 restarted.
+     *                 table is an in-memory table. A result table cannot
+     *                 contain store_only, text_search, or string columns
+     *                 (charN columns are acceptable), and it will not be
+     *                 retained if the server is restarted.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -4325,7 +4375,7 @@ public class GPUdb extends GPUdbBase {
     /**
      * Performs a <a href="../../../../concepts/unions.html"
      * target="_top">union</a> (concatenation) of one or more existing tables
-     * or views, the results of which are stored in a new view. It is
+     * or views, the results of which are stored in a new table. It is
      * equivalent to the SQL UNION ALL operator.  Non-charN 'string' and
      * 'bytes' column types cannot be included in a union, neither can columns
      * with the property 'store_only'. Though not explicitly unions, <a
@@ -4354,7 +4404,7 @@ public class GPUdb extends GPUdbBase {
     /**
      * Performs a <a href="../../../../concepts/unions.html"
      * target="_top">union</a> (concatenation) of one or more existing tables
-     * or views, the results of which are stored in a new view. It is
+     * or views, the results of which are stored in a new table. It is
      * equivalent to the SQL UNION ALL operator.  Non-charN 'string' and
      * 'bytes' column types cannot be included in a union, neither can columns
      * with the property 'store_only'. Though not explicitly unions, <a
@@ -4426,34 +4476,36 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
      *                 MERGE_VIEWS}: Merge two or more views (or views of
-     *                 views) of the same base data set into a new view. The
-     *                 resulting view would match the results of a SQL OR
-     *                 operation, e.g., if filter 1 creates a view using the
-     *                 expression 'x = 10' and filter 2 creates a view using
-     *                 the expression 'x <= 10', then the merge views operation
-     *                 creates a new view using the expression 'x = 10 OR x <=
-     *                 10'.
+     *                 views) of the same base data set into a new view. If
+     *                 this mode is selected
+     *                                                       {@code
+     *                 inputColumnNames} AND {@code outputColumnNames} are
+     *                 ignored The resulting view would match the results of a
+     *                 SQL OR operation, e.g., if filter 1 creates a view using
+     *                 the expression 'x = 10' and filter 2 creates a view
+     *                 using the expression 'x <= 10', then the merge views
+     *                 operation creates a new view using the expression 'x =
+     *                 10 OR x <= 10'.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
      *                 UNION_ALL}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for this table.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
+     *                 this table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}:
-     *                 Sets the TTL of the table specified in {@code
-     *                 tableName}. The value must be the desired TTL in
-     *                 minutes.
+     *                 Sets the <a href="../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#PERSIST
-     *                 PERSIST}: If {@code true} then the union will be
-     *                 persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} (the default) then the
-     *                 union will be a read-only, memory-only temporary table.
+     *                 PERSIST}: If {@code true}, then the union specified in
+     *                 {@code tableName} will be persisted and will not expire
+     *                 unless a {@code ttl} is specified.   If {@code false},
+     *                 then the union will be an in-memory table and will
+     *                 expire unless a {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -4953,15 +5005,15 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view, otherwise the view will
-     *                 be a top-level table. If the collection does not allow
-     *                 duplicate types and it contains a table of the same type
-     *                 as the given one, then this table creation request will
-     *                 fail.
+     *                 contain the newly created view. If the collection
+     *                 provided is non-existent, the collection will be
+     *                 automatically created. If empty, then the newly created
+     *                 view will be top-level.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterRequest.Options#TTL TTL}: Sets
-     *                 the TTL of the view specified in {@code viewName}. The
-     *                 value must be the desired TTL in minutes.
+     *                 the <a href="../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the view specified in {@code
+     *                 viewName}.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -6444,19 +6496,16 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * For a given table, retrieves the values of the given columns within a
-     * given range. It returns maps of column name to the vector of values for
-     * each supported data type (double, float, long, int and string). This
-     * operation supports pagination feature, i.e. values that are retrieved
-     * are those associated with the indices between the start (offset) and end
-     * value (offset + limit) parameters (inclusive). If there are num_points
-     * values in the table then each of the indices between 0 and num_points-1
-     * retrieves a unique value.
+     * For a given table, retrieves the values from the requested column(s).
+     * Maps of column name to the array of values as well as the column data
+     * type are returned. This endpoint supports pagination with the {@code
+     * offset} and {@code limit} parameters.
      * <p>
-     * Note that when using the pagination feature, if the table (or the
-     * underlying table in case of a view) is updated (records are inserted,
-     * deleted or modified) the records or values retrieved may differ between
-     * calls (discontiguous or overlap) based on the type of the update.
+     * When using pagination, if the table (or the underlying table in the case
+     * of a view) is modified (records are inserted, updated, or deleted)
+     * during a call to the endpoint, the records or values retrieved may
+     * differ between calls based on the type of the update, e.g., the
+     * contiguity across pages cannot be relied upon.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
@@ -6481,19 +6530,16 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * For a given table, retrieves the values of the given columns within a
-     * given range. It returns maps of column name to the vector of values for
-     * each supported data type (double, float, long, int and string). This
-     * operation supports pagination feature, i.e. values that are retrieved
-     * are those associated with the indices between the start (offset) and end
-     * value (offset + limit) parameters (inclusive). If there are num_points
-     * values in the table then each of the indices between 0 and num_points-1
-     * retrieves a unique value.
+     * For a given table, retrieves the values from the requested column(s).
+     * Maps of column name to the array of values as well as the column data
+     * type are returned. This endpoint supports pagination with the {@code
+     * offset} and {@code limit} parameters.
      * <p>
-     * Note that when using the pagination feature, if the table (or the
-     * underlying table in case of a view) is updated (records are inserted,
-     * deleted or modified) the records or values retrieved may differ between
-     * calls (discontiguous or overlap) based on the type of the update.
+     * When using pagination, if the table (or the underlying table in the case
+     * of a view) is modified (records are inserted, updated, or deleted)
+     * during a call to the endpoint, the records or values retrieved may
+     * differ between calls based on the type of the update, e.g., the
+     * contiguity across pages cannot be relied upon.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
@@ -6526,19 +6572,16 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * For a given table, retrieves the values of the given columns within a
-     * given range. It returns maps of column name to the vector of values for
-     * each supported data type (double, float, long, int and string). This
-     * operation supports pagination feature, i.e. values that are retrieved
-     * are those associated with the indices between the start (offset) and end
-     * value (offset + limit) parameters (inclusive). If there are num_points
-     * values in the table then each of the indices between 0 and num_points-1
-     * retrieves a unique value.
+     * For a given table, retrieves the values from the requested column(s).
+     * Maps of column name to the array of values as well as the column data
+     * type are returned. This endpoint supports pagination with the {@code
+     * offset} and {@code limit} parameters.
      * <p>
-     * Note that when using the pagination feature, if the table (or the
-     * underlying table in case of a view) is updated (records are inserted,
-     * deleted or modified) the records or values retrieved may differ between
-     * calls (discontiguous or overlap) based on the type of the update.
+     * When using pagination, if the table (or the underlying table in the case
+     * of a view) is modified (records are inserted, updated, or deleted)
+     * during a call to the endpoint, the records or values retrieved may
+     * differ between calls based on the type of the update, e.g., the
+     * contiguity across pages cannot be relied upon.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
@@ -7879,8 +7922,9 @@ public class GPUdb extends GPUdbBase {
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsRandomRequest.Options#ATTR_NAME
-     *                 ATTR_NAME}: Set the following parameters for the column
-     *                 specified by the key. This overrides any parameter set
+     *                 ATTR_NAME}: Use the desired column name in place of
+     *                 {@code attr_name}, and set the following parameters for
+     *                 the column specified. This overrides any parameter set
      *                 by {@code all}.
      *                 <ul>
      *                         <li> {@link
@@ -8129,11 +8173,11 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Manages global access to a table's data.  By default a table has a
-     * {@code lockType} of {@code read-write}, indicating all operations are
-     * permitted.  A user may request a {@code read-only} or a {@code
-     * write-only} lock, after which only read or write operations,
+     * {@code lockType} of {@code read_write}, indicating all operations are
+     * permitted.  A user may request a {@code read_only} or a {@code
+     * write_only} lock, after which only read or write operations,
      * respectively, are permitted on the table until the lock is removed.
-     * When {@code lockType} is {@code no-access} then no operations are
+     * When {@code lockType} is {@code no_access} then no operations are
      * permitted on the table.  The lock status can be queried by setting
      * {@code lockType} to {@code status}.
      * 
@@ -8157,11 +8201,11 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Manages global access to a table's data.  By default a table has a
-     * {@code lockType} of {@code read-write}, indicating all operations are
-     * permitted.  A user may request a {@code read-only} or a {@code
-     * write-only} lock, after which only read or write operations,
+     * {@code lockType} of {@code read_write}, indicating all operations are
+     * permitted.  A user may request a {@code read_only} or a {@code
+     * write_only} lock, after which only read or write operations,
      * respectively, are permitted on the table until the lock is removed.
-     * When {@code lockType} is {@code no-access} then no operations are
+     * When {@code lockType} is {@code no_access} then no operations are
      * permitted on the table.  The lock status can be queried by setting
      * {@code lockType} to {@code status}.
      * 
@@ -8215,7 +8259,11 @@ public class GPUdb extends GPUdbBase {
      * sourceTableNames}) based on the field mapping information (specified by
      * {@code fieldMaps}). The field map (specified by {@code fieldMaps}) holds
      * the user specified maps of target table column names to source table
-     * columns.
+     * columns. The array of {@code fieldMaps} must match one-to-one with the
+     * {@code sourceTableNames}, e.g., there's a map present in {@code
+     * fieldMaps} for each table listed in {@code sourceTableNames}. Read more
+     * about Merge Records <a href="../../../../concepts/merge_records.html"
+     * target="_top">here</a>.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -8241,36 +8289,47 @@ public class GPUdb extends GPUdbBase {
      * sourceTableNames}) based on the field mapping information (specified by
      * {@code fieldMaps}). The field map (specified by {@code fieldMaps}) holds
      * the user specified maps of target table column names to source table
-     * columns.
+     * columns. The array of {@code fieldMaps} must match one-to-one with the
+     * {@code sourceTableNames}, e.g., there's a map present in {@code
+     * fieldMaps} for each table listed in {@code sourceTableNames}. Read more
+     * about Merge Records <a href="../../../../concepts/merge_records.html"
+     * target="_top">here</a>.
      * 
      * @param tableName  The new result table name for the records to be
      *                   merged.  Must NOT be an existing table.
      * @param sourceTableNames  The list of source table names to get the
      *                          records from. Must be existing table names.
-     * @param fieldMaps  Contains the mapping of column names from result table
-     *                   (specified by {@code tableName}) as the keys, and
-     *                   corresponding column names from a table from source
-     *                   tables (specified by {@code sourceTableNames}). Must
-     *                   be existing column names in source table and target
-     *                   table, and their types must be matched.
+     * @param fieldMaps  Contains a list of source/target column mappings, one
+     *                   mapping for each source table listed in {@code
+     *                   sourceTableNames} being merged into the target table
+     *                   specified by {@code tableName}.  Each mapping contains
+     *                   the target column names (as keys) that the data in the
+     *                   mapped source columns (as values) will be merged into.
+     *                   All of the source columns being merged into a given
+     *                   target column must match in type, as that type will
+     *                   determine the type of the new target column.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created merged table (specified by
-     *                 {@code tableName}). If empty, then the newly created
-     *                 merged table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail.
+     *                 contain the newly created merged table specified by
+     *                 {@code tableName}. If the collection provided is
+     *                 non-existent, the collection will be automatically
+     *                 created. If empty, then the newly created merged table
+     *                 will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#IS_REPLICATED
-     *                 IS_REPLICATED}: For a merged table (specified by {@code
-     *                 tableName}), indicates whether the table is to be
-     *                 replicated to all the database ranks. This may be
-     *                 necessary when the table is to be joined with other
-     *                 tables in a query.
+     *                 IS_REPLICATED}: Indicates the <a
+     *                 href="../../../../concepts/tables.html#distribution"
+     *                 target="_top">distribution scheme</a> for the data of
+     *                 the merged table specified in {@code tableName}.  If
+     *                 true, the table will be <a
+     *                 href="../../../../concepts/tables.html#replication"
+     *                 target="_top">replicated</a>.  If false, the table will
+     *                 be <a
+     *                 href="../../../../concepts/tables.html#random-sharding"
+     *                 target="_top">randomly sharded</a>.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -8285,13 +8344,13 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#TTL TTL}:
-     *                 Sets the TTL of the merged table or collection
-     *                 (specified by {@code tableName}). The value must be the
-     *                 desired TTL in minutes.
+     *                 Sets the <a href="../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the merged table specified in
+     *                 {@code tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for the merged table.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
+     *                 merged table specified in {@code tableName}.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -8844,9 +8903,7 @@ public class GPUdb extends GPUdbBase {
      * For a collection, setting the {@code show_children} option to {@code
      * false} returns only information about the collection itself; setting
      * {@code show_children} to {@code true} returns a list of tables and views
-     * contained in the collection, along with their description, type id,
-     * schema, type label, type properties, and additional information
-     * including TTL.
+     * contained in the collection, along with their corresponding detail.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -8887,9 +8944,7 @@ public class GPUdb extends GPUdbBase {
      * For a collection, setting the {@code show_children} option to {@code
      * false} returns only information about the collection itself; setting
      * {@code show_children} to {@code true} returns a list of tables and views
-     * contained in the collection, along with their description, type id,
-     * schema, type label, type properties, and additional information
-     * including TTL.
+     * contained in the collection, along with their corresponding detail.
      * 
      * @param tableName  Name of the table for which to retrieve the
      *                   information. If blank, then information about all
@@ -9803,8 +9858,8 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    public VisualizeImageClassbreakResponse visualizeImageClassbreak(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbColumnName1, List<String> cbVals1, List<String> cbColumnName2, List<List<String>> cbVals2, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) throws GPUdbException {
-        VisualizeImageClassbreakRequest actualRequest_ = new VisualizeImageClassbreakRequest(tableNames, worldTableNames, xColumnName, yColumnName, geometryColumnName, trackIds, cbColumnName1, cbVals1, cbColumnName2, cbVals2, minX, maxX, minY, maxY, width, height, projection, bgColor, styleOptions, options);
+    public VisualizeImageClassbreakResponse visualizeImageClassbreak(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbColumnName, List<String> cbVals, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) throws GPUdbException {
+        VisualizeImageClassbreakRequest actualRequest_ = new VisualizeImageClassbreakRequest(tableNames, worldTableNames, xColumnName, yColumnName, geometryColumnName, trackIds, cbColumnName, cbVals, minX, maxX, minY, maxY, width, height, projection, bgColor, styleOptions, options);
         VisualizeImageClassbreakResponse actualResponse_ = new VisualizeImageClassbreakResponse();
         submitRequest("/visualize/image/classbreak", actualRequest_, actualResponse_, false);
         return actualResponse_;

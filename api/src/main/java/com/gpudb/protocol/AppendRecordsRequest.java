@@ -60,7 +60,6 @@ public class AppendRecordsRequest implements IndexedRecord {
      * integer indicating the maximum number of results to be returned from
      * source table (specified by {@code sourceTableName}). Or END_OF_SET
      * (-9999) to indicate that the max number of results should be returned.
-     * Default value is END_OF_SET (-9999).
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION EXPRESSION}:
      * Optional filter expression to apply to the source table (specified by
@@ -111,7 +110,7 @@ public class AppendRecordsRequest implements IndexedRecord {
          * A positive integer indicating the maximum number of results to be
          * returned from source table (specified by {@code sourceTableName}).
          * Or END_OF_SET (-9999) to indicate that the max number of results
-         * should be returned. Default value is END_OF_SET (-9999).
+         * should be returned.
          */
         public static final String LIMIT = "limit";
 
@@ -204,7 +203,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 of results to be returned from source table (specified
      *                 by {@code sourceTableName}). Or END_OF_SET (-9999) to
      *                 indicate that the max number of results should be
-     *                 returned. Default value is END_OF_SET (-9999).
+     *                 returned.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
@@ -347,8 +346,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         positive integer indicating the maximum number of results to be
      *         returned from source table (specified by {@code
      *         sourceTableName}). Or END_OF_SET (-9999) to indicate that the
-     *         max number of results should be returned. Default value is
-     *         END_OF_SET (-9999).
+     *         max number of results should be returned.
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION
      *         EXPRESSION}: Optional filter expression to apply to the source
@@ -408,7 +406,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 of results to be returned from source table (specified
      *                 by {@code sourceTableName}). Or END_OF_SET (-9999) to
      *                 indicate that the max number of results should be
-     *                 returned. Default value is END_OF_SET (-9999).
+     *                 returned.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the

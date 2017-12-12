@@ -95,11 +95,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#COLLECTION_NAME
      * COLLECTION_NAME}: Name of a collection which is to contain the table
-     * specified in {@code result_table}, otherwise the table will be a
-     * top-level table. If the collection does not allow duplicate types and it
-     * contains a table of the same type as the given one, then this table
-     * creation request will fail. Additionally this option is invalid if
-     * {@code tableName} is a collection.
+     * specified in {@code result_table}. If the collection provided is
+     * non-existent, the collection will be automatically created. If empty,
+     * then the table will be a top-level table.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE
      * RESULT_TABLE}: The name of the table used to store the results. Has the
@@ -108,12 +106,11 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * present, no results are returned in the response.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_PERSIST
-     * RESULT_TABLE_PERSIST}: If {@code true} then the result table specified
-     * in {result_table}@{key of input.options} will be persisted as a regular
-     * table (it will not be automatically cleared unless a {@code ttl} is
-     * provided, and the table data can be modified in subsequent operations).
-     * If {@code false} (the default) then the result table will be a
-     * read-only, memory-only temporary table.
+     * RESULT_TABLE_PERSIST}: If {@code true}, then the result table specified
+     * in {@code result_table} will be persisted and will not expire unless a
+     * {@code ttl} is specified.   If {@code false}, then the result table will
+     * be an in-memory table and will expire unless a {@code ttl} is specified
+     * otherwise.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -135,16 +132,15 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * than the original column name.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
-     * CHUNK_SIZE}: If provided this indicates the chunk size to be used for
-     * the result table. Must be used in combination with the {@code
-     * result_table} option.
+     * CHUNK_SIZE}: Indicates the chunk size to be used for the result table.
+     * Must be used in combination with the {@code result_table} option.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT LIMIT}: The
      * number of records to keep.
      *         <li> {@link
-     * com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL TTL}: Sets the
-     * TTL of the table specified in {@code result_table}. The value must be
-     * the desired TTL in minutes.
+     * com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL TTL}: Sets the <a
+     * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
+     * table specified in {@code result_table}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -152,11 +148,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
 
         /**
          * Name of a collection which is to contain the table specified in
-         * {@code result_table}, otherwise the table will be a top-level table.
-         * If the collection does not allow duplicate types and it contains a
-         * table of the same type as the given one, then this table creation
-         * request will fail. Additionally this option is invalid if {@code
-         * tableName} is a collection.
+         * {@code result_table}. If the collection provided is non-existent,
+         * the collection will be automatically created. If empty, then the
+         * table will be a top-level table.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -169,12 +163,11 @@ public class AggregateUnpivotRequest implements IndexedRecord {
         public static final String RESULT_TABLE = "result_table";
 
         /**
-         * If {@code true} then the result table specified in
-         * {result_table}@{key of input.options} will be persisted as a regular
-         * table (it will not be automatically cleared unless a {@code ttl} is
-         * provided, and the table data can be modified in subsequent
-         * operations). If {@code false} (the default) then the result table
-         * will be a read-only, memory-only temporary table.
+         * If {@code true}, then the result table specified in {@code
+         * result_table} will be persisted and will not expire unless a {@code
+         * ttl} is specified.   If {@code false}, then the result table will be
+         * an in-memory table and will expire unless a {@code ttl} is specified
+         * otherwise.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -203,9 +196,8 @@ public class AggregateUnpivotRequest implements IndexedRecord {
         public static final String ORDER_BY = "order_by";
 
         /**
-         * If provided this indicates the chunk size to be used for the result
-         * table. Must be used in combination with the {@code result_table}
-         * option.
+         * Indicates the chunk size to be used for the result table. Must be
+         * used in combination with the {@code result_table} option.
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
@@ -215,8 +207,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
         public static final String LIMIT = "limit";
 
         /**
-         * Sets the TTL of the table specified in {@code result_table}. The
-         * value must be the desired TTL in minutes.
+         * Sets the <a href="../../../../../concepts/ttl.html"
+         * target="_top">TTL</a> of the table specified in {@code
+         * result_table}.
          */
         public static final String TTL = "ttl";
 
@@ -259,12 +252,10 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table},
-     *                 otherwise the table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail. Additionally this
-     *                 option is invalid if {@code tableName} is a collection.
+     *                 contain the table specified in {@code result_table}. If
+     *                 the collection provided is non-existent, the collection
+     *                 will be automatically created. If empty, then the table
+     *                 will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of the table used to store the
@@ -274,14 +265,12 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 returned in the response.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_PERSIST
-     *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
-     *                 table specified in {result_table}@{key of input.options}
-     *                 will be persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} (the default) then the
-     *                 result table will be a read-only, memory-only temporary
-     *                 table.
+     *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
+     *                 table specified in {@code result_table} will be
+     *                 persisted and will not expire unless a {@code ttl} is
+     *                 specified.   If {@code false}, then the result table
+     *                 will be an in-memory table and will expire unless a
+     *                 {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -307,17 +296,18 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 rather than the original column name.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for the result table. Must be used in
-     *                 combination with the {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
+     *                 result table. Must be used in combination with the
+     *                 {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT
      *                 LIMIT}: The number of records to keep.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table specified in {@code
-     *                 result_table}. The value must be the desired TTL in
-     *                 minutes.
+     *                 TTL}: Sets the <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 result_table}.
      *                 </ul>
      * 
      */
@@ -361,12 +351,10 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table},
-     *                 otherwise the table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail. Additionally this
-     *                 option is invalid if {@code tableName} is a collection.
+     *                 contain the table specified in {@code result_table}. If
+     *                 the collection provided is non-existent, the collection
+     *                 will be automatically created. If empty, then the table
+     *                 will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of the table used to store the
@@ -376,14 +364,12 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 returned in the response.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_PERSIST
-     *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
-     *                 table specified in {result_table}@{key of input.options}
-     *                 will be persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} (the default) then the
-     *                 result table will be a read-only, memory-only temporary
-     *                 table.
+     *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
+     *                 table specified in {@code result_table} will be
+     *                 persisted and will not expire unless a {@code ttl} is
+     *                 specified.   If {@code false}, then the result table
+     *                 will be an in-memory table and will expire unless a
+     *                 {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -409,17 +395,18 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 rather than the original column name.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for the result table. Must be used in
-     *                 combination with the {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
+     *                 result table. Must be used in combination with the
+     *                 {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT
      *                 LIMIT}: The number of records to keep.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table specified in {@code
-     *                 result_table}. The value must be the desired TTL in
-     *                 minutes.
+     *                 TTL}: Sets the <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 result_table}.
      *                 </ul>
      * 
      */
@@ -577,12 +564,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#COLLECTION_NAME
      *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         table specified in {@code result_table}, otherwise the table
-     *         will be a top-level table. If the collection does not allow
-     *         duplicate types and it contains a table of the same type as the
-     *         given one, then this table creation request will fail.
-     *         Additionally this option is invalid if {@code tableName} is a
-     *         collection.
+     *         table specified in {@code result_table}. If the collection
+     *         provided is non-existent, the collection will be automatically
+     *         created. If empty, then the table will be a top-level table.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE
      *         RESULT_TABLE}: The name of the table used to store the results.
@@ -592,13 +576,11 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         the response.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_PERSIST
-     *         RESULT_TABLE_PERSIST}: If {@code true} then the result table
-     *         specified in {result_table}@{key of input.options} will be
-     *         persisted as a regular table (it will not be automatically
-     *         cleared unless a {@code ttl} is provided, and the table data can
-     *         be modified in subsequent operations). If {@code false} (the
-     *         default) then the result table will be a read-only, memory-only
-     *         temporary table.
+     *         RESULT_TABLE_PERSIST}: If {@code true}, then the result table
+     *         specified in {@code result_table} will be persisted and will not
+     *         expire unless a {@code ttl} is specified.   If {@code false},
+     *         then the result table will be an in-memory table and will expire
+     *         unless a {@code ttl} is specified otherwise.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -621,16 +603,17 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         name.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
-     *         CHUNK_SIZE}: If provided this indicates the chunk size to be
-     *         used for the result table. Must be used in combination with the
-     *         {@code result_table} option.
+     *         CHUNK_SIZE}: Indicates the chunk size to be used for the result
+     *         table. Must be used in combination with the {@code result_table}
+     *         option.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT LIMIT}:
      *         The number of records to keep.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL TTL}:
-     *         Sets the TTL of the table specified in {@code result_table}. The
-     *         value must be the desired TTL in minutes.
+     *         Sets the <a href="../../../../../concepts/ttl.html"
+     *         target="_top">TTL</a> of the table specified in {@code
+     *         result_table}.
      *         </ul>
      * 
      */
@@ -645,12 +628,10 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table},
-     *                 otherwise the table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail. Additionally this
-     *                 option is invalid if {@code tableName} is a collection.
+     *                 contain the table specified in {@code result_table}. If
+     *                 the collection provided is non-existent, the collection
+     *                 will be automatically created. If empty, then the table
+     *                 will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of the table used to store the
@@ -660,14 +641,12 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 returned in the response.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_PERSIST
-     *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
-     *                 table specified in {result_table}@{key of input.options}
-     *                 will be persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} (the default) then the
-     *                 result table will be a read-only, memory-only temporary
-     *                 table.
+     *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
+     *                 table specified in {@code result_table} will be
+     *                 persisted and will not expire unless a {@code ttl} is
+     *                 specified.   If {@code false}, then the result table
+     *                 will be an in-memory table and will expire unless a
+     *                 {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -693,17 +672,18 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 rather than the original column name.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for the result table. Must be used in
-     *                 combination with the {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
+     *                 result table. Must be used in combination with the
+     *                 {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT
      *                 LIMIT}: The number of records to keep.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table specified in {@code
-     *                 result_table}. The value must be the desired TTL in
-     *                 minutes.
+     *                 TTL}: Sets the <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 result_table}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

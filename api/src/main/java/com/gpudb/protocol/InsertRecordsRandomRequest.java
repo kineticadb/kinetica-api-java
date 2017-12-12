@@ -145,8 +145,9 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      * </ul>
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsRandomRequest.Options#ATTR_NAME
-     * ATTR_NAME}: Set the following parameters for the column specified by the
-     * key. This overrides any parameter set by {@code all}.
+     * ATTR_NAME}: Use the desired column name in place of {@code attr_name},
+     * and set the following parameters for the column specified. This
+     * overrides any parameter set by {@code all}.
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsRandomRequest.Options#MIN MIN}: For
@@ -374,8 +375,9 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
         public static final String CARDINALITY = "cardinality";
 
         /**
-         * Set the following parameters for the column specified by the key.
-         * This overrides any parameter set by {@code all}.
+         * Use the desired column name in place of {@code attr_name}, and set
+         * the following parameters for the column specified. This overrides
+         * any parameter set by {@code all}.
          * <ul>
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsRandomRequest.Options#MIN MIN}: For
@@ -597,8 +599,9 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsRandomRequest.Options#ATTR_NAME
-     *                 ATTR_NAME}: Set the following parameters for the column
-     *                 specified by the key. This overrides any parameter set
+     *                 ATTR_NAME}: Use the desired column name in place of
+     *                 {@code attr_name}, and set the following parameters for
+     *                 the column specified. This overrides any parameter set
      *                 by {@code all}.
      *                 <ul>
      *                         <li> {@link
@@ -845,9 +848,9 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *         </ul>
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsRandomRequest.Options#ATTR_NAME
-     *         ATTR_NAME}: Set the following parameters for the column
-     *         specified by the key. This overrides any parameter set by {@code
-     *         all}.
+     *         ATTR_NAME}: Use the desired column name in place of {@code
+     *         attr_name}, and set the following parameters for the column
+     *         specified. This overrides any parameter set by {@code all}.
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsRandomRequest.Options#MIN MIN}:
@@ -1049,8 +1052,9 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsRandomRequest.Options#ATTR_NAME
-     *                 ATTR_NAME}: Set the following parameters for the column
-     *                 specified by the key. This overrides any parameter set
+     *                 ATTR_NAME}: Use the desired column name in place of
+     *                 {@code attr_name}, and set the following parameters for
+     *                 the column specified. This overrides any parameter set
      *                 by {@code all}.
      *                 <ul>
      *                         <li> {@link

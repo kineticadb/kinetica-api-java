@@ -112,10 +112,10 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#COLLECTION_NAME
      * COLLECTION_NAME}: Name of a collection which is to contain the table
-     * specified in 'result_table', otherwise the table will be a top-level
-     * table. If the collection does not allow duplicate types and it contains
-     * a table of the same type as the given one, then this table creation
-     * request will fail.
+     * specified in {@code result_table}. If the collection provided is
+     * non-existent, the collection will be automatically created. If empty,
+     * then the table will be a top-level table.  Additionally this option is
+     * invalid if {@code tableName} is a collection.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      * EXPRESSION}: Optional filter expression to apply to the table.
@@ -139,12 +139,11 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * target="_top">tables</a>.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
-     * RESULT_TABLE_PERSIST}: If {@code true} then the result table specified
-     * in {@code result_table} will be persisted as a regular table (it will
-     * not be automatically cleared unless a {@code ttl} is provided, and the
-     * table data can be modified in subsequent operations). If {@code false}
-     * (the default) then the result table will be a read-only, memory-only
-     * temporary table.
+     * RESULT_TABLE_PERSIST}: If {@code true}, then the result table specified
+     * in {@code result_table} will be persisted and will not expire unless a
+     * {@code ttl} is specified.   If {@code false}, then the result table will
+     * be an in-memory table and will expire unless a {@code ttl} is specified
+     * otherwise.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -157,22 +156,21 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_FORCE_REPLICATED
      * RESULT_TABLE_FORCE_REPLICATED}: Force the result table to be replicated
-     * (ignores any sharding). Must be used in combination with the
-     * 'result_table' option.
+     * (ignores any sharding). Must be used in combination with the {@code
+     * result_table} option.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_GENERATE_PK
      * RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary key for the
-     * result table. Must be used in combination with the 'result_table'
+     * result table. Must be used in combination with the {@code result_table}
      * option.
      *         <li> {@link
-     * com.gpudb.protocol.AggregateUniqueRequest.Options#TTL TTL}: Sets the TTL
-     * of the table specified in 'result_table'. The value must be the desired
-     * TTL in minutes.
+     * com.gpudb.protocol.AggregateUniqueRequest.Options#TTL TTL}: Sets the <a
+     * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
+     * table specified in {@code result_table}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#CHUNK_SIZE
-     * CHUNK_SIZE}: If provided this indicates the chunk size to be used for
-     * the result table. Must be used in combination with the {@code
-     * result_table} option.
+     * CHUNK_SIZE}: Indicates the chunk size to be used for the result table.
+     * Must be used in combination with the {@code result_table} option.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -180,10 +178,10 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
         /**
          * Name of a collection which is to contain the table specified in
-         * 'result_table', otherwise the table will be a top-level table. If
-         * the collection does not allow duplicate types and it contains a
-         * table of the same type as the given one, then this table creation
-         * request will fail.
+         * {@code result_table}. If the collection provided is non-existent,
+         * the collection will be automatically created. If empty, then the
+         * table will be a top-level table.  Additionally this option is
+         * invalid if {@code tableName} is a collection.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -220,12 +218,11 @@ public class AggregateUniqueRequest implements IndexedRecord {
         public static final String RESULT_TABLE = "result_table";
 
         /**
-         * If {@code true} then the result table specified in {@code
-         * result_table} will be persisted as a regular table (it will not be
-         * automatically cleared unless a {@code ttl} is provided, and the
-         * table data can be modified in subsequent operations). If {@code
-         * false} (the default) then the result table will be a read-only,
-         * memory-only temporary table.
+         * If {@code true}, then the result table specified in {@code
+         * result_table} will be persisted and will not expire unless a {@code
+         * ttl} is specified.   If {@code false}, then the result table will be
+         * an in-memory table and will expire unless a {@code ttl} is specified
+         * otherwise.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -242,26 +239,26 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
         /**
          * Force the result table to be replicated (ignores any sharding). Must
-         * be used in combination with the 'result_table' option.
+         * be used in combination with the {@code result_table} option.
          */
         public static final String RESULT_TABLE_FORCE_REPLICATED = "result_table_force_replicated";
 
         /**
          * If 'true' then set a primary key for the result table. Must be used
-         * in combination with the 'result_table' option.
+         * in combination with the {@code result_table} option.
          */
         public static final String RESULT_TABLE_GENERATE_PK = "result_table_generate_pk";
 
         /**
-         * Sets the TTL of the table specified in 'result_table'. The value
-         * must be the desired TTL in minutes.
+         * Sets the <a href="../../../../../concepts/ttl.html"
+         * target="_top">TTL</a> of the table specified in {@code
+         * result_table}.
          */
         public static final String TTL = "ttl";
 
         /**
-         * If provided this indicates the chunk size to be used for the result
-         * table. Must be used in combination with the {@code result_table}
-         * option.
+         * Indicates the chunk size to be used for the result table. Must be
+         * used in combination with the {@code result_table} option.
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
@@ -307,11 +304,11 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in 'result_table', otherwise
-     *                 the table will be a top-level table. If the collection
-     *                 does not allow duplicate types and it contains a table
-     *                 of the same type as the given one, then this table
-     *                 creation request will fail.
+     *                 contain the table specified in {@code result_table}. If
+     *                 the collection provided is non-existent, the collection
+     *                 will be automatically created. If empty, then the table
+     *                 will be a top-level table.  Additionally this option is
+     *                 invalid if {@code tableName} is a collection.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
@@ -341,14 +338,12 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 target="_top">tables</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
-     *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
+     *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
      *                 table specified in {@code result_table} will be
-     *                 persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} (the default) then the
-     *                 result table will be a read-only, memory-only temporary
-     *                 table.
+     *                 persisted and will not expire unless a {@code ttl} is
+     *                 specified.   If {@code false}, then the result table
+     *                 will be an in-memory table and will expire unless a
+     *                 {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -365,22 +360,23 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_FORCE_REPLICATED
      *                 RESULT_TABLE_FORCE_REPLICATED}: Force the result table
      *                 to be replicated (ignores any sharding). Must be used in
-     *                 combination with the 'result_table' option.
+     *                 combination with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_GENERATE_PK
      *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
      *                 key for the result table. Must be used in combination
-     *                 with the 'result_table' option.
+     *                 with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table specified in
-     *                 'result_table'. The value must be the desired TTL in
-     *                 minutes.
+     *                 TTL}: Sets the <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for the result table. Must be used in
-     *                 combination with the {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
+     *                 result table. Must be used in combination with the
+     *                 {@code result_table} option.
      *                 </ul>
      * 
      */
@@ -429,11 +425,11 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in 'result_table', otherwise
-     *                 the table will be a top-level table. If the collection
-     *                 does not allow duplicate types and it contains a table
-     *                 of the same type as the given one, then this table
-     *                 creation request will fail.
+     *                 contain the table specified in {@code result_table}. If
+     *                 the collection provided is non-existent, the collection
+     *                 will be automatically created. If empty, then the table
+     *                 will be a top-level table.  Additionally this option is
+     *                 invalid if {@code tableName} is a collection.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
@@ -463,14 +459,12 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 target="_top">tables</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
-     *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
+     *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
      *                 table specified in {@code result_table} will be
-     *                 persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} (the default) then the
-     *                 result table will be a read-only, memory-only temporary
-     *                 table.
+     *                 persisted and will not expire unless a {@code ttl} is
+     *                 specified.   If {@code false}, then the result table
+     *                 will be an in-memory table and will expire unless a
+     *                 {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -487,22 +481,23 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_FORCE_REPLICATED
      *                 RESULT_TABLE_FORCE_REPLICATED}: Force the result table
      *                 to be replicated (ignores any sharding). Must be used in
-     *                 combination with the 'result_table' option.
+     *                 combination with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_GENERATE_PK
      *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
      *                 key for the result table. Must be used in combination
-     *                 with the 'result_table' option.
+     *                 with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table specified in
-     *                 'result_table'. The value must be the desired TTL in
-     *                 minutes.
+     *                 TTL}: Sets the <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for the result table. Must be used in
-     *                 combination with the {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
+     *                 result table. Must be used in combination with the
+     *                 {@code result_table} option.
      *                 </ul>
      * 
      */
@@ -669,10 +664,11 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#COLLECTION_NAME
      *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         table specified in 'result_table', otherwise the table will be a
-     *         top-level table. If the collection does not allow duplicate
-     *         types and it contains a table of the same type as the given one,
-     *         then this table creation request will fail.
+     *         table specified in {@code result_table}. If the collection
+     *         provided is non-existent, the collection will be automatically
+     *         created. If empty, then the table will be a top-level table.
+     *         Additionally this option is invalid if {@code tableName} is a
+     *         collection.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      *         EXPRESSION}: Optional filter expression to apply to the table.
@@ -701,12 +697,11 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         target="_top">tables</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
-     *         RESULT_TABLE_PERSIST}: If {@code true} then the result table
-     *         specified in {@code result_table} will be persisted as a regular
-     *         table (it will not be automatically cleared unless a {@code ttl}
-     *         is provided, and the table data can be modified in subsequent
-     *         operations). If {@code false} (the default) then the result
-     *         table will be a read-only, memory-only temporary table.
+     *         RESULT_TABLE_PERSIST}: If {@code true}, then the result table
+     *         specified in {@code result_table} will be persisted and will not
+     *         expire unless a {@code ttl} is specified.   If {@code false},
+     *         then the result table will be an in-memory table and will expire
+     *         unless a {@code ttl} is specified otherwise.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -720,21 +715,22 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_FORCE_REPLICATED
      *         RESULT_TABLE_FORCE_REPLICATED}: Force the result table to be
      *         replicated (ignores any sharding). Must be used in combination
-     *         with the 'result_table' option.
+     *         with the {@code result_table} option.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_GENERATE_PK
      *         RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary key for
-     *         the result table. Must be used in combination with the
-     *         'result_table' option.
+     *         the result table. Must be used in combination with the {@code
+     *         result_table} option.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#TTL TTL}: Sets
-     *         the TTL of the table specified in 'result_table'. The value must
-     *         be the desired TTL in minutes.
+     *         the <a href="../../../../../concepts/ttl.html"
+     *         target="_top">TTL</a> of the table specified in {@code
+     *         result_table}.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#CHUNK_SIZE
-     *         CHUNK_SIZE}: If provided this indicates the chunk size to be
-     *         used for the result table. Must be used in combination with the
-     *         {@code result_table} option.
+     *         CHUNK_SIZE}: Indicates the chunk size to be used for the result
+     *         table. Must be used in combination with the {@code result_table}
+     *         option.
      *         </ul>
      * 
      */
@@ -749,11 +745,11 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in 'result_table', otherwise
-     *                 the table will be a top-level table. If the collection
-     *                 does not allow duplicate types and it contains a table
-     *                 of the same type as the given one, then this table
-     *                 creation request will fail.
+     *                 contain the table specified in {@code result_table}. If
+     *                 the collection provided is non-existent, the collection
+     *                 will be automatically created. If empty, then the table
+     *                 will be a top-level table.  Additionally this option is
+     *                 invalid if {@code tableName} is a collection.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
@@ -783,14 +779,12 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 target="_top">tables</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
-     *                 RESULT_TABLE_PERSIST}: If {@code true} then the result
+     *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
      *                 table specified in {@code result_table} will be
-     *                 persisted as a regular table (it will not be
-     *                 automatically cleared unless a {@code ttl} is provided,
-     *                 and the table data can be modified in subsequent
-     *                 operations). If {@code false} (the default) then the
-     *                 result table will be a read-only, memory-only temporary
-     *                 table.
+     *                 persisted and will not expire unless a {@code ttl} is
+     *                 specified.   If {@code false}, then the result table
+     *                 will be an in-memory table and will expire unless a
+     *                 {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -807,22 +801,23 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_FORCE_REPLICATED
      *                 RESULT_TABLE_FORCE_REPLICATED}: Force the result table
      *                 to be replicated (ignores any sharding). Must be used in
-     *                 combination with the 'result_table' option.
+     *                 combination with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_GENERATE_PK
      *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
      *                 key for the result table. Must be used in combination
-     *                 with the 'result_table' option.
+     *                 with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#TTL
-     *                 TTL}: Sets the TTL of the table specified in
-     *                 'result_table'. The value must be the desired TTL in
-     *                 minutes.
+     *                 TTL}: Sets the <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for the result table. Must be used in
-     *                 combination with the {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
+     *                 result table. Must be used in combination with the
+     *                 {@code result_table} option.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -93,7 +93,7 @@ public class GetRecordsResponse<T> {
     /**
      * 
      * @return If the {@code encoding} was 'binary', then this list contains
-     *         the JSON encoded records retrieved from the set, otherwise not
+     *         the binary encoded records retrieved from the set, otherwise not
      *         populated.
      * 
      */
@@ -104,7 +104,7 @@ public class GetRecordsResponse<T> {
     /**
      * 
      * @param data  If the {@code encoding} was 'binary', then this list
-     *              contains the JSON encoded records retrieved from the set,
+     *              contains the binary encoded records retrieved from the set,
      *              otherwise not populated.
      * 
      * @return {@code this} to mimic the builder pattern.

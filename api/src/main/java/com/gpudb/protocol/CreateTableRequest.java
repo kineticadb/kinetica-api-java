@@ -71,10 +71,9 @@ public class CreateTableRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#COLLECTION_NAME
      * COLLECTION_NAME}: Name of a collection which is to contain the newly
-     * created table. If empty, then the newly created table will be a
-     * top-level table. If the collection does not allow duplicate types and it
-     * contains a table of the same type as the given one, then this table
-     * creation request will fail.
+     * created table. If the collection provided is non-existent, the
+     * collection will be automatically created. If empty, then the newly
+     * created table will be a top-level table.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#IS_COLLECTION
      * IS_COLLECTION}: Indicates whether the new table to be created will be a
@@ -104,9 +103,18 @@ public class CreateTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
-     * IS_REPLICATED}: For a table, indicates whether the table is to be
-     * replicated to all the database ranks. This may be necessary when the
-     * table is to be joined with other tables in a query.
+     * IS_REPLICATED}: For a table, indicates the <a
+     * href="../../../../../concepts/tables.html#distribution"
+     * target="_top">distribution scheme</a> for the table's data.  If true,
+     * the table will be <a
+     * href="../../../../../concepts/tables.html#replication"
+     * target="_top">replicated</a>.  If false, the table will be <a
+     * href="../../../../../concepts/tables.html#sharding"
+     * target="_top">sharded</a> according to the <a
+     * href="../../../../../concepts/tables.html#shard-keys"
+     * target="_top">shard key</a> specified in the given {@code typeId}, or <a
+     * href="../../../../../concepts/tables.html#random-sharding"
+     * target="_top">randomly sharded</a>, if no shard key is specified.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TRUE
@@ -118,27 +126,26 @@ public class CreateTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
-     * FOREIGN_KEYS}: Semicolon-separated list of foreign keys, of the format
-     * 'source_column references target_table(primary_key_column) [ as
-     * <foreign_key_name> ]'.
+     * FOREIGN_KEYS}: Semicolon-separated list of <a
+     * href="../../../../../concepts/tables.html#foreign-keys"
+     * target="_top">foreign keys</a>, of the format 'source_column references
+     * target_table(primary_key_column) [ as <foreign_key_name> ]'.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
      * FOREIGN_SHARD_KEY}: Foreign shard key of the format 'source_column
      * references shard_by_column from target_table(primary_key_column)'
      *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TTL
-     * TTL}: Sets the TTL of the table or collection specified in {@code
-     * tableName}. The value must be the desired TTL in minutes.
+     * TTL}: For a table, sets the <a href="../../../../../concepts/ttl.html"
+     * target="_top">TTL</a> of the table specified in {@code tableName}.
      *         <li> {@link
-     * com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE CHUNK_SIZE}: If
-     * provided this indicates the chunk size to be used for this table.
+     * com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE CHUNK_SIZE}:
+     * Indicates the chunk size to be used for this table.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
-     * IS_RESULT_TABLE}: For a table, indicates whether the table is a
-     * non-persistent, memory-only table that will store the output of a proc
-     * executed with {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. A
-     * result table cannot contain store_only, text_search, or string columns
-     * (char columns are acceptable), records cannot be inserted into it
-     * directly, and it will not be retained if the server is restarted.
+     * IS_RESULT_TABLE}: For a table, indicates whether the table is an
+     * in-memory table. A result table cannot contain store_only, text_search,
+     * or string columns (charN columns are acceptable), and it will not be
+     * retained if the server is restarted.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TRUE
@@ -173,10 +180,9 @@ public class CreateTableRequest implements IndexedRecord {
 
         /**
          * Name of a collection which is to contain the newly created table. If
-         * empty, then the newly created table will be a top-level table. If
-         * the collection does not allow duplicate types and it contains a
-         * table of the same type as the given one, then this table creation
-         * request will fail.
+         * the collection provided is non-existent, the collection will be
+         * automatically created. If empty, then the newly created table will
+         * be a top-level table.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -210,9 +216,18 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String DISALLOW_HOMOGENEOUS_TABLES = "disallow_homogeneous_tables";
 
         /**
-         * For a table, indicates whether the table is to be replicated to all
-         * the database ranks. This may be necessary when the table is to be
-         * joined with other tables in a query.
+         * For a table, indicates the <a
+         * href="../../../../../concepts/tables.html#distribution"
+         * target="_top">distribution scheme</a> for the table's data.  If
+         * true, the table will be <a
+         * href="../../../../../concepts/tables.html#replication"
+         * target="_top">replicated</a>.  If false, the table will be <a
+         * href="../../../../../concepts/tables.html#sharding"
+         * target="_top">sharded</a> according to the <a
+         * href="../../../../../concepts/tables.html#shard-keys"
+         * target="_top">shard key</a> specified in the given {@code typeId},
+         * or <a href="../../../../../concepts/tables.html#random-sharding"
+         * target="_top">randomly sharded</a>, if no shard key is specified.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -226,9 +241,11 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String IS_REPLICATED = "is_replicated";
 
         /**
-         * Semicolon-separated list of foreign keys, of the format
-         * 'source_column references target_table(primary_key_column) [ as
-         * <foreign_key_name> ]'.
+         * Semicolon-separated list of <a
+         * href="../../../../../concepts/tables.html#foreign-keys"
+         * target="_top">foreign keys</a>, of the format 'source_column
+         * references target_table(primary_key_column) [ as <foreign_key_name>
+         * ]'.
          */
         public static final String FOREIGN_KEYS = "foreign_keys";
 
@@ -239,23 +256,21 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String FOREIGN_SHARD_KEY = "foreign_shard_key";
 
         /**
-         * Sets the TTL of the table or collection specified in {@code
-         * tableName}. The value must be the desired TTL in minutes.
+         * For a table, sets the <a href="../../../../../concepts/ttl.html"
+         * target="_top">TTL</a> of the table specified in {@code tableName}.
          */
         public static final String TTL = "ttl";
 
         /**
-         * If provided this indicates the chunk size to be used for this table.
+         * Indicates the chunk size to be used for this table.
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
         /**
-         * For a table, indicates whether the table is a non-persistent,
-         * memory-only table that will store the output of a proc executed with
-         * {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. A result
-         * table cannot contain store_only, text_search, or string columns
-         * (char columns are acceptable), records cannot be inserted into it
-         * directly, and it will not be retained if the server is restarted.
+         * For a table, indicates whether the table is an in-memory table. A
+         * result table cannot contain store_only, text_search, or string
+         * columns (charN columns are acceptable), and it will not be retained
+         * if the server is restarted.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -319,11 +334,10 @@ public class CreateTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created table. If empty, then the
-     *                 newly created table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail.
+     *                 contain the newly created table. If the collection
+     *                 provided is non-existent, the collection will be
+     *                 automatically created. If empty, then the newly created
+     *                 table will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_COLLECTION
      *                 IS_COLLECTION}: Indicates whether the new table to be
@@ -357,10 +371,21 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
-     *                 IS_REPLICATED}: For a table, indicates whether the table
-     *                 is to be replicated to all the database ranks. This may
-     *                 be necessary when the table is to be joined with other
-     *                 tables in a query.
+     *                 IS_REPLICATED}: For a table, indicates the <a
+     *                 href="../../../../../concepts/tables.html#distribution"
+     *                 target="_top">distribution scheme</a> for the table's
+     *                 data.  If true, the table will be <a
+     *                 href="../../../../../concepts/tables.html#replication"
+     *                 target="_top">replicated</a>.  If false, the table will
+     *                 be <a
+     *                 href="../../../../../concepts/tables.html#sharding"
+     *                 target="_top">sharded</a> according to the <a
+     *                 href="../../../../../concepts/tables.html#shard-keys"
+     *                 target="_top">shard key</a> specified in the given
+     *                 {@code typeId}, or <a
+     *                 href="../../../../../concepts/tables.html#random-sharding"
+     *                 target="_top">randomly sharded</a>, if no shard key is
+     *                 specified.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -374,8 +399,10 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
-     *                 FOREIGN_KEYS}: Semicolon-separated list of foreign keys,
-     *                 of the format 'source_column references
+     *                 FOREIGN_KEYS}: Semicolon-separated list of <a
+     *                 href="../../../../../concepts/tables.html#foreign-keys"
+     *                 target="_top">foreign keys</a>, of the format
+     *                 'source_column references
      *                 target_table(primary_key_column) [ as <foreign_key_name>
      *                 ]'.
      *                         <li> {@link
@@ -385,22 +412,20 @@ public class CreateTableRequest implements IndexedRecord {
      *                 target_table(primary_key_column)'
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}:
-     *                 Sets the TTL of the table or collection specified in
-     *                 {@code tableName}. The value must be the desired TTL in
-     *                 minutes.
+     *                 For a table, sets the <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for this table.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
+     *                 this table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
      *                 IS_RESULT_TABLE}: For a table, indicates whether the
-     *                 table is a non-persistent, memory-only table that will
-     *                 store the output of a proc executed with {@link
-     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. A
-     *                 result table cannot contain store_only, text_search, or
-     *                 string columns (char columns are acceptable), records
-     *                 cannot be inserted into it directly, and it will not be
+     *                 table is an in-memory table. A result table cannot
+     *                 contain store_only, text_search, or string columns
+     *                 (charN columns are acceptable), and it will not be
      *                 retained if the server is restarted.
      *                 Supported values:
      *                 <ul>
@@ -499,10 +524,9 @@ public class CreateTableRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#COLLECTION_NAME
      *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         newly created table. If empty, then the newly created table will
-     *         be a top-level table. If the collection does not allow duplicate
-     *         types and it contains a table of the same type as the given one,
-     *         then this table creation request will fail.
+     *         newly created table. If the collection provided is non-existent,
+     *         the collection will be automatically created. If empty, then the
+     *         newly created table will be a top-level table.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#IS_COLLECTION
      *         IS_COLLECTION}: Indicates whether the new table to be created
@@ -532,9 +556,20 @@ public class CreateTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
-     *         IS_REPLICATED}: For a table, indicates whether the table is to
-     *         be replicated to all the database ranks. This may be necessary
-     *         when the table is to be joined with other tables in a query.
+     *         IS_REPLICATED}: For a table, indicates the <a
+     *         href="../../../../../concepts/tables.html#distribution"
+     *         target="_top">distribution scheme</a> for the table's data.  If
+     *         true, the table will be <a
+     *         href="../../../../../concepts/tables.html#replication"
+     *         target="_top">replicated</a>.  If false, the table will be <a
+     *         href="../../../../../concepts/tables.html#sharding"
+     *         target="_top">sharded</a> according to the <a
+     *         href="../../../../../concepts/tables.html#shard-keys"
+     *         target="_top">shard key</a> specified in the given {@code
+     *         typeId}, or <a
+     *         href="../../../../../concepts/tables.html#random-sharding"
+     *         target="_top">randomly sharded</a>, if no shard key is
+     *         specified.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -546,32 +581,30 @@ public class CreateTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
-     *         FOREIGN_KEYS}: Semicolon-separated list of foreign keys, of the
-     *         format 'source_column references
-     *         target_table(primary_key_column) [ as <foreign_key_name> ]'.
+     *         FOREIGN_KEYS}: Semicolon-separated list of <a
+     *         href="../../../../../concepts/tables.html#foreign-keys"
+     *         target="_top">foreign keys</a>, of the format 'source_column
+     *         references target_table(primary_key_column) [ as
+     *         <foreign_key_name> ]'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
      *         FOREIGN_SHARD_KEY}: Foreign shard key of the format
      *         'source_column references shard_by_column from
      *         target_table(primary_key_column)'
      *                 <li> {@link
-     *         com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}: Sets the
-     *         TTL of the table or collection specified in {@code tableName}.
-     *         The value must be the desired TTL in minutes.
+     *         com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}: For a
+     *         table, sets the <a href="../../../../../concepts/ttl.html"
+     *         target="_top">TTL</a> of the table specified in {@code
+     *         tableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE
-     *         CHUNK_SIZE}: If provided this indicates the chunk size to be
-     *         used for this table.
+     *         CHUNK_SIZE}: Indicates the chunk size to be used for this table.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
-     *         IS_RESULT_TABLE}: For a table, indicates whether the table is a
-     *         non-persistent, memory-only table that will store the output of
-     *         a proc executed with {@link
-     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. A result table
-     *         cannot contain store_only, text_search, or string columns (char
-     *         columns are acceptable), records cannot be inserted into it
-     *         directly, and it will not be retained if the server is
-     *         restarted.
+     *         IS_RESULT_TABLE}: For a table, indicates whether the table is an
+     *         in-memory table. A result table cannot contain store_only,
+     *         text_search, or string columns (charN columns are acceptable),
+     *         and it will not be retained if the server is restarted.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -612,11 +645,10 @@ public class CreateTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created table. If empty, then the
-     *                 newly created table will be a top-level table. If the
-     *                 collection does not allow duplicate types and it
-     *                 contains a table of the same type as the given one, then
-     *                 this table creation request will fail.
+     *                 contain the newly created table. If the collection
+     *                 provided is non-existent, the collection will be
+     *                 automatically created. If empty, then the newly created
+     *                 table will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_COLLECTION
      *                 IS_COLLECTION}: Indicates whether the new table to be
@@ -650,10 +682,21 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
-     *                 IS_REPLICATED}: For a table, indicates whether the table
-     *                 is to be replicated to all the database ranks. This may
-     *                 be necessary when the table is to be joined with other
-     *                 tables in a query.
+     *                 IS_REPLICATED}: For a table, indicates the <a
+     *                 href="../../../../../concepts/tables.html#distribution"
+     *                 target="_top">distribution scheme</a> for the table's
+     *                 data.  If true, the table will be <a
+     *                 href="../../../../../concepts/tables.html#replication"
+     *                 target="_top">replicated</a>.  If false, the table will
+     *                 be <a
+     *                 href="../../../../../concepts/tables.html#sharding"
+     *                 target="_top">sharded</a> according to the <a
+     *                 href="../../../../../concepts/tables.html#shard-keys"
+     *                 target="_top">shard key</a> specified in the given
+     *                 {@code typeId}, or <a
+     *                 href="../../../../../concepts/tables.html#random-sharding"
+     *                 target="_top">randomly sharded</a>, if no shard key is
+     *                 specified.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -667,8 +710,10 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
-     *                 FOREIGN_KEYS}: Semicolon-separated list of foreign keys,
-     *                 of the format 'source_column references
+     *                 FOREIGN_KEYS}: Semicolon-separated list of <a
+     *                 href="../../../../../concepts/tables.html#foreign-keys"
+     *                 target="_top">foreign keys</a>, of the format
+     *                 'source_column references
      *                 target_table(primary_key_column) [ as <foreign_key_name>
      *                 ]'.
      *                         <li> {@link
@@ -678,22 +723,20 @@ public class CreateTableRequest implements IndexedRecord {
      *                 target_table(primary_key_column)'
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}:
-     *                 Sets the TTL of the table or collection specified in
-     *                 {@code tableName}. The value must be the desired TTL in
-     *                 minutes.
+     *                 For a table, sets the <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: If provided this indicates the chunk size
-     *                 to be used for this table.
+     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
+     *                 this table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
      *                 IS_RESULT_TABLE}: For a table, indicates whether the
-     *                 table is a non-persistent, memory-only table that will
-     *                 store the output of a proc executed with {@link
-     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. A
-     *                 result table cannot contain store_only, text_search, or
-     *                 string columns (char columns are acceptable), records
-     *                 cannot be inserted into it directly, and it will not be
+     *                 table is an in-memory table. A result table cannot
+     *                 contain store_only, text_search, or string columns
+     *                 (charN columns are acceptable), and it will not be
      *                 retained if the server is restarted.
      *                 Supported values:
      *                 <ul>

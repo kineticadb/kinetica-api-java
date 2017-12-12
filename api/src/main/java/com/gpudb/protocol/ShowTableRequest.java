@@ -30,8 +30,7 @@ import org.apache.avro.generic.IndexedRecord;
  * For a collection, setting the {@code show_children} option to {@code false}
  * returns only information about the collection itself; setting {@code
  * show_children} to {@code true} returns a list of tables and views contained
- * in the collection, along with their description, type id, schema, type
- * label, type properties, and additional information including TTL.
+ * in the collection, along with their corresponding detail.
  */
 public class ShowTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

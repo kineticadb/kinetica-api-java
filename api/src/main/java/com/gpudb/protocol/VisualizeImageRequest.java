@@ -90,6 +90,10 @@ public class VisualizeImageRequest implements IndexedRecord {
 
         public static final String POINTSIZES = "pointsizes";
 
+        public static final String POINTOFFSET_X = "pointoffset_x";
+
+        public static final String POINTOFFSET_Y = "pointoffset_y";
+
         public static final String POINTSHAPES = "pointshapes";
 
         public static final String NONE = "none";
@@ -108,9 +112,15 @@ public class VisualizeImageRequest implements IndexedRecord {
 
         public static final String SYMBOLCODE = "SYMBOLCODE";
 
+        public static final String SYMBOLROTATIONS = "symbolrotations";
+
         public static final String SHAPELINEWIDTHS = "shapelinewidths";
 
         public static final String SHAPELINECOLORS = "shapelinecolors";
+
+        public static final String SHAPELINEPATTERNS = "shapelinepatterns";
+
+        public static final String SHAPELINEPATTERNLEN = "shapelinepatternlen";
 
         public static final String SHAPEFILLCOLORS = "shapefillcolors";
 
