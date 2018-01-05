@@ -101,13 +101,12 @@ public class CreateUnionRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS MERGE_VIEWS}:
      * Merge two or more views (or views of views) of the same base data set
-     * into a new view. If this mode is selected
-     *                                       {@code inputColumnNames} AND
-     * {@code outputColumnNames} are ignored The resulting view would match the
-     * results of a SQL OR operation, e.g., if filter 1 creates a view using
-     * the expression 'x = 10' and filter 2 creates a view using the expression
-     * 'x <= 10', then the merge views operation creates a new view using the
-     * expression 'x = 10 OR x <= 10'.
+     * into a new view. If this mode is selected {@code inputColumnNames} AND
+     * {@code outputColumnNames} must be empty. The resulting view would match
+     * the results of a SQL OR operation, e.g., if filter 1 creates a view
+     * using the expression 'x = 10' and filter 2 creates a view using the
+     * expression 'x <= 10', then the merge views operation creates a new view
+     * using the expression 'x = 10 OR x <= 10'.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL UNION_ALL}.
@@ -188,13 +187,13 @@ public class CreateUnionRequest implements IndexedRecord {
          *         <li> {@link
          * com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
          * MERGE_VIEWS}: Merge two or more views (or views of views) of the
-         * same base data set into a new view. If this mode is selected
-         *                                       {@code inputColumnNames} AND
-         * {@code outputColumnNames} are ignored The resulting view would match
-         * the results of a SQL OR operation, e.g., if filter 1 creates a view
-         * using the expression 'x = 10' and filter 2 creates a view using the
-         * expression 'x <= 10', then the merge views operation creates a new
-         * view using the expression 'x = 10 OR x <= 10'.
+         * same base data set into a new view. If this mode is selected {@code
+         * inputColumnNames} AND {@code outputColumnNames} must be empty. The
+         * resulting view would match the results of a SQL OR operation, e.g.,
+         * if filter 1 creates a view using the expression 'x = 10' and filter
+         * 2 creates a view using the expression 'x <= 10', then the merge
+         * views operation creates a new view using the expression 'x = 10 OR x
+         * <= 10'.
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL UNION_ALL}.
@@ -231,13 +230,13 @@ public class CreateUnionRequest implements IndexedRecord {
 
         /**
          * Merge two or more views (or views of views) of the same base data
-         * set into a new view. If this mode is selected
-         *                                       {@code inputColumnNames} AND
-         * {@code outputColumnNames} are ignored The resulting view would match
-         * the results of a SQL OR operation, e.g., if filter 1 creates a view
-         * using the expression 'x = 10' and filter 2 creates a view using the
-         * expression 'x <= 10', then the merge views operation creates a new
-         * view using the expression 'x = 10 OR x <= 10'.
+         * set into a new view. If this mode is selected {@code
+         * inputColumnNames} AND {@code outputColumnNames} must be empty. The
+         * resulting view would match the results of a SQL OR operation, e.g.,
+         * if filter 1 creates a view using the expression 'x = 10' and filter
+         * 2 creates a view using the expression 'x <= 10', then the merge
+         * views operation creates a new view using the expression 'x = 10 OR x
+         * <= 10'.
          */
         public static final String MERGE_VIEWS = "merge_views";
 
@@ -358,15 +357,13 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
      *                 MERGE_VIEWS}: Merge two or more views (or views of
      *                 views) of the same base data set into a new view. If
-     *                 this mode is selected
-     *                                                       {@code
-     *                 inputColumnNames} AND {@code outputColumnNames} are
-     *                 ignored The resulting view would match the results of a
-     *                 SQL OR operation, e.g., if filter 1 creates a view using
-     *                 the expression 'x = 10' and filter 2 creates a view
-     *                 using the expression 'x <= 10', then the merge views
-     *                 operation creates a new view using the expression 'x =
-     *                 10 OR x <= 10'.
+     *                 this mode is selected {@code inputColumnNames} AND
+     *                 {@code outputColumnNames} must be empty. The resulting
+     *                 view would match the results of a SQL OR operation,
+     *                 e.g., if filter 1 creates a view using the expression 'x
+     *                 = 10' and filter 2 creates a view using the expression
+     *                 'x <= 10', then the merge views operation creates a new
+     *                 view using the expression 'x = 10 OR x <= 10'.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
@@ -555,13 +552,12 @@ public class CreateUnionRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
      *         MERGE_VIEWS}: Merge two or more views (or views of views) of the
      *         same base data set into a new view. If this mode is selected
-     *                                               {@code inputColumnNames}
-     *         AND {@code outputColumnNames} are ignored The resulting view
-     *         would match the results of a SQL OR operation, e.g., if filter 1
-     *         creates a view using the expression 'x = 10' and filter 2
-     *         creates a view using the expression 'x <= 10', then the merge
-     *         views operation creates a new view using the expression 'x = 10
-     *         OR x <= 10'.
+     *         {@code inputColumnNames} AND {@code outputColumnNames} must be
+     *         empty. The resulting view would match the results of a SQL OR
+     *         operation, e.g., if filter 1 creates a view using the expression
+     *         'x = 10' and filter 2 creates a view using the expression 'x <=
+     *         10', then the merge views operation creates a new view using the
+     *         expression 'x = 10 OR x <= 10'.
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
@@ -653,15 +649,13 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
      *                 MERGE_VIEWS}: Merge two or more views (or views of
      *                 views) of the same base data set into a new view. If
-     *                 this mode is selected
-     *                                                       {@code
-     *                 inputColumnNames} AND {@code outputColumnNames} are
-     *                 ignored The resulting view would match the results of a
-     *                 SQL OR operation, e.g., if filter 1 creates a view using
-     *                 the expression 'x = 10' and filter 2 creates a view
-     *                 using the expression 'x <= 10', then the merge views
-     *                 operation creates a new view using the expression 'x =
-     *                 10 OR x <= 10'.
+     *                 this mode is selected {@code inputColumnNames} AND
+     *                 {@code outputColumnNames} must be empty. The resulting
+     *                 view would match the results of a SQL OR operation,
+     *                 e.g., if filter 1 creates a view using the expression 'x
+     *                 = 10' and filter 2 creates a view using the expression
+     *                 'x <= 10', then the merge views operation creates a new
+     *                 view using the expression 'x = 10 OR x <= 10'.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL

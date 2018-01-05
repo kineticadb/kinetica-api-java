@@ -131,7 +131,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
      * Constructs an AdminRebalanceRequest object with the specified
      * parameters.
      * 
-     * @param tableNames  Sepcify the tables here if only specific tables have
+     * @param tableNames  Specify the tables here if only specific tables have
      *                    to be rebalanced.  Leave this empty to rebalance all
      *                    the tables.  Note that only the tables which have no
      *                    primary or shard key can be rebalanced.
@@ -179,7 +179,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Sepcify the tables here if only specific tables have to be
+     * @return Specify the tables here if only specific tables have to be
      *         rebalanced.  Leave this empty to rebalance all the tables.  Note
      *         that only the tables which have no primary or shard key can be
      *         rebalanced.
@@ -191,7 +191,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  Sepcify the tables here if only specific tables have
+     * @param tableNames  Specify the tables here if only specific tables have
      *                    to be rebalanced.  Leave this empty to rebalance all
      *                    the tables.  Note that only the tables which have no
      *                    primary or shard key can be rebalanced.

@@ -174,7 +174,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * second aggregate, etc.
      * </ul>
      * The default value is {@link
-     * com.gpudb.protocol.AggregateGroupByRequest.Options#KEY KEY}.
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE VALUE}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
      * RESULT_TABLE}: The name of the table used to store the results. Has the
@@ -308,7 +308,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
          * then the second aggregate, etc.
          * </ul>
          * The default value is {@link
-         * com.gpudb.protocol.AggregateGroupByRequest.Options#KEY KEY}.
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE VALUE}.
          */
         public static final String SORT_BY = "sort_by";
 
@@ -493,8 +493,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 second aggregate, etc.
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#KEY
-     *                 KEY}.
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE
+     *                 VALUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of the table used to store the
@@ -665,8 +665,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 second aggregate, etc.
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#KEY
-     *                 KEY}.
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE
+     *                 VALUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of the table used to store the
@@ -952,7 +952,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         first aggregate, then the second aggregate, etc.
      *         </ul>
      *         The default value is {@link
-     *         com.gpudb.protocol.AggregateGroupByRequest.Options#KEY KEY}.
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE VALUE}.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
      *         RESULT_TABLE}: The name of the table used to store the results.
@@ -1080,8 +1080,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 second aggregate, etc.
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#KEY
-     *                 KEY}.
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE
+     *                 VALUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of the table used to store the

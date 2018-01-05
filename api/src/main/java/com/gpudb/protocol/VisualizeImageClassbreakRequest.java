@@ -124,6 +124,16 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
 
         public static final String SHAPEFILLCOLORS = "shapefillcolors";
 
+        public static final String HASHLINEINTERVALS = "hashlineintervals";
+
+        public static final String HASHLINECOLORS = "hashlinecolors";
+
+        public static final String HASHLINEANGLES = "hashlineangles";
+
+        public static final String HASHLINELENS = "hashlinelens";
+
+        public static final String HASHLINEWIDTHS = "hashlinewidths";
+
         public static final String TRACKLINEWIDTHS = "tracklinewidths";
 
         public static final String TRACKLINECOLORS = "tracklinecolors";

@@ -117,7 +117,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Add a new node to the GPUdb cluster. By default this will only add the
-     * node to the cluster, but will not be assigned any data shards. Set the
+     * node to the cluster but will not be assigned any data shards. Set the
      * {@code reshard} option to {@code true} to move some shards from the
      * other nodes in the cluster to this node.
      * 
@@ -141,7 +141,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Add a new node to the GPUdb cluster. By default this will only add the
-     * node to the cluster, but will not be assigned any data shards. Set the
+     * node to the cluster but will not be assigned any data shards. Set the
      * {@code reshard} option to {@code true} to move some shards from the
      * other nodes in the cluster to this node.
      * 
@@ -232,12 +232,12 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Perform the requested action on a list of one or more job(s) . Currently
-     * only cancelling filter, aggregate and get records reqeusts are
-     * supported. Based on the type of job and the current state of execution,
-     * the action may not be successfully executed. The final result of the
-     * attempted actions for each specified job is returned in the status array
-     * of the response.
+     * Perform the requested action on a list of one or more job(s). Based on
+     * the type of job and the current state of execution, the action may not
+     * be successfully executed. The final result of the attempted actions for
+     * each specified job is returned in the status array of the response. See
+     * <a href="../../../../gpudbAdmin/job_manager.html" target="_top">Job
+     * Manager</a> for more information.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -258,12 +258,12 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Perform the requested action on a list of one or more job(s) . Currently
-     * only cancelling filter, aggregate and get records reqeusts are
-     * supported. Based on the type of job and the current state of execution,
-     * the action may not be successfully executed. The final result of the
-     * attempted actions for each specified job is returned in the status array
-     * of the response.
+     * Perform the requested action on a list of one or more job(s). Based on
+     * the type of job and the current state of execution, the action may not
+     * be successfully executed. The final result of the attempted actions for
+     * each specified job is returned in the status array of the response. See
+     * <a href="../../../../gpudbAdmin/job_manager.html" target="_top">Job
+     * Manager</a> for more information.
      * 
      * @param jobIds  Jobs to be modified.
      * @param action  Action to be performed on the jobs specified by job_ids.
@@ -333,10 +333,9 @@ public class GPUdb extends GPUdbBase {
      *                  shards being moved.
      * @param rank  node to which the shard will be moved.
      * @param tom  Toms to which the shard will be moved.
-     * @param index  the shard which is being moved.  When use_index is set to
-     *               true, size of this array must equal the size of rank/tom
-     *               array.
-     * @param backupMapList  List of rank_tom integers, for which backup toms
+     * @param index  The shard being moved.  When use_index is set to true,
+     *               size of this array must equal the size of rank/tom array.
+     * @param backupMapList  List of rank_tom integers for which backup toms
      *                       are defined
      * @param backupMapValues  List of the backup rank_tom(s) for each rank_tom
      *                         in backup_map_list
@@ -459,7 +458,7 @@ public class GPUdb extends GPUdbBase {
      * using {@link GPUdb#adminAlterShards(long, boolean, List, List, List,
      * List, List, Map)}
      * 
-     * @param tableNames  Sepcify the tables here if only specific tables have
+     * @param tableNames  Specify the tables here if only specific tables have
      *                    to be rebalanced.  Leave this empty to rebalance all
      *                    the tables.  Note that only the tables which have no
      *                    primary or shard key can be rebalanced.
@@ -895,8 +894,8 @@ public class GPUdb extends GPUdbBase {
      * Calculates and returns the convex hull for the values in a table
      * specified by {@code tableName}.
      * 
-     * @param tableName  Name of Table on which the operation will be
-     *                   performed. Must be an existing table.  It can not be a
+     * @param tableName  Name of table on which the operation will be
+     *                   performed. Must be an existing table.  It cannot be a
      *                   collection.
      * @param xColumnName  Name of the column containing the x coordinates of
      *                     the points for the operation being performed.
@@ -1184,8 +1183,8 @@ public class GPUdb extends GPUdbBase {
      *                 second aggregate, etc.
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#KEY
-     *                 KEY}.
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE
+     *                 VALUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of the table used to store the
@@ -3888,7 +3887,7 @@ public class GPUdb extends GPUdbBase {
      * via {@link GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} with the
      * chosen columns' values falling within the specified region will trip the
      * trigger. All such records will be queued at the trigger port (by default
-     * '9001', but able to be retrieved via {@link
+     * '9001' but able to be retrieved via {@link
      * GPUdb#showSystemStatus(ShowSystemStatusRequest)}) for any listening
      * client to collect. Active triggers can be cancelled by using the {@link
      * GPUdb#clearTrigger(ClearTriggerRequest)} endpoint or by clearing all
@@ -3924,11 +3923,10 @@ public class GPUdb extends GPUdbBase {
      * GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} with the chosen
      * columns' values falling within the specified region will trip the
      * trigger. All such records will be queued at the trigger port (by default
-     * '9001', but able to be retrieved via {@link
-     * GPUdb#showSystemStatus(Map)}) for any listening client to collect.
-     * Active triggers can be cancelled by using the {@link
-     * GPUdb#clearTrigger(String, Map)} endpoint or by clearing all relevant
-     * tables.
+     * '9001' but able to be retrieved via {@link GPUdb#showSystemStatus(Map)})
+     * for any listening client to collect. Active triggers can be cancelled by
+     * using the {@link GPUdb#clearTrigger(String, Map)} endpoint or by
+     * clearing all relevant tables.
      * <p>
      * The output returns the trigger handle as well as indicating success or
      * failure of the trigger activation.
@@ -3974,7 +3972,7 @@ public class GPUdb extends GPUdbBase {
      * tables(s) via {@link GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}
      * with the chosen column_name's value falling within the specified range
      * will trip the trigger. All such records will be queued at the trigger
-     * port (by default '9001', but able to be retrieved via {@link
+     * port (by default '9001' but able to be retrieved via {@link
      * GPUdb#showSystemStatus(ShowSystemStatusRequest)}) for any listening
      * client to collect. Active triggers can be cancelled by using the {@link
      * GPUdb#clearTrigger(ClearTriggerRequest)} endpoint or by clearing all
@@ -4007,7 +4005,7 @@ public class GPUdb extends GPUdbBase {
      * tables(s) via {@link GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}
      * with the chosen column_name's value falling within the specified range
      * will trip the trigger. All such records will be queued at the trigger
-     * port (by default '9001', but able to be retrieved via {@link
+     * port (by default '9001' but able to be retrieved via {@link
      * GPUdb#showSystemStatus(Map)}) for any listening client to collect.
      * Active triggers can be cancelled by using the {@link
      * GPUdb#clearTrigger(String, Map)} endpoint or by clearing all relevant
@@ -4168,9 +4166,8 @@ public class GPUdb extends GPUdbBase {
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#STORE_ONLY
      *                    STORE_ONLY}: Persist the column value but do not make
      *                    it available to queries (e.g. {@link
-     *                    GPUdb#filterByBox(String, String, String, double,
-     *                    double, String, double, double, Map)})-i.e. it is
-     *                    mutually exclusive to the 'data' property. Any
+     *                    GPUdb#filter(String, String, String, Map)})-i.e. it
+     *                    is mutually exclusive to the 'data' property. Any
      *                    'bytes' type column must have a 'store_only'
      *                    property. This property reduces system memory usage.
      *                            <li> {@link
@@ -4477,15 +4474,13 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
      *                 MERGE_VIEWS}: Merge two or more views (or views of
      *                 views) of the same base data set into a new view. If
-     *                 this mode is selected
-     *                                                       {@code
-     *                 inputColumnNames} AND {@code outputColumnNames} are
-     *                 ignored The resulting view would match the results of a
-     *                 SQL OR operation, e.g., if filter 1 creates a view using
-     *                 the expression 'x = 10' and filter 2 creates a view
-     *                 using the expression 'x <= 10', then the merge views
-     *                 operation creates a new view using the expression 'x =
-     *                 10 OR x <= 10'.
+     *                 this mode is selected {@code inputColumnNames} AND
+     *                 {@code outputColumnNames} must be empty. The resulting
+     *                 view would match the results of a SQL OR operation,
+     *                 e.g., if filter 1 creates a view using the expression 'x
+     *                 = 10' and filter 2 creates a view using the expression
+     *                 'x <= 10', then the merge views operation creates a new
+     *                 view using the expression 'x = 10 OR x <= 10'.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
@@ -4721,10 +4716,10 @@ public class GPUdb extends GPUdbBase {
      *                   collection or a view.
      * @param expressions  A list of the actual predicates, one for each
      *                     select; format should follow the guidelines provided
-     *                     {@link GPUdb#filter(String, String, String, Map)
-     *                     here}. Specifying one or more {@code expressions} is
-     *                     mutually exclusive to specifying {@code record_id}
-     *                     in the {@code options}.
+     *                     <a href="../../../../concepts/expressions.html"
+     *                     target="_top">here</a>. Specifying one or more
+     *                     {@code expressions} is mutually exclusive to
+     *                     specifying {@code record_id} in the {@code options}.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -4949,10 +4944,11 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Filters data based on the specified expression.  The results are stored
-     * in a result set with the given {@code viewName}.
+     * in a <a href="../../../../concepts/filtered_views.html"
+     * target="_top">result set</a> with the given {@code viewName}.
      * <p>
      * For details see <a href="../../../../concepts/expressions.html"
-     * target="_top">concepts</a>.
+     * target="_top">Expressions</a>.
      * <p>
      * The response message contains the number of points for which the
      * expression evaluated to be true, which is equivalent to the size of the
@@ -4978,10 +4974,11 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Filters data based on the specified expression.  The results are stored
-     * in a result set with the given {@code viewName}.
+     * in a <a href="../../../../concepts/filtered_views.html"
+     * target="_top">result set</a> with the given {@code viewName}.
      * <p>
      * For details see <a href="../../../../concepts/expressions.html"
-     * target="_top">concepts</a>.
+     * target="_top">Expressions</a>.
      * <p>
      * The response message contains the number of points for which the
      * expression evaluated to be true, which is equivalent to the size of the
@@ -4999,7 +4996,7 @@ public class GPUdb extends GPUdbBase {
      * @param expression  The select expression to filter the specified table.
      *                    For details see <a
      *                    href="../../../../concepts/expressions.html"
-     *                    target="_top">concepts</a>.
+     *                    target="_top">Expressions</a>.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -8043,7 +8040,7 @@ public class GPUdb extends GPUdbBase {
      * symbol, and any additional optional parameter (e.g. color). To have a
      * symbol used for rendering create a table with a string column named
      * 'SYMBOLCODE' (along with 'x' or 'y' for example). Then when the table is
-     * rendered (via <a href="../../../../api/rest/wms_rest.html"
+     * rendered (via <a href="../../../rest/wms_rest.html"
      * target="_top">WMS</a>) if the 'dosymbology' parameter is 'true' then the
      * value of the 'SYMBOLCODE' column is used to pick the symbol displayed
      * for each point.
@@ -8073,7 +8070,7 @@ public class GPUdb extends GPUdbBase {
      * symbol, and any additional optional parameter (e.g. color). To have a
      * symbol used for rendering create a table with a string column named
      * 'SYMBOLCODE' (along with 'x' or 'y' for example). Then when the table is
-     * rendered (via <a href="../../../../api/rest/wms_rest.html"
+     * rendered (via <a href="../../../rest/wms_rest.html"
      * target="_top">WMS</a>) if the 'dosymbology' parameter is 'true' then the
      * value of the 'SYMBOLCODE' column is used to pick the symbol displayed
      * for each point.
@@ -9450,7 +9447,7 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
      *                 behavior when the updated primary key value already
-     *                 exists, as described in {@link
+     *                 exists as described in {@link
      *                 GPUdb#insertRecords(String, List, Map)}.
      *                 Supported values:
      *                 <ul>
@@ -9563,7 +9560,7 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
      *                 behavior when the updated primary key value already
-     *                 exists, as described in {@link
+     *                 exists as described in {@link
      *                 GPUdb#insertRecords(TypeObjectMap, String, List, Map)}.
      *                 Supported values:
      *                 <ul>
@@ -9812,12 +9809,13 @@ public class GPUdb extends GPUdbBase {
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#X_ORDER_BY
      *                      X_ORDER_BY}: An expression or aggregate expression
      *                      by which non-numeric x column values are sorted,
-     *                      e.g. avg(price).
+     *                      e.g. "avg(price) descending".
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#Y_ORDER_BY
      *                      Y_ORDER_BY}: An expression or aggregate expression
      *                      by which non-numeric y column values are sorted,
-     *                      e.g. avg(price).
+     *                      e.g. "avg(price)", which defaults to "avg(price)
+     *                      ascending".
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *                      JITTER_X}: Amplitude of horizontal jitter applied

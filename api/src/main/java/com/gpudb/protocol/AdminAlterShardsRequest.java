@@ -86,10 +86,9 @@ public class AdminAlterShardsRequest implements IndexedRecord {
      *                  shards being moved.
      * @param rank  node to which the shard will be moved.
      * @param tom  Toms to which the shard will be moved.
-     * @param index  the shard which is being moved.  When use_index is set to
-     *               true, size of this array must equal the size of rank/tom
-     *               array.
-     * @param backupMapList  List of rank_tom integers, for which backup toms
+     * @param index  The shard being moved.  When use_index is set to true,
+     *               size of this array must equal the size of rank/tom array.
+     * @param backupMapList  List of rank_tom integers for which backup toms
      *                       are defined
      * @param backupMapValues  List of the backup rank_tom(s) for each rank_tom
      *                         in backup_map_list
@@ -190,8 +189,8 @@ public class AdminAlterShardsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return the shard which is being moved.  When use_index is set to true,
-     *         size of this array must equal the size of rank/tom array.
+     * @return The shard being moved.  When use_index is set to true, size of
+     *         this array must equal the size of rank/tom array.
      * 
      */
     public List<Integer> getIndex() {
@@ -200,9 +199,8 @@ public class AdminAlterShardsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param index  the shard which is being moved.  When use_index is set to
-     *               true, size of this array must equal the size of rank/tom
-     *               array.
+     * @param index  The shard being moved.  When use_index is set to true,
+     *               size of this array must equal the size of rank/tom array.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -214,7 +212,7 @@ public class AdminAlterShardsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return List of rank_tom integers, for which backup toms are defined
+     * @return List of rank_tom integers for which backup toms are defined
      * 
      */
     public List<Integer> getBackupMapList() {
@@ -223,7 +221,7 @@ public class AdminAlterShardsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param backupMapList  List of rank_tom integers, for which backup toms
+     * @param backupMapList  List of rank_tom integers for which backup toms
      *                       are defined
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -99,9 +99,9 @@ public class CreateTypeRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#STORE_ONLY STORE_ONLY}:
      * Persist the column value but do not make it available to queries (e.g.
-     * {@link com.gpudb.GPUdb#filterByBox(FilterByBoxRequest)})-i.e. it is
-     * mutually exclusive to the 'data' property. Any 'bytes' type column must
-     * have a 'store_only' property. This property reduces system memory usage.
+     * {@link com.gpudb.GPUdb#filter(FilterRequest)})-i.e. it is mutually
+     * exclusive to the 'data' property. Any 'bytes' type column must have a
+     * 'store_only' property. This property reduces system memory usage.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#DISK_OPTIMIZED
      * DISK_OPTIMIZED}: Works in conjunction with the 'data' property for
@@ -254,10 +254,10 @@ public class CreateTypeRequest implements IndexedRecord {
 
         /**
          * Persist the column value but do not make it available to queries
-         * (e.g. {@link com.gpudb.GPUdb#filterByBox(FilterByBoxRequest)})-i.e.
-         * it is mutually exclusive to the 'data' property. Any 'bytes' type
-         * column must have a 'store_only' property. This property reduces
-         * system memory usage.
+         * (e.g. {@link com.gpudb.GPUdb#filter(FilterRequest)})-i.e. it is
+         * mutually exclusive to the 'data' property. Any 'bytes' type column
+         * must have a 'store_only' property. This property reduces system
+         * memory usage.
          */
         public static final String STORE_ONLY = "store_only";
 
@@ -507,8 +507,8 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#STORE_ONLY
      *                    STORE_ONLY}: Persist the column value but do not make
      *                    it available to queries (e.g. {@link
-     *                    com.gpudb.GPUdb#filterByBox(FilterByBoxRequest)})-i.e.
-     *                    it is mutually exclusive to the 'data' property. Any
+     *                    com.gpudb.GPUdb#filter(FilterRequest)})-i.e. it is
+     *                    mutually exclusive to the 'data' property. Any
      *                    'bytes' type column must have a 'store_only'
      *                    property. This property reduces system memory usage.
      *                            <li> {@link
@@ -771,10 +771,10 @@ public class CreateTypeRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTypeRequest.Properties#STORE_ONLY
      *         STORE_ONLY}: Persist the column value but do not make it
      *         available to queries (e.g. {@link
-     *         com.gpudb.GPUdb#filterByBox(FilterByBoxRequest)})-i.e. it is
-     *         mutually exclusive to the 'data' property. Any 'bytes' type
-     *         column must have a 'store_only' property. This property reduces
-     *         system memory usage.
+     *         com.gpudb.GPUdb#filter(FilterRequest)})-i.e. it is mutually
+     *         exclusive to the 'data' property. Any 'bytes' type column must
+     *         have a 'store_only' property. This property reduces system
+     *         memory usage.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#DISK_OPTIMIZED
      *         DISK_OPTIMIZED}: Works in conjunction with the 'data' property
@@ -961,8 +961,8 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#STORE_ONLY
      *                    STORE_ONLY}: Persist the column value but do not make
      *                    it available to queries (e.g. {@link
-     *                    com.gpudb.GPUdb#filterByBox(FilterByBoxRequest)})-i.e.
-     *                    it is mutually exclusive to the 'data' property. Any
+     *                    com.gpudb.GPUdb#filter(FilterRequest)})-i.e. it is
+     *                    mutually exclusive to the 'data' property. Any
      *                    'bytes' type column must have a 'store_only'
      *                    property. This property reduces system memory usage.
      *                            <li> {@link

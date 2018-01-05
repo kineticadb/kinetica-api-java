@@ -128,11 +128,12 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#X_ORDER_BY
      * X_ORDER_BY}: An expression or aggregate expression by which non-numeric
-     * x column values are sorted, e.g. avg(price).
+     * x column values are sorted, e.g. "avg(price) descending".
      *         <li> {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#Y_ORDER_BY
      * Y_ORDER_BY}: An expression or aggregate expression by which non-numeric
-     * y column values are sorted, e.g. avg(price).
+     * y column values are sorted, e.g. "avg(price)", which defaults to
+     * "avg(price) ascending".
      *         <li> {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      * JITTER_X}: Amplitude of horizontal jitter applied to non-numaric x
@@ -239,13 +240,14 @@ public class VisualizeImageChartRequest implements IndexedRecord {
 
         /**
          * An expression or aggregate expression by which non-numeric x column
-         * values are sorted, e.g. avg(price).
+         * values are sorted, e.g. "avg(price) descending".
          */
         public static final String X_ORDER_BY = "x_order_by";
 
         /**
          * An expression or aggregate expression by which non-numeric y column
-         * values are sorted, e.g. avg(price).
+         * values are sorted, e.g. "avg(price)", which defaults to "avg(price)
+         * ascending".
          */
         public static final String Y_ORDER_BY = "y_order_by";
 
@@ -401,12 +403,13 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#X_ORDER_BY
      *                      X_ORDER_BY}: An expression or aggregate expression
      *                      by which non-numeric x column values are sorted,
-     *                      e.g. avg(price).
+     *                      e.g. "avg(price) descending".
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#Y_ORDER_BY
      *                      Y_ORDER_BY}: An expression or aggregate expression
      *                      by which non-numeric y column values are sorted,
-     *                      e.g. avg(price).
+     *                      e.g. "avg(price)", which defaults to "avg(price)
+     *                      ascending".
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *                      JITTER_X}: Amplitude of horizontal jitter applied
@@ -746,11 +749,13 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#X_ORDER_BY
      *         X_ORDER_BY}: An expression or aggregate expression by which
-     *         non-numeric x column values are sorted, e.g. avg(price).
+     *         non-numeric x column values are sorted, e.g. "avg(price)
+     *         descending".
      *                 <li> {@link
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#Y_ORDER_BY
      *         Y_ORDER_BY}: An expression or aggregate expression by which
-     *         non-numeric y column values are sorted, e.g. avg(price).
+     *         non-numeric y column values are sorted, e.g. "avg(price)", which
+     *         defaults to "avg(price) ascending".
      *                 <li> {@link
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *         JITTER_X}: Amplitude of horizontal jitter applied to non-numaric
@@ -854,12 +859,13 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#X_ORDER_BY
      *                      X_ORDER_BY}: An expression or aggregate expression
      *                      by which non-numeric x column values are sorted,
-     *                      e.g. avg(price).
+     *                      e.g. "avg(price) descending".
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#Y_ORDER_BY
      *                      Y_ORDER_BY}: An expression or aggregate expression
      *                      by which non-numeric y column values are sorted,
-     *                      e.g. avg(price).
+     *                      e.g. "avg(price)", which defaults to "avg(price)
+     *                      ascending".
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *                      JITTER_X}: Amplitude of horizontal jitter applied

@@ -17,10 +17,11 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link com.gpudb.GPUdb#filter(FilterRequest)}.
  * <p>
  * Filters data based on the specified expression.  The results are stored in a
- * result set with the given {@code viewName}.
+ * <a href="../../../../../concepts/filtered_views.html" target="_top">result
+ * set</a> with the given {@code viewName}.
  * <p>
  * For details see <a href="../../../../../concepts/expressions.html"
- * target="_top">concepts</a>.
+ * target="_top">Expressions</a>.
  * <p>
  * The response message contains the number of points for which the expression
  * evaluated to be true, which is equivalent to the size of the result view.
@@ -114,7 +115,7 @@ public class FilterRequest implements IndexedRecord {
      * @param expression  The select expression to filter the specified table.
      *                    For details see <a
      *                    href="../../../../../concepts/expressions.html"
-     *                    target="_top">concepts</a>.
+     *                    target="_top">Expressions</a>.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -198,7 +199,7 @@ public class FilterRequest implements IndexedRecord {
      * 
      * @return The select expression to filter the specified table.  For
      *         details see <a href="../../../../../concepts/expressions.html"
-     *         target="_top">concepts</a>.
+     *         target="_top">Expressions</a>.
      * 
      */
     public String getExpression() {
@@ -210,7 +211,7 @@ public class FilterRequest implements IndexedRecord {
      * @param expression  The select expression to filter the specified table.
      *                    For details see <a
      *                    href="../../../../../concepts/expressions.html"
-     *                    target="_top">concepts</a>.
+     *                    target="_top">Expressions</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

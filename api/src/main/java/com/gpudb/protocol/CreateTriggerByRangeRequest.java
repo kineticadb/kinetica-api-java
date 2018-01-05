@@ -25,7 +25,7 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} with the chosen
  * column_name's value falling within the specified range will trip the
  * trigger. All such records will be queued at the trigger port (by default
- * '9001', but able to be retrieved via {@link
+ * '9001' but able to be retrieved via {@link
  * com.gpudb.GPUdb#showSystemStatus(ShowSystemStatusRequest)}) for any
  * listening client to collect. Active triggers can be cancelled by using the
  * {@link com.gpudb.GPUdb#clearTrigger(ClearTriggerRequest)} endpoint or by

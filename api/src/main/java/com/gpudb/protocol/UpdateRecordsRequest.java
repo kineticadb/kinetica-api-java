@@ -69,7 +69,7 @@ public class UpdateRecordsRequest<T> {
      *         <li> {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      * UPDATE_ON_EXISTING_PK}: Can be used to customize behavior when the
-     * updated primary key value already exists, as described in {@link
+     * updated primary key value already exists as described in {@link
      * com.gpudb.GPUdb#insertRecords(InsertRecordsRequest)}.
      * Supported values:
      * <ul>
@@ -121,7 +121,7 @@ public class UpdateRecordsRequest<T> {
 
         /**
          * Can be used to customize behavior when the updated primary key value
-         * already exists, as described in {@link
+         * already exists as described in {@link
          * com.gpudb.GPUdb#insertRecords(InsertRecordsRequest)}.
          * Supported values:
          * <ul>
@@ -217,7 +217,7 @@ public class UpdateRecordsRequest<T> {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
      *                 behavior when the updated primary key value already
-     *                 exists, as described in {@link
+     *                 exists as described in {@link
      *                 com.gpudb.GPUdb#insertRecords(InsertRecordsRequest)}.
      *                 Supported values:
      *                 <ul>
@@ -384,7 +384,7 @@ public class UpdateRecordsRequest<T> {
      *                 <li> {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *         UPDATE_ON_EXISTING_PK}: Can be used to customize behavior when
-     *         the updated primary key value already exists, as described in
+     *         the updated primary key value already exists as described in
      *         {@link com.gpudb.GPUdb#insertRecords(InsertRecordsRequest)}.
      *         Supported values:
      *         <ul>
@@ -445,7 +445,7 @@ public class UpdateRecordsRequest<T> {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
      *                 behavior when the updated primary key value already
-     *                 exists, as described in {@link
+     *                 exists as described in {@link
      *                 com.gpudb.GPUdb#insertRecords(InsertRecordsRequest)}.
      *                 Supported values:
      *                 <ul>

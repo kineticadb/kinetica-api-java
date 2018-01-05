@@ -110,10 +110,10 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *                   collection or a view.
      * @param expressions  A list of the actual predicates, one for each
      *                     select; format should follow the guidelines provided
-     *                     {@link com.gpudb.GPUdb#filter(FilterRequest) here}.
-     *                     Specifying one or more {@code expressions} is
-     *                     mutually exclusive to specifying {@code record_id}
-     *                     in the {@code options}.
+     *                     <a href="../../../../../concepts/expressions.html"
+     *                     target="_top">here</a>. Specifying one or more
+     *                     {@code expressions} is mutually exclusive to
+     *                     specifying {@code record_id} in the {@code options}.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -164,10 +164,11 @@ public class DeleteRecordsRequest implements IndexedRecord {
     /**
      * 
      * @return A list of the actual predicates, one for each select; format
-     *         should follow the guidelines provided {@link
-     *         com.gpudb.GPUdb#filter(FilterRequest) here}. Specifying one or
-     *         more {@code expressions} is mutually exclusive to specifying
-     *         {@code record_id} in the {@code options}.
+     *         should follow the guidelines provided <a
+     *         href="../../../../../concepts/expressions.html"
+     *         target="_top">here</a>. Specifying one or more {@code
+     *         expressions} is mutually exclusive to specifying {@code
+     *         record_id} in the {@code options}.
      * 
      */
     public List<String> getExpressions() {
@@ -178,10 +179,10 @@ public class DeleteRecordsRequest implements IndexedRecord {
      * 
      * @param expressions  A list of the actual predicates, one for each
      *                     select; format should follow the guidelines provided
-     *                     {@link com.gpudb.GPUdb#filter(FilterRequest) here}.
-     *                     Specifying one or more {@code expressions} is
-     *                     mutually exclusive to specifying {@code record_id}
-     *                     in the {@code options}.
+     *                     <a href="../../../../../concepts/expressions.html"
+     *                     target="_top">here</a>. Specifying one or more
+     *                     {@code expressions} is mutually exclusive to
+     *                     specifying {@code record_id} in the {@code options}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

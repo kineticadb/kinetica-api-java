@@ -25,9 +25,9 @@ public final class ColumnProperty {
 
     /**
      * Persist the column value but do not make it available to queries (e.g.
-     * {@link GPUdb#filterByBox(FilterByBoxRequest)})-i.e. it is mutually
-     * exclusive to the 'data' property. Any 'bytes' type column must have a
-     * 'store_only' property. This property reduces system memory usage.
+     * {@link GPUdb#filter(FilterRequest)})-i.e. it is mutually exclusive to
+     * the 'data' property. Any 'bytes' type column must have a 'store_only'
+     * property. This property reduces system memory usage.
      */
     public static final String STORE_ONLY = "store_only";
 

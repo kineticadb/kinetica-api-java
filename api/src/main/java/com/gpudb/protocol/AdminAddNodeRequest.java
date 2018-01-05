@@ -18,7 +18,7 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#adminAddNode(AdminAddNodeRequest)}.
  * <p>
  * Add a new node to the GPUdb cluster. By default this will only add the node
- * to the cluster, but will not be assigned any data shards. Set the {@code
+ * to the cluster but will not be assigned any data shards. Set the {@code
  * reshard} option to {@code true} to move some shards from the other nodes in
  * the cluster to this node.
  */
