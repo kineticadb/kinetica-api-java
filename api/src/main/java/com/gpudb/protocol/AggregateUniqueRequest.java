@@ -18,11 +18,11 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
  * <p>
  * Returns all the unique values from a particular column (specified by {@code
- * columnName}) of a particular table (specified by {@code tableName}). If
- * {@code columnName} is a numeric column the values will be in {@code
- * binaryEncodedResponse}. Otherwise if {@code columnName} is a string column
- * the values will be in {@code jsonEncodedResponse}.  The results can be paged
- * via the {@code offset} and {@code limit} parameters.
+ * columnName}) of a particular table or collection (specified by {@code
+ * tableName}). If {@code columnName} is a numeric column the values will be in
+ * {@code binaryEncodedResponse}. Otherwise if {@code columnName} is a string
+ * column the values will be in {@code jsonEncodedResponse}.  The results can
+ * be paged via the {@code offset} and {@code limit} parameters.
  * <p>
  * Columns marked as <a href="../../../../../concepts/types.html#data-handling"
  * target="_top">store-only</a> are unable to be used with this function.
@@ -33,7 +33,7 @@ import org.apache.avro.generic.IndexedRecord;
  * {"limit":"10","sort_order":"descending"}.
  * <p>
  * The response is returned as a dynamic schema. For details see: <a
- * href="../../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+ * href="../../../../../api/index.html#dynamic-schemas" target="_top">dynamic
  * schemas documentation</a>.
  * <p>
  * If a {@code result_table} name is specified in the {@code options}, the
@@ -46,8 +46,8 @@ import org.apache.avro.generic.IndexedRecord;
  * table will be sharded, in all other cases it will be replicated.  Sorting
  * will properly function only if the result table is replicated or if there is
  * only one processing node and should not be relied upon in other cases.  Not
- * available when the value of {@code columnName} is an unrestricted-length
- * string.
+ * available if {@code tableName} is a collection or when the value of {@code
+ * columnName} is an unrestricted-length string.
  */
 public class AggregateUniqueRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -136,7 +136,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * RESULT_TABLE}: The name of the table used to store the results. If
      * present, no results are returned in the response. Has the same naming
      * restrictions as <a href="../../../../../concepts/tables.html"
-     * target="_top">tables</a>.
+     * target="_top">tables</a>.  Not available if {@code tableName} is a
+     * collection or when {@code columnName} is an unrestricted-length string.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
      * RESULT_TABLE_PERSIST}: If {@code true}, then the result table specified
@@ -213,7 +214,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
          * The name of the table used to store the results. If present, no
          * results are returned in the response. Has the same naming
          * restrictions as <a href="../../../../../concepts/tables.html"
-         * target="_top">tables</a>.
+         * target="_top">tables</a>.  Not available if {@code tableName} is a
+         * collection or when {@code columnName} is an unrestricted-length
+         * string.
          */
         public static final String RESULT_TABLE = "result_table";
 
@@ -287,8 +290,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * Constructs an AggregateUniqueRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table.
+     * @param tableName  Name of an existing table/collection on which the
+     *                   operation will be performed.
      * @param columnName  Name of the column or an expression containing one or
      *                    more column names on which the unique function would
      *                    be applied.
@@ -335,7 +338,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 results. If present, no results are returned in the
      *                 response. Has the same naming restrictions as <a
      *                 href="../../../../../concepts/tables.html"
-     *                 target="_top">tables</a>.
+     *                 target="_top">tables</a>.  Not available if {@code
+     *                 tableName} is a collection or when {@code columnName} is
+     *                 an unrestricted-length string.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
@@ -393,8 +398,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * Constructs an AggregateUniqueRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table.
+     * @param tableName  Name of an existing table/collection on which the
+     *                   operation will be performed.
      * @param columnName  Name of the column or an expression containing one or
      *                    more column names on which the unique function would
      *                    be applied.
@@ -456,7 +461,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 results. If present, no results are returned in the
      *                 response. Has the same naming restrictions as <a
      *                 href="../../../../../concepts/tables.html"
-     *                 target="_top">tables</a>.
+     *                 target="_top">tables</a>.  Not available if {@code
+     *                 tableName} is a collection or when {@code columnName} is
+     *                 an unrestricted-length string.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
@@ -512,8 +519,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the operation will be performed. Must
-     *         be an existing table.
+     * @return Name of an existing table/collection on which the operation will
+     *         be performed.
      * 
      */
     public String getTableName() {
@@ -522,8 +529,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table.
+     * @param tableName  Name of an existing table/collection on which the
+     *                   operation will be performed.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -694,7 +701,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         If present, no results are returned in the response. Has the
      *         same naming restrictions as <a
      *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.
+     *         target="_top">tables</a>.  Not available if {@code tableName} is
+     *         a collection or when {@code columnName} is an
+     *         unrestricted-length string.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
      *         RESULT_TABLE_PERSIST}: If {@code true}, then the result table
@@ -776,7 +785,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 results. If present, no results are returned in the
      *                 response. Has the same naming restrictions as <a
      *                 href="../../../../../concepts/tables.html"
-     *                 target="_top">tables</a>.
+     *                 target="_top">tables</a>.  Not available if {@code
+     *                 tableName} is a collection or when {@code columnName} is
+     *                 an unrestricted-length string.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result

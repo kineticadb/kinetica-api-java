@@ -29,7 +29,7 @@ import org.apache.avro.generic.IndexedRecord;
  * indicate the pivoted column name and values respectively.
  * <p>
  * The response is returned as a dynamic schema. For details see: <a
- * href="../../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+ * href="../../../../../api/index.html#dynamic-schemas" target="_top">dynamic
  * schemas documentation</a>.
  */
 public class AggregateUnpivotRequest implements IndexedRecord {

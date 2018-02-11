@@ -116,77 +116,6 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Add a new node to the GPUdb cluster. By default this will only add the
-     * node to the cluster but will not be assigned any data shards. Set the
-     * {@code reshard} option to {@code true} to move some shards from the
-     * other nodes in the cluster to this node.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminAddNodeResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminAddNodeResponse adminAddNode(AdminAddNodeRequest request) throws GPUdbException {
-        AdminAddNodeResponse actualResponse_ = new AdminAddNodeResponse();
-        submitRequest("/admin/add/node", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Add a new node to the GPUdb cluster. By default this will only add the
-     * node to the cluster but will not be assigned any data shards. Set the
-     * {@code reshard} option to {@code true} to move some shards from the
-     * other nodes in the cluster to this node.
-     * 
-     * @param hostName  host name of the node being added to the system.
-     * @param gpuIndex
-     * @param options  Optional parameters.
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminAddNodeRequest.Options#RESHARD
-     *                 RESHARD}: If {@code true}, then some of the shards from
-     *                 all the existing nodes will be moved to the new node
-     *                 being added. Note that for big clusters, this data
-     *                 transfer could be time consuming and also result in
-     *                 delay in responding to queries for busy clusters.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminAddNodeRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminAddNodeRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AdminAddNodeRequest.Options#FALSE
-     *                 FALSE}.
-     *                 </ul>
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminAddNodeResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminAddNodeResponse adminAddNode(String hostName, int gpuIndex, Map<String, String> options) throws GPUdbException {
-        AdminAddNodeRequest actualRequest_ = new AdminAddNodeRequest(hostName, gpuIndex, options);
-        AdminAddNodeResponse actualResponse_ = new AdminAddNodeResponse();
-        submitRequest("/admin/add/node", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
      * Update the system config file.  Updates to the config file are only
      * permitted when the system is stopped.
      * 
@@ -292,72 +221,6 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Specify the mapping of the shards to the various ranks in the cluster.
-     * In most cases, it should be sufficient to let the system automatically
-     * distribute the shards evenly across the available ranks. However, this
-     * endpoint can be used to move shards for various administrative reasons,
-     * say in case of heterogeneous node clusters.  It should be noted that the
-     * system may reassign the shards the when the number of nodes in the
-     * cluster changes or the cluster is rebalanced.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminAlterShardsResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminAlterShardsResponse adminAlterShards(AdminAlterShardsRequest request) throws GPUdbException {
-        AdminAlterShardsResponse actualResponse_ = new AdminAlterShardsResponse();
-        submitRequest("/admin/alter/shards", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Specify the mapping of the shards to the various ranks in the cluster.
-     * In most cases, it should be sufficient to let the system automatically
-     * distribute the shards evenly across the available ranks. However, this
-     * endpoint can be used to move shards for various administrative reasons,
-     * say in case of heterogeneous node clusters.  It should be noted that the
-     * system may reassign the shards the when the number of nodes in the
-     * cluster changes or the cluster is rebalanced.
-     * 
-     * @param version
-     * @param useIndex  Set to true when only the shards being moved are
-     *                  specified in the request.  The index must indicate the
-     *                  shards being moved.
-     * @param rank  node to which the shard will be moved.
-     * @param tom  Toms to which the shard will be moved.
-     * @param index  The shard being moved.  When use_index is set to true,
-     *               size of this array must equal the size of rank/tom array.
-     * @param backupMapList  List of rank_tom integers for which backup toms
-     *                       are defined
-     * @param backupMapValues  List of the backup rank_tom(s) for each rank_tom
-     *                         in backup_map_list
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminAlterShardsResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminAlterShardsResponse adminAlterShards(long version, boolean useIndex, List<Integer> rank, List<Integer> tom, List<Integer> index, List<Integer> backupMapList, List<List<Integer>> backupMapValues, Map<String, String> options) throws GPUdbException {
-        AdminAlterShardsRequest actualRequest_ = new AdminAlterShardsRequest(version, useIndex, rank, tom, index, backupMapList, backupMapValues, options);
-        AdminAlterShardsResponse actualResponse_ = new AdminAlterShardsResponse();
-        submitRequest("/admin/alter/shards", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
      * Take the system offline. When the system is offline, no user operations
      * can be performed with the exception of a system shutdown.
      * 
@@ -420,183 +283,6 @@ public class GPUdb extends GPUdbBase {
         AdminOfflineRequest actualRequest_ = new AdminOfflineRequest(offline, options);
         AdminOfflineResponse actualResponse_ = new AdminOfflineResponse();
         submitRequest("/admin/offline", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Rebalance the cluster so that all the nodes contain approximately equal
-     * number of records.  The rebalance will also cause the shards to be (as
-     * much as possible) equally distributed across all the ranks. Note that
-     * the system may move any shards that were moved by system administrator
-     * using {@link GPUdb#adminAlterShards(AdminAlterShardsRequest)}
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminRebalanceResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminRebalanceResponse adminRebalance(AdminRebalanceRequest request) throws GPUdbException {
-        AdminRebalanceResponse actualResponse_ = new AdminRebalanceResponse();
-        submitRequest("/admin/rebalance", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Rebalance the cluster so that all the nodes contain approximately equal
-     * number of records.  The rebalance will also cause the shards to be (as
-     * much as possible) equally distributed across all the ranks. Note that
-     * the system may move any shards that were moved by system administrator
-     * using {@link GPUdb#adminAlterShards(long, boolean, List, List, List,
-     * List, List, Map)}
-     * 
-     * @param tableNames  Specify the tables here if only specific tables have
-     *                    to be rebalanced.  Leave this empty to rebalance all
-     *                    the tables.  Note that only the tables which have no
-     *                    primary or shard key can be rebalanced.
-     * @param action  Specify 'start' to start rebalancing the cluster or
-     *                'stop' to prematurely stop a previsouly issued rebalance
-     *                request.
-     *                Supported values:
-     *                <ul>
-     *                        <li> {@link
-     *                com.gpudb.protocol.AdminRebalanceRequest.Action#START
-     *                START}
-     *                        <li> {@link
-     *                com.gpudb.protocol.AdminRebalanceRequest.Action#STOP
-     *                STOP}
-     *                </ul>
-     * @param options  Optional parameters.
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#RESHARD
-     *                 RESHARD}: If {@code true}, then all the nodes in the
-     *                 cluster will be assigned approximately the same number
-     *                 of shards. Note that for big clusters, this data
-     *                 transfer could be time consuming and also result in
-     *                 delay in responding to queries for busy clusters.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
-     *                 TRUE}.
-     *                 </ul>
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminRebalanceResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminRebalanceResponse adminRebalance(List<String> tableNames, String action, Map<String, String> options) throws GPUdbException {
-        AdminRebalanceRequest actualRequest_ = new AdminRebalanceRequest(tableNames, action, options);
-        AdminRebalanceResponse actualResponse_ = new AdminRebalanceResponse();
-        submitRequest("/admin/rebalance", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Remove a node from the cluster.  Note that this operation could take a
-     * long time to complete for big clusters.  The data is transferred to
-     * other nodes in the cluster before the node is removed.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminRemoveNodeResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminRemoveNodeResponse adminRemoveNode(AdminRemoveNodeRequest request) throws GPUdbException {
-        AdminRemoveNodeResponse actualResponse_ = new AdminRemoveNodeResponse();
-        submitRequest("/admin/remove/node", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Remove a node from the cluster.  Note that this operation could take a
-     * long time to complete for big clusters.  The data is transferred to
-     * other nodes in the cluster before the node is removed.
-     * 
-     * @param rank  Rank number of the node being removed from the cluster.
-     * @param options  Optional parameters.
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRemoveNodeRequest.Options#RESHARD
-     *                 RESHARD}: When {@code true}, then the shards from nodes
-     *                 will be moved to the other nodes in the cluster. When
-     *                 false, then the node will only be removed from the
-     *                 cluster if the node does not contain any data shards,
-     *                 otherwise an error is returned.  Note that for big
-     *                 clusters, this data transfer could be time consuming and
-     *                 also result in delay in responding to queries for busy
-     *                 clusters.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRemoveNodeRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRemoveNodeRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AdminRemoveNodeRequest.Options#TRUE
-     *                 TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRemoveNodeRequest.Options#FORCE
-     *                 FORCE}: When {@code true}, the rank is immediately
-     *                 shutdown and removed from the cluster.  This will result
-     *                 in loss of any data that is present in the node at the
-     *                 time of the request.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRemoveNodeRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRemoveNodeRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AdminRemoveNodeRequest.Options#FALSE
-     *                 FALSE}.
-     *                 </ul>
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminRemoveNodeResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminRemoveNodeResponse adminRemoveNode(int rank, Map<String, String> options) throws GPUdbException {
-        AdminRemoveNodeRequest actualRequest_ = new AdminRemoveNodeRequest(rank, options);
-        AdminRemoveNodeResponse actualResponse_ = new AdminRemoveNodeResponse();
-        submitRequest("/admin/remove/node", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -953,7 +639,7 @@ public class GPUdb extends GPUdbBase {
      * arg_min, arg_max and count_distinct.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+     * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
      * schemas documentation</a>.
      * <p>
      * If a {@code result_table} name is specified in the {@code options}, the
@@ -1022,7 +708,7 @@ public class GPUdb extends GPUdbBase {
      * arg_min, arg_max and count_distinct.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+     * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
      * schemas documentation</a>.
      * <p>
      * If a {@code result_table} name is specified in the {@code options}, the
@@ -1098,7 +784,7 @@ public class GPUdb extends GPUdbBase {
      * arg_min, arg_max and count_distinct.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+     * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
      * schemas documentation</a>.
      * <p>
      * If a {@code result_table} name is specified in the {@code options}, the
@@ -1841,12 +1527,12 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Returns all the unique values from a particular column (specified by
-     * {@code columnName}) of a particular table (specified by {@code
-     * tableName}). If {@code columnName} is a numeric column the values will
-     * be in {@code binaryEncodedResponse}. Otherwise if {@code columnName} is
-     * a string column the values will be in {@code jsonEncodedResponse}.  The
-     * results can be paged via the {@code offset} and {@code limit}
-     * parameters.
+     * {@code columnName}) of a particular table or collection (specified by
+     * {@code tableName}). If {@code columnName} is a numeric column the values
+     * will be in {@code binaryEncodedResponse}. Otherwise if {@code
+     * columnName} is a string column the values will be in {@code
+     * jsonEncodedResponse}.  The results can be paged via the {@code offset}
+     * and {@code limit} parameters.
      * <p>
      * Columns marked as <a
      * href="../../../../concepts/types.html#data-handling"
@@ -1858,7 +1544,7 @@ public class GPUdb extends GPUdbBase {
      * {"limit":"10","sort_order":"descending"}.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+     * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
      * schemas documentation</a>.
      * <p>
      * If a {@code result_table} name is specified in the {@code options}, the
@@ -1872,8 +1558,8 @@ public class GPUdb extends GPUdbBase {
      * sharded, in all other cases it will be replicated.  Sorting will
      * properly function only if the result table is replicated or if there is
      * only one processing node and should not be relied upon in other cases.
-     * Not available when the value of {@code columnName} is an
-     * unrestricted-length string.
+     * Not available if {@code tableName} is a collection or when the value of
+     * {@code columnName} is an unrestricted-length string.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -1895,12 +1581,12 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Returns all the unique values from a particular column (specified by
-     * {@code columnName}) of a particular table (specified by {@code
-     * tableName}). If {@code columnName} is a numeric column the values will
-     * be in {@code binaryEncodedResponse}. Otherwise if {@code columnName} is
-     * a string column the values will be in {@code jsonEncodedResponse}.  The
-     * results can be paged via the {@code offset} and {@code limit}
-     * parameters.
+     * {@code columnName}) of a particular table or collection (specified by
+     * {@code tableName}). If {@code columnName} is a numeric column the values
+     * will be in {@code binaryEncodedResponse}. Otherwise if {@code
+     * columnName} is a string column the values will be in {@code
+     * jsonEncodedResponse}.  The results can be paged via the {@code offset}
+     * and {@code limit} parameters.
      * <p>
      * Columns marked as <a
      * href="../../../../concepts/types.html#data-handling"
@@ -1912,7 +1598,7 @@ public class GPUdb extends GPUdbBase {
      * {"limit":"10","sort_order":"descending"}.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+     * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
      * schemas documentation</a>.
      * <p>
      * If a {@code result_table} name is specified in the {@code options}, the
@@ -1926,8 +1612,8 @@ public class GPUdb extends GPUdbBase {
      * sharded, in all other cases it will be replicated.  Sorting will
      * properly function only if the result table is replicated or if there is
      * only one processing node and should not be relied upon in other cases.
-     * Not available when the value of {@code columnName} is an
-     * unrestricted-length string.
+     * Not available if {@code tableName} is a collection or when the value of
+     * {@code columnName} is an unrestricted-length string.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -1956,12 +1642,12 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Returns all the unique values from a particular column (specified by
-     * {@code columnName}) of a particular table (specified by {@code
-     * tableName}). If {@code columnName} is a numeric column the values will
-     * be in {@code binaryEncodedResponse}. Otherwise if {@code columnName} is
-     * a string column the values will be in {@code jsonEncodedResponse}.  The
-     * results can be paged via the {@code offset} and {@code limit}
-     * parameters.
+     * {@code columnName}) of a particular table or collection (specified by
+     * {@code tableName}). If {@code columnName} is a numeric column the values
+     * will be in {@code binaryEncodedResponse}. Otherwise if {@code
+     * columnName} is a string column the values will be in {@code
+     * jsonEncodedResponse}.  The results can be paged via the {@code offset}
+     * and {@code limit} parameters.
      * <p>
      * Columns marked as <a
      * href="../../../../concepts/types.html#data-handling"
@@ -1973,7 +1659,7 @@ public class GPUdb extends GPUdbBase {
      * {"limit":"10","sort_order":"descending"}.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+     * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
      * schemas documentation</a>.
      * <p>
      * If a {@code result_table} name is specified in the {@code options}, the
@@ -1987,11 +1673,11 @@ public class GPUdb extends GPUdbBase {
      * sharded, in all other cases it will be replicated.  Sorting will
      * properly function only if the result table is replicated or if there is
      * only one processing node and should not be relied upon in other cases.
-     * Not available when the value of {@code columnName} is an
-     * unrestricted-length string.
+     * Not available if {@code tableName} is a collection or when the value of
+     * {@code columnName} is an unrestricted-length string.
      * 
-     * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table.
+     * @param tableName  Name of an existing table/collection on which the
+     *                   operation will be performed.
      * @param columnName  Name of the column or an expression containing one or
      *                    more column names on which the unique function would
      *                    be applied.
@@ -2038,7 +1724,9 @@ public class GPUdb extends GPUdbBase {
      *                 results. If present, no results are returned in the
      *                 response. Has the same naming restrictions as <a
      *                 href="../../../../concepts/tables.html"
-     *                 target="_top">tables</a>.
+     *                 target="_top">tables</a>.  Not available if {@code
+     *                 tableName} is a collection or when {@code columnName} is
+     *                 an unrestricted-length string.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
@@ -2113,7 +1801,7 @@ public class GPUdb extends GPUdbBase {
      * respectively.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+     * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
      * schemas documentation</a>.
      * 
      * @param request  Request object containing the parameters for the
@@ -2146,7 +1834,7 @@ public class GPUdb extends GPUdbBase {
      * respectively.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+     * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
      * schemas documentation</a>.
      * 
      * @param request  Request object containing the parameters for the
@@ -2187,7 +1875,7 @@ public class GPUdb extends GPUdbBase {
      * respectively.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+     * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
      * schemas documentation</a>.
      * 
      * @param tableName  Name of the table on which the operation will be
@@ -6505,7 +6193,7 @@ public class GPUdb extends GPUdbBase {
      * contiguity across pages cannot be relied upon.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+     * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
      * schemas documentation</a>.
      * 
      * @param request  Request object containing the parameters for the
@@ -6539,7 +6227,7 @@ public class GPUdb extends GPUdbBase {
      * contiguity across pages cannot be relied upon.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+     * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
      * schemas documentation</a>.
      * 
      * @param request  Request object containing the parameters for the
@@ -6581,7 +6269,7 @@ public class GPUdb extends GPUdbBase {
      * contiguity across pages cannot be relied upon.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+     * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
      * schemas documentation</a>.
      * 
      * @param tableName  Name of the table on which this operation will be
@@ -6609,9 +6297,8 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      *                 SORT_ORDER}: String indicating how the returned values
-     *                 should be sorted - ascending or descending. Default is
-     *                 'ascending'. If sort_order is provided, sort_by has to
-     *                 be provided.
+     *                 should be sorted - ascending or descending. If
+     *                 sort_order is provided, sort_by has to be provided.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

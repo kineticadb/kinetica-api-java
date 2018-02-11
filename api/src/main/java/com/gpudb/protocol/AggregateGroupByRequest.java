@@ -49,7 +49,7 @@ import org.apache.avro.generic.IndexedRecord;
  * arg_max and count_distinct.
  * <p>
  * The response is returned as a dynamic schema. For details see: <a
- * href="../../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+ * href="../../../../../api/index.html#dynamic-schemas" target="_top">dynamic
  * schemas documentation</a>.
  * <p>
  * If a {@code result_table} name is specified in the {@code options}, the

@@ -31,7 +31,7 @@ import org.apache.avro.generic.IndexedRecord;
  * cannot be relied upon.
  * <p>
  * The response is returned as a dynamic schema. For details see: <a
- * href="../../../../../concepts/dynamic_schemas.html" target="_top">dynamic
+ * href="../../../../../api/index.html#dynamic-schemas" target="_top">dynamic
  * schemas documentation</a>.
  */
 public class GetRecordsByColumnRequest implements IndexedRecord {
@@ -93,8 +93,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      * SORT_ORDER}: String indicating how the returned values should be sorted
-     * - ascending or descending. Default is 'ascending'. If sort_order is
-     * provided, sort_by has to be provided.
+     * - ascending or descending. If sort_order is provided, sort_by has to be
+     * provided.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -131,8 +131,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
         /**
          * String indicating how the returned values should be sorted -
-         * ascending or descending. Default is 'ascending'. If sort_order is
-         * provided, sort_by has to be provided.
+         * ascending or descending. If sort_order is provided, sort_by has to
+         * be provided.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -208,9 +208,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      *                 SORT_ORDER}: String indicating how the returned values
-     *                 should be sorted - ascending or descending. Default is
-     *                 'ascending'. If sort_order is provided, sort_by has to
-     *                 be provided.
+     *                 should be sorted - ascending or descending. If
+     *                 sort_order is provided, sort_by has to be provided.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -285,9 +284,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      *                 SORT_ORDER}: String indicating how the returned values
-     *                 should be sorted - ascending or descending. Default is
-     *                 'ascending'. If sort_order is provided, sort_by has to
-     *                 be provided.
+     *                 should be sorted - ascending or descending. If
+     *                 sort_order is provided, sort_by has to be provided.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -478,8 +476,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      *         SORT_ORDER}: String indicating how the returned values should be
-     *         sorted - ascending or descending. Default is 'ascending'. If
-     *         sort_order is provided, sort_by has to be provided.
+     *         sorted - ascending or descending. If sort_order is provided,
+     *         sort_by has to be provided.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -521,9 +519,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      *                 SORT_ORDER}: String indicating how the returned values
-     *                 should be sorted - ascending or descending. Default is
-     *                 'ascending'. If sort_order is provided, sort_by has to
-     *                 be provided.
+     *                 should be sorted - ascending or descending. If
+     *                 sort_order is provided, sort_by has to be provided.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
