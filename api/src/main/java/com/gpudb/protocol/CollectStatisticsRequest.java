@@ -5,6 +5,10 @@
  */
 package com.gpudb.protocol;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -12,16 +16,19 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#insertRecordsRandom(InsertRecordsRandomRequest)}.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#collectStatistics(CollectStatisticsRequest)}.
+ * <p>
+ * Collect the requested statistics of the given column(s) in a given table.
  */
-public class InsertRecordsRandomResponse implements IndexedRecord {
+public class CollectStatisticsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("InsertRecordsRandomResponse")
+            .record("CollectStatisticsRequest")
             .namespace("com.gpudb")
             .fields()
                 .name("tableName").type().stringType().noDefault()
-                .name("count").type().longType().noDefault()
+                .name("columnNames").type().array().items().stringType().noDefault()
+                .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -37,19 +44,39 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
     }
 
     private String tableName;
-    private long count;
+    private List<String> columnNames;
+    private Map<String, String> options;
 
 
     /**
-     * Constructs an InsertRecordsRandomResponse object with default
-     * parameters.
+     * Constructs a CollectStatisticsRequest object with default parameters.
      */
-    public InsertRecordsRandomResponse() {
+    public CollectStatisticsRequest() {
+        tableName = "";
+        columnNames = new ArrayList<>();
+        options = new LinkedHashMap<>();
+    }
+
+    /**
+     * Constructs a CollectStatisticsRequest object with the specified
+     * parameters.
+     * 
+     * @param tableName  Name of the table on which the statistics operation
+     *                   will be performed.
+     * @param columnNames  List of one or more column names.
+     * @param options  Optional parameters.
+     * 
+     */
+    public CollectStatisticsRequest(String tableName, List<String> columnNames, Map<String, String> options) {
+        this.tableName = (tableName == null) ? "" : tableName;
+        this.columnNames = (columnNames == null) ? new ArrayList<String>() : columnNames;
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
      * 
-     * @return Value of {@code tableName}.
+     * @return Name of the table on which the statistics operation will be
+     *         performed.
      * 
      */
     public String getTableName() {
@@ -58,34 +85,56 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Value of {@code tableName}.
+     * @param tableName  Name of the table on which the statistics operation
+     *                   will be performed.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public InsertRecordsRandomResponse setTableName(String tableName) {
+    public CollectStatisticsRequest setTableName(String tableName) {
         this.tableName = (tableName == null) ? "" : tableName;
         return this;
     }
 
     /**
      * 
-     * @return Number of records inserted.
+     * @return List of one or more column names.
      * 
      */
-    public long getCount() {
-        return count;
+    public List<String> getColumnNames() {
+        return columnNames;
     }
 
     /**
      * 
-     * @param count  Number of records inserted.
+     * @param columnNames  List of one or more column names.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public InsertRecordsRandomResponse setCount(long count) {
-        this.count = count;
+    public CollectStatisticsRequest setColumnNames(List<String> columnNames) {
+        this.columnNames = (columnNames == null) ? new ArrayList<String>() : columnNames;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Optional parameters.
+     * 
+     */
+    public Map<String, String> getOptions() {
+        return options;
+    }
+
+    /**
+     * 
+     * @param options  Optional parameters.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public CollectStatisticsRequest setOptions(Map<String, String> options) {
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
 
@@ -119,7 +168,10 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
                 return this.tableName;
 
             case 1:
-                return this.count;
+                return this.columnNames;
+
+            case 2:
+                return this.options;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -145,7 +197,11 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
                 break;
 
             case 1:
-                this.count = (Long)value;
+                this.columnNames = (List<String>)value;
+                break;
+
+            case 2:
+                this.options = (Map<String, String>)value;
                 break;
 
             default:
@@ -163,10 +219,11 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
             return false;
         }
 
-        InsertRecordsRandomResponse that = (InsertRecordsRandomResponse)obj;
+        CollectStatisticsRequest that = (CollectStatisticsRequest)obj;
 
         return ( this.tableName.equals( that.tableName )
-                 && ( this.count == that.count ) );
+                 && this.columnNames.equals( that.columnNames )
+                 && this.options.equals( that.options ) );
     }
 
     @Override
@@ -178,9 +235,13 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.tableName ) );
         builder.append( ", " );
-        builder.append( gd.toString( "count" ) );
+        builder.append( gd.toString( "columnNames" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.count ) );
+        builder.append( gd.toString( this.columnNames ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "options" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.options ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -190,7 +251,8 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.tableName.hashCode();
-        hashCode = (31 * hashCode) + ((Long)this.count).hashCode();
+        hashCode = (31 * hashCode) + this.columnNames.hashCode();
+        hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }
 

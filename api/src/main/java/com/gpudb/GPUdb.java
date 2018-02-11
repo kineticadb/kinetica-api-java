@@ -924,6 +924,9 @@ public class GPUdb extends GPUdbBase {
      *                 result table. Must be used in combination with the
      *                 {@code result_table} option.
      *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this result table is part of
+     *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
      *                 the groupby result table will be cached on the GPU. Must
@@ -1767,6 +1770,9 @@ public class GPUdb extends GPUdbBase {
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
      *                 result table. Must be used in combination with the
      *                 {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this result table is part of
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -2348,6 +2354,27 @@ public class GPUdb extends GPUdbBase {
      *                tableName}. Specify the access mode in {@code value}.
      *                Valid modes are 'no_access', 'read_only', 'write_only'
      *                and 'read_write'.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#REFRESH
+     *                REFRESH}: Replay all the table creation commands required
+     *                to create this view. Endpoints supported are filter,
+     *                create_join_table, create_projection, create_union,
+     *                aggregate_group_by, and aggregate_unique.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
+     *                SET_REFRESH_METHOD}: Set the method by which this view is
+     *                refreshed - one of manual, periodic, on_change, on_query.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
+     *                SET_REFRESH_START_TIME}: Set the time to start periodic
+     *                refreshes to datetime string with format YYYY-MM-DD
+     *                HH:MM:SS at which refresh is to be done.  Next refresh
+     *                occurs at refresh_start_time + N*refresh_period
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
+     *                SET_REFRESH_PERIOD}: Set the time interval at which to
+     *                refresh this view - set refresh method to periodic if not
+     *                alreay set.
      *                </ul>
      * @param value  The value of the modification. May be a column name,
      *               'true' or 'false', a TTL, or the global access mode
@@ -2357,7 +2384,9 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN_DEFAULT_VALUE
      *                 COLUMN_DEFAULT_VALUE}: When adding a column, set a
-     *                 default value for existing records.
+     *                 default value for existing records.  For nullable
+     *                 columns, the default value will be null, regardless of
+     *                 data type.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN_PROPERTIES
      *                 COLUMN_PROPERTIES}: When adding or changing a column,
@@ -2392,11 +2421,8 @@ public class GPUdb extends GPUdbBase {
      *                 SNAPPY}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COPY_VALUES_FROM_COLUMN
-     *                 COPY_VALUES_FROM_COLUMN}: When adding or changing a
-     *                 column, enter a column name from the same table being
-     *                 altered to use as a source for the column being
-     *                 added/changed; values will be copied from this source
-     *                 column into the new/modified column.
+     *                 COPY_VALUES_FROM_COLUMN}: please see
+     *                 add_column_expression instead.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#RENAME_COLUMN
      *                 RENAME_COLUMN}: When changing a column, specify new
@@ -2420,6 +2446,11 @@ public class GPUdb extends GPUdbBase {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#ADD_COLUMN_EXPRESSION
+     *                 ADD_COLUMN_EXPRESSION}: expression for new column's
+     *                 values (optional with add_column). Any valid expressions
+     *                 including existing columns.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -2666,6 +2697,53 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Clears (drops) one or all column statistics of a tables.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ClearStatisticsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ClearStatisticsResponse clearStatistics(ClearStatisticsRequest request) throws GPUdbException {
+        ClearStatisticsResponse actualResponse_ = new ClearStatisticsResponse();
+        submitRequest("/clear/statistics", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Clears (drops) one or all column statistics of a tables.
+     * 
+     * @param tableName  Name of the table to clear the statistics. Must be an
+     *                   existing table.
+     * @param columnName  Name of the column to be cleared. Must be an existing
+     *                    table. Empty string clears all available statistics
+     *                    of the table.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ClearStatisticsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ClearStatisticsResponse clearStatistics(String tableName, String columnName, Map<String, String> options) throws GPUdbException {
+        ClearStatisticsRequest actualRequest_ = new ClearStatisticsRequest(tableName, columnName, options);
+        ClearStatisticsResponse actualResponse_ = new ClearStatisticsResponse();
+        submitRequest("/clear/statistics", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Clears (drops) one or all tables in the database cluster. The operation
      * is synchronous meaning that the table will be cleared before the
      * function returns. The response payload returns the status of the
@@ -2830,6 +2908,133 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Collect the requested statistics of the given column(s) in a given
+     * table.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CollectStatisticsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CollectStatisticsResponse collectStatistics(CollectStatisticsRequest request) throws GPUdbException {
+        CollectStatisticsResponse actualResponse_ = new CollectStatisticsResponse();
+        submitRequest("/collect/statistics", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Collect the requested statistics of the given column(s) in a given
+     * table.
+     * 
+     * @param tableName  Name of the table on which the statistics operation
+     *                   will be performed.
+     * @param columnNames  List of one or more column names.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CollectStatisticsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CollectStatisticsResponse collectStatistics(String tableName, List<String> columnNames, Map<String, String> options) throws GPUdbException {
+        CollectStatisticsRequest actualRequest_ = new CollectStatisticsRequest(tableName, columnNames, options);
+        CollectStatisticsResponse actualResponse_ = new CollectStatisticsResponse();
+        submitRequest("/collect/statistics", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Create a job which will run asynchronously. The response returns a job
+     * ID, which can be used to query the status and result of the job. The
+     * status and the result of the job upon completion can be requested by
+     * {@link GPUdb#getJob(GetJobRequest)}.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateJobResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateJobResponse createJob(CreateJobRequest request) throws GPUdbException {
+        CreateJobResponse actualResponse_ = new CreateJobResponse();
+        submitRequest("/create/job", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Create a job which will run asynchronously. The response returns a job
+     * ID, which can be used to query the status and result of the job. The
+     * status and the result of the job upon completion can be requested by
+     * {@link GPUdb#getJob(int, Map)}.
+     * 
+     * @param endpoint  Indicates which endpoint to execute, e.g.
+     *                  '/alter/table'.
+     * @param requestEncoding  The encoding of the request payload for the job.
+     *                         Supported values:
+     *                         <ul>
+     *                                 <li> {@link
+     *                         com.gpudb.protocol.CreateJobRequest.RequestEncoding#BINARY
+     *                         BINARY}
+     *                                 <li> {@link
+     *                         com.gpudb.protocol.CreateJobRequest.RequestEncoding#JSON
+     *                         JSON}
+     *                                 <li> {@link
+     *                         com.gpudb.protocol.CreateJobRequest.RequestEncoding#SNAPPY
+     *                         SNAPPY}
+     *                         </ul>
+     *                         The default value is {@link
+     *                         com.gpudb.protocol.CreateJobRequest.RequestEncoding#BINARY
+     *                         BINARY}.
+     * @param data  Binary-encoded payload for the job to be run
+     *              asynchronously.  The payload must contain the relevant
+     *              input parameters for the endpoint indicated in {@code
+     *              endpoint}.  Please see the documentation for the
+     *              appropriate endpoint to see what values must (or can) be
+     *              specified.  If this parameter is used, then {@code
+     *              requestEncoding} must be {@code binary} or {@code snappy}.
+     * @param dataStr  JSON-encoded payload for the job to be run
+     *                 asynchronously.  The payload must contain the relevant
+     *                 input parameters for the endpoint indicated in {@code
+     *                 endpoint}.  Please see the documentation for the
+     *                 appropriate endpoint to see what values must (or can) be
+     *                 specified.  If this parameter is used, then {@code
+     *                 requestEncoding} must be {@code json}.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateJobResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateJobResponse createJob(String endpoint, String requestEncoding, ByteBuffer data, String dataStr, Map<String, String> options) throws GPUdbException {
+        CreateJobRequest actualRequest_ = new CreateJobRequest(endpoint, requestEncoding, data, dataStr, options);
+        CreateJobResponse actualResponse_ = new CreateJobResponse();
+        submitRequest("/create/job", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Creates a table that is the result of a SQL JOIN.  For details see: <a
      * href="../../../../concepts/joins.html" target="_top">join concept
      * documentation</a>.
@@ -2971,6 +3176,9 @@ public class GPUdb extends GPUdbBase {
      *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the join table specified in
      *                 {@code joinTableName}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this projection is part of
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -2984,6 +3192,137 @@ public class GPUdb extends GPUdbBase {
         CreateJoinTableRequest actualRequest_ = new CreateJoinTableRequest(joinTableName, tableNames, columnNames, expressions, options);
         CreateJoinTableResponse actualResponse_ = new CreateJoinTableResponse();
         submitRequest("/create/jointable", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * The create materialized view request does not create the actual table
+     * that will be the toplevel table of the view but instead registers the
+     * table name so no other views or tables can be created with that name.
+     * The response contains a a view_id that is used to label the table
+     * creation requests (projection, union, group-by, filter, or join) that
+     * describes the view.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateMaterializedViewResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateMaterializedViewResponse createMaterializedView(CreateMaterializedViewRequest request) throws GPUdbException {
+        CreateMaterializedViewResponse actualResponse_ = new CreateMaterializedViewResponse();
+        submitRequest("/create/materializedview", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * The create materialized view request does not create the actual table
+     * that will be the toplevel table of the view but instead registers the
+     * table name so no other views or tables can be created with that name.
+     * The response contains a a view_id that is used to label the table
+     * creation requests (projection, union, group-by, filter, or join) that
+     * describes the view.
+     * 
+     * @param tableName  Name of the table to be created that is the top-level
+     *                   table of the materialized view.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a collection which is to
+     *                 contain the newly created view. If the collection
+     *                 provided is non-existent, the collection will be
+     *                 automatically created. If empty, then the newly created
+     *                 table will be a top-level table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL
+     *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> of the table specified in {@code
+     *                 tableName}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#PERSIST
+     *                 PERSIST}: If {@code true}, then the materialized view
+     *                 specified in {@code tableName} will be persisted and
+     *                 will not expire unless a {@code ttl} is specified.   If
+     *                 {@code false}, then the materialized view will be an
+     *                 in-memory table and will expire unless a {@code ttl} is
+     *                 specified otherwise.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_METHOD
+     *                 REFRESH_METHOD}: Method by which the join can be
+     *                 refreshed when the data in underlying member tables have
+     *                 changed.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#MANUAL
+     *                 MANUAL}: Refresh only occurs when manually requested by
+     *                 calling alter_table with action refresh_view
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_QUERY
+     *                 ON_QUERY}: Incrementally refresh (refresh just those
+     *                 records added) whenever a new query is issued and new
+     *                 data is inserted into the base table.  A full refresh of
+     *                 all the records occurs when a new query is issued and
+     *                 there have been inserts to any non-base-tables since the
+     *                 last query
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_CHANGE
+     *                 ON_CHANGE}: If possible, incrementally refresh (refresh
+     *                 just those records added) whenever an insert, update,
+     *                 delete or refresh of input table is done.  A full
+     *                 refresh on_query is done if an incremental refresh is
+     *                 not possible.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#PERIODIC
+     *                 PERIODIC}: Refresh table periodically at rate specified
+     *                 by refresh_period option
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#MANUAL
+     *                 MANUAL}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_PERIOD
+     *                 REFRESH_PERIOD}: When refresh_method is periodic
+     *                 specifies the period in seconds at which refresh occurs
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_START_TIME
+     *                 REFRESH_START_TIME}: First time at which a periodic
+     *                 refresh is to be done.  Value is a datatime string with
+     *                 format YYYY-MM-DD HH:MM:SS.
+     *                 </ul>
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateMaterializedViewResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateMaterializedViewResponse createMaterializedView(String tableName, Map<String, String> options) throws GPUdbException {
+        CreateMaterializedViewRequest actualRequest_ = new CreateMaterializedViewRequest(tableName, options);
+        CreateMaterializedViewResponse actualResponse_ = new CreateMaterializedViewResponse();
+        submitRequest("/create/materializedview", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -3063,6 +3402,13 @@ public class GPUdb extends GPUdbBase {
      * @param args  An array of command-line arguments that will be passed to
      *              {@code command} when the proc is executed.
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProcRequest.Options#MAX_CONCURRENCY_PER_NODE
+     *                 MAX_CONCURRENCY_PER_NODE}: The maximum number of
+     *                 concurrent instances of the proc that will be executed
+     *                 per node. 0 allows unlimited concurrency.
+     *                 </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -3247,6 +3593,9 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this projection is part of
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -4200,6 +4549,9 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this union table is part of
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -4694,6 +5046,9 @@ public class GPUdb extends GPUdbBase {
      *                 provided is non-existent, the collection will be
      *                 automatically created. If empty, then the newly created
      *                 view will be top-level.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this filtered-view is part of
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterRequest.Options#TTL TTL}: Sets
      *                 the <a href="../../../../concepts/ttl.html"
@@ -5856,6 +6211,48 @@ public class GPUdb extends GPUdbBase {
         FilterByValueRequest actualRequest_ = new FilterByValueRequest(tableName, viewName, isString, value, valueStr, columnName, options);
         FilterByValueResponse actualResponse_ = new FilterByValueResponse();
         submitRequest("/filter/byvalue", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  GetJobResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public GetJobResponse getJob(GetJobRequest request) throws GPUdbException {
+        GetJobResponse actualResponse_ = new GetJobResponse();
+        submitRequest("/get/job", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * 
+     * @param jobId  A unique identifier for the job whose status and result is
+     *               to be fetched.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  GetJobResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public GetJobResponse getJob(int jobId, Map<String, String> options) throws GPUdbException {
+        GetJobRequest actualRequest_ = new GetJobRequest(jobId, options);
+        GetJobResponse actualResponse_ = new GetJobResponse();
+        submitRequest("/get/job", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -8421,6 +8818,50 @@ public class GPUdb extends GPUdbBase {
         ShowSecurityRequest actualRequest_ = new ShowSecurityRequest(names, options);
         ShowSecurityResponse actualResponse_ = new ShowSecurityResponse();
         submitRequest("/show/security", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Retrieves the collected column statistics for the specified table.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowStatisticsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowStatisticsResponse showStatistics(ShowStatisticsRequest request) throws GPUdbException {
+        ShowStatisticsResponse actualResponse_ = new ShowStatisticsResponse();
+        submitRequest("/show/statistics", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Retrieves the collected column statistics for the specified table.
+     * 
+     * @param tableNames  Tables whose metadata will be fetched. All provided
+     *                    tables must exist, or an error is returned.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowStatisticsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowStatisticsResponse showStatistics(List<String> tableNames, Map<String, String> options) throws GPUdbException {
+        ShowStatisticsRequest actualRequest_ = new ShowStatisticsRequest(tableNames, options);
+        ShowStatisticsResponse actualResponse_ = new ShowStatisticsResponse();
+        submitRequest("/show/statistics", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 

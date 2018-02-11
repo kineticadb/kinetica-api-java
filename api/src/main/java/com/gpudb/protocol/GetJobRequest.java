@@ -5,6 +5,8 @@
  */
 package com.gpudb.protocol;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -12,16 +14,15 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#insertRecordsRandom(InsertRecordsRandomRequest)}.
+ * A set of parameters for {@link com.gpudb.GPUdb#getJob(GetJobRequest)}.
  */
-public class InsertRecordsRandomResponse implements IndexedRecord {
+public class GetJobRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("InsertRecordsRandomResponse")
+            .record("GetJobRequest")
             .namespace("com.gpudb")
             .fields()
-                .name("tableName").type().stringType().noDefault()
-                .name("count").type().longType().noDefault()
+                .name("jobId").type().intType().noDefault()
+                .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -36,56 +37,71 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
         return schema$;
     }
 
-    private String tableName;
-    private long count;
+    private int jobId;
+    private Map<String, String> options;
 
 
     /**
-     * Constructs an InsertRecordsRandomResponse object with default
-     * parameters.
+     * Constructs a GetJobRequest object with default parameters.
      */
-    public InsertRecordsRandomResponse() {
+    public GetJobRequest() {
+        options = new LinkedHashMap<>();
+    }
+
+    /**
+     * Constructs a GetJobRequest object with the specified parameters.
+     * 
+     * @param jobId  A unique identifier for the job whose status and result is
+     *               to be fetched.
+     * @param options  Optional parameters.
+     * 
+     */
+    public GetJobRequest(int jobId, Map<String, String> options) {
+        this.jobId = jobId;
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
      * 
-     * @return Value of {@code tableName}.
+     * @return A unique identifier for the job whose status and result is to be
+     *         fetched.
      * 
      */
-    public String getTableName() {
-        return tableName;
+    public int getJobId() {
+        return jobId;
     }
 
     /**
      * 
-     * @param tableName  Value of {@code tableName}.
+     * @param jobId  A unique identifier for the job whose status and result is
+     *               to be fetched.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public InsertRecordsRandomResponse setTableName(String tableName) {
-        this.tableName = (tableName == null) ? "" : tableName;
+    public GetJobRequest setJobId(int jobId) {
+        this.jobId = jobId;
         return this;
     }
 
     /**
      * 
-     * @return Number of records inserted.
+     * @return Optional parameters.
      * 
      */
-    public long getCount() {
-        return count;
+    public Map<String, String> getOptions() {
+        return options;
     }
 
     /**
      * 
-     * @param count  Number of records inserted.
+     * @param options  Optional parameters.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public InsertRecordsRandomResponse setCount(long count) {
-        this.count = count;
+    public GetJobRequest setOptions(Map<String, String> options) {
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
 
@@ -116,10 +132,10 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.tableName;
+                return this.jobId;
 
             case 1:
-                return this.count;
+                return this.options;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -141,11 +157,11 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.tableName = (String)value;
+                this.jobId = (Integer)value;
                 break;
 
             case 1:
-                this.count = (Long)value;
+                this.options = (Map<String, String>)value;
                 break;
 
             default:
@@ -163,10 +179,10 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
             return false;
         }
 
-        InsertRecordsRandomResponse that = (InsertRecordsRandomResponse)obj;
+        GetJobRequest that = (GetJobRequest)obj;
 
-        return ( this.tableName.equals( that.tableName )
-                 && ( this.count == that.count ) );
+        return ( ( this.jobId == that.jobId )
+                 && this.options.equals( that.options ) );
     }
 
     @Override
@@ -174,13 +190,13 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "tableName" ) );
+        builder.append( gd.toString( "jobId" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.tableName ) );
+        builder.append( gd.toString( this.jobId ) );
         builder.append( ", " );
-        builder.append( gd.toString( "count" ) );
+        builder.append( gd.toString( "options" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.count ) );
+        builder.append( gd.toString( this.options ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -189,8 +205,8 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.tableName.hashCode();
-        hashCode = (31 * hashCode) + ((Long)this.count).hashCode();
+        hashCode = (31 * hashCode) + this.jobId;
+        hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }
 

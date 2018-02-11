@@ -92,6 +92,28 @@ public class CreateProcRequest implements IndexedRecord {
         private ExecutionMode() {  }
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProcRequest.Options#MAX_CONCURRENCY_PER_NODE
+     * MAX_CONCURRENCY_PER_NODE}: The maximum number of concurrent instances of
+     * the proc that will be executed per node. 0 allows unlimited concurrency.
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * The maximum number of concurrent instances of the proc that will be
+         * executed per node. 0 allows unlimited concurrency.
+         */
+        public static final String MAX_CONCURRENCY_PER_NODE = "max_concurrency_per_node";
+
+        private Options() {  }
+    }
+
     private String procName;
     private String executionMode;
     private Map<String, ByteBuffer> files;
@@ -157,6 +179,13 @@ public class CreateProcRequest implements IndexedRecord {
      * @param args  An array of command-line arguments that will be passed to
      *              {@code command} when the proc is executed.
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProcRequest.Options#MAX_CONCURRENCY_PER_NODE
+     *                 MAX_CONCURRENCY_PER_NODE}: The maximum number of
+     *                 concurrent instances of the proc that will be executed
+     *                 per node. 0 allows unlimited concurrency.
+     *                 </ul>
      * 
      */
     public CreateProcRequest(String procName, String executionMode, Map<String, ByteBuffer> files, String command, List<String> args, Map<String, String> options) {
@@ -346,6 +375,13 @@ public class CreateProcRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProcRequest.Options#MAX_CONCURRENCY_PER_NODE
+     *         MAX_CONCURRENCY_PER_NODE}: The maximum number of concurrent
+     *         instances of the proc that will be executed per node. 0 allows
+     *         unlimited concurrency.
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -355,6 +391,13 @@ public class CreateProcRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProcRequest.Options#MAX_CONCURRENCY_PER_NODE
+     *                 MAX_CONCURRENCY_PER_NODE}: The maximum number of
+     *                 concurrent instances of the proc that will be executed
+     *                 per node. 0 allows unlimited concurrency.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

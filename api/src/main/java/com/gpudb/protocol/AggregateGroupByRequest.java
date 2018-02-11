@@ -220,6 +220,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * CHUNK_SIZE}: Indicates the chunk size to be used for the result table.
      * Must be used in combination with the {@code result_table} option.
      *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID VIEW_ID}:
+     * view this result table is part of
+     *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      * MATERIALIZE_ON_GPU}: If {@code true} then the columns of the groupby
      * result table will be cached on the GPU. Must be used in combination with
@@ -385,6 +388,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String CHUNK_SIZE = "chunk_size";
 
         /**
+         * view this result table is part of
+         */
+        public static final String VIEW_ID = "view_id";
+
+        /**
          * If {@code true} then the columns of the groupby result table will be
          * cached on the GPU. Must be used in combination with the {@code
          * result_table} option.
@@ -548,6 +556,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
      *                 result table. Must be used in combination with the
      *                 {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this result table is part of
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
@@ -720,6 +731,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
      *                 result table. Must be used in combination with the
      *                 {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this result table is part of
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
@@ -1001,6 +1015,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         table. Must be used in combination with the {@code result_table}
      *         option.
      *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
+     *         VIEW_ID}: view this result table is part of
+     *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *         MATERIALIZE_ON_GPU}: If {@code true} then the columns of the
      *         groupby result table will be cached on the GPU. Must be used in
@@ -1135,6 +1152,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
      *                 result table. Must be used in combination with the
      *                 {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this result table is part of
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of

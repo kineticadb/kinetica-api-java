@@ -5,6 +5,8 @@
  */
 package com.gpudb.protocol;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -13,15 +15,15 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of results returned by {@link
- * com.gpudb.GPUdb#insertRecordsRandom(InsertRecordsRandomRequest)}.
+ * com.gpudb.GPUdb#collectStatistics(CollectStatisticsRequest)}.
  */
-public class InsertRecordsRandomResponse implements IndexedRecord {
+public class CollectStatisticsResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("InsertRecordsRandomResponse")
+            .record("CollectStatisticsResponse")
             .namespace("com.gpudb")
             .fields()
                 .name("tableName").type().stringType().noDefault()
-                .name("count").type().longType().noDefault()
+                .name("columnNames").type().array().items().stringType().noDefault()
             .endRecord();
 
 
@@ -37,14 +39,13 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
     }
 
     private String tableName;
-    private long count;
+    private List<String> columnNames;
 
 
     /**
-     * Constructs an InsertRecordsRandomResponse object with default
-     * parameters.
+     * Constructs a CollectStatisticsResponse object with default parameters.
      */
-    public InsertRecordsRandomResponse() {
+    public CollectStatisticsResponse() {
     }
 
     /**
@@ -63,29 +64,29 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public InsertRecordsRandomResponse setTableName(String tableName) {
+    public CollectStatisticsResponse setTableName(String tableName) {
         this.tableName = (tableName == null) ? "" : tableName;
         return this;
     }
 
     /**
      * 
-     * @return Number of records inserted.
+     * @return Value of {@code columnNames}.
      * 
      */
-    public long getCount() {
-        return count;
+    public List<String> getColumnNames() {
+        return columnNames;
     }
 
     /**
      * 
-     * @param count  Number of records inserted.
+     * @param columnNames  Value of {@code columnNames}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public InsertRecordsRandomResponse setCount(long count) {
-        this.count = count;
+    public CollectStatisticsResponse setColumnNames(List<String> columnNames) {
+        this.columnNames = (columnNames == null) ? new ArrayList<String>() : columnNames;
         return this;
     }
 
@@ -119,7 +120,7 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
                 return this.tableName;
 
             case 1:
-                return this.count;
+                return this.columnNames;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -145,7 +146,7 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
                 break;
 
             case 1:
-                this.count = (Long)value;
+                this.columnNames = (List<String>)value;
                 break;
 
             default:
@@ -163,10 +164,10 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
             return false;
         }
 
-        InsertRecordsRandomResponse that = (InsertRecordsRandomResponse)obj;
+        CollectStatisticsResponse that = (CollectStatisticsResponse)obj;
 
         return ( this.tableName.equals( that.tableName )
-                 && ( this.count == that.count ) );
+                 && this.columnNames.equals( that.columnNames ) );
     }
 
     @Override
@@ -178,9 +179,9 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.tableName ) );
         builder.append( ", " );
-        builder.append( gd.toString( "count" ) );
+        builder.append( gd.toString( "columnNames" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.count ) );
+        builder.append( gd.toString( this.columnNames ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -190,7 +191,7 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.tableName.hashCode();
-        hashCode = (31 * hashCode) + ((Long)this.count).hashCode();
+        hashCode = (31 * hashCode) + this.columnNames.hashCode();
         return hashCode;
     }
 

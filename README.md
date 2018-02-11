@@ -19,11 +19,11 @@ install the jar in the local repository:
 > mvn install
 
 
-The documentation can be found at http://www.kinetica.com/docs/6.1/index.html.
+The documentation can be found at http://www.kinetica.com/docs/6.2/index.html.
 The Java specific documentation can be found at:
 
-*   http://www.kinetica.com/docs/6.1/tutorials/java_guide.html
-*   http://www.kinetica.com/docs/6.1/api/java/index.html
+*   http://www.kinetica.com/docs/6.2/tutorials/java_guide.html
+*   http://www.kinetica.com/docs/6.2/api/java/index.html
 
 
 For changes to the client-side API, please see CHANGELOG.md.  For changes

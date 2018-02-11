@@ -125,6 +125,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateJoinTableRequest.Options#TTL TTL}: Sets the <a
      * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
      * join table specified in {@code joinTableName}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID VIEW_ID}: view
+     * this projection is part of
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -237,6 +240,11 @@ public class CreateJoinTableRequest implements IndexedRecord {
          * joinTableName}.
          */
         public static final String TTL = "ttl";
+
+        /**
+         * view this projection is part of
+         */
+        public static final String VIEW_ID = "view_id";
 
         private Options() {  }
     }
@@ -378,6 +386,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 href="../../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the join table specified in
      *                 {@code joinTableName}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this projection is part of
      *                 </ul>
      * 
      */
@@ -592,6 +603,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         the <a href="../../../../../concepts/ttl.html"
      *         target="_top">TTL</a> of the join table specified in {@code
      *         joinTableName}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
+     *         VIEW_ID}: view this projection is part of
      *         </ul>
      * 
      */
@@ -694,6 +708,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 href="../../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the join table specified in
      *                 {@code joinTableName}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this projection is part of
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

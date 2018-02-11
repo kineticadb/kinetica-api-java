@@ -137,6 +137,9 @@ public class CreateProjectionRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID VIEW_ID}:
+     * view this projection is part of
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -226,6 +229,11 @@ public class CreateProjectionRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
          */
         public static final String PERSIST = "persist";
+
+        /**
+         * view this projection is part of
+         */
+        public static final String VIEW_ID = "view_id";
 
         private Options() {  }
     }
@@ -340,6 +348,9 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this projection is part of
      *                 </ul>
      * 
      */
@@ -497,6 +508,9 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
+     *         VIEW_ID}: view this projection is part of
      *         </ul>
      * 
      */
@@ -586,6 +600,9 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this projection is part of
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

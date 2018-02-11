@@ -131,6 +131,9 @@ public class CreateUnionRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID VIEW_ID}: view
+     * this union table is part of
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -268,6 +271,11 @@ public class CreateUnionRequest implements IndexedRecord {
          */
         public static final String PERSIST = "persist";
 
+        /**
+         * view this union table is part of
+         */
+        public static final String VIEW_ID = "view_id";
+
         private Options() {  }
     }
 
@@ -395,6 +403,9 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this union table is part of
      *                 </ul>
      * 
      */
@@ -585,6 +596,9 @@ public class CreateUnionRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID VIEW_ID}:
+     *         view this union table is part of
      *         </ul>
      * 
      */
@@ -687,6 +701,9 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this union table is part of
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

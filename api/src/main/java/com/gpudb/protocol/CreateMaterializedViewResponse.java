@@ -13,15 +13,15 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of results returned by {@link
- * com.gpudb.GPUdb#insertRecordsRandom(InsertRecordsRandomRequest)}.
+ * com.gpudb.GPUdb#createMaterializedView(CreateMaterializedViewRequest)}.
  */
-public class InsertRecordsRandomResponse implements IndexedRecord {
+public class CreateMaterializedViewResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("InsertRecordsRandomResponse")
+            .record("CreateMaterializedViewResponse")
             .namespace("com.gpudb")
             .fields()
                 .name("tableName").type().stringType().noDefault()
-                .name("count").type().longType().noDefault()
+                .name("viewId").type().stringType().noDefault()
             .endRecord();
 
 
@@ -37,14 +37,14 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
     }
 
     private String tableName;
-    private long count;
+    private String viewId;
 
 
     /**
-     * Constructs an InsertRecordsRandomResponse object with default
+     * Constructs a CreateMaterializedViewResponse object with default
      * parameters.
      */
-    public InsertRecordsRandomResponse() {
+    public CreateMaterializedViewResponse() {
     }
 
     /**
@@ -63,29 +63,29 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public InsertRecordsRandomResponse setTableName(String tableName) {
+    public CreateMaterializedViewResponse setTableName(String tableName) {
         this.tableName = (tableName == null) ? "" : tableName;
         return this;
     }
 
     /**
      * 
-     * @return Number of records inserted.
+     * @return Value of view_id.
      * 
      */
-    public long getCount() {
-        return count;
+    public String getViewId() {
+        return viewId;
     }
 
     /**
      * 
-     * @param count  Number of records inserted.
+     * @param viewId  Value of view_id.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public InsertRecordsRandomResponse setCount(long count) {
-        this.count = count;
+    public CreateMaterializedViewResponse setViewId(String viewId) {
+        this.viewId = (viewId == null) ? "" : viewId;
         return this;
     }
 
@@ -119,7 +119,7 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
                 return this.tableName;
 
             case 1:
-                return this.count;
+                return this.viewId;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -145,7 +145,7 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
                 break;
 
             case 1:
-                this.count = (Long)value;
+                this.viewId = (String)value;
                 break;
 
             default:
@@ -163,10 +163,10 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
             return false;
         }
 
-        InsertRecordsRandomResponse that = (InsertRecordsRandomResponse)obj;
+        CreateMaterializedViewResponse that = (CreateMaterializedViewResponse)obj;
 
         return ( this.tableName.equals( that.tableName )
-                 && ( this.count == that.count ) );
+                 && this.viewId.equals( that.viewId ) );
     }
 
     @Override
@@ -178,9 +178,9 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.tableName ) );
         builder.append( ", " );
-        builder.append( gd.toString( "count" ) );
+        builder.append( gd.toString( "viewId" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.count ) );
+        builder.append( gd.toString( this.viewId ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -190,7 +190,7 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.tableName.hashCode();
-        hashCode = (31 * hashCode) + ((Long)this.count).hashCode();
+        hashCode = (31 * hashCode) + this.viewId.hashCode();
         return hashCode;
     }
 

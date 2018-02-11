@@ -93,6 +93,31 @@ public class ShowTableResponse implements IndexedRecord {
     public static final class AdditionalInfo {
 
         /**
+         * method by which this table was created.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#CREATE_TABLE
+         * CREATE_TABLE}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#CREATE_PROJECTION
+         * CREATE_PROJECTION}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#CREATE_UNION
+         * CREATE_UNION}
+         * </ul>
+         */
+        public static final String REQUEST_AVRO_TYPE = "request_avro_type";
+        public static final String CREATE_TABLE = "create_table";
+        public static final String CREATE_PROJECTION = "create_projection";
+        public static final String CREATE_UNION = "create_union";
+
+        /**
+         * The json representation of request creating this table.
+         */
+        public static final String REQUEST_AVRO_JSON = "request_avro_json";
+
+        /**
          * Only present if the respective table is a collection. The value
          * indicates whether the collection is allowed to contain multiple
          * tables or views of the same type or not.
@@ -127,6 +152,12 @@ public class ShowTableResponse implements IndexedRecord {
          * byte sizes of all columns with property  'data'.
          */
         public static final String RECORD_BYTES = "record_bytes";
+
+        /**
+         * The names of the collections this table is part of. Only set if
+         * table is part of a collection
+         */
+        public static final String COLLECTION_NAMES = "collection_names";
 
         /**
          * The value of the <a href="../../../../../concepts/ttl.html"
@@ -221,6 +252,55 @@ public class ShowTableResponse implements IndexedRecord {
          * All read/write operations are allowed on this table.
          */
         public static final String READ_WRITE = "read_write";
+
+        /**
+         * for materialized view the name of the view this member table is part
+         * of - if same as the table_name then this is the root of the view
+         */
+        public static final String VIEW_TABLE_NAME = "view_table_name";
+
+        /**
+         * true if the view named view_table_name is persisted - reported for
+         * each view member.  Means method of recreating this member is saved -
+         * not the members data
+         */
+        public static final String IS_VIEW_PERSISTED = "is_view_persisted";
+
+        /**
+         * true if some input table of the materialized view that affects this
+         * member table has been modified since the last refresh
+         */
+        public static final String IS_DIRTY = "is_dirty";
+
+        /**
+         * for materialized view current refresh_method - one of manual,
+         * periodic, on_change, on_query
+         */
+        public static final String REFRESH_METHOD = "refresh_method";
+
+        /**
+         * for materialized view with periodic refresh_method the current
+         * intial datetime string that periodic refreshes began
+         */
+        public static final String REFRESH_START_TIME = "refresh_start_time";
+
+        /**
+         * for materialized view with periodic refresh_method the current
+         * refresh period in seconds
+         */
+        public static final String REFRESH_PERIOD = "refresh_period";
+
+        /**
+         * for materialized view the a datatime string indicating the last time
+         * the view was refreshed
+         */
+        public static final String LAST_REFRESH_TIME = "last_refresh_time";
+
+        /**
+         * for materialized with periodic refresh_method a datetime string
+         * indicating the next time the view is to be refreshed
+         */
+        public static final String NEXT_REFRESH_TIME = "next_refresh_time";
 
         private AdditionalInfo() {  }
     }

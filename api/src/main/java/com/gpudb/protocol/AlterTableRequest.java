@@ -154,6 +154,24 @@ public class AlterTableRequest implements IndexedRecord {
      * the table specified in {@code tableName}. Specify the access mode in
      * {@code value}. Valid modes are 'no_access', 'read_only', 'write_only'
      * and 'read_write'.
+     *         <li> {@link com.gpudb.protocol.AlterTableRequest.Action#REFRESH
+     * REFRESH}: Replay all the table creation commands required to create this
+     * view. Endpoints supported are filter, create_join_table,
+     * create_projection, create_union, aggregate_group_by, and
+     * aggregate_unique.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
+     * SET_REFRESH_METHOD}: Set the method by which this view is refreshed -
+     * one of manual, periodic, on_change, on_query.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
+     * SET_REFRESH_START_TIME}: Set the time to start periodic refreshes to
+     * datetime string with format YYYY-MM-DD HH:MM:SS at which refresh is to
+     * be done.  Next refresh occurs at refresh_start_time + N*refresh_period
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
+     * SET_REFRESH_PERIOD}: Set the time interval at which to refresh this view
+     * - set refresh method to periodic if not alreay set.
      * </ul>
      * A set of string constants for the parameter {@code action}.
      */
@@ -264,6 +282,33 @@ public class AlterTableRequest implements IndexedRecord {
          */
         public static final String SET_GLOBAL_ACCESS_MODE = "set_global_access_mode";
 
+        /**
+         * Replay all the table creation commands required to create this view.
+         * Endpoints supported are filter, create_join_table,
+         * create_projection, create_union, aggregate_group_by, and
+         * aggregate_unique.
+         */
+        public static final String REFRESH = "refresh";
+
+        /**
+         * Set the method by which this view is refreshed - one of manual,
+         * periodic, on_change, on_query.
+         */
+        public static final String SET_REFRESH_METHOD = "set_refresh_method";
+
+        /**
+         * Set the time to start periodic refreshes to datetime string with
+         * format YYYY-MM-DD HH:MM:SS at which refresh is to be done.  Next
+         * refresh occurs at refresh_start_time + N*refresh_period
+         */
+        public static final String SET_REFRESH_START_TIME = "set_refresh_start_time";
+
+        /**
+         * Set the time interval at which to refresh this view - set refresh
+         * method to periodic if not alreay set.
+         */
+        public static final String SET_REFRESH_PERIOD = "set_refresh_period";
+
         private Action() {  }
     }
 
@@ -274,7 +319,8 @@ public class AlterTableRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Options#COLUMN_DEFAULT_VALUE
      * COLUMN_DEFAULT_VALUE}: When adding a column, set a default value for
-     * existing records.
+     * existing records.  For nullable columns, the default value will be null,
+     * regardless of data type.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Options#COLUMN_PROPERTIES
      * COLUMN_PROPERTIES}: When adding or changing a column, set the column
@@ -304,10 +350,7 @@ public class AlterTableRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterTableRequest.Options#SNAPPY SNAPPY}.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Options#COPY_VALUES_FROM_COLUMN
-     * COPY_VALUES_FROM_COLUMN}: When adding or changing a column, enter a
-     * column name from the same table being altered to use as a source for the
-     * column being added/changed; values will be copied from this source
-     * column into the new/modified column.
+     * COPY_VALUES_FROM_COLUMN}: please see add_column_expression instead.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Options#RENAME_COLUMN
      * RENAME_COLUMN}: When changing a column, specify new column name.
@@ -327,13 +370,19 @@ public class AlterTableRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#ADD_COLUMN_EXPRESSION
+     * ADD_COLUMN_EXPRESSION}: expression for new column's values (optional
+     * with add_column). Any valid expressions including existing columns.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * When adding a column, set a default value for existing records.
+         * When adding a column, set a default value for existing records.  For
+         * nullable columns, the default value will be null, regardless of data
+         * type.
          */
         public static final String COLUMN_DEFAULT_VALUE = "column_default_value";
 
@@ -375,10 +424,7 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String LZ4HC = "lz4hc";
 
         /**
-         * When adding or changing a column, enter a column name from the same
-         * table being altered to use as a source for the column being
-         * added/changed; values will be copied from this source column into
-         * the new/modified column.
+         * please see add_column_expression instead.
          */
         public static final String COPY_VALUES_FROM_COLUMN = "copy_values_from_column";
 
@@ -413,6 +459,12 @@ public class AlterTableRequest implements IndexedRecord {
          * false
          */
         public static final String FALSE = "false";
+
+        /**
+         * expression for new column's values (optional with add_column). Any
+         * valid expressions including existing columns.
+         */
+        public static final String ADD_COLUMN_EXPRESSION = "add_column_expression";
 
         private Options() {  }
     }
@@ -528,6 +580,27 @@ public class AlterTableRequest implements IndexedRecord {
      *                tableName}. Specify the access mode in {@code value}.
      *                Valid modes are 'no_access', 'read_only', 'write_only'
      *                and 'read_write'.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#REFRESH
+     *                REFRESH}: Replay all the table creation commands required
+     *                to create this view. Endpoints supported are filter,
+     *                create_join_table, create_projection, create_union,
+     *                aggregate_group_by, and aggregate_unique.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
+     *                SET_REFRESH_METHOD}: Set the method by which this view is
+     *                refreshed - one of manual, periodic, on_change, on_query.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
+     *                SET_REFRESH_START_TIME}: Set the time to start periodic
+     *                refreshes to datetime string with format YYYY-MM-DD
+     *                HH:MM:SS at which refresh is to be done.  Next refresh
+     *                occurs at refresh_start_time + N*refresh_period
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
+     *                SET_REFRESH_PERIOD}: Set the time interval at which to
+     *                refresh this view - set refresh method to periodic if not
+     *                alreay set.
      *                </ul>
      * @param value  The value of the modification. May be a column name,
      *               'true' or 'false', a TTL, or the global access mode
@@ -537,7 +610,9 @@ public class AlterTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN_DEFAULT_VALUE
      *                 COLUMN_DEFAULT_VALUE}: When adding a column, set a
-     *                 default value for existing records.
+     *                 default value for existing records.  For nullable
+     *                 columns, the default value will be null, regardless of
+     *                 data type.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN_PROPERTIES
      *                 COLUMN_PROPERTIES}: When adding or changing a column,
@@ -572,11 +647,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                 SNAPPY}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COPY_VALUES_FROM_COLUMN
-     *                 COPY_VALUES_FROM_COLUMN}: When adding or changing a
-     *                 column, enter a column name from the same table being
-     *                 altered to use as a source for the column being
-     *                 added/changed; values will be copied from this source
-     *                 column into the new/modified column.
+     *                 COPY_VALUES_FROM_COLUMN}: please see
+     *                 add_column_expression instead.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#RENAME_COLUMN
      *                 RENAME_COLUMN}: When changing a column, specify new
@@ -600,6 +672,11 @@ public class AlterTableRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#ADD_COLUMN_EXPRESSION
+     *                 ADD_COLUMN_EXPRESSION}: expression for new column's
+     *                 values (optional with add_column). Any valid expressions
+     *                 including existing columns.
      *                 </ul>
      * 
      */
@@ -721,6 +798,26 @@ public class AlterTableRequest implements IndexedRecord {
      *         locking) for the table specified in {@code tableName}. Specify
      *         the access mode in {@code value}. Valid modes are 'no_access',
      *         'read_only', 'write_only' and 'read_write'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#REFRESH REFRESH}:
+     *         Replay all the table creation commands required to create this
+     *         view. Endpoints supported are filter, create_join_table,
+     *         create_projection, create_union, aggregate_group_by, and
+     *         aggregate_unique.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
+     *         SET_REFRESH_METHOD}: Set the method by which this view is
+     *         refreshed - one of manual, periodic, on_change, on_query.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
+     *         SET_REFRESH_START_TIME}: Set the time to start periodic
+     *         refreshes to datetime string with format YYYY-MM-DD HH:MM:SS at
+     *         which refresh is to be done.  Next refresh occurs at
+     *         refresh_start_time + N*refresh_period
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
+     *         SET_REFRESH_PERIOD}: Set the time interval at which to refresh
+     *         this view - set refresh method to periodic if not alreay set.
      *         </ul>
      * 
      */
@@ -820,6 +917,27 @@ public class AlterTableRequest implements IndexedRecord {
      *                tableName}. Specify the access mode in {@code value}.
      *                Valid modes are 'no_access', 'read_only', 'write_only'
      *                and 'read_write'.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#REFRESH
+     *                REFRESH}: Replay all the table creation commands required
+     *                to create this view. Endpoints supported are filter,
+     *                create_join_table, create_projection, create_union,
+     *                aggregate_group_by, and aggregate_unique.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
+     *                SET_REFRESH_METHOD}: Set the method by which this view is
+     *                refreshed - one of manual, periodic, on_change, on_query.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
+     *                SET_REFRESH_START_TIME}: Set the time to start periodic
+     *                refreshes to datetime string with format YYYY-MM-DD
+     *                HH:MM:SS at which refresh is to be done.  Next refresh
+     *                occurs at refresh_start_time + N*refresh_period
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
+     *                SET_REFRESH_PERIOD}: Set the time interval at which to
+     *                refresh this view - set refresh method to periodic if not
+     *                alreay set.
      *                </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -862,7 +980,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#COLUMN_DEFAULT_VALUE
      *         COLUMN_DEFAULT_VALUE}: When adding a column, set a default value
-     *         for existing records.
+     *         for existing records.  For nullable columns, the default value
+     *         will be null, regardless of data type.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#COLUMN_PROPERTIES
      *         COLUMN_PROPERTIES}: When adding or changing a column, set the
@@ -894,10 +1013,8 @@ public class AlterTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterTableRequest.Options#SNAPPY SNAPPY}.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#COPY_VALUES_FROM_COLUMN
-     *         COPY_VALUES_FROM_COLUMN}: When adding or changing a column,
-     *         enter a column name from the same table being altered to use as
-     *         a source for the column being added/changed; values will be
-     *         copied from this source column into the new/modified column.
+     *         COPY_VALUES_FROM_COLUMN}: please see add_column_expression
+     *         instead.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#RENAME_COLUMN
      *         RENAME_COLUMN}: When changing a column, specify new column name.
@@ -917,6 +1034,11 @@ public class AlterTableRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#ADD_COLUMN_EXPRESSION
+     *         ADD_COLUMN_EXPRESSION}: expression for new column's values
+     *         (optional with add_column). Any valid expressions including
+     *         existing columns.
      *         </ul>
      * 
      */
@@ -931,7 +1053,9 @@ public class AlterTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN_DEFAULT_VALUE
      *                 COLUMN_DEFAULT_VALUE}: When adding a column, set a
-     *                 default value for existing records.
+     *                 default value for existing records.  For nullable
+     *                 columns, the default value will be null, regardless of
+     *                 data type.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN_PROPERTIES
      *                 COLUMN_PROPERTIES}: When adding or changing a column,
@@ -966,11 +1090,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                 SNAPPY}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COPY_VALUES_FROM_COLUMN
-     *                 COPY_VALUES_FROM_COLUMN}: When adding or changing a
-     *                 column, enter a column name from the same table being
-     *                 altered to use as a source for the column being
-     *                 added/changed; values will be copied from this source
-     *                 column into the new/modified column.
+     *                 COPY_VALUES_FROM_COLUMN}: please see
+     *                 add_column_expression instead.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#RENAME_COLUMN
      *                 RENAME_COLUMN}: When changing a column, specify new
@@ -994,6 +1115,11 @@ public class AlterTableRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#ADD_COLUMN_EXPRESSION
+     *                 ADD_COLUMN_EXPRESSION}: expression for new column's
+     *                 values (optional with add_column). Any valid expressions
+     *                 including existing columns.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

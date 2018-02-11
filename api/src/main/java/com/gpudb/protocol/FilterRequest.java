@@ -59,6 +59,8 @@ public class FilterRequest implements IndexedRecord {
      * created view. If the collection provided is non-existent, the collection
      * will be automatically created. If empty, then the newly created view
      * will be top-level.
+     *         <li> {@link com.gpudb.protocol.FilterRequest.Options#VIEW_ID
+     * VIEW_ID}: view this filtered-view is part of
      *         <li> {@link com.gpudb.protocol.FilterRequest.Options#TTL TTL}:
      * Sets the <a href="../../../../../concepts/ttl.html"
      * target="_top">TTL</a> of the view specified in {@code viewName}.
@@ -74,6 +76,11 @@ public class FilterRequest implements IndexedRecord {
          * top-level.
          */
         public static final String COLLECTION_NAME = "collection_name";
+
+        /**
+         * view this filtered-view is part of
+         */
+        public static final String VIEW_ID = "view_id";
 
         /**
          * Sets the <a href="../../../../../concepts/ttl.html"
@@ -125,6 +132,9 @@ public class FilterRequest implements IndexedRecord {
      *                 provided is non-existent, the collection will be
      *                 automatically created. If empty, then the newly created
      *                 view will be top-level.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this filtered-view is part of
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterRequest.Options#TTL TTL}: Sets
      *                 the <a href="../../../../../concepts/ttl.html"
@@ -231,6 +241,9 @@ public class FilterRequest implements IndexedRecord {
      *         newly created view. If the collection provided is non-existent,
      *         the collection will be automatically created. If empty, then the
      *         newly created view will be top-level.
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterRequest.Options#VIEW_ID VIEW_ID}: view
+     *         this filtered-view is part of
      *                 <li> {@link com.gpudb.protocol.FilterRequest.Options#TTL
      *         TTL}: Sets the <a href="../../../../../concepts/ttl.html"
      *         target="_top">TTL</a> of the view specified in {@code viewName}.
@@ -252,6 +265,9 @@ public class FilterRequest implements IndexedRecord {
      *                 provided is non-existent, the collection will be
      *                 automatically created. If empty, then the newly created
      *                 view will be top-level.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this filtered-view is part of
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterRequest.Options#TTL TTL}: Sets
      *                 the <a href="../../../../../concepts/ttl.html"

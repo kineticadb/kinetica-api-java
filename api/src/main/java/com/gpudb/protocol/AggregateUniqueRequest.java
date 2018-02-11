@@ -172,6 +172,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * com.gpudb.protocol.AggregateUniqueRequest.Options#CHUNK_SIZE
      * CHUNK_SIZE}: Indicates the chunk size to be used for the result table.
      * Must be used in combination with the {@code result_table} option.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID VIEW_ID}: view
+     * this result table is part of
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -264,6 +267,11 @@ public class AggregateUniqueRequest implements IndexedRecord {
          * used in combination with the {@code result_table} option.
          */
         public static final String CHUNK_SIZE = "chunk_size";
+
+        /**
+         * view this result table is part of
+         */
+        public static final String VIEW_ID = "view_id";
 
         private Options() {  }
     }
@@ -382,6 +390,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
      *                 result table. Must be used in combination with the
      *                 {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this result table is part of
      *                 </ul>
      * 
      */
@@ -505,6 +516,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
      *                 result table. Must be used in combination with the
      *                 {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this result table is part of
      *                 </ul>
      * 
      */
@@ -740,6 +754,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         CHUNK_SIZE}: Indicates the chunk size to be used for the result
      *         table. Must be used in combination with the {@code result_table}
      *         option.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID
+     *         VIEW_ID}: view this result table is part of
      *         </ul>
      * 
      */
@@ -829,6 +846,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
      *                 result table. Must be used in combination with the
      *                 {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this result table is part of
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

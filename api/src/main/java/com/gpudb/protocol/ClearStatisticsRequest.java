@@ -5,6 +5,8 @@
  */
 package com.gpudb.protocol;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -12,16 +14,19 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#insertRecordsRandom(InsertRecordsRandomRequest)}.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#clearStatistics(ClearStatisticsRequest)}.
+ * <p>
+ * Clears (drops) one or all column statistics of a tables.
  */
-public class InsertRecordsRandomResponse implements IndexedRecord {
+public class ClearStatisticsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("InsertRecordsRandomResponse")
+            .record("ClearStatisticsRequest")
             .namespace("com.gpudb")
             .fields()
                 .name("tableName").type().stringType().noDefault()
-                .name("count").type().longType().noDefault()
+                .name("columnName").type().stringType().noDefault()
+                .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -37,19 +42,41 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
     }
 
     private String tableName;
-    private long count;
+    private String columnName;
+    private Map<String, String> options;
 
 
     /**
-     * Constructs an InsertRecordsRandomResponse object with default
-     * parameters.
+     * Constructs a ClearStatisticsRequest object with default parameters.
      */
-    public InsertRecordsRandomResponse() {
+    public ClearStatisticsRequest() {
+        tableName = "";
+        columnName = "";
+        options = new LinkedHashMap<>();
+    }
+
+    /**
+     * Constructs a ClearStatisticsRequest object with the specified
+     * parameters.
+     * 
+     * @param tableName  Name of the table to clear the statistics. Must be an
+     *                   existing table.
+     * @param columnName  Name of the column to be cleared. Must be an existing
+     *                    table. Empty string clears all available statistics
+     *                    of the table.
+     * @param options  Optional parameters.
+     * 
+     */
+    public ClearStatisticsRequest(String tableName, String columnName, Map<String, String> options) {
+        this.tableName = (tableName == null) ? "" : tableName;
+        this.columnName = (columnName == null) ? "" : columnName;
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
      * 
-     * @return Value of {@code tableName}.
+     * @return Name of the table to clear the statistics. Must be an existing
+     *         table.
      * 
      */
     public String getTableName() {
@@ -58,34 +85,59 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Value of {@code tableName}.
+     * @param tableName  Name of the table to clear the statistics. Must be an
+     *                   existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public InsertRecordsRandomResponse setTableName(String tableName) {
+    public ClearStatisticsRequest setTableName(String tableName) {
         this.tableName = (tableName == null) ? "" : tableName;
         return this;
     }
 
     /**
      * 
-     * @return Number of records inserted.
+     * @return Name of the column to be cleared. Must be an existing table.
+     *         Empty string clears all available statistics of the table.
      * 
      */
-    public long getCount() {
-        return count;
+    public String getColumnName() {
+        return columnName;
     }
 
     /**
      * 
-     * @param count  Number of records inserted.
+     * @param columnName  Name of the column to be cleared. Must be an existing
+     *                    table. Empty string clears all available statistics
+     *                    of the table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public InsertRecordsRandomResponse setCount(long count) {
-        this.count = count;
+    public ClearStatisticsRequest setColumnName(String columnName) {
+        this.columnName = (columnName == null) ? "" : columnName;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Optional parameters.
+     * 
+     */
+    public Map<String, String> getOptions() {
+        return options;
+    }
+
+    /**
+     * 
+     * @param options  Optional parameters.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ClearStatisticsRequest setOptions(Map<String, String> options) {
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
 
@@ -119,7 +171,10 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
                 return this.tableName;
 
             case 1:
-                return this.count;
+                return this.columnName;
+
+            case 2:
+                return this.options;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -145,7 +200,11 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
                 break;
 
             case 1:
-                this.count = (Long)value;
+                this.columnName = (String)value;
+                break;
+
+            case 2:
+                this.options = (Map<String, String>)value;
                 break;
 
             default:
@@ -163,10 +222,11 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
             return false;
         }
 
-        InsertRecordsRandomResponse that = (InsertRecordsRandomResponse)obj;
+        ClearStatisticsRequest that = (ClearStatisticsRequest)obj;
 
         return ( this.tableName.equals( that.tableName )
-                 && ( this.count == that.count ) );
+                 && this.columnName.equals( that.columnName )
+                 && this.options.equals( that.options ) );
     }
 
     @Override
@@ -178,9 +238,13 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.tableName ) );
         builder.append( ", " );
-        builder.append( gd.toString( "count" ) );
+        builder.append( gd.toString( "columnName" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.count ) );
+        builder.append( gd.toString( this.columnName ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "options" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.options ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -190,7 +254,8 @@ public class InsertRecordsRandomResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.tableName.hashCode();
-        hashCode = (31 * hashCode) + ((Long)this.count).hashCode();
+        hashCode = (31 * hashCode) + this.columnName.hashCode();
+        hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }
 
