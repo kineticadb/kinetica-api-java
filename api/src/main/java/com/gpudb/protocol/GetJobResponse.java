@@ -47,39 +47,44 @@ public class GetJobResponse implements IndexedRecord {
 
 
     /**
-     * TODO
+     * Status of the submitted job.
      * Supported values:
      * <ul>
-     *         <li> {@link com.gpudb.protocol.GetJobResponse.JobStatus#DONE
-     * DONE}: TODO
      *         <li> {@link com.gpudb.protocol.GetJobResponse.JobStatus#RUNNING
-     * RUNNING}: TODO
+     * RUNNING}: The job is currently executing.
+     *         <li> {@link com.gpudb.protocol.GetJobResponse.JobStatus#DONE
+     * DONE}: The job execution has successfully completed and the response is
+     * included in the {@code jobResponse} or {@code jobResponseStr} field
      *         <li> {@link com.gpudb.protocol.GetJobResponse.JobStatus#ERROR
-     * ERROR}: TODO
+     * ERROR}: The job was attempted, but an error was encountered.  The {@code
+     * statusMap} contains the details of the error in error_message
      *         <li> {@link
-     * com.gpudb.protocol.GetJobResponse.JobStatus#CANCELLED CANCELLED}: TODO
+     * com.gpudb.protocol.GetJobResponse.JobStatus#CANCELLED CANCELLED}: Job
+     * cancellation was requested while the execution was in progress.
      * </ul>
      * A set of string constants for the parameter {@code jobStatus}.
      */
     public static final class JobStatus {
 
         /**
-         * TODO
-         */
-        public static final String DONE = "DONE";
-
-        /**
-         * TODO
+         * The job is currently executing.
          */
         public static final String RUNNING = "RUNNING";
 
         /**
-         * TODO
+         * The job execution has successfully completed and the response is
+         * included in the {@code jobResponse} or {@code jobResponseStr} field
+         */
+        public static final String DONE = "DONE";
+
+        /**
+         * The job was attempted, but an error was encountered.  The {@code
+         * statusMap} contains the details of the error in error_message
          */
         public static final String ERROR = "ERROR";
 
         /**
-         * TODO
+         * Job cancellation was requested while the execution was in progress.
          */
         public static final String CANCELLED = "CANCELLED";
 
@@ -120,7 +125,7 @@ public class GetJobResponse implements IndexedRecord {
 
 
     /**
-     * TODO; please include all possible options along with their docstrings.
+     * Map of various status strings for the executed job.
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.GetJobResponse.StatusMap#ERROR_MESSAGE
@@ -183,19 +188,25 @@ public class GetJobResponse implements IndexedRecord {
 
     /**
      * 
-     * @return TODO
+     * @return Status of the submitted job.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.GetJobResponse.JobStatus#DONE DONE}: TODO
-     *                 <li> {@link
      *         com.gpudb.protocol.GetJobResponse.JobStatus#RUNNING RUNNING}:
-     *         TODO
+     *         The job is currently executing.
      *                 <li> {@link
-     *         com.gpudb.protocol.GetJobResponse.JobStatus#ERROR ERROR}: TODO
+     *         com.gpudb.protocol.GetJobResponse.JobStatus#DONE DONE}: The job
+     *         execution has successfully completed and the response is
+     *         included in the {@code jobResponse} or {@code jobResponseStr}
+     *         field
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetJobResponse.JobStatus#ERROR ERROR}: The
+     *         job was attempted, but an error was encountered.  The {@code
+     *         statusMap} contains the details of the error in error_message
      *                 <li> {@link
      *         com.gpudb.protocol.GetJobResponse.JobStatus#CANCELLED
-     *         CANCELLED}: TODO
+     *         CANCELLED}: Job cancellation was requested while the execution
+     *         was in progress.
      *         </ul>
      * 
      */
@@ -205,21 +216,26 @@ public class GetJobResponse implements IndexedRecord {
 
     /**
      * 
-     * @param jobStatus  TODO
+     * @param jobStatus  Status of the submitted job.
      *                   Supported values:
      *                   <ul>
      *                           <li> {@link
-     *                   com.gpudb.protocol.GetJobResponse.JobStatus#DONE
-     *                   DONE}: TODO
-     *                           <li> {@link
      *                   com.gpudb.protocol.GetJobResponse.JobStatus#RUNNING
-     *                   RUNNING}: TODO
+     *                   RUNNING}: The job is currently executing.
+     *                           <li> {@link
+     *                   com.gpudb.protocol.GetJobResponse.JobStatus#DONE
+     *                   DONE}: The job execution has successfully completed
+     *                   and the response is included in the {@code
+     *                   jobResponse} or {@code jobResponseStr} field
      *                           <li> {@link
      *                   com.gpudb.protocol.GetJobResponse.JobStatus#ERROR
-     *                   ERROR}: TODO
+     *                   ERROR}: The job was attempted, but an error was
+     *                   encountered.  The {@code statusMap} contains the
+     *                   details of the error in error_message
      *                           <li> {@link
      *                   com.gpudb.protocol.GetJobResponse.JobStatus#CANCELLED
-     *                   CANCELLED}: TODO
+     *                   CANCELLED}: Job cancellation was requested while the
+     *                   execution was in progress.
      *                   </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -232,7 +248,7 @@ public class GetJobResponse implements IndexedRecord {
 
     /**
      * 
-     * @return TODO
+     * @return True if the end point is still executing.
      * 
      */
     public boolean getRunning() {
@@ -241,7 +257,7 @@ public class GetJobResponse implements IndexedRecord {
 
     /**
      * 
-     * @param running  TODO
+     * @param running  True if the end point is still executing.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -253,7 +269,7 @@ public class GetJobResponse implements IndexedRecord {
 
     /**
      * 
-     * @return TODO
+     * @return Approximate percentage of the job completed.
      * 
      */
     public int getProgress() {
@@ -262,7 +278,7 @@ public class GetJobResponse implements IndexedRecord {
 
     /**
      * 
-     * @param progress  TODO
+     * @param progress  Approximate percentage of the job completed.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -274,7 +290,8 @@ public class GetJobResponse implements IndexedRecord {
 
     /**
      * 
-     * @return TODO
+     * @return True if the job execution completed and no errors were
+     *         encountered.
      * 
      */
     public boolean getSuccessful() {
@@ -283,7 +300,8 @@ public class GetJobResponse implements IndexedRecord {
 
     /**
      * 
-     * @param successful  TODO
+     * @param successful  True if the job execution completed and no errors
+     *                    were encountered.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -390,8 +408,7 @@ public class GetJobResponse implements IndexedRecord {
 
     /**
      * 
-     * @return TODO; please include all possible options along with their
-     *         docstrings.
+     * @return Map of various status strings for the executed job.
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.GetJobResponse.StatusMap#ERROR_MESSAGE
@@ -407,8 +424,7 @@ public class GetJobResponse implements IndexedRecord {
 
     /**
      * 
-     * @param statusMap  TODO; please include all possible options along with
-     *                   their docstrings.
+     * @param statusMap  Map of various status strings for the executed job.
      *                   <ul>
      *                           <li> {@link
      *                   com.gpudb.protocol.GetJobResponse.StatusMap#ERROR_MESSAGE

@@ -128,8 +128,9 @@ public class CreateTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
      * FOREIGN_KEYS}: Semicolon-separated list of <a
      * href="../../../../../concepts/tables.html#foreign-keys"
-     * target="_top">foreign keys</a>, of the format 'source_column references
-     * target_table(primary_key_column) [ as <foreign_key_name> ]'.
+     * target="_top">foreign keys</a>, of the format '(source_column_name [,
+     * ...]) references target_table_name(primary_key_column_name [, ...]) [as
+     * foreign_key_name]'.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
      * FOREIGN_SHARD_KEY}: Foreign shard key of the format 'source_column
@@ -243,9 +244,9 @@ public class CreateTableRequest implements IndexedRecord {
         /**
          * Semicolon-separated list of <a
          * href="../../../../../concepts/tables.html#foreign-keys"
-         * target="_top">foreign keys</a>, of the format 'source_column
-         * references target_table(primary_key_column) [ as <foreign_key_name>
-         * ]'.
+         * target="_top">foreign keys</a>, of the format '(source_column_name
+         * [, ...]) references target_table_name(primary_key_column_name [,
+         * ...]) [as foreign_key_name]'.
          */
         public static final String FOREIGN_KEYS = "foreign_keys";
 
@@ -402,9 +403,9 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FOREIGN_KEYS}: Semicolon-separated list of <a
      *                 href="../../../../../concepts/tables.html#foreign-keys"
      *                 target="_top">foreign keys</a>, of the format
-     *                 'source_column references
-     *                 target_table(primary_key_column) [ as <foreign_key_name>
-     *                 ]'.
+     *                 '(source_column_name [, ...]) references
+     *                 target_table_name(primary_key_column_name [, ...]) [as
+     *                 foreign_key_name]'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
      *                 FOREIGN_SHARD_KEY}: Foreign shard key of the format
@@ -583,9 +584,10 @@ public class CreateTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
      *         FOREIGN_KEYS}: Semicolon-separated list of <a
      *         href="../../../../../concepts/tables.html#foreign-keys"
-     *         target="_top">foreign keys</a>, of the format 'source_column
-     *         references target_table(primary_key_column) [ as
-     *         <foreign_key_name> ]'.
+     *         target="_top">foreign keys</a>, of the format
+     *         '(source_column_name [, ...]) references
+     *         target_table_name(primary_key_column_name [, ...]) [as
+     *         foreign_key_name]'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
      *         FOREIGN_SHARD_KEY}: Foreign shard key of the format
@@ -713,9 +715,9 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FOREIGN_KEYS}: Semicolon-separated list of <a
      *                 href="../../../../../concepts/tables.html#foreign-keys"
      *                 target="_top">foreign keys</a>, of the format
-     *                 'source_column references
-     *                 target_table(primary_key_column) [ as <foreign_key_name>
-     *                 ]'.
+     *                 '(source_column_name [, ...]) references
+     *                 target_table_name(primary_key_column_name [, ...]) [as
+     *                 foreign_key_name]'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
      *                 FOREIGN_SHARD_KEY}: Foreign shard key of the format

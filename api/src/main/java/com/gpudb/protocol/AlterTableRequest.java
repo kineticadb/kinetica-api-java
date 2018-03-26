@@ -139,15 +139,16 @@ public class AlterTableRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
      * CREATE_FOREIGN_KEY}: Creates a <a
      * href="../../../../../concepts/tables.html#foreign-key"
-     * target="_top">foreign key</a> using the format 'source_column references
-     * target_table(primary_key_column) [ as <foreign_key_name> ]'.
+     * target="_top">foreign key</a> using the format '(source_column_name [,
+     * ...]) references target_table_name(primary_key_column_name [, ...]) [as
+     * foreign_key_name]'.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
      * DELETE_FOREIGN_KEY}: Deletes a <a
      * href="../../../../../concepts/tables.html#foreign-key"
      * target="_top">foreign key</a>.  The {@code value} should be the
-     * <foreign_key_name> specified when creating the key or the complete
-     * string used to define it.
+     * foreign_key_name specified when creating the key or the complete string
+     * used to define it.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
      * SET_GLOBAL_ACCESS_MODE}: Sets the global access mode (i.e. locking) for
@@ -156,13 +157,17 @@ public class AlterTableRequest implements IndexedRecord {
      * and 'read_write'.
      *         <li> {@link com.gpudb.protocol.AlterTableRequest.Action#REFRESH
      * REFRESH}: Replay all the table creation commands required to create this
-     * view. Endpoints supported are filter, create_join_table,
-     * create_projection, create_union, aggregate_group_by, and
-     * aggregate_unique.
+     * view. Endpoints supported are {@link
+     * com.gpudb.GPUdb#filter(FilterRequest)}, {@link
+     * com.gpudb.GPUdb#createJoinTable(CreateJoinTableRequest)}, {@link
+     * com.gpudb.GPUdb#createProjection(CreateProjectionRequest)}, {@link
+     * com.gpudb.GPUdb#createUnion(CreateUnionRequest)}, {@link
+     * com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}, and
+     * {@link com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
      * SET_REFRESH_METHOD}: Set the method by which this view is refreshed -
-     * one of manual, periodic, on_change, on_query.
+     * one of 'manual', 'periodic', 'on_change', 'on_query'.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
      * SET_REFRESH_START_TIME}: Set the time to start periodic refreshes to
@@ -170,8 +175,9 @@ public class AlterTableRequest implements IndexedRecord {
      * be done.  Next refresh occurs at refresh_start_time + N*refresh_period
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
-     * SET_REFRESH_PERIOD}: Set the time interval at which to refresh this view
-     * - set refresh method to periodic if not alreay set.
+     * SET_REFRESH_PERIOD}: Set the time interval in seconds at which to
+     * refresh this view - sets the refresh method to periodic if not alreay
+     * set.
      * </ul>
      * A set of string constants for the parameter {@code action}.
      */
@@ -260,16 +266,16 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Creates a <a href="../../../../../concepts/tables.html#foreign-key"
-         * target="_top">foreign key</a> using the format 'source_column
-         * references target_table(primary_key_column) [ as <foreign_key_name>
-         * ]'.
+         * target="_top">foreign key</a> using the format '(source_column_name
+         * [, ...]) references target_table_name(primary_key_column_name [,
+         * ...]) [as foreign_key_name]'.
          */
         public static final String CREATE_FOREIGN_KEY = "create_foreign_key";
 
         /**
          * Deletes a <a href="../../../../../concepts/tables.html#foreign-key"
          * target="_top">foreign key</a>.  The {@code value} should be the
-         * <foreign_key_name> specified when creating the key or the complete
+         * foreign_key_name specified when creating the key or the complete
          * string used to define it.
          */
         public static final String DELETE_FOREIGN_KEY = "delete_foreign_key";
@@ -284,15 +290,19 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Replay all the table creation commands required to create this view.
-         * Endpoints supported are filter, create_join_table,
-         * create_projection, create_union, aggregate_group_by, and
-         * aggregate_unique.
+         * Endpoints supported are {@link
+         * com.gpudb.GPUdb#filter(FilterRequest)}, {@link
+         * com.gpudb.GPUdb#createJoinTable(CreateJoinTableRequest)}, {@link
+         * com.gpudb.GPUdb#createProjection(CreateProjectionRequest)}, {@link
+         * com.gpudb.GPUdb#createUnion(CreateUnionRequest)}, {@link
+         * com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}, and
+         * {@link com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
          */
         public static final String REFRESH = "refresh";
 
         /**
-         * Set the method by which this view is refreshed - one of manual,
-         * periodic, on_change, on_query.
+         * Set the method by which this view is refreshed - one of 'manual',
+         * 'periodic', 'on_change', 'on_query'.
          */
         public static final String SET_REFRESH_METHOD = "set_refresh_method";
 
@@ -304,8 +314,8 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String SET_REFRESH_START_TIME = "set_refresh_start_time";
 
         /**
-         * Set the time interval at which to refresh this view - set refresh
-         * method to periodic if not alreay set.
+         * Set the time interval in seconds at which to refresh this view -
+         * sets the refresh method to periodic if not alreay set.
          */
         public static final String SET_REFRESH_PERIOD = "set_refresh_period";
 
@@ -563,15 +573,15 @@ public class AlterTableRequest implements IndexedRecord {
      *                CREATE_FOREIGN_KEY}: Creates a <a
      *                href="../../../../../concepts/tables.html#foreign-key"
      *                target="_top">foreign key</a> using the format
-     *                'source_column references
-     *                target_table(primary_key_column) [ as <foreign_key_name>
-     *                ]'.
+     *                '(source_column_name [, ...]) references
+     *                target_table_name(primary_key_column_name [, ...]) [as
+     *                foreign_key_name]'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
      *                DELETE_FOREIGN_KEY}: Deletes a <a
      *                href="../../../../../concepts/tables.html#foreign-key"
      *                target="_top">foreign key</a>.  The {@code value} should
-     *                be the <foreign_key_name> specified when creating the key
+     *                be the foreign_key_name specified when creating the key
      *                or the complete string used to define it.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
@@ -583,13 +593,21 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REFRESH
      *                REFRESH}: Replay all the table creation commands required
-     *                to create this view. Endpoints supported are filter,
-     *                create_join_table, create_projection, create_union,
-     *                aggregate_group_by, and aggregate_unique.
+     *                to create this view. Endpoints supported are {@link
+     *                com.gpudb.GPUdb#filter(FilterRequest)}, {@link
+     *                com.gpudb.GPUdb#createJoinTable(CreateJoinTableRequest)},
+     *                {@link
+     *                com.gpudb.GPUdb#createProjection(CreateProjectionRequest)},
+     *                {@link com.gpudb.GPUdb#createUnion(CreateUnionRequest)},
+     *                {@link
+     *                com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)},
+     *                and {@link
+     *                com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
      *                SET_REFRESH_METHOD}: Set the method by which this view is
-     *                refreshed - one of manual, periodic, on_change, on_query.
+     *                refreshed - one of 'manual', 'periodic', 'on_change',
+     *                'on_query'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
      *                SET_REFRESH_START_TIME}: Set the time to start periodic
@@ -598,9 +616,9 @@ public class AlterTableRequest implements IndexedRecord {
      *                occurs at refresh_start_time + N*refresh_period
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
-     *                SET_REFRESH_PERIOD}: Set the time interval at which to
-     *                refresh this view - set refresh method to periodic if not
-     *                alreay set.
+     *                SET_REFRESH_PERIOD}: Set the time interval in seconds at
+     *                which to refresh this view - sets the refresh method to
+     *                periodic if not alreay set.
      *                </ul>
      * @param value  The value of the modification. May be a column name,
      *               'true' or 'false', a TTL, or the global access mode
@@ -782,16 +800,17 @@ public class AlterTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
      *         CREATE_FOREIGN_KEY}: Creates a <a
      *         href="../../../../../concepts/tables.html#foreign-key"
-     *         target="_top">foreign key</a> using the format 'source_column
-     *         references target_table(primary_key_column) [ as
-     *         <foreign_key_name> ]'.
+     *         target="_top">foreign key</a> using the format
+     *         '(source_column_name [, ...]) references
+     *         target_table_name(primary_key_column_name [, ...]) [as
+     *         foreign_key_name]'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
      *         DELETE_FOREIGN_KEY}: Deletes a <a
      *         href="../../../../../concepts/tables.html#foreign-key"
      *         target="_top">foreign key</a>.  The {@code value} should be the
-     *         <foreign_key_name> specified when creating the key or the
-     *         complete string used to define it.
+     *         foreign_key_name specified when creating the key or the complete
+     *         string used to define it.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
      *         SET_GLOBAL_ACCESS_MODE}: Sets the global access mode (i.e.
@@ -801,13 +820,19 @@ public class AlterTableRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#REFRESH REFRESH}:
      *         Replay all the table creation commands required to create this
-     *         view. Endpoints supported are filter, create_join_table,
-     *         create_projection, create_union, aggregate_group_by, and
-     *         aggregate_unique.
+     *         view. Endpoints supported are {@link
+     *         com.gpudb.GPUdb#filter(FilterRequest)}, {@link
+     *         com.gpudb.GPUdb#createJoinTable(CreateJoinTableRequest)}, {@link
+     *         com.gpudb.GPUdb#createProjection(CreateProjectionRequest)},
+     *         {@link com.gpudb.GPUdb#createUnion(CreateUnionRequest)}, {@link
+     *         com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)},
+     *         and {@link
+     *         com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
      *         SET_REFRESH_METHOD}: Set the method by which this view is
-     *         refreshed - one of manual, periodic, on_change, on_query.
+     *         refreshed - one of 'manual', 'periodic', 'on_change',
+     *         'on_query'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
      *         SET_REFRESH_START_TIME}: Set the time to start periodic
@@ -816,8 +841,9 @@ public class AlterTableRequest implements IndexedRecord {
      *         refresh_start_time + N*refresh_period
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
-     *         SET_REFRESH_PERIOD}: Set the time interval at which to refresh
-     *         this view - set refresh method to periodic if not alreay set.
+     *         SET_REFRESH_PERIOD}: Set the time interval in seconds at which
+     *         to refresh this view - sets the refresh method to periodic if
+     *         not alreay set.
      *         </ul>
      * 
      */
@@ -900,15 +926,15 @@ public class AlterTableRequest implements IndexedRecord {
      *                CREATE_FOREIGN_KEY}: Creates a <a
      *                href="../../../../../concepts/tables.html#foreign-key"
      *                target="_top">foreign key</a> using the format
-     *                'source_column references
-     *                target_table(primary_key_column) [ as <foreign_key_name>
-     *                ]'.
+     *                '(source_column_name [, ...]) references
+     *                target_table_name(primary_key_column_name [, ...]) [as
+     *                foreign_key_name]'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
      *                DELETE_FOREIGN_KEY}: Deletes a <a
      *                href="../../../../../concepts/tables.html#foreign-key"
      *                target="_top">foreign key</a>.  The {@code value} should
-     *                be the <foreign_key_name> specified when creating the key
+     *                be the foreign_key_name specified when creating the key
      *                or the complete string used to define it.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
@@ -920,13 +946,21 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REFRESH
      *                REFRESH}: Replay all the table creation commands required
-     *                to create this view. Endpoints supported are filter,
-     *                create_join_table, create_projection, create_union,
-     *                aggregate_group_by, and aggregate_unique.
+     *                to create this view. Endpoints supported are {@link
+     *                com.gpudb.GPUdb#filter(FilterRequest)}, {@link
+     *                com.gpudb.GPUdb#createJoinTable(CreateJoinTableRequest)},
+     *                {@link
+     *                com.gpudb.GPUdb#createProjection(CreateProjectionRequest)},
+     *                {@link com.gpudb.GPUdb#createUnion(CreateUnionRequest)},
+     *                {@link
+     *                com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)},
+     *                and {@link
+     *                com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
      *                SET_REFRESH_METHOD}: Set the method by which this view is
-     *                refreshed - one of manual, periodic, on_change, on_query.
+     *                refreshed - one of 'manual', 'periodic', 'on_change',
+     *                'on_query'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
      *                SET_REFRESH_START_TIME}: Set the time to start periodic
@@ -935,9 +969,9 @@ public class AlterTableRequest implements IndexedRecord {
      *                occurs at refresh_start_time + N*refresh_period
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
-     *                SET_REFRESH_PERIOD}: Set the time interval at which to
-     *                refresh this view - set refresh method to periodic if not
-     *                alreay set.
+     *                SET_REFRESH_PERIOD}: Set the time interval in seconds at
+     *                which to refresh this view - sets the refresh method to
+     *                periodic if not alreay set.
      *                </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

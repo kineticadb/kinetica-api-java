@@ -4,7 +4,10 @@ GPUdb Java API Changelog
 Version 6.2.0 - 2018-02-11
 --------------------------
 
--   Version release
+-   New RecordRetriever class to support multi-head record lookup by
+    shard key
+-   BulkInserter.WorkerList class deprecated in favor of top-level
+    WorkerList class used by both BulkInserter and RecordRetriever
 
 
 Version 6.1.0 - 2017-10-05

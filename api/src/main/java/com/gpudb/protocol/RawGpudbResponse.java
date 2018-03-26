@@ -15,9 +15,9 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for the raw wrapper for GPUdb responses.
  */
-public class GpudbResponse implements IndexedRecord {
+public class RawGpudbResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("GpudbResponse")
+            .record("RawGpudbResponse")
             .namespace("com.gpudb")
             .fields()
                 .name("status").type().stringType().noDefault()
@@ -47,9 +47,9 @@ public class GpudbResponse implements IndexedRecord {
 
 
     /**
-     * Constructs a GpudbResponse object with default parameters.
+     * Constructs a RawGpudbResponse object with default parameters.
      */
-    public GpudbResponse() {
+    public RawGpudbResponse() {
     }
     public String getStatus() {
         return status;
@@ -62,7 +62,7 @@ public class GpudbResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public GpudbResponse setStatus(String status) {
+    public RawGpudbResponse setStatus(String status) {
         this.status = (status == null) ? "" : status;
         return this;
     }
@@ -77,7 +77,7 @@ public class GpudbResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public GpudbResponse setMessage(String message) {
+    public RawGpudbResponse setMessage(String message) {
         this.message = (message == null) ? "" : message;
         return this;
     }
@@ -92,7 +92,7 @@ public class GpudbResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public GpudbResponse setDataType(String dataType) {
+    public RawGpudbResponse setDataType(String dataType) {
         this.dataType = (dataType == null) ? "" : dataType;
         return this;
     }
@@ -107,7 +107,7 @@ public class GpudbResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public GpudbResponse setData(ByteBuffer data) {
+    public RawGpudbResponse setData(ByteBuffer data) {
         this.data = (data == null) ? ByteBuffer.wrap( new byte[0] ) : data;
         return this;
     }
@@ -122,7 +122,7 @@ public class GpudbResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public GpudbResponse setDataStr(String dataStr) {
+    public RawGpudbResponse setDataStr(String dataStr) {
         this.dataStr = (dataStr == null) ? "" : dataStr;
         return this;
     }
@@ -222,7 +222,7 @@ public class GpudbResponse implements IndexedRecord {
             return false;
         }
 
-        GpudbResponse that = (GpudbResponse)obj;
+        RawGpudbResponse that = (RawGpudbResponse)obj;
 
         return ( this.status.equals( that.status )
                  && this.message.equals( that.message )

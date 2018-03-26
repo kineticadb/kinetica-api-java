@@ -24,6 +24,10 @@ import org.apache.avro.generic.IndexedRecord;
  * returned. This endpoint supports pagination with the {@code offset} and
  * {@code limit} parameters.
  * <p>
+ * <a href="../../../../../concepts/window.html" target="_top">Window
+ * functions</a> are available through this endpoint as well as {@link
+ * com.gpudb.GPUdb#createProjection(CreateProjectionRequest)}.
+ * <p>
  * When using pagination, if the table (or the underlying table in the case of
  * a view) is modified (records are inserted, updated, or deleted) during a
  * call to the endpoint, the records or values retrieved may differ between

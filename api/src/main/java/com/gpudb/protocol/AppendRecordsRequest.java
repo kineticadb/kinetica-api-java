@@ -184,10 +184,13 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                         be an existing table name.
      * @param fieldMap  Contains the mapping of column names from the target
      *                  table (specified by {@code tableName}) as the keys, and
-     *                  corresponding column names from the source table
-     *                  (specified by {@code sourceTableName}). Must be
-     *                  existing column names in source table and target table,
-     *                  and their types must be matched.
+     *                  corresponding column names or expressions (e.g.,
+     *                  'col_name+1') from the source table (specified by
+     *                  {@code sourceTableName}). Must be existing column names
+     *                  in source table and target table, and their types must
+     *                  be matched. For details on using expressions, see <a
+     *                  href="../../../../../concepts/expressions.html"
+     *                  target="_top">Expressions</a>.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -305,9 +308,12 @@ public class AppendRecordsRequest implements IndexedRecord {
      * 
      * @return Contains the mapping of column names from the target table
      *         (specified by {@code tableName}) as the keys, and corresponding
-     *         column names from the source table (specified by {@code
-     *         sourceTableName}). Must be existing column names in source table
-     *         and target table, and their types must be matched.
+     *         column names or expressions (e.g., 'col_name+1') from the source
+     *         table (specified by {@code sourceTableName}). Must be existing
+     *         column names in source table and target table, and their types
+     *         must be matched. For details on using expressions, see <a
+     *         href="../../../../../concepts/expressions.html"
+     *         target="_top">Expressions</a>.
      * 
      */
     public Map<String, String> getFieldMap() {
@@ -318,10 +324,13 @@ public class AppendRecordsRequest implements IndexedRecord {
      * 
      * @param fieldMap  Contains the mapping of column names from the target
      *                  table (specified by {@code tableName}) as the keys, and
-     *                  corresponding column names from the source table
-     *                  (specified by {@code sourceTableName}). Must be
-     *                  existing column names in source table and target table,
-     *                  and their types must be matched.
+     *                  corresponding column names or expressions (e.g.,
+     *                  'col_name+1') from the source table (specified by
+     *                  {@code sourceTableName}). Must be existing column names
+     *                  in source table and target table, and their types must
+     *                  be matched. For details on using expressions, see <a
+     *                  href="../../../../../concepts/expressions.html"
+     *                  target="_top">Expressions</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

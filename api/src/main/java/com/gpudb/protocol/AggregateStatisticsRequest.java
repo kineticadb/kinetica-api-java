@@ -34,6 +34,10 @@ import org.apache.avro.generic.IndexedRecord;
  * value must be specified separately (i.e.
  * 'percentile(75.0),percentile(99.0),percentile_rank(1234.56),percentile_rank(-5)').
  * <p>
+ * A second, comma-separated value can be added to the {percentile}@{choise of
+ * input stats} statistic to calculate percentile resolution, e.g., a 50th
+ * percentile with 200 resolution would be 'percentile(50,200)'.
+ * <p>
  * The weighted average statistic requires a {@code weight_column_name} to be
  * specified in {@code options}. The weighted average is then defined as the
  * sum of the products of {@code columnName} times the {@code
@@ -121,7 +125,9 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE
      * PERCENTILE}: Estimate (via t-digest) of the given percentile of the
-     * column(s) (percentile(50.0) will be an approximation of the median).
+     * column(s) (percentile(50.0) will be an approximation of the median). Add
+     * a second, comma-separated value to calculate percentile resolution,
+     * e.g., 'percentile(75,150)'
      *         <li> {@link
      * com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE_RANK
      * PERCENTILE_RANK}: Estimate (via t-digest) of the percentile rank of the
@@ -196,7 +202,9 @@ public class AggregateStatisticsRequest implements IndexedRecord {
 
         /**
          * Estimate (via t-digest) of the given percentile of the column(s)
-         * (percentile(50.0) will be an approximation of the median).
+         * (percentile(50.0) will be an approximation of the median). Add a
+         * second, comma-separated value to calculate percentile resolution,
+         * e.g., 'percentile(75,150)'
          */
         public static final String PERCENTILE = "percentile";
 
@@ -322,7 +330,9 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE
      *               PERCENTILE}: Estimate (via t-digest) of the given
      *               percentile of the column(s) (percentile(50.0) will be an
-     *               approximation of the median).
+     *               approximation of the median). Add a second,
+     *               comma-separated value to calculate percentile resolution,
+     *               e.g., 'percentile(75,150)'
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE_RANK
      *               PERCENTILE_RANK}: Estimate (via t-digest) of the
@@ -448,7 +458,8 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *         com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE
      *         PERCENTILE}: Estimate (via t-digest) of the given percentile of
      *         the column(s) (percentile(50.0) will be an approximation of the
-     *         median).
+     *         median). Add a second, comma-separated value to calculate
+     *         percentile resolution, e.g., 'percentile(75,150)'
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE_RANK
      *         PERCENTILE_RANK}: Estimate (via t-digest) of the percentile rank
@@ -514,7 +525,9 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE
      *               PERCENTILE}: Estimate (via t-digest) of the given
      *               percentile of the column(s) (percentile(50.0) will be an
-     *               approximation of the median).
+     *               approximation of the median). Add a second,
+     *               comma-separated value to calculate percentile resolution,
+     *               e.g., 'percentile(75,150)'
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE_RANK
      *               PERCENTILE_RANK}: Estimate (via t-digest) of the

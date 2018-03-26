@@ -1099,7 +1099,7 @@ public abstract class GPUdbBase {
                 }
 
                 try {
-                    // Manually decode the GpudbResponse wrapper directly from
+                    // Manually decode the RawGpudbResponse wrapper directly from
                     // the stream to avoid allocation of intermediate buffers
 
                     BinaryDecoder decoder = DecoderFactory.get().binaryDecoder(inputStream, null);

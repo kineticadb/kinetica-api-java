@@ -21,13 +21,19 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * Create a new empty result table (specified by {@code tableName}), and insert
  * all records from source tables (specified by {@code sourceTableNames}) based
- * on the field mapping information (specified by {@code fieldMaps}). The field
- * map (specified by {@code fieldMaps}) holds the user specified maps of target
- * table column names to source table columns. The array of {@code fieldMaps}
- * must match one-to-one with the {@code sourceTableNames}, e.g., there's a map
- * present in {@code fieldMaps} for each table listed in {@code
- * sourceTableNames}. Read more about Merge Records <a
- * href="../../../../../concepts/merge_records.html" target="_top">here</a>.
+ * on the field mapping information (specified by {@code fieldMaps}).
+ * <p>
+ * For merge records details and examples, see <a
+ * href="../../../../../concepts/merge_records.html" target="_top">Merge
+ * Records</a>.  For limitations, see <a
+ * href="../../../../../concepts/merge_records.html#limitations-and-cautions"
+ * target="_top">Merge Records Limitations and Cautions</a>.
+
+ * The field map (specified by {@code fieldMaps}) holds the user-specified maps
+ * of target table column names to source table columns. The array of {@code
+ * fieldMaps} must match one-to-one with the {@code sourceTableNames}, e.g.,
+ * there's a map present in {@code fieldMaps} for each table listed in {@code
+ * sourceTableNames}.
  */
 public class MergeRecordsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -89,6 +95,9 @@ public class MergeRecordsRequest implements IndexedRecord {
      * com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE CHUNK_SIZE}:
      * Indicates the chunk size to be used for the merged table specified in
      * {@code tableName}.
+     *         <li> {@link
+     * com.gpudb.protocol.MergeRecordsRequest.Options#VIEW_ID VIEW_ID}: view
+     * this result table is part of
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -139,6 +148,11 @@ public class MergeRecordsRequest implements IndexedRecord {
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
+        /**
+         * view this result table is part of
+         */
+        public static final String VIEW_ID = "view_id";
+
         private Options() {  }
     }
 
@@ -170,10 +184,12 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                   sourceTableNames} being merged into the target table
      *                   specified by {@code tableName}.  Each mapping contains
      *                   the target column names (as keys) that the data in the
-     *                   mapped source columns (as values) will be merged into.
-     *                   All of the source columns being merged into a given
-     *                   target column must match in type, as that type will
-     *                   determine the type of the new target column.
+     *                   mapped source columns or column <a
+     *                   href="../../../../../concepts/expressions.html"
+     *                   target="_top">expressions</a> (as values) will be
+     *                   merged into.  All of the source columns being merged
+     *                   into a given target column must match in type, as that
+     *                   type will determine the type of the new target column.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -217,6 +233,9 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
      *                 merged table specified in {@code tableName}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MergeRecordsRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this result table is part of
      *                 </ul>
      * 
      */
@@ -279,10 +298,12 @@ public class MergeRecordsRequest implements IndexedRecord {
      *         for each source table listed in {@code sourceTableNames} being
      *         merged into the target table specified by {@code tableName}.
      *         Each mapping contains the target column names (as keys) that the
-     *         data in the mapped source columns (as values) will be merged
-     *         into.  All of the source columns being merged into a given
-     *         target column must match in type, as that type will determine
-     *         the type of the new target column.
+     *         data in the mapped source columns or column <a
+     *         href="../../../../../concepts/expressions.html"
+     *         target="_top">expressions</a> (as values) will be merged into.
+     *         All of the source columns being merged into a given target
+     *         column must match in type, as that type will determine the type
+     *         of the new target column.
      * 
      */
     public List<Map<String, String>> getFieldMaps() {
@@ -296,10 +317,12 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                   sourceTableNames} being merged into the target table
      *                   specified by {@code tableName}.  Each mapping contains
      *                   the target column names (as keys) that the data in the
-     *                   mapped source columns (as values) will be merged into.
-     *                   All of the source columns being merged into a given
-     *                   target column must match in type, as that type will
-     *                   determine the type of the new target column.
+     *                   mapped source columns or column <a
+     *                   href="../../../../../concepts/expressions.html"
+     *                   target="_top">expressions</a> (as values) will be
+     *                   merged into.  All of the source columns being merged
+     *                   into a given target column must match in type, as that
+     *                   type will determine the type of the new target column.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -348,6 +371,9 @@ public class MergeRecordsRequest implements IndexedRecord {
      *         com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE
      *         CHUNK_SIZE}: Indicates the chunk size to be used for the merged
      *         table specified in {@code tableName}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MergeRecordsRequest.Options#VIEW_ID VIEW_ID}:
+     *         view this result table is part of
      *         </ul>
      * 
      */
@@ -400,6 +426,9 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
      *                 merged table specified in {@code tableName}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MergeRecordsRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this result table is part of
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -23,6 +23,12 @@ import org.apache.avro.generic.IndexedRecord;
  * given table/view/collection and computes aggregates on each unique
  * combination. This is somewhat analogous to an SQL-style SELECT...GROUP BY.
  * <p>
+ * For aggregation details and examples, see <a
+ * href="../../../../../concepts/aggregation.html"
+ * target="_top">Aggregation</a>.  For limitations, see <a
+ * href="../../../../../concepts/aggregation.html#limitations"
+ * target="_top">Aggregation Limitations</a>.
+ * <p>
  * Any column(s) can be grouped on, and all column types except
  * unrestricted-length strings may be used for computing applicable aggregates;
  * columns marked as <a href="../../../../../concepts/types.html#data-handling"
@@ -47,6 +53,20 @@ import org.apache.avro.generic.IndexedRecord;
  * target="_top">aggregation functions</a> are: count(*), sum, min, max, avg,
  * mean, stddev, stddev_pop, stddev_samp, var, var_pop, var_samp, arg_min,
  * arg_max and count_distinct.
+ * <p>
+ * Available grouping functions are <a
+ * href="../../../../../concepts/rollup.html" target="_top">Rollup</a>, <a
+ * href="../../../../../concepts/cube.html" target="_top">Cube</a>, and <a
+ * href="../../../../../concepts/grouping_sets.html" target="_top">Grouping
+ * Sets</a>
+ * <p>
+ * This service also provides support for <a
+ * href="../../../../../concepts/pivot.html" target="_top">Pivot</a>
+ * operations.
+ * <p>
+ * Filtering on aggregates is supported via expressions using <a
+ * href="../../../../../concepts/expressions.html#aggregate-expressions"
+ * target="_top">aggregation functions</a> supplied to {@code having}.
  * <p>
  * The response is returned as a dynamic schema. For details see: <a
  * href="../../../../../api/index.html#dynamic-schemas" target="_top">dynamic
@@ -236,6 +256,26 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT PIVOT}: pivot
+     * column
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT_VALUES
+     * PIVOT_VALUES}: The value list provided will become the column headers in
+     * the output. Should be the values from the pivot_column.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#GROUPING_SETS
+     * GROUPING_SETS}: Customize the grouping attribute sets to compute the
+     * aggregates. These sets can include ROLLUP or CUBE operartors. The
+     * attribute sets should be enclosed in paranthesis and can include
+     * composite attributes. All attributes specified in the grouping sets must
+     * present in the groupby attributes.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#ROLLUP ROLLUP}: This
+     * option is used to specify the multilevel aggregates.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE CUBE}: This
+     * option is used to specify the multidimensional aggregates.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -408,6 +448,36 @@ public class AggregateGroupByRequest implements IndexedRecord {
          */
         public static final String MATERIALIZE_ON_GPU = "materialize_on_gpu";
 
+        /**
+         * pivot column
+         */
+        public static final String PIVOT = "pivot";
+
+        /**
+         * The value list provided will become the column headers in the
+         * output. Should be the values from the pivot_column.
+         */
+        public static final String PIVOT_VALUES = "pivot_values";
+
+        /**
+         * Customize the grouping attribute sets to compute the aggregates.
+         * These sets can include ROLLUP or CUBE operartors. The attribute sets
+         * should be enclosed in paranthesis and can include composite
+         * attributes. All attributes specified in the grouping sets must
+         * present in the groupby attributes.
+         */
+        public static final String GROUPING_SETS = "grouping_sets";
+
+        /**
+         * This option is used to specify the multilevel aggregates.
+         */
+        public static final String ROLLUP = "rollup";
+
+        /**
+         * This option is used to specify the multidimensional aggregates.
+         */
+        public static final String CUBE = "cube";
+
         private Options() {  }
     }
 
@@ -577,6 +647,30 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT
+     *                 PIVOT}: pivot column
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT_VALUES
+     *                 PIVOT_VALUES}: The value list provided will become the
+     *                 column headers in the output. Should be the values from
+     *                 the pivot_column.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#GROUPING_SETS
+     *                 GROUPING_SETS}: Customize the grouping attribute sets to
+     *                 compute the aggregates. These sets can include ROLLUP or
+     *                 CUBE operartors. The attribute sets should be enclosed
+     *                 in paranthesis and can include composite attributes. All
+     *                 attributes specified in the grouping sets must present
+     *                 in the groupby attributes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#ROLLUP
+     *                 ROLLUP}: This option is used to specify the multilevel
+     *                 aggregates.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE
+     *                 CUBE}: This option is used to specify the
+     *                 multidimensional aggregates.
      *                 </ul>
      * 
      */
@@ -752,6 +846,30 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT
+     *                 PIVOT}: pivot column
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT_VALUES
+     *                 PIVOT_VALUES}: The value list provided will become the
+     *                 column headers in the output. Should be the values from
+     *                 the pivot_column.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#GROUPING_SETS
+     *                 GROUPING_SETS}: Customize the grouping attribute sets to
+     *                 compute the aggregates. These sets can include ROLLUP or
+     *                 CUBE operartors. The attribute sets should be enclosed
+     *                 in paranthesis and can include composite attributes. All
+     *                 attributes specified in the grouping sets must present
+     *                 in the groupby attributes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#ROLLUP
+     *                 ROLLUP}: This option is used to specify the multilevel
+     *                 aggregates.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE
+     *                 CUBE}: This option is used to specify the
+     *                 multidimensional aggregates.
      *                 </ul>
      * 
      */
@@ -1031,6 +1149,28 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT PIVOT}:
+     *         pivot column
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT_VALUES
+     *         PIVOT_VALUES}: The value list provided will become the column
+     *         headers in the output. Should be the values from the
+     *         pivot_column.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#GROUPING_SETS
+     *         GROUPING_SETS}: Customize the grouping attribute sets to compute
+     *         the aggregates. These sets can include ROLLUP or CUBE
+     *         operartors. The attribute sets should be enclosed in paranthesis
+     *         and can include composite attributes. All attributes specified
+     *         in the grouping sets must present in the groupby attributes.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#ROLLUP
+     *         ROLLUP}: This option is used to specify the multilevel
+     *         aggregates.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE CUBE}:
+     *         This option is used to specify the multidimensional aggregates.
      *         </ul>
      * 
      */
@@ -1173,6 +1313,30 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT
+     *                 PIVOT}: pivot column
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT_VALUES
+     *                 PIVOT_VALUES}: The value list provided will become the
+     *                 column headers in the output. Should be the values from
+     *                 the pivot_column.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#GROUPING_SETS
+     *                 GROUPING_SETS}: Customize the grouping attribute sets to
+     *                 compute the aggregates. These sets can include ROLLUP or
+     *                 CUBE operartors. The attribute sets should be enclosed
+     *                 in paranthesis and can include composite attributes. All
+     *                 attributes specified in the grouping sets must present
+     *                 in the groupby attributes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#ROLLUP
+     *                 ROLLUP}: This option is used to specify the multilevel
+     *                 aggregates.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE
+     *                 CUBE}: This option is used to specify the
+     *                 multidimensional aggregates.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

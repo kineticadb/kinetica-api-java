@@ -289,6 +289,56 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Retrieves a list of the most recent alerts generated.  The number of
+     * alerts to retrieve is specified in this request.
+     * Returns lists of alert data, earliest to latest
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminShowAlertsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminShowAlertsResponse adminShowAlerts(AdminShowAlertsRequest request) throws GPUdbException {
+        AdminShowAlertsResponse actualResponse_ = new AdminShowAlertsResponse();
+        submitRequest("/admin/show/alerts", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Retrieves a list of the most recent alerts generated.  The number of
+     * alerts to retrieve is specified in this request.
+     * Returns lists of alert data, earliest to latest
+     * 
+     * @param numAlerts  Number of most recent alerts to request. The response
+     *                   will return {@code numAlerts} alerts, or less if there
+     *                   are less in the system. A value of 0 returns all
+     *                   stored alerts.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminShowAlertsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminShowAlertsResponse adminShowAlerts(int numAlerts, Map<String, String> options) throws GPUdbException {
+        AdminShowAlertsRequest actualRequest_ = new AdminShowAlertsRequest(numAlerts, options);
+        AdminShowAlertsResponse actualResponse_ = new AdminShowAlertsResponse();
+        submitRequest("/admin/show/alerts", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Show the current system configuration file.
      * 
      * @param request  Request object containing the parameters for the
@@ -611,6 +661,12 @@ public class GPUdb extends GPUdbBase {
      * combination. This is somewhat analogous to an SQL-style SELECT...GROUP
      * BY.
      * <p>
+     * For aggregation details and examples, see <a
+     * href="../../../../concepts/aggregation.html"
+     * target="_top">Aggregation</a>.  For limitations, see <a
+     * href="../../../../concepts/aggregation.html#limitations"
+     * target="_top">Aggregation Limitations</a>.
+     * <p>
      * Any column(s) can be grouped on, and all column types except
      * unrestricted-length strings may be used for computing applicable
      * aggregates; columns marked as <a
@@ -637,6 +693,20 @@ public class GPUdb extends GPUdbBase {
      * target="_top">aggregation functions</a> are: count(*), sum, min, max,
      * avg, mean, stddev, stddev_pop, stddev_samp, var, var_pop, var_samp,
      * arg_min, arg_max and count_distinct.
+     * <p>
+     * Available grouping functions are <a
+     * href="../../../../concepts/rollup.html" target="_top">Rollup</a>, <a
+     * href="../../../../concepts/cube.html" target="_top">Cube</a>, and <a
+     * href="../../../../concepts/grouping_sets.html" target="_top">Grouping
+     * Sets</a>
+     * <p>
+     * This service also provides support for <a
+     * href="../../../../concepts/pivot.html" target="_top">Pivot</a>
+     * operations.
+     * <p>
+     * Filtering on aggregates is supported via expressions using <a
+     * href="../../../../concepts/expressions.html#aggregate-expressions"
+     * target="_top">aggregation functions</a> supplied to {@code having}.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
@@ -680,6 +750,12 @@ public class GPUdb extends GPUdbBase {
      * combination. This is somewhat analogous to an SQL-style SELECT...GROUP
      * BY.
      * <p>
+     * For aggregation details and examples, see <a
+     * href="../../../../concepts/aggregation.html"
+     * target="_top">Aggregation</a>.  For limitations, see <a
+     * href="../../../../concepts/aggregation.html#limitations"
+     * target="_top">Aggregation Limitations</a>.
+     * <p>
      * Any column(s) can be grouped on, and all column types except
      * unrestricted-length strings may be used for computing applicable
      * aggregates; columns marked as <a
@@ -706,6 +782,20 @@ public class GPUdb extends GPUdbBase {
      * target="_top">aggregation functions</a> are: count(*), sum, min, max,
      * avg, mean, stddev, stddev_pop, stddev_samp, var, var_pop, var_samp,
      * arg_min, arg_max and count_distinct.
+     * <p>
+     * Available grouping functions are <a
+     * href="../../../../concepts/rollup.html" target="_top">Rollup</a>, <a
+     * href="../../../../concepts/cube.html" target="_top">Cube</a>, and <a
+     * href="../../../../concepts/grouping_sets.html" target="_top">Grouping
+     * Sets</a>
+     * <p>
+     * This service also provides support for <a
+     * href="../../../../concepts/pivot.html" target="_top">Pivot</a>
+     * operations.
+     * <p>
+     * Filtering on aggregates is supported via expressions using <a
+     * href="../../../../concepts/expressions.html#aggregate-expressions"
+     * target="_top">aggregation functions</a> supplied to {@code having}.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
@@ -756,6 +846,12 @@ public class GPUdb extends GPUdbBase {
      * combination. This is somewhat analogous to an SQL-style SELECT...GROUP
      * BY.
      * <p>
+     * For aggregation details and examples, see <a
+     * href="../../../../concepts/aggregation.html"
+     * target="_top">Aggregation</a>.  For limitations, see <a
+     * href="../../../../concepts/aggregation.html#limitations"
+     * target="_top">Aggregation Limitations</a>.
+     * <p>
      * Any column(s) can be grouped on, and all column types except
      * unrestricted-length strings may be used for computing applicable
      * aggregates; columns marked as <a
@@ -782,6 +878,20 @@ public class GPUdb extends GPUdbBase {
      * target="_top">aggregation functions</a> are: count(*), sum, min, max,
      * avg, mean, stddev, stddev_pop, stddev_samp, var, var_pop, var_samp,
      * arg_min, arg_max and count_distinct.
+     * <p>
+     * Available grouping functions are <a
+     * href="../../../../concepts/rollup.html" target="_top">Rollup</a>, <a
+     * href="../../../../concepts/cube.html" target="_top">Cube</a>, and <a
+     * href="../../../../concepts/grouping_sets.html" target="_top">Grouping
+     * Sets</a>
+     * <p>
+     * This service also provides support for <a
+     * href="../../../../concepts/pivot.html" target="_top">Pivot</a>
+     * operations.
+     * <p>
+     * Filtering on aggregates is supported via expressions using <a
+     * href="../../../../concepts/expressions.html#aggregate-expressions"
+     * target="_top">aggregation functions</a> supplied to {@code having}.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
@@ -944,6 +1054,30 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT
+     *                 PIVOT}: pivot column
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT_VALUES
+     *                 PIVOT_VALUES}: The value list provided will become the
+     *                 column headers in the output. Should be the values from
+     *                 the pivot_column.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#GROUPING_SETS
+     *                 GROUPING_SETS}: Customize the grouping attribute sets to
+     *                 compute the aggregates. These sets can include ROLLUP or
+     *                 CUBE operartors. The attribute sets should be enclosed
+     *                 in paranthesis and can include composite attributes. All
+     *                 attributes specified in the grouping sets must present
+     *                 in the groupby attributes.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#ROLLUP
+     *                 ROLLUP}: This option is used to specify the multilevel
+     *                 aggregates.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE
+     *                 CUBE}: This option is used to specify the
+     *                 multidimensional aggregates.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -1238,6 +1372,10 @@ public class GPUdb extends GPUdbBase {
      * each value must be specified separately (i.e.
      * 'percentile(75.0),percentile(99.0),percentile_rank(1234.56),percentile_rank(-5)').
      * <p>
+     * A second, comma-separated value can be added to the {percentile}@{choise
+     * of input stats} statistic to calculate percentile resolution, e.g., a
+     * 50th percentile with 200 resolution would be 'percentile(50,200)'.
+     * <p>
      * The weighted average statistic requires a {@code weight_column_name} to
      * be specified in {@code options}. The weighted average is then defined as
      * the sum of the products of {@code columnName} times the {@code
@@ -1293,6 +1431,10 @@ public class GPUdb extends GPUdbBase {
      * percentile}/{@code percentile_rank}. To compute multiple percentiles
      * each value must be specified separately (i.e.
      * 'percentile(75.0),percentile(99.0),percentile_rank(1234.56),percentile_rank(-5)').
+     * <p>
+     * A second, comma-separated value can be added to the {percentile}@{choise
+     * of input stats} statistic to calculate percentile resolution, e.g., a
+     * 50th percentile with 200 resolution would be 'percentile(50,200)'.
      * <p>
      * The weighted average statistic requires a {@code weight_column_name} to
      * be specified in {@code options}. The weighted average is then defined as
@@ -1367,7 +1509,9 @@ public class GPUdb extends GPUdbBase {
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE
      *               PERCENTILE}: Estimate (via t-digest) of the given
      *               percentile of the column(s) (percentile(50.0) will be an
-     *               approximation of the median).
+     *               approximation of the median). Add a second,
+     *               comma-separated value to calculate percentile resolution,
+     *               e.g., 'percentile(75,150)'
      *                       <li> {@link
      *               com.gpudb.protocol.AggregateStatisticsRequest.Stats#PERCENTILE_RANK
      *               PERCENTILE_RANK}: Estimate (via t-digest) of the
@@ -1798,13 +1942,17 @@ public class GPUdb extends GPUdbBase {
     /**
      * Rotate the column values into rows values.
      * <p>
-     * The aggregate unpivot is used to normalize tables that are built for
-     * cross tabular reporting purposes. The unpivot operator rotates the
-     * column values for all the pivoted columns. A variable column, value
-     * column and all columns from the source table except the unpivot columns
-     * are projected into the result table. The variable column and value
-     * columns in the result table indicate the pivoted column name and values
-     * respectively.
+     * For unpivot details and examples, see <a
+     * href="../../../../concepts/unpivot.html" target="_top">Unpivot</a>.  For
+     * limitations, see <a href="../../../../concepts/unpivot.html#limitations"
+     * target="_top">Unpivot Limitations</a>.
+     * <p>
+     * Unpivot is used to normalize tables that are built for cross tabular
+     * reporting purposes. The unpivot operator rotates the column values for
+     * all the pivoted columns. A variable column, value column and all columns
+     * from the source table except the unpivot columns are projected into the
+     * result table. The variable column and value columns in the result table
+     * indicate the pivoted column name and values respectively.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
@@ -1831,13 +1979,17 @@ public class GPUdb extends GPUdbBase {
     /**
      * Rotate the column values into rows values.
      * <p>
-     * The aggregate unpivot is used to normalize tables that are built for
-     * cross tabular reporting purposes. The unpivot operator rotates the
-     * column values for all the pivoted columns. A variable column, value
-     * column and all columns from the source table except the unpivot columns
-     * are projected into the result table. The variable column and value
-     * columns in the result table indicate the pivoted column name and values
-     * respectively.
+     * For unpivot details and examples, see <a
+     * href="../../../../concepts/unpivot.html" target="_top">Unpivot</a>.  For
+     * limitations, see <a href="../../../../concepts/unpivot.html#limitations"
+     * target="_top">Unpivot Limitations</a>.
+     * <p>
+     * Unpivot is used to normalize tables that are built for cross tabular
+     * reporting purposes. The unpivot operator rotates the column values for
+     * all the pivoted columns. A variable column, value column and all columns
+     * from the source table except the unpivot columns are projected into the
+     * result table. The variable column and value columns in the result table
+     * indicate the pivoted column name and values respectively.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
@@ -1872,13 +2024,17 @@ public class GPUdb extends GPUdbBase {
     /**
      * Rotate the column values into rows values.
      * <p>
-     * The aggregate unpivot is used to normalize tables that are built for
-     * cross tabular reporting purposes. The unpivot operator rotates the
-     * column values for all the pivoted columns. A variable column, value
-     * column and all columns from the source table except the unpivot columns
-     * are projected into the result table. The variable column and value
-     * columns in the result table indicate the pivoted column name and values
-     * respectively.
+     * For unpivot details and examples, see <a
+     * href="../../../../concepts/unpivot.html" target="_top">Unpivot</a>.  For
+     * limitations, see <a href="../../../../concepts/unpivot.html#limitations"
+     * target="_top">Unpivot Limitations</a>.
+     * <p>
+     * Unpivot is used to normalize tables that are built for cross tabular
+     * reporting purposes. The unpivot operator rotates the column values for
+     * all the pivoted columns. A variable column, value column and all columns
+     * from the source table except the unpivot columns are projected into the
+     * result table. The variable column and value columns in the result table
+     * indicate the pivoted column name and values respectively.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
@@ -1951,6 +2107,25 @@ public class GPUdb extends GPUdbBase {
      *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 result_table}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this result table is part of
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
+     *                 MATERIALIZE_ON_GPU}: If {@code true} then the output
+     *                 columns will be cached on the GPU.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -2337,15 +2512,15 @@ public class GPUdb extends GPUdbBase {
      *                CREATE_FOREIGN_KEY}: Creates a <a
      *                href="../../../../concepts/tables.html#foreign-key"
      *                target="_top">foreign key</a> using the format
-     *                'source_column references
-     *                target_table(primary_key_column) [ as <foreign_key_name>
-     *                ]'.
+     *                '(source_column_name [, ...]) references
+     *                target_table_name(primary_key_column_name [, ...]) [as
+     *                foreign_key_name]'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
      *                DELETE_FOREIGN_KEY}: Deletes a <a
      *                href="../../../../concepts/tables.html#foreign-key"
      *                target="_top">foreign key</a>.  The {@code value} should
-     *                be the <foreign_key_name> specified when creating the key
+     *                be the foreign_key_name specified when creating the key
      *                or the complete string used to define it.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
@@ -2357,13 +2532,19 @@ public class GPUdb extends GPUdbBase {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REFRESH
      *                REFRESH}: Replay all the table creation commands required
-     *                to create this view. Endpoints supported are filter,
-     *                create_join_table, create_projection, create_union,
-     *                aggregate_group_by, and aggregate_unique.
+     *                to create this view. Endpoints supported are {@link
+     *                GPUdb#filter(String, String, String, Map)}, {@link
+     *                GPUdb#createJoinTable(String, List, List, List, Map)},
+     *                {@link GPUdb#createProjection(String, String, List,
+     *                Map)}, {@link GPUdb#createUnion(String, List, List, List,
+     *                Map)}, {@link
+     *                GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}, and
+     *                {@link GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
      *                SET_REFRESH_METHOD}: Set the method by which this view is
-     *                refreshed - one of manual, periodic, on_change, on_query.
+     *                refreshed - one of 'manual', 'periodic', 'on_change',
+     *                'on_query'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
      *                SET_REFRESH_START_TIME}: Set the time to start periodic
@@ -2372,9 +2553,9 @@ public class GPUdb extends GPUdbBase {
      *                occurs at refresh_start_time + N*refresh_period
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
-     *                SET_REFRESH_PERIOD}: Set the time interval at which to
-     *                refresh this view - set refresh method to periodic if not
-     *                alreay set.
+     *                SET_REFRESH_PERIOD}: Set the time interval in seconds at
+     *                which to refresh this view - sets the refresh method to
+     *                periodic if not alreay set.
      *                </ul>
      * @param value  The value of the modification. May be a column name,
      *               'true' or 'false', a TTL, or the global access mode
@@ -2617,10 +2798,13 @@ public class GPUdb extends GPUdbBase {
      *                         be an existing table name.
      * @param fieldMap  Contains the mapping of column names from the target
      *                  table (specified by {@code tableName}) as the keys, and
-     *                  corresponding column names from the source table
-     *                  (specified by {@code sourceTableName}). Must be
-     *                  existing column names in source table and target table,
-     *                  and their types must be matched.
+     *                  corresponding column names or expressions (e.g.,
+     *                  'col_name+1') from the source table (specified by
+     *                  {@code sourceTableName}). Must be existing column names
+     *                  in source table and target table, and their types must
+     *                  be matched. For details on using expressions, see <a
+     *                  href="../../../../concepts/expressions.html"
+     *                  target="_top">Expressions</a>.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -2691,53 +2875,6 @@ public class GPUdb extends GPUdbBase {
         AppendRecordsRequest actualRequest_ = new AppendRecordsRequest(tableName, sourceTableName, fieldMap, options);
         AppendRecordsResponse actualResponse_ = new AppendRecordsResponse();
         submitRequest("/append/records", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Clears (drops) one or all column statistics of a tables.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  ClearStatisticsResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public ClearStatisticsResponse clearStatistics(ClearStatisticsRequest request) throws GPUdbException {
-        ClearStatisticsResponse actualResponse_ = new ClearStatisticsResponse();
-        submitRequest("/clear/statistics", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Clears (drops) one or all column statistics of a tables.
-     * 
-     * @param tableName  Name of the table to clear the statistics. Must be an
-     *                   existing table.
-     * @param columnName  Name of the column to be cleared. Must be an existing
-     *                    table. Empty string clears all available statistics
-     *                    of the table.
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  ClearStatisticsResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public ClearStatisticsResponse clearStatistics(String tableName, String columnName, Map<String, String> options) throws GPUdbException {
-        ClearStatisticsRequest actualRequest_ = new ClearStatisticsRequest(tableName, columnName, options);
-        ClearStatisticsResponse actualResponse_ = new ClearStatisticsResponse();
-        submitRequest("/clear/statistics", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -2908,53 +3045,6 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Collect the requested statistics of the given column(s) in a given
-     * table.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  CollectStatisticsResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public CollectStatisticsResponse collectStatistics(CollectStatisticsRequest request) throws GPUdbException {
-        CollectStatisticsResponse actualResponse_ = new CollectStatisticsResponse();
-        submitRequest("/collect/statistics", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Collect the requested statistics of the given column(s) in a given
-     * table.
-     * 
-     * @param tableName  Name of the table on which the statistics operation
-     *                   will be performed.
-     * @param columnNames  List of one or more column names.
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  CollectStatisticsResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public CollectStatisticsResponse collectStatistics(String tableName, List<String> columnNames, Map<String, String> options) throws GPUdbException {
-        CollectStatisticsRequest actualRequest_ = new CollectStatisticsRequest(tableName, columnNames, options);
-        CollectStatisticsResponse actualResponse_ = new CollectStatisticsResponse();
-        submitRequest("/collect/statistics", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
      * Create a job which will run asynchronously. The response returns a job
      * ID, which can be used to query the status and result of the job. The
      * status and the result of the job upon completion can be requested by
@@ -3035,9 +3125,13 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a table that is the result of a SQL JOIN.  For details see: <a
-     * href="../../../../concepts/joins.html" target="_top">join concept
-     * documentation</a>.
+     * Creates a table that is the result of a SQL JOIN.
+     * <p>
+     * For join details and examples see: <a
+     * href="../../../../concepts/joins.html" target="_top">Joins</a>.  For
+     * limitations, see <a
+     * href="../../../../concepts/joins.html#limitations-cautions"
+     * target="_top">Join Limitations and Cautions</a>.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -3058,9 +3152,13 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a table that is the result of a SQL JOIN.  For details see: <a
-     * href="../../../../concepts/joins.html" target="_top">join concept
-     * documentation</a>.
+     * Creates a table that is the result of a SQL JOIN.
+     * <p>
+     * For join details and examples see: <a
+     * href="../../../../concepts/joins.html" target="_top">Joins</a>.  For
+     * limitations, see <a
+     * href="../../../../concepts/joins.html#limitations-cautions"
+     * target="_top">Join Limitations and Cautions</a>.
      * 
      * @param joinTableName  Name of the join table to be created.  Has the
      *                       same naming restrictions as <a
@@ -3198,12 +3296,17 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * The create materialized view request does not create the actual table
-     * that will be the toplevel table of the view but instead registers the
-     * table name so no other views or tables can be created with that name.
-     * The response contains a a view_id that is used to label the table
-     * creation requests (projection, union, group-by, filter, or join) that
-     * describes the view.
+     * Initiates the process of creating a materialized view, reserving the
+     * view's name to prevent other views or tables from being created with
+     * that name.
+     * <p>
+     * For materialized view details and examples, see <a
+     * href="../../../../concepts/materialized_views.html"
+     * target="_top">Materialized Views</a>.
+     * <p>
+     * The response contains {@code viewId}, which is used to tag each
+     * subsequent operation (projection, union, group-by, filter, or join) that
+     * will compose the view.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -3224,12 +3327,17 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * The create materialized view request does not create the actual table
-     * that will be the toplevel table of the view but instead registers the
-     * table name so no other views or tables can be created with that name.
-     * The response contains a a view_id that is used to label the table
-     * creation requests (projection, union, group-by, filter, or join) that
-     * describes the view.
+     * Initiates the process of creating a materialized view, reserving the
+     * view's name to prevent other views or tables from being created with
+     * that name.
+     * <p>
+     * For materialized view details and examples, see <a
+     * href="../../../../concepts/materialized_views.html"
+     * target="_top">Materialized Views</a>.
+     * <p>
+     * The response contains {@code viewId}, which is used to tag each
+     * subsequent operation (projection, union, group-by, filter, or join) that
+     * will compose the view.
      * 
      * @param tableName  Name of the table to be created that is the top-level
      *                   table of the materialized view.
@@ -3432,6 +3540,16 @@ public class GPUdb extends GPUdbBase {
      * represents a subset of the columns (potentially including derived
      * columns) of a table.
      * <p>
+     * For projection details and examples, see <a
+     * href="../../../../concepts/projections.html"
+     * target="_top">Projections</a>.  For limitations, see <a
+     * href="../../../../concepts/projections.html#limitations-and-cautions"
+     * target="_top">Projection Limitations and Cautions</a>.
+     * <p>
+     * <a href="../../../../concepts/window.html" target="_top">Window
+     * functions</a> are available through this endpoint as well as {@link
+     * GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
+     * <p>
      * Notes:
      * <p>
      * A moving average can be calculated on a given column using the following
@@ -3479,6 +3597,16 @@ public class GPUdb extends GPUdbBase {
      * target="_top">projection</a> of an existing table. A projection
      * represents a subset of the columns (potentially including derived
      * columns) of a table.
+     * <p>
+     * For projection details and examples, see <a
+     * href="../../../../concepts/projections.html"
+     * target="_top">Projections</a>.  For limitations, see <a
+     * href="../../../../concepts/projections.html#limitations-and-cautions"
+     * target="_top">Projection Limitations and Cautions</a>.
+     * <p>
+     * <a href="../../../../concepts/window.html" target="_top">Window
+     * functions</a> are available through this endpoint as well as {@link
+     * GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
      * <p>
      * Notes:
      * <p>
@@ -3800,9 +3928,9 @@ public class GPUdb extends GPUdbBase {
      *                 FOREIGN_KEYS}: Semicolon-separated list of <a
      *                 href="../../../../concepts/tables.html#foreign-keys"
      *                 target="_top">foreign keys</a>, of the format
-     *                 'source_column references
-     *                 target_table(primary_key_column) [ as <foreign_key_name>
-     *                 ]'.
+     *                 '(source_column_name [, ...]) references
+     *                 target_table_name(primary_key_column_name [, ...]) [as
+     *                 foreign_key_name]'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
      *                 FOREIGN_SHARD_KEY}: Foreign shard key of the format
@@ -4407,15 +4535,38 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Performs a <a href="../../../../concepts/unions.html"
-     * target="_top">union</a> (concatenation) of one or more existing tables
-     * or views, the results of which are stored in a new table. It is
-     * equivalent to the SQL UNION ALL operator.  Non-charN 'string' and
-     * 'bytes' column types cannot be included in a union, neither can columns
-     * with the property 'store_only'. Though not explicitly unions, <a
-     * href="../../../../concepts/intersect.html" target="_top">intersect</a>
-     * and <a href="../../../../concepts/except.html" target="_top">except</a>
-     * are also available from this endpoint.
+     * Merges data from one or more tables with comparable data types into a
+     * new table.
+     * <p>
+     * The following merges are supported:
+     * <p>
+     * UNION (DISTINCT/ALL) - For data set union details and examples, see <a
+     * href="../../../../concepts/unions.html" target="_top">Union</a>.  For
+     * limitations, see <a
+     * href="../../../../concepts/unions.html#limitations-and-cautions"
+     * target="_top">Union Limitations and Cautions</a>.
+     * <p>
+     * INTERSECT (DISTINCT) - For data set intersection details and examples,
+     * see <a href="../../../../concepts/intersect.html"
+     * target="_top">Intersect</a>.  For limitations, see <a
+     * href="../../../../concepts/intersect.html#limitations"
+     * target="_top">Intersect Limitations</a>.
+     * <p>
+     * EXCEPT (DISTINCT) - For data set subtraction details and examples, see
+     * <a href="../../../../concepts/except.html" target="_top">Except</a>.
+     * For limitations, see <a
+     * href="../../../../concepts/except.html#limitations" target="_top">Except
+     * Limitations</a>.
+     * <p>
+     * MERGE VIEWS - For a given set of <a
+     * href="../../../../concepts/filtered_views.html" target="_top">filtered
+     * views</a> on a single table, creates a single filtered view containing
+     * all of the unique records across all of the given filtered data sets.
+     * <p>
+     * Non-charN 'string' and 'bytes' column types cannot be merged, nor can
+     * columns marked as <a
+     * href="../../../../concepts/types.html#data-handling"
+     * target="_top">store-only</a>.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -4436,39 +4587,62 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Performs a <a href="../../../../concepts/unions.html"
-     * target="_top">union</a> (concatenation) of one or more existing tables
-     * or views, the results of which are stored in a new table. It is
-     * equivalent to the SQL UNION ALL operator.  Non-charN 'string' and
-     * 'bytes' column types cannot be included in a union, neither can columns
-     * with the property 'store_only'. Though not explicitly unions, <a
-     * href="../../../../concepts/intersect.html" target="_top">intersect</a>
-     * and <a href="../../../../concepts/except.html" target="_top">except</a>
-     * are also available from this endpoint.
+     * Merges data from one or more tables with comparable data types into a
+     * new table.
+     * <p>
+     * The following merges are supported:
+     * <p>
+     * UNION (DISTINCT/ALL) - For data set union details and examples, see <a
+     * href="../../../../concepts/unions.html" target="_top">Union</a>.  For
+     * limitations, see <a
+     * href="../../../../concepts/unions.html#limitations-and-cautions"
+     * target="_top">Union Limitations and Cautions</a>.
+     * <p>
+     * INTERSECT (DISTINCT) - For data set intersection details and examples,
+     * see <a href="../../../../concepts/intersect.html"
+     * target="_top">Intersect</a>.  For limitations, see <a
+     * href="../../../../concepts/intersect.html#limitations"
+     * target="_top">Intersect Limitations</a>.
+     * <p>
+     * EXCEPT (DISTINCT) - For data set subtraction details and examples, see
+     * <a href="../../../../concepts/except.html" target="_top">Except</a>.
+     * For limitations, see <a
+     * href="../../../../concepts/except.html#limitations" target="_top">Except
+     * Limitations</a>.
+     * <p>
+     * MERGE VIEWS - For a given set of <a
+     * href="../../../../concepts/filtered_views.html" target="_top">filtered
+     * views</a> on a single table, creates a single filtered view containing
+     * all of the unique records across all of the given filtered data sets.
+     * <p>
+     * Non-charN 'string' and 'bytes' column types cannot be merged, nor can
+     * columns marked as <a
+     * href="../../../../concepts/types.html#data-handling"
+     * target="_top">store-only</a>.
      * 
      * @param tableName  Name of the table to be created. Has the same naming
      *                   restrictions as <a
      *                   href="../../../../concepts/tables.html"
      *                   target="_top">tables</a>.
-     * @param tableNames  The list of table names making up the union. Must
-     *                    contain the names of one or more existing tables.
+     * @param tableNames  The list of table names to merge. Must contain the
+     *                    names of one or more existing tables.
      * @param inputColumnNames  The list of columns from each of the
      *                          corresponding input tables.
      * @param outputColumnNames  The list of names of the columns to be stored
-     *                           in the union.
+     *                           in the output table.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the union. If the collection provided is
+     *                 contain the output table. If the collection provided is
      *                 non-existent, the collection will be automatically
-     *                 created. If empty, then the union will be a top-level
+     *                 created. If empty, the output table will be a top-level
      *                 table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: If 'true' then the columns of the
-     *                 union will be cached on the GPU.
+     *                 MATERIALIZE_ON_GPU}: If {@code true}, then the columns
+     *                 of the output table will be cached on the GPU.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -4482,9 +4656,9 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MODE
-     *                 MODE}: If 'merge_views' then this operation will merge
-     *                 (i.e. union) the provided views. All 'table_names' must
-     *                 be views from the same underlying base table.
+     *                 MODE}: If {@code merge_views}, then this operation will
+     *                 merge the provided views. All {@code tableNames} must be
+     *                 views from the same underlying base table.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -4493,7 +4667,7 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION
      *                 UNION}: Retains all unique rows from the specified
-     *                 tables (synonym for 'union_distinct').
+     *                 tables (synonym for {@code union_distinct}).
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_DISTINCT
      *                 UNION_DISTINCT}: Retains all unique rows from the
@@ -4515,9 +4689,9 @@ public class GPUdb extends GPUdbBase {
      *                 {@code outputColumnNames} must be empty. The resulting
      *                 view would match the results of a SQL OR operation,
      *                 e.g., if filter 1 creates a view using the expression 'x
-     *                 = 10' and filter 2 creates a view using the expression
+     *                 = 20' and filter 2 creates a view using the expression
      *                 'x <= 10', then the merge views operation creates a new
-     *                 view using the expression 'x = 10 OR x <= 10'.
+     *                 view using the expression 'x = 20 OR x <= 10'.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
@@ -4533,10 +4707,10 @@ public class GPUdb extends GPUdbBase {
      *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#PERSIST
-     *                 PERSIST}: If {@code true}, then the union specified in
+     *                 PERSIST}: If {@code true}, then the table specified in
      *                 {@code tableName} will be persisted and will not expire
      *                 unless a {@code ttl} is specified.   If {@code false},
-     *                 then the union will be an in-memory table and will
+     *                 then the table will be an in-memory table and will
      *                 expire unless a {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
@@ -4551,7 +4725,7 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this union table is part of
+     *                 VIEW_ID}: view the output table will be a part of
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -6583,6 +6757,10 @@ public class GPUdb extends GPUdbBase {
      * type are returned. This endpoint supports pagination with the {@code
      * offset} and {@code limit} parameters.
      * <p>
+     * <a href="../../../../concepts/window.html" target="_top">Window
+     * functions</a> are available through this endpoint as well as {@link
+     * GPUdb#createProjection(CreateProjectionRequest)}.
+     * <p>
      * When using pagination, if the table (or the underlying table in the case
      * of a view) is modified (records are inserted, updated, or deleted)
      * during a call to the endpoint, the records or values retrieved may
@@ -6616,6 +6794,10 @@ public class GPUdb extends GPUdbBase {
      * Maps of column name to the array of values as well as the column data
      * type are returned. This endpoint supports pagination with the {@code
      * offset} and {@code limit} parameters.
+     * <p>
+     * <a href="../../../../concepts/window.html" target="_top">Window
+     * functions</a> are available through this endpoint as well as {@link
+     * GPUdb#createProjection(CreateProjectionRequest)}.
      * <p>
      * When using pagination, if the table (or the underlying table in the case
      * of a view) is modified (records are inserted, updated, or deleted)
@@ -6658,6 +6840,10 @@ public class GPUdb extends GPUdbBase {
      * Maps of column name to the array of values as well as the column data
      * type are returned. This endpoint supports pagination with the {@code
      * offset} and {@code limit} parameters.
+     * <p>
+     * <a href="../../../../concepts/window.html" target="_top">Window
+     * functions</a> are available through this endpoint as well as {@link
+     * GPUdb#createProjection(String, String, List, Map)}.
      * <p>
      * When using pagination, if the table (or the underlying table in the case
      * of a view) is modified (records are inserted, updated, or deleted)
@@ -8338,13 +8524,19 @@ public class GPUdb extends GPUdbBase {
      * Create a new empty result table (specified by {@code tableName}), and
      * insert all records from source tables (specified by {@code
      * sourceTableNames}) based on the field mapping information (specified by
-     * {@code fieldMaps}). The field map (specified by {@code fieldMaps}) holds
-     * the user specified maps of target table column names to source table
-     * columns. The array of {@code fieldMaps} must match one-to-one with the
-     * {@code sourceTableNames}, e.g., there's a map present in {@code
-     * fieldMaps} for each table listed in {@code sourceTableNames}. Read more
-     * about Merge Records <a href="../../../../concepts/merge_records.html"
-     * target="_top">here</a>.
+     * {@code fieldMaps}).
+     * <p>
+     * For merge records details and examples, see <a
+     * href="../../../../concepts/merge_records.html" target="_top">Merge
+     * Records</a>.  For limitations, see <a
+     * href="../../../../concepts/merge_records.html#limitations-and-cautions"
+     * target="_top">Merge Records Limitations and Cautions</a>.
+
+     * The field map (specified by {@code fieldMaps}) holds the user-specified
+     * maps of target table column names to source table columns. The array of
+     * {@code fieldMaps} must match one-to-one with the {@code
+     * sourceTableNames}, e.g., there's a map present in {@code fieldMaps} for
+     * each table listed in {@code sourceTableNames}.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -8368,13 +8560,19 @@ public class GPUdb extends GPUdbBase {
      * Create a new empty result table (specified by {@code tableName}), and
      * insert all records from source tables (specified by {@code
      * sourceTableNames}) based on the field mapping information (specified by
-     * {@code fieldMaps}). The field map (specified by {@code fieldMaps}) holds
-     * the user specified maps of target table column names to source table
-     * columns. The array of {@code fieldMaps} must match one-to-one with the
-     * {@code sourceTableNames}, e.g., there's a map present in {@code
-     * fieldMaps} for each table listed in {@code sourceTableNames}. Read more
-     * about Merge Records <a href="../../../../concepts/merge_records.html"
-     * target="_top">here</a>.
+     * {@code fieldMaps}).
+     * <p>
+     * For merge records details and examples, see <a
+     * href="../../../../concepts/merge_records.html" target="_top">Merge
+     * Records</a>.  For limitations, see <a
+     * href="../../../../concepts/merge_records.html#limitations-and-cautions"
+     * target="_top">Merge Records Limitations and Cautions</a>.
+
+     * The field map (specified by {@code fieldMaps}) holds the user-specified
+     * maps of target table column names to source table columns. The array of
+     * {@code fieldMaps} must match one-to-one with the {@code
+     * sourceTableNames}, e.g., there's a map present in {@code fieldMaps} for
+     * each table listed in {@code sourceTableNames}.
      * 
      * @param tableName  The new result table name for the records to be
      *                   merged.  Must NOT be an existing table.
@@ -8385,10 +8583,12 @@ public class GPUdb extends GPUdbBase {
      *                   sourceTableNames} being merged into the target table
      *                   specified by {@code tableName}.  Each mapping contains
      *                   the target column names (as keys) that the data in the
-     *                   mapped source columns (as values) will be merged into.
-     *                   All of the source columns being merged into a given
-     *                   target column must match in type, as that type will
-     *                   determine the type of the new target column.
+     *                   mapped source columns or column <a
+     *                   href="../../../../concepts/expressions.html"
+     *                   target="_top">expressions</a> (as values) will be
+     *                   merged into.  All of the source columns being merged
+     *                   into a given target column must match in type, as that
+     *                   type will determine the type of the new target column.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -8432,6 +8632,9 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
      *                 merged table specified in {@code tableName}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MergeRecordsRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this result table is part of
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -8818,50 +9021,6 @@ public class GPUdb extends GPUdbBase {
         ShowSecurityRequest actualRequest_ = new ShowSecurityRequest(names, options);
         ShowSecurityResponse actualResponse_ = new ShowSecurityResponse();
         submitRequest("/show/security", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Retrieves the collected column statistics for the specified table.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  ShowStatisticsResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public ShowStatisticsResponse showStatistics(ShowStatisticsRequest request) throws GPUdbException {
-        ShowStatisticsResponse actualResponse_ = new ShowStatisticsResponse();
-        submitRequest("/show/statistics", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Retrieves the collected column statistics for the specified table.
-     * 
-     * @param tableNames  Tables whose metadata will be fetched. All provided
-     *                    tables must exist, or an error is returned.
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  ShowStatisticsResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public ShowStatisticsResponse showStatistics(List<String> tableNames, Map<String, String> options) throws GPUdbException {
-        ShowStatisticsRequest actualRequest_ = new ShowStatisticsRequest(tableNames, options);
-        ShowStatisticsResponse actualResponse_ = new ShowStatisticsResponse();
-        submitRequest("/show/statistics", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 

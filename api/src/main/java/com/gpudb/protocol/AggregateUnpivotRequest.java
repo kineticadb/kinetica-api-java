@@ -21,12 +21,17 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * Rotate the column values into rows values.
  * <p>
- * The aggregate unpivot is used to normalize tables that are built for cross
- * tabular reporting purposes. The unpivot operator rotates the column values
- * for all the pivoted columns. A variable column, value column and all columns
- * from the source table except the unpivot columns are projected into the
- * result table. The variable column and value columns in the result table
- * indicate the pivoted column name and values respectively.
+ * For unpivot details and examples, see <a
+ * href="../../../../../concepts/unpivot.html" target="_top">Unpivot</a>.  For
+ * limitations, see <a href="../../../../../concepts/unpivot.html#limitations"
+ * target="_top">Unpivot Limitations</a>.
+ * <p>
+ * Unpivot is used to normalize tables that are built for cross tabular
+ * reporting purposes. The unpivot operator rotates the column values for all
+ * the pivoted columns. A variable column, value column and all columns from
+ * the source table except the unpivot columns are projected into the result
+ * table. The variable column and value columns in the result table indicate
+ * the pivoted column name and values respectively.
  * <p>
  * The response is returned as a dynamic schema. For details see: <a
  * href="../../../../../api/index.html#dynamic-schemas" target="_top">dynamic
@@ -141,6 +146,22 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL TTL}: Sets the <a
      * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
      * table specified in {@code result_table}.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateUnpivotRequest.Options#VIEW_ID VIEW_ID}:
+     * view this result table is part of
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
+     * MATERIALIZE_ON_GPU}: If {@code true} then the output columns will be
+     * cached on the GPU.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -212,6 +233,25 @@ public class AggregateUnpivotRequest implements IndexedRecord {
          * result_table}.
          */
         public static final String TTL = "ttl";
+
+        /**
+         * view this result table is part of
+         */
+        public static final String VIEW_ID = "view_id";
+
+        /**
+         * If {@code true} then the output columns will be cached on the GPU.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
+         */
+        public static final String MATERIALIZE_ON_GPU = "materialize_on_gpu";
 
         private Options() {  }
     }
@@ -308,6 +348,25 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 href="../../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 result_table}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this result table is part of
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
+     *                 MATERIALIZE_ON_GPU}: If {@code true} then the output
+     *                 columns will be cached on the GPU.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      */
@@ -407,6 +466,25 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 href="../../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 result_table}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this result table is part of
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
+     *                 MATERIALIZE_ON_GPU}: If {@code true} then the output
+     *                 columns will be cached on the GPU.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      */
@@ -614,6 +692,22 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         Sets the <a href="../../../../../concepts/ttl.html"
      *         target="_top">TTL</a> of the table specified in {@code
      *         result_table}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#VIEW_ID
+     *         VIEW_ID}: view this result table is part of
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
+     *         MATERIALIZE_ON_GPU}: If {@code true} then the output columns
+     *         will be cached on the GPU.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
      *         </ul>
      * 
      */
@@ -684,6 +778,25 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 href="../../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 result_table}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#VIEW_ID
+     *                 VIEW_ID}: view this result table is part of
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
+     *                 MATERIALIZE_ON_GPU}: If {@code true} then the output
+     *                 columns will be cached on the GPU.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

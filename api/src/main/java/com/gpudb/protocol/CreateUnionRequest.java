@@ -19,15 +19,36 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createUnion(CreateUnionRequest)}.
  * <p>
- * Performs a <a href="../../../../../concepts/unions.html"
- * target="_top">union</a> (concatenation) of one or more existing tables or
- * views, the results of which are stored in a new table. It is equivalent to
- * the SQL UNION ALL operator.  Non-charN 'string' and 'bytes' column types
- * cannot be included in a union, neither can columns with the property
- * 'store_only'. Though not explicitly unions, <a
- * href="../../../../../concepts/intersect.html" target="_top">intersect</a>
- * and <a href="../../../../../concepts/except.html" target="_top">except</a>
- * are also available from this endpoint.
+ * Merges data from one or more tables with comparable data types into a new
+ * table.
+ * <p>
+ * The following merges are supported:
+ * <p>
+ * UNION (DISTINCT/ALL) - For data set union details and examples, see <a
+ * href="../../../../../concepts/unions.html" target="_top">Union</a>.  For
+ * limitations, see <a
+ * href="../../../../../concepts/unions.html#limitations-and-cautions"
+ * target="_top">Union Limitations and Cautions</a>.
+ * <p>
+ * INTERSECT (DISTINCT) - For data set intersection details and examples, see
+ * <a href="../../../../../concepts/intersect.html"
+ * target="_top">Intersect</a>.  For limitations, see <a
+ * href="../../../../../concepts/intersect.html#limitations"
+ * target="_top">Intersect Limitations</a>.
+ * <p>
+ * EXCEPT (DISTINCT) - For data set subtraction details and examples, see <a
+ * href="../../../../../concepts/except.html" target="_top">Except</a>.  For
+ * limitations, see <a href="../../../../../concepts/except.html#limitations"
+ * target="_top">Except Limitations</a>.
+ * <p>
+ * MERGE VIEWS - For a given set of <a
+ * href="../../../../../concepts/filtered_views.html" target="_top">filtered
+ * views</a> on a single table, creates a single filtered view containing all
+ * of the unique records across all of the given filtered data sets.
+ * <p>
+ * Non-charN 'string' and 'bytes' column types cannot be merged, nor can
+ * columns marked as <a href="../../../../../concepts/types.html#data-handling"
+ * target="_top">store-only</a>.
  */
 public class CreateUnionRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -59,14 +80,14 @@ public class CreateUnionRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the union. If
-     * the collection provided is non-existent, the collection will be
-     * automatically created. If empty, then the union will be a top-level
+     * COLLECTION_NAME}: Name of a collection which is to contain the output
+     * table. If the collection provided is non-existent, the collection will
+     * be automatically created. If empty, the output table will be a top-level
      * table.
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
-     * MATERIALIZE_ON_GPU}: If 'true' then the columns of the union will be
-     * cached on the GPU.
+     * MATERIALIZE_ON_GPU}: If {@code true}, then the columns of the output
+     * table will be cached on the GPU.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#TRUE
@@ -77,9 +98,9 @@ public class CreateUnionRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
      *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#MODE
-     * MODE}: If 'merge_views' then this operation will merge (i.e. union) the
-     * provided views. All 'table_names' must be views from the same underlying
-     * base table.
+     * MODE}: If {@code merge_views}, then this operation will merge the
+     * provided views. All {@code tableNames} must be views from the same
+     * underlying base table.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -87,7 +108,7 @@ public class CreateUnionRequest implements IndexedRecord {
      * Retains all rows from the specified tables.
      *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#UNION
      * UNION}: Retains all unique rows from the specified tables (synonym for
-     * 'union_distinct').
+     * {@code union_distinct}).
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#UNION_DISTINCT
      * UNION_DISTINCT}: Retains all unique rows from the specified tables.
@@ -104,9 +125,9 @@ public class CreateUnionRequest implements IndexedRecord {
      * into a new view. If this mode is selected {@code inputColumnNames} AND
      * {@code outputColumnNames} must be empty. The resulting view would match
      * the results of a SQL OR operation, e.g., if filter 1 creates a view
-     * using the expression 'x = 10' and filter 2 creates a view using the
+     * using the expression 'x = 20' and filter 2 creates a view using the
      * expression 'x <= 10', then the merge views operation creates a new view
-     * using the expression 'x = 10 OR x <= 10'.
+     * using the expression 'x = 20 OR x <= 10'.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL UNION_ALL}.
@@ -118,9 +139,9 @@ public class CreateUnionRequest implements IndexedRecord {
      * target="_top">TTL</a> of the table specified in {@code tableName}.
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#PERSIST PERSIST}: If
-     * {@code true}, then the union specified in {@code tableName} will be
+     * {@code true}, then the table specified in {@code tableName} will be
      * persisted and will not expire unless a {@code ttl} is specified.   If
-     * {@code false}, then the union will be an in-memory table and will expire
+     * {@code false}, then the table will be an in-memory table and will expire
      * unless a {@code ttl} is specified otherwise.
      * Supported values:
      * <ul>
@@ -132,23 +153,24 @@ public class CreateUnionRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
      *         <li> {@link
-     * com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID VIEW_ID}: view
-     * this union table is part of
+     * com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID VIEW_ID}: view the
+     * output table will be a part of
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the union. If the
+         * Name of a collection which is to contain the output table. If the
          * collection provided is non-existent, the collection will be
-         * automatically created. If empty, then the union will be a top-level
-         * table.
+         * automatically created. If empty, the output table will be a
+         * top-level table.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * If 'true' then the columns of the union will be cached on the GPU.
+         * If {@code true}, then the columns of the output table will be cached
+         * on the GPU.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -164,9 +186,9 @@ public class CreateUnionRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * If 'merge_views' then this operation will merge (i.e. union) the
-         * provided views. All 'table_names' must be views from the same
-         * underlying base table.
+         * If {@code merge_views}, then this operation will merge the provided
+         * views. All {@code tableNames} must be views from the same underlying
+         * base table.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -174,8 +196,8 @@ public class CreateUnionRequest implements IndexedRecord {
          * Retains all rows from the specified tables.
          *         <li> {@link
          * com.gpudb.protocol.CreateUnionRequest.Options#UNION UNION}: Retains
-         * all unique rows from the specified tables (synonym for
-         * 'union_distinct').
+         * all unique rows from the specified tables (synonym for {@code
+         * union_distinct}).
          *         <li> {@link
          * com.gpudb.protocol.CreateUnionRequest.Options#UNION_DISTINCT
          * UNION_DISTINCT}: Retains all unique rows from the specified tables.
@@ -193,9 +215,9 @@ public class CreateUnionRequest implements IndexedRecord {
          * same base data set into a new view. If this mode is selected {@code
          * inputColumnNames} AND {@code outputColumnNames} must be empty. The
          * resulting view would match the results of a SQL OR operation, e.g.,
-         * if filter 1 creates a view using the expression 'x = 10' and filter
+         * if filter 1 creates a view using the expression 'x = 20' and filter
          * 2 creates a view using the expression 'x <= 10', then the merge
-         * views operation creates a new view using the expression 'x = 10 OR x
+         * views operation creates a new view using the expression 'x = 20 OR x
          * <= 10'.
          * </ul>
          * The default value is {@link
@@ -210,7 +232,7 @@ public class CreateUnionRequest implements IndexedRecord {
 
         /**
          * Retains all unique rows from the specified tables (synonym for
-         * 'union_distinct').
+         * {@code union_distinct}).
          */
         public static final String UNION = "union";
 
@@ -236,9 +258,9 @@ public class CreateUnionRequest implements IndexedRecord {
          * set into a new view. If this mode is selected {@code
          * inputColumnNames} AND {@code outputColumnNames} must be empty. The
          * resulting view would match the results of a SQL OR operation, e.g.,
-         * if filter 1 creates a view using the expression 'x = 10' and filter
+         * if filter 1 creates a view using the expression 'x = 20' and filter
          * 2 creates a view using the expression 'x <= 10', then the merge
-         * views operation creates a new view using the expression 'x = 10 OR x
+         * views operation creates a new view using the expression 'x = 20 OR x
          * <= 10'.
          */
         public static final String MERGE_VIEWS = "merge_views";
@@ -255,9 +277,9 @@ public class CreateUnionRequest implements IndexedRecord {
         public static final String TTL = "ttl";
 
         /**
-         * If {@code true}, then the union specified in {@code tableName} will
+         * If {@code true}, then the table specified in {@code tableName} will
          * be persisted and will not expire unless a {@code ttl} is specified.
-         * If {@code false}, then the union will be an in-memory table and will
+         * If {@code false}, then the table will be an in-memory table and will
          * expire unless a {@code ttl} is specified otherwise.
          * Supported values:
          * <ul>
@@ -272,7 +294,7 @@ public class CreateUnionRequest implements IndexedRecord {
         public static final String PERSIST = "persist";
 
         /**
-         * view this union table is part of
+         * view the output table will be a part of
          */
         public static final String VIEW_ID = "view_id";
 
@@ -304,25 +326,25 @@ public class CreateUnionRequest implements IndexedRecord {
      *                   restrictions as <a
      *                   href="../../../../../concepts/tables.html"
      *                   target="_top">tables</a>.
-     * @param tableNames  The list of table names making up the union. Must
-     *                    contain the names of one or more existing tables.
+     * @param tableNames  The list of table names to merge. Must contain the
+     *                    names of one or more existing tables.
      * @param inputColumnNames  The list of columns from each of the
      *                          corresponding input tables.
      * @param outputColumnNames  The list of names of the columns to be stored
-     *                           in the union.
+     *                           in the output table.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the union. If the collection provided is
+     *                 contain the output table. If the collection provided is
      *                 non-existent, the collection will be automatically
-     *                 created. If empty, then the union will be a top-level
+     *                 created. If empty, the output table will be a top-level
      *                 table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: If 'true' then the columns of the
-     *                 union will be cached on the GPU.
+     *                 MATERIALIZE_ON_GPU}: If {@code true}, then the columns
+     *                 of the output table will be cached on the GPU.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -336,9 +358,9 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MODE
-     *                 MODE}: If 'merge_views' then this operation will merge
-     *                 (i.e. union) the provided views. All 'table_names' must
-     *                 be views from the same underlying base table.
+     *                 MODE}: If {@code merge_views}, then this operation will
+     *                 merge the provided views. All {@code tableNames} must be
+     *                 views from the same underlying base table.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -347,7 +369,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION
      *                 UNION}: Retains all unique rows from the specified
-     *                 tables (synonym for 'union_distinct').
+     *                 tables (synonym for {@code union_distinct}).
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_DISTINCT
      *                 UNION_DISTINCT}: Retains all unique rows from the
@@ -369,9 +391,9 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 {@code outputColumnNames} must be empty. The resulting
      *                 view would match the results of a SQL OR operation,
      *                 e.g., if filter 1 creates a view using the expression 'x
-     *                 = 10' and filter 2 creates a view using the expression
+     *                 = 20' and filter 2 creates a view using the expression
      *                 'x <= 10', then the merge views operation creates a new
-     *                 view using the expression 'x = 10 OR x <= 10'.
+     *                 view using the expression 'x = 20 OR x <= 10'.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
@@ -387,10 +409,10 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#PERSIST
-     *                 PERSIST}: If {@code true}, then the union specified in
+     *                 PERSIST}: If {@code true}, then the table specified in
      *                 {@code tableName} will be persisted and will not expire
      *                 unless a {@code ttl} is specified.   If {@code false},
-     *                 then the union will be an in-memory table and will
+     *                 then the table will be an in-memory table and will
      *                 expire unless a {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
@@ -405,7 +427,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this union table is part of
+     *                 VIEW_ID}: view the output table will be a part of
      *                 </ul>
      * 
      */
@@ -445,8 +467,8 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The list of table names making up the union. Must contain the
-     *         names of one or more existing tables.
+     * @return The list of table names to merge. Must contain the names of one
+     *         or more existing tables.
      * 
      */
     public List<String> getTableNames() {
@@ -455,8 +477,8 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  The list of table names making up the union. Must
-     *                    contain the names of one or more existing tables.
+     * @param tableNames  The list of table names to merge. Must contain the
+     *                    names of one or more existing tables.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -490,7 +512,8 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The list of names of the columns to be stored in the union.
+     * @return The list of names of the columns to be stored in the output
+     *         table.
      * 
      */
     public List<String> getOutputColumnNames() {
@@ -500,7 +523,7 @@ public class CreateUnionRequest implements IndexedRecord {
     /**
      * 
      * @param outputColumnNames  The list of names of the columns to be stored
-     *                           in the union.
+     *                           in the output table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -517,13 +540,13 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
      *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         union. If the collection provided is non-existent, the
-     *         collection will be automatically created. If empty, then the
-     *         union will be a top-level table.
+     *         output table. If the collection provided is non-existent, the
+     *         collection will be automatically created. If empty, the output
+     *         table will be a top-level table.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
-     *         MATERIALIZE_ON_GPU}: If 'true' then the columns of the union
-     *         will be cached on the GPU.
+     *         MATERIALIZE_ON_GPU}: If {@code true}, then the columns of the
+     *         output table will be cached on the GPU.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -535,8 +558,8 @@ public class CreateUnionRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#MODE MODE}: If
-     *         'merge_views' then this operation will merge (i.e. union) the
-     *         provided views. All 'table_names' must be views from the same
+     *         {@code merge_views}, then this operation will merge the provided
+     *         views. All {@code tableNames} must be views from the same
      *         underlying base table.
      *         Supported values:
      *         <ul>
@@ -546,7 +569,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#UNION UNION}:
      *         Retains all unique rows from the specified tables (synonym for
-     *         'union_distinct').
+     *         {@code union_distinct}).
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#UNION_DISTINCT
      *         UNION_DISTINCT}: Retains all unique rows from the specified
@@ -566,9 +589,9 @@ public class CreateUnionRequest implements IndexedRecord {
      *         {@code inputColumnNames} AND {@code outputColumnNames} must be
      *         empty. The resulting view would match the results of a SQL OR
      *         operation, e.g., if filter 1 creates a view using the expression
-     *         'x = 10' and filter 2 creates a view using the expression 'x <=
+     *         'x = 20' and filter 2 creates a view using the expression 'x <=
      *         10', then the merge views operation creates a new view using the
-     *         expression 'x = 10 OR x <= 10'.
+     *         expression 'x = 20 OR x <= 10'.
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
@@ -582,9 +605,9 @@ public class CreateUnionRequest implements IndexedRecord {
      *         of the table specified in {@code tableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#PERSIST PERSIST}:
-     *         If {@code true}, then the union specified in {@code tableName}
+     *         If {@code true}, then the table specified in {@code tableName}
      *         will be persisted and will not expire unless a {@code ttl} is
-     *         specified.   If {@code false}, then the union will be an
+     *         specified.   If {@code false}, then the table will be an
      *         in-memory table and will expire unless a {@code ttl} is
      *         specified otherwise.
      *         Supported values:
@@ -598,7 +621,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID VIEW_ID}:
-     *         view this union table is part of
+     *         view the output table will be a part of
      *         </ul>
      * 
      */
@@ -613,14 +636,14 @@ public class CreateUnionRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the union. If the collection provided is
+     *                 contain the output table. If the collection provided is
      *                 non-existent, the collection will be automatically
-     *                 created. If empty, then the union will be a top-level
+     *                 created. If empty, the output table will be a top-level
      *                 table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: If 'true' then the columns of the
-     *                 union will be cached on the GPU.
+     *                 MATERIALIZE_ON_GPU}: If {@code true}, then the columns
+     *                 of the output table will be cached on the GPU.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -634,9 +657,9 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MODE
-     *                 MODE}: If 'merge_views' then this operation will merge
-     *                 (i.e. union) the provided views. All 'table_names' must
-     *                 be views from the same underlying base table.
+     *                 MODE}: If {@code merge_views}, then this operation will
+     *                 merge the provided views. All {@code tableNames} must be
+     *                 views from the same underlying base table.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -645,7 +668,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION
      *                 UNION}: Retains all unique rows from the specified
-     *                 tables (synonym for 'union_distinct').
+     *                 tables (synonym for {@code union_distinct}).
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_DISTINCT
      *                 UNION_DISTINCT}: Retains all unique rows from the
@@ -667,9 +690,9 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 {@code outputColumnNames} must be empty. The resulting
      *                 view would match the results of a SQL OR operation,
      *                 e.g., if filter 1 creates a view using the expression 'x
-     *                 = 10' and filter 2 creates a view using the expression
+     *                 = 20' and filter 2 creates a view using the expression
      *                 'x <= 10', then the merge views operation creates a new
-     *                 view using the expression 'x = 10 OR x <= 10'.
+     *                 view using the expression 'x = 20 OR x <= 10'.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL
@@ -685,10 +708,10 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#PERSIST
-     *                 PERSIST}: If {@code true}, then the union specified in
+     *                 PERSIST}: If {@code true}, then the table specified in
      *                 {@code tableName} will be persisted and will not expire
      *                 unless a {@code ttl} is specified.   If {@code false},
-     *                 then the union will be an in-memory table and will
+     *                 then the table will be an in-memory table and will
      *                 expire unless a {@code ttl} is specified otherwise.
      *                 Supported values:
      *                 <ul>
@@ -703,7 +726,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this union table is part of
+     *                 VIEW_ID}: view the output table will be a part of
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

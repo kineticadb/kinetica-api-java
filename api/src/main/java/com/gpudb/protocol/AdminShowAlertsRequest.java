@@ -5,8 +5,7 @@
  */
 package com.gpudb.protocol;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -15,16 +14,20 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of results returned by {@link
- * com.gpudb.GPUdb#showStatistics(ShowStatisticsRequest)}.
+ * A set of parameters for {@link
+ * com.gpudb.GPUdb#adminShowAlerts(AdminShowAlertsRequest)}.
+ * <p>
+ * Retrieves a list of the most recent alerts generated.  The number of alerts
+ * to retrieve is specified in this request.
+ * Returns lists of alert data, earliest to latest
  */
-public class ShowStatisticsResponse implements IndexedRecord {
+public class AdminShowAlertsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("ShowStatisticsResponse")
+            .record("AdminShowAlertsRequest")
             .namespace("com.gpudb")
             .fields()
-                .name("tableNames").type().array().items().stringType().noDefault()
-                .name("stastisticsMap").type().array().items().array().items().map().values().stringType().noDefault()
+                .name("numAlerts").type().intType().noDefault()
+                .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -39,57 +42,77 @@ public class ShowStatisticsResponse implements IndexedRecord {
         return schema$;
     }
 
-    private List<String> tableNames;
-    private List<List<Map<String, String>>> stastisticsMap;
+    private int numAlerts;
+    private Map<String, String> options;
 
 
     /**
-     * Constructs a ShowStatisticsResponse object with default parameters.
+     * Constructs an AdminShowAlertsRequest object with default parameters.
      */
-    public ShowStatisticsResponse() {
+    public AdminShowAlertsRequest() {
+        options = new LinkedHashMap<>();
+    }
+
+    /**
+     * Constructs an AdminShowAlertsRequest object with the specified
+     * parameters.
+     * 
+     * @param numAlerts  Number of most recent alerts to request. The response
+     *                   will return {@code numAlerts} alerts, or less if there
+     *                   are less in the system. A value of 0 returns all
+     *                   stored alerts.
+     * @param options  Optional parameters.
+     * 
+     */
+    public AdminShowAlertsRequest(int numAlerts, Map<String, String> options) {
+        this.numAlerts = numAlerts;
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
      * 
-     * @return Value of {@code tableNames}.
+     * @return Number of most recent alerts to request. The response will
+     *         return {@code numAlerts} alerts, or less if there are less in
+     *         the system. A value of 0 returns all stored alerts.
      * 
      */
-    public List<String> getTableNames() {
-        return tableNames;
+    public int getNumAlerts() {
+        return numAlerts;
     }
 
     /**
      * 
-     * @param tableNames  Value of {@code tableNames}.
+     * @param numAlerts  Number of most recent alerts to request. The response
+     *                   will return {@code numAlerts} alerts, or less if there
+     *                   are less in the system. A value of 0 returns all
+     *                   stored alerts.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowStatisticsResponse setTableNames(List<String> tableNames) {
-        this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
+    public AdminShowAlertsRequest setNumAlerts(int numAlerts) {
+        this.numAlerts = numAlerts;
         return this;
     }
 
     /**
      * 
-     * @return A list of maps which contain the column statistics of the table
-     *         {@code tableNames}.
+     * @return Optional parameters.
      * 
      */
-    public List<List<Map<String, String>>> getStastisticsMap() {
-        return stastisticsMap;
+    public Map<String, String> getOptions() {
+        return options;
     }
 
     /**
      * 
-     * @param stastisticsMap  A list of maps which contain the column
-     *                        statistics of the table {@code tableNames}.
+     * @param options  Optional parameters.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowStatisticsResponse setStastisticsMap(List<List<Map<String, String>>> stastisticsMap) {
-        this.stastisticsMap = (stastisticsMap == null) ? new ArrayList<List<Map<String, String>>>() : stastisticsMap;
+    public AdminShowAlertsRequest setOptions(Map<String, String> options) {
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
 
@@ -120,10 +143,10 @@ public class ShowStatisticsResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.tableNames;
+                return this.numAlerts;
 
             case 1:
-                return this.stastisticsMap;
+                return this.options;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -145,11 +168,11 @@ public class ShowStatisticsResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.tableNames = (List<String>)value;
+                this.numAlerts = (Integer)value;
                 break;
 
             case 1:
-                this.stastisticsMap = (List<List<Map<String, String>>>)value;
+                this.options = (Map<String, String>)value;
                 break;
 
             default:
@@ -167,10 +190,10 @@ public class ShowStatisticsResponse implements IndexedRecord {
             return false;
         }
 
-        ShowStatisticsResponse that = (ShowStatisticsResponse)obj;
+        AdminShowAlertsRequest that = (AdminShowAlertsRequest)obj;
 
-        return ( this.tableNames.equals( that.tableNames )
-                 && this.stastisticsMap.equals( that.stastisticsMap ) );
+        return ( ( this.numAlerts == that.numAlerts )
+                 && this.options.equals( that.options ) );
     }
 
     @Override
@@ -178,13 +201,13 @@ public class ShowStatisticsResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "tableNames" ) );
+        builder.append( gd.toString( "numAlerts" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.tableNames ) );
+        builder.append( gd.toString( this.numAlerts ) );
         builder.append( ", " );
-        builder.append( gd.toString( "stastisticsMap" ) );
+        builder.append( gd.toString( "options" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.stastisticsMap ) );
+        builder.append( gd.toString( this.options ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -193,8 +216,8 @@ public class ShowStatisticsResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.tableNames.hashCode();
-        hashCode = (31 * hashCode) + this.stastisticsMap.hashCode();
+        hashCode = (31 * hashCode) + this.numAlerts;
+        hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }
 

@@ -19,9 +19,13 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createJoinTable(CreateJoinTableRequest)}.
  * <p>
- * Creates a table that is the result of a SQL JOIN.  For details see: <a
- * href="../../../../../concepts/joins.html" target="_top">join concept
- * documentation</a>.
+ * Creates a table that is the result of a SQL JOIN.
+ * <p>
+ * For join details and examples see: <a
+ * href="../../../../../concepts/joins.html" target="_top">Joins</a>.  For
+ * limitations, see <a
+ * href="../../../../../concepts/joins.html#limitations-cautions"
+ * target="_top">Join Limitations and Cautions</a>.
  */
 public class CreateJoinTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
