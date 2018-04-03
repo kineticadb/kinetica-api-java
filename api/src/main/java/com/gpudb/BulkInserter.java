@@ -168,7 +168,7 @@ public class BulkInserter<T> {
 
                         if (match) {
                             try {
-                                add(new URL(protocol + "://" + url));
+                                add(new URL( url ));
                             } catch (MalformedURLException ex) {
                                 throw new GPUdbException(ex.getMessage(), ex);
                             }
