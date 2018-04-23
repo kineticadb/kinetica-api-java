@@ -56,6 +56,32 @@ public class FilterByRadiusRequest implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByRadiusRequest.Options#COLLECTION_NAME
+     * COLLECTION_NAME}: Name of a collection which is to contain the newly
+     * created view. If the collection provided is non-existent, the collection
+     * will be automatically created. If empty, then the newly created view
+     * will be top-level.
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * Name of a collection which is to contain the newly created view. If
+         * the collection provided is non-existent, the collection will be
+         * automatically created. If empty, then the newly created view will be
+         * top-level.
+         */
+        public static final String COLLECTION_NAME = "collection_name";
+
+        private Options() {  }
+    }
+
     private String tableName;
     private String viewName;
     private String xColumnName;
@@ -104,6 +130,15 @@ public class FilterByRadiusRequest implements IndexedRecord {
      *                The minimum allowed value is 0. The maximum allowed value
      *                is MAX_INT.
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByRadiusRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a collection which is to
+     *                 contain the newly created view. If the collection
+     *                 provided is non-existent, the collection will be
+     *                 automatically created. If empty, then the newly created
+     *                 view will be top-level.
+     *                 </ul>
      * 
      */
     public FilterByRadiusRequest(String tableName, String viewName, String xColumnName, double xCenter, String yColumnName, double yCenter, double radius, Map<String, String> options) {
@@ -296,6 +331,14 @@ public class FilterByRadiusRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByRadiusRequest.Options#COLLECTION_NAME
+     *         COLLECTION_NAME}: Name of a collection which is to contain the
+     *         newly created view. If the collection provided is non-existent,
+     *         the collection will be automatically created. If empty, then the
+     *         newly created view will be top-level.
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -305,6 +348,15 @@ public class FilterByRadiusRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByRadiusRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a collection which is to
+     *                 contain the newly created view. If the collection
+     *                 provided is non-existent, the collection will be
+     *                 automatically created. If empty, then the newly created
+     *                 view will be top-level.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

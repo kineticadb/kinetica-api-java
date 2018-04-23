@@ -20,7 +20,7 @@ import org.apache.avro.generic.IndexedRecord;
  * Retrieves records from a given table, optionally filtered by an expression
  * and/or sorted by a column. This operation can be performed on tables, views,
  * or on homogeneous collections (collections containing tables of all the same
- * type). Records can be returned encoded as binary or json.
+ * type). Records can be returned encoded as binary, json or geojson.
  * <p>
  * This operation supports paging through the data via the {@code offset} and
  * {@code limit} parameters. Note that when paging through a table, if the
@@ -61,6 +61,8 @@ public class GetRecordsRequest implements IndexedRecord {
      * BINARY}
      *         <li> {@link com.gpudb.protocol.GetRecordsRequest.Encoding#JSON
      * JSON}
+     *         <li> {@link
+     * com.gpudb.protocol.GetRecordsRequest.Encoding#GEOJSON GEOJSON}
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.GetRecordsRequest.Encoding#BINARY BINARY}.
@@ -69,6 +71,7 @@ public class GetRecordsRequest implements IndexedRecord {
     public static final class Encoding {
         public static final String BINARY = "binary";
         public static final String JSON = "json";
+        public static final String GEOJSON = "geojson";
 
         private Encoding() {  }
     }
@@ -275,6 +278,9 @@ public class GetRecordsRequest implements IndexedRecord {
      *                          <li> {@link
      *                  com.gpudb.protocol.GetRecordsRequest.Encoding#JSON
      *                  JSON}
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsRequest.Encoding#GEOJSON
+     *                  GEOJSON}
      *                  </ul>
      *                  The default value is {@link
      *                  com.gpudb.protocol.GetRecordsRequest.Encoding#BINARY
@@ -420,6 +426,8 @@ public class GetRecordsRequest implements IndexedRecord {
      *         com.gpudb.protocol.GetRecordsRequest.Encoding#BINARY BINARY}
      *                 <li> {@link
      *         com.gpudb.protocol.GetRecordsRequest.Encoding#JSON JSON}
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetRecordsRequest.Encoding#GEOJSON GEOJSON}
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.GetRecordsRequest.Encoding#BINARY BINARY}.
@@ -440,6 +448,9 @@ public class GetRecordsRequest implements IndexedRecord {
      *                          <li> {@link
      *                  com.gpudb.protocol.GetRecordsRequest.Encoding#JSON
      *                  JSON}
+     *                          <li> {@link
+     *                  com.gpudb.protocol.GetRecordsRequest.Encoding#GEOJSON
+     *                  GEOJSON}
      *                  </ul>
      *                  The default value is {@link
      *                  com.gpudb.protocol.GetRecordsRequest.Encoding#BINARY

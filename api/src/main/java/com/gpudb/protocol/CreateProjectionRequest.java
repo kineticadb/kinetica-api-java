@@ -148,6 +148,20 @@ public class CreateProjectionRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#PRESERVE_DICT_ENCODING
+     * PRESERVE_DICT_ENCODING}: If {@code true}, then columns that were dict
+     * encoded in the source table will be dict encoded in the projection
+     * table.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}.
+     *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID VIEW_ID}:
      * view this projection is part of
      * </ul>
@@ -239,6 +253,21 @@ public class CreateProjectionRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
          */
         public static final String PERSIST = "persist";
+
+        /**
+         * If {@code true}, then columns that were dict encoded in the source
+         * table will be dict encoded in the projection table.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}.
+         */
+        public static final String PRESERVE_DICT_ENCODING = "preserve_dict_encoding";
 
         /**
          * view this projection is part of
@@ -358,6 +387,23 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#PRESERVE_DICT_ENCODING
+     *                 PRESERVE_DICT_ENCODING}: If {@code true}, then columns
+     *                 that were dict encoded in the source table will be dict
+     *                 encoded in the projection table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this projection is part of
@@ -519,6 +565,20 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#PRESERVE_DICT_ENCODING
+     *         PRESERVE_DICT_ENCODING}: If {@code true}, then columns that were
+     *         dict encoded in the source table will be dict encoded in the
+     *         projection table.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
      *         VIEW_ID}: view this projection is part of
      *         </ul>
@@ -610,6 +670,23 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#PRESERVE_DICT_ENCODING
+     *                 PRESERVE_DICT_ENCODING}: If {@code true}, then columns
+     *                 that were dict encoded in the source table will be dict
+     *                 encoded in the projection table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this projection is part of

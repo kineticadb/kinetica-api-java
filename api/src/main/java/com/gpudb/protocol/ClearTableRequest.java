@@ -108,7 +108,9 @@ public class ClearTableRequest implements IndexedRecord {
      * Constructs a ClearTableRequest object with the specified parameters.
      * 
      * @param tableName  Name of the table to be cleared. Must be an existing
-     *                   table. Empty string clears all available tables.
+     *                   table. Empty string clears all available tables,
+     *                   though this behavior is be prevented by default via
+     *                   gpudb.conf parameter 'disable_clear_all'.
      * @param authorization  No longer used. User can pass an empty string.
      * @param options  Optional parameters.
      *                 <ul>
@@ -142,7 +144,9 @@ public class ClearTableRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table to be cleared. Must be an existing table.
-     *         Empty string clears all available tables.
+     *         Empty string clears all available tables, though this behavior
+     *         is be prevented by default via gpudb.conf parameter
+     *         'disable_clear_all'.
      * 
      */
     public String getTableName() {
@@ -152,7 +156,9 @@ public class ClearTableRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table to be cleared. Must be an existing
-     *                   table. Empty string clears all available tables.
+     *                   table. Empty string clears all available tables,
+     *                   though this behavior is be prevented by default via
+     *                   gpudb.conf parameter 'disable_clear_all'.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

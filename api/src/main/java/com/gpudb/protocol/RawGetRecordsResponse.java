@@ -120,8 +120,8 @@ public class RawGetRecordsResponse implements IndexedRecord {
     /**
      * 
      * @return If the {@code encoding} was 'binary', then this list contains
-     *         the binary encoded records retrieved from the set, otherwise not
-     *         populated.
+     *         the binary encoded records retrieved from the table, otherwise
+     *         not populated.
      * 
      */
     public List<ByteBuffer> getRecordsBinary() {
@@ -132,7 +132,7 @@ public class RawGetRecordsResponse implements IndexedRecord {
      * 
      * @param recordsBinary  If the {@code encoding} was 'binary', then this
      *                       list contains the binary encoded records retrieved
-     *                       from the set, otherwise not populated.
+     *                       from the table, otherwise not populated.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -145,8 +145,10 @@ public class RawGetRecordsResponse implements IndexedRecord {
     /**
      * 
      * @return If the {@code encoding} was 'json', then this list contains the
-     *         JSON encoded records retrieved from the set, otherwise not
-     *         populated.
+     *         JSON encoded records retrieved from the table. If the {@code
+     *         encoding} was 'geojson' this list contains a single entry
+     *         consisting of a GeoJSON FeatureCollection containing a feature
+     *         per record. Otherwise not populated.
      * 
      */
     public List<String> getRecordsJson() {
@@ -157,7 +159,10 @@ public class RawGetRecordsResponse implements IndexedRecord {
      * 
      * @param recordsJson  If the {@code encoding} was 'json', then this list
      *                     contains the JSON encoded records retrieved from the
-     *                     set, otherwise not populated.
+     *                     table. If the {@code encoding} was 'geojson' this
+     *                     list contains a single entry consisting of a GeoJSON
+     *                     FeatureCollection containing a feature per record.
+     *                     Otherwise not populated.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

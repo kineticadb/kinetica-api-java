@@ -132,6 +132,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID VIEW_ID}: view
      * this projection is part of
+     *         <li> {@link
+     * com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT NO_COUNT}:
+     * return a count of 0 for the join table for logging and for show_table.
+     * optimization needed for large overlapped equi-join stencils
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -249,6 +253,13 @@ public class CreateJoinTableRequest implements IndexedRecord {
          * view this projection is part of
          */
         public static final String VIEW_ID = "view_id";
+
+        /**
+         * return a count of 0 for the join table for logging and for
+         * show_table. optimization needed for large overlapped equi-join
+         * stencils
+         */
+        public static final String NO_COUNT = "no_count";
 
         private Options() {  }
     }
@@ -393,6 +404,11 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this projection is part of
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT
+     *                 NO_COUNT}: return a count of 0 for the join table for
+     *                 logging and for show_table. optimization needed for
+     *                 large overlapped equi-join stencils
      *                 </ul>
      * 
      */
@@ -610,6 +626,11 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
      *         VIEW_ID}: view this projection is part of
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT
+     *         NO_COUNT}: return a count of 0 for the join table for logging
+     *         and for show_table. optimization needed for large overlapped
+     *         equi-join stencils
      *         </ul>
      * 
      */
@@ -715,6 +736,11 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this projection is part of
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT
+     *                 NO_COUNT}: return a count of 0 for the join table for
+     *                 logging and for show_table. optimization needed for
+     *                 large overlapped equi-join stencils
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

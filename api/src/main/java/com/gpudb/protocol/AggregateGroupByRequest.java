@@ -226,11 +226,29 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * RESULT_TABLE_FORCE_REPLICATED}: Force the result table to be replicated
      * (ignores any sharding). Must be used in combination with the {@code
      * result_table} option.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_GENERATE_PK
      * RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary key for the
      * result table. Must be used in combination with the {@code result_table}
      * option.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#TTL TTL}: Sets the <a
      * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
@@ -405,12 +423,30 @@ public class AggregateGroupByRequest implements IndexedRecord {
         /**
          * Force the result table to be replicated (ignores any sharding). Must
          * be used in combination with the {@code result_table} option.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
          */
         public static final String RESULT_TABLE_FORCE_REPLICATED = "result_table_force_replicated";
 
         /**
          * If 'true' then set a primary key for the result table. Must be used
          * in combination with the {@code result_table} option.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
          */
         public static final String RESULT_TABLE_GENERATE_PK = "result_table_generate_pk";
 
@@ -610,11 +646,35 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 RESULT_TABLE_FORCE_REPLICATED}: Force the result table
      *                 to be replicated (ignores any sharding). Must be used in
      *                 combination with the {@code result_table} option.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_GENERATE_PK
      *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
      *                 key for the result table. Must be used in combination
      *                 with the {@code result_table} option.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TTL
      *                 TTL}: Sets the <a
@@ -809,11 +869,35 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 RESULT_TABLE_FORCE_REPLICATED}: Force the result table
      *                 to be replicated (ignores any sharding). Must be used in
      *                 combination with the {@code result_table} option.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_GENERATE_PK
      *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
      *                 key for the result table. Must be used in combination
      *                 with the {@code result_table} option.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TTL
      *                 TTL}: Sets the <a
@@ -1117,11 +1201,29 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         RESULT_TABLE_FORCE_REPLICATED}: Force the result table to be
      *         replicated (ignores any sharding). Must be used in combination
      *         with the {@code result_table} option.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_GENERATE_PK
      *         RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary key for
      *         the result table. Must be used in combination with the {@code
      *         result_table} option.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#TTL TTL}:
      *         Sets the <a href="../../../../../concepts/ttl.html"
@@ -1276,11 +1378,35 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 RESULT_TABLE_FORCE_REPLICATED}: Force the result table
      *                 to be replicated (ignores any sharding). Must be used in
      *                 combination with the {@code result_table} option.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_GENERATE_PK
      *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
      *                 key for the result table. Must be used in combination
      *                 with the {@code result_table} option.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TTL
      *                 TTL}: Sets the <a

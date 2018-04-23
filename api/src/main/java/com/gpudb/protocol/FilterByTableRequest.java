@@ -57,6 +57,12 @@ public class FilterByTableRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#COLLECTION_NAME
+     * COLLECTION_NAME}: Name of a collection which is to contain the newly
+     * created view. If the collection provided is non-existent, the collection
+     * will be automatically created. If empty, then the newly created view
+     * will be top-level.
+     *         <li> {@link
      * com.gpudb.protocol.FilterByTableRequest.Options#FILTER_MODE
      * FILTER_MODE}: String indicating the filter mode, either {@code in_table}
      * or {@code not_in_table}.
@@ -117,6 +123,14 @@ public class FilterByTableRequest implements IndexedRecord {
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
+
+        /**
+         * Name of a collection which is to contain the newly created view. If
+         * the collection provided is non-existent, the collection will be
+         * automatically created. If empty, then the newly created view will be
+         * top-level.
+         */
+        public static final String COLLECTION_NAME = "collection_name";
 
         /**
          * String indicating the filter mode, either {@code in_table} or {@code
@@ -249,6 +263,13 @@ public class FilterByTableRequest implements IndexedRecord {
      *                               type of the {@code columnName}.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a collection which is to
+     *                 contain the newly created view. If the collection
+     *                 provided is non-existent, the collection will be
+     *                 automatically created. If empty, then the newly created
+     *                 view will be top-level.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#FILTER_MODE
      *                 FILTER_MODE}: String indicating the filter mode, either
@@ -462,6 +483,12 @@ public class FilterByTableRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#COLLECTION_NAME
+     *         COLLECTION_NAME}: Name of a collection which is to contain the
+     *         newly created view. If the collection provided is non-existent,
+     *         the collection will be automatically created. If empty, then the
+     *         newly created view will be top-level.
+     *                 <li> {@link
      *         com.gpudb.protocol.FilterByTableRequest.Options#FILTER_MODE
      *         FILTER_MODE}: String indicating the filter mode, either {@code
      *         in_table} or {@code not_in_table}.
@@ -533,6 +560,13 @@ public class FilterByTableRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a collection which is to
+     *                 contain the newly created view. If the collection
+     *                 provided is non-existent, the collection will be
+     *                 automatically created. If empty, then the newly created
+     *                 view will be top-level.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#FILTER_MODE
      *                 FILTER_MODE}: String indicating the filter mode, either

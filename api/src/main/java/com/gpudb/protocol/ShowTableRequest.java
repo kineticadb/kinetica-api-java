@@ -58,6 +58,19 @@ public class ShowTableRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.ShowTableRequest.Options#FORCE_SYNCHRONOUS
+     * FORCE_SYNCHRONOUS}: If {@code true} then the table sizes will wait for
+     * read lock before returning.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}.
+     *         <li> {@link
      * com.gpudb.protocol.ShowTableRequest.Options#GET_SIZES GET_SIZES}: If
      * {@code true} then the table sizes will be returned; blank, otherwise.
      * Supported values:
@@ -119,6 +132,23 @@ public class ShowTableRequest implements IndexedRecord {
     public static final class Options {
 
         /**
+         * If {@code true} then the table sizes will wait for read lock before
+         * returning.
+         * Supported values:
+         * <ul>
+         *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}.
+         */
+        public static final String FORCE_SYNCHRONOUS = "force_synchronous";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
          * If {@code true} then the table sizes will be returned; blank,
          * otherwise.
          * Supported values:
@@ -132,8 +162,6 @@ public class ShowTableRequest implements IndexedRecord {
          * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
          */
         public static final String GET_SIZES = "get_sizes";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * If {@code tableName} is a collection, then {@code true} will return
@@ -209,6 +237,19 @@ public class ShowTableRequest implements IndexedRecord {
      *                   returned.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FORCE_SYNCHRONOUS
+     *                 FORCE_SYNCHRONOUS}: If {@code true} then the table sizes
+     *                 will wait for read lock before returning.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowTableRequest.Options#GET_SIZES
      *                 GET_SIZES}: If {@code true} then the table sizes will be
@@ -310,6 +351,19 @@ public class ShowTableRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#FORCE_SYNCHRONOUS
+     *         FORCE_SYNCHRONOUS}: If {@code true} then the table sizes will
+     *         wait for read lock before returning.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.ShowTableRequest.Options#GET_SIZES
      *         GET_SIZES}: If {@code true} then the table sizes will be
      *         returned; blank, otherwise.
@@ -378,6 +432,19 @@ public class ShowTableRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FORCE_SYNCHRONOUS
+     *                 FORCE_SYNCHRONOUS}: If {@code true} then the table sizes
+     *                 will wait for read lock before returning.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowTableRequest.Options#GET_SIZES
      *                 GET_SIZES}: If {@code true} then the table sizes will be

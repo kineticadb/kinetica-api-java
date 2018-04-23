@@ -43,6 +43,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("tableName").type().stringType().noDefault()
+                .name("columnNames").type().array().items().stringType().noDefault()
                 .name("variableColumnName").type().stringType().noDefault()
                 .name("valueColumnName").type().stringType().noDefault()
                 .name("pivotedColumns").type().array().items().stringType().noDefault()
@@ -257,6 +258,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
     }
 
     private String tableName;
+    private List<String> columnNames;
     private String variableColumnName;
     private String valueColumnName;
     private List<String> pivotedColumns;
@@ -269,6 +271,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      */
     public AggregateUnpivotRequest() {
         tableName = "";
+        columnNames = new ArrayList<>();
         variableColumnName = "";
         valueColumnName = "";
         pivotedColumns = new ArrayList<>();
@@ -282,6 +285,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table/view.
+     * @param columnNames  List of column names or expressions. A wildcard '*'
+     *                     can be used to include all the non-pivoted columns
+     *                     from the source table.
      * @param variableColumnName  Specifies the variable/parameter column name.
      * @param valueColumnName  Specifies the value column name.
      * @param pivotedColumns  List of one or more values typically the column
@@ -370,8 +376,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 </ul>
      * 
      */
-    public AggregateUnpivotRequest(String tableName, String variableColumnName, String valueColumnName, List<String> pivotedColumns, Map<String, String> options) {
+    public AggregateUnpivotRequest(String tableName, List<String> columnNames, String variableColumnName, String valueColumnName, List<String> pivotedColumns, Map<String, String> options) {
         this.tableName = (tableName == null) ? "" : tableName;
+        this.columnNames = (columnNames == null) ? new ArrayList<String>() : columnNames;
         this.variableColumnName = (variableColumnName == null) ? "" : variableColumnName;
         this.valueColumnName = (valueColumnName == null) ? "" : valueColumnName;
         this.pivotedColumns = (pivotedColumns == null) ? new ArrayList<String>() : pivotedColumns;
@@ -385,6 +392,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table/view.
+     * @param columnNames  List of column names or expressions. A wildcard '*'
+     *                     can be used to include all the non-pivoted columns
+     *                     from the source table.
      * @param variableColumnName  Specifies the variable/parameter column name.
      * @param valueColumnName  Specifies the value column name.
      * @param pivotedColumns  List of one or more values typically the column
@@ -488,8 +498,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 </ul>
      * 
      */
-    public AggregateUnpivotRequest(String tableName, String variableColumnName, String valueColumnName, List<String> pivotedColumns, String encoding, Map<String, String> options) {
+    public AggregateUnpivotRequest(String tableName, List<String> columnNames, String variableColumnName, String valueColumnName, List<String> pivotedColumns, String encoding, Map<String, String> options) {
         this.tableName = (tableName == null) ? "" : tableName;
+        this.columnNames = (columnNames == null) ? new ArrayList<String>() : columnNames;
         this.variableColumnName = (variableColumnName == null) ? "" : variableColumnName;
         this.valueColumnName = (valueColumnName == null) ? "" : valueColumnName;
         this.pivotedColumns = (pivotedColumns == null) ? new ArrayList<String>() : pivotedColumns;
@@ -517,6 +528,30 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      */
     public AggregateUnpivotRequest setTableName(String tableName) {
         this.tableName = (tableName == null) ? "" : tableName;
+        return this;
+    }
+
+    /**
+     * 
+     * @return List of column names or expressions. A wildcard '*' can be used
+     *         to include all the non-pivoted columns from the source table.
+     * 
+     */
+    public List<String> getColumnNames() {
+        return columnNames;
+    }
+
+    /**
+     * 
+     * @param columnNames  List of column names or expressions. A wildcard '*'
+     *                     can be used to include all the non-pivoted columns
+     *                     from the source table.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AggregateUnpivotRequest setColumnNames(List<String> columnNames) {
+        this.columnNames = (columnNames == null) ? new ArrayList<String>() : columnNames;
         return this;
     }
 
@@ -837,18 +872,21 @@ public class AggregateUnpivotRequest implements IndexedRecord {
                 return this.tableName;
 
             case 1:
-                return this.variableColumnName;
+                return this.columnNames;
 
             case 2:
-                return this.valueColumnName;
+                return this.variableColumnName;
 
             case 3:
-                return this.pivotedColumns;
+                return this.valueColumnName;
 
             case 4:
-                return this.encoding;
+                return this.pivotedColumns;
 
             case 5:
+                return this.encoding;
+
+            case 6:
                 return this.options;
 
             default:
@@ -875,22 +913,26 @@ public class AggregateUnpivotRequest implements IndexedRecord {
                 break;
 
             case 1:
-                this.variableColumnName = (String)value;
+                this.columnNames = (List<String>)value;
                 break;
 
             case 2:
-                this.valueColumnName = (String)value;
+                this.variableColumnName = (String)value;
                 break;
 
             case 3:
-                this.pivotedColumns = (List<String>)value;
+                this.valueColumnName = (String)value;
                 break;
 
             case 4:
-                this.encoding = (String)value;
+                this.pivotedColumns = (List<String>)value;
                 break;
 
             case 5:
+                this.encoding = (String)value;
+                break;
+
+            case 6:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -912,6 +954,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
         AggregateUnpivotRequest that = (AggregateUnpivotRequest)obj;
 
         return ( this.tableName.equals( that.tableName )
+                 && this.columnNames.equals( that.columnNames )
                  && this.variableColumnName.equals( that.variableColumnName )
                  && this.valueColumnName.equals( that.valueColumnName )
                  && this.pivotedColumns.equals( that.pivotedColumns )
@@ -927,6 +970,10 @@ public class AggregateUnpivotRequest implements IndexedRecord {
         builder.append( gd.toString( "tableName" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.tableName ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "columnNames" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.columnNames ) );
         builder.append( ", " );
         builder.append( gd.toString( "variableColumnName" ) );
         builder.append( ": " );
@@ -956,6 +1003,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.tableName.hashCode();
+        hashCode = (31 * hashCode) + this.columnNames.hashCode();
         hashCode = (31 * hashCode) + this.variableColumnName.hashCode();
         hashCode = (31 * hashCode) + this.valueColumnName.hashCode();
         hashCode = (31 * hashCode) + this.pivotedColumns.hashCode();

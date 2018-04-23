@@ -63,6 +63,12 @@ public class FilterBySeriesRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.FilterBySeriesRequest.Options#COLLECTION_NAME
+     * COLLECTION_NAME}: Name of a collection which is to contain the newly
+     * created view. If the collection provided is non-existent, the collection
+     * will be automatically created. If empty, then the newly created view
+     * will be top-level.
+     *         <li> {@link
      * com.gpudb.protocol.FilterBySeriesRequest.Options#SPATIAL_RADIUS
      * SPATIAL_RADIUS}: A positive number passed as a string representing the
      * radius of the search area centered around each track point's geospatial
@@ -90,6 +96,14 @@ public class FilterBySeriesRequest implements IndexedRecord {
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
+
+        /**
+         * Name of a collection which is to contain the newly created view. If
+         * the collection provided is non-existent, the collection will be
+         * automatically created. If empty, then the newly created view will be
+         * top-level.
+         */
+        public static final String COLLECTION_NAME = "collection_name";
 
         /**
          * A positive number passed as a string representing the radius of the
@@ -164,6 +178,13 @@ public class FilterBySeriesRequest implements IndexedRecord {
      *                        ID within the given set.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterBySeriesRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a collection which is to
+     *                 contain the newly created view. If the collection
+     *                 provided is non-existent, the collection will be
+     *                 automatically created. If empty, then the newly created
+     *                 view will be top-level.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterBySeriesRequest.Options#SPATIAL_RADIUS
      *                 SPATIAL_RADIUS}: A positive number passed as a string
@@ -310,6 +331,12 @@ public class FilterBySeriesRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.FilterBySeriesRequest.Options#COLLECTION_NAME
+     *         COLLECTION_NAME}: Name of a collection which is to contain the
+     *         newly created view. If the collection provided is non-existent,
+     *         the collection will be automatically created. If empty, then the
+     *         newly created view will be top-level.
+     *                 <li> {@link
      *         com.gpudb.protocol.FilterBySeriesRequest.Options#SPATIAL_RADIUS
      *         SPATIAL_RADIUS}: A positive number passed as a string
      *         representing the radius of the search area centered around each
@@ -347,6 +374,13 @@ public class FilterBySeriesRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterBySeriesRequest.Options#COLLECTION_NAME
+     *                 COLLECTION_NAME}: Name of a collection which is to
+     *                 contain the newly created view. If the collection
+     *                 provided is non-existent, the collection will be
+     *                 automatically created. If empty, then the newly created
+     *                 view will be top-level.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterBySeriesRequest.Options#SPATIAL_RADIUS
      *                 SPATIAL_RADIUS}: A positive number passed as a string

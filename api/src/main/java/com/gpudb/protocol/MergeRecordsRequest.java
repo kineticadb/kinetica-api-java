@@ -92,6 +92,21 @@ public class MergeRecordsRequest implements IndexedRecord {
      * target="_top">TTL</a> of the merged table specified in {@code
      * tableName}.
      *         <li> {@link
+     * com.gpudb.protocol.MergeRecordsRequest.Options#PERSIST PERSIST}: If
+     * {@code true}, then the table specified in {@code tableName} will be
+     * persisted and will not expire unless a {@code ttl} is specified.   If
+     * {@code false}, then the table will be an in-memory table and will expire
+     * unless a {@code ttl} is specified otherwise.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.MergeRecordsRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.MergeRecordsRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.MergeRecordsRequest.Options#TRUE TRUE}.
+     *         <li> {@link
      * com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE CHUNK_SIZE}:
      * Indicates the chunk size to be used for the merged table specified in
      * {@code tableName}.
@@ -141,6 +156,23 @@ public class MergeRecordsRequest implements IndexedRecord {
          * tableName}.
          */
         public static final String TTL = "ttl";
+
+        /**
+         * If {@code true}, then the table specified in {@code tableName} will
+         * be persisted and will not expire unless a {@code ttl} is specified.
+         * If {@code false}, then the table will be an in-memory table and will
+         * expire unless a {@code ttl} is specified otherwise.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.MergeRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.MergeRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.MergeRecordsRequest.Options#TRUE TRUE}.
+         */
+        public static final String PERSIST = "persist";
 
         /**
          * Indicates the chunk size to be used for the merged table specified
@@ -229,6 +261,25 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                 Sets the <a href="../../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the merged table specified in
      *                 {@code tableName}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MergeRecordsRequest.Options#PERSIST
+     *                 PERSIST}: If {@code true}, then the table specified in
+     *                 {@code tableName} will be persisted and will not expire
+     *                 unless a {@code ttl} is specified.   If {@code false},
+     *                 then the table will be an in-memory table and will
+     *                 expire unless a {@code ttl} is specified otherwise.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MergeRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MergeRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MergeRecordsRequest.Options#TRUE
+     *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
@@ -368,6 +419,22 @@ public class MergeRecordsRequest implements IndexedRecord {
      *         target="_top">TTL</a> of the merged table specified in {@code
      *         tableName}.
      *                 <li> {@link
+     *         com.gpudb.protocol.MergeRecordsRequest.Options#PERSIST PERSIST}:
+     *         If {@code true}, then the table specified in {@code tableName}
+     *         will be persisted and will not expire unless a {@code ttl} is
+     *         specified.   If {@code false}, then the table will be an
+     *         in-memory table and will expire unless a {@code ttl} is
+     *         specified otherwise.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.MergeRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.MergeRecordsRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.MergeRecordsRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE
      *         CHUNK_SIZE}: Indicates the chunk size to be used for the merged
      *         table specified in {@code tableName}.
@@ -422,6 +489,25 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                 Sets the <a href="../../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the merged table specified in
      *                 {@code tableName}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MergeRecordsRequest.Options#PERSIST
+     *                 PERSIST}: If {@code true}, then the table specified in
+     *                 {@code tableName} will be persisted and will not expire
+     *                 unless a {@code ttl} is specified.   If {@code false},
+     *                 then the table will be an in-memory table and will
+     *                 expire unless a {@code ttl} is specified otherwise.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MergeRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MergeRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MergeRecordsRequest.Options#TRUE
+     *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
