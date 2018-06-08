@@ -25,8 +25,8 @@ import org.apache.avro.generic.IndexedRecord;
  * target="_top">Materialized Views</a>.
  * <p>
  * The response contains {@code viewId}, which is used to tag each subsequent
- * operation (projection, union, group-by, filter, or join) that will compose
- * the view.
+ * operation (projection, union, aggregation, filter, or join) that will
+ * compose the view.
  */
 public class CreateMaterializedViewRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -87,36 +87,34 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.CreateMaterializedViewRequest.Options#MANUAL MANUAL}:
-     * Refresh only occurs when manually requested by calling alter_table with
-     * action refresh_view
+     * Refresh only occurs when manually requested by calling {@link
+     * com.gpudb.GPUdb#alterTable(AlterTableRequest)} with an 'action' of
+     * 'refresh'
      *         <li> {@link
      * com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_QUERY
-     * ON_QUERY}: Incrementally refresh (refresh just those records added)
-     * whenever a new query is issued and new data is inserted into the base
-     * table.  A full refresh of all the records occurs when a new query is
-     * issued and there have been inserts to any non-base-tables since the last
-     * query
+     * ON_QUERY}: For future use.
      *         <li> {@link
      * com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_CHANGE
      * ON_CHANGE}: If possible, incrementally refresh (refresh just those
      * records added) whenever an insert, update, delete or refresh of input
-     * table is done.  A full refresh on_query is done if an incremental
-     * refresh is not possible.
+     * table is done.  A full refresh is done if an incremental refresh is not
+     * possible.
      *         <li> {@link
      * com.gpudb.protocol.CreateMaterializedViewRequest.Options#PERIODIC
-     * PERIODIC}: Refresh table periodically at rate specified by
-     * refresh_period option
+     * PERIODIC}: Refresh table periodically at rate specified by {@code
+     * refresh_period}
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateMaterializedViewRequest.Options#MANUAL MANUAL}.
      *         <li> {@link
      * com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_PERIOD
-     * REFRESH_PERIOD}: When refresh_method is periodic specifies the period in
-     * seconds at which refresh occurs
+     * REFRESH_PERIOD}: When {@code refresh_method} is {@code periodic},
+     * specifies the period in seconds at which refresh occurs
      *         <li> {@link
      * com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_START_TIME
-     * REFRESH_START_TIME}: First time at which a periodic refresh is to be
-     * done.  Value is a datatime string with format YYYY-MM-DD HH:MM:SS.
+     * REFRESH_START_TIME}: When {@code refresh_method} is {@code periodic},
+     * specifies the first time at which a refresh is to be done.  Value is a
+     * datetime string with format 'YYYY-MM-DD HH:MM:SS'.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -166,24 +164,21 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
          *         <li> {@link
          * com.gpudb.protocol.CreateMaterializedViewRequest.Options#MANUAL
          * MANUAL}: Refresh only occurs when manually requested by calling
-         * alter_table with action refresh_view
+         * {@link com.gpudb.GPUdb#alterTable(AlterTableRequest)} with an
+         * 'action' of 'refresh'
          *         <li> {@link
          * com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_QUERY
-         * ON_QUERY}: Incrementally refresh (refresh just those records added)
-         * whenever a new query is issued and new data is inserted into the
-         * base table.  A full refresh of all the records occurs when a new
-         * query is issued and there have been inserts to any non-base-tables
-         * since the last query
+         * ON_QUERY}: For future use.
          *         <li> {@link
          * com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_CHANGE
          * ON_CHANGE}: If possible, incrementally refresh (refresh just those
          * records added) whenever an insert, update, delete or refresh of
-         * input table is done.  A full refresh on_query is done if an
-         * incremental refresh is not possible.
+         * input table is done.  A full refresh is done if an incremental
+         * refresh is not possible.
          *         <li> {@link
          * com.gpudb.protocol.CreateMaterializedViewRequest.Options#PERIODIC
-         * PERIODIC}: Refresh table periodically at rate specified by
-         * refresh_period option
+         * PERIODIC}: Refresh table periodically at rate specified by {@code
+         * refresh_period}
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.CreateMaterializedViewRequest.Options#MANUAL
@@ -192,43 +187,41 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
         public static final String REFRESH_METHOD = "refresh_method";
 
         /**
-         * Refresh only occurs when manually requested by calling alter_table
-         * with action refresh_view
+         * Refresh only occurs when manually requested by calling {@link
+         * com.gpudb.GPUdb#alterTable(AlterTableRequest)} with an 'action' of
+         * 'refresh'
          */
         public static final String MANUAL = "manual";
 
         /**
-         * Incrementally refresh (refresh just those records added) whenever a
-         * new query is issued and new data is inserted into the base table.  A
-         * full refresh of all the records occurs when a new query is issued
-         * and there have been inserts to any non-base-tables since the last
-         * query
+         * For future use.
          */
         public static final String ON_QUERY = "on_query";
 
         /**
          * If possible, incrementally refresh (refresh just those records
          * added) whenever an insert, update, delete or refresh of input table
-         * is done.  A full refresh on_query is done if an incremental refresh
-         * is not possible.
+         * is done.  A full refresh is done if an incremental refresh is not
+         * possible.
          */
         public static final String ON_CHANGE = "on_change";
 
         /**
-         * Refresh table periodically at rate specified by refresh_period
-         * option
+         * Refresh table periodically at rate specified by {@code
+         * refresh_period}
          */
         public static final String PERIODIC = "periodic";
 
         /**
-         * When refresh_method is periodic specifies the period in seconds at
-         * which refresh occurs
+         * When {@code refresh_method} is {@code periodic}, specifies the
+         * period in seconds at which refresh occurs
          */
         public static final String REFRESH_PERIOD = "refresh_period";
 
         /**
-         * First time at which a periodic refresh is to be done.  Value is a
-         * datatime string with format YYYY-MM-DD HH:MM:SS.
+         * When {@code refresh_method} is {@code periodic}, specifies the first
+         * time at which a refresh is to be done.  Value is a datetime string
+         * with format 'YYYY-MM-DD HH:MM:SS'.
          */
         public static final String REFRESH_START_TIME = "refresh_start_time";
 
@@ -299,39 +292,38 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#MANUAL
      *                 MANUAL}: Refresh only occurs when manually requested by
-     *                 calling alter_table with action refresh_view
+     *                 calling {@link
+     *                 com.gpudb.GPUdb#alterTable(AlterTableRequest)} with an
+     *                 'action' of 'refresh'
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_QUERY
-     *                 ON_QUERY}: Incrementally refresh (refresh just those
-     *                 records added) whenever a new query is issued and new
-     *                 data is inserted into the base table.  A full refresh of
-     *                 all the records occurs when a new query is issued and
-     *                 there have been inserts to any non-base-tables since the
-     *                 last query
+     *                 ON_QUERY}: For future use.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_CHANGE
      *                 ON_CHANGE}: If possible, incrementally refresh (refresh
      *                 just those records added) whenever an insert, update,
      *                 delete or refresh of input table is done.  A full
-     *                 refresh on_query is done if an incremental refresh is
-     *                 not possible.
+     *                 refresh is done if an incremental refresh is not
+     *                 possible.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#PERIODIC
      *                 PERIODIC}: Refresh table periodically at rate specified
-     *                 by refresh_period option
+     *                 by {@code refresh_period}
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#MANUAL
      *                 MANUAL}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_PERIOD
-     *                 REFRESH_PERIOD}: When refresh_method is periodic
-     *                 specifies the period in seconds at which refresh occurs
+     *                 REFRESH_PERIOD}: When {@code refresh_method} is {@code
+     *                 periodic}, specifies the period in seconds at which
+     *                 refresh occurs
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_START_TIME
-     *                 REFRESH_START_TIME}: First time at which a periodic
-     *                 refresh is to be done.  Value is a datatime string with
-     *                 format YYYY-MM-DD HH:MM:SS.
+     *                 REFRESH_START_TIME}: When {@code refresh_method} is
+     *                 {@code periodic}, specifies the first time at which a
+     *                 refresh is to be done.  Value is a datetime string with
+     *                 format 'YYYY-MM-DD HH:MM:SS'.
      *                 </ul>
      * 
      */
@@ -406,37 +398,36 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#MANUAL
      *         MANUAL}: Refresh only occurs when manually requested by calling
-     *         alter_table with action refresh_view
+     *         {@link com.gpudb.GPUdb#alterTable(AlterTableRequest)} with an
+     *         'action' of 'refresh'
      *                 <li> {@link
      *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_QUERY
-     *         ON_QUERY}: Incrementally refresh (refresh just those records
-     *         added) whenever a new query is issued and new data is inserted
-     *         into the base table.  A full refresh of all the records occurs
-     *         when a new query is issued and there have been inserts to any
-     *         non-base-tables since the last query
+     *         ON_QUERY}: For future use.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_CHANGE
      *         ON_CHANGE}: If possible, incrementally refresh (refresh just
      *         those records added) whenever an insert, update, delete or
-     *         refresh of input table is done.  A full refresh on_query is done
-     *         if an incremental refresh is not possible.
+     *         refresh of input table is done.  A full refresh is done if an
+     *         incremental refresh is not possible.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#PERIODIC
      *         PERIODIC}: Refresh table periodically at rate specified by
-     *         refresh_period option
+     *         {@code refresh_period}
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#MANUAL
      *         MANUAL}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_PERIOD
-     *         REFRESH_PERIOD}: When refresh_method is periodic specifies the
-     *         period in seconds at which refresh occurs
+     *         REFRESH_PERIOD}: When {@code refresh_method} is {@code
+     *         periodic}, specifies the period in seconds at which refresh
+     *         occurs
      *                 <li> {@link
      *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_START_TIME
-     *         REFRESH_START_TIME}: First time at which a periodic refresh is
-     *         to be done.  Value is a datatime string with format YYYY-MM-DD
-     *         HH:MM:SS.
+     *         REFRESH_START_TIME}: When {@code refresh_method} is {@code
+     *         periodic}, specifies the first time at which a refresh is to be
+     *         done.  Value is a datetime string with format 'YYYY-MM-DD
+     *         HH:MM:SS'.
      *         </ul>
      * 
      */
@@ -491,39 +482,38 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#MANUAL
      *                 MANUAL}: Refresh only occurs when manually requested by
-     *                 calling alter_table with action refresh_view
+     *                 calling {@link
+     *                 com.gpudb.GPUdb#alterTable(AlterTableRequest)} with an
+     *                 'action' of 'refresh'
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_QUERY
-     *                 ON_QUERY}: Incrementally refresh (refresh just those
-     *                 records added) whenever a new query is issued and new
-     *                 data is inserted into the base table.  A full refresh of
-     *                 all the records occurs when a new query is issued and
-     *                 there have been inserts to any non-base-tables since the
-     *                 last query
+     *                 ON_QUERY}: For future use.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_CHANGE
      *                 ON_CHANGE}: If possible, incrementally refresh (refresh
      *                 just those records added) whenever an insert, update,
      *                 delete or refresh of input table is done.  A full
-     *                 refresh on_query is done if an incremental refresh is
-     *                 not possible.
+     *                 refresh is done if an incremental refresh is not
+     *                 possible.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#PERIODIC
      *                 PERIODIC}: Refresh table periodically at rate specified
-     *                 by refresh_period option
+     *                 by {@code refresh_period}
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#MANUAL
      *                 MANUAL}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_PERIOD
-     *                 REFRESH_PERIOD}: When refresh_method is periodic
-     *                 specifies the period in seconds at which refresh occurs
+     *                 REFRESH_PERIOD}: When {@code refresh_method} is {@code
+     *                 periodic}, specifies the period in seconds at which
+     *                 refresh occurs
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_START_TIME
-     *                 REFRESH_START_TIME}: First time at which a periodic
-     *                 refresh is to be done.  Value is a datatime string with
-     *                 format YYYY-MM-DD HH:MM:SS.
+     *                 REFRESH_START_TIME}: When {@code refresh_method} is
+     *                 {@code periodic}, specifies the first time at which a
+     *                 refresh is to be done.  Value is a datetime string with
+     *                 format 'YYYY-MM-DD HH:MM:SS'.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

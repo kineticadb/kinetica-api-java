@@ -160,6 +160,13 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_JOB_MANAGER
      * ENABLE_JOB_MANAGER}: Enable JobManager to enforce processing of requests
      * in the order received.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_ENABLED
+     * CHUNK_CACHE_ENABLED}: Enable chunk level query caching. Flushes the
+     * chunk cache when value is false
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
+     * CHUNK_CACHE_SIZE}: Size of the chunk cache in bytes.
      * </ul>
      * A set of string constants for the parameter {@code propertyUpdatesMap}.
      */
@@ -313,6 +320,17 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * received.
          */
         public static final String ENABLE_JOB_MANAGER = "enable_job_manager";
+
+        /**
+         * Enable chunk level query caching. Flushes the chunk cache when value
+         * is false
+         */
+        public static final String CHUNK_CACHE_ENABLED = "chunk_cache_enabled";
+
+        /**
+         * Size of the chunk cache in bytes.
+         */
+        public static final String CHUNK_CACHE_SIZE = "chunk_cache_size";
 
         private PropertyUpdatesMap() {  }
     }
@@ -474,6 +492,15 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            ENABLE_JOB_MANAGER}: Enable JobManager to
      *                            enforce processing of requests in the order
      *                            received.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_ENABLED
+     *                            CHUNK_CACHE_ENABLED}: Enable chunk level
+     *                            query caching. Flushes the chunk cache when
+     *                            value is false
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
+     *                            CHUNK_CACHE_SIZE}: Size of the chunk cache in
+     *                            bytes.
      *                            </ul>
      * @param options  Optional parameters.
      * 
@@ -603,6 +630,13 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_JOB_MANAGER
      *         ENABLE_JOB_MANAGER}: Enable JobManager to enforce processing of
      *         requests in the order received.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_ENABLED
+     *         CHUNK_CACHE_ENABLED}: Enable chunk level query caching. Flushes
+     *         the chunk cache when value is false
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
+     *         CHUNK_CACHE_SIZE}: Size of the chunk cache in bytes.
      *         </ul>
      * 
      */
@@ -752,6 +786,15 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            ENABLE_JOB_MANAGER}: Enable JobManager to
      *                            enforce processing of requests in the order
      *                            received.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_ENABLED
+     *                            CHUNK_CACHE_ENABLED}: Enable chunk level
+     *                            query caching. Flushes the chunk cache when
+     *                            value is false
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
+     *                            CHUNK_CACHE_SIZE}: Size of the chunk cache in
+     *                            bytes.
      *                            </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

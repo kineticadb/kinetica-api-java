@@ -175,6 +175,13 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String REMAINING_TABLE_TTL = "remaining_table_ttl";
 
         /**
+         * The value of the time-to-live in minutes for unqueried column data
+         * to stay in memory.  Not present for collections or if not set for
+         * this table.
+         */
+        public static final String MEMORY_TTL = "memory_ttl";
+
+        /**
          * Semicolon-separated list of <a
          * href="../../../../../concepts/tables.html#foreign-key"
          * target="_top">foreign keys</a>, of the format 'source_column
@@ -274,7 +281,7 @@ public class ShowTableResponse implements IndexedRecord {
 
         /**
          * for materialized view current refresh_method - one of manual,
-         * periodic, on_change, on_query
+         * periodic, on_change
          */
         public static final String REFRESH_METHOD = "refresh_method";
 

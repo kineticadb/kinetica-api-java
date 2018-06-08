@@ -19,6 +19,15 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * Retrieves a list of the most recent alerts generated.  The number of alerts
  * to retrieve is specified in this request.
+ * <p>
+ * Important: This endpoint is accessed via the host manager port rather than
+ * the primary database port; the default ports for host manager and the
+ * primary database can be found <a
+ * href="../../../../../install/index.html#default-ports"
+ * target="_top">here</a>.  If you are invoking this endpoint via a GPUdb API
+ * object, you must instantiate that object using the host manager port instead
+ * of the database port. The same IP address is used for both ports.
+
  * Returns lists of alert data, earliest to latest
  */
 public class AdminShowAlertsRequest implements IndexedRecord {

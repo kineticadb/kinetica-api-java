@@ -116,51 +116,6 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Update the system config file.  Updates to the config file are only
-     * permitted when the system is stopped.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminAlterConfigurationResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminAlterConfigurationResponse adminAlterConfiguration(AdminAlterConfigurationRequest request) throws GPUdbException {
-        AdminAlterConfigurationResponse actualResponse_ = new AdminAlterConfigurationResponse();
-        submitRequest("/admin/alter/configuration", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Update the system config file.  Updates to the config file are only
-     * permitted when the system is stopped.
-     * 
-     * @param configString  updated contents of the config file.
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminAlterConfigurationResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminAlterConfigurationResponse adminAlterConfiguration(String configString, Map<String, String> options) throws GPUdbException {
-        AdminAlterConfigurationRequest actualRequest_ = new AdminAlterConfigurationRequest(configString, options);
-        AdminAlterConfigurationResponse actualResponse_ = new AdminAlterConfigurationResponse();
-        submitRequest("/admin/alter/configuration", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
      * Perform the requested action on a list of one or more job(s). Based on
      * the type of job and the current state of execution, the action may not
      * be successfully executed. The final result of the attempted actions for
@@ -291,6 +246,16 @@ public class GPUdb extends GPUdbBase {
     /**
      * Retrieves a list of the most recent alerts generated.  The number of
      * alerts to retrieve is specified in this request.
+     * <p>
+     * Important: This endpoint is accessed via the host manager port rather
+     * than the primary database port; the default ports for host manager and
+     * the primary database can be found <a
+     * href="../../../../install/index.html#default-ports"
+     * target="_top">here</a>.  If you are invoking this endpoint via a GPUdb
+     * API object, you must instantiate that object using the host manager port
+     * instead of the database port. The same IP address is used for both
+     * ports.
+
      * Returns lists of alert data, earliest to latest
      * 
      * @param request  Request object containing the parameters for the
@@ -314,6 +279,16 @@ public class GPUdb extends GPUdbBase {
     /**
      * Retrieves a list of the most recent alerts generated.  The number of
      * alerts to retrieve is specified in this request.
+     * <p>
+     * Important: This endpoint is accessed via the host manager port rather
+     * than the primary database port; the default ports for host manager and
+     * the primary database can be found <a
+     * href="../../../../install/index.html#default-ports"
+     * target="_top">here</a>.  If you are invoking this endpoint via a GPUdb
+     * API object, you must instantiate that object using the host manager port
+     * instead of the database port. The same IP address is used for both
+     * ports.
+
      * Returns lists of alert data, earliest to latest
      * 
      * @param numAlerts  Number of most recent alerts to request. The response
@@ -333,48 +308,6 @@ public class GPUdb extends GPUdbBase {
         AdminShowAlertsRequest actualRequest_ = new AdminShowAlertsRequest(numAlerts, options);
         AdminShowAlertsResponse actualResponse_ = new AdminShowAlertsResponse();
         submitRequest("/admin/show/alerts", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Show the current system configuration file.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminShowConfigurationResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminShowConfigurationResponse adminShowConfiguration(AdminShowConfigurationRequest request) throws GPUdbException {
-        AdminShowConfigurationResponse actualResponse_ = new AdminShowConfigurationResponse();
-        submitRequest("/admin/show/configuration", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Show the current system configuration file.
-     * 
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminShowConfigurationResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminShowConfigurationResponse adminShowConfiguration(Map<String, String> options) throws GPUdbException {
-        AdminShowConfigurationRequest actualRequest_ = new AdminShowConfigurationRequest(options);
-        AdminShowConfigurationResponse actualResponse_ = new AdminShowConfigurationResponse();
-        submitRequest("/admin/show/configuration", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -1058,6 +991,12 @@ public class GPUdb extends GPUdbBase {
      *                 result table. Must be used in combination with the
      *                 {@code result_table} option.
      *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CREATE_INDEXES
+     *                 CREATE_INDEXES}: Comma-separated list of columns on
+     *                 which to create indexes on the result table. Must be
+     *                 used in combination with the {@code result_table}
+     *                 option.
+     *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this result table is part of
      *                         <li> {@link
@@ -1133,7 +1072,8 @@ public class GPUdb extends GPUdbBase {
      * is also inclusive.  The value returned for each bin is the number of
      * records in it, except when a column name is provided as a *value_column*
      * in {@code options}.  In this latter case the sum of the values
-     * corresponding to the *value_column* is used as the result instead.
+     * corresponding to the *value_column* is used as the result instead.  The
+     * total number of bins requested cannot exceed 10,000.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -1162,7 +1102,8 @@ public class GPUdb extends GPUdbBase {
      * is also inclusive.  The value returned for each bin is the number of
      * records in it, except when a column name is provided as a *value_column*
      * in {@code options}.  In this latter case the sum of the values
-     * corresponding to the *value_column* is used as the result instead.
+     * corresponding to the *value_column* is used as the result instead.  The
+     * total number of bins requested cannot exceed 10,000.
      * 
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table or collection.
@@ -1396,9 +1337,9 @@ public class GPUdb extends GPUdbBase {
      * each value must be specified separately (i.e.
      * 'percentile(75.0),percentile(99.0),percentile_rank(1234.56),percentile_rank(-5)').
      * <p>
-     * A second, comma-separated value can be added to the {percentile}@{choise
-     * of input stats} statistic to calculate percentile resolution, e.g., a
-     * 50th percentile with 200 resolution would be 'percentile(50,200)'.
+     * A second, comma-separated value can be added to the {@code percentile}
+     * statistic to calculate percentile resolution, e.g., a 50th percentile
+     * with 200 resolution would be 'percentile(50,200)'.
      * <p>
      * The weighted average statistic requires a {@code weight_column_name} to
      * be specified in {@code options}. The weighted average is then defined as
@@ -1456,9 +1397,9 @@ public class GPUdb extends GPUdbBase {
      * each value must be specified separately (i.e.
      * 'percentile(75.0),percentile(99.0),percentile_rank(1234.56),percentile_rank(-5)').
      * <p>
-     * A second, comma-separated value can be added to the {percentile}@{choise
-     * of input stats} statistic to calculate percentile resolution, e.g., a
-     * 50th percentile with 200 resolution would be 'percentile(50,200)'.
+     * A second, comma-separated value can be added to the {@code percentile}
+     * statistic to calculate percentile resolution, e.g., a 50th percentile
+     * with 200 resolution would be 'percentile(50,200)'.
      * <p>
      * The weighted average statistic requires a {@code weight_column_name} to
      * be specified in {@code options}. The weighted average is then defined as
@@ -2374,6 +2315,15 @@ public class GPUdb extends GPUdbBase {
      *                            ENABLE_JOB_MANAGER}: Enable JobManager to
      *                            enforce processing of requests in the order
      *                            received.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_ENABLED
+     *                            CHUNK_CACHE_ENABLED}: Enable chunk level
+     *                            query caching. Flushes the chunk cache when
+     *                            value is false
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
+     *                            CHUNK_CACHE_SIZE}: Size of the chunk cache in
+     *                            bytes.
      *                            </ul>
      * @param options  Optional parameters.
      * 
@@ -2414,9 +2364,13 @@ public class GPUdb extends GPUdbBase {
      * table & view that is not protected will have its TTL set to the given
      * value.
      * <p>
-     * Set the global access mode (i.e. locking) for a table. The mode can be
-     * set to
-     * 'no_access', 'read_only', 'write_only' or 'read_write'.
+     * Set the global access mode (i.e. locking) for a table. This setting
+     * trumps any
+     * role-based access controls that may be in place; e.g., a user with write
+     * access
+     * to a table marked read-only will not be able to insert records into it.
+     * The mode
+     * can be set to read-only, write-only, read/write, and no access.
      * <p>
      * Change the <a href="../../../../concepts/protection.html"
      * target="_top">protection</a> mode to prevent or
@@ -2471,9 +2425,13 @@ public class GPUdb extends GPUdbBase {
      * table & view that is not protected will have its TTL set to the given
      * value.
      * <p>
-     * Set the global access mode (i.e. locking) for a table. The mode can be
-     * set to
-     * 'no_access', 'read_only', 'write_only' or 'read_write'.
+     * Set the global access mode (i.e. locking) for a table. This setting
+     * trumps any
+     * role-based access controls that may be in place; e.g., a user with write
+     * access
+     * to a table marked read-only will not be able to insert records into it.
+     * The mode
+     * can be set to read-only, write-only, read/write, and no access.
      * <p>
      * Change the <a href="../../../../concepts/protection.html"
      * target="_top">protection</a> mode to prevent or
@@ -2533,8 +2491,16 @@ public class GPUdb extends GPUdbBase {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}:
      *                Sets the <a href="../../../../concepts/ttl.html"
-     *                target="_top">TTL</a> of the table, view, or collection
-     *                specified in {@code tableName}.
+     *                target="_top">time-to-live</a> in minutes of the table,
+     *                view, or collection specified in {@code tableName}.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#MEMORY_TTL
+     *                MEMORY_TTL}: Sets the time-to-live in minutes for the
+     *                individual chunks of the columns of the table, view, or
+     *                collection specified in {@code tableName} to free their
+     *                memory if unused longer than the given time. Specify an
+     *                empty string to restore the global memory_ttl setting and
+     *                a value of '-1' for an infinite timeout.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
      *                ADD_COLUMN}: Adds the column specified in {@code value}
@@ -2547,7 +2513,12 @@ public class GPUdb extends GPUdbBase {
      *                CHANGE_COLUMN}: Changes type and properties of the column
      *                specified in {@code value}.  Use {@code column_type} and
      *                {@code column_properties} in {@code options} to set the
-     *                column's type and properties, respectively.
+     *                column's type and properties, respectively. Note that
+     *                primary key and/or shard key columns cannot be changed.
+     *                All unchanging column properties must be listed for the
+     *                change to take place, e.g., to add dictionary encoding to
+     *                an existing 'char4' column, both 'char4' and 'dict' must
+     *                be specified in the {@code options} map.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
      *                SET_COLUMN_COMPRESSION}: Modifies the <a
@@ -2582,31 +2553,31 @@ public class GPUdb extends GPUdbBase {
      *                and 'read_write'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REFRESH
-     *                REFRESH}: Replay all the table creation commands required
-     *                to create this view. Endpoints supported are {@link
-     *                GPUdb#filter(String, String, String, Map)}, {@link
-     *                GPUdb#createJoinTable(String, List, List, List, Map)},
-     *                {@link GPUdb#createProjection(String, String, List,
-     *                Map)}, {@link GPUdb#createUnion(String, List, List, List,
-     *                Map)}, {@link
-     *                GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}, and
-     *                {@link GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
+     *                REFRESH}: Replays all the table creation commands
+     *                required to create this <a
+     *                href="../../../../concepts/materialized_views.html"
+     *                target="_top">materialized view</a>.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
-     *                SET_REFRESH_METHOD}: Set the method by which this view is
-     *                refreshed - one of 'manual', 'periodic', 'on_change',
-     *                'on_query'.
+     *                SET_REFRESH_METHOD}: Sets the method by which this <a
+     *                href="../../../../concepts/materialized_views.html"
+     *                target="_top">materialized view</a> is refreshed - one of
+     *                'manual', 'periodic', 'on_change'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
-     *                SET_REFRESH_START_TIME}: Set the time to start periodic
-     *                refreshes to datetime string with format YYYY-MM-DD
-     *                HH:MM:SS at which refresh is to be done.  Next refresh
-     *                occurs at refresh_start_time + N*refresh_period
+     *                SET_REFRESH_START_TIME}: Sets the time to start periodic
+     *                refreshes of this <a
+     *                href="../../../../concepts/materialized_views.html"
+     *                target="_top">materialized view</a> to datetime string
+     *                with format 'YYYY-MM-DD HH:MM:SS'.  Subsequent refreshes
+     *                occur at the specified time + N * the refresh period.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
-     *                SET_REFRESH_PERIOD}: Set the time interval in seconds at
-     *                which to refresh this view - sets the refresh method to
-     *                periodic if not alreay set.
+     *                SET_REFRESH_PERIOD}: Sets the time interval in seconds at
+     *                which to refresh this <a
+     *                href="../../../../concepts/materialized_views.html"
+     *                target="_top">materialized view</a>.  Also, sets the
+     *                refresh method to periodic if not alreay set.
      *                </ul>
      * @param value  The value of the modification. May be a column name,
      *               'true' or 'false', a TTL, or the global access mode
@@ -3226,7 +3197,7 @@ public class GPUdb extends GPUdbBase {
      *                     syntax 'column_name as alias'. Wild cards '*' can be
      *                     used to include all columns across member tables or
      *                     'table_id.*' for all of a single table's columns.
-     *                     Columns and column expressions comprising the join
+     *                     Columns and column expressions composing the join
      *                     must be uniquely named or aliased--therefore, the
      *                     '*' wild card cannot be used if column names aren't
      *                     unique across all tables.
@@ -3284,14 +3255,19 @@ public class GPUdb extends GPUdbBase {
      *                 data is inserted into the base table.  A full refresh of
      *                 all the records occurs when a new query is issued and
      *                 there have been inserts to any non-base-tables since the
-     *                 last query
+     *                 last query.  <a href="../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> will be set to not expire; any
+     *                 {@code ttl} specified will be ignored.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#ON_INSERT
      *                 ON_INSERT}: incrementally refresh (refresh just those
      *                 records added) whenever new data is inserted into a base
      *                 table.  A full refresh of all the records occurs when a
      *                 new query is issued and there have been inserts to any
-     *                 non-base-tables since the last query
+     *                 non-base-tables since the last query.  <a
+     *                 href="../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> will be set to not expire; any
+     *                 {@code ttl} specified will be ignored.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#MANUAL
@@ -3326,7 +3302,9 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#TTL
      *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the join table specified in
-     *                 {@code joinTableName}.
+     *                 {@code joinTableName}.  Ignored if {@code
+     *                 refresh_method} is either {@code on_insert} or {@code
+     *                 on_query}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this projection is part of
@@ -3363,8 +3341,8 @@ public class GPUdb extends GPUdbBase {
      * target="_top">Materialized Views</a>.
      * <p>
      * The response contains {@code viewId}, which is used to tag each
-     * subsequent operation (projection, union, group-by, filter, or join) that
-     * will compose the view.
+     * subsequent operation (projection, union, aggregation, filter, or join)
+     * that will compose the view.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -3394,8 +3372,8 @@ public class GPUdb extends GPUdbBase {
      * target="_top">Materialized Views</a>.
      * <p>
      * The response contains {@code viewId}, which is used to tag each
-     * subsequent operation (projection, union, group-by, filter, or join) that
-     * will compose the view.
+     * subsequent operation (projection, union, aggregation, filter, or join)
+     * that will compose the view.
      * 
      * @param tableName  Name of the table to be created that is the top-level
      *                   table of the materialized view.
@@ -3443,39 +3421,37 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#MANUAL
      *                 MANUAL}: Refresh only occurs when manually requested by
-     *                 calling alter_table with action refresh_view
+     *                 calling {@link GPUdb#alterTable(String, String, String,
+     *                 Map)} with an 'action' of 'refresh'
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_QUERY
-     *                 ON_QUERY}: Incrementally refresh (refresh just those
-     *                 records added) whenever a new query is issued and new
-     *                 data is inserted into the base table.  A full refresh of
-     *                 all the records occurs when a new query is issued and
-     *                 there have been inserts to any non-base-tables since the
-     *                 last query
+     *                 ON_QUERY}: For future use.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_CHANGE
      *                 ON_CHANGE}: If possible, incrementally refresh (refresh
      *                 just those records added) whenever an insert, update,
      *                 delete or refresh of input table is done.  A full
-     *                 refresh on_query is done if an incremental refresh is
-     *                 not possible.
+     *                 refresh is done if an incremental refresh is not
+     *                 possible.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#PERIODIC
      *                 PERIODIC}: Refresh table periodically at rate specified
-     *                 by refresh_period option
+     *                 by {@code refresh_period}
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#MANUAL
      *                 MANUAL}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_PERIOD
-     *                 REFRESH_PERIOD}: When refresh_method is periodic
-     *                 specifies the period in seconds at which refresh occurs
+     *                 REFRESH_PERIOD}: When {@code refresh_method} is {@code
+     *                 periodic}, specifies the period in seconds at which
+     *                 refresh occurs
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#REFRESH_START_TIME
-     *                 REFRESH_START_TIME}: First time at which a periodic
-     *                 refresh is to be done.  Value is a datatime string with
-     *                 format YYYY-MM-DD HH:MM:SS.
+     *                 REFRESH_START_TIME}: When {@code refresh_method} is
+     *                 {@code periodic}, specifies the first time at which a
+     *                 refresh is to be done.  Value is a datetime string with
+     *                 format 'YYYY-MM-DD HH:MM:SS'.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -3718,6 +3694,22 @@ public class GPUdb extends GPUdbBase {
      *                 target="_top">expression</a> to be applied to the source
      *                 table prior to the projection.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#IS_REPLICATED
+     *                 IS_REPLICATED}: If {@code true} then the projection will
+     *                 be replicated even if the source table is not.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT
      *                 LIMIT}: The number of records to keep.
      *                         <li> {@link
@@ -3747,6 +3739,14 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for
      *                 this table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#CREATE_INDEXES
+     *                 CREATE_INDEXES}: Comma-separated list of columns on
+     *                 which to create indexes on the output table.  The
+     *                 columns specified must be present in {@code
+     *                 columnNames}.  If any alias is given for any column
+     *                 name, the alias must be used, rather than the original
+     *                 column name.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#TTL
      *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
@@ -4291,15 +4291,17 @@ public class GPUdb extends GPUdbBase {
      * given column simultaneously.  One example of mutually exclusive
      * properties are {@code data} and {@code store_only}.
      * <p>
-     * To set a *primary key* on one or more columns include the property
-     * 'primary_key' on the desired column_names. If a primary key is
+     * A single <a href="../../../../concepts/tables.html#primary-keys"
+     * target="_top">primary key</a> and/or single <a
+     * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
+     * key</a> can be set across one or more columns. If a primary key is
      * specified, then a uniqueness constraint is enforced, in that only a
      * single object can exist with a given primary key. When {@link
      * GPUdb#insertRecordsRaw(RawInsertRecordsRequest) inserting} data into a
      * table with a primary key, depending on the parameters in the request,
-     * incoming objects with primary keys that match existing objects will
-     * either overwrite (i.e. update) the existing object or will be skipped
-     * and not added into the set.
+     * incoming objects with primary key values that match existing objects
+     * will either overwrite (i.e. update) the existing object or will be
+     * skipped and not added into the set.
      * <p>
      * Example of a type definition with some of the parameters::
      * <p>
@@ -4350,15 +4352,17 @@ public class GPUdb extends GPUdbBase {
      * given column simultaneously.  One example of mutually exclusive
      * properties are {@code data} and {@code store_only}.
      * <p>
-     * To set a *primary key* on one or more columns include the property
-     * 'primary_key' on the desired column_names. If a primary key is
+     * A single <a href="../../../../concepts/tables.html#primary-keys"
+     * target="_top">primary key</a> and/or single <a
+     * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
+     * key</a> can be set across one or more columns. If a primary key is
      * specified, then a uniqueness constraint is enforced, in that only a
      * single object can exist with a given primary key. When {@link
      * GPUdb#insertRecordsRaw(RawInsertRecordsRequest) inserting} data into a
      * table with a primary key, depending on the parameters in the request,
-     * incoming objects with primary keys that match existing objects will
-     * either overwrite (i.e. update) the existing object or will be skipped
-     * and not added into the set.
+     * incoming objects with primary key values that match existing objects
+     * will either overwrite (i.e. update) the existing object or will be
+     * skipped and not added into the set.
      * <p>
      * Example of a type definition with some of the parameters::
      * <p>
@@ -4401,20 +4405,22 @@ public class GPUdb extends GPUdbBase {
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#TEXT_SEARCH
      *                    TEXT_SEARCH}: Valid only for 'string' columns.
      *                    Enables full text search for string columns. Can be
-     *                    set independently of *data* and *store_only*.
+     *                    set independently of {@code data} and {@code
+     *                    store_only}.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#STORE_ONLY
      *                    STORE_ONLY}: Persist the column value but do not make
      *                    it available to queries (e.g. {@link
      *                    GPUdb#filter(String, String, String, Map)})-i.e. it
-     *                    is mutually exclusive to the 'data' property. Any
-     *                    'bytes' type column must have a 'store_only'
-     *                    property. This property reduces system memory usage.
+     *                    is mutually exclusive to the {@code data} property.
+     *                    Any 'bytes' type column must have a {@code
+     *                    store_only} property. This property reduces system
+     *                    memory usage.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DISK_OPTIMIZED
-     *                    DISK_OPTIMIZED}: Works in conjunction with the 'data'
-     *                    property for string columns. This property reduces
-     *                    system disk usage by disabling reverse string
+     *                    DISK_OPTIMIZED}: Works in conjunction with the {@code
+     *                    data} property for string columns. This property
+     *                    reduces system disk usage by disabling reverse string
      *                    lookups. Queries like {@link GPUdb#filter(String,
      *                    String, String, Map)}, {@link
      *                    GPUdb#filterByList(String, String, Map, Map)}, and
@@ -4443,23 +4449,24 @@ public class GPUdb extends GPUdbBase {
      *                    and up to four digits in the fractional part.  The
      *                    value can be positive or negative (indicated by a
      *                    minus sign at the beginning).  This property is
-     *                    mutually exclusive with the 'text_search' property.
+     *                    mutually exclusive with the {@code text_search}
+     *                    property.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DATE
      *                    DATE}: Valid only for 'string' columns.  Indicates
      *                    that this field represents a date and will be
      *                    provided in the format 'YYYY-MM-DD'.  The allowable
      *                    range is 1000-01-01 through 2900-01-01.  This
-     *                    property is mutually exclusive with the *text_search*
-     *                    property.
+     *                    property is mutually exclusive with the {@code
+     *                    text_search} property.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#TIME
      *                    TIME}: Valid only for 'string' columns.  Indicates
      *                    that this field represents a time-of-day and will be
      *                    provided in the format 'HH:MM:SS.mmm'.  The allowable
      *                    range is 00:00:00.000 through 23:59:59.999.  This
-     *                    property is mutually exclusive with the *text_search*
-     *                    property.
+     *                    property is mutually exclusive with the {@code
+     *                    text_search} property.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DATETIME
      *                    DATETIME}: Valid only for 'string' columns.
@@ -4467,71 +4474,62 @@ public class GPUdb extends GPUdbBase {
      *                    will be provided in the format 'YYYY-MM-DD
      *                    HH:MM:SS.mmm'.  The allowable range is 1000-01-01
      *                    00:00:00.000 through 2900-01-01 23:59:59.999.  This
-     *                    property is mutually exclusive with the *text_search*
-     *                    property.
+     *                    property is mutually exclusive with the {@code
+     *                    text_search} property.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR1
      *                    CHAR1}: This property provides optimized memory, disk
      *                    and query performance for string columns. Strings
      *                    with this property must be no longer than 1
-     *                    character. This property cannot be combined with
-     *                    *text_search*
+     *                    character.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR2
      *                    CHAR2}: This property provides optimized memory, disk
      *                    and query performance for string columns. Strings
      *                    with this property must be no longer than 2
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR4
      *                    CHAR4}: This property provides optimized memory, disk
      *                    and query performance for string columns. Strings
      *                    with this property must be no longer than 4
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR8
      *                    CHAR8}: This property provides optimized memory, disk
      *                    and query performance for string columns. Strings
      *                    with this property must be no longer than 8
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR16
      *                    CHAR16}: This property provides optimized memory,
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 16
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR32
      *                    CHAR32}: This property provides optimized memory,
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 32
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR64
      *                    CHAR64}: This property provides optimized memory,
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 64
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR128
      *                    CHAR128}: This property provides optimized memory,
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 128
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR256
      *                    CHAR256}: This property provides optimized memory,
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 256
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#INT8
      *                    INT8}: This property provides optimized memory and
@@ -4559,11 +4557,15 @@ public class GPUdb extends GPUdbBase {
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#PRIMARY_KEY
      *                    PRIMARY_KEY}: This property indicates that this
-     *                    column will be part of (or the entire) primary key.
+     *                    column will be part of (or the entire) <a
+     *                    href="../../../../concepts/tables.html#primary-keys"
+     *                    target="_top">primary key</a>.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#SHARD_KEY
      *                    SHARD_KEY}: This property indicates that this column
-     *                    will be part of (or the entire) shard key.
+     *                    will be part of (or the entire) <a
+     *                    href="../../../../concepts/tables.html#shard-keys"
+     *                    target="_top">shard key</a>.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#NULLABLE
      *                    NULLABLE}: This property indicates that this column
@@ -4577,9 +4579,9 @@ public class GPUdb extends GPUdbBase {
      *                    schema must be: ['int', 'null'].
      *                    The C++, C#, Java, and Python APIs have built-in
      *                    convenience for bypassing setting the avro schema by
-     *                    hand.  For those two languages, one can use this
-     *                    property as usual and not have to worry about the
-     *                    avro schema for the record.
+     *                    hand.  For those languages, one can use this property
+     *                    as usual and not have to worry about the avro schema
+     *                    for the record.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DICT
      *                    DICT}: This property indicates that this column
@@ -4776,6 +4778,12 @@ public class GPUdb extends GPUdbBase {
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for
      *                 this table.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#CREATE_INDEXES
+     *                 CREATE_INDEXES}: Comma-separated list of columns on
+     *                 which to create indexes on the output table.  The
+     *                 columns specified must be present in {@code
+     *                 outputColumnNames}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}:
      *                 Sets the <a href="../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the table specified in {@code
@@ -4965,8 +4973,9 @@ public class GPUdb extends GPUdbBase {
     /**
      * Deletes record(s) matching the provided criteria from the given table.
      * The record selection criteria can either be one or more  {@code
-     * expressions} (matching multiple records) or a single record identified
-     * by {@code record_id} options.  Note that the two selection criteria are
+     * expressions} (matching multiple records), a single record identified by
+     * {@code record_id} options, or all records when using {@code
+     * delete_all_records}.  Note that the three selection criteria are
      * mutually exclusive.  This operation cannot be run on a collection or a
      * view.  The operation is synchronous meaning that a response will not be
      * available until the request is completely processed and all the matching
@@ -4993,8 +5002,9 @@ public class GPUdb extends GPUdbBase {
     /**
      * Deletes record(s) matching the provided criteria from the given table.
      * The record selection criteria can either be one or more  {@code
-     * expressions} (matching multiple records) or a single record identified
-     * by {@code record_id} options.  Note that the two selection criteria are
+     * expressions} (matching multiple records), a single record identified by
+     * {@code record_id} options, or all records when using {@code
+     * delete_all_records}.  Note that the three selection criteria are
      * mutually exclusive.  This operation cannot be run on a collection or a
      * view.  The operation is synchronous meaning that a response will not be
      * available until the request is completely processed and all the matching
@@ -5023,6 +5033,23 @@ public class GPUdb extends GPUdbBase {
      *                 insertion of the record} or by calling {@link
      *                 GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
      *                 with the *return_record_ids* option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteRecordsRequest.Options#DELETE_ALL_RECORDS
+     *                 DELETE_ALL_RECORDS}: If set to {@code true}, all records
+     *                 in the table will be deleted. If set to {@code false},
+     *                 then the option is effectively ignored.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.DeleteRecordsRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -5213,6 +5240,14 @@ public class GPUdb extends GPUdbBase {
      *                 for multiple specified run IDs, the cached data from the
      *                 first run ID specified in the list that includes that
      *                 table will be used.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#KIFS_INPUT_DIRS
+     *                 KIFS_INPUT_DIRS}: A comma-delimited list of KiFS
+     *                 directories whose local files will be made directly
+     *                 accessible to the proc through the API. (All KiFS files,
+     *                 local or not, are also accessible through the file
+     *                 system below the KiFS mount point.) Each name specified
+     *                 must the name of an existing KiFS directory.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -6153,7 +6188,9 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of the table on which the filter by track
      *                   operation will be performed. Must be a currently
-     *                   existing table with track semantic type.
+     *                   existing table with a <a
+     *                   href="../../../../geospatial/geo_objects.html"
+     *                   target="_top">track</a> present.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results. Has the same naming
      *                  restrictions as <a
@@ -8303,11 +8340,11 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.InsertRecordsRandomRequest.Options#MIN
      *                 MIN}: For numerical columns, the minimum of the
      *                 generated values is set to this value.  Default is
-     *                 -99999.  For point, shape, and track semantic types, min
-     *                 for numeric 'x' and 'y' columns needs to be within
-     *                 [-180, 180] and [-90, 90], respectively. The default
-     *                 minimum possible values for these columns in such cases
-     *                 are -180.0 and -90.0. For the 'TIMESTAMP' column, the
+     *                 -99999.  For point, shape, and track columns, min for
+     *                 numeric 'x' and 'y' columns needs to be within [-180,
+     *                 180] and [-90, 90], respectively. The default minimum
+     *                 possible values for these columns in such cases are
+     *                 -180.0 and -90.0. For the 'TIMESTAMP' column, the
      *                 default minimum corresponds to Jan 1, 2010.
      *                 For string columns, the minimum length of the randomly
      *                 generated strings is set to this value (default is 0).
@@ -8315,29 +8352,28 @@ public class GPUdb extends GPUdbBase {
      *                 be less than or equal to max. Value needs to be within
      *                 [0, 200].
      *                 If the min is outside the accepted ranges for strings
-     *                 columns and 'x' and 'y' columns for point/shape/track
-     *                 types, then those parameters will not be set; however,
-     *                 an error will not be thrown in such a case. It is the
+     *                 columns and 'x' and 'y' columns for point/shape/track,
+     *                 then those parameters will not be set; however, an error
+     *                 will not be thrown in such a case. It is the
      *                 responsibility of the user to use the {@code all}
      *                 parameter judiciously.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsRandomRequest.Options#MAX
      *                 MAX}: For numerical columns, the maximum of the
      *                 generated values is set to this value. Default is 99999.
-     *                 For point, shape, and track semantic types, max for
-     *                 numeric 'x' and 'y' columns needs to be within [-180,
-     *                 180] and [-90, 90], respectively. The default minimum
-     *                 possible values for these columns in such cases are
-     *                 180.0 and 90.0.
+     *                 For point, shape, and track columns, max for numeric 'x'
+     *                 and 'y' columns needs to be within [-180, 180] and [-90,
+     *                 90], respectively. The default minimum possible values
+     *                 for these columns in such cases are 180.0 and 90.0.
      *                 For string columns, the maximum length of the randomly
      *                 generated strings is set to this value (default is 200).
      *                 If both minimum and maximum are provided, *max* must be
      *                 greater than or equal to *min*. Value needs to be within
      *                 [0, 200].
      *                 If the *max* is outside the accepted ranges for strings
-     *                 columns and 'x' and 'y' columns for point/shape/track
-     *                 types, then those parameters will not be set; however,
-     *                 an error will not be thrown in such a case. It is the
+     *                 columns and 'x' and 'y' columns for point/shape/track,
+     *                 then those parameters will not be set; however, an error
+     *                 will not be thrown in such a case. It is the
      *                 responsibility of the user to use the {@code all}
      *                 parameter judiciously.
      *                         <li> {@link
@@ -8382,11 +8418,11 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.InsertRecordsRandomRequest.Options#MIN
      *                 MIN}: For numerical columns, the minimum of the
      *                 generated values is set to this value.  Default is
-     *                 -99999.  For point, shape, and track semantic types, min
-     *                 for numeric 'x' and 'y' columns needs to be within
-     *                 [-180, 180] and [-90, 90], respectively. The default
-     *                 minimum possible values for these columns in such cases
-     *                 are -180.0 and -90.0. For the 'TIMESTAMP' column, the
+     *                 -99999.  For point, shape, and track columns, min for
+     *                 numeric 'x' and 'y' columns needs to be within [-180,
+     *                 180] and [-90, 90], respectively. The default minimum
+     *                 possible values for these columns in such cases are
+     *                 -180.0 and -90.0. For the 'TIMESTAMP' column, the
      *                 default minimum corresponds to Jan 1, 2010.
      *                 For string columns, the minimum length of the randomly
      *                 generated strings is set to this value (default is 0).
@@ -8394,29 +8430,28 @@ public class GPUdb extends GPUdbBase {
      *                 be less than or equal to max. Value needs to be within
      *                 [0, 200].
      *                 If the min is outside the accepted ranges for strings
-     *                 columns and 'x' and 'y' columns for point/shape/track
-     *                 types, then those parameters will not be set; however,
-     *                 an error will not be thrown in such a case. It is the
+     *                 columns and 'x' and 'y' columns for point/shape/track,
+     *                 then those parameters will not be set; however, an error
+     *                 will not be thrown in such a case. It is the
      *                 responsibility of the user to use the {@code all}
      *                 parameter judiciously.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsRandomRequest.Options#MAX
      *                 MAX}: For numerical columns, the maximum of the
      *                 generated values is set to this value. Default is 99999.
-     *                 For point, shape, and track semantic types, max for
-     *                 numeric 'x' and 'y' columns needs to be within [-180,
-     *                 180] and [-90, 90], respectively. The default minimum
-     *                 possible values for these columns in such cases are
-     *                 180.0 and 90.0.
+     *                 For point, shape, and track columns, max for numeric 'x'
+     *                 and 'y' columns needs to be within [-180, 180] and [-90,
+     *                 90], respectively. The default minimum possible values
+     *                 for these columns in such cases are 180.0 and 90.0.
      *                 For string columns, the maximum length of the randomly
      *                 generated strings is set to this value (default is 200).
      *                 If both minimum and maximum are provided, *max* must be
      *                 greater than or equal to *min*. Value needs to be within
      *                 [0, 200].
      *                 If the *max* is outside the accepted ranges for strings
-     *                 columns and 'x' and 'y' columns for point/shape/track
-     *                 types, then those parameters will not be set; however,
-     *                 an error will not be thrown in such a case. It is the
+     *                 columns and 'x' and 'y' columns for point/shape/track,
+     *                 then those parameters will not be set; however, an error
+     *                 will not be thrown in such a case. It is the
      *                 responsibility of the user to use the {@code all}
      *                 parameter judiciously.
      *                         <li> {@link
@@ -8453,7 +8488,7 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsRandomRequest.Options#TRACK_LENGTH
      *                 TRACK_LENGTH}: This key-map pair is only valid for track
-     *                 type data sets (an error is thrown otherwise).  No nulls
+     *                 data sets (an error is thrown otherwise).  No nulls
      *                 would be generated for nullable columns.
      *                 <ul>
      *                         <li> {@link
@@ -9583,9 +9618,9 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Gets names of the tables whose type matches the given criteria. Each
-     * table has a particular type. This type is made out of the type label,
-     * schema of the table, and the semantic type of the table. This function
-     * allows a look up of the existing tables based on full or partial type
+     * table has a particular type. This type comprises the schema and
+     * properties of the table and sometimes a type label. This function allows
+     * a look up of the existing tables based on full or partial type
      * information. The operation is synchronous.
      * 
      * @param request  Request object containing the parameters for the
@@ -9608,9 +9643,9 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Gets names of the tables whose type matches the given criteria. Each
-     * table has a particular type. This type is made out of the type label,
-     * schema of the table, and the semantic type of the table. This function
-     * allows a look up of the existing tables based on full or partial type
+     * table has a particular type. This type comprises the schema and
+     * properties of the table and sometimes a type label. This function allows
+     * a look up of the existing tables based on full or partial type
      * information. The operation is synchronous.
      * 
      * @param typeId  Type id returned by a call to {@link
@@ -9683,11 +9718,10 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Retrieves information for the specified data type. Given a type ID, the
-     * database returns the data type schema, the label, and the semantic type
-     * along with the type ID. If the user provides any combination of label
-     * and semantic type, then the database returns the pertinent information
-     * for all data types that match the input criteria.
+     * Retrieves information for the specified data type ID or type label. For
+     * all data types that match the input criteria, the database returns the
+     * type ID, the type schema, the label (if available), and the type's
+     * column properties.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -9713,11 +9747,10 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Retrieves information for the specified data type. Given a type ID, the
-     * database returns the data type schema, the label, and the semantic type
-     * along with the type ID. If the user provides any combination of label
-     * and semantic type, then the database returns the pertinent information
-     * for all data types that match the input criteria.
+     * Retrieves information for the specified data type ID or type label. For
+     * all data types that match the input criteria, the database returns the
+     * type ID, the type schema, the label (if available), and the type's
+     * column properties.
      * 
      * @param typeId  Type Id returned in response to a call to {@link
      *                GPUdb#createType(String, String, Map, Map)}.
@@ -10363,6 +10396,23 @@ public class GPUdb extends GPUdbBase {
         VisualizeImageClassbreakRequest actualRequest_ = new VisualizeImageClassbreakRequest(tableNames, worldTableNames, xColumnName, yColumnName, geometryColumnName, trackIds, cbColumnName, cbVals, minX, maxX, minY, maxY, width, height, projection, bgColor, styleOptions, options);
         VisualizeImageClassbreakResponse actualResponse_ = new VisualizeImageClassbreakResponse();
         submitRequest("/visualize/image/classbreak", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public VisualizeImageContourResponse visualizeImageContour(VisualizeImageContourRequest request) throws GPUdbException {
+        VisualizeImageContourResponse actualResponse_ = new VisualizeImageContourResponse();
+        submitRequest("/visualize/image/contour", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public VisualizeImageContourResponse visualizeImageContour(List<String> tableNames, String xColumnName, String yColumnName, String valueColumnName, double minX, double maxX, double minY, double maxY, int width, int height, String projection, Map<String, String> styleOptions, Map<String, String> options) throws GPUdbException {
+        VisualizeImageContourRequest actualRequest_ = new VisualizeImageContourRequest(tableNames, xColumnName, yColumnName, valueColumnName, minX, maxX, minY, maxY, width, height, projection, styleOptions, options);
+        VisualizeImageContourResponse actualResponse_ = new VisualizeImageContourResponse();
+        submitRequest("/visualize/image/contour", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 

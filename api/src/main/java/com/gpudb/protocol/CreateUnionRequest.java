@@ -134,6 +134,11 @@ public class CreateUnionRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE CHUNK_SIZE}:
      * Indicates the chunk size to be used for this table.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#CREATE_INDEXES
+     * CREATE_INDEXES}: Comma-separated list of columns on which to create
+     * indexes on the output table.  The columns specified must be present in
+     * {@code outputColumnNames}.
      *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#TTL
      * TTL}: Sets the <a href="../../../../../concepts/ttl.html"
      * target="_top">TTL</a> of the table specified in {@code tableName}.
@@ -271,6 +276,13 @@ public class CreateUnionRequest implements IndexedRecord {
         public static final String CHUNK_SIZE = "chunk_size";
 
         /**
+         * Comma-separated list of columns on which to create indexes on the
+         * output table.  The columns specified must be present in {@code
+         * outputColumnNames}.
+         */
+        public static final String CREATE_INDEXES = "create_indexes";
+
+        /**
          * Sets the <a href="../../../../../concepts/ttl.html"
          * target="_top">TTL</a> of the table specified in {@code tableName}.
          */
@@ -402,6 +414,12 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for
      *                 this table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#CREATE_INDEXES
+     *                 CREATE_INDEXES}: Comma-separated list of columns on
+     *                 which to create indexes on the output table.  The
+     *                 columns specified must be present in {@code
+     *                 outputColumnNames}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}:
      *                 Sets the <a href="../../../../../concepts/ttl.html"
@@ -600,6 +618,11 @@ public class CreateUnionRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE
      *         CHUNK_SIZE}: Indicates the chunk size to be used for this table.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#CREATE_INDEXES
+     *         CREATE_INDEXES}: Comma-separated list of columns on which to
+     *         create indexes on the output table.  The columns specified must
+     *         be present in {@code outputColumnNames}.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}: Sets the
      *         <a href="../../../../../concepts/ttl.html" target="_top">TTL</a>
      *         of the table specified in {@code tableName}.
@@ -701,6 +724,12 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for
      *                 this table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#CREATE_INDEXES
+     *                 CREATE_INDEXES}: Comma-separated list of columns on
+     *                 which to create indexes on the output table.  The
+     *                 columns specified must be present in {@code
+     *                 outputColumnNames}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}:
      *                 Sets the <a href="../../../../../concepts/ttl.html"

@@ -258,6 +258,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * CHUNK_SIZE}: Indicates the chunk size to be used for the result table.
      * Must be used in combination with the {@code result_table} option.
      *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#CREATE_INDEXES
+     * CREATE_INDEXES}: Comma-separated list of columns on which to create
+     * indexes on the result table. Must be used in combination with the {@code
+     * result_table} option.
+     *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID VIEW_ID}:
      * view this result table is part of
      *         <li> {@link
@@ -462,6 +467,13 @@ public class AggregateGroupByRequest implements IndexedRecord {
          * used in combination with the {@code result_table} option.
          */
         public static final String CHUNK_SIZE = "chunk_size";
+
+        /**
+         * Comma-separated list of columns on which to create indexes on the
+         * result table. Must be used in combination with the {@code
+         * result_table} option.
+         */
+        public static final String CREATE_INDEXES = "create_indexes";
 
         /**
          * view this result table is part of
@@ -687,6 +699,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 result table. Must be used in combination with the
      *                 {@code result_table} option.
      *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CREATE_INDEXES
+     *                 CREATE_INDEXES}: Comma-separated list of columns on
+     *                 which to create indexes on the result table. Must be
+     *                 used in combination with the {@code result_table}
+     *                 option.
+     *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this result table is part of
      *                         <li> {@link
@@ -909,6 +927,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
      *                 result table. Must be used in combination with the
      *                 {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CREATE_INDEXES
+     *                 CREATE_INDEXES}: Comma-separated list of columns on
+     *                 which to create indexes on the result table. Must be
+     *                 used in combination with the {@code result_table}
+     *                 option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this result table is part of
@@ -1235,6 +1259,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         table. Must be used in combination with the {@code result_table}
      *         option.
      *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#CREATE_INDEXES
+     *         CREATE_INDEXES}: Comma-separated list of columns on which to
+     *         create indexes on the result table. Must be used in combination
+     *         with the {@code result_table} option.
+     *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
      *         VIEW_ID}: view this result table is part of
      *                 <li> {@link
@@ -1418,6 +1447,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
      *                 result table. Must be used in combination with the
      *                 {@code result_table} option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CREATE_INDEXES
+     *                 CREATE_INDEXES}: Comma-separated list of columns on
+     *                 which to create indexes on the result table. Must be
+     *                 used in combination with the {@code result_table}
+     *                 option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this result table is part of

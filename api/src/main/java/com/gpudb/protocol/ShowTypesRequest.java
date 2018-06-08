@@ -16,11 +16,9 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#showTypes(ShowTypesRequest)}.
  * <p>
- * Retrieves information for the specified data type. Given a type ID, the
- * database returns the data type schema, the label, and the semantic type
- * along with the type ID. If the user provides any combination of label and
- * semantic type, then the database returns the pertinent information for all
- * data types that match the input criteria.
+ * Retrieves information for the specified data type ID or type label. For all
+ * data types that match the input criteria, the database returns the type ID,
+ * the type schema, the label (if available), and the type's column properties.
  */
 public class ShowTypesRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

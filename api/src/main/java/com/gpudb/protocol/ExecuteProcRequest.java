@@ -74,6 +74,13 @@ public class ExecuteProcRequest implements IndexedRecord {
      * passed to the proc. If the same table was cached for multiple specified
      * run IDs, the cached data from the first run ID specified in the list
      * that includes that table will be used.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteProcRequest.Options#KIFS_INPUT_DIRS
+     * KIFS_INPUT_DIRS}: A comma-delimited list of KiFS directories whose local
+     * files will be made directly accessible to the proc through the API. (All
+     * KiFS files, local or not, are also accessible through the file system
+     * below the KiFS mount point.) Each name specified must the name of an
+     * existing KiFS directory.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -104,6 +111,15 @@ public class ExecuteProcRequest implements IndexedRecord {
          * in the list that includes that table will be used.
          */
         public static final String USE_CACHED_INPUT = "use_cached_input";
+
+        /**
+         * A comma-delimited list of KiFS directories whose local files will be
+         * made directly accessible to the proc through the API. (All KiFS
+         * files, local or not, are also accessible through the file system
+         * below the KiFS mount point.) Each name specified must the name of an
+         * existing KiFS directory.
+         */
+        public static final String KIFS_INPUT_DIRS = "kifs_input_dirs";
 
         private Options() {  }
     }
@@ -195,6 +211,14 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                 multiple specified run IDs, the cached data from the
      *                 first run ID specified in the list that includes that
      *                 table will be used.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#KIFS_INPUT_DIRS
+     *                 KIFS_INPUT_DIRS}: A comma-delimited list of KiFS
+     *                 directories whose local files will be made directly
+     *                 accessible to the proc through the API. (All KiFS files,
+     *                 local or not, are also accessible through the file
+     *                 system below the KiFS mount point.) Each name specified
+     *                 must the name of an existing KiFS directory.
      *                 </ul>
      * 
      */
@@ -407,6 +431,13 @@ public class ExecuteProcRequest implements IndexedRecord {
      *         will be passed to the proc. If the same table was cached for
      *         multiple specified run IDs, the cached data from the first run
      *         ID specified in the list that includes that table will be used.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteProcRequest.Options#KIFS_INPUT_DIRS
+     *         KIFS_INPUT_DIRS}: A comma-delimited list of KiFS directories
+     *         whose local files will be made directly accessible to the proc
+     *         through the API. (All KiFS files, local or not, are also
+     *         accessible through the file system below the KiFS mount point.)
+     *         Each name specified must the name of an existing KiFS directory.
      *         </ul>
      * 
      */
@@ -446,6 +477,14 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                 multiple specified run IDs, the cached data from the
      *                 first run ID specified in the list that includes that
      *                 table will be used.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#KIFS_INPUT_DIRS
+     *                 KIFS_INPUT_DIRS}: A comma-delimited list of KiFS
+     *                 directories whose local files will be made directly
+     *                 accessible to the proc through the API. (All KiFS files,
+     *                 local or not, are also accessible through the file
+     *                 system below the KiFS mount point.) Each name specified
+     *                 must the name of an existing KiFS directory.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

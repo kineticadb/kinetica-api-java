@@ -164,7 +164,9 @@ public class FilterBySeriesRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table on which the filter by track
      *                   operation will be performed. Must be a currently
-     *                   existing table with track semantic type.
+     *                   existing table with a <a
+     *                   href="../../../../../geospatial/geo_objects.html"
+     *                   target="_top">track</a> present.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results. Has the same naming
      *                  restrictions as <a
@@ -228,8 +230,9 @@ public class FilterBySeriesRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table on which the filter by track operation will be
-     *         performed. Must be a currently existing table with track
-     *         semantic type.
+     *         performed. Must be a currently existing table with a <a
+     *         href="../../../../../geospatial/geo_objects.html"
+     *         target="_top">track</a> present.
      * 
      */
     public String getTableName() {
@@ -240,7 +243,9 @@ public class FilterBySeriesRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table on which the filter by track
      *                   operation will be performed. Must be a currently
-     *                   existing table with track semantic type.
+     *                   existing table with a <a
+     *                   href="../../../../../geospatial/geo_objects.html"
+     *                   target="_top">track</a> present.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -25,7 +25,8 @@ import org.apache.avro.generic.IndexedRecord;
  * inclusive.  The value returned for each bin is the number of records in it,
  * except when a column name is provided as a *value_column* in {@code
  * options}.  In this latter case the sum of the values corresponding to the
- * *value_column* is used as the result instead.
+ * *value_column* is used as the result instead.  The total number of bins
+ * requested cannot exceed 10,000.
  */
 public class AggregateHistogramRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

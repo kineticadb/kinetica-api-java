@@ -19,22 +19,23 @@ public final class ColumnProperty {
 
     /**
      * Valid only for 'string' columns. Enables full text search for string
-     * columns. Can be set independently of *data* and *store_only*.
+     * columns. Can be set independently of {@code data} and {@code
+     * store_only}.
      */
     public static final String TEXT_SEARCH = "text_search";
 
     /**
      * Persist the column value but do not make it available to queries (e.g.
      * {@link GPUdb#filter(FilterRequest)})-i.e. it is mutually exclusive to
-     * the 'data' property. Any 'bytes' type column must have a 'store_only'
-     * property. This property reduces system memory usage.
+     * the {@code data} property. Any 'bytes' type column must have a {@code
+     * store_only} property. This property reduces system memory usage.
      */
     public static final String STORE_ONLY = "store_only";
 
     /**
-     * Works in conjunction with the 'data' property for string columns. This
-     * property reduces system disk usage by disabling reverse string lookups.
-     * Queries like {@link GPUdb#filter(FilterRequest)}, {@link
+     * Works in conjunction with the {@code data} property for string columns.
+     * This property reduces system disk usage by disabling reverse string
+     * lookups. Queries like {@link GPUdb#filter(FilterRequest)}, {@link
      * GPUdb#filterByList(FilterByListRequest)}, and {@link
      * GPUdb#filterByValue(FilterByValueRequest)} work as usual but {@link
      * GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}, {@link
@@ -57,7 +58,7 @@ public final class ColumnProperty {
      * 4) data type.  There can be up to 15 digits before the decimal point and
      * up to four digits in the fractional part.  The value can be positive or
      * negative (indicated by a minus sign at the beginning).  This property is
-     * mutually exclusive with the 'text_search' property.
+     * mutually exclusive with the {@code text_search} property.
      */
     public static final String DECIMAL = "decimal";
 
@@ -65,7 +66,7 @@ public final class ColumnProperty {
      * Valid only for 'string' columns.  Indicates that this field represents a
      * date and will be provided in the format 'YYYY-MM-DD'.  The allowable
      * range is 1000-01-01 through 2900-01-01.  This property is mutually
-     * exclusive with the *text_search* property.
+     * exclusive with the {@code text_search} property.
      */
     public static final String DATE = "date";
 
@@ -73,7 +74,7 @@ public final class ColumnProperty {
      * Valid only for 'string' columns.  Indicates that this field represents a
      * time-of-day and will be provided in the format 'HH:MM:SS.mmm'.  The
      * allowable range is 00:00:00.000 through 23:59:59.999.  This property is
-     * mutually exclusive with the *text_search* property.
+     * mutually exclusive with the {@code text_search} property.
      */
     public static final String TIME = "time";
 
@@ -81,71 +82,71 @@ public final class ColumnProperty {
      * Valid only for 'string' columns.  Indicates that this field represents a
      * datetime and will be provided in the format 'YYYY-MM-DD HH:MM:SS.mmm'.
      * The allowable range is 1000-01-01 00:00:00.000 through 2900-01-01
-     * 23:59:59.999.  This property is mutually exclusive with the
-     * *text_search* property.
+     * 23:59:59.999.  This property is mutually exclusive with the {@code
+     * text_search} property.
      */
     public static final String DATETIME = "datetime";
 
     /**
      * This property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 1
-     * character. This property cannot be combined with *text_search*
+     * character.
      */
     public static final String CHAR1 = "char1";
 
     /**
      * This property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 2
-     * characters. This property cannot be combined with *text_search*
+     * characters.
      */
     public static final String CHAR2 = "char2";
 
     /**
      * This property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 4
-     * characters. This property cannot be combined with *text_search*
+     * characters.
      */
     public static final String CHAR4 = "char4";
 
     /**
      * This property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 8
-     * characters. This property cannot be combined with *text_search*
+     * characters.
      */
     public static final String CHAR8 = "char8";
 
     /**
      * This property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 16
-     * characters. This property cannot be combined with *text_search*
+     * characters.
      */
     public static final String CHAR16 = "char16";
 
     /**
      * This property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 32
-     * characters. This property cannot be combined with *text_search*
+     * characters.
      */
     public static final String CHAR32 = "char32";
 
     /**
      * This property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 64
-     * characters. This property cannot be combined with *text_search*
+     * characters.
      */
     public static final String CHAR64 = "char64";
 
     /**
      * This property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 128
-     * characters. This property cannot be combined with *text_search*
+     * characters.
      */
     public static final String CHAR128 = "char128";
 
     /**
      * This property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 256
-     * characters. This property cannot be combined with *text_search*
+     * characters.
      */
     public static final String CHAR256 = "char256";
 
@@ -180,13 +181,15 @@ public final class ColumnProperty {
 
     /**
      * This property indicates that this column will be part of (or the entire)
-     * primary key.
+     * <a href="../../../../concepts/tables.html#primary-keys"
+     * target="_top">primary key</a>.
      */
     public static final String PRIMARY_KEY = "primary_key";
 
     /**
      * This property indicates that this column will be part of (or the entire)
-     * shard key.
+     * <a href="../../../../concepts/tables.html#shard-keys"
+     * target="_top">shard key</a>.
      */
     public static final String SHARD_KEY = "shard_key";
 
@@ -200,9 +203,9 @@ public final class ColumnProperty {
      * ['int', 'null'].
      * <p>
      * The C++, C#, Java, and Python APIs have built-in convenience for
-     * bypassing setting the avro schema by hand.  For those two languages, one
-     * can use this property as usual and not have to worry about the avro
-     * schema for the record.
+     * bypassing setting the avro schema by hand.  For those languages, one can
+     * use this property as usual and not have to worry about the avro schema
+     * for the record.
      */
     public static final String NULLABLE = "nullable";
 

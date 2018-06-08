@@ -92,13 +92,17 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * incrementally refresh (refresh just those records added) whenever a new
      * query is issued and new data is inserted into the base table.  A full
      * refresh of all the records occurs when a new query is issued and there
-     * have been inserts to any non-base-tables since the last query
+     * have been inserts to any non-base-tables since the last query.  <a
+     * href="../../../../../concepts/ttl.html" target="_top">TTL</a> will be
+     * set to not expire; any {@code ttl} specified will be ignored.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#ON_INSERT ON_INSERT}:
      * incrementally refresh (refresh just those records added) whenever new
      * data is inserted into a base table.  A full refresh of all the records
      * occurs when a new query is issued and there have been inserts to any
-     * non-base-tables since the last query
+     * non-base-tables since the last query.  <a
+     * href="../../../../../concepts/ttl.html" target="_top">TTL</a> will be
+     * set to not expire; any {@code ttl} specified will be ignored.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#MANUAL MANUAL}.
@@ -128,7 +132,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#TTL TTL}: Sets the <a
      * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
-     * join table specified in {@code joinTableName}.
+     * join table specified in {@code joinTableName}.  Ignored if {@code
+     * refresh_method} is either {@code on_insert} or {@code on_query}.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID VIEW_ID}: view
      * this projection is part of
@@ -186,13 +191,17 @@ public class CreateJoinTableRequest implements IndexedRecord {
          * whenever a new query is issued and new data is inserted into the
          * base table.  A full refresh of all the records occurs when a new
          * query is issued and there have been inserts to any non-base-tables
-         * since the last query
+         * since the last query.  <a href="../../../../../concepts/ttl.html"
+         * target="_top">TTL</a> will be set to not expire; any {@code ttl}
+         * specified will be ignored.
          *         <li> {@link
          * com.gpudb.protocol.CreateJoinTableRequest.Options#ON_INSERT
          * ON_INSERT}: incrementally refresh (refresh just those records added)
          * whenever new data is inserted into a base table.  A full refresh of
          * all the records occurs when a new query is issued and there have
-         * been inserts to any non-base-tables since the last query
+         * been inserts to any non-base-tables since the last query.  <a
+         * href="../../../../../concepts/ttl.html" target="_top">TTL</a> will
+         * be set to not expire; any {@code ttl} specified will be ignored.
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.CreateJoinTableRequest.Options#MANUAL MANUAL}.
@@ -210,7 +219,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
          * new query is issued and new data is inserted into the base table.  A
          * full refresh of all the records occurs when a new query is issued
          * and there have been inserts to any non-base-tables since the last
-         * query
+         * query.  <a href="../../../../../concepts/ttl.html"
+         * target="_top">TTL</a> will be set to not expire; any {@code ttl}
+         * specified will be ignored.
          */
         public static final String ON_QUERY = "on_query";
 
@@ -218,7 +229,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
          * incrementally refresh (refresh just those records added) whenever
          * new data is inserted into a base table.  A full refresh of all the
          * records occurs when a new query is issued and there have been
-         * inserts to any non-base-tables since the last query
+         * inserts to any non-base-tables since the last query.  <a
+         * href="../../../../../concepts/ttl.html" target="_top">TTL</a> will
+         * be set to not expire; any {@code ttl} specified will be ignored.
          */
         public static final String ON_INSERT = "on_insert";
 
@@ -245,7 +258,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
         /**
          * Sets the <a href="../../../../../concepts/ttl.html"
          * target="_top">TTL</a> of the join table specified in {@code
-         * joinTableName}.
+         * joinTableName}.  Ignored if {@code refresh_method} is either {@code
+         * on_insert} or {@code on_query}.
          */
         public static final String TTL = "ttl";
 
@@ -299,7 +313,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                     syntax 'column_name as alias'. Wild cards '*' can be
      *                     used to include all columns across member tables or
      *                     'table_id.*' for all of a single table's columns.
-     *                     Columns and column expressions comprising the join
+     *                     Columns and column expressions composing the join
      *                     must be uniquely named or aliased--therefore, the
      *                     '*' wild card cannot be used if column names aren't
      *                     unique across all tables.
@@ -357,14 +371,19 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 data is inserted into the base table.  A full refresh of
      *                 all the records occurs when a new query is issued and
      *                 there have been inserts to any non-base-tables since the
-     *                 last query
+     *                 last query.  <a href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> will be set to not expire; any
+     *                 {@code ttl} specified will be ignored.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#ON_INSERT
      *                 ON_INSERT}: incrementally refresh (refresh just those
      *                 records added) whenever new data is inserted into a base
      *                 table.  A full refresh of all the records occurs when a
      *                 new query is issued and there have been inserts to any
-     *                 non-base-tables since the last query
+     *                 non-base-tables since the last query.  <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> will be set to not expire; any
+     *                 {@code ttl} specified will be ignored.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#MANUAL
@@ -400,7 +419,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 TTL}: Sets the <a
      *                 href="../../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the join table specified in
-     *                 {@code joinTableName}.
+     *                 {@code joinTableName}.  Ignored if {@code
+     *                 refresh_method} is either {@code on_insert} or {@code
+     *                 on_query}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this projection is part of
@@ -477,8 +498,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         alias.  Columns can be aliased via the syntax 'column_name as
      *         alias'. Wild cards '*' can be used to include all columns across
      *         member tables or 'table_id.*' for all of a single table's
-     *         columns.  Columns and column expressions comprising the join
-     *         must be uniquely named or aliased--therefore, the '*' wild card
+     *         columns.  Columns and column expressions composing the join must
+     *         be uniquely named or aliased--therefore, the '*' wild card
      *         cannot be used if column names aren't unique across all tables.
      * 
      */
@@ -495,7 +516,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                     syntax 'column_name as alias'. Wild cards '*' can be
      *                     used to include all columns across member tables or
      *                     'table_id.*' for all of a single table's columns.
-     *                     Columns and column expressions comprising the join
+     *                     Columns and column expressions composing the join
      *                     must be uniquely named or aliased--therefore, the
      *                     '*' wild card cannot be used if column names aren't
      *                     unique across all tables.
@@ -581,14 +602,19 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         added) whenever a new query is issued and new data is inserted
      *         into the base table.  A full refresh of all the records occurs
      *         when a new query is issued and there have been inserts to any
-     *         non-base-tables since the last query
+     *         non-base-tables since the last query.  <a
+     *         href="../../../../../concepts/ttl.html" target="_top">TTL</a>
+     *         will be set to not expire; any {@code ttl} specified will be
+     *         ignored.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#ON_INSERT
      *         ON_INSERT}: incrementally refresh (refresh just those records
      *         added) whenever new data is inserted into a base table.  A full
      *         refresh of all the records occurs when a new query is issued and
      *         there have been inserts to any non-base-tables since the last
-     *         query
+     *         query.  <a href="../../../../../concepts/ttl.html"
+     *         target="_top">TTL</a> will be set to not expire; any {@code ttl}
+     *         specified will be ignored.
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#MANUAL
@@ -622,7 +648,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#TTL TTL}: Sets
      *         the <a href="../../../../../concepts/ttl.html"
      *         target="_top">TTL</a> of the join table specified in {@code
-     *         joinTableName}.
+     *         joinTableName}.  Ignored if {@code refresh_method} is either
+     *         {@code on_insert} or {@code on_query}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
      *         VIEW_ID}: view this projection is part of
@@ -689,14 +716,19 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 data is inserted into the base table.  A full refresh of
      *                 all the records occurs when a new query is issued and
      *                 there have been inserts to any non-base-tables since the
-     *                 last query
+     *                 last query.  <a href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> will be set to not expire; any
+     *                 {@code ttl} specified will be ignored.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#ON_INSERT
      *                 ON_INSERT}: incrementally refresh (refresh just those
      *                 records added) whenever new data is inserted into a base
      *                 table.  A full refresh of all the records occurs when a
      *                 new query is issued and there have been inserts to any
-     *                 non-base-tables since the last query
+     *                 non-base-tables since the last query.  <a
+     *                 href="../../../../../concepts/ttl.html"
+     *                 target="_top">TTL</a> will be set to not expire; any
+     *                 {@code ttl} specified will be ignored.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#MANUAL
@@ -732,7 +764,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 TTL}: Sets the <a
      *                 href="../../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the join table specified in
-     *                 {@code joinTableName}.
+     *                 {@code joinTableName}.  Ignored if {@code
+     *                 refresh_method} is either {@code on_insert} or {@code
+     *                 on_query}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this projection is part of

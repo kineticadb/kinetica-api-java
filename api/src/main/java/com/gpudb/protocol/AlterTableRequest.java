@@ -34,9 +34,13 @@ import org.apache.avro.generic.IndexedRecord;
  * contained
  * table & view that is not protected will have its TTL set to the given value.
  * <p>
- * Set the global access mode (i.e. locking) for a table. The mode can be set
- * to
- * 'no_access', 'read_only', 'write_only' or 'read_write'.
+ * Set the global access mode (i.e. locking) for a table. This setting trumps
+ * any
+ * role-based access controls that may be in place; e.g., a user with write
+ * access
+ * to a table marked read-only will not be able to insert records into it. The
+ * mode
+ * can be set to read-only, write-only, read/write, and no access.
  * <p>
  * Change the <a href="../../../../../concepts/protection.html"
  * target="_top">protection</a> mode to prevent or
@@ -113,8 +117,15 @@ public class AlterTableRequest implements IndexedRecord {
      * target="_top">tables</a>.
      *         <li> {@link com.gpudb.protocol.AlterTableRequest.Action#TTL
      * TTL}: Sets the <a href="../../../../../concepts/ttl.html"
-     * target="_top">TTL</a> of the table, view, or collection specified in
-     * {@code tableName}.
+     * target="_top">time-to-live</a> in minutes of the table, view, or
+     * collection specified in {@code tableName}.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#MEMORY_TTL MEMORY_TTL}: Sets
+     * the time-to-live in minutes for the individual chunks of the columns of
+     * the table, view, or collection specified in {@code tableName} to free
+     * their memory if unused longer than the given time. Specify an empty
+     * string to restore the global memory_ttl setting and a value of '-1' for
+     * an infinite timeout.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN ADD_COLUMN}: Adds
      * the column specified in {@code value} to the table specified in {@code
@@ -125,6 +136,10 @@ public class AlterTableRequest implements IndexedRecord {
      * CHANGE_COLUMN}: Changes type and properties of the column specified in
      * {@code value}.  Use {@code column_type} and {@code column_properties} in
      * {@code options} to set the column's type and properties, respectively.
+     * Note that primary key and/or shard key columns cannot be changed. All
+     * unchanging column properties must be listed for the change to take
+     * place, e.g., to add dictionary encoding to an existing 'char4' column,
+     * both 'char4' and 'dict' must be specified in the {@code options} map.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
      * SET_COLUMN_COMPRESSION}: Modifies the <a
@@ -156,28 +171,28 @@ public class AlterTableRequest implements IndexedRecord {
      * {@code value}. Valid modes are 'no_access', 'read_only', 'write_only'
      * and 'read_write'.
      *         <li> {@link com.gpudb.protocol.AlterTableRequest.Action#REFRESH
-     * REFRESH}: Replay all the table creation commands required to create this
-     * view. Endpoints supported are {@link
-     * com.gpudb.GPUdb#filter(FilterRequest)}, {@link
-     * com.gpudb.GPUdb#createJoinTable(CreateJoinTableRequest)}, {@link
-     * com.gpudb.GPUdb#createProjection(CreateProjectionRequest)}, {@link
-     * com.gpudb.GPUdb#createUnion(CreateUnionRequest)}, {@link
-     * com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}, and
-     * {@link com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
+     * REFRESH}: Replays all the table creation commands required to create
+     * this <a href="../../../../../concepts/materialized_views.html"
+     * target="_top">materialized view</a>.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
-     * SET_REFRESH_METHOD}: Set the method by which this view is refreshed -
-     * one of 'manual', 'periodic', 'on_change', 'on_query'.
+     * SET_REFRESH_METHOD}: Sets the method by which this <a
+     * href="../../../../../concepts/materialized_views.html"
+     * target="_top">materialized view</a> is refreshed - one of 'manual',
+     * 'periodic', 'on_change'.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
-     * SET_REFRESH_START_TIME}: Set the time to start periodic refreshes to
-     * datetime string with format YYYY-MM-DD HH:MM:SS at which refresh is to
-     * be done.  Next refresh occurs at refresh_start_time + N*refresh_period
+     * SET_REFRESH_START_TIME}: Sets the time to start periodic refreshes of
+     * this <a href="../../../../../concepts/materialized_views.html"
+     * target="_top">materialized view</a> to datetime string with format
+     * 'YYYY-MM-DD HH:MM:SS'.  Subsequent refreshes occur at the specified time
+     * + N * the refresh period.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
-     * SET_REFRESH_PERIOD}: Set the time interval in seconds at which to
-     * refresh this view - sets the refresh method to periodic if not alreay
-     * set.
+     * SET_REFRESH_PERIOD}: Sets the time interval in seconds at which to
+     * refresh this <a href="../../../../../concepts/materialized_views.html"
+     * target="_top">materialized view</a>.  Also, sets the refresh method to
+     * periodic if not alreay set.
      * </ul>
      * A set of string constants for the parameter {@code action}.
      */
@@ -230,10 +245,19 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Sets the <a href="../../../../../concepts/ttl.html"
-         * target="_top">TTL</a> of the table, view, or collection specified in
-         * {@code tableName}.
+         * target="_top">time-to-live</a> in minutes of the table, view, or
+         * collection specified in {@code tableName}.
          */
         public static final String TTL = "ttl";
+
+        /**
+         * Sets the time-to-live in minutes for the individual chunks of the
+         * columns of the table, view, or collection specified in {@code
+         * tableName} to free their memory if unused longer than the given
+         * time. Specify an empty string to restore the global memory_ttl
+         * setting and a value of '-1' for an infinite timeout.
+         */
+        public static final String MEMORY_TTL = "memory_ttl";
 
         /**
          * Adds the column specified in {@code value} to the table specified in
@@ -247,7 +271,11 @@ public class AlterTableRequest implements IndexedRecord {
          * Changes type and properties of the column specified in {@code
          * value}.  Use {@code column_type} and {@code column_properties} in
          * {@code options} to set the column's type and properties,
-         * respectively.
+         * respectively. Note that primary key and/or shard key columns cannot
+         * be changed. All unchanging column properties must be listed for the
+         * change to take place, e.g., to add dictionary encoding to an
+         * existing 'char4' column, both 'char4' and 'dict' must be specified
+         * in the {@code options} map.
          */
         public static final String CHANGE_COLUMN = "change_column";
 
@@ -289,33 +317,34 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String SET_GLOBAL_ACCESS_MODE = "set_global_access_mode";
 
         /**
-         * Replay all the table creation commands required to create this view.
-         * Endpoints supported are {@link
-         * com.gpudb.GPUdb#filter(FilterRequest)}, {@link
-         * com.gpudb.GPUdb#createJoinTable(CreateJoinTableRequest)}, {@link
-         * com.gpudb.GPUdb#createProjection(CreateProjectionRequest)}, {@link
-         * com.gpudb.GPUdb#createUnion(CreateUnionRequest)}, {@link
-         * com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}, and
-         * {@link com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
+         * Replays all the table creation commands required to create this <a
+         * href="../../../../../concepts/materialized_views.html"
+         * target="_top">materialized view</a>.
          */
         public static final String REFRESH = "refresh";
 
         /**
-         * Set the method by which this view is refreshed - one of 'manual',
-         * 'periodic', 'on_change', 'on_query'.
+         * Sets the method by which this <a
+         * href="../../../../../concepts/materialized_views.html"
+         * target="_top">materialized view</a> is refreshed - one of 'manual',
+         * 'periodic', 'on_change'.
          */
         public static final String SET_REFRESH_METHOD = "set_refresh_method";
 
         /**
-         * Set the time to start periodic refreshes to datetime string with
-         * format YYYY-MM-DD HH:MM:SS at which refresh is to be done.  Next
-         * refresh occurs at refresh_start_time + N*refresh_period
+         * Sets the time to start periodic refreshes of this <a
+         * href="../../../../../concepts/materialized_views.html"
+         * target="_top">materialized view</a> to datetime string with format
+         * 'YYYY-MM-DD HH:MM:SS'.  Subsequent refreshes occur at the specified
+         * time + N * the refresh period.
          */
         public static final String SET_REFRESH_START_TIME = "set_refresh_start_time";
 
         /**
-         * Set the time interval in seconds at which to refresh this view -
-         * sets the refresh method to periodic if not alreay set.
+         * Sets the time interval in seconds at which to refresh this <a
+         * href="../../../../../concepts/materialized_views.html"
+         * target="_top">materialized view</a>.  Also, sets the refresh method
+         * to periodic if not alreay set.
          */
         public static final String SET_REFRESH_PERIOD = "set_refresh_period";
 
@@ -543,8 +572,16 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}:
      *                Sets the <a href="../../../../../concepts/ttl.html"
-     *                target="_top">TTL</a> of the table, view, or collection
-     *                specified in {@code tableName}.
+     *                target="_top">time-to-live</a> in minutes of the table,
+     *                view, or collection specified in {@code tableName}.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#MEMORY_TTL
+     *                MEMORY_TTL}: Sets the time-to-live in minutes for the
+     *                individual chunks of the columns of the table, view, or
+     *                collection specified in {@code tableName} to free their
+     *                memory if unused longer than the given time. Specify an
+     *                empty string to restore the global memory_ttl setting and
+     *                a value of '-1' for an infinite timeout.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
      *                ADD_COLUMN}: Adds the column specified in {@code value}
@@ -557,7 +594,12 @@ public class AlterTableRequest implements IndexedRecord {
      *                CHANGE_COLUMN}: Changes type and properties of the column
      *                specified in {@code value}.  Use {@code column_type} and
      *                {@code column_properties} in {@code options} to set the
-     *                column's type and properties, respectively.
+     *                column's type and properties, respectively. Note that
+     *                primary key and/or shard key columns cannot be changed.
+     *                All unchanging column properties must be listed for the
+     *                change to take place, e.g., to add dictionary encoding to
+     *                an existing 'char4' column, both 'char4' and 'dict' must
+     *                be specified in the {@code options} map.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
      *                SET_COLUMN_COMPRESSION}: Modifies the <a
@@ -592,33 +634,31 @@ public class AlterTableRequest implements IndexedRecord {
      *                and 'read_write'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REFRESH
-     *                REFRESH}: Replay all the table creation commands required
-     *                to create this view. Endpoints supported are {@link
-     *                com.gpudb.GPUdb#filter(FilterRequest)}, {@link
-     *                com.gpudb.GPUdb#createJoinTable(CreateJoinTableRequest)},
-     *                {@link
-     *                com.gpudb.GPUdb#createProjection(CreateProjectionRequest)},
-     *                {@link com.gpudb.GPUdb#createUnion(CreateUnionRequest)},
-     *                {@link
-     *                com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)},
-     *                and {@link
-     *                com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
+     *                REFRESH}: Replays all the table creation commands
+     *                required to create this <a
+     *                href="../../../../../concepts/materialized_views.html"
+     *                target="_top">materialized view</a>.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
-     *                SET_REFRESH_METHOD}: Set the method by which this view is
-     *                refreshed - one of 'manual', 'periodic', 'on_change',
-     *                'on_query'.
+     *                SET_REFRESH_METHOD}: Sets the method by which this <a
+     *                href="../../../../../concepts/materialized_views.html"
+     *                target="_top">materialized view</a> is refreshed - one of
+     *                'manual', 'periodic', 'on_change'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
-     *                SET_REFRESH_START_TIME}: Set the time to start periodic
-     *                refreshes to datetime string with format YYYY-MM-DD
-     *                HH:MM:SS at which refresh is to be done.  Next refresh
-     *                occurs at refresh_start_time + N*refresh_period
+     *                SET_REFRESH_START_TIME}: Sets the time to start periodic
+     *                refreshes of this <a
+     *                href="../../../../../concepts/materialized_views.html"
+     *                target="_top">materialized view</a> to datetime string
+     *                with format 'YYYY-MM-DD HH:MM:SS'.  Subsequent refreshes
+     *                occur at the specified time + N * the refresh period.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
-     *                SET_REFRESH_PERIOD}: Set the time interval in seconds at
-     *                which to refresh this view - sets the refresh method to
-     *                periodic if not alreay set.
+     *                SET_REFRESH_PERIOD}: Sets the time interval in seconds at
+     *                which to refresh this <a
+     *                href="../../../../../concepts/materialized_views.html"
+     *                target="_top">materialized view</a>.  Also, sets the
+     *                refresh method to periodic if not alreay set.
      *                </ul>
      * @param value  The value of the modification. May be a column name,
      *               'true' or 'false', a TTL, or the global access mode
@@ -771,9 +811,17 @@ public class AlterTableRequest implements IndexedRecord {
      *         target="_top">tables</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}: Sets the
-     *         <a href="../../../../../concepts/ttl.html" target="_top">TTL</a>
-     *         of the table, view, or collection specified in {@code
-     *         tableName}.
+     *         <a href="../../../../../concepts/ttl.html"
+     *         target="_top">time-to-live</a> in minutes of the table, view, or
+     *         collection specified in {@code tableName}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#MEMORY_TTL
+     *         MEMORY_TTL}: Sets the time-to-live in minutes for the individual
+     *         chunks of the columns of the table, view, or collection
+     *         specified in {@code tableName} to free their memory if unused
+     *         longer than the given time. Specify an empty string to restore
+     *         the global memory_ttl setting and a value of '-1' for an
+     *         infinite timeout.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
      *         ADD_COLUMN}: Adds the column specified in {@code value} to the
@@ -785,7 +833,11 @@ public class AlterTableRequest implements IndexedRecord {
      *         CHANGE_COLUMN}: Changes type and properties of the column
      *         specified in {@code value}.  Use {@code column_type} and {@code
      *         column_properties} in {@code options} to set the column's type
-     *         and properties, respectively.
+     *         and properties, respectively. Note that primary key and/or shard
+     *         key columns cannot be changed. All unchanging column properties
+     *         must be listed for the change to take place, e.g., to add
+     *         dictionary encoding to an existing 'char4' column, both 'char4'
+     *         and 'dict' must be specified in the {@code options} map.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
      *         SET_COLUMN_COMPRESSION}: Modifies the <a
@@ -819,31 +871,30 @@ public class AlterTableRequest implements IndexedRecord {
      *         'read_only', 'write_only' and 'read_write'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#REFRESH REFRESH}:
-     *         Replay all the table creation commands required to create this
-     *         view. Endpoints supported are {@link
-     *         com.gpudb.GPUdb#filter(FilterRequest)}, {@link
-     *         com.gpudb.GPUdb#createJoinTable(CreateJoinTableRequest)}, {@link
-     *         com.gpudb.GPUdb#createProjection(CreateProjectionRequest)},
-     *         {@link com.gpudb.GPUdb#createUnion(CreateUnionRequest)}, {@link
-     *         com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)},
-     *         and {@link
-     *         com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
+     *         Replays all the table creation commands required to create this
+     *         <a href="../../../../../concepts/materialized_views.html"
+     *         target="_top">materialized view</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
-     *         SET_REFRESH_METHOD}: Set the method by which this view is
-     *         refreshed - one of 'manual', 'periodic', 'on_change',
-     *         'on_query'.
+     *         SET_REFRESH_METHOD}: Sets the method by which this <a
+     *         href="../../../../../concepts/materialized_views.html"
+     *         target="_top">materialized view</a> is refreshed - one of
+     *         'manual', 'periodic', 'on_change'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
-     *         SET_REFRESH_START_TIME}: Set the time to start periodic
-     *         refreshes to datetime string with format YYYY-MM-DD HH:MM:SS at
-     *         which refresh is to be done.  Next refresh occurs at
-     *         refresh_start_time + N*refresh_period
+     *         SET_REFRESH_START_TIME}: Sets the time to start periodic
+     *         refreshes of this <a
+     *         href="../../../../../concepts/materialized_views.html"
+     *         target="_top">materialized view</a> to datetime string with
+     *         format 'YYYY-MM-DD HH:MM:SS'.  Subsequent refreshes occur at the
+     *         specified time + N * the refresh period.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
-     *         SET_REFRESH_PERIOD}: Set the time interval in seconds at which
-     *         to refresh this view - sets the refresh method to periodic if
-     *         not alreay set.
+     *         SET_REFRESH_PERIOD}: Sets the time interval in seconds at which
+     *         to refresh this <a
+     *         href="../../../../../concepts/materialized_views.html"
+     *         target="_top">materialized view</a>.  Also, sets the refresh
+     *         method to periodic if not alreay set.
      *         </ul>
      * 
      */
@@ -896,8 +947,16 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}:
      *                Sets the <a href="../../../../../concepts/ttl.html"
-     *                target="_top">TTL</a> of the table, view, or collection
-     *                specified in {@code tableName}.
+     *                target="_top">time-to-live</a> in minutes of the table,
+     *                view, or collection specified in {@code tableName}.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#MEMORY_TTL
+     *                MEMORY_TTL}: Sets the time-to-live in minutes for the
+     *                individual chunks of the columns of the table, view, or
+     *                collection specified in {@code tableName} to free their
+     *                memory if unused longer than the given time. Specify an
+     *                empty string to restore the global memory_ttl setting and
+     *                a value of '-1' for an infinite timeout.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
      *                ADD_COLUMN}: Adds the column specified in {@code value}
@@ -910,7 +969,12 @@ public class AlterTableRequest implements IndexedRecord {
      *                CHANGE_COLUMN}: Changes type and properties of the column
      *                specified in {@code value}.  Use {@code column_type} and
      *                {@code column_properties} in {@code options} to set the
-     *                column's type and properties, respectively.
+     *                column's type and properties, respectively. Note that
+     *                primary key and/or shard key columns cannot be changed.
+     *                All unchanging column properties must be listed for the
+     *                change to take place, e.g., to add dictionary encoding to
+     *                an existing 'char4' column, both 'char4' and 'dict' must
+     *                be specified in the {@code options} map.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
      *                SET_COLUMN_COMPRESSION}: Modifies the <a
@@ -945,33 +1009,31 @@ public class AlterTableRequest implements IndexedRecord {
      *                and 'read_write'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REFRESH
-     *                REFRESH}: Replay all the table creation commands required
-     *                to create this view. Endpoints supported are {@link
-     *                com.gpudb.GPUdb#filter(FilterRequest)}, {@link
-     *                com.gpudb.GPUdb#createJoinTable(CreateJoinTableRequest)},
-     *                {@link
-     *                com.gpudb.GPUdb#createProjection(CreateProjectionRequest)},
-     *                {@link com.gpudb.GPUdb#createUnion(CreateUnionRequest)},
-     *                {@link
-     *                com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)},
-     *                and {@link
-     *                com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
+     *                REFRESH}: Replays all the table creation commands
+     *                required to create this <a
+     *                href="../../../../../concepts/materialized_views.html"
+     *                target="_top">materialized view</a>.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
-     *                SET_REFRESH_METHOD}: Set the method by which this view is
-     *                refreshed - one of 'manual', 'periodic', 'on_change',
-     *                'on_query'.
+     *                SET_REFRESH_METHOD}: Sets the method by which this <a
+     *                href="../../../../../concepts/materialized_views.html"
+     *                target="_top">materialized view</a> is refreshed - one of
+     *                'manual', 'periodic', 'on_change'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
-     *                SET_REFRESH_START_TIME}: Set the time to start periodic
-     *                refreshes to datetime string with format YYYY-MM-DD
-     *                HH:MM:SS at which refresh is to be done.  Next refresh
-     *                occurs at refresh_start_time + N*refresh_period
+     *                SET_REFRESH_START_TIME}: Sets the time to start periodic
+     *                refreshes of this <a
+     *                href="../../../../../concepts/materialized_views.html"
+     *                target="_top">materialized view</a> to datetime string
+     *                with format 'YYYY-MM-DD HH:MM:SS'.  Subsequent refreshes
+     *                occur at the specified time + N * the refresh period.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
-     *                SET_REFRESH_PERIOD}: Set the time interval in seconds at
-     *                which to refresh this view - sets the refresh method to
-     *                periodic if not alreay set.
+     *                SET_REFRESH_PERIOD}: Sets the time interval in seconds at
+     *                which to refresh this <a
+     *                href="../../../../../concepts/materialized_views.html"
+     *                target="_top">materialized view</a>.  Also, sets the
+     *                refresh method to periodic if not alreay set.
      *                </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

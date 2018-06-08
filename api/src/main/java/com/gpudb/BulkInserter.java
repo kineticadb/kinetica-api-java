@@ -4,6 +4,7 @@ import com.gpudb.protocol.AdminShowShardsRequest;
 import com.gpudb.protocol.InsertRecordsRequest;
 import com.gpudb.protocol.InsertRecordsResponse;
 import com.gpudb.protocol.RawInsertRecordsRequest;
+import com.gpudb.protocol.ShowTableResponse;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -281,12 +282,21 @@ public class BulkInserter<T> {
         this.tableName = tableName;
         this.typeObjectMap = typeObjectMap;
 
+        // Validate that the table exists
+        if ( !gpudb.hasTable( tableName, null ).getTableExists() ) {
+            throw new GPUdbException( "Table '" + tableName + "' does not exist!" );
+        }
+            
+        // Check if it is a replicated table (if so, then can't do
+        // multi-head ingestion; will have to force rank-0 ingestion)
+        boolean isReplicatedTable = gpudb.showTable( tableName, null ).getTableDescriptions().get( 0 ).contains( ShowTableResponse.TableDescriptions.REPLICATED );
+            
+        // Validate the batch size
         if (batchSize < 1) {
             throw new IllegalArgumentException("Batch size must be greater than zero.");
         }
-
         this.batchSize = batchSize;
-
+        
         if (options != null) {
             this.options = Collections.unmodifiableMap(new HashMap<>(options));
         } else {
@@ -329,7 +339,9 @@ public class BulkInserter<T> {
         this.workerQueues = new ArrayList<>();
 
         try {
-            if (workers != null && !workers.isEmpty()) {
+            // If we have multiple workers, then use those (unless the table
+            // is replicated)
+            if (workers != null && !workers.isEmpty() && !isReplicatedTable ) {
                 for (URL url : workers) {
                     this.workerQueues.add(new WorkerQueue<T>(GPUdbBase.appendPathToURL(url, "/insert/records"), batchSize, primaryKeyBuilder != null, updateOnExistingPk));
                 }

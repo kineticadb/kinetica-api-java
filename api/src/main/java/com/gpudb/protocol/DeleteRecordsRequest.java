@@ -21,12 +21,12 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * Deletes record(s) matching the provided criteria from the given table. The
  * record selection criteria can either be one or more  {@code expressions}
- * (matching multiple records) or a single record identified by {@code
- * record_id} options.  Note that the two selection criteria are mutually
- * exclusive.  This operation cannot be run on a collection or a view.  The
- * operation is synchronous meaning that a response will not be available until
- * the request is completely processed and all the matching records are
- * deleted.
+ * (matching multiple records), a single record identified by {@code record_id}
+ * options, or all records when using {@code delete_all_records}.  Note that
+ * the three selection criteria are mutually exclusive.  This operation cannot
+ * be run on a collection or a view.  The operation is synchronous meaning that
+ * a response will not be available until the request is completely processed
+ * and all the matching records are deleted.
  */
 public class DeleteRecordsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -65,6 +65,20 @@ public class DeleteRecordsRequest implements IndexedRecord {
      * the record} or by calling {@link
      * com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
      * with the *return_record_ids* option.
+     *         <li> {@link
+     * com.gpudb.protocol.DeleteRecordsRequest.Options#DELETE_ALL_RECORDS
+     * DELETE_ALL_RECORDS}: If set to {@code true}, all records in the table
+     * will be deleted. If set to {@code false}, then the option is effectively
+     * ignored.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.DeleteRecordsRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.DeleteRecordsRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.DeleteRecordsRequest.Options#FALSE FALSE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -84,6 +98,23 @@ public class DeleteRecordsRequest implements IndexedRecord {
          * with the *return_record_ids* option.
          */
         public static final String RECORD_ID = "record_id";
+
+        /**
+         * If set to {@code true}, all records in the table will be deleted. If
+         * set to {@code false}, then the option is effectively ignored.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.DeleteRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.DeleteRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.DeleteRecordsRequest.Options#FALSE FALSE}.
+         */
+        public static final String DELETE_ALL_RECORDS = "delete_all_records";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         private Options() {  }
     }
@@ -128,6 +159,23 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *                 insertion of the record} or by calling {@link
      *                 com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
      *                 with the *return_record_ids* option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteRecordsRequest.Options#DELETE_ALL_RECORDS
+     *                 DELETE_ALL_RECORDS}: If set to {@code true}, all records
+     *                 in the table will be deleted. If set to {@code false},
+     *                 then the option is effectively ignored.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.DeleteRecordsRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      */
@@ -208,6 +256,20 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *         insertion of the record} or by calling {@link
      *         com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
      *         with the *return_record_ids* option.
+     *                 <li> {@link
+     *         com.gpudb.protocol.DeleteRecordsRequest.Options#DELETE_ALL_RECORDS
+     *         DELETE_ALL_RECORDS}: If set to {@code true}, all records in the
+     *         table will be deleted. If set to {@code false}, then the option
+     *         is effectively ignored.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.DeleteRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.DeleteRecordsRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.DeleteRecordsRequest.Options#FALSE FALSE}.
      *         </ul>
      * 
      */
@@ -231,6 +293,23 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *                 insertion of the record} or by calling {@link
      *                 com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
      *                 with the *return_record_ids* option.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteRecordsRequest.Options#DELETE_ALL_RECORDS
+     *                 DELETE_ALL_RECORDS}: If set to {@code true}, all records
+     *                 in the table will be deleted. If set to {@code false},
+     *                 then the option is effectively ignored.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.DeleteRecordsRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

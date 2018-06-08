@@ -28,15 +28,17 @@ import org.apache.avro.generic.IndexedRecord;
  * simultaneously.  One example of mutually exclusive properties are {@code
  * data} and {@code store_only}.
  * <p>
- * To set a *primary key* on one or more columns include the property
- * 'primary_key' on the desired column_names. If a primary key is specified,
- * then a uniqueness constraint is enforced, in that only a single object can
- * exist with a given primary key. When {@link
+ * A single <a href="../../../../../concepts/tables.html#primary-keys"
+ * target="_top">primary key</a> and/or single <a
+ * href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
+ * key</a> can be set across one or more columns. If a primary key is
+ * specified, then a uniqueness constraint is enforced, in that only a single
+ * object can exist with a given primary key. When {@link
  * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest) inserting} data
  * into a table with a primary key, depending on the parameters in the request,
- * incoming objects with primary keys that match existing objects will either
- * overwrite (i.e. update) the existing object or will be skipped and not added
- * into the set.
+ * incoming objects with primary key values that match existing objects will
+ * either overwrite (i.e. update) the existing object or will be skipped and
+ * not added into the set.
  * <p>
  * Example of a type definition with some of the parameters::
  * <p>
@@ -95,16 +97,18 @@ public class CreateTypeRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#TEXT_SEARCH
      * TEXT_SEARCH}: Valid only for 'string' columns. Enables full text search
-     * for string columns. Can be set independently of *data* and *store_only*.
+     * for string columns. Can be set independently of {@code data} and {@code
+     * store_only}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#STORE_ONLY STORE_ONLY}:
      * Persist the column value but do not make it available to queries (e.g.
      * {@link com.gpudb.GPUdb#filter(FilterRequest)})-i.e. it is mutually
-     * exclusive to the 'data' property. Any 'bytes' type column must have a
-     * 'store_only' property. This property reduces system memory usage.
+     * exclusive to the {@code data} property. Any 'bytes' type column must
+     * have a {@code store_only} property. This property reduces system memory
+     * usage.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#DISK_OPTIMIZED
-     * DISK_OPTIMIZED}: Works in conjunction with the 'data' property for
+     * DISK_OPTIMIZED}: Works in conjunction with the {@code data} property for
      * string columns. This property reduces system disk usage by disabling
      * reverse string lookups. Queries like {@link
      * com.gpudb.GPUdb#filter(FilterRequest)}, {@link
@@ -126,70 +130,70 @@ public class CreateTypeRequest implements IndexedRecord {
      * type.  There can be up to 15 digits before the decimal point and up to
      * four digits in the fractional part.  The value can be positive or
      * negative (indicated by a minus sign at the beginning).  This property is
-     * mutually exclusive with the 'text_search' property.
+     * mutually exclusive with the {@code text_search} property.
      *         <li> {@link com.gpudb.protocol.CreateTypeRequest.Properties#DATE
      * DATE}: Valid only for 'string' columns.  Indicates that this field
      * represents a date and will be provided in the format 'YYYY-MM-DD'.  The
      * allowable range is 1000-01-01 through 2900-01-01.  This property is
-     * mutually exclusive with the *text_search* property.
+     * mutually exclusive with the {@code text_search} property.
      *         <li> {@link com.gpudb.protocol.CreateTypeRequest.Properties#TIME
      * TIME}: Valid only for 'string' columns.  Indicates that this field
      * represents a time-of-day and will be provided in the format
      * 'HH:MM:SS.mmm'.  The allowable range is 00:00:00.000 through
-     * 23:59:59.999.  This property is mutually exclusive with the
-     * *text_search* property.
+     * 23:59:59.999.  This property is mutually exclusive with the {@code
+     * text_search} property.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#DATETIME DATETIME}:
      * Valid only for 'string' columns.  Indicates that this field represents a
      * datetime and will be provided in the format 'YYYY-MM-DD HH:MM:SS.mmm'.
      * The allowable range is 1000-01-01 00:00:00.000 through 2900-01-01
-     * 23:59:59.999.  This property is mutually exclusive with the
-     * *text_search* property.
+     * 23:59:59.999.  This property is mutually exclusive with the {@code
+     * text_search} property.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#CHAR1 CHAR1}: This
      * property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 1
-     * character. This property cannot be combined with *text_search*
+     * character.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#CHAR2 CHAR2}: This
      * property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 2
-     * characters. This property cannot be combined with *text_search*
+     * characters.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#CHAR4 CHAR4}: This
      * property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 4
-     * characters. This property cannot be combined with *text_search*
+     * characters.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#CHAR8 CHAR8}: This
      * property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 8
-     * characters. This property cannot be combined with *text_search*
+     * characters.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#CHAR16 CHAR16}: This
      * property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 16
-     * characters. This property cannot be combined with *text_search*
+     * characters.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#CHAR32 CHAR32}: This
      * property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 32
-     * characters. This property cannot be combined with *text_search*
+     * characters.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#CHAR64 CHAR64}: This
      * property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 64
-     * characters. This property cannot be combined with *text_search*
+     * characters.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#CHAR128 CHAR128}: This
      * property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 128
-     * characters. This property cannot be combined with *text_search*
+     * characters.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#CHAR256 CHAR256}: This
      * property provides optimized memory, disk and query performance for
      * string columns. Strings with this property must be no longer than 256
-     * characters. This property cannot be combined with *text_search*
+     * characters.
      *         <li> {@link com.gpudb.protocol.CreateTypeRequest.Properties#INT8
      * INT8}: This property provides optimized memory and query performance for
      * int columns. Ints with this property must be between -128 and +127
@@ -211,11 +215,14 @@ public class CreateTypeRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#PRIMARY_KEY
      * PRIMARY_KEY}: This property indicates that this column will be part of
-     * (or the entire) primary key.
+     * (or the entire) <a
+     * href="../../../../../concepts/tables.html#primary-keys"
+     * target="_top">primary key</a>.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#SHARD_KEY SHARD_KEY}:
      * This property indicates that this column will be part of (or the entire)
-     * shard key.
+     * <a href="../../../../../concepts/tables.html#shard-keys"
+     * target="_top">shard key</a>.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#NULLABLE NULLABLE}: This
      * property indicates that this column is nullable.  However, setting this
@@ -226,9 +233,9 @@ public class CreateTypeRequest implements IndexedRecord {
      * entry for the column in the avro schema must be: ['int', 'null'].
      * <p>
      * The C++, C#, Java, and Python APIs have built-in convenience for
-     * bypassing setting the avro schema by hand.  For those two languages, one
-     * can use this property as usual and not have to worry about the avro
-     * schema for the record.
+     * bypassing setting the avro schema by hand.  For those languages, one can
+     * use this property as usual and not have to worry about the avro schema
+     * for the record.
      *         <li> {@link com.gpudb.protocol.CreateTypeRequest.Properties#DICT
      * DICT}: This property indicates that this column should be dictionary
      * encoded. It can only be used in conjunction with string columns marked
@@ -248,26 +255,28 @@ public class CreateTypeRequest implements IndexedRecord {
 
         /**
          * Valid only for 'string' columns. Enables full text search for string
-         * columns. Can be set independently of *data* and *store_only*.
+         * columns. Can be set independently of {@code data} and {@code
+         * store_only}.
          */
         public static final String TEXT_SEARCH = "text_search";
 
         /**
          * Persist the column value but do not make it available to queries
          * (e.g. {@link com.gpudb.GPUdb#filter(FilterRequest)})-i.e. it is
-         * mutually exclusive to the 'data' property. Any 'bytes' type column
-         * must have a 'store_only' property. This property reduces system
-         * memory usage.
+         * mutually exclusive to the {@code data} property. Any 'bytes' type
+         * column must have a {@code store_only} property. This property
+         * reduces system memory usage.
          */
         public static final String STORE_ONLY = "store_only";
 
         /**
-         * Works in conjunction with the 'data' property for string columns.
-         * This property reduces system disk usage by disabling reverse string
-         * lookups. Queries like {@link com.gpudb.GPUdb#filter(FilterRequest)},
-         * {@link com.gpudb.GPUdb#filterByList(FilterByListRequest)}, and
-         * {@link com.gpudb.GPUdb#filterByValue(FilterByValueRequest)} work as
-         * usual but {@link
+         * Works in conjunction with the {@code data} property for string
+         * columns. This property reduces system disk usage by disabling
+         * reverse string lookups. Queries like {@link
+         * com.gpudb.GPUdb#filter(FilterRequest)}, {@link
+         * com.gpudb.GPUdb#filterByList(FilterByListRequest)}, and {@link
+         * com.gpudb.GPUdb#filterByValue(FilterByValueRequest)} work as usual
+         * but {@link
          * com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}, {@link
          * com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)} and
          * {@link
@@ -289,8 +298,8 @@ public class CreateTypeRequest implements IndexedRecord {
          * NUMERIC(19, 4) data type.  There can be up to 15 digits before the
          * decimal point and up to four digits in the fractional part.  The
          * value can be positive or negative (indicated by a minus sign at the
-         * beginning).  This property is mutually exclusive with the
-         * 'text_search' property.
+         * beginning).  This property is mutually exclusive with the {@code
+         * text_search} property.
          */
         public static final String DECIMAL = "decimal";
 
@@ -298,7 +307,7 @@ public class CreateTypeRequest implements IndexedRecord {
          * Valid only for 'string' columns.  Indicates that this field
          * represents a date and will be provided in the format 'YYYY-MM-DD'.
          * The allowable range is 1000-01-01 through 2900-01-01.  This property
-         * is mutually exclusive with the *text_search* property.
+         * is mutually exclusive with the {@code text_search} property.
          */
         public static final String DATE = "date";
 
@@ -306,8 +315,8 @@ public class CreateTypeRequest implements IndexedRecord {
          * Valid only for 'string' columns.  Indicates that this field
          * represents a time-of-day and will be provided in the format
          * 'HH:MM:SS.mmm'.  The allowable range is 00:00:00.000 through
-         * 23:59:59.999.  This property is mutually exclusive with the
-         * *text_search* property.
+         * 23:59:59.999.  This property is mutually exclusive with the {@code
+         * text_search} property.
          */
         public static final String TIME = "time";
 
@@ -316,79 +325,70 @@ public class CreateTypeRequest implements IndexedRecord {
          * represents a datetime and will be provided in the format 'YYYY-MM-DD
          * HH:MM:SS.mmm'.  The allowable range is 1000-01-01 00:00:00.000
          * through 2900-01-01 23:59:59.999.  This property is mutually
-         * exclusive with the *text_search* property.
+         * exclusive with the {@code text_search} property.
          */
         public static final String DATETIME = "datetime";
 
         /**
          * This property provides optimized memory, disk and query performance
          * for string columns. Strings with this property must be no longer
-         * than 1 character. This property cannot be combined with
-         * *text_search*
+         * than 1 character.
          */
         public static final String CHAR1 = "char1";
 
         /**
          * This property provides optimized memory, disk and query performance
          * for string columns. Strings with this property must be no longer
-         * than 2 characters. This property cannot be combined with
-         * *text_search*
+         * than 2 characters.
          */
         public static final String CHAR2 = "char2";
 
         /**
          * This property provides optimized memory, disk and query performance
          * for string columns. Strings with this property must be no longer
-         * than 4 characters. This property cannot be combined with
-         * *text_search*
+         * than 4 characters.
          */
         public static final String CHAR4 = "char4";
 
         /**
          * This property provides optimized memory, disk and query performance
          * for string columns. Strings with this property must be no longer
-         * than 8 characters. This property cannot be combined with
-         * *text_search*
+         * than 8 characters.
          */
         public static final String CHAR8 = "char8";
 
         /**
          * This property provides optimized memory, disk and query performance
          * for string columns. Strings with this property must be no longer
-         * than 16 characters. This property cannot be combined with
-         * *text_search*
+         * than 16 characters.
          */
         public static final String CHAR16 = "char16";
 
         /**
          * This property provides optimized memory, disk and query performance
          * for string columns. Strings with this property must be no longer
-         * than 32 characters. This property cannot be combined with
-         * *text_search*
+         * than 32 characters.
          */
         public static final String CHAR32 = "char32";
 
         /**
          * This property provides optimized memory, disk and query performance
          * for string columns. Strings with this property must be no longer
-         * than 64 characters. This property cannot be combined with
-         * *text_search*
+         * than 64 characters.
          */
         public static final String CHAR64 = "char64";
 
         /**
          * This property provides optimized memory, disk and query performance
          * for string columns. Strings with this property must be no longer
-         * than 128 characters. This property cannot be combined with
-         * *text_search*
+         * than 128 characters.
          */
         public static final String CHAR128 = "char128";
 
         /**
          * This property provides optimized memory, disk and query performance
          * for string columns. Strings with this property must be no longer
-         * than 256 characters. This property cannot be combined with
-         * *text_search*
+         * than 256 characters.
          */
         public static final String CHAR256 = "char256";
 
@@ -423,13 +423,15 @@ public class CreateTypeRequest implements IndexedRecord {
 
         /**
          * This property indicates that this column will be part of (or the
-         * entire) primary key.
+         * entire) <a href="../../../../../concepts/tables.html#primary-keys"
+         * target="_top">primary key</a>.
          */
         public static final String PRIMARY_KEY = "primary_key";
 
         /**
          * This property indicates that this column will be part of (or the
-         * entire) shard key.
+         * entire) <a href="../../../../../concepts/tables.html#shard-keys"
+         * target="_top">shard key</a>.
          */
         public static final String SHARD_KEY = "shard_key";
 
@@ -443,9 +445,9 @@ public class CreateTypeRequest implements IndexedRecord {
          * the avro schema must be: ['int', 'null'].
          * <p>
          * The C++, C#, Java, and Python APIs have built-in convenience for
-         * bypassing setting the avro schema by hand.  For those two languages,
-         * one can use this property as usual and not have to worry about the
-         * avro schema for the record.
+         * bypassing setting the avro schema by hand.  For those languages, one
+         * can use this property as usual and not have to worry about the avro
+         * schema for the record.
          */
         public static final String NULLABLE = "nullable";
 
@@ -502,20 +504,21 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#TEXT_SEARCH
      *                    TEXT_SEARCH}: Valid only for 'string' columns.
      *                    Enables full text search for string columns. Can be
-     *                    set independently of *data* and *store_only*.
+     *                    set independently of {@code data} and {@code
+     *                    store_only}.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#STORE_ONLY
      *                    STORE_ONLY}: Persist the column value but do not make
      *                    it available to queries (e.g. {@link
      *                    com.gpudb.GPUdb#filter(FilterRequest)})-i.e. it is
-     *                    mutually exclusive to the 'data' property. Any
-     *                    'bytes' type column must have a 'store_only'
+     *                    mutually exclusive to the {@code data} property. Any
+     *                    'bytes' type column must have a {@code store_only}
      *                    property. This property reduces system memory usage.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DISK_OPTIMIZED
-     *                    DISK_OPTIMIZED}: Works in conjunction with the 'data'
-     *                    property for string columns. This property reduces
-     *                    system disk usage by disabling reverse string
+     *                    DISK_OPTIMIZED}: Works in conjunction with the {@code
+     *                    data} property for string columns. This property
+     *                    reduces system disk usage by disabling reverse string
      *                    lookups. Queries like {@link
      *                    com.gpudb.GPUdb#filter(FilterRequest)}, {@link
      *                    com.gpudb.GPUdb#filterByList(FilterByListRequest)},
@@ -544,23 +547,24 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    and up to four digits in the fractional part.  The
      *                    value can be positive or negative (indicated by a
      *                    minus sign at the beginning).  This property is
-     *                    mutually exclusive with the 'text_search' property.
+     *                    mutually exclusive with the {@code text_search}
+     *                    property.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DATE
      *                    DATE}: Valid only for 'string' columns.  Indicates
      *                    that this field represents a date and will be
      *                    provided in the format 'YYYY-MM-DD'.  The allowable
      *                    range is 1000-01-01 through 2900-01-01.  This
-     *                    property is mutually exclusive with the *text_search*
-     *                    property.
+     *                    property is mutually exclusive with the {@code
+     *                    text_search} property.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#TIME
      *                    TIME}: Valid only for 'string' columns.  Indicates
      *                    that this field represents a time-of-day and will be
      *                    provided in the format 'HH:MM:SS.mmm'.  The allowable
      *                    range is 00:00:00.000 through 23:59:59.999.  This
-     *                    property is mutually exclusive with the *text_search*
-     *                    property.
+     *                    property is mutually exclusive with the {@code
+     *                    text_search} property.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DATETIME
      *                    DATETIME}: Valid only for 'string' columns.
@@ -568,71 +572,62 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    will be provided in the format 'YYYY-MM-DD
      *                    HH:MM:SS.mmm'.  The allowable range is 1000-01-01
      *                    00:00:00.000 through 2900-01-01 23:59:59.999.  This
-     *                    property is mutually exclusive with the *text_search*
-     *                    property.
+     *                    property is mutually exclusive with the {@code
+     *                    text_search} property.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR1
      *                    CHAR1}: This property provides optimized memory, disk
      *                    and query performance for string columns. Strings
      *                    with this property must be no longer than 1
-     *                    character. This property cannot be combined with
-     *                    *text_search*
+     *                    character.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR2
      *                    CHAR2}: This property provides optimized memory, disk
      *                    and query performance for string columns. Strings
      *                    with this property must be no longer than 2
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR4
      *                    CHAR4}: This property provides optimized memory, disk
      *                    and query performance for string columns. Strings
      *                    with this property must be no longer than 4
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR8
      *                    CHAR8}: This property provides optimized memory, disk
      *                    and query performance for string columns. Strings
      *                    with this property must be no longer than 8
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR16
      *                    CHAR16}: This property provides optimized memory,
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 16
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR32
      *                    CHAR32}: This property provides optimized memory,
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 32
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR64
      *                    CHAR64}: This property provides optimized memory,
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 64
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR128
      *                    CHAR128}: This property provides optimized memory,
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 128
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR256
      *                    CHAR256}: This property provides optimized memory,
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 256
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#INT8
      *                    INT8}: This property provides optimized memory and
@@ -660,11 +655,15 @@ public class CreateTypeRequest implements IndexedRecord {
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#PRIMARY_KEY
      *                    PRIMARY_KEY}: This property indicates that this
-     *                    column will be part of (or the entire) primary key.
+     *                    column will be part of (or the entire) <a
+     *                    href="../../../../../concepts/tables.html#primary-keys"
+     *                    target="_top">primary key</a>.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#SHARD_KEY
      *                    SHARD_KEY}: This property indicates that this column
-     *                    will be part of (or the entire) shard key.
+     *                    will be part of (or the entire) <a
+     *                    href="../../../../../concepts/tables.html#shard-keys"
+     *                    target="_top">shard key</a>.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#NULLABLE
      *                    NULLABLE}: This property indicates that this column
@@ -678,9 +677,9 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    schema must be: ['int', 'null'].
      *                    The C++, C#, Java, and Python APIs have built-in
      *                    convenience for bypassing setting the avro schema by
-     *                    hand.  For those two languages, one can use this
-     *                    property as usual and not have to worry about the
-     *                    avro schema for the record.
+     *                    hand.  For those languages, one can use this property
+     *                    as usual and not have to worry about the avro schema
+     *                    for the record.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DICT
      *                    DICT}: This property indicates that this column
@@ -765,21 +764,21 @@ public class CreateTypeRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#TEXT_SEARCH
      *         TEXT_SEARCH}: Valid only for 'string' columns. Enables full text
-     *         search for string columns. Can be set independently of *data*
-     *         and *store_only*.
+     *         search for string columns. Can be set independently of {@code
+     *         data} and {@code store_only}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#STORE_ONLY
      *         STORE_ONLY}: Persist the column value but do not make it
      *         available to queries (e.g. {@link
      *         com.gpudb.GPUdb#filter(FilterRequest)})-i.e. it is mutually
-     *         exclusive to the 'data' property. Any 'bytes' type column must
-     *         have a 'store_only' property. This property reduces system
-     *         memory usage.
+     *         exclusive to the {@code data} property. Any 'bytes' type column
+     *         must have a {@code store_only} property. This property reduces
+     *         system memory usage.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#DISK_OPTIMIZED
-     *         DISK_OPTIMIZED}: Works in conjunction with the 'data' property
-     *         for string columns. This property reduces system disk usage by
-     *         disabling reverse string lookups. Queries like {@link
+     *         DISK_OPTIMIZED}: Works in conjunction with the {@code data}
+     *         property for string columns. This property reduces system disk
+     *         usage by disabling reverse string lookups. Queries like {@link
      *         com.gpudb.GPUdb#filter(FilterRequest)}, {@link
      *         com.gpudb.GPUdb#filterByList(FilterByListRequest)}, and {@link
      *         com.gpudb.GPUdb#filterByValue(FilterByValueRequest)} work as
@@ -804,82 +803,73 @@ public class CreateTypeRequest implements IndexedRecord {
      *         before the decimal point and up to four digits in the fractional
      *         part.  The value can be positive or negative (indicated by a
      *         minus sign at the beginning).  This property is mutually
-     *         exclusive with the 'text_search' property.
+     *         exclusive with the {@code text_search} property.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#DATE DATE}:
      *         Valid only for 'string' columns.  Indicates that this field
      *         represents a date and will be provided in the format
      *         'YYYY-MM-DD'.  The allowable range is 1000-01-01 through
-     *         2900-01-01.  This property is mutually exclusive with the
-     *         *text_search* property.
+     *         2900-01-01.  This property is mutually exclusive with the {@code
+     *         text_search} property.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#TIME TIME}:
      *         Valid only for 'string' columns.  Indicates that this field
      *         represents a time-of-day and will be provided in the format
      *         'HH:MM:SS.mmm'.  The allowable range is 00:00:00.000 through
      *         23:59:59.999.  This property is mutually exclusive with the
-     *         *text_search* property.
+     *         {@code text_search} property.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#DATETIME
      *         DATETIME}: Valid only for 'string' columns.  Indicates that this
      *         field represents a datetime and will be provided in the format
      *         'YYYY-MM-DD HH:MM:SS.mmm'.  The allowable range is 1000-01-01
      *         00:00:00.000 through 2900-01-01 23:59:59.999.  This property is
-     *         mutually exclusive with the *text_search* property.
+     *         mutually exclusive with the {@code text_search} property.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#CHAR1 CHAR1}:
      *         This property provides optimized memory, disk and query
      *         performance for string columns. Strings with this property must
-     *         be no longer than 1 character. This property cannot be combined
-     *         with *text_search*
+     *         be no longer than 1 character.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#CHAR2 CHAR2}:
      *         This property provides optimized memory, disk and query
      *         performance for string columns. Strings with this property must
-     *         be no longer than 2 characters. This property cannot be combined
-     *         with *text_search*
+     *         be no longer than 2 characters.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#CHAR4 CHAR4}:
      *         This property provides optimized memory, disk and query
      *         performance for string columns. Strings with this property must
-     *         be no longer than 4 characters. This property cannot be combined
-     *         with *text_search*
+     *         be no longer than 4 characters.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#CHAR8 CHAR8}:
      *         This property provides optimized memory, disk and query
      *         performance for string columns. Strings with this property must
-     *         be no longer than 8 characters. This property cannot be combined
-     *         with *text_search*
+     *         be no longer than 8 characters.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#CHAR16 CHAR16}:
      *         This property provides optimized memory, disk and query
      *         performance for string columns. Strings with this property must
-     *         be no longer than 16 characters. This property cannot be
-     *         combined with *text_search*
+     *         be no longer than 16 characters.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#CHAR32 CHAR32}:
      *         This property provides optimized memory, disk and query
      *         performance for string columns. Strings with this property must
-     *         be no longer than 32 characters. This property cannot be
-     *         combined with *text_search*
+     *         be no longer than 32 characters.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#CHAR64 CHAR64}:
      *         This property provides optimized memory, disk and query
      *         performance for string columns. Strings with this property must
-     *         be no longer than 64 characters. This property cannot be
-     *         combined with *text_search*
+     *         be no longer than 64 characters.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#CHAR128
      *         CHAR128}: This property provides optimized memory, disk and
      *         query performance for string columns. Strings with this property
-     *         must be no longer than 128 characters. This property cannot be
-     *         combined with *text_search*
+     *         must be no longer than 128 characters.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#CHAR256
      *         CHAR256}: This property provides optimized memory, disk and
      *         query performance for string columns. Strings with this property
-     *         must be no longer than 256 characters. This property cannot be
-     *         combined with *text_search*
+     *         must be no longer than 256 characters.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#INT8 INT8}: This
      *         property provides optimized memory and query performance for int
@@ -904,11 +894,15 @@ public class CreateTypeRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#PRIMARY_KEY
      *         PRIMARY_KEY}: This property indicates that this column will be
-     *         part of (or the entire) primary key.
+     *         part of (or the entire) <a
+     *         href="../../../../../concepts/tables.html#primary-keys"
+     *         target="_top">primary key</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#SHARD_KEY
      *         SHARD_KEY}: This property indicates that this column will be
-     *         part of (or the entire) shard key.
+     *         part of (or the entire) <a
+     *         href="../../../../../concepts/tables.html#shard-keys"
+     *         target="_top">shard key</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#NULLABLE
      *         NULLABLE}: This property indicates that this column is nullable.
@@ -920,9 +914,9 @@ public class CreateTypeRequest implements IndexedRecord {
      *         the entry for the column in the avro schema must be: ['int',
      *         'null'].
      *         The C++, C#, Java, and Python APIs have built-in convenience for
-     *         bypassing setting the avro schema by hand.  For those two
-     *         languages, one can use this property as usual and not have to
-     *         worry about the avro schema for the record.
+     *         bypassing setting the avro schema by hand.  For those languages,
+     *         one can use this property as usual and not have to worry about
+     *         the avro schema for the record.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#DICT DICT}: This
      *         property indicates that this column should be dictionary
@@ -956,20 +950,21 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#TEXT_SEARCH
      *                    TEXT_SEARCH}: Valid only for 'string' columns.
      *                    Enables full text search for string columns. Can be
-     *                    set independently of *data* and *store_only*.
+     *                    set independently of {@code data} and {@code
+     *                    store_only}.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#STORE_ONLY
      *                    STORE_ONLY}: Persist the column value but do not make
      *                    it available to queries (e.g. {@link
      *                    com.gpudb.GPUdb#filter(FilterRequest)})-i.e. it is
-     *                    mutually exclusive to the 'data' property. Any
-     *                    'bytes' type column must have a 'store_only'
+     *                    mutually exclusive to the {@code data} property. Any
+     *                    'bytes' type column must have a {@code store_only}
      *                    property. This property reduces system memory usage.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DISK_OPTIMIZED
-     *                    DISK_OPTIMIZED}: Works in conjunction with the 'data'
-     *                    property for string columns. This property reduces
-     *                    system disk usage by disabling reverse string
+     *                    DISK_OPTIMIZED}: Works in conjunction with the {@code
+     *                    data} property for string columns. This property
+     *                    reduces system disk usage by disabling reverse string
      *                    lookups. Queries like {@link
      *                    com.gpudb.GPUdb#filter(FilterRequest)}, {@link
      *                    com.gpudb.GPUdb#filterByList(FilterByListRequest)},
@@ -998,23 +993,24 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    and up to four digits in the fractional part.  The
      *                    value can be positive or negative (indicated by a
      *                    minus sign at the beginning).  This property is
-     *                    mutually exclusive with the 'text_search' property.
+     *                    mutually exclusive with the {@code text_search}
+     *                    property.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DATE
      *                    DATE}: Valid only for 'string' columns.  Indicates
      *                    that this field represents a date and will be
      *                    provided in the format 'YYYY-MM-DD'.  The allowable
      *                    range is 1000-01-01 through 2900-01-01.  This
-     *                    property is mutually exclusive with the *text_search*
-     *                    property.
+     *                    property is mutually exclusive with the {@code
+     *                    text_search} property.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#TIME
      *                    TIME}: Valid only for 'string' columns.  Indicates
      *                    that this field represents a time-of-day and will be
      *                    provided in the format 'HH:MM:SS.mmm'.  The allowable
      *                    range is 00:00:00.000 through 23:59:59.999.  This
-     *                    property is mutually exclusive with the *text_search*
-     *                    property.
+     *                    property is mutually exclusive with the {@code
+     *                    text_search} property.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DATETIME
      *                    DATETIME}: Valid only for 'string' columns.
@@ -1022,71 +1018,62 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    will be provided in the format 'YYYY-MM-DD
      *                    HH:MM:SS.mmm'.  The allowable range is 1000-01-01
      *                    00:00:00.000 through 2900-01-01 23:59:59.999.  This
-     *                    property is mutually exclusive with the *text_search*
-     *                    property.
+     *                    property is mutually exclusive with the {@code
+     *                    text_search} property.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR1
      *                    CHAR1}: This property provides optimized memory, disk
      *                    and query performance for string columns. Strings
      *                    with this property must be no longer than 1
-     *                    character. This property cannot be combined with
-     *                    *text_search*
+     *                    character.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR2
      *                    CHAR2}: This property provides optimized memory, disk
      *                    and query performance for string columns. Strings
      *                    with this property must be no longer than 2
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR4
      *                    CHAR4}: This property provides optimized memory, disk
      *                    and query performance for string columns. Strings
      *                    with this property must be no longer than 4
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR8
      *                    CHAR8}: This property provides optimized memory, disk
      *                    and query performance for string columns. Strings
      *                    with this property must be no longer than 8
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR16
      *                    CHAR16}: This property provides optimized memory,
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 16
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR32
      *                    CHAR32}: This property provides optimized memory,
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 32
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR64
      *                    CHAR64}: This property provides optimized memory,
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 64
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR128
      *                    CHAR128}: This property provides optimized memory,
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 128
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#CHAR256
      *                    CHAR256}: This property provides optimized memory,
      *                    disk and query performance for string columns.
      *                    Strings with this property must be no longer than 256
-     *                    characters. This property cannot be combined with
-     *                    *text_search*
+     *                    characters.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#INT8
      *                    INT8}: This property provides optimized memory and
@@ -1114,11 +1101,15 @@ public class CreateTypeRequest implements IndexedRecord {
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#PRIMARY_KEY
      *                    PRIMARY_KEY}: This property indicates that this
-     *                    column will be part of (or the entire) primary key.
+     *                    column will be part of (or the entire) <a
+     *                    href="../../../../../concepts/tables.html#primary-keys"
+     *                    target="_top">primary key</a>.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#SHARD_KEY
      *                    SHARD_KEY}: This property indicates that this column
-     *                    will be part of (or the entire) shard key.
+     *                    will be part of (or the entire) <a
+     *                    href="../../../../../concepts/tables.html#shard-keys"
+     *                    target="_top">shard key</a>.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#NULLABLE
      *                    NULLABLE}: This property indicates that this column
@@ -1132,9 +1123,9 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    schema must be: ['int', 'null'].
      *                    The C++, C#, Java, and Python APIs have built-in
      *                    convenience for bypassing setting the avro schema by
-     *                    hand.  For those two languages, one can use this
-     *                    property as usual and not have to worry about the
-     *                    avro schema for the record.
+     *                    hand.  For those languages, one can use this property
+     *                    as usual and not have to worry about the avro schema
+     *                    for the record.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DICT
      *                    DICT}: This property indicates that this column

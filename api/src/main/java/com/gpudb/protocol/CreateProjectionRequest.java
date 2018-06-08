@@ -98,6 +98,19 @@ public class CreateProjectionRequest implements IndexedRecord {
      * target="_top">expression</a> to be applied to the source table prior to
      * the projection.
      *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#IS_REPLICATED
+     * IS_REPLICATED}: If {@code true} then the projection will be replicated
+     * even if the source table is not.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT LIMIT}: The
      * number of records to keep.
      *         <li> {@link
@@ -122,6 +135,12 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
      * CHUNK_SIZE}: Indicates the chunk size to be used for this table.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#CREATE_INDEXES
+     * CREATE_INDEXES}: Comma-separated list of columns on which to create
+     * indexes on the output table.  The columns specified must be present in
+     * {@code columnNames}.  If any alias is given for any column name, the
+     * alias must be used, rather than the original column name.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#TTL TTL}: Sets the <a
      * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
@@ -187,6 +206,23 @@ public class CreateProjectionRequest implements IndexedRecord {
         public static final String EXPRESSION = "expression";
 
         /**
+         * If {@code true} then the projection will be replicated even if the
+         * source table is not.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+         */
+        public static final String IS_REPLICATED = "is_replicated";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
          * The number of records to keep.
          */
         public static final String LIMIT = "limit";
@@ -213,13 +249,19 @@ public class CreateProjectionRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
          */
         public static final String MATERIALIZE_ON_GPU = "materialize_on_gpu";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * Indicates the chunk size to be used for this table.
          */
         public static final String CHUNK_SIZE = "chunk_size";
+
+        /**
+         * Comma-separated list of columns on which to create indexes on the
+         * output table.  The columns specified must be present in {@code
+         * columnNames}.  If any alias is given for any column name, the alias
+         * must be used, rather than the original column name.
+         */
+        public static final String CREATE_INDEXES = "create_indexes";
 
         /**
          * Sets the <a href="../../../../../concepts/ttl.html"
@@ -325,6 +367,22 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 target="_top">expression</a> to be applied to the source
      *                 table prior to the projection.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#IS_REPLICATED
+     *                 IS_REPLICATED}: If {@code true} then the projection will
+     *                 be replicated even if the source table is not.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT
      *                 LIMIT}: The number of records to keep.
      *                         <li> {@link
@@ -354,6 +412,14 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for
      *                 this table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#CREATE_INDEXES
+     *                 CREATE_INDEXES}: Comma-separated list of columns on
+     *                 which to create indexes on the output table.  The
+     *                 columns specified must be present in {@code
+     *                 columnNames}.  If any alias is given for any column
+     *                 name, the alias must be used, rather than the original
+     *                 column name.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#TTL
      *                 TTL}: Sets the <a
@@ -511,6 +577,19 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         target="_top">expression</a> to be applied to the source table
      *         prior to the projection.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#IS_REPLICATED
+     *         IS_REPLICATED}: If {@code true} then the projection will be
+     *         replicated even if the source table is not.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT LIMIT}:
      *         The number of records to keep.
      *                 <li> {@link
@@ -536,6 +615,13 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
      *         CHUNK_SIZE}: Indicates the chunk size to be used for this table.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#CREATE_INDEXES
+     *         CREATE_INDEXES}: Comma-separated list of columns on which to
+     *         create indexes on the output table.  The columns specified must
+     *         be present in {@code columnNames}.  If any alias is given for
+     *         any column name, the alias must be used, rather than the
+     *         original column name.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#TTL TTL}:
      *         Sets the <a href="../../../../../concepts/ttl.html"
@@ -608,6 +694,22 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 target="_top">expression</a> to be applied to the source
      *                 table prior to the projection.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#IS_REPLICATED
+     *                 IS_REPLICATED}: If {@code true} then the projection will
+     *                 be replicated even if the source table is not.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT
      *                 LIMIT}: The number of records to keep.
      *                         <li> {@link
@@ -637,6 +739,14 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for
      *                 this table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#CREATE_INDEXES
+     *                 CREATE_INDEXES}: Comma-separated list of columns on
+     *                 which to create indexes on the output table.  The
+     *                 columns specified must be present in {@code
+     *                 columnNames}.  If any alias is given for any column
+     *                 name, the alias must be used, rather than the original
+     *                 column name.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#TTL
      *                 TTL}: Sets the <a
