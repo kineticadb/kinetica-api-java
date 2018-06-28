@@ -163,6 +163,27 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_INDEXES
+     * CREATE_INDEXES}: Comma-separated list of columns on which to create
+     * indexes on the table specified in {@code result_table}. The columns
+     * specified must be present in output column names.  If any alias is given
+     * for any column name, the alias must be used, rather than the original
+     * column name.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_FORCE_REPLICATED
+     * RESULT_TABLE_FORCE_REPLICATED}: Force the result table to be replicated
+     * (ignores any sharding). Must be used in combination with the {@code
+     * result_table} option.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -253,6 +274,30 @@ public class AggregateUnpivotRequest implements IndexedRecord {
          * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
          */
         public static final String MATERIALIZE_ON_GPU = "materialize_on_gpu";
+
+        /**
+         * Comma-separated list of columns on which to create indexes on the
+         * table specified in {@code result_table}. The columns specified must
+         * be present in output column names.  If any alias is given for any
+         * column name, the alias must be used, rather than the original column
+         * name.
+         */
+        public static final String CREATE_INDEXES = "create_indexes";
+
+        /**
+         * Force the result table to be replicated (ignores any sharding). Must
+         * be used in combination with the {@code result_table} option.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
+         */
+        public static final String RESULT_TABLE_FORCE_REPLICATED = "result_table_force_replicated";
 
         private Options() {  }
     }
@@ -361,6 +406,31 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the output
      *                 columns will be cached on the GPU.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_INDEXES
+     *                 CREATE_INDEXES}: Comma-separated list of columns on
+     *                 which to create indexes on the table specified in {@code
+     *                 result_table}. The columns specified must be present in
+     *                 output column names.  If any alias is given for any
+     *                 column name, the alias must be used, rather than the
+     *                 original column name.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_FORCE_REPLICATED
+     *                 RESULT_TABLE_FORCE_REPLICATED}: Force the result table
+     *                 to be replicated (ignores any sharding). Must be used in
+     *                 combination with the {@code result_table} option.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -483,6 +553,31 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the output
      *                 columns will be cached on the GPU.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_INDEXES
+     *                 CREATE_INDEXES}: Comma-separated list of columns on
+     *                 which to create indexes on the table specified in {@code
+     *                 result_table}. The columns specified must be present in
+     *                 output column names.  If any alias is given for any
+     *                 column name, the alias must be used, rather than the
+     *                 original column name.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_FORCE_REPLICATED
+     *                 RESULT_TABLE_FORCE_REPLICATED}: Force the result table
+     *                 to be replicated (ignores any sharding). Must be used in
+     *                 combination with the {@code result_table} option.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -743,6 +838,27 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_INDEXES
+     *         CREATE_INDEXES}: Comma-separated list of columns on which to
+     *         create indexes on the table specified in {@code result_table}.
+     *         The columns specified must be present in output column names.
+     *         If any alias is given for any column name, the alias must be
+     *         used, rather than the original column name.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_FORCE_REPLICATED
+     *         RESULT_TABLE_FORCE_REPLICATED}: Force the result table to be
+     *         replicated (ignores any sharding). Must be used in combination
+     *         with the {@code result_table} option.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
      *         </ul>
      * 
      */
@@ -820,6 +936,31 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the output
      *                 columns will be cached on the GPU.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_INDEXES
+     *                 CREATE_INDEXES}: Comma-separated list of columns on
+     *                 which to create indexes on the table specified in {@code
+     *                 result_table}. The columns specified must be present in
+     *                 output column names.  If any alias is given for any
+     *                 column name, the alias must be used, rather than the
+     *                 original column name.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_FORCE_REPLICATED
+     *                 RESULT_TABLE_FORCE_REPLICATED}: Force the result table
+     *                 to be replicated (ignores any sharding). Must be used in
+     *                 combination with the {@code result_table} option.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

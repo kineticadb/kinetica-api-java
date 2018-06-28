@@ -116,9 +116,17 @@ public class CreateUnionRequest implements IndexedRecord {
      * EXCEPT}: Retains all unique rows from the first table that do not appear
      * in the second table (only works on 2 tables).
      *         <li> {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#EXCEPT_ALL EXCEPT_ALL}:
+     * Retains all rows(including duplicates) from the first table that do not
+     * appear in the second table (only works on 2 tables).
+     *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT INTERSECT}:
      * Retains all unique rows that appear in both of the specified tables
      * (only works on 2 tables).
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT_ALL
+     * INTERSECT_ALL}: Retains all rows(including duplicates) that appear in
+     * both of the specified tables (only works on 2 tables).
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS MERGE_VIEWS}:
      * Merge two or more views (or views of views) of the same base data set
@@ -160,6 +168,19 @@ public class CreateUnionRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID VIEW_ID}: view the
      * output table will be a part of
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#FORCE_REPLICATED
+     * FORCE_REPLICATED}: If {@code true}, then the table specified in {@code
+     * tableName} will be replicated even if the source tables are not.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -211,9 +232,18 @@ public class CreateUnionRequest implements IndexedRecord {
          * Retains all unique rows from the first table that do not appear in
          * the second table (only works on 2 tables).
          *         <li> {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#EXCEPT_ALL
+         * EXCEPT_ALL}: Retains all rows(including duplicates) from the first
+         * table that do not appear in the second table (only works on 2
+         * tables).
+         *         <li> {@link
          * com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT INTERSECT}:
          * Retains all unique rows that appear in both of the specified tables
          * (only works on 2 tables).
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT_ALL
+         * INTERSECT_ALL}: Retains all rows(including duplicates) that appear
+         * in both of the specified tables (only works on 2 tables).
          *         <li> {@link
          * com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
          * MERGE_VIEWS}: Merge two or more views (or views of views) of the
@@ -253,10 +283,22 @@ public class CreateUnionRequest implements IndexedRecord {
         public static final String EXCEPT = "except";
 
         /**
+         * Retains all rows(including duplicates) from the first table that do
+         * not appear in the second table (only works on 2 tables).
+         */
+        public static final String EXCEPT_ALL = "except_all";
+
+        /**
          * Retains all unique rows that appear in both of the specified tables
          * (only works on 2 tables).
          */
         public static final String INTERSECT = "intersect";
+
+        /**
+         * Retains all rows(including duplicates) that appear in both of the
+         * specified tables (only works on 2 tables).
+         */
+        public static final String INTERSECT_ALL = "intersect_all";
 
         /**
          * Merge two or more views (or views of views) of the same base data
@@ -309,6 +351,21 @@ public class CreateUnionRequest implements IndexedRecord {
          * view the output table will be a part of
          */
         public static final String VIEW_ID = "view_id";
+
+        /**
+         * If {@code true}, then the table specified in {@code tableName} will
+         * be replicated even if the source tables are not.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
+         */
+        public static final String FORCE_REPLICATED = "force_replicated";
 
         private Options() {  }
     }
@@ -392,9 +449,19 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 that do not appear in the second table (only works on 2
      *                 tables).
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#EXCEPT_ALL
+     *                 EXCEPT_ALL}: Retains all rows(including duplicates) from
+     *                 the first table that do not appear in the second table
+     *                 (only works on 2 tables).
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT
      *                 INTERSECT}: Retains all unique rows that appear in both
      *                 of the specified tables (only works on 2 tables).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT_ALL
+     *                 INTERSECT_ALL}: Retains all rows(including duplicates)
+     *                 that appear in both of the specified tables (only works
+     *                 on 2 tables).
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
      *                 MERGE_VIEWS}: Merge two or more views (or views of
@@ -446,6 +513,22 @@ public class CreateUnionRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID
      *                 VIEW_ID}: view the output table will be a part of
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FORCE_REPLICATED
+     *                 FORCE_REPLICATED}: If {@code true}, then the table
+     *                 specified in {@code tableName} will be replicated even
+     *                 if the source tables are not.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      */
@@ -597,9 +680,18 @@ public class CreateUnionRequest implements IndexedRecord {
      *         Retains all unique rows from the first table that do not appear
      *         in the second table (only works on 2 tables).
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#EXCEPT_ALL
+     *         EXCEPT_ALL}: Retains all rows(including duplicates) from the
+     *         first table that do not appear in the second table (only works
+     *         on 2 tables).
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT
      *         INTERSECT}: Retains all unique rows that appear in both of the
      *         specified tables (only works on 2 tables).
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT_ALL
+     *         INTERSECT_ALL}: Retains all rows(including duplicates) that
+     *         appear in both of the specified tables (only works on 2 tables).
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
      *         MERGE_VIEWS}: Merge two or more views (or views of views) of the
@@ -645,6 +737,20 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID VIEW_ID}:
      *         view the output table will be a part of
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#FORCE_REPLICATED
+     *         FORCE_REPLICATED}: If {@code true}, then the table specified in
+     *         {@code tableName} will be replicated even if the source tables
+     *         are not.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
      *         </ul>
      * 
      */
@@ -702,9 +808,19 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 that do not appear in the second table (only works on 2
      *                 tables).
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#EXCEPT_ALL
+     *                 EXCEPT_ALL}: Retains all rows(including duplicates) from
+     *                 the first table that do not appear in the second table
+     *                 (only works on 2 tables).
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT
      *                 INTERSECT}: Retains all unique rows that appear in both
      *                 of the specified tables (only works on 2 tables).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT_ALL
+     *                 INTERSECT_ALL}: Retains all rows(including duplicates)
+     *                 that appear in both of the specified tables (only works
+     *                 on 2 tables).
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
      *                 MERGE_VIEWS}: Merge two or more views (or views of
@@ -756,6 +872,22 @@ public class CreateUnionRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID
      *                 VIEW_ID}: view the output table will be a part of
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FORCE_REPLICATED
+     *                 FORCE_REPLICATED}: If {@code true}, then the table
+     *                 specified in {@code tableName} will be replicated even
+     *                 if the source tables are not.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

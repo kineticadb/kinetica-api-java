@@ -2118,6 +2118,31 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_INDEXES
+     *                 CREATE_INDEXES}: Comma-separated list of columns on
+     *                 which to create indexes on the table specified in {@code
+     *                 result_table}. The columns specified must be present in
+     *                 output column names.  If any alias is given for any
+     *                 column name, the alias must be used, rather than the
+     *                 original column name.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_FORCE_REPLICATED
+     *                 RESULT_TABLE_FORCE_REPLICATED}: Force the result table
+     *                 to be replicated (ignores any sharding). Must be used in
+     *                 combination with the {@code result_table} option.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -4755,9 +4780,19 @@ public class GPUdb extends GPUdbBase {
      *                 that do not appear in the second table (only works on 2
      *                 tables).
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#EXCEPT_ALL
+     *                 EXCEPT_ALL}: Retains all rows(including duplicates) from
+     *                 the first table that do not appear in the second table
+     *                 (only works on 2 tables).
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT
      *                 INTERSECT}: Retains all unique rows that appear in both
      *                 of the specified tables (only works on 2 tables).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#INTERSECT_ALL
+     *                 INTERSECT_ALL}: Retains all rows(including duplicates)
+     *                 that appear in both of the specified tables (only works
+     *                 on 2 tables).
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MERGE_VIEWS
      *                 MERGE_VIEWS}: Merge two or more views (or views of
@@ -4809,6 +4844,22 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID
      *                 VIEW_ID}: view the output table will be a part of
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FORCE_REPLICATED
+     *                 FORCE_REPLICATED}: If {@code true}, then the table
+     *                 specified in {@code tableName} will be replicated even
+     *                 if the source tables are not.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -10392,8 +10443,8 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    public VisualizeImageClassbreakResponse visualizeImageClassbreak(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbColumnName, List<String> cbVals, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) throws GPUdbException {
-        VisualizeImageClassbreakRequest actualRequest_ = new VisualizeImageClassbreakRequest(tableNames, worldTableNames, xColumnName, yColumnName, geometryColumnName, trackIds, cbColumnName, cbVals, minX, maxX, minY, maxY, width, height, projection, bgColor, styleOptions, options);
+    public VisualizeImageClassbreakResponse visualizeImageClassbreak(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbAttr, List<String> cbVals, String cbPointcolorAttr, List<String> cbPointcolorVals, String cbPointsizeAttr, List<String> cbPointsizeVals, String cbPointshapeAttr, List<String> cbPointshapeVals, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) throws GPUdbException {
+        VisualizeImageClassbreakRequest actualRequest_ = new VisualizeImageClassbreakRequest(tableNames, worldTableNames, xColumnName, yColumnName, geometryColumnName, trackIds, cbAttr, cbVals, cbPointcolorAttr, cbPointcolorVals, cbPointsizeAttr, cbPointsizeVals, cbPointshapeAttr, cbPointshapeVals, minX, maxX, minY, maxY, width, height, projection, bgColor, styleOptions, options);
         VisualizeImageClassbreakResponse actualResponse_ = new VisualizeImageClassbreakResponse();
         submitRequest("/visualize/image/classbreak", actualRequest_, actualResponse_, false);
         return actualResponse_;
