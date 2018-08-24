@@ -66,11 +66,10 @@ public class AppendRecordsRequest implements IndexedRecord {
      * {@code sourceTableName}). Empty by default.
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY ORDER_BY}:
-     * Comma-separated list of the columns to be sorted from source table
-     * (specified by {@code sourceTableName}) by; e.g. 'timestamp asc, x desc'.
-     * The columns specified must be present in {@code fieldMap}.  If any alias
-     * is given for any column name, the alias must be used, rather than the
-     * original column name.
+     * Comma-separated list of the columns and expressions to be sorted by from
+     * the source table (specified by {@code sourceTableName}); e.g. 'timestamp
+     * asc, x desc'.  The {@code order_by} columns do not have to be present in
+     * {@code fieldMap}.
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      * UPDATE_ON_EXISTING_PK}: Specifies the record collision policy for
@@ -121,11 +120,10 @@ public class AppendRecordsRequest implements IndexedRecord {
         public static final String EXPRESSION = "expression";
 
         /**
-         * Comma-separated list of the columns to be sorted from source table
-         * (specified by {@code sourceTableName}) by; e.g. 'timestamp asc, x
-         * desc'.  The columns specified must be present in {@code fieldMap}.
-         * If any alias is given for any column name, the alias must be used,
-         * rather than the original column name.
+         * Comma-separated list of the columns and expressions to be sorted by
+         * from the source table (specified by {@code sourceTableName}); e.g.
+         * 'timestamp asc, x desc'.  The {@code order_by} columns do not have
+         * to be present in {@code fieldMap}.
          */
         public static final String ORDER_BY = "order_by";
 
@@ -214,12 +212,11 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 Empty by default.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY
-     *                 ORDER_BY}: Comma-separated list of the columns to be
-     *                 sorted from source table (specified by {@code
-     *                 sourceTableName}) by; e.g. 'timestamp asc, x desc'.  The
-     *                 columns specified must be present in {@code fieldMap}.
-     *                 If any alias is given for any column name, the alias
-     *                 must be used, rather than the original column name.
+     *                 ORDER_BY}: Comma-separated list of the columns and
+     *                 expressions to be sorted by from the source table
+     *                 (specified by {@code sourceTableName}); e.g. 'timestamp
+     *                 asc, x desc'.  The {@code order_by} columns do not have
+     *                 to be present in {@code fieldMap}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
@@ -362,11 +359,10 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         table (specified by {@code sourceTableName}). Empty by default.
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY
-     *         ORDER_BY}: Comma-separated list of the columns to be sorted from
-     *         source table (specified by {@code sourceTableName}) by; e.g.
-     *         'timestamp asc, x desc'.  The columns specified must be present
-     *         in {@code fieldMap}.  If any alias is given for any column name,
-     *         the alias must be used, rather than the original column name.
+     *         ORDER_BY}: Comma-separated list of the columns and expressions
+     *         to be sorted by from the source table (specified by {@code
+     *         sourceTableName}); e.g. 'timestamp asc, x desc'.  The {@code
+     *         order_by} columns do not have to be present in {@code fieldMap}.
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *         UPDATE_ON_EXISTING_PK}: Specifies the record collision policy
@@ -423,12 +419,11 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 Empty by default.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY
-     *                 ORDER_BY}: Comma-separated list of the columns to be
-     *                 sorted from source table (specified by {@code
-     *                 sourceTableName}) by; e.g. 'timestamp asc, x desc'.  The
-     *                 columns specified must be present in {@code fieldMap}.
-     *                 If any alias is given for any column name, the alias
-     *                 must be used, rather than the original column name.
+     *                 ORDER_BY}: Comma-separated list of the columns and
+     *                 expressions to be sorted by from the source table
+     *                 (specified by {@code sourceTableName}); e.g. 'timestamp
+     *                 asc, x desc'.  The {@code order_by} columns do not have
+     *                 to be present in {@code fieldMap}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision

@@ -5,6 +5,7 @@
  */
 package com.gpudb.protocol;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +31,8 @@ public class VisualizeImageChartRequest implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("tableName").type().stringType().noDefault()
-                .name("xColumnName").type().stringType().noDefault()
-                .name("yColumnName").type().stringType().noDefault()
+                .name("xColumnNames").type().array().items().stringType().noDefault()
+                .name("yColumnNames").type().array().items().stringType().noDefault()
                 .name("minX").type().doubleType().noDefault()
                 .name("maxX").type().doubleType().noDefault()
                 .name("minY").type().doubleType().noDefault()
@@ -135,6 +136,34 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      * y column values are sorted, e.g. "avg(price)", which defaults to
      * "avg(price) ascending".
      *         <li> {@link
+     * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#SCALE_TYPE_X
+     * SCALE_TYPE_X}: Type of x axis scale.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE NONE}:
+     * No scale is applied to the x axis.
+     *         <li> {@link
+     * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#LOG LOG}: A
+     * base-10 log scale is applied to the x axis.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE NONE}.
+     *         <li> {@link
+     * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#SCALE_TYPE_Y
+     * SCALE_TYPE_Y}: Type of y axis scale.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE NONE}:
+     * No scale is applied to the y axis.
+     *         <li> {@link
+     * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#LOG LOG}: A
+     * base-10 log scale is applied to the y axis.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE NONE}.
+     *         <li> {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      * JITTER_X}: Amplitude of horizontal jitter applied to non-numaric x
      * column values.
@@ -192,6 +221,10 @@ public class VisualizeImageChartRequest implements IndexedRecord {
          * SQUARE}.
          */
         public static final String POINTSHAPE = "pointshape";
+
+        /**
+         * No scale is applied to the y axis.
+         */
         public static final String NONE = "none";
         public static final String CIRCLE = "circle";
         public static final String SQUARE = "square";
@@ -252,6 +285,45 @@ public class VisualizeImageChartRequest implements IndexedRecord {
         public static final String Y_ORDER_BY = "y_order_by";
 
         /**
+         * Type of x axis scale.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+         * NONE}: No scale is applied to the x axis.
+         *         <li> {@link
+         * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#LOG LOG}:
+         * A base-10 log scale is applied to the x axis.
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+         * NONE}.
+         */
+        public static final String SCALE_TYPE_X = "scale_type_x";
+
+        /**
+         * A base-10 log scale is applied to the y axis.
+         */
+        public static final String LOG = "log";
+
+        /**
+         * Type of y axis scale.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+         * NONE}: No scale is applied to the y axis.
+         *         <li> {@link
+         * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#LOG LOG}:
+         * A base-10 log scale is applied to the y axis.
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+         * NONE}.
+         */
+        public static final String SCALE_TYPE_Y = "scale_type_y";
+
+        /**
          * Amplitude of horizontal jitter applied to non-numaric x column
          * values.
          */
@@ -272,8 +344,8 @@ public class VisualizeImageChartRequest implements IndexedRecord {
     }
 
     private String tableName;
-    private String xColumnName;
-    private String yColumnName;
+    private List<String> xColumnNames;
+    private List<String> yColumnNames;
     private double minX;
     private double maxX;
     private double minY;
@@ -290,8 +362,8 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      */
     public VisualizeImageChartRequest() {
         tableName = "";
-        xColumnName = "";
-        yColumnName = "";
+        xColumnNames = new ArrayList<>();
+        yColumnNames = new ArrayList<>();
         bgColor = "";
         styleOptions = new LinkedHashMap<>();
         options = new LinkedHashMap<>();
@@ -303,10 +375,10 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table containing the data to be drawn as a
      *                   chart.
-     * @param xColumnName  Name of the column containing the data mapped to the
-     *                     x axis of a chart.
-     * @param yColumnName  Name of the column containing the data mapped to the
-     *                     y axis of a chart.
+     * @param xColumnNames  Names of the columns containing the data mapped to
+     *                      the x axis of a chart.
+     * @param yColumnNames  Names of the columns containing the data mapped to
+     *                      the y axis of a chart.
      * @param minX  Lower bound for the x column values. For non-numeric x
      *              column, each x column item is mapped to an integral value
      *              starting from 0.
@@ -411,6 +483,36 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                      e.g. "avg(price)", which defaults to "avg(price)
      *                      ascending".
      *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#SCALE_TYPE_X
+     *                      SCALE_TYPE_X}: Type of x axis scale.
+     *                      Supported values:
+     *                      <ul>
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+     *                      NONE}: No scale is applied to the x axis.
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#LOG
+     *                      LOG}: A base-10 log scale is applied to the x axis.
+     *                      </ul>
+     *                      The default value is {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+     *                      NONE}.
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#SCALE_TYPE_Y
+     *                      SCALE_TYPE_Y}: Type of y axis scale.
+     *                      Supported values:
+     *                      <ul>
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+     *                      NONE}: No scale is applied to the y axis.
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#LOG
+     *                      LOG}: A base-10 log scale is applied to the y axis.
+     *                      </ul>
+     *                      The default value is {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+     *                      NONE}.
+     *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *                      JITTER_X}: Amplitude of horizontal jitter applied
      *                      to non-numaric x column values.
@@ -427,10 +529,10 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      * @param options  Optional parameters.
      * 
      */
-    public VisualizeImageChartRequest(String tableName, String xColumnName, String yColumnName, double minX, double maxX, double minY, double maxY, int width, int height, String bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) {
+    public VisualizeImageChartRequest(String tableName, List<String> xColumnNames, List<String> yColumnNames, double minX, double maxX, double minY, double maxY, int width, int height, String bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) {
         this.tableName = (tableName == null) ? "" : tableName;
-        this.xColumnName = (xColumnName == null) ? "" : xColumnName;
-        this.yColumnName = (yColumnName == null) ? "" : yColumnName;
+        this.xColumnNames = (xColumnNames == null) ? new ArrayList<String>() : xColumnNames;
+        this.yColumnNames = (yColumnNames == null) ? new ArrayList<String>() : yColumnNames;
         this.minX = minX;
         this.maxX = maxX;
         this.minY = minY;
@@ -466,47 +568,47 @@ public class VisualizeImageChartRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the column containing the data mapped to the x axis of a
-     *         chart.
+     * @return Names of the columns containing the data mapped to the x axis of
+     *         a chart.
      * 
      */
-    public String getXColumnName() {
-        return xColumnName;
+    public List<String> getXColumnNames() {
+        return xColumnNames;
     }
 
     /**
      * 
-     * @param xColumnName  Name of the column containing the data mapped to the
-     *                     x axis of a chart.
+     * @param xColumnNames  Names of the columns containing the data mapped to
+     *                      the x axis of a chart.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public VisualizeImageChartRequest setXColumnName(String xColumnName) {
-        this.xColumnName = (xColumnName == null) ? "" : xColumnName;
+    public VisualizeImageChartRequest setXColumnNames(List<String> xColumnNames) {
+        this.xColumnNames = (xColumnNames == null) ? new ArrayList<String>() : xColumnNames;
         return this;
     }
 
     /**
      * 
-     * @return Name of the column containing the data mapped to the y axis of a
-     *         chart.
+     * @return Names of the columns containing the data mapped to the y axis of
+     *         a chart.
      * 
      */
-    public String getYColumnName() {
-        return yColumnName;
+    public List<String> getYColumnNames() {
+        return yColumnNames;
     }
 
     /**
      * 
-     * @param yColumnName  Name of the column containing the data mapped to the
-     *                     y axis of a chart.
+     * @param yColumnNames  Names of the columns containing the data mapped to
+     *                      the y axis of a chart.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public VisualizeImageChartRequest setYColumnName(String yColumnName) {
-        this.yColumnName = (yColumnName == null) ? "" : yColumnName;
+    public VisualizeImageChartRequest setYColumnNames(List<String> yColumnNames) {
+        this.yColumnNames = (yColumnNames == null) ? new ArrayList<String>() : yColumnNames;
         return this;
     }
 
@@ -757,6 +859,36 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *         non-numeric y column values are sorted, e.g. "avg(price)", which
      *         defaults to "avg(price) ascending".
      *                 <li> {@link
+     *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#SCALE_TYPE_X
+     *         SCALE_TYPE_X}: Type of x axis scale.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+     *         NONE}: No scale is applied to the x axis.
+     *                 <li> {@link
+     *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#LOG
+     *         LOG}: A base-10 log scale is applied to the x axis.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+     *         NONE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#SCALE_TYPE_Y
+     *         SCALE_TYPE_Y}: Type of y axis scale.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+     *         NONE}: No scale is applied to the y axis.
+     *                 <li> {@link
+     *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#LOG
+     *         LOG}: A base-10 log scale is applied to the y axis.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+     *         NONE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *         JITTER_X}: Amplitude of horizontal jitter applied to non-numaric
      *         x column values.
@@ -867,6 +999,36 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                      e.g. "avg(price)", which defaults to "avg(price)
      *                      ascending".
      *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#SCALE_TYPE_X
+     *                      SCALE_TYPE_X}: Type of x axis scale.
+     *                      Supported values:
+     *                      <ul>
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+     *                      NONE}: No scale is applied to the x axis.
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#LOG
+     *                      LOG}: A base-10 log scale is applied to the x axis.
+     *                      </ul>
+     *                      The default value is {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+     *                      NONE}.
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#SCALE_TYPE_Y
+     *                      SCALE_TYPE_Y}: Type of y axis scale.
+     *                      Supported values:
+     *                      <ul>
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+     *                      NONE}: No scale is applied to the y axis.
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#LOG
+     *                      LOG}: A base-10 log scale is applied to the y axis.
+     *                      </ul>
+     *                      The default value is {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+     *                      NONE}.
+     *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *                      JITTER_X}: Amplitude of horizontal jitter applied
      *                      to non-numaric x column values.
@@ -940,10 +1102,10 @@ public class VisualizeImageChartRequest implements IndexedRecord {
                 return this.tableName;
 
             case 1:
-                return this.xColumnName;
+                return this.xColumnNames;
 
             case 2:
-                return this.yColumnName;
+                return this.yColumnNames;
 
             case 3:
                 return this.minX;
@@ -996,11 +1158,11 @@ public class VisualizeImageChartRequest implements IndexedRecord {
                 break;
 
             case 1:
-                this.xColumnName = (String)value;
+                this.xColumnNames = (List<String>)value;
                 break;
 
             case 2:
-                this.yColumnName = (String)value;
+                this.yColumnNames = (List<String>)value;
                 break;
 
             case 3:
@@ -1057,8 +1219,8 @@ public class VisualizeImageChartRequest implements IndexedRecord {
         VisualizeImageChartRequest that = (VisualizeImageChartRequest)obj;
 
         return ( this.tableName.equals( that.tableName )
-                 && this.xColumnName.equals( that.xColumnName )
-                 && this.yColumnName.equals( that.yColumnName )
+                 && this.xColumnNames.equals( that.xColumnNames )
+                 && this.yColumnNames.equals( that.yColumnNames )
                  && ( (Double)this.minX ).equals( (Double)that.minX )
                  && ( (Double)this.maxX ).equals( (Double)that.maxX )
                  && ( (Double)this.minY ).equals( (Double)that.minY )
@@ -1079,13 +1241,13 @@ public class VisualizeImageChartRequest implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.tableName ) );
         builder.append( ", " );
-        builder.append( gd.toString( "xColumnName" ) );
+        builder.append( gd.toString( "xColumnNames" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.xColumnName ) );
+        builder.append( gd.toString( this.xColumnNames ) );
         builder.append( ", " );
-        builder.append( gd.toString( "yColumnName" ) );
+        builder.append( gd.toString( "yColumnNames" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.yColumnName ) );
+        builder.append( gd.toString( this.yColumnNames ) );
         builder.append( ", " );
         builder.append( gd.toString( "minX" ) );
         builder.append( ": " );
@@ -1131,8 +1293,8 @@ public class VisualizeImageChartRequest implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.tableName.hashCode();
-        hashCode = (31 * hashCode) + this.xColumnName.hashCode();
-        hashCode = (31 * hashCode) + this.yColumnName.hashCode();
+        hashCode = (31 * hashCode) + this.xColumnNames.hashCode();
+        hashCode = (31 * hashCode) + this.yColumnNames.hashCode();
         hashCode = (31 * hashCode) + ((Double)this.minX).hashCode();
         hashCode = (31 * hashCode) + ((Double)this.maxX).hashCode();
         hashCode = (31 * hashCode) + ((Double)this.minY).hashCode();

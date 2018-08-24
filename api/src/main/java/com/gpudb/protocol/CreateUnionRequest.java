@@ -30,14 +30,14 @@ import org.apache.avro.generic.IndexedRecord;
  * href="../../../../../concepts/unions.html#limitations-and-cautions"
  * target="_top">Union Limitations and Cautions</a>.
  * <p>
- * INTERSECT (DISTINCT) - For data set intersection details and examples, see
- * <a href="../../../../../concepts/intersect.html"
+ * INTERSECT (DISTINCT/ALL) - For data set intersection details and examples,
+ * see <a href="../../../../../concepts/intersect.html"
  * target="_top">Intersect</a>.  For limitations, see <a
  * href="../../../../../concepts/intersect.html#limitations"
  * target="_top">Intersect Limitations</a>.
  * <p>
- * EXCEPT (DISTINCT) - For data set subtraction details and examples, see <a
- * href="../../../../../concepts/except.html" target="_top">Except</a>.  For
+ * EXCEPT (DISTINCT/ALL) - For data set subtraction details and examples, see
+ * <a href="../../../../../concepts/except.html" target="_top">Except</a>.  For
  * limitations, see <a href="../../../../../concepts/except.html#limitations"
  * target="_top">Except Limitations</a>.
  * <p>

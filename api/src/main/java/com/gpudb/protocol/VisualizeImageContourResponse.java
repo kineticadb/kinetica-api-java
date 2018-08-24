@@ -25,6 +25,11 @@ public class VisualizeImageContourResponse implements IndexedRecord {
                 .name("bgColor").type().longType().noDefault()
                 .name("imageData").type().bytesType().noDefault()
                 .name("gridData").type().bytesType().noDefault()
+                .name("fillN0").type().doubleType().noDefault()
+                .name("fillNn").type().doubleType().noDefault()
+                .name("minLevel").type().doubleType().noDefault()
+                .name("maxLevel").type().doubleType().noDefault()
+                .name("samplesUsed").type().longType().noDefault()
             .endRecord();
 
 
@@ -38,6 +43,11 @@ public class VisualizeImageContourResponse implements IndexedRecord {
     private long bgColor;
     private ByteBuffer imageData;
     private ByteBuffer gridData;
+    private double fillN0;
+    private double fillNn;
+    private double minLevel;
+    private double maxLevel;
+    private long samplesUsed;
 
 
     public VisualizeImageContourResponse() {
@@ -88,6 +98,51 @@ public class VisualizeImageContourResponse implements IndexedRecord {
         return this;
     }
 
+    public double getFillN0() {
+        return fillN0;
+    }
+
+    public VisualizeImageContourResponse setFillN0(double fillN0) {
+        this.fillN0 = fillN0;
+        return this;
+    }
+
+    public double getFillNn() {
+        return fillNn;
+    }
+
+    public VisualizeImageContourResponse setFillNn(double fillNn) {
+        this.fillNn = fillNn;
+        return this;
+    }
+
+    public double getMinLevel() {
+        return minLevel;
+    }
+
+    public VisualizeImageContourResponse setMinLevel(double minLevel) {
+        this.minLevel = minLevel;
+        return this;
+    }
+
+    public double getMaxLevel() {
+        return maxLevel;
+    }
+
+    public VisualizeImageContourResponse setMaxLevel(double maxLevel) {
+        this.maxLevel = maxLevel;
+        return this;
+    }
+
+    public long getSamplesUsed() {
+        return samplesUsed;
+    }
+
+    public VisualizeImageContourResponse setSamplesUsed(long samplesUsed) {
+        this.samplesUsed = samplesUsed;
+        return this;
+    }
+
     @Override
     public Schema getSchema() {
         return schema$;
@@ -110,6 +165,21 @@ public class VisualizeImageContourResponse implements IndexedRecord {
 
             case 4:
                 return this.gridData;
+
+            case 5:
+                return this.fillN0;
+
+            case 6:
+                return this.fillNn;
+
+            case 7:
+                return this.minLevel;
+
+            case 8:
+                return this.maxLevel;
+
+            case 9:
+                return this.samplesUsed;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -140,6 +210,26 @@ public class VisualizeImageContourResponse implements IndexedRecord {
                 this.gridData = (ByteBuffer)value;
                 break;
 
+            case 5:
+                this.fillN0 = (Double)value;
+                break;
+
+            case 6:
+                this.fillNn = (Double)value;
+                break;
+
+            case 7:
+                this.minLevel = (Double)value;
+                break;
+
+            case 8:
+                this.maxLevel = (Double)value;
+                break;
+
+            case 9:
+                this.samplesUsed = (Long)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -162,7 +252,12 @@ public class VisualizeImageContourResponse implements IndexedRecord {
                  && ( this.height == that.height )
                  && ( this.bgColor == that.bgColor )
                  && this.imageData.equals( that.imageData )
-                 && this.gridData.equals( that.gridData ) );
+                 && this.gridData.equals( that.gridData )
+                 && ( (Double)this.fillN0 ).equals( (Double)that.fillN0 )
+                 && ( (Double)this.fillNn ).equals( (Double)that.fillNn )
+                 && ( (Double)this.minLevel ).equals( (Double)that.minLevel )
+                 && ( (Double)this.maxLevel ).equals( (Double)that.maxLevel )
+                 && ( this.samplesUsed == that.samplesUsed ) );
     }
 
 
@@ -190,6 +285,26 @@ public class VisualizeImageContourResponse implements IndexedRecord {
         builder.append( gd.toString( "gridData" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.gridData ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "fillN0" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.fillN0 ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "fillNn" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.fillNn ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "minLevel" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.minLevel ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "maxLevel" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.maxLevel ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "samplesUsed" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.samplesUsed ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -204,6 +319,11 @@ public class VisualizeImageContourResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + ((Long)this.bgColor).hashCode();
         hashCode = (31 * hashCode) + this.imageData.hashCode();
         hashCode = (31 * hashCode) + this.gridData.hashCode();
+        hashCode = (31 * hashCode) + ((Double)this.fillN0).hashCode();
+        hashCode = (31 * hashCode) + ((Double)this.fillNn).hashCode();
+        hashCode = (31 * hashCode) + ((Double)this.minLevel).hashCode();
+        hashCode = (31 * hashCode) + ((Double)this.maxLevel).hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.samplesUsed).hashCode();
         return hashCode;
     }
 

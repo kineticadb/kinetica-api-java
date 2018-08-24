@@ -114,7 +114,11 @@ public class VisualizeImageContourRequest implements IndexedRecord {
 
         public static final String NUM_LEVELS = "num_levels";
 
+        public static final String ADJUST_LEVELS = "adjust_levels";
+
         public static final String SEARCH_RADIUS = "search_radius";
+
+        public static final String MAX_SEARCH_CELLS = "max_search_cells";
 
         public static final String GRIDDING_METHOD = "gridding_method";
 
@@ -126,11 +130,21 @@ public class VisualizeImageContourRequest implements IndexedRecord {
 
         public static final String PASS_THROUGH = "PASS_THROUGH";
 
+        public static final String FILL_RATIO = "FILL_RATIO";
+
         public static final String SMOOTHING_FACTOR = "smoothing_factor";
 
-        public static final String GRID_ROWS = "grid_rows";
+        public static final String GRID_SIZE = "grid_size";
 
-        public static final String GRID_COLUMNS = "grid_columns";
+        public static final String ADJUST_GRID = "adjust_grid";
+
+        public static final String ADJUST_GRID_NEIGH = "adjust_grid_neigh";
+
+        public static final String ADJUST_GRID_SIZE = "adjust_grid_size";
+
+        public static final String MAX_GRID_SIZE = "max_grid_size";
+
+        public static final String MIN_GRID_SIZE = "min_grid_size";
 
         public static final String RENDER_OUTPUT_GRID = "render_output_grid";
 

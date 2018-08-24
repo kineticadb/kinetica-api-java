@@ -104,8 +104,10 @@ public class FilterByAreaGeometryRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table to filter.  This may be the name of
      *                   a collection, a table or a view (when chaining
-     *                   queries).  Collections may be filtered only if all
-     *                   tables within the collection have the same type ID.
+     *                   queries).  If filtering a collection, all child tables
+     *                   where the filter expression is valid will be filtered;
+     *                   the filtered result tables will then be placed in a
+     *                   collection specified by {@code viewName}.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results. Must not be an already existing
      *                  collection, table or view.
@@ -139,9 +141,11 @@ public class FilterByAreaGeometryRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table to filter.  This may be the name of a
-     *         collection, a table or a view (when chaining queries).
-     *         Collections may be filtered only if all tables within the
-     *         collection have the same type ID.
+     *         collection, a table or a view (when chaining queries).  If
+     *         filtering a collection, all child tables where the filter
+     *         expression is valid will be filtered; the filtered result tables
+     *         will then be placed in a collection specified by {@code
+     *         viewName}.
      * 
      */
     public String getTableName() {
@@ -152,8 +156,10 @@ public class FilterByAreaGeometryRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table to filter.  This may be the name of
      *                   a collection, a table or a view (when chaining
-     *                   queries).  Collections may be filtered only if all
-     *                   tables within the collection have the same type ID.
+     *                   queries).  If filtering a collection, all child tables
+     *                   where the filter expression is valid will be filtered;
+     *                   the filtered result tables will then be placed in a
+     *                   collection specified by {@code viewName}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -32,9 +32,6 @@ import org.apache.avro.generic.GenericData;
  * <p>
  * The {@code return_record_ids} option indicates that the database should
  * return the unique identifiers of inserted records.
- * <p>
- * The {@code route_to_address} option directs that inserted records should be
- * targeted for a particular database node.
  * 
  * @param <T>  The type of object being processed.
  * 
@@ -78,10 +75,6 @@ public class InsertRecordsRequest<T> {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
-     *         <li> {@link
-     * com.gpudb.protocol.RawInsertRecordsRequest.Options#ROUTE_TO_ADDRESS
-     * ROUTE_TO_ADDRESS}: Route to a specific rank/tom. Option not suitable for
-     * tables using primary/shard keys
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -125,12 +118,6 @@ public class InsertRecordsRequest<T> {
          * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
          */
         public static final String RETURN_RECORD_IDS = "return_record_ids";
-
-        /**
-         * Route to a specific rank/tom. Option not suitable for tables using
-         * primary/shard keys
-         */
-        public static final String ROUTE_TO_ADDRESS = "route_to_address";
 
         private Options() {  }
     }
@@ -201,10 +188,6 @@ public class InsertRecordsRequest<T> {
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
      *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#ROUTE_TO_ADDRESS
-     *                 ROUTE_TO_ADDRESS}: Route to a specific rank/tom. Option
-     *                 not suitable for tables using primary/shard keys
      *                 </ul>
      * 
      */
@@ -300,10 +283,6 @@ public class InsertRecordsRequest<T> {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
-     *                 <li> {@link
-     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#ROUTE_TO_ADDRESS
-     *         ROUTE_TO_ADDRESS}: Route to a specific rank/tom. Option not
-     *         suitable for tables using primary/shard keys
      *         </ul>
      * 
      */
@@ -357,10 +336,6 @@ public class InsertRecordsRequest<T> {
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
      *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#ROUTE_TO_ADDRESS
-     *                 ROUTE_TO_ADDRESS}: Route to a specific rank/tom. Option
-     *                 not suitable for tables using primary/shard keys
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

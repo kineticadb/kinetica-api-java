@@ -2603,6 +2603,10 @@ public class GPUdb extends GPUdbBase {
      *                href="../../../../concepts/materialized_views.html"
      *                target="_top">materialized view</a>.  Also, sets the
      *                refresh method to periodic if not alreay set.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_TEXT_SEARCH_ATTRIBUTES
+     *                REMOVE_TEXT_SEARCH_ATTRIBUTES}: remove text_search
+     *                attribute from all columns, if exists.
      *                </ul>
      * @param value  The value of the modification. May be a column name,
      *               'true' or 'false', a TTL, or the global access mode
@@ -2671,6 +2675,20 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#FALSE
      *                 FALSE}: false
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#UPDATE_LAST_ACCESS_TIME
+     *                 UPDATE_LAST_ACCESS_TIME}: Indicates whether need to
+     *                 update the last_access_time.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#FALSE
+     *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
@@ -2875,12 +2893,11 @@ public class GPUdb extends GPUdbBase {
      *                 Empty by default.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY
-     *                 ORDER_BY}: Comma-separated list of the columns to be
-     *                 sorted from source table (specified by {@code
-     *                 sourceTableName}) by; e.g. 'timestamp asc, x desc'.  The
-     *                 columns specified must be present in {@code fieldMap}.
-     *                 If any alias is given for any column name, the alias
-     *                 must be used, rather than the original column name.
+     *                 ORDER_BY}: Comma-separated list of the columns and
+     *                 expressions to be sorted by from the source table
+     *                 (specified by {@code sourceTableName}); e.g. 'timestamp
+     *                 asc, x desc'.  The {@code order_by} columns do not have
+     *                 to be present in {@code fieldMap}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
@@ -4648,14 +4665,14 @@ public class GPUdb extends GPUdbBase {
      * href="../../../../concepts/unions.html#limitations-and-cautions"
      * target="_top">Union Limitations and Cautions</a>.
      * <p>
-     * INTERSECT (DISTINCT) - For data set intersection details and examples,
-     * see <a href="../../../../concepts/intersect.html"
+     * INTERSECT (DISTINCT/ALL) - For data set intersection details and
+     * examples, see <a href="../../../../concepts/intersect.html"
      * target="_top">Intersect</a>.  For limitations, see <a
      * href="../../../../concepts/intersect.html#limitations"
      * target="_top">Intersect Limitations</a>.
      * <p>
-     * EXCEPT (DISTINCT) - For data set subtraction details and examples, see
-     * <a href="../../../../concepts/except.html" target="_top">Except</a>.
+     * EXCEPT (DISTINCT/ALL) - For data set subtraction details and examples,
+     * see <a href="../../../../concepts/except.html" target="_top">Except</a>.
      * For limitations, see <a
      * href="../../../../concepts/except.html#limitations" target="_top">Except
      * Limitations</a>.
@@ -4700,14 +4717,14 @@ public class GPUdb extends GPUdbBase {
      * href="../../../../concepts/unions.html#limitations-and-cautions"
      * target="_top">Union Limitations and Cautions</a>.
      * <p>
-     * INTERSECT (DISTINCT) - For data set intersection details and examples,
-     * see <a href="../../../../concepts/intersect.html"
+     * INTERSECT (DISTINCT/ALL) - For data set intersection details and
+     * examples, see <a href="../../../../concepts/intersect.html"
      * target="_top">Intersect</a>.  For limitations, see <a
      * href="../../../../concepts/intersect.html#limitations"
      * target="_top">Intersect Limitations</a>.
      * <p>
-     * EXCEPT (DISTINCT) - For data set subtraction details and examples, see
-     * <a href="../../../../concepts/except.html" target="_top">Except</a>.
+     * EXCEPT (DISTINCT/ALL) - For data set subtraction details and examples,
+     * see <a href="../../../../concepts/except.html" target="_top">Except</a>.
      * For limitations, see <a
      * href="../../../../concepts/except.html#limitations" target="_top">Except
      * Limitations</a>.
@@ -5361,8 +5378,10 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of the table to filter.  This may be the ID of a
      *                   collection, table or a result set (for chaining
-     *                   queries).  Collections may be filtered only if all
-     *                   tables within the collection have the same type ID.
+     *                   queries). If filtering a collection, all child tables
+     *                   where the filter expression is valid will be filtered;
+     *                   the filtered result tables will then be placed in a
+     *                   collection specified by {@code viewName}.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results. Has the same naming
      *                  restrictions as <a
@@ -5445,8 +5464,10 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of the table to filter.  This may be the name of
      *                   a collection, a table or a view (when chaining
-     *                   queries).  Collections may be filtered only if all
-     *                   tables within the collection have the same type ID.
+     *                   queries). If filtering a collection, all child tables
+     *                   where the filter expression is valid will be filtered;
+     *                   the filtered result tables will then be placed in a
+     *                   collection specified by {@code viewName}.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results. Has the same naming
      *                  restrictions as <a
@@ -5525,8 +5546,10 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of the table to filter.  This may be the name of
      *                   a collection, a table or a view (when chaining
-     *                   queries).  Collections may be filtered only if all
-     *                   tables within the collection have the same type ID.
+     *                   queries).  If filtering a collection, all child tables
+     *                   where the filter expression is valid will be filtered;
+     *                   the filtered result tables will then be placed in a
+     *                   collection specified by {@code viewName}.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results. Must not be an already existing
      *                  collection, table or view.
@@ -5874,8 +5897,10 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of the table to filter.  This may be the ID of a
      *                   collection, table or a result set (for chaining
-     *                   queries).  Collections may be filtered only if all
-     *                   tables within the collection have the same type ID.
+     *                   queries). If filtering a collection, all child tables
+     *                   where the filter expression is valid will be filtered;
+     *                   the filtered result tables will then be placed in a
+     *                   collection specified by {@code viewName}.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results. Has the same naming
      *                  restrictions as <a
@@ -7147,8 +7172,9 @@ public class GPUdb extends GPUdbBase {
      *                 table.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_BY
-     *                 SORT_BY}: Optional column that the data should be sorted
-     *                 by. Empty by default (i.e. no sorting is applied).
+     *                 SORT_BY}: Optional column(s) that the data should be
+     *                 sorted by. Empty by default (i.e. no sorting is
+     *                 applied).
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      *                 SORT_ORDER}: String indicating how the returned values
@@ -7169,10 +7195,23 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#ORDER_BY
      *                 ORDER_BY}: Comma-separated list of the columns to be
-     *                 sorted by; e.g. 'timestamp asc, x desc'.  The columns
-     *                 specified must be present in {@code columnNames}.  If
-     *                 any alias is given for any column name, the alias must
-     *                 be used, rather than the original column name.
+     *                 sorted by; e.g. 'timestamp asc, x desc'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#CONVERT_WKTS_TO_WKBS
+     *                 CONVERT_WKTS_TO_WKBS}: If true, then WKT string columns
+     *                 will be returned as WKB bytes.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -8005,9 +8044,6 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The {@code return_record_ids} option indicates that the database should
      * return the unique identifiers of inserted records.
-     * <p>
-     * The {@code route_to_address} option directs that inserted records should
-     * be targeted for a particular database node.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -8044,9 +8080,6 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The {@code return_record_ids} option indicates that the database should
      * return the unique identifiers of inserted records.
-     * <p>
-     * The {@code route_to_address} option directs that inserted records should
-     * be targeted for a particular database node.
      * 
      * @param <TRequest>  The type of object being added.
      * @param request  Request object containing the parameters for the
@@ -8085,9 +8118,6 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The {@code return_record_ids} option indicates that the database should
      * return the unique identifiers of inserted records.
-     * <p>
-     * The {@code route_to_address} option directs that inserted records should
-     * be targeted for a particular database node.
      * 
      * @param <TRequest>  The type of object being added.
      * @param typeObjectMap  Type object map used for encoding input objects.
@@ -8133,9 +8163,6 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The {@code return_record_ids} option indicates that the database should
      * return the unique identifiers of inserted records.
-     * <p>
-     * The {@code route_to_address} option directs that inserted records should
-     * be targeted for a particular database node.
      * 
      * @param <TRequest>  The type of object being added.
      * @param tableName  Table to which the records are to be added. Must be an
@@ -8187,10 +8214,6 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
      *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#ROUTE_TO_ADDRESS
-     *                 ROUTE_TO_ADDRESS}: Route to a specific rank/tom. Option
-     *                 not suitable for tables using primary/shard keys
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -8226,9 +8249,6 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The {@code return_record_ids} option indicates that the database should
      * return the unique identifiers of inserted records.
-     * <p>
-     * The {@code route_to_address} option directs that inserted records should
-     * be targeted for a particular database node.
      * 
      * @param <TRequest>  The type of object being added.
      * @param typeObjectMap  Type object map used for encoding input objects.
@@ -8281,10 +8301,6 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
      *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#ROUTE_TO_ADDRESS
-     *                 ROUTE_TO_ADDRESS}: Route to a specific rank/tom. Option
-     *                 not suitable for tables using primary/shard keys
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -9808,6 +9824,22 @@ public class GPUdb extends GPUdbBase {
      * @param label  Option string that was supplied by user in a call to
      *               {@link GPUdb#createType(String, String, Map, Map)}.
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTypesRequest.Options#NO_JOIN_TYPES
+     *                 NO_JOIN_TYPES}: When set to 'true', no join types will
+     *                 be included.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTypesRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTypesRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowTypesRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -10049,6 +10081,24 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
+     *                 USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to 'true',
+     *                 all new_values in new_values_maps are considered as
+     *                 expression values. When set to 'false', all new_values
+     *                 in new_values_maps are considered as constants.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#RECORD_ID
      *                 RECORD_ID}: ID of a single record to be updated
      *                 (returned in the call to {@link
@@ -10149,6 +10199,24 @@ public class GPUdb extends GPUdbBase {
      *                 behavior when the updated primary key value already
      *                 exists as described in {@link
      *                 GPUdb#insertRecords(TypeObjectMap, String, List, Map)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
+     *                 USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to 'true',
+     *                 all new_values in new_values_maps are considered as
+     *                 expression values. When set to 'false', all new_values
+     *                 in new_values_maps are considered as constants.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -10296,10 +10364,10 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of the table containing the data to be drawn as a
      *                   chart.
-     * @param xColumnName  Name of the column containing the data mapped to the
-     *                     x axis of a chart.
-     * @param yColumnName  Name of the column containing the data mapped to the
-     *                     y axis of a chart.
+     * @param xColumnNames  Names of the columns containing the data mapped to
+     *                      the x axis of a chart.
+     * @param yColumnNames  Names of the columns containing the data mapped to
+     *                      the y axis of a chart.
      * @param minX  Lower bound for the x column values. For non-numeric x
      *              column, each x column item is mapped to an integral value
      *              starting from 0.
@@ -10404,6 +10472,36 @@ public class GPUdb extends GPUdbBase {
      *                      e.g. "avg(price)", which defaults to "avg(price)
      *                      ascending".
      *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#SCALE_TYPE_X
+     *                      SCALE_TYPE_X}: Type of x axis scale.
+     *                      Supported values:
+     *                      <ul>
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+     *                      NONE}: No scale is applied to the x axis.
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#LOG
+     *                      LOG}: A base-10 log scale is applied to the x axis.
+     *                      </ul>
+     *                      The default value is {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+     *                      NONE}.
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#SCALE_TYPE_Y
+     *                      SCALE_TYPE_Y}: Type of y axis scale.
+     *                      Supported values:
+     *                      <ul>
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+     *                      NONE}: No scale is applied to the y axis.
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#LOG
+     *                      LOG}: A base-10 log scale is applied to the y axis.
+     *                      </ul>
+     *                      The default value is {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
+     *                      NONE}.
+     *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *                      JITTER_X}: Amplitude of horizontal jitter applied
      *                      to non-numaric x column values.
@@ -10426,8 +10524,8 @@ public class GPUdb extends GPUdbBase {
      * @throws GPUdbException  if an error occurs during the operation.
      * 
      */
-    public VisualizeImageChartResponse visualizeImageChart(String tableName, String xColumnName, String yColumnName, double minX, double maxX, double minY, double maxY, int width, int height, String bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) throws GPUdbException {
-        VisualizeImageChartRequest actualRequest_ = new VisualizeImageChartRequest(tableName, xColumnName, yColumnName, minX, maxX, minY, maxY, width, height, bgColor, styleOptions, options);
+    public VisualizeImageChartResponse visualizeImageChart(String tableName, List<String> xColumnNames, List<String> yColumnNames, double minX, double maxX, double minY, double maxY, int width, int height, String bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) throws GPUdbException {
+        VisualizeImageChartRequest actualRequest_ = new VisualizeImageChartRequest(tableName, xColumnNames, yColumnNames, minX, maxX, minY, maxY, width, height, bgColor, styleOptions, options);
         VisualizeImageChartResponse actualResponse_ = new VisualizeImageChartResponse();
         submitRequest("/visualize/image/chart", actualRequest_, actualResponse_, false);
         return actualResponse_;

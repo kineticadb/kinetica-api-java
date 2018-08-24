@@ -193,6 +193,10 @@ public class AlterTableRequest implements IndexedRecord {
      * refresh this <a href="../../../../../concepts/materialized_views.html"
      * target="_top">materialized view</a>.  Also, sets the refresh method to
      * periodic if not alreay set.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#REMOVE_TEXT_SEARCH_ATTRIBUTES
+     * REMOVE_TEXT_SEARCH_ATTRIBUTES}: remove text_search attribute from all
+     * columns, if exists.
      * </ul>
      * A set of string constants for the parameter {@code action}.
      */
@@ -348,6 +352,11 @@ public class AlterTableRequest implements IndexedRecord {
          */
         public static final String SET_REFRESH_PERIOD = "set_refresh_period";
 
+        /**
+         * remove text_search attribute from all columns, if exists.
+         */
+        public static final String REMOVE_TEXT_SEARCH_ATTRIBUTES = "remove_text_search_attributes";
+
         private Action() {  }
     }
 
@@ -406,6 +415,19 @@ public class AlterTableRequest implements IndexedRecord {
      * TRUE}: true
      *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#FALSE
      * FALSE}: false
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#UPDATE_LAST_ACCESS_TIME
+     * UPDATE_LAST_ACCESS_TIME}: Indicates whether need to update the
+     * last_access_time.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#FALSE
+     * FALSE}
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
@@ -488,16 +510,22 @@ public class AlterTableRequest implements IndexedRecord {
          * com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
          */
         public static final String VALIDATE_CHANGE_COLUMN = "validate_change_column";
-
-        /**
-         * true
-         */
         public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         /**
-         * false
+         * Indicates whether need to update the last_access_time.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
          */
-        public static final String FALSE = "false";
+        public static final String UPDATE_LAST_ACCESS_TIME = "update_last_access_time";
 
         /**
          * expression for new column's values (optional with add_column). Any
@@ -659,6 +687,10 @@ public class AlterTableRequest implements IndexedRecord {
      *                href="../../../../../concepts/materialized_views.html"
      *                target="_top">materialized view</a>.  Also, sets the
      *                refresh method to periodic if not alreay set.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_TEXT_SEARCH_ATTRIBUTES
+     *                REMOVE_TEXT_SEARCH_ATTRIBUTES}: remove text_search
+     *                attribute from all columns, if exists.
      *                </ul>
      * @param value  The value of the modification. May be a column name,
      *               'true' or 'false', a TTL, or the global access mode
@@ -727,6 +759,20 @@ public class AlterTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#FALSE
      *                 FALSE}: false
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#UPDATE_LAST_ACCESS_TIME
+     *                 UPDATE_LAST_ACCESS_TIME}: Indicates whether need to
+     *                 update the last_access_time.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#FALSE
+     *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
@@ -895,6 +941,10 @@ public class AlterTableRequest implements IndexedRecord {
      *         href="../../../../../concepts/materialized_views.html"
      *         target="_top">materialized view</a>.  Also, sets the refresh
      *         method to periodic if not alreay set.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#REMOVE_TEXT_SEARCH_ATTRIBUTES
+     *         REMOVE_TEXT_SEARCH_ATTRIBUTES}: remove text_search attribute
+     *         from all columns, if exists.
      *         </ul>
      * 
      */
@@ -1034,6 +1084,10 @@ public class AlterTableRequest implements IndexedRecord {
      *                href="../../../../../concepts/materialized_views.html"
      *                target="_top">materialized view</a>.  Also, sets the
      *                refresh method to periodic if not alreay set.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_TEXT_SEARCH_ATTRIBUTES
+     *                REMOVE_TEXT_SEARCH_ATTRIBUTES}: remove text_search
+     *                attribute from all columns, if exists.
      *                </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -1131,6 +1185,19 @@ public class AlterTableRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#UPDATE_LAST_ACCESS_TIME
+     *         UPDATE_LAST_ACCESS_TIME}: Indicates whether need to update the
+     *         last_access_time.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#ADD_COLUMN_EXPRESSION
      *         ADD_COLUMN_EXPRESSION}: expression for new column's values
      *         (optional with add_column). Any valid expressions including
@@ -1208,6 +1275,20 @@ public class AlterTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#FALSE
      *                 FALSE}: false
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#UPDATE_LAST_ACCESS_TIME
+     *                 UPDATE_LAST_ACCESS_TIME}: Indicates whether need to
+     *                 update the last_access_time.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#FALSE
+     *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.

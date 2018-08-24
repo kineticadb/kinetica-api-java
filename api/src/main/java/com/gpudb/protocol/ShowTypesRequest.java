@@ -42,6 +42,46 @@ public class ShowTypesRequest implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTypesRequest.Options#NO_JOIN_TYPES
+     * NO_JOIN_TYPES}: When set to 'true', no join types will be included.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ShowTypesRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ShowTypesRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ShowTypesRequest.Options#FALSE FALSE}.
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * When set to 'true', no join types will be included.
+         * Supported values:
+         * <ul>
+         *         <li> {@link com.gpudb.protocol.ShowTypesRequest.Options#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTypesRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ShowTypesRequest.Options#FALSE FALSE}.
+         */
+        public static final String NO_JOIN_TYPES = "no_join_types";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private Options() {  }
+    }
+
     private String typeId;
     private String label;
     private Map<String, String> options;
@@ -64,6 +104,22 @@ public class ShowTypesRequest implements IndexedRecord {
      * @param label  Option string that was supplied by user in a call to
      *               {@link com.gpudb.GPUdb#createType(CreateTypeRequest)}.
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTypesRequest.Options#NO_JOIN_TYPES
+     *                 NO_JOIN_TYPES}: When set to 'true', no join types will
+     *                 be included.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTypesRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTypesRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowTypesRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
      * 
      */
     public ShowTypesRequest(String typeId, String label, Map<String, String> options) {
@@ -121,6 +177,21 @@ public class ShowTypesRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTypesRequest.Options#NO_JOIN_TYPES
+     *         NO_JOIN_TYPES}: When set to 'true', no join types will be
+     *         included.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTypesRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTypesRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ShowTypesRequest.Options#FALSE FALSE}.
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -130,6 +201,22 @@ public class ShowTypesRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTypesRequest.Options#NO_JOIN_TYPES
+     *                 NO_JOIN_TYPES}: When set to 'true', no join types will
+     *                 be included.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTypesRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowTypesRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowTypesRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

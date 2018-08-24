@@ -130,6 +130,20 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
      *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
+     * USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to 'true', all new_values
+     * in new_values_maps are considered as expression values. When set to
+     * 'false', all new_values in new_values_maps are considered as constants.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#RECORD_ID RECORD_ID}:
      * ID of a single record to be updated (returned in the call to {@link
      * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} or {@link
@@ -182,6 +196,22 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
          * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
          */
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
+
+        /**
+         * When set to 'true', all new_values in new_values_maps are considered
+         * as expression values. When set to 'false', all new_values in
+         * new_values_maps are considered as constants.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
+         */
+        public static final String USE_EXPRESSIONS_IN_NEW_VALUES_MAPS = "use_expressions_in_new_values_maps";
 
         /**
          * ID of a single record to be updated (returned in the call to {@link
@@ -272,6 +302,24 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 behavior when the updated primary key value already
      *                 exists as described in {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
+     *                 USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to 'true',
+     *                 all new_values in new_values_maps are considered as
+     *                 expression values. When set to 'false', all new_values
+     *                 in new_values_maps are considered as constants.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -379,6 +427,24 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 behavior when the updated primary key value already
      *                 exists as described in {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
+     *                 USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to 'true',
+     *                 all new_values in new_values_maps are considered as
+     *                 expression values. When set to 'false', all new_values
+     *                 in new_values_maps are considered as constants.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -633,6 +699,21 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
+     *         USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to 'true', all
+     *         new_values in new_values_maps are considered as expression
+     *         values. When set to 'false', all new_values in new_values_maps
+     *         are considered as constants.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#RECORD_ID
      *         RECORD_ID}: ID of a single record to be updated (returned in the
      *         call to {@link
@@ -684,6 +765,24 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 behavior when the updated primary key value already
      *                 exists as described in {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
+     *                 USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to 'true',
+     *                 all new_values in new_values_maps are considered as
+     *                 expression values. When set to 'false', all new_values
+     *                 in new_values_maps are considered as constants.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
