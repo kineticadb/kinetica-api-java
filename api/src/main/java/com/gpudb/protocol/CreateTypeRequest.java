@@ -237,11 +237,13 @@ public class CreateTypeRequest implements IndexedRecord {
      * use this property as usual and not have to worry about the avro schema
      * for the record.
      *         <li> {@link com.gpudb.protocol.CreateTypeRequest.Properties#DICT
-     * DICT}: This property indicates that this column should be dictionary
-     * encoded. It can only be used in conjunction with string columns marked
-     * with a charN property. This property is appropriate for columns where
-     * the cardinality (the number of unique values) is expected to be low, and
-     * can save a large amount of memory.
+     * DICT}: This property indicates that this column should be <a
+     * href="../../../../../concepts/dictionary_encoding.html"
+     * target="_top">dictionary encoded</a>. It can only be used in conjunction
+     * with restricted string (charN), int, or long columns. Dictionary
+     * encoding is best for columns where the cardinality (the number of unique
+     * values) is expected to be low. This property can save a large amount of
+     * memory.
      * </ul>
      * A set of string constants for the parameter {@code properties}.
      */
@@ -452,11 +454,13 @@ public class CreateTypeRequest implements IndexedRecord {
         public static final String NULLABLE = "nullable";
 
         /**
-         * This property indicates that this column should be dictionary
-         * encoded. It can only be used in conjunction with string columns
-         * marked with a charN property. This property is appropriate for
-         * columns where the cardinality (the number of unique values) is
-         * expected to be low, and can save a large amount of memory.
+         * This property indicates that this column should be <a
+         * href="../../../../../concepts/dictionary_encoding.html"
+         * target="_top">dictionary encoded</a>. It can only be used in
+         * conjunction with restricted string (charN), int, or long columns.
+         * Dictionary encoding is best for columns where the cardinality (the
+         * number of unique values) is expected to be low. This property can
+         * save a large amount of memory.
          */
         public static final String DICT = "dict";
 
@@ -683,12 +687,14 @@ public class CreateTypeRequest implements IndexedRecord {
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DICT
      *                    DICT}: This property indicates that this column
-     *                    should be dictionary encoded. It can only be used in
-     *                    conjunction with string columns marked with a charN
-     *                    property. This property is appropriate for columns
-     *                    where the cardinality (the number of unique values)
-     *                    is expected to be low, and can save a large amount of
-     *                    memory.
+     *                    should be <a
+     *                    href="../../../../../concepts/dictionary_encoding.html"
+     *                    target="_top">dictionary encoded</a>. It can only be
+     *                    used in conjunction with restricted string (charN),
+     *                    int, or long columns. Dictionary encoding is best for
+     *                    columns where the cardinality (the number of unique
+     *                    values) is expected to be low. This property can save
+     *                    a large amount of memory.
      *                    </ul>
      * @param options  Optional parameters.
      * 
@@ -919,11 +925,13 @@ public class CreateTypeRequest implements IndexedRecord {
      *         the avro schema for the record.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#DICT DICT}: This
-     *         property indicates that this column should be dictionary
-     *         encoded. It can only be used in conjunction with string columns
-     *         marked with a charN property. This property is appropriate for
-     *         columns where the cardinality (the number of unique values) is
-     *         expected to be low, and can save a large amount of memory.
+     *         property indicates that this column should be <a
+     *         href="../../../../../concepts/dictionary_encoding.html"
+     *         target="_top">dictionary encoded</a>. It can only be used in
+     *         conjunction with restricted string (charN), int, or long
+     *         columns. Dictionary encoding is best for columns where the
+     *         cardinality (the number of unique values) is expected to be low.
+     *         This property can save a large amount of memory.
      *         </ul>
      * 
      */
@@ -1129,12 +1137,14 @@ public class CreateTypeRequest implements IndexedRecord {
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DICT
      *                    DICT}: This property indicates that this column
-     *                    should be dictionary encoded. It can only be used in
-     *                    conjunction with string columns marked with a charN
-     *                    property. This property is appropriate for columns
-     *                    where the cardinality (the number of unique values)
-     *                    is expected to be low, and can save a large amount of
-     *                    memory.
+     *                    should be <a
+     *                    href="../../../../../concepts/dictionary_encoding.html"
+     *                    target="_top">dictionary encoded</a>. It can only be
+     *                    used in conjunction with restricted string (charN),
+     *                    int, or long columns. Dictionary encoding is best for
+     *                    columns where the cardinality (the number of unique
+     *                    values) is expected to be low. This property can save
+     *                    a large amount of memory.
      *                    </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

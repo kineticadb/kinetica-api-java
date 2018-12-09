@@ -6,7 +6,9 @@
 package com.gpudb.protocol;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -26,6 +28,7 @@ public class UpdateRecordsResponse implements IndexedRecord {
                 .name("countsUpdated").type().array().items().longType().noDefault()
                 .name("countInserted").type().longType().noDefault()
                 .name("countsInserted").type().array().items().longType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -44,6 +47,7 @@ public class UpdateRecordsResponse implements IndexedRecord {
     private List<Long> countsUpdated;
     private long countInserted;
     private List<Long> countsInserted;
+    private Map<String, String> info;
 
 
     /**
@@ -144,6 +148,27 @@ public class UpdateRecordsResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public UpdateRecordsResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -181,6 +206,9 @@ public class UpdateRecordsResponse implements IndexedRecord {
             case 3:
                 return this.countsInserted;
 
+            case 4:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -216,6 +244,10 @@ public class UpdateRecordsResponse implements IndexedRecord {
                 this.countsInserted = (List<Long>)value;
                 break;
 
+            case 4:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -236,7 +268,8 @@ public class UpdateRecordsResponse implements IndexedRecord {
         return ( ( this.countUpdated == that.countUpdated )
                  && this.countsUpdated.equals( that.countsUpdated )
                  && ( this.countInserted == that.countInserted )
-                 && this.countsInserted.equals( that.countsInserted ) );
+                 && this.countsInserted.equals( that.countsInserted )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -259,6 +292,10 @@ public class UpdateRecordsResponse implements IndexedRecord {
         builder.append( gd.toString( "countsInserted" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.countsInserted ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -271,6 +308,7 @@ public class UpdateRecordsResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.countsUpdated.hashCode();
         hashCode = (31 * hashCode) + ((Long)this.countInserted).hashCode();
         hashCode = (31 * hashCode) + this.countsInserted.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

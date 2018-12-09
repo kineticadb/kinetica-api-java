@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
 public class WorkerList extends ArrayList<URL> {
     private static final long serialVersionUID = 1L;
 
+    private boolean isMultiHeadEnabled;
+    private Pattern ipRegex;
+
     /**
      * Creates an empty {@link WorkerList} that can be populated manually
      * with worker URLs to support multi-head operations. Note that worker URLs
@@ -65,6 +68,9 @@ public class WorkerList extends ArrayList<URL> {
      * for one or more workers
      */
     public WorkerList(GPUdb gpudb, Pattern ipRegex) throws GPUdbException {
+
+        this.ipRegex = ipRegex;
+        
         Map<String, String> systemProperties = gpudb.showSystemProperties(GPUdb.options()).getPropertyMap();
 
         String s = systemProperties.get("conf.enable_worker_http_servers");
@@ -73,9 +79,11 @@ public class WorkerList extends ArrayList<URL> {
             throw new GPUdbException("Missing value for conf.enable_worker_http_servers.");
         }
 
+        // Check if multi-head I/O is enabled
         if (s.equals("FALSE")) {
             return;
         }
+        this.isMultiHeadEnabled = true;
 
         if (gpudb.getURLs().size() > 1) {
             throw new GPUdbException("Multi-head ingest not supported with failover URLs.");
@@ -87,6 +95,13 @@ public class WorkerList extends ArrayList<URL> {
             String[] urlLists = s.split(";");
 
             for (int i = 1; i < urlLists.length; i++) {
+
+                // Handle removed ranks
+                if ( urlLists[i].isEmpty() ) {
+                    add( null );
+                    continue;
+                }
+                
                 String[] urls = urlLists[i].split(",");
                 boolean found = false;
 
@@ -100,8 +115,8 @@ public class WorkerList extends ArrayList<URL> {
                         throw new GPUdbException(ex.getMessage(), ex);
                     }
 
-                    if (ipRegex != null) {
-                        match = ipRegex.matcher(url.getHost()).matches();
+                    if (this.ipRegex != null) {
+                        match = this.ipRegex.matcher(url.getHost()).matches();
                     } else {
                         match = true;
                     }
@@ -141,14 +156,20 @@ public class WorkerList extends ArrayList<URL> {
             String protocol = gpudb.getURL().getProtocol();
 
             for (int i = 1; i < ipLists.length; i++) {
+                // Handle removed ranks
+                if ( ipLists[i].isEmpty() ) {
+                    add( null );
+                    continue;
+                }
+
                 String[] ips = ipLists[i].split(",");
                 boolean found = false;
 
                 for (String ip : ips) {
                     boolean match;
 
-                    if (ipRegex != null) {
-                        match = ipRegex.matcher(ip).matches();
+                    if (this.ipRegex != null) {
+                        match = this.ipRegex.matcher(ip).matches();
                     } else {
                         match = true;
                     }
@@ -199,5 +220,23 @@ public class WorkerList extends ArrayList<URL> {
     public WorkerList(GPUdb gpudb, String ipPrefix) throws GPUdbException {
         this(gpudb, (ipPrefix == null) ? null
                 : Pattern.compile(Pattern.quote(ipPrefix) + ".*"));
+    }
+
+
+    /**
+     * @return  the IP regular expression used to create this worker list.
+     *
+     */
+    public Pattern getIpRegex() {
+        return this.ipRegex;
+    }
+
+
+    /**
+     * return  a boolean indicating whether multi-head I/O is enabled at the
+     * server.
+     */
+    public boolean isMultiHeadEnabled() {
+        return this.isMultiHeadEnabled;
     }
 }

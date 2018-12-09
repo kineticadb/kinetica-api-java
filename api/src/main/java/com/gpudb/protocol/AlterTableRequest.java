@@ -17,8 +17,8 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#alterTable(AlterTableRequest)}.
  * <p>
- * Apply various modifications to a table, view, or collection.  The available
- * modifications include the following:
+ * Apply various modifications to a table, view, or collection.  The
+ * available modifications include the following:
  * <p>
  * Create or delete an <a
  * href="../../../../../concepts/indexes.html#column-index"
@@ -46,6 +46,10 @@ import org.apache.avro.generic.IndexedRecord;
  * target="_top">protection</a> mode to prevent or
  * allow automatic expiration. This can be applied to tables, views, and
  * collections.
+ * <p>
+ * Manage a <a href="../../../../../concepts/tables.html#partitioning"
+ * target="_top">range-partitioned</a>
+ * table's partitions.
  * <p>
  * Allow homogeneous tables within a collection.
  * <p>
@@ -86,9 +90,7 @@ public class AlterTableRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#ALLOW_HOMOGENEOUS_TABLES
-     * ALLOW_HOMOGENEOUS_TABLES}: Sets whether homogeneous tables are allowed
-     * in the given collection. This action is only valid if {@code tableName}
-     * is a collection. The {@code value} must be either 'true' or 'false'.
+     * ALLOW_HOMOGENEOUS_TABLES}: No longer supported; action will be ignored.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX CREATE_INDEX}:
      * Creates an <a href="../../../../../concepts/indexes.html#column-index"
@@ -165,6 +167,21 @@ public class AlterTableRequest implements IndexedRecord {
      * foreign_key_name specified when creating the key or the complete string
      * used to define it.
      *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
+     * ADD_PARTITION}: Partition definition to add (for range-partitioned
+     * tables only).  See <a
+     * href="../../../../../concepts/tables.html#partitioning-by-range-example"
+     * target="_top">range partitioning example</a> for example format.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
+     * REMOVE_PARTITION}: Name of partition to remove (for range-partitioned
+     * tables only).  All data in partition will be moved to the default
+     * partition
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
+     * DELETE_PARTITION}: Name of partition to delete (for range-partitioned
+     * tables only).  All data in the partition will be deleted.
+     *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
      * SET_GLOBAL_ACCESS_MODE}: Sets the global access mode (i.e. locking) for
      * the table specified in {@code tableName}. Specify the access mode in
@@ -203,9 +220,7 @@ public class AlterTableRequest implements IndexedRecord {
     public static final class Action {
 
         /**
-         * Sets whether homogeneous tables are allowed in the given collection.
-         * This action is only valid if {@code tableName} is a collection. The
-         * {@code value} must be either 'true' or 'false'.
+         * No longer supported; action will be ignored.
          */
         public static final String ALLOW_HOMOGENEOUS_TABLES = "allow_homogeneous_tables";
 
@@ -313,6 +328,26 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String DELETE_FOREIGN_KEY = "delete_foreign_key";
 
         /**
+         * Partition definition to add (for range-partitioned tables only).
+         * See <a
+         * href="../../../../../concepts/tables.html#partitioning-by-range-example"
+         * target="_top">range partitioning example</a> for example format.
+         */
+        public static final String ADD_PARTITION = "add_partition";
+
+        /**
+         * Name of partition to remove (for range-partitioned tables only).
+         * All data in partition will be moved to the default partition
+         */
+        public static final String REMOVE_PARTITION = "remove_partition";
+
+        /**
+         * Name of partition to delete (for range-partitioned tables only).
+         * All data in the partition will be deleted.
+         */
+        public static final String DELETE_PARTITION = "delete_partition";
+
+        /**
          * Sets the global access mode (i.e. locking) for the table specified
          * in {@code tableName}. Specify the access mode in {@code value}.
          * Valid modes are 'no_access', 'read_only', 'write_only' and
@@ -364,6 +399,12 @@ public class AlterTableRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
+     *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#ACTION
+     * ACTION}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#COLUMN_NAME COLUMN_NAME}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#TABLE_NAME TABLE_NAME}
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Options#COLUMN_DEFAULT_VALUE
      * COLUMN_DEFAULT_VALUE}: When adding a column, set a default value for
@@ -439,6 +480,9 @@ public class AlterTableRequest implements IndexedRecord {
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
+        public static final String ACTION = "action";
+        public static final String COLUMN_NAME = "column_name";
+        public static final String TABLE_NAME = "table_name";
 
         /**
          * When adding a column, set a default value for existing records.  For
@@ -562,10 +606,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                <ul>
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ALLOW_HOMOGENEOUS_TABLES
-     *                ALLOW_HOMOGENEOUS_TABLES}: Sets whether homogeneous
-     *                tables are allowed in the given collection. This action
-     *                is only valid if {@code tableName} is a collection. The
-     *                {@code value} must be either 'true' or 'false'.
+     *                ALLOW_HOMOGENEOUS_TABLES}: No longer supported; action
+     *                will be ignored.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
      *                CREATE_INDEX}: Creates an <a
@@ -654,6 +696,23 @@ public class AlterTableRequest implements IndexedRecord {
      *                be the foreign_key_name specified when creating the key
      *                or the complete string used to define it.
      *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
+     *                ADD_PARTITION}: Partition definition to add (for
+     *                range-partitioned tables only).  See <a
+     *                href="../../../../../concepts/tables.html#partitioning-by-range-example"
+     *                target="_top">range partitioning example</a> for example
+     *                format.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
+     *                REMOVE_PARTITION}: Name of partition to remove (for
+     *                range-partitioned tables only).  All data in partition
+     *                will be moved to the default partition
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
+     *                DELETE_PARTITION}: Name of partition to delete (for
+     *                range-partitioned tables only).  All data in the
+     *                partition will be deleted.
+     *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
      *                SET_GLOBAL_ACCESS_MODE}: Sets the global access mode
      *                (i.e. locking) for the table specified in {@code
@@ -697,6 +756,15 @@ public class AlterTableRequest implements IndexedRecord {
      *               depending on {@code action}.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#ACTION
+     *                 ACTION}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN_NAME
+     *                 COLUMN_NAME}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#TABLE_NAME
+     *                 TABLE_NAME}
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN_DEFAULT_VALUE
      *                 COLUMN_DEFAULT_VALUE}: When adding a column, set a
@@ -821,10 +889,8 @@ public class AlterTableRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#ALLOW_HOMOGENEOUS_TABLES
-     *         ALLOW_HOMOGENEOUS_TABLES}: Sets whether homogeneous tables are
-     *         allowed in the given collection. This action is only valid if
-     *         {@code tableName} is a collection. The {@code value} must be
-     *         either 'true' or 'false'.
+     *         ALLOW_HOMOGENEOUS_TABLES}: No longer supported; action will be
+     *         ignored.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
      *         CREATE_INDEX}: Creates an <a
@@ -910,6 +976,22 @@ public class AlterTableRequest implements IndexedRecord {
      *         foreign_key_name specified when creating the key or the complete
      *         string used to define it.
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
+     *         ADD_PARTITION}: Partition definition to add (for
+     *         range-partitioned tables only).  See <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-range-example"
+     *         target="_top">range partitioning example</a> for example format.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
+     *         REMOVE_PARTITION}: Name of partition to remove (for
+     *         range-partitioned tables only).  All data in partition will be
+     *         moved to the default partition
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
+     *         DELETE_PARTITION}: Name of partition to delete (for
+     *         range-partitioned tables only).  All data in the partition will
+     *         be deleted.
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
      *         SET_GLOBAL_ACCESS_MODE}: Sets the global access mode (i.e.
      *         locking) for the table specified in {@code tableName}. Specify
@@ -959,10 +1041,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                <ul>
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ALLOW_HOMOGENEOUS_TABLES
-     *                ALLOW_HOMOGENEOUS_TABLES}: Sets whether homogeneous
-     *                tables are allowed in the given collection. This action
-     *                is only valid if {@code tableName} is a collection. The
-     *                {@code value} must be either 'true' or 'false'.
+     *                ALLOW_HOMOGENEOUS_TABLES}: No longer supported; action
+     *                will be ignored.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
      *                CREATE_INDEX}: Creates an <a
@@ -1051,6 +1131,23 @@ public class AlterTableRequest implements IndexedRecord {
      *                be the foreign_key_name specified when creating the key
      *                or the complete string used to define it.
      *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
+     *                ADD_PARTITION}: Partition definition to add (for
+     *                range-partitioned tables only).  See <a
+     *                href="../../../../../concepts/tables.html#partitioning-by-range-example"
+     *                target="_top">range partitioning example</a> for example
+     *                format.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
+     *                REMOVE_PARTITION}: Name of partition to remove (for
+     *                range-partitioned tables only).  All data in partition
+     *                will be moved to the default partition
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
+     *                DELETE_PARTITION}: Name of partition to delete (for
+     *                range-partitioned tables only).  All data in the
+     *                partition will be deleted.
+     *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
      *                SET_GLOBAL_ACCESS_MODE}: Sets the global access mode
      *                (i.e. locking) for the table specified in {@code
@@ -1127,6 +1224,14 @@ public class AlterTableRequest implements IndexedRecord {
      * 
      * @return Optional parameters.
      *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#ACTION ACTION}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#COLUMN_NAME
+     *         COLUMN_NAME}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#TABLE_NAME
+     *         TABLE_NAME}
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#COLUMN_DEFAULT_VALUE
      *         COLUMN_DEFAULT_VALUE}: When adding a column, set a default value
@@ -1213,6 +1318,15 @@ public class AlterTableRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#ACTION
+     *                 ACTION}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN_NAME
+     *                 COLUMN_NAME}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#TABLE_NAME
+     *                 TABLE_NAME}
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN_DEFAULT_VALUE
      *                 COLUMN_DEFAULT_VALUE}: When adding a column, set a

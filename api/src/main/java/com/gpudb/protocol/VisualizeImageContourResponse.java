@@ -8,6 +8,8 @@ package com.gpudb.protocol;
 
 
 import java.nio.ByteBuffer;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -30,6 +32,7 @@ public class VisualizeImageContourResponse implements IndexedRecord {
                 .name("minLevel").type().doubleType().noDefault()
                 .name("maxLevel").type().doubleType().noDefault()
                 .name("samplesUsed").type().longType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -48,6 +51,7 @@ public class VisualizeImageContourResponse implements IndexedRecord {
     private double minLevel;
     private double maxLevel;
     private long samplesUsed;
+    private Map<String, String> info;
 
 
     public VisualizeImageContourResponse() {
@@ -143,6 +147,15 @@ public class VisualizeImageContourResponse implements IndexedRecord {
         return this;
     }
 
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    public VisualizeImageContourResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
     @Override
     public Schema getSchema() {
         return schema$;
@@ -180,6 +193,9 @@ public class VisualizeImageContourResponse implements IndexedRecord {
 
             case 9:
                 return this.samplesUsed;
+
+            case 10:
+                return this.info;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -230,6 +246,10 @@ public class VisualizeImageContourResponse implements IndexedRecord {
                 this.samplesUsed = (Long)value;
                 break;
 
+            case 10:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -257,7 +277,8 @@ public class VisualizeImageContourResponse implements IndexedRecord {
                  && ( (Double)this.fillNn ).equals( (Double)that.fillNn )
                  && ( (Double)this.minLevel ).equals( (Double)that.minLevel )
                  && ( (Double)this.maxLevel ).equals( (Double)that.maxLevel )
-                 && ( this.samplesUsed == that.samplesUsed ) );
+                 && ( this.samplesUsed == that.samplesUsed )
+                 && this.info.equals( that.info ) );
     }
 
 
@@ -305,6 +326,10 @@ public class VisualizeImageContourResponse implements IndexedRecord {
         builder.append( gd.toString( "samplesUsed" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.samplesUsed ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -324,6 +349,7 @@ public class VisualizeImageContourResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + ((Double)this.minLevel).hashCode();
         hashCode = (31 * hashCode) + ((Double)this.maxLevel).hashCode();
         hashCode = (31 * hashCode) + ((Long)this.samplesUsed).hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

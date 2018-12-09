@@ -23,6 +23,7 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("propertyMap").type().map().values().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -63,6 +64,9 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
      * com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_WORKER_HTTP_SERVER_PORTS
      * CONF_WORKER_HTTP_SERVER_PORTS}: Semicolon (';') separated string of the
      * port numbers of all the ingestion-enabled worker ranks of the system.
+     *         <li> {@link
+     * com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_HM_HTTP_PORT
+     * CONF_HM_HTTP_PORT}: The host manager port number (an integer value).
      * </ul>
      * A set of string constants for the parameter {@code propertyMap}.
      */
@@ -108,10 +112,16 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
          */
         public static final String CONF_WORKER_HTTP_SERVER_PORTS = "conf.worker_http_server_ports";
 
+        /**
+         * The host manager port number (an integer value).
+         */
+        public static final String CONF_HM_HTTP_PORT = "conf.hm_http_port";
+
         private PropertyMap() {  }
     }
 
     private Map<String, String> propertyMap;
+    private Map<String, String> info;
 
 
     /**
@@ -151,6 +161,10 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
      *         CONF_WORKER_HTTP_SERVER_PORTS}: Semicolon (';') separated string
      *         of the port numbers of all the ingestion-enabled worker ranks of
      *         the system.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_HM_HTTP_PORT
+     *         CONF_HM_HTTP_PORT}: The host manager port number (an integer
+     *         value).
      *         </ul>
      * 
      */
@@ -189,6 +203,10 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
      *                     CONF_WORKER_HTTP_SERVER_PORTS}: Semicolon (';')
      *                     separated string of the port numbers of all the
      *                     ingestion-enabled worker ranks of the system.
+     *                             <li> {@link
+     *                     com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_HM_HTTP_PORT
+     *                     CONF_HM_HTTP_PORT}: The host manager port number (an
+     *                     integer value).
      *                     </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -196,6 +214,27 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
      */
     public ShowSystemPropertiesResponse setPropertyMap(Map<String, String> propertyMap) {
         this.propertyMap = (propertyMap == null) ? new LinkedHashMap<String, String>() : propertyMap;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowSystemPropertiesResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
 
@@ -228,6 +267,9 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
             case 0:
                 return this.propertyMap;
 
+            case 1:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -251,6 +293,10 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
                 this.propertyMap = (Map<String, String>)value;
                 break;
 
+            case 1:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -268,7 +314,8 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
 
         ShowSystemPropertiesResponse that = (ShowSystemPropertiesResponse)obj;
 
-        return ( this.propertyMap.equals( that.propertyMap ) );
+        return ( this.propertyMap.equals( that.propertyMap )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -279,6 +326,10 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
         builder.append( gd.toString( "propertyMap" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.propertyMap ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -288,6 +339,7 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.propertyMap.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

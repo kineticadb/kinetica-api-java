@@ -103,7 +103,7 @@ public class FilterByAreaGeometryRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of the table to filter.  This may be the name of
-     *                   a collection, a table or a view (when chaining
+     *                   a collection, a table, or a view (when chaining
      *                   queries).  If filtering a collection, all child tables
      *                   where the filter expression is valid will be filtered;
      *                   the filtered result tables will then be placed in a
@@ -141,7 +141,7 @@ public class FilterByAreaGeometryRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table to filter.  This may be the name of a
-     *         collection, a table or a view (when chaining queries).  If
+     *         collection, a table, or a view (when chaining queries).  If
      *         filtering a collection, all child tables where the filter
      *         expression is valid will be filtered; the filtered result tables
      *         will then be placed in a collection specified by {@code
@@ -155,7 +155,7 @@ public class FilterByAreaGeometryRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table to filter.  This may be the name of
-     *                   a collection, a table or a view (when chaining
+     *                   a collection, a table, or a view (when chaining
      *                   queries).  If filtering a collection, all child tables
      *                   where the filter expression is valid will be filtered;
      *                   the filtered result tables will then be placed in a

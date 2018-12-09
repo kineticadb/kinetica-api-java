@@ -49,6 +49,11 @@ public class AlterUserRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterUserRequest.Action#SET_PASSWORD SET_PASSWORD}:
      * Sets the password of the user. The user must be an internal user.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterUserRequest.Action#SET_RESOURCE_GROUP
+     * SET_RESOURCE_GROUP}: Sets the resource group for an internal user. The
+     * resource group must exist, otherwise, an empty string assigns the user
+     * to the default resource group.
      * </ul>
      * A set of string constants for the parameter {@code action}.
      */
@@ -58,6 +63,13 @@ public class AlterUserRequest implements IndexedRecord {
          * Sets the password of the user. The user must be an internal user.
          */
         public static final String SET_PASSWORD = "set_password";
+
+        /**
+         * Sets the resource group for an internal user. The resource group
+         * must exist, otherwise, an empty string assigns the user to the
+         * default resource group.
+         */
+        public static final String SET_RESOURCE_GROUP = "set_resource_group";
 
         private Action() {  }
     }
@@ -89,6 +101,12 @@ public class AlterUserRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterUserRequest.Action#SET_PASSWORD
      *                SET_PASSWORD}: Sets the password of the user. The user
      *                must be an internal user.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterUserRequest.Action#SET_RESOURCE_GROUP
+     *                SET_RESOURCE_GROUP}: Sets the resource group for an
+     *                internal user. The resource group must exist, otherwise,
+     *                an empty string assigns the user to the default resource
+     *                group.
      *                </ul>
      * @param value  The value of the modification, depending on {@code
      *               action}.
@@ -132,6 +150,11 @@ public class AlterUserRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterUserRequest.Action#SET_PASSWORD
      *         SET_PASSWORD}: Sets the password of the user. The user must be
      *         an internal user.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterUserRequest.Action#SET_RESOURCE_GROUP
+     *         SET_RESOURCE_GROUP}: Sets the resource group for an internal
+     *         user. The resource group must exist, otherwise, an empty string
+     *         assigns the user to the default resource group.
      *         </ul>
      * 
      */
@@ -148,6 +171,12 @@ public class AlterUserRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterUserRequest.Action#SET_PASSWORD
      *                SET_PASSWORD}: Sets the password of the user. The user
      *                must be an internal user.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterUserRequest.Action#SET_RESOURCE_GROUP
+     *                SET_RESOURCE_GROUP}: Sets the resource group for an
+     *                internal user. The resource group must exist, otherwise,
+     *                an empty string assigns the user to the default resource
+     *                group.
      *                </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -7,6 +7,8 @@
 package com.gpudb.protocol;
 
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -21,6 +23,7 @@ public class AdminReplaceTomRequest implements IndexedRecord {
             .fields()
                 .name("oldRankTom").type().longType().noDefault()
                 .name("newRankTom").type().longType().noDefault()
+                .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -31,14 +34,17 @@ public class AdminReplaceTomRequest implements IndexedRecord {
 
     private long oldRankTom;
     private long newRankTom;
+    private Map<String, String> options;
 
 
     public AdminReplaceTomRequest() {
+        options = new LinkedHashMap<>();
     }
 
-    public AdminReplaceTomRequest(long oldRankTom, long newRankTom) {
+    public AdminReplaceTomRequest(long oldRankTom, long newRankTom, Map<String, String> options) {
         this.oldRankTom = oldRankTom;
         this.newRankTom = newRankTom;
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     public long getOldRankTom() {
@@ -59,6 +65,15 @@ public class AdminReplaceTomRequest implements IndexedRecord {
         return this;
     }
 
+    public Map<String, String> getOptions() {
+        return options;
+    }
+
+    public AdminReplaceTomRequest setOptions(Map<String, String> options) {
+        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
+        return this;
+    }
+
     @Override
     public Schema getSchema() {
         return schema$;
@@ -72,6 +87,9 @@ public class AdminReplaceTomRequest implements IndexedRecord {
 
             case 1:
                 return this.newRankTom;
+
+            case 2:
+                return this.options;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -88,6 +106,10 @@ public class AdminReplaceTomRequest implements IndexedRecord {
 
             case 1:
                 this.newRankTom = (Long)value;
+                break;
+
+            case 2:
+                this.options = (Map<String, String>)value;
                 break;
 
             default:
@@ -109,7 +131,8 @@ public class AdminReplaceTomRequest implements IndexedRecord {
         AdminReplaceTomRequest that = (AdminReplaceTomRequest)obj;
 
         return ( ( this.oldRankTom == that.oldRankTom )
-                 && ( this.newRankTom == that.newRankTom ) );
+                 && ( this.newRankTom == that.newRankTom )
+                 && this.options.equals( that.options ) );
     }
 
 
@@ -125,6 +148,10 @@ public class AdminReplaceTomRequest implements IndexedRecord {
         builder.append( gd.toString( "newRankTom" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.newRankTom ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "options" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.options ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -136,6 +163,7 @@ public class AdminReplaceTomRequest implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + ((Long)this.oldRankTom).hashCode();
         hashCode = (31 * hashCode) + ((Long)this.newRankTom).hashCode();
+        hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }
 

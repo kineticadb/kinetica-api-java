@@ -42,6 +42,27 @@ public class CreateUserInternalRequest implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUserInternalRequest.Options#RESOURCE_GROUP
+     * RESOURCE_GROUP}: Name of an existing resource group to associate with
+     * this user
+     * </ul>
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * Name of an existing resource group to associate with this user
+         */
+        public static final String RESOURCE_GROUP = "resource_group";
+
+        private Options() {  }
+    }
+
     private String name;
     private String password;
     private Map<String, String> options;
@@ -67,6 +88,12 @@ public class CreateUserInternalRequest implements IndexedRecord {
      * @param password  Initial password of the user to be created. May be an
      *                  empty string for no password.
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserInternalRequest.Options#RESOURCE_GROUP
+     *                 RESOURCE_GROUP}: Name of an existing resource group to
+     *                 associate with this user
+     *                 </ul>
      * 
      */
     public CreateUserInternalRequest(String name, String password, Map<String, String> options) {
@@ -127,6 +154,12 @@ public class CreateUserInternalRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUserInternalRequest.Options#RESOURCE_GROUP
+     *         RESOURCE_GROUP}: Name of an existing resource group to associate
+     *         with this user
+     *         </ul>
      * 
      */
     public Map<String, String> getOptions() {
@@ -136,6 +169,12 @@ public class CreateUserInternalRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserInternalRequest.Options#RESOURCE_GROUP
+     *                 RESOURCE_GROUP}: Name of an existing resource group to
+     *                 associate with this user
+     *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

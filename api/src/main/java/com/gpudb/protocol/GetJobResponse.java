@@ -31,6 +31,7 @@ public class GetJobResponse implements IndexedRecord {
                 .name("jobResponse").type().bytesType().noDefault()
                 .name("jobResponseStr").type().stringType().noDefault()
                 .name("statusMap").type().map().values().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -155,6 +156,7 @@ public class GetJobResponse implements IndexedRecord {
     private ByteBuffer jobResponse;
     private String jobResponseStr;
     private Map<String, String> statusMap;
+    private Map<String, String> info;
 
 
     /**
@@ -442,6 +444,27 @@ public class GetJobResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public GetJobResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -493,6 +516,9 @@ public class GetJobResponse implements IndexedRecord {
 
             case 8:
                 return this.statusMap;
+
+            case 9:
+                return this.info;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -549,6 +575,10 @@ public class GetJobResponse implements IndexedRecord {
                 this.statusMap = (Map<String, String>)value;
                 break;
 
+            case 9:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -574,7 +604,8 @@ public class GetJobResponse implements IndexedRecord {
                  && this.responseEncoding.equals( that.responseEncoding )
                  && this.jobResponse.equals( that.jobResponse )
                  && this.jobResponseStr.equals( that.jobResponseStr )
-                 && this.statusMap.equals( that.statusMap ) );
+                 && this.statusMap.equals( that.statusMap )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -617,6 +648,10 @@ public class GetJobResponse implements IndexedRecord {
         builder.append( gd.toString( "statusMap" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.statusMap ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -634,6 +669,7 @@ public class GetJobResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.jobResponse.hashCode();
         hashCode = (31 * hashCode) + this.jobResponseStr.hashCode();
         hashCode = (31 * hashCode) + this.statusMap.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

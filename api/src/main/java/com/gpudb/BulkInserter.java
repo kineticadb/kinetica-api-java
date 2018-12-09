@@ -1,12 +1,14 @@
 package com.gpudb;
 
 import com.gpudb.protocol.AdminShowShardsRequest;
+import com.gpudb.protocol.AdminShowShardsResponse;
 import com.gpudb.protocol.InsertRecordsRequest;
 import com.gpudb.protocol.InsertRecordsResponse;
 import com.gpudb.protocol.RawInsertRecordsRequest;
 import com.gpudb.protocol.ShowTableResponse;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,6 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 import org.apache.avro.generic.IndexedRecord;
+import org.apache.commons.lang3.mutable.MutableLong;
 
 /**
  * Object that manages the insertion into GPUdb of large numbers of records in
@@ -39,6 +42,12 @@ public class BulkInserter<T> {
 
         private InsertException(URL url, List<?> records, String message, Throwable cause) {
             super(message, cause);
+            this.url = url;
+            this.records = records;
+        }
+
+        private InsertException(URL url, List<?> records, String message) {
+            super(message);
             this.url = url;
             this.records = records;
         }
@@ -171,6 +180,7 @@ public class BulkInserter<T> {
         }
     }
 
+    // BulkInserter Members
     private final GPUdb gpudb;
     private final String tableName;
     private final TypeObjectMap<T> typeObjectMap;
@@ -178,9 +188,17 @@ public class BulkInserter<T> {
     private final Map<String, String> options;
     private final RecordKeyBuilder<T> primaryKeyBuilder;
     private final RecordKeyBuilder<T> shardKeyBuilder;
-    private final List<Integer> routingTable;
-    private final List<WorkerQueue<T>> workerQueues;
+    private final boolean isReplicatedTable;
+    private final boolean isMultiHeadEnabled;
+    private final boolean hasPrimaryKey;
+    private final boolean updateOnExistingPk;
     private volatile int retryCount;
+    private List<Integer> routingTable;
+    private long shardVersion;
+    private MutableLong shardUpdateTime;
+    private com.gpudb.WorkerList workerList;
+    private List<WorkerQueue<T>> workerQueues;
+    private int numRanks;
     private final AtomicLong countInserted = new AtomicLong();
     private final AtomicLong countUpdated = new AtomicLong();
 
@@ -277,10 +295,15 @@ public class BulkInserter<T> {
         this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers);
     }
 
+
     private BulkInserter(GPUdb gpudb, String tableName, Type type, TypeObjectMap<T> typeObjectMap, int batchSize, Map<String, String> options, com.gpudb.WorkerList workers) throws GPUdbException {
         this.gpudb = gpudb;
         this.tableName = tableName;
         this.typeObjectMap = typeObjectMap;
+        this.workerList    = workers;
+
+        this.shardVersion = 0;
+        this.shardUpdateTime = new MutableLong();
 
         // Validate that the table exists
         if ( !gpudb.hasTable( tableName, null ).getTableExists() ) {
@@ -289,7 +312,10 @@ public class BulkInserter<T> {
             
         // Check if it is a replicated table (if so, then can't do
         // multi-head ingestion; will have to force rank-0 ingestion)
-        boolean isReplicatedTable = gpudb.showTable( tableName, null ).getTableDescriptions().get( 0 ).contains( ShowTableResponse.TableDescriptions.REPLICATED );
+        this.isReplicatedTable = gpudb.showTable( tableName, null )
+                                      .getTableDescriptions()
+                                      .get( 0 )
+                                      .contains( ShowTableResponse.TableDescriptions.REPLICATED );
             
         // Validate the batch size
         if (batchSize < 1) {
@@ -331,29 +357,47 @@ public class BulkInserter<T> {
                 shardKeyBuilder = null;
             }
         }
+        // Save whether this table has a primary key
+        this.hasPrimaryKey = (this.primaryKeyBuilder != null);
 
-        boolean updateOnExistingPk = options != null
-                && options.containsKey(InsertRecordsRequest.Options.UPDATE_ON_EXISTING_PK)
-                && options.get(InsertRecordsRequest.Options.UPDATE_ON_EXISTING_PK).equals(InsertRecordsRequest.Options.TRUE);
+        this.updateOnExistingPk = options != null
+            && options.containsKey(InsertRecordsRequest.Options.UPDATE_ON_EXISTING_PK)
+            && options.get(InsertRecordsRequest.Options.UPDATE_ON_EXISTING_PK).equals(InsertRecordsRequest.Options.TRUE);
 
         this.workerQueues = new ArrayList<>();
 
         try {
+            // Set if multi-head I/O is turned on at the server
+            this.isMultiHeadEnabled = ( this.workerList != null && !this.workerList.isEmpty() );
+
             // If we have multiple workers, then use those (unless the table
             // is replicated)
-            if (workers != null && !workers.isEmpty() && !isReplicatedTable ) {
-                for (URL url : workers) {
-                    this.workerQueues.add(new WorkerQueue<T>(GPUdbBase.appendPathToURL(url, "/insert/records"), batchSize, primaryKeyBuilder != null, updateOnExistingPk));
-                }
-
-                routingTable = gpudb.adminShowShards(new AdminShowShardsRequest()).getRank();
-
-                for (int i = 0; i < routingTable.size(); i++) {
-                    if (routingTable.get(i) > this.workerQueues.size()) {
-                        throw new IllegalArgumentException("Too few worker URLs specified.");
+            if (this.isMultiHeadEnabled && !this.isReplicatedTable ) {
+                
+                for (URL url : this.workerList) {
+                    if (url == null) {
+                        // Handle removed ranks
+                        this.workerQueues.add( null );
+                        // this.workerQueues.add( (WorkerQueue<>)null );
+                    } else {
+                        this.workerQueues.add(new WorkerQueue<T>( GPUdbBase.appendPathToURL(url, "/insert/records"),
+                                                                  batchSize,
+                                                                  this.hasPrimaryKey,
+                                                                  this.updateOnExistingPk ) );
                     }
                 }
-            } else {
+
+                // Get the shard mapping
+                updateShardMapping( false );
+                // routingTable = gpudb.adminShowShards(new AdminShowShardsRequest()).getRank();
+
+                this.numRanks = this.workerQueues.size();
+                // for (int i = 0; i < routingTable.size(); i++) {
+                //     if (routingTable.get(i) > this.workerQueues.size()) {
+                //         throw new IllegalArgumentException("Too few worker URLs specified.");
+                //     }
+                // }
+            } else { // use the head node only for insertion
                 if (gpudb.getURLs().size() == 1) {
                     this.workerQueues.add(new WorkerQueue<T>(GPUdbBase.appendPathToURL(gpudb.getURL(), "/insert/records"), batchSize, primaryKeyBuilder != null, updateOnExistingPk));
                 } else {
@@ -361,11 +405,132 @@ public class BulkInserter<T> {
                 }
 
                 routingTable = null;
+                this.numRanks = 1;
             }
         } catch (MalformedURLException ex) {
             throw new GPUdbException(ex.getMessage(), ex);
         }
     }
+
+
+    /**
+     * Updates the shard mapping based on the latest cluster configuration.
+     * Also reconstructs the worker queues based on the new sharding.
+     *
+     * @return  a bool indicating whether the shard mapping was updated or not.
+     */
+    private boolean updateShardMapping() throws GPUdbException {
+        return this.updateShardMapping( true );
+    }
+
+
+    /**
+     * Updates the shard mapping based on the latest cluster configuration.
+     * Optionally, also reconstructs the worker queues based on the new sharding.
+     *
+     * @param doReconstructWorkerQueues  Boolean flag indicating if the worker
+     *                                   queues ought to be re-built.
+     *
+     * @return  a bool indicating whether the shard mapping was updated or not.
+     */
+    private boolean updateShardMapping( boolean doReconstructWorkerQueues ) throws GPUdbException {
+        // Get the latest shard mapping information
+        AdminShowShardsResponse shardInfo = gpudb.adminShowShards(new AdminShowShardsRequest());
+
+        // Get the shard version
+        long newShardVersion = shardInfo.getVersion();
+
+        // No-op if the shard version hasn't changed (and it's not the first time)
+        if (this.shardVersion == newShardVersion) {
+            return false; // Did not do anything
+        }
+        
+        // Save the new shard version and also when we're updating the mapping
+        this.shardVersion = newShardVersion;
+
+        synchronized ( this.shardUpdateTime ) {
+            this.shardUpdateTime.setValue( new Timestamp( System.currentTimeMillis() ).getTime() );
+        }
+
+        // Update the routing table
+        this.routingTable = shardInfo.getRank();
+
+        // The worker queues need to be re-constructed when asked for
+        // iff multi-head i/o is enabled and the table is not replicated
+        if ( doReconstructWorkerQueues
+             && this.isMultiHeadEnabled
+             && !this.isReplicatedTable )
+        {
+            reconstructWorkerQueues();
+        }
+        
+        return true; // the shard mapping was updated indeed
+    }  // end updateShardMapping
+
+
+    /**
+     * Reconstructs the worker queues and re-queues records in the old
+     * queues.
+     */
+    private void reconstructWorkerQueues() throws GPUdbException {
+
+        // Get the latest worker list (use whatever IP regex was used initially)
+        if ( this.workerList == null )
+            throw new GPUdbException( "No worker list exists!" );
+        com.gpudb.WorkerList newWorkerList = new com.gpudb.WorkerList( this.gpudb,
+                                                                       this.workerList.getIpRegex() );
+        if ( newWorkerList.equals( this.workerList ) ) {
+            return; // nothing to do since the worker list did not change
+        }
+
+        // Update the worker list
+        synchronized ( this.workerList ) {
+            this.workerList = newWorkerList;
+        }
+
+        // Create worker queues per worker URL
+        List< WorkerQueue<T> > newWorkerQueues = new ArrayList<>();
+        for ( URL url : this.workerList) {
+            try {
+                // Handle removed ranks
+                if (url == null) {
+                    newWorkerQueues.add( null );
+                    // newWorkerQueues.add( (WorkerQueue<>)null );
+                }
+                else {
+                    // Add a queue for a currently active rank
+                    newWorkerQueues.add( new WorkerQueue<T>( GPUdbBase.appendPathToURL(url, "/insert/records"),
+                                                             batchSize,
+                                                             (this.primaryKeyBuilder != null),
+                                                             this.updateOnExistingPk ) );
+                }
+            } catch (MalformedURLException ex) {
+                throw new GPUdbException( ex.getMessage(), ex );
+            } catch (Exception ex) {
+                throw new GPUdbException( ex.getMessage(), ex );
+            }
+        }
+
+        // Get the number of workers
+        this.numRanks = newWorkerQueues.size();
+
+        // Save the new queue for future use
+        List< WorkerQueue<T> > oldWorkerQueues;
+        synchronized( this.workerQueues ) {
+            oldWorkerQueues = this.workerQueues;
+            this.workerQueues = newWorkerQueues;
+        }
+        
+        // Re-queue any existing queued records
+        for ( WorkerQueue<T> oldQueue : oldWorkerQueues ) {
+            if ( oldQueue != null ) { // skipping removed ranks
+                synchronized ( oldQueue ) {
+                    this.insert( oldQueue.flush() );
+                }
+            }
+        }
+    }  // end reconstructWorkerQueues
+
 
     /**
      * Gets the GPUdb instance into which records will be inserted.
@@ -473,18 +638,24 @@ public class BulkInserter<T> {
      */
     public void flush() throws InsertException {
         for (WorkerQueue<T> workerQueue : workerQueues) {
+
+            // Handle removed ranks
+            if ( workerQueue == null)
+                continue;
+            
             List<T> queue;
 
             synchronized (workerQueue) {
                 queue = workerQueue.flush();
             }
 
-            flush(queue, workerQueue.getUrl());
+            flush(queue, workerQueue.getUrl(), true);
         }
     }
 
+
     @SuppressWarnings("unchecked")
-    private void flush(List<T> queue, URL url) throws InsertException {
+    private void flush(List<T> queue, URL url, boolean forcedFlush) throws InsertException {
         if (queue.isEmpty()) {
             return;
         }
@@ -499,28 +670,67 @@ public class BulkInserter<T> {
             }
 
             InsertRecordsResponse response = new InsertRecordsResponse();
-            int retries = retryCount;
 
+            int retries = retryCount;
+            long insertionAttemptTimestamp = 0;
+            
             while (true) {
+                insertionAttemptTimestamp = new Timestamp( System.currentTimeMillis() ).getTime();
                 try {
                     if (url == null) {
-                        gpudb.submitRequest("/insert/records", request, response, true);
+                        response = gpudb.submitRequest("/insert/records", request, response, true);
                     } else {
-                        gpudb.submitRequest(url, request, response, true);
+                        response = gpudb.submitRequest(url, request, response, true);
                     }
 
-                    break;
+                    countInserted.addAndGet( response.getCountInserted() );
+                    countUpdated.addAndGet(  response.getCountUpdated()  );
+
+                    // Check if shard re-balancing is under way at the server; if so,
+                    // we need to update the shard mapping
+                    if ( "true".equals( response.getInfo().get( "data_rerouted" ) ) ) {
+                        updateShardMapping();
+                    }
+
+                    break; // out of the while loop
                 } catch (Exception ex) {
+                    // Insertion failed, but maybe due to shard mapping changes (due to
+                    // cluster reconfiguration)? Check if the mapping needs to be updated
+                    // or has been updated by another thread already after the
+                    // insertion was attemtped
+                    boolean updatedShardMapping = updateShardMapping();
+                    synchronized ( this.shardUpdateTime ) {
+                        if ( updatedShardMapping
+                             || ( insertionAttemptTimestamp < this.shardUpdateTime.longValue() ) ) {
+
+                            // We need to try inserting the records again since no worker
+                            // queue has these records any more (but the records may
+                            // go to a worker queue different from the one they came from)
+                            --retries;
+                            try {
+                                this.insert( queue );
+
+                                // If the user intends a forceful flush, i.e. the public flush()
+                                // was invoked, then make sure that the records get flushed
+                                if ( forcedFlush ) {
+                                    this.flush();
+                                }
+
+                                break; // out of the while loop
+                            } catch (Exception ex2) {
+                                // Re-setting the exception since we may re-try again
+                                ex = ex2;
+                            }
+                        }
+                    }
+                    
                     if (retries > 0) {
-                        retries--;
+                        --retries;
                     } else {
                         throw ex;
                     }
                 }
             }
-
-            countInserted.addAndGet(response.getCountInserted());
-            countUpdated.addAndGet(response.getCountUpdated());
         } catch (GPUdbBase.SubmitException ex) {
             throw new InsertException(ex.getURL(), queue, ex.getMessage(), ex);
         } catch (Exception ex) {
@@ -558,14 +768,22 @@ public class BulkInserter<T> {
 
         WorkerQueue<T> workerQueue;
 
-        if (routingTable == null) {
+        if (this.routingTable == null) {
             workerQueue = workerQueues.get(0);
         } else if (shardKey == null) {
-            workerQueue = workerQueues.get(routingTable.get(ThreadLocalRandom.current().nextInt(routingTable.size())) - 1);
+            workerQueue = workerQueues.get( routingTable.get( ThreadLocalRandom.current().nextInt( routingTable.size() ) ) - 1 );
         } else {
-            workerQueue = workerQueues.get(shardKey.route(routingTable));
+            workerQueue = workerQueues.get( shardKey.route( routingTable ) );
         }
 
+        // Ensure that this is a valid worker queue (and not a previously removed rank)
+        if (workerQueue == null) {
+            List<T> queuedRecord = new ArrayList<>();
+            queuedRecord.add( record );
+            throw new InsertException( (URL)null, queuedRecord,
+                                       "Attempted to insert into worker rank that has been removed!  Maybe need to update the shard mapping.");
+        }
+        
         List<T> queue;
 
         synchronized (workerQueue) {
@@ -573,7 +791,7 @@ public class BulkInserter<T> {
         }
 
         if (queue != null) {
-            flush(queue, workerQueue.getUrl());
+            flush(queue, workerQueue.getUrl(), false);
         }
     }
 
@@ -594,7 +812,7 @@ public class BulkInserter<T> {
      */
     @SuppressWarnings("unchecked")
     public void insert(List<T> records) throws InsertException {
-        for (int i = 0; i < records.size(); i++) {
+        for (int i = 0; i < records.size(); ++i) {
             try {
                 insert(records.get(i));
             } catch (InsertException ex) {

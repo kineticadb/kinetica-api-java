@@ -92,13 +92,14 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * EXPRESSION}: Optional filter expression to apply to the table.
      *         <li> {@link
      * com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_BY SORT_BY}:
-     * Optional column(s) that the data should be sorted by. Empty by default
-     * (i.e. no sorting is applied).
+     * Optional column that the data should be sorted by. Used in conjunction
+     * with {@code sort_order}. The {@code order_by} option can be used in lieu
+     * of {@code sort_by} / {@code sort_order}.
      *         <li> {@link
      * com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      * SORT_ORDER}: String indicating how the returned values should be sorted
-     * - ascending or descending. If sort_order is provided, sort_by has to be
-     * provided.
+     * - {@code ascending} or {@code descending}. If {@code sort_order} is
+     * provided, {@code sort_by} has to be provided.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -113,8 +114,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * ASCENDING}.
      *         <li> {@link
      * com.gpudb.protocol.GetRecordsByColumnRequest.Options#ORDER_BY ORDER_BY}:
-     * Comma-separated list of the columns to be sorted by; e.g. 'timestamp
-     * asc, x desc'.
+     * Comma-separated list of the columns to be sorted by as well as the sort
+     * direction, e.g., 'timestamp asc, x desc'.
      *         <li> {@link
      * com.gpudb.protocol.GetRecordsByColumnRequest.Options#CONVERT_WKTS_TO_WKBS
      * CONVERT_WKTS_TO_WKBS}: If true, then WKT string columns will be returned
@@ -139,15 +140,16 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
         public static final String EXPRESSION = "expression";
 
         /**
-         * Optional column(s) that the data should be sorted by. Empty by
-         * default (i.e. no sorting is applied).
+         * Optional column that the data should be sorted by. Used in
+         * conjunction with {@code sort_order}. The {@code order_by} option can
+         * be used in lieu of {@code sort_by} / {@code sort_order}.
          */
         public static final String SORT_BY = "sort_by";
 
         /**
-         * String indicating how the returned values should be sorted -
-         * ascending or descending. If sort_order is provided, sort_by has to
-         * be provided.
+         * String indicating how the returned values should be sorted - {@code
+         * ascending} or {@code descending}. If {@code sort_order} is provided,
+         * {@code sort_by} has to be provided.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -166,8 +168,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
         public static final String DESCENDING = "descending";
 
         /**
-         * Comma-separated list of the columns to be sorted by; e.g. 'timestamp
-         * asc, x desc'.
+         * Comma-separated list of the columns to be sorted by as well as the
+         * sort direction, e.g., 'timestamp asc, x desc'.
          */
         public static final String ORDER_BY = "order_by";
 
@@ -232,14 +234,16 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 table.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_BY
-     *                 SORT_BY}: Optional column(s) that the data should be
-     *                 sorted by. Empty by default (i.e. no sorting is
-     *                 applied).
+     *                 SORT_BY}: Optional column that the data should be sorted
+     *                 by. Used in conjunction with {@code sort_order}. The
+     *                 {@code order_by} option can be used in lieu of {@code
+     *                 sort_by} / {@code sort_order}.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      *                 SORT_ORDER}: String indicating how the returned values
-     *                 should be sorted - ascending or descending. If
-     *                 sort_order is provided, sort_by has to be provided.
+     *                 should be sorted - {@code ascending} or {@code
+     *                 descending}. If {@code sort_order} is provided, {@code
+     *                 sort_by} has to be provided.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -255,7 +259,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#ORDER_BY
      *                 ORDER_BY}: Comma-separated list of the columns to be
-     *                 sorted by; e.g. 'timestamp asc, x desc'.
+     *                 sorted by as well as the sort direction, e.g.,
+     *                 'timestamp asc, x desc'.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#CONVERT_WKTS_TO_WKBS
      *                 CONVERT_WKTS_TO_WKBS}: If true, then WKT string columns
@@ -322,14 +327,16 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 table.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_BY
-     *                 SORT_BY}: Optional column(s) that the data should be
-     *                 sorted by. Empty by default (i.e. no sorting is
-     *                 applied).
+     *                 SORT_BY}: Optional column that the data should be sorted
+     *                 by. Used in conjunction with {@code sort_order}. The
+     *                 {@code order_by} option can be used in lieu of {@code
+     *                 sort_by} / {@code sort_order}.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      *                 SORT_ORDER}: String indicating how the returned values
-     *                 should be sorted - ascending or descending. If
-     *                 sort_order is provided, sort_by has to be provided.
+     *                 should be sorted - {@code ascending} or {@code
+     *                 descending}. If {@code sort_order} is provided, {@code
+     *                 sort_by} has to be provided.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -345,7 +352,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#ORDER_BY
      *                 ORDER_BY}: Comma-separated list of the columns to be
-     *                 sorted by; e.g. 'timestamp asc, x desc'.
+     *                 sorted by as well as the sort direction, e.g.,
+     *                 'timestamp asc, x desc'.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#CONVERT_WKTS_TO_WKBS
      *                 CONVERT_WKTS_TO_WKBS}: If true, then WKT string columns
@@ -528,13 +536,15 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *         EXPRESSION}: Optional filter expression to apply to the table.
      *                 <li> {@link
      *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_BY
-     *         SORT_BY}: Optional column(s) that the data should be sorted by.
-     *         Empty by default (i.e. no sorting is applied).
+     *         SORT_BY}: Optional column that the data should be sorted by.
+     *         Used in conjunction with {@code sort_order}. The {@code
+     *         order_by} option can be used in lieu of {@code sort_by} / {@code
+     *         sort_order}.
      *                 <li> {@link
      *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      *         SORT_ORDER}: String indicating how the returned values should be
-     *         sorted - ascending or descending. If sort_order is provided,
-     *         sort_by has to be provided.
+     *         sorted - {@code ascending} or {@code descending}. If {@code
+     *         sort_order} is provided, {@code sort_by} has to be provided.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -549,8 +559,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *         ASCENDING}.
      *                 <li> {@link
      *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#ORDER_BY
-     *         ORDER_BY}: Comma-separated list of the columns to be sorted by;
-     *         e.g. 'timestamp asc, x desc'.
+     *         ORDER_BY}: Comma-separated list of the columns to be sorted by
+     *         as well as the sort direction, e.g., 'timestamp asc, x desc'.
      *                 <li> {@link
      *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#CONVERT_WKTS_TO_WKBS
      *         CONVERT_WKTS_TO_WKBS}: If true, then WKT string columns will be
@@ -583,14 +593,16 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 table.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_BY
-     *                 SORT_BY}: Optional column(s) that the data should be
-     *                 sorted by. Empty by default (i.e. no sorting is
-     *                 applied).
+     *                 SORT_BY}: Optional column that the data should be sorted
+     *                 by. Used in conjunction with {@code sort_order}. The
+     *                 {@code order_by} option can be used in lieu of {@code
+     *                 sort_by} / {@code sort_order}.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      *                 SORT_ORDER}: String indicating how the returned values
-     *                 should be sorted - ascending or descending. If
-     *                 sort_order is provided, sort_by has to be provided.
+     *                 should be sorted - {@code ascending} or {@code
+     *                 descending}. If {@code sort_order} is provided, {@code
+     *                 sort_by} has to be provided.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -606,7 +618,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#ORDER_BY
      *                 ORDER_BY}: Comma-separated list of the columns to be
-     *                 sorted by; e.g. 'timestamp asc, x desc'.
+     *                 sorted by as well as the sort direction, e.g.,
+     *                 'timestamp asc, x desc'.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#CONVERT_WKTS_TO_WKBS
      *                 CONVERT_WKTS_TO_WKBS}: If true, then WKT string columns

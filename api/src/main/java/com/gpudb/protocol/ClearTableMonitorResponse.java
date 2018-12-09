@@ -5,6 +5,8 @@
  */
 package com.gpudb.protocol;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -21,6 +23,7 @@ public class ClearTableMonitorResponse implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("topicId").type().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -36,6 +39,7 @@ public class ClearTableMonitorResponse implements IndexedRecord {
     }
 
     private String topicId;
+    private Map<String, String> info;
 
 
     /**
@@ -62,6 +66,27 @@ public class ClearTableMonitorResponse implements IndexedRecord {
      */
     public ClearTableMonitorResponse setTopicId(String topicId) {
         this.topicId = (topicId == null) ? "" : topicId;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ClearTableMonitorResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
 
@@ -94,6 +119,9 @@ public class ClearTableMonitorResponse implements IndexedRecord {
             case 0:
                 return this.topicId;
 
+            case 1:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -117,6 +145,10 @@ public class ClearTableMonitorResponse implements IndexedRecord {
                 this.topicId = (String)value;
                 break;
 
+            case 1:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -134,7 +166,8 @@ public class ClearTableMonitorResponse implements IndexedRecord {
 
         ClearTableMonitorResponse that = (ClearTableMonitorResponse)obj;
 
-        return ( this.topicId.equals( that.topicId ) );
+        return ( this.topicId.equals( that.topicId )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -145,6 +178,10 @@ public class ClearTableMonitorResponse implements IndexedRecord {
         builder.append( gd.toString( "topicId" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.topicId ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -154,6 +191,7 @@ public class ClearTableMonitorResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.topicId.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

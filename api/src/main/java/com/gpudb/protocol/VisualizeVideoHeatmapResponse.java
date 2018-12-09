@@ -9,7 +9,9 @@ package com.gpudb.protocol;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -28,6 +30,7 @@ public class VisualizeVideoHeatmapResponse implements IndexedRecord {
                 .name("numFrames").type().intType().noDefault()
                 .name("sessionKey").type().stringType().noDefault()
                 .name("data").type().array().items().bytesType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -42,6 +45,7 @@ public class VisualizeVideoHeatmapResponse implements IndexedRecord {
     private int numFrames;
     private String sessionKey;
     private List<ByteBuffer> data;
+    private Map<String, String> info;
 
 
     public VisualizeVideoHeatmapResponse() {
@@ -101,6 +105,15 @@ public class VisualizeVideoHeatmapResponse implements IndexedRecord {
         return this;
     }
 
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    public VisualizeVideoHeatmapResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
     @Override
     public Schema getSchema() {
         return schema$;
@@ -126,6 +139,9 @@ public class VisualizeVideoHeatmapResponse implements IndexedRecord {
 
             case 5:
                 return this.data;
+
+            case 6:
+                return this.info;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -160,6 +176,10 @@ public class VisualizeVideoHeatmapResponse implements IndexedRecord {
                 this.data = (List<ByteBuffer>)value;
                 break;
 
+            case 6:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -183,7 +203,8 @@ public class VisualizeVideoHeatmapResponse implements IndexedRecord {
                  && ( this.bgColor == that.bgColor )
                  && ( this.numFrames == that.numFrames )
                  && this.sessionKey.equals( that.sessionKey )
-                 && this.data.equals( that.data ) );
+                 && this.data.equals( that.data )
+                 && this.info.equals( that.info ) );
     }
 
 
@@ -215,6 +236,10 @@ public class VisualizeVideoHeatmapResponse implements IndexedRecord {
         builder.append( gd.toString( "data" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.data ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -230,6 +255,7 @@ public class VisualizeVideoHeatmapResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.numFrames;
         hashCode = (31 * hashCode) + this.sessionKey.hashCode();
         hashCode = (31 * hashCode) + this.data.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

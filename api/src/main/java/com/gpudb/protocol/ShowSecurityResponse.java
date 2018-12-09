@@ -26,6 +26,8 @@ public class ShowSecurityResponse implements IndexedRecord {
                 .name("types").type().map().values().stringType().noDefault()
                 .name("roles").type().map().values().array().items().stringType().noDefault()
                 .name("permissions").type().map().values().array().items().map().values().stringType().noDefault()
+                .name("resourceGroups").type().map().values().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -81,6 +83,8 @@ public class ShowSecurityResponse implements IndexedRecord {
     private Map<String, String> types;
     private Map<String, List<String>> roles;
     private Map<String, List<Map<String, String>>> permissions;
+    private Map<String, String> resourceGroups;
+    private Map<String, String> info;
 
 
     /**
@@ -185,6 +189,48 @@ public class ShowSecurityResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Map of user name to resource group name.
+     * 
+     */
+    public Map<String, String> getResourceGroups() {
+        return resourceGroups;
+    }
+
+    /**
+     * 
+     * @param resourceGroups  Map of user name to resource group name.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowSecurityResponse setResourceGroups(Map<String, String> resourceGroups) {
+        this.resourceGroups = (resourceGroups == null) ? new LinkedHashMap<String, String>() : resourceGroups;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowSecurityResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -219,6 +265,12 @@ public class ShowSecurityResponse implements IndexedRecord {
             case 2:
                 return this.permissions;
 
+            case 3:
+                return this.resourceGroups;
+
+            case 4:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -250,6 +302,14 @@ public class ShowSecurityResponse implements IndexedRecord {
                 this.permissions = (Map<String, List<Map<String, String>>>)value;
                 break;
 
+            case 3:
+                this.resourceGroups = (Map<String, String>)value;
+                break;
+
+            case 4:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -269,7 +329,9 @@ public class ShowSecurityResponse implements IndexedRecord {
 
         return ( this.types.equals( that.types )
                  && this.roles.equals( that.roles )
-                 && this.permissions.equals( that.permissions ) );
+                 && this.permissions.equals( that.permissions )
+                 && this.resourceGroups.equals( that.resourceGroups )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -288,6 +350,14 @@ public class ShowSecurityResponse implements IndexedRecord {
         builder.append( gd.toString( "permissions" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.permissions ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "resourceGroups" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.resourceGroups ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -299,6 +369,8 @@ public class ShowSecurityResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.types.hashCode();
         hashCode = (31 * hashCode) + this.roles.hashCode();
         hashCode = (31 * hashCode) + this.permissions.hashCode();
+        hashCode = (31 * hashCode) + this.resourceGroups.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

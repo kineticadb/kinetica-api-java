@@ -7,7 +7,9 @@ package com.gpudb.protocol;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -30,6 +32,7 @@ public class RawGetRecordsResponse implements IndexedRecord {
                 .name("recordsJson").type().array().items().stringType().noDefault()
                 .name("totalNumberOfRecords").type().longType().noDefault()
                 .name("hasMoreRecords").type().booleanType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -51,6 +54,7 @@ public class RawGetRecordsResponse implements IndexedRecord {
     private List<String> recordsJson;
     private long totalNumberOfRecords;
     private boolean hasMoreRecords;
+    private Map<String, String> info;
 
 
     /**
@@ -215,6 +219,27 @@ public class RawGetRecordsResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public RawGetRecordsResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -260,6 +285,9 @@ public class RawGetRecordsResponse implements IndexedRecord {
 
             case 6:
                 return this.hasMoreRecords;
+
+            case 7:
+                return this.info;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -308,6 +336,10 @@ public class RawGetRecordsResponse implements IndexedRecord {
                 this.hasMoreRecords = (Boolean)value;
                 break;
 
+            case 7:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -331,7 +363,8 @@ public class RawGetRecordsResponse implements IndexedRecord {
                  && this.recordsBinary.equals( that.recordsBinary )
                  && this.recordsJson.equals( that.recordsJson )
                  && ( this.totalNumberOfRecords == that.totalNumberOfRecords )
-                 && ( this.hasMoreRecords == that.hasMoreRecords ) );
+                 && ( this.hasMoreRecords == that.hasMoreRecords )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -366,6 +399,10 @@ public class RawGetRecordsResponse implements IndexedRecord {
         builder.append( gd.toString( "hasMoreRecords" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.hasMoreRecords ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -381,6 +418,7 @@ public class RawGetRecordsResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.recordsJson.hashCode();
         hashCode = (31 * hashCode) + ((Long)this.totalNumberOfRecords).hashCode();
         hashCode = (31 * hashCode) + ((Boolean)this.hasMoreRecords).hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

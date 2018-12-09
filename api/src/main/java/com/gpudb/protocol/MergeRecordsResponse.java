@@ -5,6 +5,8 @@
  */
 package com.gpudb.protocol;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -21,6 +23,7 @@ public class MergeRecordsResponse implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("tableName").type().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -36,6 +39,7 @@ public class MergeRecordsResponse implements IndexedRecord {
     }
 
     private String tableName;
+    private Map<String, String> info;
 
 
     /**
@@ -56,6 +60,27 @@ public class MergeRecordsResponse implements IndexedRecord {
      */
     public MergeRecordsResponse setTableName(String tableName) {
         this.tableName = (tableName == null) ? "" : tableName;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public MergeRecordsResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
 
@@ -88,6 +113,9 @@ public class MergeRecordsResponse implements IndexedRecord {
             case 0:
                 return this.tableName;
 
+            case 1:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -111,6 +139,10 @@ public class MergeRecordsResponse implements IndexedRecord {
                 this.tableName = (String)value;
                 break;
 
+            case 1:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -128,7 +160,8 @@ public class MergeRecordsResponse implements IndexedRecord {
 
         MergeRecordsResponse that = (MergeRecordsResponse)obj;
 
-        return ( this.tableName.equals( that.tableName ) );
+        return ( this.tableName.equals( that.tableName )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -139,6 +172,10 @@ public class MergeRecordsResponse implements IndexedRecord {
         builder.append( gd.toString( "tableName" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.tableName ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -148,6 +185,7 @@ public class MergeRecordsResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.tableName.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

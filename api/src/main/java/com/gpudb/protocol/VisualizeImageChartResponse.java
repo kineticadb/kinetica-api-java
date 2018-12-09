@@ -33,6 +33,7 @@ public class VisualizeImageChartResponse implements IndexedRecord {
                 .name("bgColor").type().stringType().noDefault()
                 .name("imageData").type().bytesType().noDefault()
                 .name("axesInfo").type().map().values().array().items().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -105,6 +106,7 @@ public class VisualizeImageChartResponse implements IndexedRecord {
     private String bgColor;
     private ByteBuffer imageData;
     private Map<String, List<String>> axesInfo;
+    private Map<String, String> info;
 
 
     /**
@@ -358,6 +360,27 @@ public class VisualizeImageChartResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public VisualizeImageChartResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -409,6 +432,9 @@ public class VisualizeImageChartResponse implements IndexedRecord {
 
             case 8:
                 return this.axesInfo;
+
+            case 9:
+                return this.info;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -465,6 +491,10 @@ public class VisualizeImageChartResponse implements IndexedRecord {
                 this.axesInfo = (Map<String, List<String>>)value;
                 break;
 
+            case 9:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -490,7 +520,8 @@ public class VisualizeImageChartResponse implements IndexedRecord {
                  && ( this.height == that.height )
                  && this.bgColor.equals( that.bgColor )
                  && this.imageData.equals( that.imageData )
-                 && this.axesInfo.equals( that.axesInfo ) );
+                 && this.axesInfo.equals( that.axesInfo )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -533,6 +564,10 @@ public class VisualizeImageChartResponse implements IndexedRecord {
         builder.append( gd.toString( "axesInfo" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.axesInfo ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -550,6 +585,7 @@ public class VisualizeImageChartResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.bgColor.hashCode();
         hashCode = (31 * hashCode) + this.imageData.hashCode();
         hashCode = (31 * hashCode) + this.axesInfo.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

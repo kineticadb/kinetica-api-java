@@ -8,6 +8,8 @@ package com.gpudb.protocol;
 
 
 import java.nio.ByteBuffer;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -24,6 +26,7 @@ public class VisualizeImageClassbreakResponse implements IndexedRecord {
                 .name("height").type().doubleType().noDefault()
                 .name("bgColor").type().longType().noDefault()
                 .name("imageData").type().bytesType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -36,6 +39,7 @@ public class VisualizeImageClassbreakResponse implements IndexedRecord {
     private double height;
     private long bgColor;
     private ByteBuffer imageData;
+    private Map<String, String> info;
 
 
     public VisualizeImageClassbreakResponse() {
@@ -77,6 +81,15 @@ public class VisualizeImageClassbreakResponse implements IndexedRecord {
         return this;
     }
 
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    public VisualizeImageClassbreakResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
     @Override
     public Schema getSchema() {
         return schema$;
@@ -96,6 +109,9 @@ public class VisualizeImageClassbreakResponse implements IndexedRecord {
 
             case 3:
                 return this.imageData;
+
+            case 4:
+                return this.info;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -122,6 +138,10 @@ public class VisualizeImageClassbreakResponse implements IndexedRecord {
                 this.imageData = (ByteBuffer)value;
                 break;
 
+            case 4:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -143,7 +163,8 @@ public class VisualizeImageClassbreakResponse implements IndexedRecord {
         return ( ( (Double)this.width ).equals( (Double)that.width )
                  && ( (Double)this.height ).equals( (Double)that.height )
                  && ( this.bgColor == that.bgColor )
-                 && this.imageData.equals( that.imageData ) );
+                 && this.imageData.equals( that.imageData )
+                 && this.info.equals( that.info ) );
     }
 
 
@@ -167,6 +188,10 @@ public class VisualizeImageClassbreakResponse implements IndexedRecord {
         builder.append( gd.toString( "imageData" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.imageData ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -180,6 +205,7 @@ public class VisualizeImageClassbreakResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + ((Double)this.height).hashCode();
         hashCode = (31 * hashCode) + ((Long)this.bgColor).hashCode();
         hashCode = (31 * hashCode) + this.imageData.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

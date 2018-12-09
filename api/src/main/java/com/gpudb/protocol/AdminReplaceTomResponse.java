@@ -7,6 +7,8 @@
 package com.gpudb.protocol;
 
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -21,6 +23,7 @@ public class AdminReplaceTomResponse implements IndexedRecord {
             .fields()
                 .name("oldRankTom").type().longType().noDefault()
                 .name("newRankTom").type().longType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -31,6 +34,7 @@ public class AdminReplaceTomResponse implements IndexedRecord {
 
     private long oldRankTom;
     private long newRankTom;
+    private Map<String, String> info;
 
 
     public AdminReplaceTomResponse() {
@@ -54,6 +58,15 @@ public class AdminReplaceTomResponse implements IndexedRecord {
         return this;
     }
 
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    public AdminReplaceTomResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
     @Override
     public Schema getSchema() {
         return schema$;
@@ -67,6 +80,9 @@ public class AdminReplaceTomResponse implements IndexedRecord {
 
             case 1:
                 return this.newRankTom;
+
+            case 2:
+                return this.info;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -83,6 +99,10 @@ public class AdminReplaceTomResponse implements IndexedRecord {
 
             case 1:
                 this.newRankTom = (Long)value;
+                break;
+
+            case 2:
+                this.info = (Map<String, String>)value;
                 break;
 
             default:
@@ -104,7 +124,8 @@ public class AdminReplaceTomResponse implements IndexedRecord {
         AdminReplaceTomResponse that = (AdminReplaceTomResponse)obj;
 
         return ( ( this.oldRankTom == that.oldRankTom )
-                 && ( this.newRankTom == that.newRankTom ) );
+                 && ( this.newRankTom == that.newRankTom )
+                 && this.info.equals( that.info ) );
     }
 
 
@@ -120,6 +141,10 @@ public class AdminReplaceTomResponse implements IndexedRecord {
         builder.append( gd.toString( "newRankTom" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.newRankTom ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -131,6 +156,7 @@ public class AdminReplaceTomResponse implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + ((Long)this.oldRankTom).hashCode();
         hashCode = (31 * hashCode) + ((Long)this.newRankTom).hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

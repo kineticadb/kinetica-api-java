@@ -6,7 +6,9 @@
 package com.gpudb.protocol;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -24,6 +26,7 @@ public class DeleteRecordsResponse implements IndexedRecord {
             .fields()
                 .name("countDeleted").type().longType().noDefault()
                 .name("countsDeleted").type().array().items().longType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -40,6 +43,7 @@ public class DeleteRecordsResponse implements IndexedRecord {
 
     private long countDeleted;
     private List<Long> countsDeleted;
+    private Map<String, String> info;
 
 
     /**
@@ -92,6 +96,27 @@ public class DeleteRecordsResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public DeleteRecordsResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -123,6 +148,9 @@ public class DeleteRecordsResponse implements IndexedRecord {
             case 1:
                 return this.countsDeleted;
 
+            case 2:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -150,6 +178,10 @@ public class DeleteRecordsResponse implements IndexedRecord {
                 this.countsDeleted = (List<Long>)value;
                 break;
 
+            case 2:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -168,7 +200,8 @@ public class DeleteRecordsResponse implements IndexedRecord {
         DeleteRecordsResponse that = (DeleteRecordsResponse)obj;
 
         return ( ( this.countDeleted == that.countDeleted )
-                 && this.countsDeleted.equals( that.countsDeleted ) );
+                 && this.countsDeleted.equals( that.countsDeleted )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -183,6 +216,10 @@ public class DeleteRecordsResponse implements IndexedRecord {
         builder.append( gd.toString( "countsDeleted" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.countsDeleted ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -193,6 +230,7 @@ public class DeleteRecordsResponse implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + ((Long)this.countDeleted).hashCode();
         hashCode = (31 * hashCode) + this.countsDeleted.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

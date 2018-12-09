@@ -5,6 +5,8 @@
  */
 package com.gpudb.protocol;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -22,6 +24,7 @@ public class HasProcResponse implements IndexedRecord {
             .fields()
                 .name("procName").type().stringType().noDefault()
                 .name("procExists").type().booleanType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -57,6 +60,7 @@ public class HasProcResponse implements IndexedRecord {
 
     private String procName;
     private boolean procExists;
+    private Map<String, String> info;
 
 
     /**
@@ -124,6 +128,27 @@ public class HasProcResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public HasProcResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -155,6 +180,9 @@ public class HasProcResponse implements IndexedRecord {
             case 1:
                 return this.procExists;
 
+            case 2:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -182,6 +210,10 @@ public class HasProcResponse implements IndexedRecord {
                 this.procExists = (Boolean)value;
                 break;
 
+            case 2:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -200,7 +232,8 @@ public class HasProcResponse implements IndexedRecord {
         HasProcResponse that = (HasProcResponse)obj;
 
         return ( this.procName.equals( that.procName )
-                 && ( this.procExists == that.procExists ) );
+                 && ( this.procExists == that.procExists )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -215,6 +248,10 @@ public class HasProcResponse implements IndexedRecord {
         builder.append( gd.toString( "procExists" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.procExists ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -225,6 +262,7 @@ public class HasProcResponse implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.procName.hashCode();
         hashCode = (31 * hashCode) + ((Boolean)this.procExists).hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

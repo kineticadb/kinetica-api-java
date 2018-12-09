@@ -30,6 +30,7 @@ public class AlterTableResponse implements IndexedRecord {
                 .name("typeDefinition").type().stringType().noDefault()
                 .name("properties").type().map().values().array().items().stringType().noDefault()
                 .name("label").type().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -51,6 +52,7 @@ public class AlterTableResponse implements IndexedRecord {
     private String typeDefinition;
     private Map<String, List<String>> properties;
     private String label;
+    private Map<String, String> info;
 
 
     /**
@@ -215,6 +217,27 @@ public class AlterTableResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AlterTableResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -260,6 +283,9 @@ public class AlterTableResponse implements IndexedRecord {
 
             case 6:
                 return this.label;
+
+            case 7:
+                return this.info;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -308,6 +334,10 @@ public class AlterTableResponse implements IndexedRecord {
                 this.label = (String)value;
                 break;
 
+            case 7:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -331,7 +361,8 @@ public class AlterTableResponse implements IndexedRecord {
                  && this.typeId.equals( that.typeId )
                  && this.typeDefinition.equals( that.typeDefinition )
                  && this.properties.equals( that.properties )
-                 && this.label.equals( that.label ) );
+                 && this.label.equals( that.label )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -366,6 +397,10 @@ public class AlterTableResponse implements IndexedRecord {
         builder.append( gd.toString( "label" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.label ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -381,6 +416,7 @@ public class AlterTableResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.typeDefinition.hashCode();
         hashCode = (31 * hashCode) + this.properties.hashCode();
         hashCode = (31 * hashCode) + this.label.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

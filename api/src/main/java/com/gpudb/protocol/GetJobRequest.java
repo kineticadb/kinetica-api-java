@@ -21,7 +21,7 @@ public class GetJobRequest implements IndexedRecord {
             .record("GetJobRequest")
             .namespace("com.gpudb")
             .fields()
-                .name("jobId").type().intType().noDefault()
+                .name("jobId").type().longType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -37,7 +37,7 @@ public class GetJobRequest implements IndexedRecord {
         return schema$;
     }
 
-    private int jobId;
+    private long jobId;
     private Map<String, String> options;
 
 
@@ -56,7 +56,7 @@ public class GetJobRequest implements IndexedRecord {
      * @param options  Optional parameters.
      * 
      */
-    public GetJobRequest(int jobId, Map<String, String> options) {
+    public GetJobRequest(long jobId, Map<String, String> options) {
         this.jobId = jobId;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
@@ -67,7 +67,7 @@ public class GetJobRequest implements IndexedRecord {
      *         fetched.
      * 
      */
-    public int getJobId() {
+    public long getJobId() {
         return jobId;
     }
 
@@ -79,7 +79,7 @@ public class GetJobRequest implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public GetJobRequest setJobId(int jobId) {
+    public GetJobRequest setJobId(long jobId) {
         this.jobId = jobId;
         return this;
     }
@@ -157,7 +157,7 @@ public class GetJobRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.jobId = (Integer)value;
+                this.jobId = (Long)value;
                 break;
 
             case 1:
@@ -205,7 +205,7 @@ public class GetJobRequest implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.jobId;
+        hashCode = (31 * hashCode) + ((Long)this.jobId).hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

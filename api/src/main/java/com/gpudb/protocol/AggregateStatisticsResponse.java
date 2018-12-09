@@ -23,6 +23,7 @@ public class AggregateStatisticsResponse implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("stats").type().map().values().doubleType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -38,6 +39,7 @@ public class AggregateStatisticsResponse implements IndexedRecord {
     }
 
     private Map<String, Double> stats;
+    private Map<String, String> info;
 
 
     /**
@@ -71,6 +73,27 @@ public class AggregateStatisticsResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AggregateStatisticsResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -99,6 +122,9 @@ public class AggregateStatisticsResponse implements IndexedRecord {
             case 0:
                 return this.stats;
 
+            case 1:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -122,6 +148,10 @@ public class AggregateStatisticsResponse implements IndexedRecord {
                 this.stats = (Map<String, Double>)value;
                 break;
 
+            case 1:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -139,7 +169,8 @@ public class AggregateStatisticsResponse implements IndexedRecord {
 
         AggregateStatisticsResponse that = (AggregateStatisticsResponse)obj;
 
-        return ( this.stats.equals( that.stats ) );
+        return ( this.stats.equals( that.stats )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -150,6 +181,10 @@ public class AggregateStatisticsResponse implements IndexedRecord {
         builder.append( gd.toString( "stats" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.stats ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -159,6 +194,7 @@ public class AggregateStatisticsResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.stats.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

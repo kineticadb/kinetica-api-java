@@ -6,7 +6,9 @@
 package com.gpudb.protocol;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -22,9 +24,10 @@ public class AdminAlterJobsResponse implements IndexedRecord {
             .record("AdminAlterJobsResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("jobIds").type().array().items().intType().noDefault()
+                .name("jobIds").type().array().items().longType().noDefault()
                 .name("action").type().stringType().noDefault()
                 .name("status").type().array().items().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -39,9 +42,10 @@ public class AdminAlterJobsResponse implements IndexedRecord {
         return schema$;
     }
 
-    private List<Integer> jobIds;
+    private List<Long> jobIds;
     private String action;
     private List<String> status;
+    private Map<String, String> info;
 
 
     /**
@@ -55,7 +59,7 @@ public class AdminAlterJobsResponse implements IndexedRecord {
      * @return Jobs on which the action was performed.
      * 
      */
-    public List<Integer> getJobIds() {
+    public List<Long> getJobIds() {
         return jobIds;
     }
 
@@ -66,8 +70,8 @@ public class AdminAlterJobsResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminAlterJobsResponse setJobIds(List<Integer> jobIds) {
-        this.jobIds = (jobIds == null) ? new ArrayList<Integer>() : jobIds;
+    public AdminAlterJobsResponse setJobIds(List<Long> jobIds) {
+        this.jobIds = (jobIds == null) ? new ArrayList<Long>() : jobIds;
         return this;
     }
 
@@ -114,6 +118,27 @@ public class AdminAlterJobsResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AdminAlterJobsResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -148,6 +173,9 @@ public class AdminAlterJobsResponse implements IndexedRecord {
             case 2:
                 return this.status;
 
+            case 3:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -168,7 +196,7 @@ public class AdminAlterJobsResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.jobIds = (List<Integer>)value;
+                this.jobIds = (List<Long>)value;
                 break;
 
             case 1:
@@ -177,6 +205,10 @@ public class AdminAlterJobsResponse implements IndexedRecord {
 
             case 2:
                 this.status = (List<String>)value;
+                break;
+
+            case 3:
+                this.info = (Map<String, String>)value;
                 break;
 
             default:
@@ -198,7 +230,8 @@ public class AdminAlterJobsResponse implements IndexedRecord {
 
         return ( this.jobIds.equals( that.jobIds )
                  && this.action.equals( that.action )
-                 && this.status.equals( that.status ) );
+                 && this.status.equals( that.status )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -217,6 +250,10 @@ public class AdminAlterJobsResponse implements IndexedRecord {
         builder.append( gd.toString( "status" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.status ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -228,6 +265,7 @@ public class AdminAlterJobsResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.jobIds.hashCode();
         hashCode = (31 * hashCode) + this.action.hashCode();
         hashCode = (31 * hashCode) + this.status.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

@@ -5,6 +5,8 @@
  */
 package com.gpudb.protocol;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -24,6 +26,7 @@ public class AggregateMinMaxGeometryResponse implements IndexedRecord {
                 .name("maxX").type().doubleType().noDefault()
                 .name("minY").type().doubleType().noDefault()
                 .name("maxY").type().doubleType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -42,6 +45,7 @@ public class AggregateMinMaxGeometryResponse implements IndexedRecord {
     private double maxX;
     private double minY;
     private double maxY;
+    private Map<String, String> info;
 
 
     /**
@@ -136,6 +140,27 @@ public class AggregateMinMaxGeometryResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AggregateMinMaxGeometryResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -173,6 +198,9 @@ public class AggregateMinMaxGeometryResponse implements IndexedRecord {
             case 3:
                 return this.maxY;
 
+            case 4:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -208,6 +236,10 @@ public class AggregateMinMaxGeometryResponse implements IndexedRecord {
                 this.maxY = (Double)value;
                 break;
 
+            case 4:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -228,7 +260,8 @@ public class AggregateMinMaxGeometryResponse implements IndexedRecord {
         return ( ( (Double)this.minX ).equals( (Double)that.minX )
                  && ( (Double)this.maxX ).equals( (Double)that.maxX )
                  && ( (Double)this.minY ).equals( (Double)that.minY )
-                 && ( (Double)this.maxY ).equals( (Double)that.maxY ) );
+                 && ( (Double)this.maxY ).equals( (Double)that.maxY )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -251,6 +284,10 @@ public class AggregateMinMaxGeometryResponse implements IndexedRecord {
         builder.append( gd.toString( "maxY" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.maxY ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -263,6 +300,7 @@ public class AggregateMinMaxGeometryResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + ((Double)this.maxX).hashCode();
         hashCode = (31 * hashCode) + ((Double)this.minY).hashCode();
         hashCode = (31 * hashCode) + ((Double)this.maxY).hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

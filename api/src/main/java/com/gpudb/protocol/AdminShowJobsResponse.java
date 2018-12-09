@@ -6,7 +6,9 @@
 package com.gpudb.protocol;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -22,12 +24,13 @@ public class AdminShowJobsResponse implements IndexedRecord {
             .record("AdminShowJobsResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("jobId").type().array().items().intType().noDefault()
+                .name("jobId").type().array().items().longType().noDefault()
                 .name("status").type().array().items().stringType().noDefault()
                 .name("endpointName").type().array().items().stringType().noDefault()
                 .name("timeReceived").type().array().items().longType().noDefault()
                 .name("authId").type().array().items().stringType().noDefault()
                 .name("userData").type().array().items().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -42,12 +45,13 @@ public class AdminShowJobsResponse implements IndexedRecord {
         return schema$;
     }
 
-    private List<Integer> jobId;
+    private List<Long> jobId;
     private List<String> status;
     private List<String> endpointName;
     private List<Long> timeReceived;
     private List<String> authId;
     private List<String> userData;
+    private Map<String, String> info;
 
 
     /**
@@ -55,7 +59,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
      */
     public AdminShowJobsResponse() {
     }
-    public List<Integer> getJobId() {
+    public List<Long> getJobId() {
         return jobId;
     }
 
@@ -66,8 +70,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminShowJobsResponse setJobId(List<Integer> jobId) {
-        this.jobId = (jobId == null) ? new ArrayList<Integer>() : jobId;
+    public AdminShowJobsResponse setJobId(List<Long> jobId) {
+        this.jobId = (jobId == null) ? new ArrayList<Long>() : jobId;
         return this;
     }
     public List<String> getStatus() {
@@ -147,6 +151,27 @@ public class AdminShowJobsResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AdminShowJobsResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -190,6 +215,9 @@ public class AdminShowJobsResponse implements IndexedRecord {
             case 5:
                 return this.userData;
 
+            case 6:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -210,7 +238,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.jobId = (List<Integer>)value;
+                this.jobId = (List<Long>)value;
                 break;
 
             case 1:
@@ -231,6 +259,10 @@ public class AdminShowJobsResponse implements IndexedRecord {
 
             case 5:
                 this.userData = (List<String>)value;
+                break;
+
+            case 6:
+                this.info = (Map<String, String>)value;
                 break;
 
             default:
@@ -255,7 +287,8 @@ public class AdminShowJobsResponse implements IndexedRecord {
                  && this.endpointName.equals( that.endpointName )
                  && this.timeReceived.equals( that.timeReceived )
                  && this.authId.equals( that.authId )
-                 && this.userData.equals( that.userData ) );
+                 && this.userData.equals( that.userData )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -286,6 +319,10 @@ public class AdminShowJobsResponse implements IndexedRecord {
         builder.append( gd.toString( "userData" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.userData ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -300,6 +337,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.timeReceived.hashCode();
         hashCode = (31 * hashCode) + this.authId.hashCode();
         hashCode = (31 * hashCode) + this.userData.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

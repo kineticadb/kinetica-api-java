@@ -6,7 +6,9 @@
 package com.gpudb.protocol;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.generic.GenericData;
 
 
@@ -23,6 +25,7 @@ public class GetRecordsFromCollectionResponse<T> {
     private List<String> typeNames;
     private List<T> data;
     private List<String> recordIds;
+    private Map<String, String> info;
 
 
     /**
@@ -129,6 +132,27 @@ public class GetRecordsFromCollectionResponse<T> {
         this.recordIds = (recordIds == null) ? new ArrayList<String>() : recordIds;
         return this;
     }
+
+    /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public GetRecordsFromCollectionResponse<T> setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
     @Override
     public boolean equals(Object obj) {
         if( obj == this ) {
@@ -144,7 +168,8 @@ public class GetRecordsFromCollectionResponse<T> {
         return ( this.tableName.equals( that.tableName )
                  && this.typeNames.equals( that.typeNames )
                  && this.data.equals( that.data )
-                 && this.recordIds.equals( that.recordIds ) );
+                 && this.recordIds.equals( that.recordIds )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -167,6 +192,10 @@ public class GetRecordsFromCollectionResponse<T> {
         builder.append( gd.toString( "recordIds" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.recordIds ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -179,6 +208,7 @@ public class GetRecordsFromCollectionResponse<T> {
         hashCode = (31 * hashCode) + this.typeNames.hashCode();
         hashCode = (31 * hashCode) + this.data.hashCode();
         hashCode = (31 * hashCode) + this.recordIds.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

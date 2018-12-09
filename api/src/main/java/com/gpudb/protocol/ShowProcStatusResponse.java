@@ -37,6 +37,7 @@ public class ShowProcStatusResponse implements IndexedRecord {
                 .name("results").type().map().values().map().values().map().values().stringType().noDefault()
                 .name("binResults").type().map().values().map().values().map().values().bytesType().noDefault()
                 .name("timings").type().map().values().map().values().map().values().longType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -145,6 +146,7 @@ public class ShowProcStatusResponse implements IndexedRecord {
     private Map<String, Map<String, Map<String, String>>> results;
     private Map<String, Map<String, Map<String, ByteBuffer>>> binResults;
     private Map<String, Map<String, Map<String, Long>>> timings;
+    private Map<String, String> info;
 
 
     /**
@@ -510,6 +512,27 @@ public class ShowProcStatusResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowProcStatusResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -573,6 +596,9 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
             case 12:
                 return this.timings;
+
+            case 13:
+                return this.info;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -645,6 +671,10 @@ public class ShowProcStatusResponse implements IndexedRecord {
                 this.timings = (Map<String, Map<String, Map<String, Long>>>)value;
                 break;
 
+            case 13:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -674,7 +704,8 @@ public class ShowProcStatusResponse implements IndexedRecord {
                  && this.messages.equals( that.messages )
                  && this.results.equals( that.results )
                  && this.binResults.equals( that.binResults )
-                 && this.timings.equals( that.timings ) );
+                 && this.timings.equals( that.timings )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -733,6 +764,10 @@ public class ShowProcStatusResponse implements IndexedRecord {
         builder.append( gd.toString( "timings" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.timings ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -754,6 +789,7 @@ public class ShowProcStatusResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.results.hashCode();
         hashCode = (31 * hashCode) + this.binResults.hashCode();
         hashCode = (31 * hashCode) + this.timings.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

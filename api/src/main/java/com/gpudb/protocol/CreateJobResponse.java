@@ -5,6 +5,8 @@
  */
 package com.gpudb.protocol;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -20,7 +22,8 @@ public class CreateJobResponse implements IndexedRecord {
             .record("CreateJobResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("jobId").type().intType().noDefault()
+                .name("jobId").type().longType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -35,7 +38,8 @@ public class CreateJobResponse implements IndexedRecord {
         return schema$;
     }
 
-    private int jobId;
+    private long jobId;
+    private Map<String, String> info;
 
 
     /**
@@ -49,7 +53,7 @@ public class CreateJobResponse implements IndexedRecord {
      * @return An identifier for the job created by this call.
      * 
      */
-    public int getJobId() {
+    public long getJobId() {
         return jobId;
     }
 
@@ -60,8 +64,29 @@ public class CreateJobResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public CreateJobResponse setJobId(int jobId) {
+    public CreateJobResponse setJobId(long jobId) {
         this.jobId = jobId;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public CreateJobResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
 
@@ -94,6 +119,9 @@ public class CreateJobResponse implements IndexedRecord {
             case 0:
                 return this.jobId;
 
+            case 1:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -114,7 +142,11 @@ public class CreateJobResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.jobId = (Integer)value;
+                this.jobId = (Long)value;
+                break;
+
+            case 1:
+                this.info = (Map<String, String>)value;
                 break;
 
             default:
@@ -134,7 +166,8 @@ public class CreateJobResponse implements IndexedRecord {
 
         CreateJobResponse that = (CreateJobResponse)obj;
 
-        return ( ( this.jobId == that.jobId ) );
+        return ( ( this.jobId == that.jobId )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -145,6 +178,10 @@ public class CreateJobResponse implements IndexedRecord {
         builder.append( gd.toString( "jobId" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.jobId ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -153,7 +190,8 @@ public class CreateJobResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.jobId;
+        hashCode = (31 * hashCode) + ((Long)this.jobId).hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

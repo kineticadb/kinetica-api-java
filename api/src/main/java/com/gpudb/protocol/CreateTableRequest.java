@@ -17,16 +17,28 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createTable(CreateTableRequest)}.
  * <p>
- * Creates a new table or collection. If a new table is being created, the type
- * of the table is given by {@code typeId}, which must the be the ID of a
- * currently registered type (i.e. one created via {@link
- * com.gpudb.GPUdb#createType(CreateTypeRequest)}). The table will be created
- * inside a collection if the option {@code collection_name} is specified. If
- * that collection does not already exist, it will be created.
+ * Creates a new table or collection. If a new table is being created,
+ * the type of the table is given by {@code typeId}, which must the be the ID
+ * of
+ * a currently registered type (i.e. one created via {@link
+ * com.gpudb.GPUdb#createType(CreateTypeRequest)}). The
+ * table will be created inside a collection if the option
+ * {@code collection_name} is specified. If that collection does
+ * not already exist, it will be created.
  * <p>
- * To create a new collection, specify the name of the collection in {@code
- * tableName} and set the {@code is_collection} option to {@code true}; {@code
- * typeId} will be ignored.
+ * To create a new collection, specify the name of the collection in
+ * {@code tableName} and set the {@code is_collection} option to
+ * {@code true}; {@code typeId} will be
+ * ignored.
+ * <p>
+ * A table may optionally be designated to use a
+ * <a href="../../../../../concepts/tables.html#replication"
+ * target="_top">replicated</a> distribution scheme,
+ * have <a href="../../../../../concepts/tables.html#foreign-keys"
+ * target="_top">foreign keys</a> to other
+ * tables assigned, or be assigned a
+ * <a href="../../../../../concepts/tables.html#partitioning"
+ * target="_top">partitioning</a> scheme.
  */
 public class CreateTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -89,9 +101,8 @@ public class CreateTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#DISALLOW_HOMOGENEOUS_TABLES
-     * DISALLOW_HOMOGENEOUS_TABLES}: For a collection, indicates whether the
-     * collection prohibits containment of multiple tables of exactly the same
-     * data type.
+     * DISALLOW_HOMOGENEOUS_TABLES}: No longer supported; value will be
+     * ignored.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TRUE
@@ -103,18 +114,21 @@ public class CreateTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
-     * IS_REPLICATED}: For a table, indicates the <a
+     * IS_REPLICATED}: For a table, affects the <a
      * href="../../../../../concepts/tables.html#distribution"
-     * target="_top">distribution scheme</a> for the table's data.  If true,
-     * the table will be <a
+     * target="_top">distribution scheme</a> for the table's data.  If true and
+     * the given type has no explicit <a
+     * href="../../../../../concepts/tables.html#shard-key" target="_top">shard
+     * key</a> defined, the table will be <a
      * href="../../../../../concepts/tables.html#replication"
      * target="_top">replicated</a>.  If false, the table will be <a
      * href="../../../../../concepts/tables.html#sharding"
-     * target="_top">sharded</a> according to the <a
-     * href="../../../../../concepts/tables.html#shard-keys"
-     * target="_top">shard key</a> specified in the given {@code typeId}, or <a
+     * target="_top">sharded</a> according to the shard key specified in the
+     * given {@code typeId}, or <a
      * href="../../../../../concepts/tables.html#random-sharding"
-     * target="_top">randomly sharded</a>, if no shard key is specified.
+     * target="_top">randomly sharded</a>, if no shard key is specified.  Note
+     * that a type containing a shard key cannot be used to create a replicated
+     * table.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TRUE
@@ -135,6 +149,35 @@ public class CreateTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
      * FOREIGN_SHARD_KEY}: Foreign shard key of the format 'source_column
      * references shard_by_column from target_table(primary_key_column)'
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#PARTITION_TYPE
+     * PARTITION_TYPE}: <a
+     * href="../../../../../concepts/tables.html#partitioning"
+     * target="_top">Partitioning</a> scheme to use
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#RANGE
+     * RANGE}: Use <a
+     * href="../../../../../concepts/tables.html#partitioning-by-range"
+     * target="_top">range partitioning</a>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#INTERVAL INTERVAL}: Use <a
+     * href="../../../../../concepts/tables.html#partitioning-by-interval"
+     * target="_top">interval partitioning</a>
+     * </ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
+     * PARTITION_KEYS}: Comma-separated list of partition keys, which are the
+     * columns or column expressions by which records will be assigned to
+     * partitions defined by {@code partition_definitions}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#PARTITION_DEFINITIONS
+     * PARTITION_DEFINITIONS}: Comma-separated list of partition definitions,
+     * whose format depends on the choice of {@code partition_type}.  See <a
+     * href="../../../../../concepts/tables.html#partitioning-by-range-example"
+     * target="_top">range partitioning example</a> or <a
+     * href="../../../../../concepts/tables.html#partitioning-by-interval-example"
+     * target="_top">interval partitioning example</a> for example formats.
      *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TTL
      * TTL}: For a table, sets the <a href="../../../../../concepts/ttl.html"
      * target="_top">TTL</a> of the table specified in {@code tableName}.
@@ -156,6 +199,9 @@ public class CreateTableRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#STRATEGY_DEFINITION
+     * STRATEGY_DEFINITION}
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -202,8 +248,7 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String IS_COLLECTION = "is_collection";
 
         /**
-         * For a collection, indicates whether the collection prohibits
-         * containment of multiple tables of exactly the same data type.
+         * No longer supported; value will be ignored.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -217,18 +262,21 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String DISALLOW_HOMOGENEOUS_TABLES = "disallow_homogeneous_tables";
 
         /**
-         * For a table, indicates the <a
+         * For a table, affects the <a
          * href="../../../../../concepts/tables.html#distribution"
-         * target="_top">distribution scheme</a> for the table's data.  If
-         * true, the table will be <a
+         * target="_top">distribution scheme</a> for the table's data.  If true
+         * and the given type has no explicit <a
+         * href="../../../../../concepts/tables.html#shard-key"
+         * target="_top">shard key</a> defined, the table will be <a
          * href="../../../../../concepts/tables.html#replication"
          * target="_top">replicated</a>.  If false, the table will be <a
          * href="../../../../../concepts/tables.html#sharding"
-         * target="_top">sharded</a> according to the <a
-         * href="../../../../../concepts/tables.html#shard-keys"
-         * target="_top">shard key</a> specified in the given {@code typeId},
-         * or <a href="../../../../../concepts/tables.html#random-sharding"
+         * target="_top">sharded</a> according to the shard key specified in
+         * the given {@code typeId}, or <a
+         * href="../../../../../concepts/tables.html#random-sharding"
          * target="_top">randomly sharded</a>, if no shard key is specified.
+         * Note that a type containing a shard key cannot be used to create a
+         * replicated table.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -257,6 +305,55 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String FOREIGN_SHARD_KEY = "foreign_shard_key";
 
         /**
+         * <a href="../../../../../concepts/tables.html#partitioning"
+         * target="_top">Partitioning</a> scheme to use
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#RANGE RANGE}: Use <a
+         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * target="_top">range partitioning</a>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#INTERVAL INTERVAL}:
+         * Use <a
+         * href="../../../../../concepts/tables.html#partitioning-by-interval"
+         * target="_top">interval partitioning</a>
+         * </ul>
+         */
+        public static final String PARTITION_TYPE = "partition_type";
+
+        /**
+         * Use <a
+         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * target="_top">range partitioning</a>
+         */
+        public static final String RANGE = "RANGE";
+
+        /**
+         * Use <a
+         * href="../../../../../concepts/tables.html#partitioning-by-interval"
+         * target="_top">interval partitioning</a>
+         */
+        public static final String INTERVAL = "INTERVAL";
+
+        /**
+         * Comma-separated list of partition keys, which are the columns or
+         * column expressions by which records will be assigned to partitions
+         * defined by {@code partition_definitions}
+         */
+        public static final String PARTITION_KEYS = "partition_keys";
+
+        /**
+         * Comma-separated list of partition definitions, whose format depends
+         * on the choice of {@code partition_type}.  See <a
+         * href="../../../../../concepts/tables.html#partitioning-by-range-example"
+         * target="_top">range partitioning example</a> or <a
+         * href="../../../../../concepts/tables.html#partitioning-by-interval-example"
+         * target="_top">interval partitioning example</a> for example formats.
+         */
+        public static final String PARTITION_DEFINITIONS = "partition_definitions";
+
+        /**
          * For a table, sets the <a href="../../../../../concepts/ttl.html"
          * target="_top">TTL</a> of the table specified in {@code tableName}.
          */
@@ -283,6 +380,7 @@ public class CreateTableRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
          */
         public static final String IS_RESULT_TABLE = "is_result_table";
+        public static final String STRATEGY_DEFINITION = "strategy_definition";
 
         private Options() {  }
     }
@@ -356,9 +454,8 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#DISALLOW_HOMOGENEOUS_TABLES
-     *                 DISALLOW_HOMOGENEOUS_TABLES}: For a collection,
-     *                 indicates whether the collection prohibits containment
-     *                 of multiple tables of exactly the same data type.
+     *                 DISALLOW_HOMOGENEOUS_TABLES}: No longer supported; value
+     *                 will be ignored.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -372,21 +469,23 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
-     *                 IS_REPLICATED}: For a table, indicates the <a
+     *                 IS_REPLICATED}: For a table, affects the <a
      *                 href="../../../../../concepts/tables.html#distribution"
      *                 target="_top">distribution scheme</a> for the table's
-     *                 data.  If true, the table will be <a
+     *                 data.  If true and the given type has no explicit <a
+     *                 href="../../../../../concepts/tables.html#shard-key"
+     *                 target="_top">shard key</a> defined, the table will be
+     *                 <a
      *                 href="../../../../../concepts/tables.html#replication"
      *                 target="_top">replicated</a>.  If false, the table will
      *                 be <a
      *                 href="../../../../../concepts/tables.html#sharding"
-     *                 target="_top">sharded</a> according to the <a
-     *                 href="../../../../../concepts/tables.html#shard-keys"
-     *                 target="_top">shard key</a> specified in the given
-     *                 {@code typeId}, or <a
+     *                 target="_top">sharded</a> according to the shard key
+     *                 specified in the given {@code typeId}, or <a
      *                 href="../../../../../concepts/tables.html#random-sharding"
      *                 target="_top">randomly sharded</a>, if no shard key is
-     *                 specified.
+     *                 specified.  Note that a type containing a shard key
+     *                 cannot be used to create a replicated table.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -411,6 +510,40 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FOREIGN_SHARD_KEY}: Foreign shard key of the format
      *                 'source_column references shard_by_column from
      *                 target_table(primary_key_column)'
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_TYPE
+     *                 PARTITION_TYPE}: <a
+     *                 href="../../../../../concepts/tables.html#partitioning"
+     *                 target="_top">Partitioning</a> scheme to use
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#RANGE
+     *                 RANGE}: Use <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                 target="_top">range partitioning</a>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#INTERVAL
+     *                 INTERVAL}: Use <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *                 target="_top">interval partitioning</a>
+     *                 </ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
+     *                 PARTITION_KEYS}: Comma-separated list of partition keys,
+     *                 which are the columns or column expressions by which
+     *                 records will be assigned to partitions defined by {@code
+     *                 partition_definitions}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_DEFINITIONS
+     *                 PARTITION_DEFINITIONS}: Comma-separated list of
+     *                 partition definitions, whose format depends on the
+     *                 choice of {@code partition_type}.  See <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-range-example"
+     *                 target="_top">range partitioning example</a> or <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-interval-example"
+     *                 target="_top">interval partitioning example</a> for
+     *                 example formats.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}:
      *                 For a table, sets the <a
@@ -439,6 +572,9 @@ public class CreateTableRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#STRATEGY_DEFINITION
+     *                 STRATEGY_DEFINITION}
      *                 </ul>
      * 
      */
@@ -543,9 +679,8 @@ public class CreateTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#DISALLOW_HOMOGENEOUS_TABLES
-     *         DISALLOW_HOMOGENEOUS_TABLES}: For a collection, indicates
-     *         whether the collection prohibits containment of multiple tables
-     *         of exactly the same data type.
+     *         DISALLOW_HOMOGENEOUS_TABLES}: No longer supported; value will be
+     *         ignored.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -557,20 +692,21 @@ public class CreateTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
-     *         IS_REPLICATED}: For a table, indicates the <a
+     *         IS_REPLICATED}: For a table, affects the <a
      *         href="../../../../../concepts/tables.html#distribution"
      *         target="_top">distribution scheme</a> for the table's data.  If
-     *         true, the table will be <a
+     *         true and the given type has no explicit <a
+     *         href="../../../../../concepts/tables.html#shard-key"
+     *         target="_top">shard key</a> defined, the table will be <a
      *         href="../../../../../concepts/tables.html#replication"
      *         target="_top">replicated</a>.  If false, the table will be <a
      *         href="../../../../../concepts/tables.html#sharding"
-     *         target="_top">sharded</a> according to the <a
-     *         href="../../../../../concepts/tables.html#shard-keys"
-     *         target="_top">shard key</a> specified in the given {@code
-     *         typeId}, or <a
+     *         target="_top">sharded</a> according to the shard key specified
+     *         in the given {@code typeId}, or <a
      *         href="../../../../../concepts/tables.html#random-sharding"
      *         target="_top">randomly sharded</a>, if no shard key is
-     *         specified.
+     *         specified.  Note that a type containing a shard key cannot be
+     *         used to create a replicated table.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -594,6 +730,39 @@ public class CreateTableRequest implements IndexedRecord {
      *         'source_column references shard_by_column from
      *         target_table(primary_key_column)'
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#PARTITION_TYPE
+     *         PARTITION_TYPE}: <a
+     *         href="../../../../../concepts/tables.html#partitioning"
+     *         target="_top">Partitioning</a> scheme to use
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#RANGE RANGE}: Use
+     *         <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-range"
+     *         target="_top">range partitioning</a>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#INTERVAL
+     *         INTERVAL}: Use <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *         target="_top">interval partitioning</a>
+     *         </ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
+     *         PARTITION_KEYS}: Comma-separated list of partition keys, which
+     *         are the columns or column expressions by which records will be
+     *         assigned to partitions defined by {@code partition_definitions}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#PARTITION_DEFINITIONS
+     *         PARTITION_DEFINITIONS}: Comma-separated list of partition
+     *         definitions, whose format depends on the choice of {@code
+     *         partition_type}.  See <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-range-example"
+     *         target="_top">range partitioning example</a> or <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-interval-example"
+     *         target="_top">interval partitioning example</a> for example
+     *         formats.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}: For a
      *         table, sets the <a href="../../../../../concepts/ttl.html"
      *         target="_top">TTL</a> of the table specified in {@code
@@ -616,6 +785,9 @@ public class CreateTableRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#STRATEGY_DEFINITION
+     *         STRATEGY_DEFINITION}
      *         </ul>
      * 
      */
@@ -668,9 +840,8 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#DISALLOW_HOMOGENEOUS_TABLES
-     *                 DISALLOW_HOMOGENEOUS_TABLES}: For a collection,
-     *                 indicates whether the collection prohibits containment
-     *                 of multiple tables of exactly the same data type.
+     *                 DISALLOW_HOMOGENEOUS_TABLES}: No longer supported; value
+     *                 will be ignored.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -684,21 +855,23 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
-     *                 IS_REPLICATED}: For a table, indicates the <a
+     *                 IS_REPLICATED}: For a table, affects the <a
      *                 href="../../../../../concepts/tables.html#distribution"
      *                 target="_top">distribution scheme</a> for the table's
-     *                 data.  If true, the table will be <a
+     *                 data.  If true and the given type has no explicit <a
+     *                 href="../../../../../concepts/tables.html#shard-key"
+     *                 target="_top">shard key</a> defined, the table will be
+     *                 <a
      *                 href="../../../../../concepts/tables.html#replication"
      *                 target="_top">replicated</a>.  If false, the table will
      *                 be <a
      *                 href="../../../../../concepts/tables.html#sharding"
-     *                 target="_top">sharded</a> according to the <a
-     *                 href="../../../../../concepts/tables.html#shard-keys"
-     *                 target="_top">shard key</a> specified in the given
-     *                 {@code typeId}, or <a
+     *                 target="_top">sharded</a> according to the shard key
+     *                 specified in the given {@code typeId}, or <a
      *                 href="../../../../../concepts/tables.html#random-sharding"
      *                 target="_top">randomly sharded</a>, if no shard key is
-     *                 specified.
+     *                 specified.  Note that a type containing a shard key
+     *                 cannot be used to create a replicated table.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -723,6 +896,40 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FOREIGN_SHARD_KEY}: Foreign shard key of the format
      *                 'source_column references shard_by_column from
      *                 target_table(primary_key_column)'
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_TYPE
+     *                 PARTITION_TYPE}: <a
+     *                 href="../../../../../concepts/tables.html#partitioning"
+     *                 target="_top">Partitioning</a> scheme to use
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#RANGE
+     *                 RANGE}: Use <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                 target="_top">range partitioning</a>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#INTERVAL
+     *                 INTERVAL}: Use <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *                 target="_top">interval partitioning</a>
+     *                 </ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
+     *                 PARTITION_KEYS}: Comma-separated list of partition keys,
+     *                 which are the columns or column expressions by which
+     *                 records will be assigned to partitions defined by {@code
+     *                 partition_definitions}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_DEFINITIONS
+     *                 PARTITION_DEFINITIONS}: Comma-separated list of
+     *                 partition definitions, whose format depends on the
+     *                 choice of {@code partition_type}.  See <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-range-example"
+     *                 target="_top">range partitioning example</a> or <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-interval-example"
+     *                 target="_top">interval partitioning example</a> for
+     *                 example formats.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}:
      *                 For a table, sets the <a
@@ -751,6 +958,9 @@ public class CreateTableRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#STRATEGY_DEFINITION
+     *                 STRATEGY_DEFINITION}
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

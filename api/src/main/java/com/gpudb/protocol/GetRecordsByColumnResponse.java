@@ -6,8 +6,11 @@
 package com.gpudb.protocol;
 
 import com.gpudb.Record;
+import com.gpudb.Type;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.generic.GenericData;
 
 
@@ -20,6 +23,8 @@ public class GetRecordsByColumnResponse {
     private List<Record> data;
     private long totalNumberOfRecords;
     private boolean hasMoreRecords;
+    private Map<String, String> info;
+    private Type dataType;
 
 
     /**
@@ -112,6 +117,50 @@ public class GetRecordsByColumnResponse {
         this.hasMoreRecords = hasMoreRecords;
         return this;
     }
+
+    /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public GetRecordsByColumnResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
+     * 
+     * @return The {@link Type} object containing the type of the dynamically
+     *         generated data.
+     * 
+     */
+    public Type getDataType() {
+        return dataType;
+    }
+
+    /**
+     * 
+     * @param dataType  The {@link Type} object containing the type of the
+     *                  dynamically generated data.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public GetRecordsByColumnResponse setDataType(Type dataType) {
+        this.dataType = dataType;
+        return this;
+    }
     @Override
     public boolean equals(Object obj) {
         if( obj == this ) {
@@ -127,7 +176,9 @@ public class GetRecordsByColumnResponse {
         return ( this.tableName.equals( that.tableName )
                  && this.data.equals( that.data )
                  && ( this.totalNumberOfRecords == that.totalNumberOfRecords )
-                 && ( this.hasMoreRecords == that.hasMoreRecords ) );
+                 && ( this.hasMoreRecords == that.hasMoreRecords )
+                 && this.info.equals( that.info )
+                 && this.dataType.equals( that.dataType ) );
     }
 
     @Override
@@ -150,6 +201,14 @@ public class GetRecordsByColumnResponse {
         builder.append( gd.toString( "hasMoreRecords" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.hasMoreRecords ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "dataType" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.dataType ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -162,6 +221,8 @@ public class GetRecordsByColumnResponse {
         hashCode = (31 * hashCode) + this.data.hashCode();
         hashCode = (31 * hashCode) + ((Long)this.totalNumberOfRecords).hashCode();
         hashCode = (31 * hashCode) + ((Boolean)this.hasMoreRecords).hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
+        hashCode = (31 * hashCode) + this.dataType.hashCode();
         return hashCode;
     }
 

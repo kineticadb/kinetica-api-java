@@ -6,7 +6,9 @@
 package com.gpudb.protocol;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -25,6 +27,7 @@ public class AdminShowShardsResponse implements IndexedRecord {
                 .name("version").type().longType().noDefault()
                 .name("rank").type().array().items().intType().noDefault()
                 .name("tom").type().array().items().intType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -42,6 +45,7 @@ public class AdminShowShardsResponse implements IndexedRecord {
     private long version;
     private List<Integer> rank;
     private List<Integer> tom;
+    private Map<String, String> info;
 
 
     /**
@@ -114,6 +118,27 @@ public class AdminShowShardsResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AdminShowShardsResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -148,6 +173,9 @@ public class AdminShowShardsResponse implements IndexedRecord {
             case 2:
                 return this.tom;
 
+            case 3:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -179,6 +207,10 @@ public class AdminShowShardsResponse implements IndexedRecord {
                 this.tom = (List<Integer>)value;
                 break;
 
+            case 3:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -198,7 +230,8 @@ public class AdminShowShardsResponse implements IndexedRecord {
 
         return ( ( this.version == that.version )
                  && this.rank.equals( that.rank )
-                 && this.tom.equals( that.tom ) );
+                 && this.tom.equals( that.tom )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -217,6 +250,10 @@ public class AdminShowShardsResponse implements IndexedRecord {
         builder.append( gd.toString( "tom" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.tom ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -228,6 +265,7 @@ public class AdminShowShardsResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + ((Long)this.version).hashCode();
         hashCode = (31 * hashCode) + this.rank.hashCode();
         hashCode = (31 * hashCode) + this.tom.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

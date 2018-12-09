@@ -5,6 +5,8 @@
  */
 package com.gpudb.protocol;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -22,6 +24,7 @@ public class AggregateMinMaxResponse implements IndexedRecord {
             .fields()
                 .name("min").type().doubleType().noDefault()
                 .name("max").type().doubleType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -38,6 +41,7 @@ public class AggregateMinMaxResponse implements IndexedRecord {
 
     private double min;
     private double max;
+    private Map<String, String> info;
 
 
     /**
@@ -89,6 +93,27 @@ public class AggregateMinMaxResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AggregateMinMaxResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -120,6 +145,9 @@ public class AggregateMinMaxResponse implements IndexedRecord {
             case 1:
                 return this.max;
 
+            case 2:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -147,6 +175,10 @@ public class AggregateMinMaxResponse implements IndexedRecord {
                 this.max = (Double)value;
                 break;
 
+            case 2:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -165,7 +197,8 @@ public class AggregateMinMaxResponse implements IndexedRecord {
         AggregateMinMaxResponse that = (AggregateMinMaxResponse)obj;
 
         return ( ( (Double)this.min ).equals( (Double)that.min )
-                 && ( (Double)this.max ).equals( (Double)that.max ) );
+                 && ( (Double)this.max ).equals( (Double)that.max )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -180,6 +213,10 @@ public class AggregateMinMaxResponse implements IndexedRecord {
         builder.append( gd.toString( "max" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.max ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -190,6 +227,7 @@ public class AggregateMinMaxResponse implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + ((Double)this.min).hashCode();
         hashCode = (31 * hashCode) + ((Double)this.max).hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

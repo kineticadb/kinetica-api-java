@@ -26,6 +26,7 @@ public class AlterTableMetadataResponse implements IndexedRecord {
             .fields()
                 .name("tableNames").type().array().items().stringType().noDefault()
                 .name("metadataMap").type().map().values().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -42,6 +43,7 @@ public class AlterTableMetadataResponse implements IndexedRecord {
 
     private List<String> tableNames;
     private Map<String, String> metadataMap;
+    private Map<String, String> info;
 
 
     /**
@@ -93,6 +95,27 @@ public class AlterTableMetadataResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AlterTableMetadataResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -124,6 +147,9 @@ public class AlterTableMetadataResponse implements IndexedRecord {
             case 1:
                 return this.metadataMap;
 
+            case 2:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -151,6 +177,10 @@ public class AlterTableMetadataResponse implements IndexedRecord {
                 this.metadataMap = (Map<String, String>)value;
                 break;
 
+            case 2:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -169,7 +199,8 @@ public class AlterTableMetadataResponse implements IndexedRecord {
         AlterTableMetadataResponse that = (AlterTableMetadataResponse)obj;
 
         return ( this.tableNames.equals( that.tableNames )
-                 && this.metadataMap.equals( that.metadataMap ) );
+                 && this.metadataMap.equals( that.metadataMap )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -184,6 +215,10 @@ public class AlterTableMetadataResponse implements IndexedRecord {
         builder.append( gd.toString( "metadataMap" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.metadataMap ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -194,6 +229,7 @@ public class AlterTableMetadataResponse implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.tableNames.hashCode();
         hashCode = (31 * hashCode) + this.metadataMap.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

@@ -148,6 +148,22 @@ public class VisualizeImageContourRequest implements IndexedRecord {
 
         public static final String RENDER_OUTPUT_GRID = "render_output_grid";
 
+        public static final String COLOR_ISOLINES = "color_isolines";
+
+        public static final String ADD_LABELS = "add_labels";
+
+        public static final String LABELS_FONT_SIZE = "labels_font_size";
+
+        public static final String LABELS_FONT_FAMILY = "labels_font_family";
+
+        public static final String LABELS_SEARCH_WINDOW = "labels_search_window";
+
+        public static final String LABELS_INTRALEVEL_SEPARATION = "labels_intralevel_separation";
+
+        public static final String LABELS_INTERLEVEL_SEPARATION = "labels_interlevel_separation";
+
+        public static final String LABELS_MAX_ANGLE = "labels_max_angle";
+
 
         private Options() {  }
     }

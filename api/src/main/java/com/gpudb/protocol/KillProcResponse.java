@@ -6,7 +6,9 @@
 package com.gpudb.protocol;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -23,6 +25,7 @@ public class KillProcResponse implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("runIds").type().array().items().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -38,6 +41,7 @@ public class KillProcResponse implements IndexedRecord {
     }
 
     private List<String> runIds;
+    private Map<String, String> info;
 
 
     /**
@@ -64,6 +68,27 @@ public class KillProcResponse implements IndexedRecord {
      */
     public KillProcResponse setRunIds(List<String> runIds) {
         this.runIds = (runIds == null) ? new ArrayList<String>() : runIds;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public KillProcResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
 
@@ -96,6 +121,9 @@ public class KillProcResponse implements IndexedRecord {
             case 0:
                 return this.runIds;
 
+            case 1:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -119,6 +147,10 @@ public class KillProcResponse implements IndexedRecord {
                 this.runIds = (List<String>)value;
                 break;
 
+            case 1:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -136,7 +168,8 @@ public class KillProcResponse implements IndexedRecord {
 
         KillProcResponse that = (KillProcResponse)obj;
 
-        return ( this.runIds.equals( that.runIds ) );
+        return ( this.runIds.equals( that.runIds )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -147,6 +180,10 @@ public class KillProcResponse implements IndexedRecord {
         builder.append( gd.toString( "runIds" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.runIds ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -156,6 +193,7 @@ public class KillProcResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.runIds.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

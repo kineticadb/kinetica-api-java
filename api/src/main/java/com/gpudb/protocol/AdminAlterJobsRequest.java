@@ -31,7 +31,7 @@ public class AdminAlterJobsRequest implements IndexedRecord {
             .record("AdminAlterJobsRequest")
             .namespace("com.gpudb")
             .fields()
-                .name("jobIds").type().array().items().intType().noDefault()
+                .name("jobIds").type().array().items().longType().noDefault()
                 .name("action").type().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
@@ -64,7 +64,7 @@ public class AdminAlterJobsRequest implements IndexedRecord {
         private Action() {  }
     }
 
-    private List<Integer> jobIds;
+    private List<Long> jobIds;
     private String action;
     private Map<String, String> options;
 
@@ -93,8 +93,8 @@ public class AdminAlterJobsRequest implements IndexedRecord {
      * @param options  Optional parameters.
      * 
      */
-    public AdminAlterJobsRequest(List<Integer> jobIds, String action, Map<String, String> options) {
-        this.jobIds = (jobIds == null) ? new ArrayList<Integer>() : jobIds;
+    public AdminAlterJobsRequest(List<Long> jobIds, String action, Map<String, String> options) {
+        this.jobIds = (jobIds == null) ? new ArrayList<Long>() : jobIds;
         this.action = (action == null) ? "" : action;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
@@ -104,7 +104,7 @@ public class AdminAlterJobsRequest implements IndexedRecord {
      * @return Jobs to be modified.
      * 
      */
-    public List<Integer> getJobIds() {
+    public List<Long> getJobIds() {
         return jobIds;
     }
 
@@ -115,8 +115,8 @@ public class AdminAlterJobsRequest implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminAlterJobsRequest setJobIds(List<Integer> jobIds) {
-        this.jobIds = (jobIds == null) ? new ArrayList<Integer>() : jobIds;
+    public AdminAlterJobsRequest setJobIds(List<Long> jobIds) {
+        this.jobIds = (jobIds == null) ? new ArrayList<Long>() : jobIds;
         return this;
     }
 
@@ -228,7 +228,7 @@ public class AdminAlterJobsRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.jobIds = (List<Integer>)value;
+                this.jobIds = (List<Long>)value;
                 break;
 
             case 1:

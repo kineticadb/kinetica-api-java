@@ -5,6 +5,8 @@
  */
 package com.gpudb.protocol;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -23,6 +25,7 @@ public class RevokePermissionTableResponse implements IndexedRecord {
                 .name("name").type().stringType().noDefault()
                 .name("permission").type().stringType().noDefault()
                 .name("tableName").type().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -40,6 +43,7 @@ public class RevokePermissionTableResponse implements IndexedRecord {
     private String name;
     private String permission;
     private String tableName;
+    private Map<String, String> info;
 
 
     /**
@@ -113,6 +117,27 @@ public class RevokePermissionTableResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public RevokePermissionTableResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -147,6 +172,9 @@ public class RevokePermissionTableResponse implements IndexedRecord {
             case 2:
                 return this.tableName;
 
+            case 3:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -178,6 +206,10 @@ public class RevokePermissionTableResponse implements IndexedRecord {
                 this.tableName = (String)value;
                 break;
 
+            case 3:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -197,7 +229,8 @@ public class RevokePermissionTableResponse implements IndexedRecord {
 
         return ( this.name.equals( that.name )
                  && this.permission.equals( that.permission )
-                 && this.tableName.equals( that.tableName ) );
+                 && this.tableName.equals( that.tableName )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -216,6 +249,10 @@ public class RevokePermissionTableResponse implements IndexedRecord {
         builder.append( gd.toString( "tableName" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.tableName ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -227,6 +264,7 @@ public class RevokePermissionTableResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.name.hashCode();
         hashCode = (31 * hashCode) + this.permission.hashCode();
         hashCode = (31 * hashCode) + this.tableName.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

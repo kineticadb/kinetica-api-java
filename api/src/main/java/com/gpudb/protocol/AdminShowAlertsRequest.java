@@ -17,18 +17,8 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#adminShowAlerts(AdminShowAlertsRequest)}.
  * <p>
- * Retrieves a list of the most recent alerts generated.  The number of alerts
- * to retrieve is specified in this request.
- * <p>
- * Important: This endpoint is accessed via the host manager port rather than
- * the primary database port; the default ports for host manager and the
- * primary database can be found <a
- * href="../../../../../install/index.html#default-ports"
- * target="_top">here</a>.  If you are invoking this endpoint via a GPUdb API
- * object, you must instantiate that object using the host manager port instead
- * of the database port. The same IP address is used for both ports.
-
- * Returns lists of alert data, earliest to latest
+ * Requests a list of the most recent alerts.
+ * Returns lists of alert data, including timestamp and type.
  */
 public class AdminShowAlertsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -67,9 +57,9 @@ public class AdminShowAlertsRequest implements IndexedRecord {
      * parameters.
      * 
      * @param numAlerts  Number of most recent alerts to request. The response
-     *                   will return {@code numAlerts} alerts, or less if there
-     *                   are less in the system. A value of 0 returns all
-     *                   stored alerts.
+     *                   will include up to {@code numAlerts} depending on how
+     *                   many alerts there are in the system. A value of 0
+     *                   returns all stored alerts.
      * @param options  Optional parameters.
      * 
      */
@@ -81,8 +71,8 @@ public class AdminShowAlertsRequest implements IndexedRecord {
     /**
      * 
      * @return Number of most recent alerts to request. The response will
-     *         return {@code numAlerts} alerts, or less if there are less in
-     *         the system. A value of 0 returns all stored alerts.
+     *         include up to {@code numAlerts} depending on how many alerts
+     *         there are in the system. A value of 0 returns all stored alerts.
      * 
      */
     public int getNumAlerts() {
@@ -92,9 +82,9 @@ public class AdminShowAlertsRequest implements IndexedRecord {
     /**
      * 
      * @param numAlerts  Number of most recent alerts to request. The response
-     *                   will return {@code numAlerts} alerts, or less if there
-     *                   are less in the system. A value of 0 returns all
-     *                   stored alerts.
+     *                   will include up to {@code numAlerts} depending on how
+     *                   many alerts there are in the system. A value of 0
+     *                   returns all stored alerts.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -53,23 +53,22 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#OFFSET OFFSET}: A
      * positive integer indicating the number of initial results to skip from
-     * source table (specified by {@code sourceTableName}). Default is 0. The
-     * minimum allowed value is 0. The maximum allowed value is MAX_INT.
+     * {@code sourceTableName}. Default is 0. The minimum allowed value is 0.
+     * The maximum allowed value is MAX_INT.
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#LIMIT LIMIT}: A positive
      * integer indicating the maximum number of results to be returned from
-     * source table (specified by {@code sourceTableName}). Or END_OF_SET
-     * (-9999) to indicate that the max number of results should be returned.
+     * {@code sourceTableName}. Or END_OF_SET (-9999) to indicate that the max
+     * number of results should be returned.
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION EXPRESSION}:
-     * Optional filter expression to apply to the source table (specified by
-     * {@code sourceTableName}). Empty by default.
+     * Optional filter expression to apply to the {@code sourceTableName}.
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY ORDER_BY}:
-     * Comma-separated list of the columns and expressions to be sorted by from
-     * the source table (specified by {@code sourceTableName}); e.g. 'timestamp
-     * asc, x desc'.  The {@code order_by} columns do not have to be present in
-     * {@code fieldMap}.
+     * Comma-separated list of the columns to be sorted by from source table
+     * (specified by {@code sourceTableName}), e.g., 'timestamp asc, x desc'.
+     * The {@code order_by} columns do not have to be present in {@code
+     * fieldMap}.
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      * UPDATE_ON_EXISTING_PK}: Specifies the record collision policy for
@@ -99,31 +98,28 @@ public class AppendRecordsRequest implements IndexedRecord {
 
         /**
          * A positive integer indicating the number of initial results to skip
-         * from source table (specified by {@code sourceTableName}). Default is
-         * 0. The minimum allowed value is 0. The maximum allowed value is
-         * MAX_INT.
+         * from {@code sourceTableName}. Default is 0. The minimum allowed
+         * value is 0. The maximum allowed value is MAX_INT.
          */
         public static final String OFFSET = "offset";
 
         /**
          * A positive integer indicating the maximum number of results to be
-         * returned from source table (specified by {@code sourceTableName}).
-         * Or END_OF_SET (-9999) to indicate that the max number of results
-         * should be returned.
+         * returned from {@code sourceTableName}. Or END_OF_SET (-9999) to
+         * indicate that the max number of results should be returned.
          */
         public static final String LIMIT = "limit";
 
         /**
-         * Optional filter expression to apply to the source table (specified
-         * by {@code sourceTableName}). Empty by default.
+         * Optional filter expression to apply to the {@code sourceTableName}.
          */
         public static final String EXPRESSION = "expression";
 
         /**
-         * Comma-separated list of the columns and expressions to be sorted by
-         * from the source table (specified by {@code sourceTableName}); e.g.
-         * 'timestamp asc, x desc'.  The {@code order_by} columns do not have
-         * to be present in {@code fieldMap}.
+         * Comma-separated list of the columns to be sorted by from source
+         * table (specified by {@code sourceTableName}), e.g., 'timestamp asc,
+         * x desc'. The {@code order_by} columns do not have to be present in
+         * {@code fieldMap}.
          */
         public static final String ORDER_BY = "order_by";
 
@@ -194,29 +190,26 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#OFFSET
      *                 OFFSET}: A positive integer indicating the number of
-     *                 initial results to skip from source table (specified by
-     *                 {@code sourceTableName}). Default is 0. The minimum
-     *                 allowed value is 0. The maximum allowed value is
-     *                 MAX_INT.
+     *                 initial results to skip from {@code sourceTableName}.
+     *                 Default is 0. The minimum allowed value is 0. The
+     *                 maximum allowed value is MAX_INT.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#LIMIT
      *                 LIMIT}: A positive integer indicating the maximum number
-     *                 of results to be returned from source table (specified
-     *                 by {@code sourceTableName}). Or END_OF_SET (-9999) to
-     *                 indicate that the max number of results should be
-     *                 returned.
+     *                 of results to be returned from {@code sourceTableName}.
+     *                 Or END_OF_SET (-9999) to indicate that the max number of
+     *                 results should be returned.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
-     *                 source table (specified by {@code sourceTableName}).
-     *                 Empty by default.
+     *                 {@code sourceTableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY
-     *                 ORDER_BY}: Comma-separated list of the columns and
-     *                 expressions to be sorted by from the source table
-     *                 (specified by {@code sourceTableName}); e.g. 'timestamp
-     *                 asc, x desc'.  The {@code order_by} columns do not have
-     *                 to be present in {@code fieldMap}.
+     *                 ORDER_BY}: Comma-separated list of the columns to be
+     *                 sorted by from source table (specified by {@code
+     *                 sourceTableName}), e.g., 'timestamp asc, x desc'. The
+     *                 {@code order_by} columns do not have to be present in
+     *                 {@code fieldMap}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
@@ -344,25 +337,23 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#OFFSET OFFSET}:
      *         A positive integer indicating the number of initial results to
-     *         skip from source table (specified by {@code sourceTableName}).
-     *         Default is 0. The minimum allowed value is 0. The maximum
-     *         allowed value is MAX_INT.
+     *         skip from {@code sourceTableName}. Default is 0. The minimum
+     *         allowed value is 0. The maximum allowed value is MAX_INT.
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#LIMIT LIMIT}: A
      *         positive integer indicating the maximum number of results to be
-     *         returned from source table (specified by {@code
-     *         sourceTableName}). Or END_OF_SET (-9999) to indicate that the
-     *         max number of results should be returned.
+     *         returned from {@code sourceTableName}. Or END_OF_SET (-9999) to
+     *         indicate that the max number of results should be returned.
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION
-     *         EXPRESSION}: Optional filter expression to apply to the source
-     *         table (specified by {@code sourceTableName}). Empty by default.
+     *         EXPRESSION}: Optional filter expression to apply to the {@code
+     *         sourceTableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY
-     *         ORDER_BY}: Comma-separated list of the columns and expressions
-     *         to be sorted by from the source table (specified by {@code
-     *         sourceTableName}); e.g. 'timestamp asc, x desc'.  The {@code
-     *         order_by} columns do not have to be present in {@code fieldMap}.
+     *         ORDER_BY}: Comma-separated list of the columns to be sorted by
+     *         from source table (specified by {@code sourceTableName}), e.g.,
+     *         'timestamp asc, x desc'. The {@code order_by} columns do not
+     *         have to be present in {@code fieldMap}.
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *         UPDATE_ON_EXISTING_PK}: Specifies the record collision policy
@@ -401,29 +392,26 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#OFFSET
      *                 OFFSET}: A positive integer indicating the number of
-     *                 initial results to skip from source table (specified by
-     *                 {@code sourceTableName}). Default is 0. The minimum
-     *                 allowed value is 0. The maximum allowed value is
-     *                 MAX_INT.
+     *                 initial results to skip from {@code sourceTableName}.
+     *                 Default is 0. The minimum allowed value is 0. The
+     *                 maximum allowed value is MAX_INT.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#LIMIT
      *                 LIMIT}: A positive integer indicating the maximum number
-     *                 of results to be returned from source table (specified
-     *                 by {@code sourceTableName}). Or END_OF_SET (-9999) to
-     *                 indicate that the max number of results should be
-     *                 returned.
+     *                 of results to be returned from {@code sourceTableName}.
+     *                 Or END_OF_SET (-9999) to indicate that the max number of
+     *                 results should be returned.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
-     *                 source table (specified by {@code sourceTableName}).
-     *                 Empty by default.
+     *                 {@code sourceTableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY
-     *                 ORDER_BY}: Comma-separated list of the columns and
-     *                 expressions to be sorted by from the source table
-     *                 (specified by {@code sourceTableName}); e.g. 'timestamp
-     *                 asc, x desc'.  The {@code order_by} columns do not have
-     *                 to be present in {@code fieldMap}.
+     *                 ORDER_BY}: Comma-separated list of the columns to be
+     *                 sorted by from source table (specified by {@code
+     *                 sourceTableName}), e.g., 'timestamp asc, x desc'. The
+     *                 {@code order_by} columns do not have to be present in
+     *                 {@code fieldMap}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision

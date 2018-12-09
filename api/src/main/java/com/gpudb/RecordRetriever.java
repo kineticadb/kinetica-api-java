@@ -1,15 +1,18 @@
 package com.gpudb;
 
 import com.gpudb.protocol.AdminShowShardsRequest;
+import com.gpudb.protocol.AdminShowShardsResponse;
 import com.gpudb.protocol.GetRecordsRequest;
 import com.gpudb.protocol.GetRecordsResponse;
 import com.gpudb.protocol.RawGetRecordsResponse;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.mutable.MutableLong;
 
 /**
  * Object that permits efficient retrieval of records from GPUdb, with support
@@ -24,8 +27,13 @@ public class RecordRetriever<T> {
     private final Type type;
     private final TypeObjectMap<T> typeObjectMap;
     private final RecordKeyBuilder<T> shardKeyBuilder;
-    private final List<Integer> routingTable;
-    private final List<URL> workerUrls;
+    private final boolean isMultiHeadEnabled;
+    private int numRanks;
+    private long shardVersion;
+    private MutableLong shardUpdateTime;
+    private com.gpudb.WorkerList workerList;
+    private List<Integer> routingTable;
+    private List<URL> workerUrls;
 
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
@@ -98,6 +106,10 @@ public class RecordRetriever<T> {
         this.tableName = tableName;
         this.type = type;
         this.typeObjectMap = typeObjectMap;
+        this.workerList    = workers;
+
+        this.shardVersion = 0;
+        this.shardUpdateTime = new MutableLong();
 
         RecordKeyBuilder<T> shardKeyBuilderTemp;
 
@@ -123,26 +135,146 @@ public class RecordRetriever<T> {
 
         this.workerUrls = new ArrayList<>();
 
-        if (workers != null && !workers.isEmpty()) {
+        // Set if multi-head I/O is turned on at the server
+        this.isMultiHeadEnabled = ( this.workerList != null && !this.workerList.isEmpty() );
+
+        if ( this.isMultiHeadEnabled ) {
+        // if (workers != null && !workers.isEmpty()) {
             try {
                 for (URL url : workers) {
-                    this.workerUrls.add(GPUdbBase.appendPathToURL(url, "/get/records"));
+                    if (url == null) {
+                        // Handle removed ranks
+                        this.workerUrls.add( null );
+                        // this.workerUrls.add( (URL)null );
+                    } else { // add a URL for an active rank
+                        this.workerUrls.add(GPUdbBase.appendPathToURL(url, "/get/records"));
+                    }
                 }
             } catch (MalformedURLException ex) {
                 throw new GPUdbException(ex.getMessage(), ex);
             }
 
-            routingTable = gpudb.adminShowShards(new AdminShowShardsRequest()).getRank();
+            // Get the shard mapping
+            updateShardMapping( false );
+            // routingTable = gpudb.adminShowShards(new AdminShowShardsRequest()).getRank();
 
-            for (int i = 0; i < routingTable.size(); i++) {
-                if (routingTable.get(i) > workers.size()) {
-                    throw new IllegalArgumentException("Too few worker URLs specified.");
-                }
-            }
+            this.numRanks = this.workerUrls.size();
+
+            // for (int i = 0; i < routingTable.size(); i++) {
+            //     if (routingTable.get(i) > workers.size()) {
+            //         throw new IllegalArgumentException("Too few worker URLs specified.");
+            //     }
+            // }
         } else {
             routingTable = null;
+            this.numRanks = 1;
         }
     }
+
+
+
+    /**
+     * Updates the shard mapping based on the latest cluster configuration.
+     * Also reconstructs the worker queues based on the new sharding.
+     *
+     * @return  a bool indicating whether the shard mapping was updated or not.
+     */
+    private boolean updateShardMapping() throws GPUdbException {
+        return this.updateShardMapping( true );
+    }
+
+
+    /**
+     * Updates the shard mapping based on the latest cluster configuration.
+     * Optionally, also reconstructs the worker queues based on the new sharding.
+     *
+     * @param doReconstructWorkerQueues  Boolean flag indicating if the worker
+     *                                   queues ought to be re-built.
+     *
+     * @return  a bool indicating whether the shard mapping was updated or not.
+     */
+    private boolean updateShardMapping( boolean doReconstructWorkerURLs ) throws GPUdbException {
+        // Get the latest shard mapping information
+        AdminShowShardsResponse shardInfo = gpudb.adminShowShards(new AdminShowShardsRequest());
+
+        // Get the shard version
+        long newShardVersion = shardInfo.getVersion();
+
+        // No-op if the shard version hasn't changed (and it's not the first time)
+        if (this.shardVersion == newShardVersion) {
+            return false; // Did not do anything
+        }
+        
+        // Save the new shard version and also when we're updating the mapping
+        this.shardVersion = newShardVersion;
+
+        synchronized ( this.shardUpdateTime ) {
+            this.shardUpdateTime.setValue( new Timestamp( System.currentTimeMillis() ).getTime() );
+        }
+
+        // Update the routing table
+        this.routingTable = shardInfo.getRank();
+
+        // The worker queues need to be re-constructed when asked for
+        // iff multi-head i/o is enabled and the table is not replicated
+        if ( doReconstructWorkerURLs
+             && this.isMultiHeadEnabled )
+        {
+            reconstructWorkerURLs();
+        }
+        
+        return true; // the shard mapping was updated indeed
+    }  // end updateShardMapping
+
+
+    /**
+     * Reconstructs the list of worker URLs.
+     */
+    private void reconstructWorkerURLs() throws GPUdbException {
+
+        // Get the latest worker list (use whatever IP regex was used initially)
+        if ( this.workerList == null )
+            throw new GPUdbException( "No worker list exists!" );
+        com.gpudb.WorkerList newWorkerList = new com.gpudb.WorkerList( this.gpudb,
+                                                                       this.workerList.getIpRegex() );
+        if (newWorkerList == this.workerList) {
+            return; // nothing to do since the worker list did not change
+        }
+
+        // Update the worker list
+        synchronized ( this.workerList ) {
+            this.workerList = newWorkerList;
+        }
+
+        // Create worker queues per worker URL
+        List<URL> newWorkerUrls = new ArrayList<>();
+        for ( URL url : this.workerList) {
+            try {
+                // Handle removed ranks
+                if (url == null) {
+                    newWorkerUrls.add( null );
+                    // newWorkerUrls.add( (URL)null );
+                }
+                else {
+                    // Add a queue for a currently active rank
+                    newWorkerUrls.add( GPUdbBase.appendPathToURL(url, "/get/records") );
+                }
+            } catch (MalformedURLException ex) {
+                throw new GPUdbException( ex.getMessage(), ex );
+            } catch (Exception ex) {
+                throw new GPUdbException( ex.getMessage(), ex );
+            }
+        }
+
+        // Get the number of workers
+        this.numRanks = newWorkerUrls.size();
+
+        // Save the new queue for future use
+        synchronized ( this.workerUrls ) {
+            this.workerUrls = newWorkerUrls;
+        }
+    }  // end reconstructWorkerURLs
+
 
     /**
      * Gets the GPUdb instance from which records will be retrieved.
@@ -202,27 +334,63 @@ public class RecordRetriever<T> {
         GetRecordsRequest request = new GetRecordsRequest(tableName, 0, GPUdb.END_OF_SET, options);
         RawGetRecordsResponse response = new RawGetRecordsResponse();
 
-        if (routingTable != null) {
-            RecordKey shardKey = shardKeyBuilder.build(keyValues);
-            URL url = workerUrls.get(shardKey.route(routingTable));
-            response = gpudb.submitRequest(url, request, response, false);
-        } else {
-            response = gpudb.submitRequest("/get/records", request, response, false);
-        }
-
         GetRecordsResponse<T> decodedResponse = new GetRecordsResponse<>();
-        decodedResponse.setTableName(response.getTableName());
-        decodedResponse.setTypeName(response.getTypeName());
-        decodedResponse.setTypeSchema(response.getTypeSchema());
 
-        if (typeObjectMap == null) {
-            decodedResponse.setData(gpudb.<T>decode(type, response.getRecordsBinary()));
-        } else {
-            decodedResponse.setData(gpudb.<T>decode(typeObjectMap, response.getRecordsBinary()));
+        long retrievalAttemptTimestamp = new Timestamp( System.currentTimeMillis() ).getTime();
+
+        try {
+            if (routingTable != null) {
+                RecordKey shardKey = shardKeyBuilder.build(keyValues);
+                URL url = workerUrls.get(shardKey.route(routingTable));
+                response = gpudb.submitRequest(url, request, response, false);
+            } else {
+                response = gpudb.submitRequest("/get/records", request, response, false);
+            }
+
+            // Check if shard re-balancing is under way at the server; if so,
+            // we need to update the shard mapping
+            if ( response.getInfo().get( "data_rerouted" ) == "true" ) {
+                updateShardMapping();
+            }
+
+
+            // Set up the decoded response
+            decodedResponse.setTableName(  response.getTableName()  );
+            decodedResponse.setTypeName(   response.getTypeName()   );
+            decodedResponse.setTypeSchema( response.getTypeSchema() );
+
+            // Decode the actual resposne
+            if (typeObjectMap == null) {
+                decodedResponse.setData( gpudb.<T>decode(type, response.getRecordsBinary()) );
+            } else {
+                decodedResponse.setData( gpudb.<T>decode(typeObjectMap, response.getRecordsBinary()) );
+            }
+
+            decodedResponse.setTotalNumberOfRecords(response.getTotalNumberOfRecords());
+            decodedResponse.setHasMoreRecords(response.getHasMoreRecords());
+        } catch (Exception ex) {
+            // Retrieval failed, but maybe due to shard mapping changes (due to
+            // cluster reconfiguration)? Check if the mapping needs to be updated
+            // or has been updated by another thread already after the
+            // insertion was attemtped
+            boolean updatedShardMapping = updateShardMapping();
+            synchronized ( this.shardUpdateTime ) {
+                if ( updatedShardMapping
+                     || ( retrievalAttemptTimestamp < this.shardUpdateTime.longValue() ) ) {
+
+                    // We need to try fetching the records again
+                    try {
+                        return this.getByKey( keyValues, expression );
+                    } catch (Exception ex2) {
+                        // Re-setting the exception since we may re-try again
+                        throw new GPUdbException( ex2.getMessage() );
+                    }
+                }
+            }
+            throw new GPUdbException( ex.getMessage() );
         }
 
-        decodedResponse.setTotalNumberOfRecords(response.getTotalNumberOfRecords());
-        decodedResponse.setHasMoreRecords(response.getHasMoreRecords());
         return decodedResponse;
-    }
-}
+    }  // getByKey()
+
+}  // class RecordRetriever

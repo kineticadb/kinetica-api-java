@@ -5,6 +5,8 @@
  */
 package com.gpudb.protocol;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -21,6 +23,7 @@ public class AdminOfflineResponse implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("isOffline").type().booleanType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -36,6 +39,7 @@ public class AdminOfflineResponse implements IndexedRecord {
     }
 
     private boolean isOffline;
+    private Map<String, String> info;
 
 
     /**
@@ -63,6 +67,27 @@ public class AdminOfflineResponse implements IndexedRecord {
      */
     public AdminOfflineResponse setIsOffline(boolean isOffline) {
         this.isOffline = isOffline;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AdminOfflineResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
 
@@ -95,6 +120,9 @@ public class AdminOfflineResponse implements IndexedRecord {
             case 0:
                 return this.isOffline;
 
+            case 1:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -118,6 +146,10 @@ public class AdminOfflineResponse implements IndexedRecord {
                 this.isOffline = (Boolean)value;
                 break;
 
+            case 1:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -135,7 +167,8 @@ public class AdminOfflineResponse implements IndexedRecord {
 
         AdminOfflineResponse that = (AdminOfflineResponse)obj;
 
-        return ( ( this.isOffline == that.isOffline ) );
+        return ( ( this.isOffline == that.isOffline )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -146,6 +179,10 @@ public class AdminOfflineResponse implements IndexedRecord {
         builder.append( gd.toString( "isOffline" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.isOffline ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -155,6 +192,7 @@ public class AdminOfflineResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + ((Boolean)this.isOffline).hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

@@ -23,6 +23,7 @@ public class ShowSystemStatusResponse implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("statusMap").type().map().values().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -38,6 +39,7 @@ public class ShowSystemStatusResponse implements IndexedRecord {
     }
 
     private Map<String, String> statusMap;
+    private Map<String, String> info;
 
 
     /**
@@ -65,6 +67,27 @@ public class ShowSystemStatusResponse implements IndexedRecord {
      */
     public ShowSystemStatusResponse setStatusMap(Map<String, String> statusMap) {
         this.statusMap = (statusMap == null) ? new LinkedHashMap<String, String>() : statusMap;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowSystemStatusResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
 
@@ -97,6 +120,9 @@ public class ShowSystemStatusResponse implements IndexedRecord {
             case 0:
                 return this.statusMap;
 
+            case 1:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -120,6 +146,10 @@ public class ShowSystemStatusResponse implements IndexedRecord {
                 this.statusMap = (Map<String, String>)value;
                 break;
 
+            case 1:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -137,7 +167,8 @@ public class ShowSystemStatusResponse implements IndexedRecord {
 
         ShowSystemStatusResponse that = (ShowSystemStatusResponse)obj;
 
-        return ( this.statusMap.equals( that.statusMap ) );
+        return ( this.statusMap.equals( that.statusMap )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -148,6 +179,10 @@ public class ShowSystemStatusResponse implements IndexedRecord {
         builder.append( gd.toString( "statusMap" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.statusMap ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -157,6 +192,7 @@ public class ShowSystemStatusResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.statusMap.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

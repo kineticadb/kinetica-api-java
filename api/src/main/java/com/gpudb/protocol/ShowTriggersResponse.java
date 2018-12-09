@@ -23,6 +23,7 @@ public class ShowTriggersResponse implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("triggerMap").type().map().values().map().values().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -38,6 +39,7 @@ public class ShowTriggersResponse implements IndexedRecord {
     }
 
     private Map<String, Map<String, String>> triggerMap;
+    private Map<String, String> info;
 
 
     /**
@@ -89,6 +91,27 @@ public class ShowTriggersResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowTriggersResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -117,6 +140,9 @@ public class ShowTriggersResponse implements IndexedRecord {
             case 0:
                 return this.triggerMap;
 
+            case 1:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -140,6 +166,10 @@ public class ShowTriggersResponse implements IndexedRecord {
                 this.triggerMap = (Map<String, Map<String, String>>)value;
                 break;
 
+            case 1:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -157,7 +187,8 @@ public class ShowTriggersResponse implements IndexedRecord {
 
         ShowTriggersResponse that = (ShowTriggersResponse)obj;
 
-        return ( this.triggerMap.equals( that.triggerMap ) );
+        return ( this.triggerMap.equals( that.triggerMap )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -168,6 +199,10 @@ public class ShowTriggersResponse implements IndexedRecord {
         builder.append( gd.toString( "triggerMap" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.triggerMap ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -177,6 +212,7 @@ public class ShowTriggersResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.triggerMap.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

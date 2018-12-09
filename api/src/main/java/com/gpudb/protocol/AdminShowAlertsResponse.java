@@ -6,6 +6,7 @@
 package com.gpudb.protocol;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
@@ -26,6 +27,7 @@ public class AdminShowAlertsResponse implements IndexedRecord {
                 .name("timestamps").type().array().items().stringType().noDefault()
                 .name("types").type().array().items().stringType().noDefault()
                 .name("params").type().array().items().map().values().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -43,6 +45,7 @@ public class AdminShowAlertsResponse implements IndexedRecord {
     private List<String> timestamps;
     private List<String> types;
     private List<Map<String, String>> params;
+    private Map<String, String> info;
 
 
     /**
@@ -53,9 +56,9 @@ public class AdminShowAlertsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return System alert timestamps.  The array is sorted from earliest to
-     *         latest.  Each array entry corresponds with the entries at the
-     *         same index in {@code types} and {@code params}.
+     * @return Timestamp for when the alert occurred, sorted from most recent
+     *         to least recent. Each array entry corresponds with the entries
+     *         at the same index in {@code types} and {@code params}.
      * 
      */
     public List<String> getTimestamps() {
@@ -64,10 +67,10 @@ public class AdminShowAlertsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param timestamps  System alert timestamps.  The array is sorted from
-     *                    earliest to latest.  Each array entry corresponds
-     *                    with the entries at the same index in {@code types}
-     *                    and {@code params}.
+     * @param timestamps  Timestamp for when the alert occurred, sorted from
+     *                    most recent to least recent. Each array entry
+     *                    corresponds with the entries at the same index in
+     *                    {@code types} and {@code params}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -79,9 +82,9 @@ public class AdminShowAlertsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return System alert types.  The array is sorted from earliest to
-     *         latest. Each array entry corresponds with the entries at the
-     *         same index in {@code timestamps} and {@code params}.
+     * @return Type of system alert, sorted from most recent to least recent.
+     *         Each array entry corresponds with the entries at the same index
+     *         in {@code timestamps} and {@code params}.
      * 
      */
     public List<String> getTypes() {
@@ -90,8 +93,8 @@ public class AdminShowAlertsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param types  System alert types.  The array is sorted from earliest to
-     *               latest. Each array entry corresponds with the entries at
+     * @param types  Type of system alert, sorted from most recent to least
+     *               recent. Each array entry corresponds with the entries at
      *               the same index in {@code timestamps} and {@code params}.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -104,8 +107,8 @@ public class AdminShowAlertsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Parameters for each alert.  The array is sorted from earliest to
-     *         latest. Each array entry corresponds with the entries at the
+     * @return Parameters for each alert, sorted from most recent to least
+     *         recent. Each array entry corresponds with the entries at the
      *         same index in {@code timestamps} and {@code types}.
      * 
      */
@@ -115,8 +118,8 @@ public class AdminShowAlertsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param params  Parameters for each alert.  The array is sorted from
-     *                earliest to latest. Each array entry corresponds with the
+     * @param params  Parameters for each alert, sorted from most recent to
+     *                least recent. Each array entry corresponds with the
      *                entries at the same index in {@code timestamps} and
      *                {@code types}.
      * 
@@ -125,6 +128,27 @@ public class AdminShowAlertsResponse implements IndexedRecord {
      */
     public AdminShowAlertsResponse setParams(List<Map<String, String>> params) {
         this.params = (params == null) ? new ArrayList<Map<String, String>>() : params;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AdminShowAlertsResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
 
@@ -163,6 +187,9 @@ public class AdminShowAlertsResponse implements IndexedRecord {
             case 2:
                 return this.params;
 
+            case 3:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -194,6 +221,10 @@ public class AdminShowAlertsResponse implements IndexedRecord {
                 this.params = (List<Map<String, String>>)value;
                 break;
 
+            case 3:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -213,7 +244,8 @@ public class AdminShowAlertsResponse implements IndexedRecord {
 
         return ( this.timestamps.equals( that.timestamps )
                  && this.types.equals( that.types )
-                 && this.params.equals( that.params ) );
+                 && this.params.equals( that.params )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -232,6 +264,10 @@ public class AdminShowAlertsResponse implements IndexedRecord {
         builder.append( gd.toString( "params" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.params ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -243,6 +279,7 @@ public class AdminShowAlertsResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.timestamps.hashCode();
         hashCode = (31 * hashCode) + this.types.hashCode();
         hashCode = (31 * hashCode) + this.params.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

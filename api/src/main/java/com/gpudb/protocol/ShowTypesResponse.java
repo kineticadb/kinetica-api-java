@@ -6,6 +6,7 @@
 package com.gpudb.protocol;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
@@ -27,6 +28,7 @@ public class ShowTypesResponse implements IndexedRecord {
                 .name("typeSchemas").type().array().items().stringType().noDefault()
                 .name("labels").type().array().items().stringType().noDefault()
                 .name("properties").type().array().items().map().values().array().items().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -45,6 +47,7 @@ public class ShowTypesResponse implements IndexedRecord {
     private List<String> typeSchemas;
     private List<String> labels;
     private List<Map<String, List<String>>> properties;
+    private Map<String, String> info;
 
 
     /**
@@ -114,6 +117,27 @@ public class ShowTypesResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowTypesResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -151,6 +175,9 @@ public class ShowTypesResponse implements IndexedRecord {
             case 3:
                 return this.properties;
 
+            case 4:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -186,6 +213,10 @@ public class ShowTypesResponse implements IndexedRecord {
                 this.properties = (List<Map<String, List<String>>>)value;
                 break;
 
+            case 4:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -206,7 +237,8 @@ public class ShowTypesResponse implements IndexedRecord {
         return ( this.typeIds.equals( that.typeIds )
                  && this.typeSchemas.equals( that.typeSchemas )
                  && this.labels.equals( that.labels )
-                 && this.properties.equals( that.properties ) );
+                 && this.properties.equals( that.properties )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -229,6 +261,10 @@ public class ShowTypesResponse implements IndexedRecord {
         builder.append( gd.toString( "properties" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.properties ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -241,6 +277,7 @@ public class ShowTypesResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.typeSchemas.hashCode();
         hashCode = (31 * hashCode) + this.labels.hashCode();
         hashCode = (31 * hashCode) + this.properties.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

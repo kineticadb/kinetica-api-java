@@ -6,6 +6,8 @@
 package com.gpudb.protocol;
 
 import java.nio.ByteBuffer;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -26,6 +28,7 @@ public class RawAggregateGroupByResponse implements IndexedRecord {
                 .name("jsonEncodedResponse").type().stringType().noDefault()
                 .name("totalNumberOfRecords").type().longType().noDefault()
                 .name("hasMoreRecords").type().booleanType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -45,6 +48,7 @@ public class RawAggregateGroupByResponse implements IndexedRecord {
     private String jsonEncodedResponse;
     private long totalNumberOfRecords;
     private boolean hasMoreRecords;
+    private Map<String, String> info;
 
 
     /**
@@ -161,6 +165,27 @@ public class RawAggregateGroupByResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public RawAggregateGroupByResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -201,6 +226,9 @@ public class RawAggregateGroupByResponse implements IndexedRecord {
             case 4:
                 return this.hasMoreRecords;
 
+            case 5:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -240,6 +268,10 @@ public class RawAggregateGroupByResponse implements IndexedRecord {
                 this.hasMoreRecords = (Boolean)value;
                 break;
 
+            case 5:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -261,7 +293,8 @@ public class RawAggregateGroupByResponse implements IndexedRecord {
                  && this.binaryEncodedResponse.equals( that.binaryEncodedResponse )
                  && this.jsonEncodedResponse.equals( that.jsonEncodedResponse )
                  && ( this.totalNumberOfRecords == that.totalNumberOfRecords )
-                 && ( this.hasMoreRecords == that.hasMoreRecords ) );
+                 && ( this.hasMoreRecords == that.hasMoreRecords )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -288,6 +321,10 @@ public class RawAggregateGroupByResponse implements IndexedRecord {
         builder.append( gd.toString( "hasMoreRecords" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.hasMoreRecords ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -301,6 +338,7 @@ public class RawAggregateGroupByResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.jsonEncodedResponse.hashCode();
         hashCode = (31 * hashCode) + ((Long)this.totalNumberOfRecords).hashCode();
         hashCode = (31 * hashCode) + ((Boolean)this.hasMoreRecords).hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

@@ -7,6 +7,7 @@ package com.gpudb.protocol;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
@@ -30,6 +31,7 @@ public class ShowProcResponse implements IndexedRecord {
                 .name("commands").type().array().items().stringType().noDefault()
                 .name("args").type().array().items().array().items().stringType().noDefault()
                 .name("options").type().array().items().map().values().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -73,6 +75,7 @@ public class ShowProcResponse implements IndexedRecord {
     private List<String> commands;
     private List<List<String>> args;
     private List<Map<String, String>> options;
+    private Map<String, String> info;
 
 
     /**
@@ -223,6 +226,27 @@ public class ShowProcResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowProcResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -265,6 +289,9 @@ public class ShowProcResponse implements IndexedRecord {
 
             case 5:
                 return this.options;
+
+            case 6:
+                return this.info;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -309,6 +336,10 @@ public class ShowProcResponse implements IndexedRecord {
                 this.options = (List<Map<String, String>>)value;
                 break;
 
+            case 6:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -331,7 +362,8 @@ public class ShowProcResponse implements IndexedRecord {
                  && this.files.equals( that.files )
                  && this.commands.equals( that.commands )
                  && this.args.equals( that.args )
-                 && this.options.equals( that.options ) );
+                 && this.options.equals( that.options )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -362,6 +394,10 @@ public class ShowProcResponse implements IndexedRecord {
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.options ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -376,6 +412,7 @@ public class ShowProcResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.commands.hashCode();
         hashCode = (31 * hashCode) + this.args.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

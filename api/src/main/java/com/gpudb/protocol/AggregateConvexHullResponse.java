@@ -6,7 +6,9 @@
 package com.gpudb.protocol;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -26,6 +28,7 @@ public class AggregateConvexHullResponse implements IndexedRecord {
                 .name("yVector").type().array().items().doubleType().noDefault()
                 .name("count").type().intType().noDefault()
                 .name("isValid").type().booleanType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -44,6 +47,7 @@ public class AggregateConvexHullResponse implements IndexedRecord {
     private List<Double> yVector;
     private int count;
     private boolean isValid;
+    private Map<String, String> info;
 
 
     /**
@@ -132,6 +136,27 @@ public class AggregateConvexHullResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AggregateConvexHullResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -169,6 +194,9 @@ public class AggregateConvexHullResponse implements IndexedRecord {
             case 3:
                 return this.isValid;
 
+            case 4:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -204,6 +232,10 @@ public class AggregateConvexHullResponse implements IndexedRecord {
                 this.isValid = (Boolean)value;
                 break;
 
+            case 4:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -224,7 +256,8 @@ public class AggregateConvexHullResponse implements IndexedRecord {
         return ( this.xVector.equals( that.xVector )
                  && this.yVector.equals( that.yVector )
                  && ( this.count == that.count )
-                 && ( this.isValid == that.isValid ) );
+                 && ( this.isValid == that.isValid )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -247,6 +280,10 @@ public class AggregateConvexHullResponse implements IndexedRecord {
         builder.append( gd.toString( "isValid" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.isValid ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -259,6 +296,7 @@ public class AggregateConvexHullResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.yVector.hashCode();
         hashCode = (31 * hashCode) + this.count;
         hashCode = (31 * hashCode) + ((Boolean)this.isValid).hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

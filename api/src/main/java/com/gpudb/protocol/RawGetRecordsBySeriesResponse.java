@@ -7,7 +7,9 @@ package com.gpudb.protocol;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -28,6 +30,7 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
                 .name("typeSchemas").type().array().items().stringType().noDefault()
                 .name("listRecordsBinary").type().array().items().array().items().bytesType().noDefault()
                 .name("listRecordsJson").type().array().items().array().items().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -47,6 +50,7 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
     private List<String> typeSchemas;
     private List<List<ByteBuffer>> listRecordsBinary;
     private List<List<String>> listRecordsJson;
+    private Map<String, String> info;
 
 
     /**
@@ -186,6 +190,27 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public RawGetRecordsBySeriesResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -226,6 +251,9 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
             case 4:
                 return this.listRecordsJson;
 
+            case 5:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -265,6 +293,10 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
                 this.listRecordsJson = (List<List<String>>)value;
                 break;
 
+            case 5:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -286,7 +318,8 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
                  && this.typeNames.equals( that.typeNames )
                  && this.typeSchemas.equals( that.typeSchemas )
                  && this.listRecordsBinary.equals( that.listRecordsBinary )
-                 && this.listRecordsJson.equals( that.listRecordsJson ) );
+                 && this.listRecordsJson.equals( that.listRecordsJson )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -313,6 +346,10 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
         builder.append( gd.toString( "listRecordsJson" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.listRecordsJson ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -326,6 +363,7 @@ public class RawGetRecordsBySeriesResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.typeSchemas.hashCode();
         hashCode = (31 * hashCode) + this.listRecordsBinary.hashCode();
         hashCode = (31 * hashCode) + this.listRecordsJson.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

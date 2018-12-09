@@ -165,11 +165,11 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE NONE}.
      *         <li> {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
-     * JITTER_X}: Amplitude of horizontal jitter applied to non-numaric x
+     * JITTER_X}: Amplitude of horizontal jitter applied to non-numeric x
      * column values.
      *         <li> {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_Y
-     * JITTER_Y}: Amplitude of vertical jitter applied to non-numaric y column
+     * JITTER_Y}: Amplitude of vertical jitter applied to non-numeric y column
      * values.
      *         <li> {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#PLOT_ALL
@@ -324,13 +324,13 @@ public class VisualizeImageChartRequest implements IndexedRecord {
         public static final String SCALE_TYPE_Y = "scale_type_y";
 
         /**
-         * Amplitude of horizontal jitter applied to non-numaric x column
+         * Amplitude of horizontal jitter applied to non-numeric x column
          * values.
          */
         public static final String JITTER_X = "jitter_x";
 
         /**
-         * Amplitude of vertical jitter applied to non-numaric y column values.
+         * Amplitude of vertical jitter applied to non-numeric y column values.
          */
         public static final String JITTER_Y = "jitter_y";
 
@@ -515,11 +515,11 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *                      JITTER_X}: Amplitude of horizontal jitter applied
-     *                      to non-numaric x column values.
+     *                      to non-numeric x column values.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_Y
      *                      JITTER_Y}: Amplitude of vertical jitter applied to
-     *                      non-numaric y column values.
+     *                      non-numeric y column values.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#PLOT_ALL
      *                      PLOT_ALL}: If this options is set to "true", all
@@ -890,11 +890,11 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *         NONE}.
      *                 <li> {@link
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
-     *         JITTER_X}: Amplitude of horizontal jitter applied to non-numaric
+     *         JITTER_X}: Amplitude of horizontal jitter applied to non-numeric
      *         x column values.
      *                 <li> {@link
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_Y
-     *         JITTER_Y}: Amplitude of vertical jitter applied to non-numaric y
+     *         JITTER_Y}: Amplitude of vertical jitter applied to non-numeric y
      *         column values.
      *                 <li> {@link
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#PLOT_ALL
@@ -1031,11 +1031,11 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *                      JITTER_X}: Amplitude of horizontal jitter applied
-     *                      to non-numaric x column values.
+     *                      to non-numeric x column values.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_Y
      *                      JITTER_Y}: Amplitude of vertical jitter applied to
-     *                      non-numaric y column values.
+     *                      non-numeric y column values.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#PLOT_ALL
      *                      PLOT_ALL}: If this options is set to "true", all

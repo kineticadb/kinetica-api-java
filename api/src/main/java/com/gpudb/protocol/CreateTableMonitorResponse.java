@@ -5,6 +5,8 @@
  */
 package com.gpudb.protocol;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -23,6 +25,7 @@ public class CreateTableMonitorResponse implements IndexedRecord {
                 .name("topicId").type().stringType().noDefault()
                 .name("tableName").type().stringType().noDefault()
                 .name("typeSchema").type().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -40,6 +43,7 @@ public class CreateTableMonitorResponse implements IndexedRecord {
     private String topicId;
     private String tableName;
     private String typeSchema;
+    private Map<String, String> info;
 
 
     /**
@@ -114,6 +118,27 @@ public class CreateTableMonitorResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public CreateTableMonitorResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -148,6 +173,9 @@ public class CreateTableMonitorResponse implements IndexedRecord {
             case 2:
                 return this.typeSchema;
 
+            case 3:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -179,6 +207,10 @@ public class CreateTableMonitorResponse implements IndexedRecord {
                 this.typeSchema = (String)value;
                 break;
 
+            case 3:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -198,7 +230,8 @@ public class CreateTableMonitorResponse implements IndexedRecord {
 
         return ( this.topicId.equals( that.topicId )
                  && this.tableName.equals( that.tableName )
-                 && this.typeSchema.equals( that.typeSchema ) );
+                 && this.typeSchema.equals( that.typeSchema )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -217,6 +250,10 @@ public class CreateTableMonitorResponse implements IndexedRecord {
         builder.append( gd.toString( "typeSchema" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.typeSchema ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -228,6 +265,7 @@ public class CreateTableMonitorResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.topicId.hashCode();
         hashCode = (31 * hashCode) + this.tableName.hashCode();
         hashCode = (31 * hashCode) + this.typeSchema.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

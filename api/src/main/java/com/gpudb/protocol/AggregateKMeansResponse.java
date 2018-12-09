@@ -6,7 +6,9 @@
 package com.gpudb.protocol;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -29,6 +31,7 @@ public class AggregateKMeansResponse implements IndexedRecord {
                 .name("rmsDist").type().doubleType().noDefault()
                 .name("tolerance").type().doubleType().noDefault()
                 .name("numIters").type().intType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -50,6 +53,7 @@ public class AggregateKMeansResponse implements IndexedRecord {
     private double rmsDist;
     private double tolerance;
     private int numIters;
+    private Map<String, String> info;
 
 
     /**
@@ -217,6 +221,27 @@ public class AggregateKMeansResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AggregateKMeansResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -262,6 +287,9 @@ public class AggregateKMeansResponse implements IndexedRecord {
 
             case 6:
                 return this.numIters;
+
+            case 7:
+                return this.info;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -310,6 +338,10 @@ public class AggregateKMeansResponse implements IndexedRecord {
                 this.numIters = (Integer)value;
                 break;
 
+            case 7:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -333,7 +365,8 @@ public class AggregateKMeansResponse implements IndexedRecord {
                  && ( this.count == that.count )
                  && ( (Double)this.rmsDist ).equals( (Double)that.rmsDist )
                  && ( (Double)this.tolerance ).equals( (Double)that.tolerance )
-                 && ( this.numIters == that.numIters ) );
+                 && ( this.numIters == that.numIters )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -368,6 +401,10 @@ public class AggregateKMeansResponse implements IndexedRecord {
         builder.append( gd.toString( "numIters" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.numIters ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -383,6 +420,7 @@ public class AggregateKMeansResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + ((Double)this.rmsDist).hashCode();
         hashCode = (31 * hashCode) + ((Double)this.tolerance).hashCode();
         hashCode = (31 * hashCode) + this.numIters;
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

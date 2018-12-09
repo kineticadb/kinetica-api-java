@@ -5,6 +5,8 @@
  */
 package com.gpudb.protocol;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -22,6 +24,7 @@ public class CreateJoinTableResponse implements IndexedRecord {
             .fields()
                 .name("joinTableName").type().stringType().noDefault()
                 .name("count").type().longType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -38,6 +41,7 @@ public class CreateJoinTableResponse implements IndexedRecord {
 
     private String joinTableName;
     private long count;
+    private Map<String, String> info;
 
 
     /**
@@ -91,6 +95,27 @@ public class CreateJoinTableResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public CreateJoinTableResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -122,6 +147,9 @@ public class CreateJoinTableResponse implements IndexedRecord {
             case 1:
                 return this.count;
 
+            case 2:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -149,6 +177,10 @@ public class CreateJoinTableResponse implements IndexedRecord {
                 this.count = (Long)value;
                 break;
 
+            case 2:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -167,7 +199,8 @@ public class CreateJoinTableResponse implements IndexedRecord {
         CreateJoinTableResponse that = (CreateJoinTableResponse)obj;
 
         return ( this.joinTableName.equals( that.joinTableName )
-                 && ( this.count == that.count ) );
+                 && ( this.count == that.count )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -182,6 +215,10 @@ public class CreateJoinTableResponse implements IndexedRecord {
         builder.append( gd.toString( "count" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.count ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -192,6 +229,7 @@ public class CreateJoinTableResponse implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.joinTableName.hashCode();
         hashCode = (31 * hashCode) + ((Long)this.count).hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

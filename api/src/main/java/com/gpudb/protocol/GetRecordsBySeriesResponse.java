@@ -6,7 +6,9 @@
 package com.gpudb.protocol;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.generic.GenericData;
 
 
@@ -22,6 +24,7 @@ public class GetRecordsBySeriesResponse<T> {
     private List<String> typeNames;
     private List<String> typeSchemas;
     private List<List<T>> data;
+    private Map<String, String> info;
 
 
     /**
@@ -129,6 +132,27 @@ public class GetRecordsBySeriesResponse<T> {
         this.data = (data == null) ? new ArrayList<List<T>>() : data;
         return this;
     }
+
+    /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public GetRecordsBySeriesResponse<T> setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
     @Override
     public boolean equals(Object obj) {
         if( obj == this ) {
@@ -144,7 +168,8 @@ public class GetRecordsBySeriesResponse<T> {
         return ( this.tableNames.equals( that.tableNames )
                  && this.typeNames.equals( that.typeNames )
                  && this.typeSchemas.equals( that.typeSchemas )
-                 && this.data.equals( that.data ) );
+                 && this.data.equals( that.data )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -167,6 +192,10 @@ public class GetRecordsBySeriesResponse<T> {
         builder.append( gd.toString( "data" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.data ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -179,6 +208,7 @@ public class GetRecordsBySeriesResponse<T> {
         hashCode = (31 * hashCode) + this.typeNames.hashCode();
         hashCode = (31 * hashCode) + this.typeSchemas.hashCode();
         hashCode = (31 * hashCode) + this.data.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

@@ -6,6 +6,7 @@
 package com.gpudb.protocol;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
@@ -36,6 +37,7 @@ public class ShowTableResponse implements IndexedRecord {
                 .name("joinSizes").type().array().items().doubleType().noDefault()
                 .name("totalSize").type().longType().noDefault()
                 .name("totalFullSize").type().longType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -118,22 +120,6 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String REQUEST_AVRO_JSON = "request_avro_json";
 
         /**
-         * Only present if the respective table is a collection. The value
-         * indicates whether the collection is allowed to contain multiple
-         * tables or views of the same type or not.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#FALSE FALSE}
-         * </ul>
-         */
-        public static final String ALLOW_HOMOGENEOUS_TABLES = "allow_homogeneous_tables";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
-
-        /**
          * Indicates whether the respective table is <a
          * href="../../../../../concepts/protection.html"
          * target="_top">protected</a> or not.
@@ -146,6 +132,8 @@ public class ShowTableResponse implements IndexedRecord {
          * </ul>
          */
         public static final String PROTECTED = "protected";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         /**
          * The number of in-memory bytes per record which is the sum of the
@@ -196,6 +184,62 @@ public class ShowTableResponse implements IndexedRecord {
          * Not present for collections.
          */
         public static final String FOREIGN_SHARD_KEY = "foreign_shard_key";
+
+        /**
+         * <a href="../../../../../concepts/tables.html#partitioning"
+         * target="_top">Partitioning</a> scheme used for this table
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#RANGE RANGE}:
+         * Using <a
+         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * target="_top">range partitioning</a>
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#INTERVAL
+         * INTERVAL}: Using <a
+         * href="../../../../../concepts/tables.html#partitioning-by-interval"
+         * target="_top">interval partitioning</a>
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#NONE NONE}:
+         * Using no partitioning
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#NONE NONE}.
+         */
+        public static final String PARTITION_TYPE = "partition_type";
+
+        /**
+         * Using <a
+         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * target="_top">range partitioning</a>
+         */
+        public static final String RANGE = "RANGE";
+
+        /**
+         * Using <a
+         * href="../../../../../concepts/tables.html#partitioning-by-interval"
+         * target="_top">interval partitioning</a>
+         */
+        public static final String INTERVAL = "INTERVAL";
+
+        /**
+         * Using no partitioning
+         */
+        public static final String NONE = "NONE";
+
+        /**
+         * Comma-separated list of partition keys
+         */
+        public static final String PARTITION_KEYS = "partition_keys";
+
+        /**
+         * Comma-separated list of partition definitions, whose format depends
+         * on the {partition_type}@{key of output additional_info}.  See <a
+         * href="../../../../../concepts/tables.html#partitioning"
+         * target="_top">partitioning</a> documentation for details.
+         */
+        public static final String PARTITION_DEFINITIONS = "partition_definitions";
 
         /**
          * Semicolon-separated list of columns that have <a
@@ -304,10 +348,15 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String LAST_REFRESH_TIME = "last_refresh_time";
 
         /**
-         * for materialized with periodic refresh_method a datetime string
+         * for materialized view with periodic refresh_method a datetime string
          * indicating the next time the view is to be refreshed
          */
         public static final String NEXT_REFRESH_TIME = "next_refresh_time";
+
+        /**
+         * user-specified chunk size, if provided at table creation time
+         */
+        public static final String USER_CHUNK_SIZE = "user_chunk_size";
 
         private AdditionalInfo() {  }
     }
@@ -325,6 +374,7 @@ public class ShowTableResponse implements IndexedRecord {
     private List<Double> joinSizes;
     private long totalSize;
     private long totalFullSize;
+    private Map<String, String> info;
 
 
     /**
@@ -716,6 +766,27 @@ public class ShowTableResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowTableResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -779,6 +850,9 @@ public class ShowTableResponse implements IndexedRecord {
 
             case 12:
                 return this.totalFullSize;
+
+            case 13:
+                return this.info;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -851,6 +925,10 @@ public class ShowTableResponse implements IndexedRecord {
                 this.totalFullSize = (Long)value;
                 break;
 
+            case 13:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -880,7 +958,8 @@ public class ShowTableResponse implements IndexedRecord {
                  && this.fullSizes.equals( that.fullSizes )
                  && this.joinSizes.equals( that.joinSizes )
                  && ( this.totalSize == that.totalSize )
-                 && ( this.totalFullSize == that.totalFullSize ) );
+                 && ( this.totalFullSize == that.totalFullSize )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -939,6 +1018,10 @@ public class ShowTableResponse implements IndexedRecord {
         builder.append( gd.toString( "totalFullSize" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.totalFullSize ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -960,6 +1043,7 @@ public class ShowTableResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.joinSizes.hashCode();
         hashCode = (31 * hashCode) + ((Long)this.totalSize).hashCode();
         hashCode = (31 * hashCode) + ((Long)this.totalFullSize).hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

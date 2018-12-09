@@ -5,6 +5,8 @@
  */
 package com.gpudb.protocol;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -22,6 +24,7 @@ public class GrantPermissionSystemResponse implements IndexedRecord {
             .fields()
                 .name("name").type().stringType().noDefault()
                 .name("permission").type().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -38,6 +41,7 @@ public class GrantPermissionSystemResponse implements IndexedRecord {
 
     private String name;
     private String permission;
+    private Map<String, String> info;
 
 
     /**
@@ -90,6 +94,27 @@ public class GrantPermissionSystemResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public GrantPermissionSystemResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -121,6 +146,9 @@ public class GrantPermissionSystemResponse implements IndexedRecord {
             case 1:
                 return this.permission;
 
+            case 2:
+                return this.info;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -148,6 +176,10 @@ public class GrantPermissionSystemResponse implements IndexedRecord {
                 this.permission = (String)value;
                 break;
 
+            case 2:
+                this.info = (Map<String, String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -166,7 +198,8 @@ public class GrantPermissionSystemResponse implements IndexedRecord {
         GrantPermissionSystemResponse that = (GrantPermissionSystemResponse)obj;
 
         return ( this.name.equals( that.name )
-                 && this.permission.equals( that.permission ) );
+                 && this.permission.equals( that.permission )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -181,6 +214,10 @@ public class GrantPermissionSystemResponse implements IndexedRecord {
         builder.append( gd.toString( "permission" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.permission ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -191,6 +228,7 @@ public class GrantPermissionSystemResponse implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.name.hashCode();
         hashCode = (31 * hashCode) + this.permission.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

@@ -1,5 +1,7 @@
 package com.gpudb;
 
+import com.gpudb.protocol.ShowSystemPropertiesRequest;
+import com.gpudb.protocol.ShowSystemPropertiesResponse;
 import com.gpudb.protocol.ShowTableRequest;
 import com.gpudb.protocol.ShowTableResponse;
 import com.gpudb.protocol.ShowTypesRequest;
@@ -7,6 +9,7 @@ import com.gpudb.protocol.ShowTypesResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.NumberFormatException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,6 +49,7 @@ public abstract class GPUdbBase {
         private int threadCount = 1;
         private ExecutorService executor;
         private Map<String, String> httpHeaders = new HashMap<>();
+        private int hmPort = 9300;  // Default host manager port
         private int timeout;
 
         /**
@@ -122,6 +126,18 @@ public abstract class GPUdbBase {
          */
         public Map<String, String> getHttpHeaders() {
             return httpHeaders;
+        }
+
+        /**
+         * Gets the host manager port number. Some endpoints are supported only
+         * at the host manager, rather than the head node of the database.
+         *
+         * @return  the host manager port
+         *
+         * @see #setHostManagerPort(int)
+         */
+        public int getHostManagerPort() {
+            return hmPort;
         }
 
         /**
@@ -279,6 +295,29 @@ public abstract class GPUdbBase {
         }
 
         /**
+         * Sets the host manager port number. Some endpoints are supported only
+         * at the host manager, rather than the head node of the database.
+         *
+         * @param value  the host manager port number
+         * @return       the current {@link Options} instance
+         *
+         * @see #getHostManagerPort()
+         */
+        public Options setHostManagerPort(int value) {
+            if (value < 0) {
+                throw new IllegalArgumentException("Host manager port number must be greater than zero; "
+                                                   + "given " + value);
+            }
+            if (value > 65536) {
+                throw new IllegalArgumentException("Host manager port number must be less than 65536; "
+                                                   + "given " + value);
+            }
+
+            hmPort = value;
+            return this;
+        }
+
+        /**
          * Sets the timeout value, in milliseconds, after which a lack of
          * response from the GPUdb server will result in requests being aborted.
          * A timeout of zero is interpreted as an infinite timeout. Note that
@@ -291,14 +330,14 @@ public abstract class GPUdbBase {
          * @see #getTimeout()
          */
         public Options setTimeout(int value) {
-            if (timeout < 0) {
+            if (value < 0) {
                 throw new IllegalArgumentException("Timeout must be greater than or equal to zero.");
             }
 
             timeout = value;
             return this;
         }
-    }
+    }  // end class Options
 
     /**
      * An exception that occurred during the submission of a request to GPUdb.
@@ -352,7 +391,8 @@ public abstract class GPUdbBase {
         public int getRequestSize() {
             return requestSize;
         }
-    }
+    }   // end class SubmitException
+
 
     /**
      * Pass-through OutputStream that counts the number of bytes written to it
@@ -397,7 +437,7 @@ public abstract class GPUdbBase {
             outputStream.write(b);
             byteCount++;
         }
-    }
+    } // end class CountingOutputStream
 
     /**
      * Gets the version number of the GPUdb Java API.
@@ -486,8 +526,10 @@ public abstract class GPUdbBase {
     // Fields
 
     private List<URL> urls;
+    private List<URL> hmUrls;
     private final Object urlLock;
     private int currentURL;
+    private int currentHmURL;
     private String username;
     private String password;
     private String authorization;
@@ -499,7 +541,9 @@ public abstract class GPUdbBase {
     private ConcurrentHashMap<Class<?>, TypeObjectMap<?>> knownTypeObjectMaps;
     private ConcurrentHashMap<String, Object> knownTypes;
 
-    // Constructor
+
+    // Constructors
+    // ------------
 
     protected GPUdbBase(String url, Options options) throws GPUdbException {
         urlLock = new Object();
@@ -522,11 +566,12 @@ public abstract class GPUdbBase {
     protected GPUdbBase(List<URL> urls, Options options) throws GPUdbException {
         urlLock = new Object();
         this.urls = Collections.unmodifiableList(urls);
-        currentURL = (int)(Math.random() * urls.size());
+        currentURL   = (int)(Math.random() * this.urls.size());
+        currentHmURL = (int)(Math.random() * this.hmUrls.size());
         init(options);
     }
 
-    private void init(Options options) {
+    private void init(Options options) throws GPUdbException {
         username = options.getUsername();
         password = options.getPassword();
 
@@ -539,6 +584,20 @@ public abstract class GPUdbBase {
         useSnappy = options.getUseSnappy();
         threadCount = options.getThreadCount();
         executor = options.getExecutor();
+
+        // Create URLs for the host manager
+        this.hmUrls = new ArrayList();
+        for ( URL url : this.urls ) {
+            try {
+                // Change only the port to be the host manager port
+                URL hmUrl = new URL( url.getProtocol(), url.getHost(),
+                                     options.getHostManagerPort(),
+                                     url.getFile() );
+                this.hmUrls.add( hmUrl );
+            } catch ( MalformedURLException ex ) {
+                throw new GPUdbException( ex.getMessage(), ex );
+            }
+        }
 
         Map<String, String> tempHttpHeaders = new HashMap<>();
 
@@ -587,7 +646,7 @@ public abstract class GPUdbBase {
     private URL switchURL(URL oldURL) {
         synchronized (urlLock) {
             if (urls.get(currentURL) == oldURL) {
-                currentURL++;
+                ++currentURL;
 
                 if (currentURL >= urls.size()) {
                     currentURL = 0;
@@ -595,6 +654,48 @@ public abstract class GPUdbBase {
             }
 
             return urls.get(currentURL);
+        }
+    }
+
+    /**
+     * Gets the list of URLs for the GPUdb host manager. At any given time, one
+     * URL will be active and used for all GPUdb calls (call {@link #getHmURL
+     * getHmURL} to determine which one), but in the event of failure, the
+     * other URLs will be tried in order, and if a working one is found
+     * it will become the new active URL.
+     *
+     * @return  the list of URLs
+     */
+    public List<URL> getHmURLs() {
+        return this.hmUrls;
+    }
+
+    /**
+     * Gets the active URL of the GPUdb host manager.
+     *
+     * @return  the URL
+     */
+    public URL getHmURL() {
+        if (this.hmUrls.size() == 1) {
+            return this.hmUrls.get(0);
+        } else {
+            synchronized (urlLock) {
+                return this.hmUrls.get( currentHmURL );
+            }
+        }
+    }
+
+    private URL switchHmURL(URL oldURL) {
+        synchronized (urlLock) {
+            if (this.hmUrls.get( currentHmURL ) == oldURL) {
+                ++currentHmURL;
+
+                if (currentHmURL >= this.hmUrls.size()) {
+                    currentHmURL = 0;
+                }
+            }
+
+            return this.hmUrls.get(currentHmURL);
         }
     }
 
@@ -697,6 +798,78 @@ public abstract class GPUdbBase {
     public int getTimeout() {
         return timeout;
     }
+
+    /**
+     * Re-sets the host manager port number for the host manager URLs. Some
+     * endpoints are supported only at the host manager, rather than the
+     * head node of the database.
+     *
+     * @param value  the host manager port number
+     * @return       the current {@link GPUdbBase} instance
+     */
+    public GPUdbBase setHostManagerPort(int value) throws IllegalArgumentException, GPUdbException {
+        if (value < 0) {
+            throw new IllegalArgumentException("Host manager port number must be greater than zero; "
+                                               + "given " + value );
+        }
+        if (value > 65536) {
+            throw new IllegalArgumentException("Host manager port number must be less than 65536; "
+                                               + "given " + value );
+        }
+
+        // Reset the port for all the host manager URLs
+        for ( int i = 0; i < this.hmUrls.size(); ++i ) {
+            try {
+                URL oldUrl = this.hmUrls.get( i );
+                // Change only the port to be the host manager port
+                URL newUrl = new URL( oldUrl.getProtocol(), oldUrl.getHost(),
+                                      value,
+                                      oldUrl.getFile() );
+                this.hmUrls.set( i, newUrl );
+            } catch ( MalformedURLException ex ) {
+                throw new GPUdbException( ex.getMessage(), ex );
+            }
+        }
+        return this;
+    }
+
+    
+    /**
+     * Automatically resets the host manager port number for the host manager
+     * URLs by finding out what the host manager port is.
+     */
+    protected void updateHostManagerPort() throws GPUdbException {
+
+        int hmPort;
+
+        // Find out from the database server what the correct port
+        // number is
+        ShowSystemPropertiesResponse response = submitRequest("/show/system/properties",
+                                                              new ShowSystemPropertiesRequest(),
+                                                              new ShowSystemPropertiesResponse(),
+                                                              false);
+        Map<String, String> systemProperties = response.getPropertyMap();
+        String port_str = systemProperties.get( ShowSystemPropertiesResponse.PropertyMap.CONF_HM_HTTP_PORT );
+
+        if (port_str == null) {
+            throw new GPUdbException("Missing value for '"
+                                     + ShowSystemPropertiesResponse.PropertyMap.CONF_HM_HTTP_PORT
+                                     + "'" );
+        }
+
+        // Parse the integer value from the string
+        try {
+            hmPort = Integer.parseInt( port_str );
+        } catch (NumberFormatException ex) {
+            throw new GPUdbException( "No parsable value found for host manager port number "
+                                      + "(expected integer, given '" + port_str + "')" );
+        }
+
+        // Update the host manager URLs with the correct port number
+        this.setHostManagerPort( hmPort );
+        return;
+    }
+
 
     // Type Management
 
@@ -965,11 +1138,14 @@ public abstract class GPUdbBase {
      * @param endpoint  the GPUdb endpoint to send the request to
      * @param request   the request object
      * @param response  the response object
+     *
      * @return          the response object (same as {@code response} parameter)
      *
      * @throws SubmitException if an error occurs while submitting the request
      */
-    public <T extends IndexedRecord> T submitRequest(String endpoint, IndexedRecord request, T response) throws SubmitException {
+    public <T extends IndexedRecord> T submitRequest( String endpoint,
+                                                      IndexedRecord request,
+                                                      T response ) throws SubmitException {
         return submitRequest(endpoint, request, response, false);
     }
 
@@ -988,12 +1164,17 @@ public abstract class GPUdbBase {
      * @param request            the request object
      * @param response           the response object
      * @param enableCompression  whether to compress the request
+     *
      * @return                   the response object (same as {@code response}
      *                           parameter)
      *
      * @throws SubmitException if an error occurs while submitting the request
      */
-    public <T extends IndexedRecord> T submitRequest(String endpoint, IndexedRecord request, T response, boolean enableCompression) throws SubmitException {
+    public <T extends IndexedRecord> T submitRequest( String endpoint,
+                                                      IndexedRecord request,
+                                                      T response,
+                                                      boolean enableCompression ) throws SubmitException {
+        // Send the request to the database server head node
         URL url = getURL();
         URL originalURL = url;
 
@@ -1008,6 +1189,7 @@ public abstract class GPUdbBase {
                 } else if (ex.getCause() != null) {
                     url = switchURL(url);
 
+                    // If we've circled back, then none of the URLs worked
                     if (url == originalURL) {
                         throw new SubmitException(null, ex.getRequest(), ex.getRequestSize(), ex.getMessage(), ex.getCause());
                     }
@@ -1015,8 +1197,103 @@ public abstract class GPUdbBase {
                     throw ex;
                 }
             }
-        }
+        } // end while
+    } // end submitRequest
+
+
+    /**
+     * Submits an arbitrary request to the GPUdb host manager and saves the
+     * response into a pre-created response object. The request and response
+     * objects must implement the Avro {@link IndexedRecord} interface.
+     *
+     * @param <T>       the type of the response object
+     * @param endpoint  the GPUdb endpoint to send the request to
+     * @param request   the request object
+     * @param response  the response object
+     *
+     * @return          the response object (same as {@code response} parameter)
+     *
+     * @throws SubmitException if an error occurs while submitting the request
+     */
+    public <T extends IndexedRecord> T submitRequestToHM( String endpoint,
+                                                          IndexedRecord request,
+                                                          T response ) throws SubmitException {
+        return submitRequestToHM(endpoint, request, response, false );
     }
+
+
+    /**
+     * Submits an arbitrary request to the GPUdb host manager and saves the
+     * response into a pre-created response object, optionally compressing
+     * the request before sending. The request and response objects must
+     * implement the Avro {@link IndexedRecord} interface. The request
+     * will only be compressed if {@code enableCompression} is {@code true} and
+     * the {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
+     * called with the {@link Options#setUseSnappy(boolean) Snappy compression
+     * flag} set to {@code true}.
+     *
+     * @param <T>                the type of the response object
+     * @param endpoint           the GPUdb endpoint to send the request to
+     * @param request            the request object
+     * @param response           the response object
+     * @param enableCompression  whether to compress the request
+     *
+     * @return                   the response object (same as {@code response}
+     *                           parameter)
+     *
+     * @throws SubmitException if an error occurs while submitting the request
+     */
+    public <T extends IndexedRecord> T submitRequestToHM( String endpoint,
+                                                          IndexedRecord request,
+                                                          T response,
+                                                          boolean enableCompression ) throws SubmitException {
+        // Send the request to the host manager
+        URL hmUrl = getHmURL();
+        URL originalURL = hmUrl;
+
+        while (true) {
+            boolean retry = false;
+
+            try {
+                return submitRequest(appendPathToURL(hmUrl, endpoint), request, response, enableCompression);
+            } catch (MalformedURLException ex) {
+                throw new GPUdbRuntimeException(ex.getMessage(), ex);
+            } catch (SubmitException ex) {
+                if ( this.hmUrls.size() == 1 ) {
+                    retry = true;
+                } else if (ex.getCause() != null) {
+                    hmUrl = switchHmURL( hmUrl );
+
+                    // If we've circled back, then none of the URLs worked
+                    if ( hmUrl == originalURL ) {
+                        retry = true;
+                    }
+                } else {
+                    throw ex;
+                }
+
+                // Try to automatically update the host manager port
+                if ( retry ) {
+                    try {
+                        updateHostManagerPort();
+                        hmUrl = getHmURL();
+                    } catch (GPUdbException ex2) {
+                        throw new SubmitException(null, ex.getRequest(), ex.getRequestSize(), ex2.getMessage());
+                    }
+
+                    // Ping the new URL
+                    try {
+                        return submitRequest(appendPathToURL(hmUrl, endpoint), request, response, enableCompression);
+                    } catch (MalformedURLException ex2) {
+                        throw new GPUdbRuntimeException(ex2.getMessage(), ex2);
+                    } catch (SubmitException ex2) {
+                        throw new SubmitException(null, ex2.getRequest(), ex2.getRequestSize(), ex2.getMessage(), ex2.getCause());
+                    }
+                }
+            }
+        } // end while
+    } // end submitRequestToHM
+
 
     /**
      * Submits an arbitrary request to GPUdb via the specified URL and saves the
