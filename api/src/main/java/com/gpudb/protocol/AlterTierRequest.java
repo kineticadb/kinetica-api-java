@@ -16,7 +16,15 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#alterTier(AlterTierRequest)}.
  * <p>
- * Alters properties of exisiting tier to facilitate resource management.
+ * Alters properties of an exisiting <a
+ * href="../../../../../rm/concepts.html#storage-tiers" target="_top">tier</a>
+ * to facilitate <a href="../../../../../rm/concepts.html"
+ * target="_top">resource management</a>.
+ * <p>
+ * To disable <a
+ * href="../../../../../rm/concepts.html#watermark-based-eviction"
+ * target="_top">watermark-based eviction</a>, set both {@code high_watermark}
+ * and {@code low_watermark} to 100.
  */
 public class AlterTierRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -47,12 +55,13 @@ public class AlterTierRequest implements IndexedRecord {
      * CAPACITY}: Maximum size in bytes this tier may hold at once.
      *         <li> {@link
      * com.gpudb.protocol.AlterTierRequest.Options#HIGH_WATERMARK
-     * HIGH_WATERMARK}: Triggers asynchronous eviction once a tiers resource
-     * usage exceeds this percentage down to the low watermark.
+     * HIGH_WATERMARK}: Threshold of usage of this tier's resource that, once
+     * exceeded, will trigger watermark-based eviction from this tier.
      *         <li> {@link
      * com.gpudb.protocol.AlterTierRequest.Options#LOW_WATERMARK
-     * LOW_WATERMARK}: Percentage resource usage to evict down to once the high
-     * watermark has been hit.
+     * LOW_WATERMARK}: Threshold of resource usage that, once fallen below
+     * after crossing the {@code high_watermark}, will cease watermark-based
+     * eviction from this tier.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -64,14 +73,15 @@ public class AlterTierRequest implements IndexedRecord {
         public static final String CAPACITY = "capacity";
 
         /**
-         * Triggers asynchronous eviction once a tiers resource usage exceeds
-         * this percentage down to the low watermark.
+         * Threshold of usage of this tier's resource that, once exceeded, will
+         * trigger watermark-based eviction from this tier.
          */
         public static final String HIGH_WATERMARK = "high_watermark";
 
         /**
-         * Percentage resource usage to evict down to once the high watermark
-         * has been hit.
+         * Threshold of resource usage that, once fallen below after crossing
+         * the {@code high_watermark}, will cease watermark-based eviction from
+         * this tier.
          */
         public static final String LOW_WATERMARK = "low_watermark";
 
@@ -93,7 +103,8 @@ public class AlterTierRequest implements IndexedRecord {
     /**
      * Constructs an AlterTierRequest object with the specified parameters.
      * 
-     * @param name  Name of the tier to be altered. Must match tier group name.
+     * @param name  Name of the tier to be altered. Must be an existing tier
+     *              group name.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -102,13 +113,14 @@ public class AlterTierRequest implements IndexedRecord {
      *                 once.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#HIGH_WATERMARK
-     *                 HIGH_WATERMARK}: Triggers asynchronous eviction once a
-     *                 tiers resource usage exceeds this percentage down to the
-     *                 low watermark.
+     *                 HIGH_WATERMARK}: Threshold of usage of this tier's
+     *                 resource that, once exceeded, will trigger
+     *                 watermark-based eviction from this tier.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#LOW_WATERMARK
-     *                 LOW_WATERMARK}: Percentage resource usage to evict down
-     *                 to once the high watermark has been hit.
+     *                 LOW_WATERMARK}: Threshold of resource usage that, once
+     *                 fallen below after crossing the {@code high_watermark},
+     *                 will cease watermark-based eviction from this tier.
      *                 </ul>
      * 
      */
@@ -119,7 +131,8 @@ public class AlterTierRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the tier to be altered. Must match tier group name.
+     * @return Name of the tier to be altered. Must be an existing tier group
+     *         name.
      * 
      */
     public String getName() {
@@ -128,7 +141,8 @@ public class AlterTierRequest implements IndexedRecord {
 
     /**
      * 
-     * @param name  Name of the tier to be altered. Must match tier group name.
+     * @param name  Name of the tier to be altered. Must be an existing tier
+     *              group name.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -147,13 +161,14 @@ public class AlterTierRequest implements IndexedRecord {
      *         Maximum size in bytes this tier may hold at once.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTierRequest.Options#HIGH_WATERMARK
-     *         HIGH_WATERMARK}: Triggers asynchronous eviction once a tiers
-     *         resource usage exceeds this percentage down to the low
-     *         watermark.
+     *         HIGH_WATERMARK}: Threshold of usage of this tier's resource
+     *         that, once exceeded, will trigger watermark-based eviction from
+     *         this tier.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTierRequest.Options#LOW_WATERMARK
-     *         LOW_WATERMARK}: Percentage resource usage to evict down to once
-     *         the high watermark has been hit.
+     *         LOW_WATERMARK}: Threshold of resource usage that, once fallen
+     *         below after crossing the {@code high_watermark}, will cease
+     *         watermark-based eviction from this tier.
      *         </ul>
      * 
      */
@@ -171,13 +186,14 @@ public class AlterTierRequest implements IndexedRecord {
      *                 once.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#HIGH_WATERMARK
-     *                 HIGH_WATERMARK}: Triggers asynchronous eviction once a
-     *                 tiers resource usage exceeds this percentage down to the
-     *                 low watermark.
+     *                 HIGH_WATERMARK}: Threshold of usage of this tier's
+     *                 resource that, once exceeded, will trigger
+     *                 watermark-based eviction from this tier.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#LOW_WATERMARK
-     *                 LOW_WATERMARK}: Percentage resource usage to evict down
-     *                 to once the high watermark has been hit.
+     *                 LOW_WATERMARK}: Threshold of resource usage that, once
+     *                 fallen below after crossing the {@code high_watermark},
+     *                 will cease watermark-based eviction from this tier.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

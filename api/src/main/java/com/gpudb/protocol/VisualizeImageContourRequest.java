@@ -77,29 +77,159 @@ public class VisualizeImageContourRequest implements IndexedRecord {
 
         public static final String BG_COLOR = "bg_color";
 
+        public static final String TEXT_COLOR = "text_color";
+
         public static final String COLORMAP = "colormap";
 
         public static final String JET = "jet";
 
-        public static final String HOT = "hot";
+        public static final String ACCENT = "accent";
 
-        public static final String HSV = "hsv";
+        public static final String AFMHOT = "afmhot";
 
-        public static final String GRAY = "gray";
+        public static final String AUTUMN = "autumn";
+
+        public static final String BINARY = "binary";
 
         public static final String BLUES = "blues";
+
+        public static final String BONE = "bone";
+
+        public static final String BRBG = "brbg";
+
+        public static final String BRG = "brg";
+
+        public static final String BUGN = "bugn";
+
+        public static final String BUPU = "bupu";
+
+        public static final String BWR = "bwr";
+
+        public static final String CMRMAP = "cmrmap";
+
+        public static final String COOL = "cool";
+
+        public static final String COOLWARM = "coolwarm";
+
+        public static final String COPPER = "copper";
+
+        public static final String CUBEHELIX = "cubehelix";
+
+        public static final String DARK2 = "dark2";
+
+        public static final String FLAG = "flag";
+
+        public static final String GIST_EARTH = "gist_earth";
+
+        public static final String GIST_GRAY = "gist_gray";
+
+        public static final String GIST_HEAT = "gist_heat";
+
+        public static final String GIST_NCAR = "gist_ncar";
+
+        public static final String GIST_RAINBOW = "gist_rainbow";
+
+        public static final String GIST_STERN = "gist_stern";
+
+        public static final String GIST_YARG = "gist_yarg";
+
+        public static final String GNBU = "gnbu";
+
+        public static final String GNUPLOT2 = "gnuplot2";
+
+        public static final String GNUPLOT = "gnuplot";
+
+        public static final String GRAY = "gray";
 
         public static final String GREENS = "greens";
 
         public static final String GREYS = "greys";
 
+        public static final String HOT = "hot";
+
+        public static final String HSV = "hsv";
+
+        public static final String INFERNO = "inferno";
+
+        public static final String MAGMA = "magma";
+
+        public static final String NIPY_SPECTRAL = "nipy_spectral";
+
+        public static final String OCEAN = "ocean";
+
         public static final String ORANGES = "oranges";
+
+        public static final String ORRD = "orrd";
+
+        public static final String PAIRED = "paired";
+
+        public static final String PASTEL1 = "pastel1";
+
+        public static final String PASTEL2 = "pastel2";
+
+        public static final String PINK = "pink";
+
+        public static final String PIYG = "piyg";
+
+        public static final String PLASMA = "plasma";
+
+        public static final String PRGN = "prgn";
+
+        public static final String PRISM = "prism";
+
+        public static final String PUBU = "pubu";
+
+        public static final String PUBUGN = "pubugn";
+
+        public static final String PUOR = "puor";
+
+        public static final String PURD = "purd";
 
         public static final String PURPLES = "purples";
 
+        public static final String RAINBOW = "rainbow";
+
+        public static final String RDBU = "rdbu";
+
+        public static final String RDGY = "rdgy";
+
+        public static final String RDPU = "rdpu";
+
+        public static final String RDYLBU = "rdylbu";
+
+        public static final String RDYLGN = "rdylgn";
+
         public static final String REDS = "reds";
 
+        public static final String SEISMIC = "seismic";
+
+        public static final String SET1 = "set1";
+
+        public static final String SET2 = "set2";
+
+        public static final String SET3 = "set3";
+
+        public static final String SPECTRAL = "spectral";
+
+        public static final String SPRING = "spring";
+
+        public static final String SUMMER = "summer";
+
+        public static final String TERRAIN = "terrain";
+
         public static final String VIRIDIS = "viridis";
+
+        public static final String WINTER = "winter";
+
+        public static final String WISTIA = "wistia";
+
+        public static final String YLGN = "ylgn";
+
+        public static final String YLGNBU = "ylgnbu";
+
+        public static final String YLORBR = "ylorbr";
+
+        public static final String YLORRD = "ylorrd";
 
 
         private StyleOptions() {  }

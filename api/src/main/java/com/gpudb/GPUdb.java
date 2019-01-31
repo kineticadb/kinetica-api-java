@@ -116,117 +116,6 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Add one or more new ranks to the Kinetica cluster. The new ranks will
-     * not contain any data initially, other than replicated tables, and not be
-     * assigned any shards. To rebalance data across the cluster, which
-     * includes shifting some shard key assignments to newly added ranks, see
-     * {@link GPUdb#adminRebalance(AdminRebalanceRequest)}.
-     * <p>
-     * For example, if attempting to add three new ranks (two ranks on host
-     * 172.123.45.67 and one rank on host 172.123.45.68) to a Kinetica cluster
-     * with additional configuration parameters:
-     * <p>
-     * * {@code hosts} would be an array including 172.123.45.67 in the first
-     * two indices (signifying two ranks being added to host 172.123.45.67) and
-     * 172.123.45.68 in the last index (signifying one rank being added to host
-     * 172.123.45.67)
-     * <p>
-     * * {@code configParams} would be an array of maps, with each map
-     * corresponding to the ranks being added in {@code hosts}. The key of each
-     * map would be the configuration parameter name and the value would be the
-     * parameter's value, e.g. 'rank.gpu':'1'
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminAddRanksResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminAddRanksResponse adminAddRanks(AdminAddRanksRequest request) throws GPUdbException {
-        AdminAddRanksResponse actualResponse_ = new AdminAddRanksResponse();
-        submitRequest("/admin/add/ranks", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Add one or more new ranks to the Kinetica cluster. The new ranks will
-     * not contain any data initially, other than replicated tables, and not be
-     * assigned any shards. To rebalance data across the cluster, which
-     * includes shifting some shard key assignments to newly added ranks, see
-     * {@link GPUdb#adminRebalance(Map)}.
-     * <p>
-     * For example, if attempting to add three new ranks (two ranks on host
-     * 172.123.45.67 and one rank on host 172.123.45.68) to a Kinetica cluster
-     * with additional configuration parameters:
-     * <p>
-     * * {@code hosts} would be an array including 172.123.45.67 in the first
-     * two indices (signifying two ranks being added to host 172.123.45.67) and
-     * 172.123.45.68 in the last index (signifying one rank being added to host
-     * 172.123.45.67)
-     * <p>
-     * * {@code configParams} would be an array of maps, with each map
-     * corresponding to the ranks being added in {@code hosts}. The key of each
-     * map would be the configuration parameter name and the value would be the
-     * parameter's value, e.g. 'rank.gpu':'1'
-     * 
-     * @param hosts  The IP address of each rank being added to the cluster.
-     *               Insert one entry per rank, even if they are on the same
-     *               host. The order of the hosts in the array only matters as
-     *               it relates to the {@code configParams}.
-     * @param configParams  Configuration parameters to apply to the new ranks,
-     *                      e.g., which GPU to use. Configuration parameters
-     *                      that start with 'rankN.', where N is the rank
-     *                      number, should omit the N, as the new rank
-     *                      number(s) are not allocated until the ranks are
-     *                      created. Each entry in this array corresponds to
-     *                      the entry at the same array index in the {@code
-     *                      hosts}. This array must either be completely empty
-     *                      or have the same number of elements as the hosts
-     *                      array.  An empty array will result in the new ranks
-     *                      being set only with default parameters.
-     * @param options  Optional parameters.
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminAddRanksRequest.Options#DRY_RUN
-     *                 DRY_RUN}: If {@code true}, only validation checks will
-     *                 be performed. No ranks are added.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminAddRanksRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminAddRanksRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AdminAddRanksRequest.Options#FALSE
-     *                 FALSE}.
-     *                 </ul>
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminAddRanksResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminAddRanksResponse adminAddRanks(List<String> hosts, List<Map<String, String>> configParams, Map<String, String> options) throws GPUdbException {
-        AdminAddRanksRequest actualRequest_ = new AdminAddRanksRequest(hosts, configParams, options);
-        AdminAddRanksResponse actualResponse_ = new AdminAddRanksResponse();
-        submitRequest("/admin/add/ranks", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
      * Perform the requested action on a list of one or more job(s). Based on
      * the type of job and the current state of execution, the action may not
      * be successfully executed. The final result of the attempted actions for
@@ -372,200 +261,6 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Rebalance the cluster so that all the nodes contain approximately an
-     * equal number of records.  The rebalance will also cause the shards to be
-     * equally distributed (as much as possible) across all the ranks.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminRebalanceResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminRebalanceResponse adminRebalance(AdminRebalanceRequest request) throws GPUdbException {
-        AdminRebalanceResponse actualResponse_ = new AdminRebalanceResponse();
-        submitRequest("/admin/rebalance", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Rebalance the cluster so that all the nodes contain approximately an
-     * equal number of records.  The rebalance will also cause the shards to be
-     * equally distributed (as much as possible) across all the ranks.
-     * 
-     * @param options  Optional parameters.
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_SHARDED_DATA
-     *                 REBALANCE_SHARDED_DATA}: If {@code true}, sharded data
-     *                 will be rebalanced approximately equally across the
-     *                 cluster. Note that for big clusters, this data transfer
-     *                 could be time consuming and result in delayed query
-     *                 responses.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
-     *                 TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_UNSHARDED_DATA
-     *                 REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded
-     *                 data (data without primary keys and without shard keys)
-     *                 will be rebalanced approximately equally across the
-     *                 cluster. Note that for big clusters, this data transfer
-     *                 could be time consuming and result in delayed query
-     *                 responses.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
-     *                 TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_WHITELIST
-     *                 TABLE_WHITELIST}: Comma-separated list of unsharded
-     *                 table names to rebalance. Not applicable to sharded
-     *                 tables because they are always balanced in accordance
-     *                 with their primary key or shard key. Cannot be used
-     *                 simultaneously with {@code table_blacklist}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_BLACKLIST
-     *                 TABLE_BLACKLIST}: Comma-separated list of unsharded
-     *                 table names to not rebalance. Not applicable to sharded
-     *                 tables because they are always balanced in accordance
-     *                 with their primary key or shard key. Cannot be used
-     *                 simultaneously with {@code table_whitelist}.
-     *                 </ul>
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminRebalanceResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminRebalanceResponse adminRebalance(Map<String, String> options) throws GPUdbException {
-        AdminRebalanceRequest actualRequest_ = new AdminRebalanceRequest(options);
-        AdminRebalanceResponse actualResponse_ = new AdminRebalanceResponse();
-        submitRequest("/admin/rebalance", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Remove one or more ranks from the cluster.  Note that this operation
-     * could take a long time to complete for big clusters. All data in the
-     * ranks to be removed is rebalanced to other ranks before the node is
-     * removed unless the {@code rebalance_sharded_data} or {@code
-     * rebalance_unsharded_data} parameters are set to {@code false} in the
-     * {@code options}.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminRemoveRanksResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminRemoveRanksResponse adminRemoveRanks(AdminRemoveRanksRequest request) throws GPUdbException {
-        AdminRemoveRanksResponse actualResponse_ = new AdminRemoveRanksResponse();
-        submitRequest("/admin/remove/ranks", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Remove one or more ranks from the cluster.  Note that this operation
-     * could take a long time to complete for big clusters. All data in the
-     * ranks to be removed is rebalanced to other ranks before the node is
-     * removed unless the {@code rebalance_sharded_data} or {@code
-     * rebalance_unsharded_data} parameters are set to {@code false} in the
-     * {@code options}.
-     * 
-     * @param ranks  Rank numbers of the ranks to be removed from the cluster.
-     * @param options  Optional parameters.
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_SHARDED_DATA
-     *                 REBALANCE_SHARDED_DATA}: When {@code true}, data with
-     *                 primary keys or shard keys will be rebalanced to other
-     *                 ranks prior to rank removal. Note that for big clusters,
-     *                 this data transfer could be time consuming and result in
-     *                 delayed query responses.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE
-     *                 TRUE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_UNSHARDED_DATA
-     *                 REBALANCE_UNSHARDED_DATA}: When {@code true}, unsharded
-     *                 data (data without primary keys and without shard keys)
-     *                 will be rebalanced to other ranks prior to rank removal.
-     *                 Note that for big clusters, this data transfer could be
-     *                 time consuming and result in delayed query responses.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE
-     *                 TRUE}.
-     *                 </ul>
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminRemoveRanksResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminRemoveRanksResponse adminRemoveRanks(List<Integer> ranks, Map<String, String> options) throws GPUdbException {
-        AdminRemoveRanksRequest actualRequest_ = new AdminRemoveRanksRequest(ranks, options);
-        AdminRemoveRanksResponse actualResponse_ = new AdminRemoveRanksResponse();
-        submitRequest("/admin/remove/ranks", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
      * Requests a list of the most recent alerts.
      * Returns lists of alert data, including timestamp and type.
      * 
@@ -614,13 +309,12 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Shows detailed status of current or prior cluster operations.
+     * Requests the detailed status of the current operation (by default) or a
+     * prior cluster operation specified by {@code historyIndex}.
+     * Returns details on the requested cluster operation.
      * <p>
-     * By default will retrieve the current or most resent cluster operation.
-     * The @{history_index} is used to specify which cluster operation to
-     * retrieve. A value of zero will return the most recent, one will return
-     * the second most recent, etc.  The response will also indicate how many
-     * cluster operations are stored in the history.
+     * The response will also indicate how many cluster operations are stored
+     * in the history.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -641,16 +335,15 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Shows detailed status of current or prior cluster operations.
+     * Requests the detailed status of the current operation (by default) or a
+     * prior cluster operation specified by {@code historyIndex}.
+     * Returns details on the requested cluster operation.
      * <p>
-     * By default will retrieve the current or most resent cluster operation.
-     * The @{history_index} is used to specify which cluster operation to
-     * retrieve. A value of zero will return the most recent, one will return
-     * the second most recent, etc.  The response will also indicate how many
-     * cluster operations are stored in the history.
+     * The response will also indicate how many cluster operations are stored
+     * in the history.
      * 
-     * @param historyIndex  Indicates which cluster operation to retrieve.
-     *                      Zero is most recent.
+     * @param historyIndex  Indicates which cluster operation to retrieve.  Use
+     *                      0 for the most recent.
      * @param options  Optional parameters.
      * 
      * @return Response object containing the results of the operation.
@@ -863,6 +556,39 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_PERSIST
      *                 VERIFY_PERSIST}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#CONCURRENT_SAFE
+     *                 CONCURRENT_SAFE}: When enabled, allows this endpoint to
+     *                 be run safely with other concurrent database operations.
+     *                 Other operations may be slower while this is running.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_RANK0
+     *                 VERIFY_RANK0}: When enabled, compares rank0 table
+     *                 meta-data against workers meta-data
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1399,6 +1125,12 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE
      *                 CUBE}: This option is used to specify the
      *                 multidimensional aggregates.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#THROW_ERROR_ON_REFRESH
+     *                 THROW_ERROR_ON_REFRESH}: <DEVELOPER>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
+     *                 SLEEP_ON_REFRESH}: <DEVELOPER>
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -2560,20 +2292,22 @@ public class GPUdb extends GPUdbBase {
      * Alters properties of exisiting resource group to facilitate resource
      * management.
      * 
-     * @param name  Name of the group to be altered. Must match existing
+     * @param name  Name of the group to be altered. Must be an existing
      *              resource group name.
-     * @param tierAttributes  Optional map containing group limits for
-     *                        tier-specific attributes such as memory.
+     * @param tierAttributes  Optional map containing tier names and their
+     *                        respective attribute group limits.  The only
+     *                        valid attribute limit that can be set is
+     *                        max_memory (in bytes) for the VRAM & RAM tiers.
+     *                        For instance, to set max VRAM capacity to 1GB and
+     *                        max RAM capacity to 10GB, use:
+     *                        {'VRAM':{'max_memory':'1000000000'},
+     *                        'RAM':{'max_memory':'10000000000'}}
      *                        <ul>
      *                                <li> {@link
      *                        com.gpudb.protocol.AlterResourceGroupRequest.TierAttributes#MAX_MEMORY
      *                        MAX_MEMORY}: Maximum amount of memory usable in
      *                        the given tier at one time for this group.
      *                        </ul>
-     * @param tierStrategy  Optional array that defines the default tiering
-     *                      strategy for this group. Each element pair defines
-     *                      an existing tier and its preferred priority. e.g.
-     *                      ['RAM 50',VRAM 30']
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -2591,10 +2325,10 @@ public class GPUdb extends GPUdbBase {
      *                 for this group.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#IS_DEFAULT_GROUP
-     *                 IS_DEFAULT_GROUP}: If true this request applies to the
-     *                 global default resource group. It is an error for this
-     *                 field to be true when the {@code name} field is also
-     *                 populated.
+     *                 IS_DEFAULT_GROUP}: If {@code true}, this request applies
+     *                 to the global default resource group. It is an error for
+     *                 this field to be {@code true} when the {@code name}
+     *                 field is also populated.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -2616,8 +2350,8 @@ public class GPUdb extends GPUdbBase {
      * @throws GPUdbException  if an error occurs during the operation.
      * 
      */
-    public AlterResourceGroupResponse alterResourceGroup(String name, Map<String, Map<String, String>> tierAttributes, List<String> tierStrategy, Map<String, String> options) throws GPUdbException {
-        AlterResourceGroupRequest actualRequest_ = new AlterResourceGroupRequest(name, tierAttributes, tierStrategy, options);
+    public AlterResourceGroupResponse alterResourceGroup(String name, Map<String, Map<String, String>> tierAttributes, Map<String, String> options) throws GPUdbException {
+        AlterResourceGroupRequest actualRequest_ = new AlterResourceGroupRequest(name, tierAttributes, options);
         AlterResourceGroupResponse actualResponse_ = new AlterResourceGroupResponse();
         submitRequest("/alter/resourcegroup", actualRequest_, actualResponse_, false);
         return actualResponse_;
@@ -2774,12 +2508,6 @@ public class GPUdb extends GPUdbBase {
      *                            records the database will serve for a given
      *                            data retrieval call
      *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MEMORY_ALLOCATION_LIMIT_MB
-     *                            MEMORY_ALLOCATION_LIMIT_MB}: Set the memory
-     *                            allocation limit for all rank processes in
-     *                            megabytes, 0 means no limit. Overrides any
-     *                            individual rank memory allocation limits.
-     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
      *                            ENABLE_AUDIT}: Enable or disable auditing.
      *                                    <li> {@link
@@ -2795,11 +2523,6 @@ public class GPUdb extends GPUdbBase {
      *                            AUDIT_DATA}: Enable or disable auditing of
      *                            request data.
      *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_JOB_MANAGER
-     *                            ENABLE_JOB_MANAGER}: Enable JobManager to
-     *                            enforce processing of requests in the order
-     *                            received.
-     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_ENABLED
      *                            CHUNK_CACHE_ENABLED}: Enable chunk level
      *                            query caching. Flushes the chunk cache when
@@ -2808,6 +2531,11 @@ public class GPUdb extends GPUdbBase {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
      *                            CHUNK_CACHE_SIZE}: Size of the chunk cache in
      *                            bytes.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
+     *                            SYNCHRONOUS_COMPRESSION}: compress vector on
+     *                            set_compression (instead of waiting for
+     *                            background thread)
      *                            </ul>
      * @param options  Optional parameters.
      * 
@@ -2831,6 +2559,12 @@ public class GPUdb extends GPUdbBase {
      * Apply various modifications to a table, view, or collection.  The
      * available modifications include the following:
      * <p>
+     * Manage a table's columns--a column can be added, removed, or have its
+     * <a href="../../../../concepts/types.html" target="_top">type and
+     * properties</a> modified, including
+     * whether it is <a href="../../../../concepts/compression.html"
+     * target="_top">compressed</a> or not.
+     * <p>
      * Create or delete an <a
      * href="../../../../concepts/indexes.html#column-index"
      * target="_top">index</a> on a
@@ -2839,6 +2573,24 @@ public class GPUdb extends GPUdbBase {
      * containing equality or relational operators on indexed columns. This
      * only
      * applies to tables.
+     * <p>
+     * Create or delete a <a
+     * href="../../../../concepts/tables.html#foreign-key"
+     * target="_top">foreign key</a>
+     * on a particular column.
+     * <p>
+     * Manage a <a href="../../../../concepts/tables.html#partitioning"
+     * target="_top">range-partitioned</a>
+     * table's partitions.
+     * <p>
+     * Set (or reset) the <a
+     * href="../../../../rm/concepts.html#tier-strategies" target="_top">tier
+     * strategy</a>
+     * of a table or view.
+     * <p>
+     * Refresh and manage the refresh mode of a
+     * <a href="../../../../concepts/materialized_views.html"
+     * target="_top">materialized view</a>.
      * <p>
      * Set the <a href="../../../../concepts/ttl.html"
      * target="_top">time-to-live (TTL)</a>. This can be applied
@@ -2859,19 +2611,6 @@ public class GPUdb extends GPUdbBase {
      * target="_top">protection</a> mode to prevent or
      * allow automatic expiration. This can be applied to tables, views, and
      * collections.
-     * <p>
-     * Manage a <a href="../../../../concepts/tables.html#partitioning"
-     * target="_top">range-partitioned</a>
-     * table's partitions.
-     * <p>
-     * Allow homogeneous tables within a collection.
-     * <p>
-     * Manage a table's columns--a column can be added, removed, or have its
-     * <a href="../../../../concepts/types.html" target="_top">type and
-     * properties</a> modified.
-     * <p>
-     * Set or unset <a href="../../../../concepts/compression.html"
-     * target="_top">compression</a> for a column.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -2895,6 +2634,12 @@ public class GPUdb extends GPUdbBase {
      * Apply various modifications to a table, view, or collection.  The
      * available modifications include the following:
      * <p>
+     * Manage a table's columns--a column can be added, removed, or have its
+     * <a href="../../../../concepts/types.html" target="_top">type and
+     * properties</a> modified, including
+     * whether it is <a href="../../../../concepts/compression.html"
+     * target="_top">compressed</a> or not.
+     * <p>
      * Create or delete an <a
      * href="../../../../concepts/indexes.html#column-index"
      * target="_top">index</a> on a
@@ -2903,6 +2648,24 @@ public class GPUdb extends GPUdbBase {
      * containing equality or relational operators on indexed columns. This
      * only
      * applies to tables.
+     * <p>
+     * Create or delete a <a
+     * href="../../../../concepts/tables.html#foreign-key"
+     * target="_top">foreign key</a>
+     * on a particular column.
+     * <p>
+     * Manage a <a href="../../../../concepts/tables.html#partitioning"
+     * target="_top">range-partitioned</a>
+     * table's partitions.
+     * <p>
+     * Set (or reset) the <a
+     * href="../../../../rm/concepts.html#tier-strategies" target="_top">tier
+     * strategy</a>
+     * of a table or view.
+     * <p>
+     * Refresh and manage the refresh mode of a
+     * <a href="../../../../concepts/materialized_views.html"
+     * target="_top">materialized view</a>.
      * <p>
      * Set the <a href="../../../../concepts/ttl.html"
      * target="_top">time-to-live (TTL)</a>. This can be applied
@@ -2923,19 +2686,6 @@ public class GPUdb extends GPUdbBase {
      * target="_top">protection</a> mode to prevent or
      * allow automatic expiration. This can be applied to tables, views, and
      * collections.
-     * <p>
-     * Manage a <a href="../../../../concepts/tables.html#partitioning"
-     * target="_top">range-partitioned</a>
-     * table's partitions.
-     * <p>
-     * Allow homogeneous tables within a collection.
-     * <p>
-     * Manage a table's columns--a column can be added, removed, or have its
-     * <a href="../../../../concepts/types.html" target="_top">type and
-     * properties</a> modified.
-     * <p>
-     * Set or unset <a href="../../../../concepts/compression.html"
-     * target="_top">compression</a> for a column.
      * 
      * @param tableName  Table on which the operation will be performed. Must
      *                   be an existing table, view, or collection.
@@ -3012,7 +2762,8 @@ public class GPUdb extends GPUdbBase {
      *                SET_COLUMN_COMPRESSION}: Modifies the <a
      *                href="../../../../concepts/compression.html"
      *                target="_top">compression</a> setting on the column
-     *                specified in {@code value}.
+     *                specified in {@code value} to the compression type
+     *                specified in {@code compression_type}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_COLUMN
      *                DELETE_COLUMN}: Deletes the column specified in {@code
@@ -3021,8 +2772,8 @@ public class GPUdb extends GPUdbBase {
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
      *                CREATE_FOREIGN_KEY}: Creates a <a
      *                href="../../../../concepts/tables.html#foreign-key"
-     *                target="_top">foreign key</a> using the format
-     *                '(source_column_name [, ...]) references
+     *                target="_top">foreign key</a> specified in {@code value}
+     *                using the format '(source_column_name [, ...]) references
      *                target_table_name(primary_key_column_name [, ...]) [as
      *                foreign_key_name]'.
      *                        <li> {@link
@@ -3034,21 +2785,21 @@ public class GPUdb extends GPUdbBase {
      *                or the complete string used to define it.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
-     *                ADD_PARTITION}: Partition definition to add (for
-     *                range-partitioned tables only).  See <a
+     *                ADD_PARTITION}: Adds a partition (for range-partitioned
+     *                tables only) specified in {@code value}.  See <a
      *                href="../../../../concepts/tables.html#partitioning-by-range-example"
      *                target="_top">range partitioning example</a> for example
      *                format.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
-     *                REMOVE_PARTITION}: Name of partition to remove (for
-     *                range-partitioned tables only).  All data in partition
-     *                will be moved to the default partition
+     *                REMOVE_PARTITION}: Removes the partition specified in
+     *                {@code value} and relocates all its data to the default
+     *                partition (for range-partitioned tables only).
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
-     *                DELETE_PARTITION}: Name of partition to delete (for
-     *                range-partitioned tables only).  All data in the
-     *                partition will be deleted.
+     *                DELETE_PARTITION}: Deletes the partition specified in
+     *                {@code value} and its data (for range-partitioned tables
+     *                only).
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
      *                SET_GLOBAL_ACCESS_MODE}: Sets the global access mode
@@ -3066,31 +2817,52 @@ public class GPUdb extends GPUdbBase {
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
      *                SET_REFRESH_METHOD}: Sets the method by which this <a
      *                href="../../../../concepts/materialized_views.html"
-     *                target="_top">materialized view</a> is refreshed - one of
-     *                'manual', 'periodic', 'on_change'.
+     *                target="_top">materialized view</a> is refreshed to the
+     *                method specified in {@code value} - one of 'manual',
+     *                'periodic', 'on_change'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
      *                SET_REFRESH_START_TIME}: Sets the time to start periodic
      *                refreshes of this <a
      *                href="../../../../concepts/materialized_views.html"
-     *                target="_top">materialized view</a> to datetime string
-     *                with format 'YYYY-MM-DD HH:MM:SS'.  Subsequent refreshes
-     *                occur at the specified time + N * the refresh period.
+     *                target="_top">materialized view</a> to the datetime
+     *                string specified in {@code value} with format 'YYYY-MM-DD
+     *                HH:MM:SS'.  Subsequent refreshes occur at the specified
+     *                time + N * the refresh period.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
      *                SET_REFRESH_PERIOD}: Sets the time interval in seconds at
      *                which to refresh this <a
      *                href="../../../../concepts/materialized_views.html"
-     *                target="_top">materialized view</a>.  Also, sets the
-     *                refresh method to periodic if not alreay set.
+     *                target="_top">materialized view</a> to the value
+     *                specified in {@code value}.  Also, sets the refresh
+     *                method to periodic if not already set.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_TEXT_SEARCH_ATTRIBUTES
-     *                REMOVE_TEXT_SEARCH_ATTRIBUTES}: remove text_search
-     *                attribute from all columns, if exists.
+     *                REMOVE_TEXT_SEARCH_ATTRIBUTES}: Removes <a
+     *                href="../../../../concepts/full_text_search.html"
+     *                target="_top">text search</a> attribute from all columns.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_STRATEGY_DEFINITION
+     *                SET_STRATEGY_DEFINITION}: Sets the <a
+     *                href="../../../../rm/concepts.html#tier-strategies"
+     *                target="_top">tier strategy</a> for the table and its
+     *                columns to the one specified in {@code value}, replacing
+     *                the existing tier strategy in its entirety. See <a
+     *                href="../../../../rm/concepts.html#tier-strategies"
+     *                target="_top">tier strategy usage</a> for format and <a
+     *                href="../../../../rm/usage.html#tier-strategies"
+     *                target="_top">tier strategy examples</a> for examples.
      *                </ul>
-     * @param value  The value of the modification. May be a column name,
-     *               'true' or 'false', a TTL, or the global access mode
-     *               depending on {@code action}.
+     * @param value  The value of the modification, depending on {@code
+     *               action}.  For example, if {@code action} is {@code
+     *               add_column}, this would be the column name; while the
+     *               column's definition would be covered by the {@code
+     *               column_type}, {@code column_properties}, {@code
+     *               column_default_value}, and {@code add_column_expression}
+     *               in {@code options}.  If {@code action} is {@code ttl}, it
+     *               would be the number of minutes for the new TTL. If {@code
+     *               action} is {@code refresh}, this field would be blank.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -3142,8 +2914,8 @@ public class GPUdb extends GPUdbBase {
      *                 SNAPPY}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COPY_VALUES_FROM_COLUMN
-     *                 COPY_VALUES_FROM_COLUMN}: please see
-     *                 add_column_expression instead.
+     *                 COPY_VALUES_FROM_COLUMN}: Deprecated.  Please use {@code
+     *                 add_column_expression} instead.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#RENAME_COLUMN
      *                 RENAME_COLUMN}: When changing a column, specify new
@@ -3169,23 +2941,46 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#UPDATE_LAST_ACCESS_TIME
-     *                 UPDATE_LAST_ACCESS_TIME}: Indicates whether need to
-     *                 update the last_access_time.
+     *                 UPDATE_LAST_ACCESS_TIME}: Indicates whether the <a
+     *                 href="../../../../concepts/ttl.html"
+     *                 target="_top">time-to-live</a> (TTL) expiration
+     *                 countdown timer should be reset to the table's TTL.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}
+     *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}:
+     *                 Reset the expiration countdown timer to the table's
+     *                 configured TTL.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Don't reset the timer; expiration countdown will
+     *                 continue from where it is, as if the table had not been
+     *                 accessed.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#ADD_COLUMN_EXPRESSION
-     *                 ADD_COLUMN_EXPRESSION}: expression for new column's
-     *                 values (optional with add_column). Any valid expressions
-     *                 including existing columns.
+     *                 ADD_COLUMN_EXPRESSION}: When adding a column, an
+     *                 optional expression to use for the new column's values.
+     *                 Any valid expression may be used, including one
+     *                 containing references to existing columns in the same
+     *                 table.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#STRATEGY_DEFINITION
+     *                 STRATEGY_DEFINITION}: Optional parameter for specifying
+     *                 the <a
+     *                 href="../../../../rm/concepts.html#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns when {@code action} is {@code
+     *                 set_strategy_definition}, replacing the existing tier
+     *                 strategy in its entirety. See <a
+     *                 href="../../../../rm/concepts.html#tier-strategies"
+     *                 target="_top">tier strategy usage</a> for format and <a
+     *                 href="../../../../rm/usage.html#tier-strategies"
+     *                 target="_top">tier strategy examples</a> for examples.
+     *                 This option will be ignored if {@code value} is also
+     *                 specified.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -3352,7 +3147,15 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Alters properties of exisiting tier to facilitate resource management.
+     * Alters properties of an exisiting <a
+     * href="../../../../rm/concepts.html#storage-tiers" target="_top">tier</a>
+     * to facilitate <a href="../../../../rm/concepts.html"
+     * target="_top">resource management</a>.
+     * <p>
+     * To disable <a
+     * href="../../../../rm/concepts.html#watermark-based-eviction"
+     * target="_top">watermark-based eviction</a>, set both {@code
+     * high_watermark} and {@code low_watermark} to 100.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -3373,9 +3176,18 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Alters properties of exisiting tier to facilitate resource management.
+     * Alters properties of an exisiting <a
+     * href="../../../../rm/concepts.html#storage-tiers" target="_top">tier</a>
+     * to facilitate <a href="../../../../rm/concepts.html"
+     * target="_top">resource management</a>.
+     * <p>
+     * To disable <a
+     * href="../../../../rm/concepts.html#watermark-based-eviction"
+     * target="_top">watermark-based eviction</a>, set both {@code
+     * high_watermark} and {@code low_watermark} to 100.
      * 
-     * @param name  Name of the tier to be altered. Must match tier group name.
+     * @param name  Name of the tier to be altered. Must be an existing tier
+     *              group name.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -3384,13 +3196,14 @@ public class GPUdb extends GPUdbBase {
      *                 once.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#HIGH_WATERMARK
-     *                 HIGH_WATERMARK}: Triggers asynchronous eviction once a
-     *                 tiers resource usage exceeds this percentage down to the
-     *                 low watermark.
+     *                 HIGH_WATERMARK}: Threshold of usage of this tier's
+     *                 resource that, once exceeded, will trigger
+     *                 watermark-based eviction from this tier.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTierRequest.Options#LOW_WATERMARK
-     *                 LOW_WATERMARK}: Percentage resource usage to evict down
-     *                 to once the high watermark has been hit.
+     *                 LOW_WATERMARK}: Threshold of resource usage that, once
+     *                 fallen below after crossing the {@code high_watermark},
+     *                 will cease watermark-based eviction from this tier.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -3584,6 +3397,20 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Clears statistics (cardinality, mean value, etc.) for a column in a
+     * specified table.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ClearStatisticsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public ClearStatisticsResponse clearStatistics(ClearStatisticsRequest request) throws GPUdbException {
         ClearStatisticsResponse actualResponse_ = new ClearStatisticsResponse();
         submitRequest("/clear/statistics", request, actualResponse_, false);
@@ -3592,6 +3419,24 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Clears statistics (cardinality, mean value, etc.) for a column in a
+     * specified table.
+     * 
+     * @param tableName  Name of a table. Must be an existing table.
+     * @param columnName  Name of the column in {@code tableName} for which to
+     *                    clear statistics. The column must be from an existing
+     *                    table. An empty string clears statistics for all
+     *                    columns in the table.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ClearStatisticsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public ClearStatisticsResponse clearStatistics(String tableName, String columnName, Map<String, String> options) throws GPUdbException {
         ClearStatisticsRequest actualRequest_ = new ClearStatisticsRequest(tableName, columnName, options);
         ClearStatisticsResponse actualResponse_ = new ClearStatisticsResponse();
@@ -3767,6 +3612,19 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Collect statistics for a column(s) in a specified table.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CollectStatisticsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public CollectStatisticsResponse collectStatistics(CollectStatisticsRequest request) throws GPUdbException {
         CollectStatisticsResponse actualResponse_ = new CollectStatisticsResponse();
         submitRequest("/collect/statistics", request, actualResponse_, false);
@@ -3775,6 +3633,22 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Collect statistics for a column(s) in a specified table.
+     * 
+     * @param tableName  Name of a table. Must be an existing table.
+     * @param columnNames  List of one or more column names in {@code
+     *                     tableName} for which to collect statistics
+     *                     (cardinality, mean value, etc.).
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CollectStatisticsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public CollectStatisticsResponse collectStatistics(String tableName, List<String> columnNames, Map<String, String> options) throws GPUdbException {
         CollectStatisticsRequest actualRequest_ = new CollectStatisticsRequest(tableName, columnNames, options);
         CollectStatisticsResponse actualResponse_ = new CollectStatisticsResponse();
@@ -3836,8 +3710,10 @@ public class GPUdb extends GPUdbBase {
      *               target="_top">identifiers</a>; identifiers are grouped as
      *               <a
      *               href="../../../../graph_solver/network_graph_solver.html#id-combos"
-     *               target="_top">combinations</a>. Example format:
-     *               'table.column AS NODE_ID'
+     *               target="_top">combinations</a>. Identifiers can be used
+     *               with existing column names, e.g., 'table.column AS
+     *               NODE_ID', or expressions, e.g., 'ST_MAKEPOINT(column1,
+     *               column2) AS NODE_WKTPOINT'.
      * @param edges  Edges represent the required fundamental topological unit
      *               of a graph that typically connect nodes. Edges must be
      *               specified using <a
@@ -3845,8 +3721,10 @@ public class GPUdb extends GPUdbBase {
      *               target="_top">identifiers</a>; identifiers are grouped as
      *               <a
      *               href="../../../../graph_solver/network_graph_solver.html#id-combos"
-     *               target="_top">combinations</a>. Example format:
-     *               'table.column AS EDGE_WKTLINE'
+     *               target="_top">combinations</a>. Identifiers can be used
+     *               with existing column names, e.g., 'table.column AS
+     *               EDGE_ID', or expressions, e.g., 'SUBSTR(column, 1, 6) AS
+     *               EDGE_NODE1_NAME'.
      * @param weights  Weights represent a method of informing the graph solver
      *                 of the cost of including a given edge in a solution.
      *                 Weights must be specified using <a
@@ -3854,8 +3732,10 @@ public class GPUdb extends GPUdbBase {
      *                 target="_top">identifiers</a>; identifiers are grouped
      *                 as <a
      *                 href="../../../../graph_solver/network_graph_solver.html#id-combos"
-     *                 target="_top">combinations</a>. Example format:
-     *                 'table.column AS WEIGHTS_EDGE_ID'
+     *                 target="_top">combinations</a>. Identifiers can be used
+     *                 with existing column names, e.g., 'table.column AS
+     *                 WEIGHTS_EDGE_ID', or expressions, e.g., 'ST_LENGTH(wkt)
+     *                 AS WEIGHTS_VALUESPECIFIED'.
      * @param restrictions  Restrictions represent a method of informing the
      *                      graph solver which edges and/or nodes should be
      *                      ignored for the solution. Restrictions must be
@@ -3864,8 +3744,11 @@ public class GPUdb extends GPUdbBase {
      *                      target="_top">identifiers</a>; identifiers are
      *                      grouped as <a
      *                      href="../../../../graph_solver/network_graph_solver.html#id-combos"
-     *                      target="_top">combinations</a>. Example format:
-     *                      'table.column AS RESTRICTIONS_EDGE_ID'
+     *                      target="_top">combinations</a>. Identifiers can be
+     *                      used with existing column names, e.g.,
+     *                      'table.column AS RESTRICTIONS_EDGE_ID', or
+     *                      expressions, e.g., 'column/2 AS
+     *                      RESTRICTIONS_VALUECOMPARED'.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -4753,8 +4636,8 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
-     *                 TRUE}.
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this projection is part of
@@ -4803,18 +4686,20 @@ public class GPUdb extends GPUdbBase {
      * @param name  Name of the group to be created. Must contain only letters,
      *              digits, and underscores, and cannot begin with a digit.
      *              Must not match existing resource group name.
-     * @param tierAttributes  Optional map containing group limits for
-     *                        tier-specific attributes such as memory.
+     * @param tierAttributes  Optional map containing tier names and their
+     *                        respective attribute group limits.  The only
+     *                        valid attribute limit that can be set is
+     *                        max_memory (in bytes) for the VRAM & RAM tiers.
+     *                        For instance, to set max VRAM capacity to 1GB and
+     *                        max RAM capacity to 10GB, use:
+     *                        {'VRAM':{'max_memory':'1000000000'},
+     *                        'RAM':{'max_memory':'10000000000'}}
      *                        <ul>
      *                                <li> {@link
      *                        com.gpudb.protocol.CreateResourceGroupRequest.TierAttributes#MAX_MEMORY
      *                        MAX_MEMORY}: Maximum amount of memory usable in
      *                        the given tier at one time for this group.
      *                        </ul>
-     * @param tierStrategy  Optional array that defines the default tiering
-     *                      strategy for this group. Each element pair defines
-     *                      an existing tier and its preferred priority. e.g.
-     *                      ['RAM 50',VRAM 30']
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -4839,8 +4724,8 @@ public class GPUdb extends GPUdbBase {
      * @throws GPUdbException  if an error occurs during the operation.
      * 
      */
-    public CreateResourceGroupResponse createResourceGroup(String name, Map<String, Map<String, String>> tierAttributes, List<String> tierStrategy, Map<String, String> options) throws GPUdbException {
-        CreateResourceGroupRequest actualRequest_ = new CreateResourceGroupRequest(name, tierAttributes, tierStrategy, options);
+    public CreateResourceGroupResponse createResourceGroup(String name, Map<String, Map<String, String>> tierAttributes, Map<String, String> options) throws GPUdbException {
+        CreateResourceGroupRequest actualRequest_ = new CreateResourceGroupRequest(name, tierAttributes, options);
         CreateResourceGroupResponse actualResponse_ = new CreateResourceGroupResponse();
         submitRequest("/create/resourcegroup", actualRequest_, actualResponse_, false);
         return actualResponse_;
@@ -4914,9 +4799,11 @@ public class GPUdb extends GPUdbBase {
      * target="_top">replicated</a> distribution scheme,
      * have <a href="../../../../concepts/tables.html#foreign-keys"
      * target="_top">foreign keys</a> to other
-     * tables assigned, or be assigned a
+     * tables assigned, be assigned a
      * <a href="../../../../concepts/tables.html#partitioning"
-     * target="_top">partitioning</a> scheme.
+     * target="_top">partitioning</a> scheme, or have a
+     * <a href="../../../../rm/concepts.html#tier-strategies"
+     * target="_top">tier strategy</a> assigned.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -4956,9 +4843,11 @@ public class GPUdb extends GPUdbBase {
      * target="_top">replicated</a> distribution scheme,
      * have <a href="../../../../concepts/tables.html#foreign-keys"
      * target="_top">foreign keys</a> to other
-     * tables assigned, or be assigned a
+     * tables assigned, be assigned a
      * <a href="../../../../concepts/tables.html#partitioning"
-     * target="_top">partitioning</a> scheme.
+     * target="_top">partitioning</a> scheme, or have a
+     * <a href="../../../../rm/concepts.html#tier-strategies"
+     * target="_top">tier strategy</a> assigned.
      * 
      * @param tableName  Name of the table to be created. Error for requests
      *                   with existing table of the same name and type id may
@@ -5065,31 +4954,31 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
      *                 FOREIGN_SHARD_KEY}: Foreign shard key of the format
      *                 'source_column references shard_by_column from
-     *                 target_table(primary_key_column)'
+     *                 target_table(primary_key_column)'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_TYPE
      *                 PARTITION_TYPE}: <a
      *                 href="../../../../concepts/tables.html#partitioning"
-     *                 target="_top">Partitioning</a> scheme to use
+     *                 target="_top">Partitioning</a> scheme to use.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#RANGE
      *                 RANGE}: Use <a
      *                 href="../../../../concepts/tables.html#partitioning-by-range"
-     *                 target="_top">range partitioning</a>
+     *                 target="_top">range partitioning</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#INTERVAL
      *                 INTERVAL}: Use <a
      *                 href="../../../../concepts/tables.html#partitioning-by-interval"
-     *                 target="_top">interval partitioning</a>
+     *                 target="_top">interval partitioning</a>.
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
      *                 PARTITION_KEYS}: Comma-separated list of partition keys,
      *                 which are the columns or column expressions by which
      *                 records will be assigned to partitions defined by {@code
-     *                 partition_definitions}
+     *                 partition_definitions}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_DEFINITIONS
      *                 PARTITION_DEFINITIONS}: Comma-separated list of
@@ -5130,7 +5019,14 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#STRATEGY_DEFINITION
-     *                 STRATEGY_DEFINITION}
+     *                 STRATEGY_DEFINITION}: The <a
+     *                 href="../../../../rm/concepts.html#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns. See <a
+     *                 href="../../../../rm/concepts.html#tier-strategies"
+     *                 target="_top">tier strategy usage</a> for format and <a
+     *                 href="../../../../rm/usage.html#tier-strategies"
+     *                 target="_top">tier strategy examples</a> for examples.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -5681,10 +5577,10 @@ public class GPUdb extends GPUdbBase {
      *                    href="../../../../concepts/dictionary_encoding.html"
      *                    target="_top">dictionary encoded</a>. It can only be
      *                    used in conjunction with restricted string (charN),
-     *                    int, or long columns. Dictionary encoding is best for
-     *                    columns where the cardinality (the number of unique
-     *                    values) is expected to be low. This property can save
-     *                    a large amount of memory.
+     *                    int, long or date columns. Dictionary encoding is
+     *                    best for columns where the cardinality (the number of
+     *                    unique values) is expected to be low. This property
+     *                    can save a large amount of memory.
      *                    </ul>
      * @param options  Optional parameters.
      * 
@@ -6281,7 +6177,7 @@ public class GPUdb extends GPUdbBase {
     /**
      * Deletes a resource group.
      * 
-     * @param name  Name of the group to be deleted.
+     * @param name  Name of the resource group to be deleted.
      * @param options  Optional parameters.
      * 
      * @return Response object containing the results of the operation.
@@ -10946,8 +10842,9 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Shows various statistics for storage/memory tiers and resource groups.
-     * Statistics are provided on a per rank basis.
+     * Requests various statistics for storage/memory tiers and resource
+     * groups.
+     * Returns statistics on a per-rank basis.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -10968,8 +10865,9 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Shows various statistics for storage/memory tiers and resource groups.
-     * Statistics are provided on a per rank basis.
+     * Requests various statistics for storage/memory tiers and resource
+     * groups.
+     * Returns statistics on a per-rank basis.
      * 
      * @param options  Optional parameters.
      * 
@@ -10990,7 +10888,8 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Shows resource group properties.
+     * Requests resource group properties.
+     * Returns detailed information about the requested resource groups.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -11011,7 +10910,8 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Shows resource group properties.
+     * Requests resource group properties.
+     * Returns detailed information about the requested resource groups.
      * 
      * @param names  List of names of groups to be shown. A single entry with
      *               an empty string returns all groups.
@@ -11019,8 +10919,8 @@ public class GPUdb extends GPUdbBase {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_DEFAULT_VALUES
-     *                 SHOW_DEFAULT_VALUES}: If true include values of fields
-     *                 that are based on the default resource group.
+     *                 SHOW_DEFAULT_VALUES}: If {@code true} include values of
+     *                 fields that are based on the default resource group.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -11035,7 +10935,7 @@ public class GPUdb extends GPUdbBase {
      *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_DEFAULT_GROUP
-     *                 SHOW_DEFAULT_GROUP}: If true include the default
+     *                 SHOW_DEFAULT_GROUP}: If {@code true} include the default
      *                 resource group in the response.
      *                 Supported values:
      *                 <ul>
@@ -11116,6 +11016,19 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Retrieves the collected column statistics for the specified table.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowStatisticsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public ShowStatisticsResponse showStatistics(ShowStatisticsRequest request) throws GPUdbException {
         ShowStatisticsResponse actualResponse_ = new ShowStatisticsResponse();
         submitRequest("/show/statistics", request, actualResponse_, false);
@@ -11124,6 +11037,20 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    /**
+     * Retrieves the collected column statistics for the specified table.
+     * 
+     * @param tableNames  Tables whose metadata will be fetched. All provided
+     *                    tables must exist, or an error is returned.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowStatisticsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
     public ShowStatisticsResponse showStatistics(List<String> tableNames, Map<String, String> options) throws GPUdbException {
         ShowStatisticsRequest actualRequest_ = new ShowStatisticsRequest(tableNames, options);
         ShowStatisticsResponse actualResponse_ = new ShowStatisticsResponse();
@@ -11698,15 +11625,33 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param graphName  Name of the graph resource to solve.
      * @param weightsOnEdges  Additional weights to apply to the edges of an
-     *                        existing graph. Example format: 'table.column AS
-     *                        WEIGHTS_EDGE_ID'. Any provided weights will be
-     *                        added (in the case of 'WEIGHTS_VALUESPECIFIED')
-     *                        to or multiplied with (in the case of
-     *                        'WEIGHTS_FACTORSPECIFIED') the existing
-     *                        weight(s).
+     *                        existing graph. Weights must be specified using
+     *                        <a
+     *                        href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                        target="_top">identifiers</a>; identifiers are
+     *                        grouped as <a
+     *                        href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                        target="_top">combinations</a>. Identifiers can
+     *                        be used with existing column names, e.g.,
+     *                        'table.column AS WEIGHTS_EDGE_ID', or
+     *                        expressions, e.g., 'ST_LENGTH(wkt) AS
+     *                        WEIGHTS_VALUESPECIFIED'. Any provided weights
+     *                        will be added (in the case of
+     *                        'WEIGHTS_VALUESPECIFIED') to or multiplied with
+     *                        (in the case of 'WEIGHTS_FACTORSPECIFIED') the
+     *                        existing weight(s).
      * @param restrictions  Additional restrictions to apply to the nodes/edges
-     *                      of an existing graph. Example format: 'table.column
-     *                      AS RESTRICTIONS_NODE_ID'. If {@code
+     *                      of an existing graph. Restrictions must be
+     *                      specified using <a
+     *                      href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      target="_top">identifiers</a>; identifiers are
+     *                      grouped as <a
+     *                      href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      target="_top">combinations</a>. Identifiers can be
+     *                      used with existing column names, e.g.,
+     *                      'table.column AS RESTRICTIONS_EDGE_ID', or
+     *                      expressions, e.g., 'column/2 AS
+     *                      RESTRICTIONS_VALUECOMPARED'. If {@code
      *                      remove_previous_restrictions} is set to {@code
      *                      true}, any provided restrictions will replace the
      *                      existing restrictions. If {@code
@@ -12104,6 +12049,23 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_PARTITION
+     *                 UPDATE_PARTITION}: Force qualifying records to be
+     *                 deleted and reinserted so their partition membership
+     *                 will be reevaluated.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
      *                 USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to {@code
      *                 true}, all new values in {@code newValuesMaps} are
@@ -12225,6 +12187,23 @@ public class GPUdb extends GPUdbBase {
      *                 behavior when the updated primary key value already
      *                 exists as described in {@link
      *                 GPUdb#insertRecords(TypeObjectMap, String, List, Map)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_PARTITION
+     *                 UPDATE_PARTITION}: Force qualifying records to be
+     *                 deleted and reinserted so their partition membership
+     *                 will be reevaluated.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

@@ -5,9 +5,7 @@
  */
 package com.gpudb.protocol;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -28,7 +26,6 @@ public class CreateResourceGroupRequest implements IndexedRecord {
             .fields()
                 .name("name").type().stringType().noDefault()
                 .name("tierAttributes").type().map().values().map().values().stringType().noDefault()
-                .name("tierStrategy").type().array().items().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -46,8 +43,13 @@ public class CreateResourceGroupRequest implements IndexedRecord {
 
 
     /**
-     * Optional map containing group limits for tier-specific attributes such
-     * as memory.
+     * Optional map containing tier names and their respective attribute group
+     * limits.  The only valid attribute limit that can be set is max_memory
+     * (in bytes) for the VRAM & RAM tiers.
+     * <p>
+     * For instance, to set max VRAM capacity to 1GB and max RAM capacity to
+     * 10GB, use:  {'VRAM':{'max_memory':'1000000000'},
+     * 'RAM':{'max_memory':'10000000000'}}
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.CreateResourceGroupRequest.TierAttributes#MAX_MEMORY
@@ -108,7 +110,6 @@ public class CreateResourceGroupRequest implements IndexedRecord {
 
     private String name;
     private Map<String, Map<String, String>> tierAttributes;
-    private List<String> tierStrategy;
     private Map<String, String> options;
 
 
@@ -118,7 +119,6 @@ public class CreateResourceGroupRequest implements IndexedRecord {
     public CreateResourceGroupRequest() {
         name = "";
         tierAttributes = new LinkedHashMap<>();
-        tierStrategy = new ArrayList<>();
         options = new LinkedHashMap<>();
     }
 
@@ -129,18 +129,20 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      * @param name  Name of the group to be created. Must contain only letters,
      *              digits, and underscores, and cannot begin with a digit.
      *              Must not match existing resource group name.
-     * @param tierAttributes  Optional map containing group limits for
-     *                        tier-specific attributes such as memory.
+     * @param tierAttributes  Optional map containing tier names and their
+     *                        respective attribute group limits.  The only
+     *                        valid attribute limit that can be set is
+     *                        max_memory (in bytes) for the VRAM & RAM tiers.
+     *                        For instance, to set max VRAM capacity to 1GB and
+     *                        max RAM capacity to 10GB, use:
+     *                        {'VRAM':{'max_memory':'1000000000'},
+     *                        'RAM':{'max_memory':'10000000000'}}
      *                        <ul>
      *                                <li> {@link
      *                        com.gpudb.protocol.CreateResourceGroupRequest.TierAttributes#MAX_MEMORY
      *                        MAX_MEMORY}: Maximum amount of memory usable in
      *                        the given tier at one time for this group.
      *                        </ul>
-     * @param tierStrategy  Optional array that defines the default tiering
-     *                      strategy for this group. Each element pair defines
-     *                      an existing tier and its preferred priority. e.g.
-     *                      ['RAM 50',VRAM 30']
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -159,10 +161,9 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      *                 </ul>
      * 
      */
-    public CreateResourceGroupRequest(String name, Map<String, Map<String, String>> tierAttributes, List<String> tierStrategy, Map<String, String> options) {
+    public CreateResourceGroupRequest(String name, Map<String, Map<String, String>> tierAttributes, Map<String, String> options) {
         this.name = (name == null) ? "" : name;
         this.tierAttributes = (tierAttributes == null) ? new LinkedHashMap<String, Map<String, String>>() : tierAttributes;
-        this.tierStrategy = (tierStrategy == null) ? new ArrayList<String>() : tierStrategy;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
@@ -193,8 +194,12 @@ public class CreateResourceGroupRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional map containing group limits for tier-specific
-     *         attributes such as memory.
+     * @return Optional map containing tier names and their respective
+     *         attribute group limits.  The only valid attribute limit that can
+     *         be set is max_memory (in bytes) for the VRAM & RAM tiers.
+     *         For instance, to set max VRAM capacity to 1GB and max RAM
+     *         capacity to 10GB, use:  {'VRAM':{'max_memory':'1000000000'},
+     *         'RAM':{'max_memory':'10000000000'}}
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateResourceGroupRequest.TierAttributes#MAX_MEMORY
@@ -209,8 +214,14 @@ public class CreateResourceGroupRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tierAttributes  Optional map containing group limits for
-     *                        tier-specific attributes such as memory.
+     * @param tierAttributes  Optional map containing tier names and their
+     *                        respective attribute group limits.  The only
+     *                        valid attribute limit that can be set is
+     *                        max_memory (in bytes) for the VRAM & RAM tiers.
+     *                        For instance, to set max VRAM capacity to 1GB and
+     *                        max RAM capacity to 10GB, use:
+     *                        {'VRAM':{'max_memory':'1000000000'},
+     *                        'RAM':{'max_memory':'10000000000'}}
      *                        <ul>
      *                                <li> {@link
      *                        com.gpudb.protocol.CreateResourceGroupRequest.TierAttributes#MAX_MEMORY
@@ -223,32 +234,6 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      */
     public CreateResourceGroupRequest setTierAttributes(Map<String, Map<String, String>> tierAttributes) {
         this.tierAttributes = (tierAttributes == null) ? new LinkedHashMap<String, Map<String, String>>() : tierAttributes;
-        return this;
-    }
-
-    /**
-     * 
-     * @return Optional array that defines the default tiering strategy for
-     *         this group. Each element pair defines an existing tier and its
-     *         preferred priority. e.g. ['RAM 50',VRAM 30']
-     * 
-     */
-    public List<String> getTierStrategy() {
-        return tierStrategy;
-    }
-
-    /**
-     * 
-     * @param tierStrategy  Optional array that defines the default tiering
-     *                      strategy for this group. Each element pair defines
-     *                      an existing tier and its preferred priority. e.g.
-     *                      ['RAM 50',VRAM 30']
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public CreateResourceGroupRequest setTierStrategy(List<String> tierStrategy) {
-        this.tierStrategy = (tierStrategy == null) ? new ArrayList<String>() : tierStrategy;
         return this;
     }
 
@@ -335,9 +320,6 @@ public class CreateResourceGroupRequest implements IndexedRecord {
                 return this.tierAttributes;
 
             case 2:
-                return this.tierStrategy;
-
-            case 3:
                 return this.options;
 
             default:
@@ -368,10 +350,6 @@ public class CreateResourceGroupRequest implements IndexedRecord {
                 break;
 
             case 2:
-                this.tierStrategy = (List<String>)value;
-                break;
-
-            case 3:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -394,7 +372,6 @@ public class CreateResourceGroupRequest implements IndexedRecord {
 
         return ( this.name.equals( that.name )
                  && this.tierAttributes.equals( that.tierAttributes )
-                 && this.tierStrategy.equals( that.tierStrategy )
                  && this.options.equals( that.options ) );
     }
 
@@ -411,10 +388,6 @@ public class CreateResourceGroupRequest implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.tierAttributes ) );
         builder.append( ", " );
-        builder.append( gd.toString( "tierStrategy" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.tierStrategy ) );
-        builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.options ) );
@@ -428,7 +401,6 @@ public class CreateResourceGroupRequest implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.name.hashCode();
         hashCode = (31 * hashCode) + this.tierAttributes.hashCode();
-        hashCode = (31 * hashCode) + this.tierStrategy.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

@@ -19,7 +19,8 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#showResourceGroups(ShowResourceGroupsRequest)}.
  * <p>
- * Shows resource group properties.
+ * Requests resource group properties.
+ * Returns detailed information about the requested resource groups.
  */
 public class ShowResourceGroupsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -48,8 +49,8 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_DEFAULT_VALUES
-     * SHOW_DEFAULT_VALUES}: If true include values of fields that are based on
-     * the default resource group.
+     * SHOW_DEFAULT_VALUES}: If {@code true} include values of fields that are
+     * based on the default resource group.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -61,8 +62,8 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
      * com.gpudb.protocol.ShowResourceGroupsRequest.Options#TRUE TRUE}.
      *         <li> {@link
      * com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_DEFAULT_GROUP
-     * SHOW_DEFAULT_GROUP}: If true include the default resource group in the
-     * response.
+     * SHOW_DEFAULT_GROUP}: If {@code true} include the default resource group
+     * in the response.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -78,8 +79,8 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * If true include values of fields that are based on the default
-         * resource group.
+         * If {@code true} include values of fields that are based on the
+         * default resource group.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -95,7 +96,7 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * If true include the default resource group in the response.
+         * If {@code true} include the default resource group in the response.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -133,8 +134,8 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_DEFAULT_VALUES
-     *                 SHOW_DEFAULT_VALUES}: If true include values of fields
-     *                 that are based on the default resource group.
+     *                 SHOW_DEFAULT_VALUES}: If {@code true} include values of
+     *                 fields that are based on the default resource group.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -149,7 +150,7 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
      *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_DEFAULT_GROUP
-     *                 SHOW_DEFAULT_GROUP}: If true include the default
+     *                 SHOW_DEFAULT_GROUP}: If {@code true} include the default
      *                 resource group in the response.
      *                 Supported values:
      *                 <ul>
@@ -200,8 +201,8 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_DEFAULT_VALUES
-     *         SHOW_DEFAULT_VALUES}: If true include values of fields that are
-     *         based on the default resource group.
+     *         SHOW_DEFAULT_VALUES}: If {@code true} include values of fields
+     *         that are based on the default resource group.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -214,8 +215,8 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
      *         com.gpudb.protocol.ShowResourceGroupsRequest.Options#TRUE TRUE}.
      *                 <li> {@link
      *         com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_DEFAULT_GROUP
-     *         SHOW_DEFAULT_GROUP}: If true include the default resource group
-     *         in the response.
+     *         SHOW_DEFAULT_GROUP}: If {@code true} include the default
+     *         resource group in the response.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -239,8 +240,8 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_DEFAULT_VALUES
-     *                 SHOW_DEFAULT_VALUES}: If true include values of fields
-     *                 that are based on the default resource group.
+     *                 SHOW_DEFAULT_VALUES}: If {@code true} include values of
+     *                 fields that are based on the default resource group.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -255,7 +256,7 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
      *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_DEFAULT_GROUP
-     *                 SHOW_DEFAULT_GROUP}: If true include the default
+     *                 SHOW_DEFAULT_GROUP}: If {@code true} include the default
      *                 resource group in the response.
      *                 Supported values:
      *                 <ul>

@@ -235,7 +235,7 @@ public class ShowTableResponse implements IndexedRecord {
 
         /**
          * Comma-separated list of partition definitions, whose format depends
-         * on the {partition_type}@{key of output additional_info}.  See <a
+         * on the partition_type.  See <a
          * href="../../../../../concepts/tables.html#partitioning"
          * target="_top">partitioning</a> documentation for details.
          */

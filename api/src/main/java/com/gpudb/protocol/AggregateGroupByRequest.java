@@ -299,6 +299,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE CUBE}: This
      * option is used to specify the multidimensional aggregates.
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#THROW_ERROR_ON_REFRESH
+     * THROW_ERROR_ON_REFRESH}: <DEVELOPER>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
+     * SLEEP_ON_REFRESH}: <DEVELOPER>
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -526,6 +532,16 @@ public class AggregateGroupByRequest implements IndexedRecord {
          */
         public static final String CUBE = "cube";
 
+        /**
+         * <DEVELOPER>
+         */
+        public static final String THROW_ERROR_ON_REFRESH = "throw_error_on_refresh";
+
+        /**
+         * <DEVELOPER>
+         */
+        public static final String SLEEP_ON_REFRESH = "sleep_on_refresh";
+
         private Options() {  }
     }
 
@@ -749,6 +765,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE
      *                 CUBE}: This option is used to specify the
      *                 multidimensional aggregates.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#THROW_ERROR_ON_REFRESH
+     *                 THROW_ERROR_ON_REFRESH}: <DEVELOPER>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
+     *                 SLEEP_ON_REFRESH}: <DEVELOPER>
      *                 </ul>
      * 
      */
@@ -978,6 +1000,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE
      *                 CUBE}: This option is used to specify the
      *                 multidimensional aggregates.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#THROW_ERROR_ON_REFRESH
+     *                 THROW_ERROR_ON_REFRESH}: <DEVELOPER>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
+     *                 SLEEP_ON_REFRESH}: <DEVELOPER>
      *                 </ul>
      * 
      */
@@ -1302,6 +1330,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE CUBE}:
      *         This option is used to specify the multidimensional aggregates.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#THROW_ERROR_ON_REFRESH
+     *         THROW_ERROR_ON_REFRESH}: <DEVELOPER>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
+     *         SLEEP_ON_REFRESH}: <DEVELOPER>
      *         </ul>
      * 
      */
@@ -1498,6 +1532,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE
      *                 CUBE}: This option is used to specify the
      *                 multidimensional aggregates.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#THROW_ERROR_ON_REFRESH
+     *                 THROW_ERROR_ON_REFRESH}: <DEVELOPER>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
+     *                 SLEEP_ON_REFRESH}: <DEVELOPER>
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

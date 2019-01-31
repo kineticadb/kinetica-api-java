@@ -69,6 +69,346 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Whether this cluster operation is currently in progress or not.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.InProgress#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.InProgress#FALSE
+     * FALSE}
+     * </ul>
+     * A set of string constants for the parameter {@code inProgress}.
+     */
+    public static final class InProgress {
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private InProgress() {  }
+    }
+
+
+    /**
+     * Overall success status of the operation.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.OverallStatus#OK
+     * OK}: The operation was successful, or, if still in progress, the
+     * operation is successful so far.
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.OverallStatus#ERROR
+     * ERROR}: An error occurred executing the operation.
+     * </ul>
+     * A set of string constants for the parameter {@code overallStatus}.
+     */
+    public static final class OverallStatus {
+
+        /**
+         * The operation was successful, or, if still in progress, the
+         * operation is successful so far.
+         */
+        public static final String OK = "OK";
+
+        /**
+         * An error occurred executing the operation.
+         */
+        public static final String ERROR = "ERROR";
+
+        private OverallStatus() {  }
+    }
+
+
+    /**
+     * Whether a user stopped this operation at any point while in progress.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.UserStopped#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.UserStopped#FALSE
+     * FALSE}
+     * </ul>
+     * A set of string constants for the parameter {@code userStopped}.
+     */
+    public static final class UserStopped {
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private UserStopped() {  }
+    }
+
+
+    /**
+     * Whether this operation was a dry run.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.DryRun#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.DryRun#FALSE
+     * FALSE}
+     * </ul>
+     * A set of string constants for the parameter {@code dryRun}.
+     */
+    public static final class DryRun {
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private DryRun() {  }
+    }
+
+
+    /**
+     * Whether adding ranks is (or was) part of this operation.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanks#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanks#FALSE
+     * FALSE}
+     * </ul>
+     * A set of string constants for the parameter {@code addRanks}.
+     */
+    public static final class AddRanks {
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private AddRanks() {  }
+    }
+
+
+    /**
+     * If this was a rank-adding operation, the add-specific status of the
+     * operation.
+     * Valid values are:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanksStatus#NOT_STARTED
+     * NOT_STARTED}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanksStatus#IN_PROGRESS
+     * IN_PROGRESS}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanksStatus#INTERRUPTED
+     * INTERRUPTED}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanksStatus#COMPLETED_OK
+     * COMPLETED_OK}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanksStatus#ERROR
+     * ERROR}
+     * </ul>
+     * A set of string constants for the parameter {@code addRanksStatus}.
+     */
+    public static final class AddRanksStatus {
+        public static final String NOT_STARTED = "NOT_STARTED";
+        public static final String IN_PROGRESS = "IN_PROGRESS";
+        public static final String INTERRUPTED = "INTERRUPTED";
+        public static final String COMPLETED_OK = "COMPLETED_OK";
+        public static final String ERROR = "ERROR";
+
+        private AddRanksStatus() {  }
+    }
+
+
+    /**
+     * Whether removing ranks is (or was) part of this operation.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanks#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanks#FALSE
+     * FALSE}
+     * </ul>
+     * A set of string constants for the parameter {@code removeRanks}.
+     */
+    public static final class RemoveRanks {
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private RemoveRanks() {  }
+    }
+
+
+    /**
+     * If this was a rank-removing operation, the removal-specific status of
+     * the operation.
+     * Valid values are:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanksStatus#NOT_STARTED
+     * NOT_STARTED}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanksStatus#IN_PROGRESS
+     * IN_PROGRESS}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanksStatus#INTERRUPTED
+     * INTERRUPTED}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanksStatus#COMPLETED_OK
+     * COMPLETED_OK}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanksStatus#ERROR
+     * ERROR}
+     * </ul>
+     * A set of string constants for the parameter {@code removeRanksStatus}.
+     */
+    public static final class RemoveRanksStatus {
+        public static final String NOT_STARTED = "NOT_STARTED";
+        public static final String IN_PROGRESS = "IN_PROGRESS";
+        public static final String INTERRUPTED = "INTERRUPTED";
+        public static final String COMPLETED_OK = "COMPLETED_OK";
+        public static final String ERROR = "ERROR";
+
+        private RemoveRanksStatus() {  }
+    }
+
+
+    /**
+     * Whether data and/or shard rebalancing is (or was) part of this
+     * operation.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.Rebalance#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.Rebalance#FALSE
+     * FALSE}
+     * </ul>
+     * A set of string constants for the parameter {@code rebalance}.
+     */
+    public static final class Rebalance {
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private Rebalance() {  }
+    }
+
+
+    /**
+     * Whether rebalancing of unsharded data is (or was) part of this
+     * operation.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedData#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedData#FALSE
+     * FALSE}
+     * </ul>
+     * A set of string constants for the parameter {@code
+     * rebalanceUnshardedData}.
+     */
+    public static final class RebalanceUnshardedData {
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private RebalanceUnshardedData() {  }
+    }
+
+
+    /**
+     * If this was an operation that included rebalancing unsharded data, the
+     * rebalancing-specific status of the operation.
+     * Valid values are:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedDataStatus#NOT_STARTED
+     * NOT_STARTED}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedDataStatus#IN_PROGRESS
+     * IN_PROGRESS}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedDataStatus#INTERRUPTED
+     * INTERRUPTED}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedDataStatus#COMPLETED_OK
+     * COMPLETED_OK}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedDataStatus#ERROR
+     * ERROR}
+     * </ul>
+     * A set of string constants for the parameter {@code
+     * rebalanceUnshardedDataStatus}.
+     */
+    public static final class RebalanceUnshardedDataStatus {
+        public static final String NOT_STARTED = "NOT_STARTED";
+        public static final String IN_PROGRESS = "IN_PROGRESS";
+        public static final String INTERRUPTED = "INTERRUPTED";
+        public static final String COMPLETED_OK = "COMPLETED_OK";
+        public static final String ERROR = "ERROR";
+
+        private RebalanceUnshardedDataStatus() {  }
+    }
+
+
+    /**
+     * Whether rebalancing of sharded data is (or was) part of this operation.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedData#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedData#FALSE
+     * FALSE}
+     * </ul>
+     * A set of string constants for the parameter {@code
+     * rebalanceShardedData}.
+     */
+    public static final class RebalanceShardedData {
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private RebalanceShardedData() {  }
+    }
+
+
+    /**
+     * If this was an operation that included rebalancing sharded data, the
+     * rebalancing-specific status of the operation.
+     * Valid values are:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedDataStatus#NOT_STARTED
+     * NOT_STARTED}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedDataStatus#IN_PROGRESS
+     * IN_PROGRESS}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedDataStatus#INTERRUPTED
+     * INTERRUPTED}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedDataStatus#COMPLETED_OK
+     * COMPLETED_OK}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedDataStatus#ERROR
+     * ERROR}
+     * </ul>
+     * A set of string constants for the parameter {@code
+     * rebalanceShardedDataStatus}.
+     */
+    public static final class RebalanceShardedDataStatus {
+        public static final String NOT_STARTED = "NOT_STARTED";
+        public static final String IN_PROGRESS = "IN_PROGRESS";
+        public static final String INTERRUPTED = "INTERRUPTED";
+        public static final String COMPLETED_OK = "COMPLETED_OK";
+        public static final String ERROR = "ERROR";
+
+        private RebalanceShardedDataStatus() {  }
+    }
+
     private int historyIndex;
     private int historySize;
     private boolean inProgress;
@@ -111,9 +451,9 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates how recent the cluster operation is, relative to all
-     *         prior cluster operations.  Zero is most recent, one is second
-     *         most recent, etc.
+     * @return The index of this cluster operation in the
+     *         reverse-chronologically sorted list of operations, where 0 is
+     *         the most recent operation.
      * 
      */
     public int getHistoryIndex() {
@@ -122,9 +462,9 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param historyIndex  Indicates how recent the cluster operation is,
-     *                      relative to all prior cluster operations.  Zero is
-     *                      most recent, one is second most recent, etc.
+     * @param historyIndex  The index of this cluster operation in the
+     *                      reverse-chronologically sorted list of operations,
+     *                      where 0 is the most recent operation.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -136,7 +476,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Number of cluster operations executed to date
+     * @return Number of cluster operations executed to date.
      * 
      */
     public int getHistorySize() {
@@ -145,7 +485,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param historySize  Number of cluster operations executed to date
+     * @param historySize  Number of cluster operations executed to date.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -157,7 +497,16 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Whether this cluster operation is currently in progress or not
+     * @return Whether this cluster operation is currently in progress or not.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.InProgress#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.InProgress#FALSE
+     *         FALSE}
+     *         </ul>
      * 
      */
     public boolean getInProgress() {
@@ -167,7 +516,16 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
     /**
      * 
      * @param inProgress  Whether this cluster operation is currently in
-     *                    progress or not
+     *                    progress or not.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.AdminShowClusterOperationsResponse.InProgress#TRUE
+     *                    TRUE}
+     *                            <li> {@link
+     *                    com.gpudb.protocol.AdminShowClusterOperationsResponse.InProgress#FALSE
+     *                    FALSE}
+     *                    </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -179,7 +537,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The start time of the cluster operation
+     * @return The start time of the cluster operation.
      * 
      */
     public String getStartTime() {
@@ -188,7 +546,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param startTime  The start time of the cluster operation
+     * @param startTime  The start time of the cluster operation.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -200,7 +558,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The end time of the cluster operation, if completed
+     * @return The end time of the cluster operation, if completed.
      * 
      */
     public String getEndTime() {
@@ -209,7 +567,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param endTime  The end time of the cluster operation, if completed
+     * @param endTime  The end time of the cluster operation, if completed.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -242,7 +600,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The schema for the original request
+     * @return The schema for the original request.
      * 
      */
     public String getEndpointSchema() {
@@ -251,7 +609,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param endpointSchema  The schema for the original request
+     * @param endpointSchema  The schema for the original request.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -263,8 +621,17 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return OK or ERROR.  If the operation is still in progress, OK means it
-     *         has been successful so far.
+     * @return Overall success status of the operation.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.OverallStatus#OK
+     *         OK}: The operation was successful, or, if still in progress, the
+     *         operation is successful so far.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.OverallStatus#ERROR
+     *         ERROR}: An error occurred executing the operation.
+     *         </ul>
      * 
      */
     public String getOverallStatus() {
@@ -273,8 +640,17 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param overallStatus  OK or ERROR.  If the operation is still in
-     *                       progress, OK means it has been successful so far.
+     * @param overallStatus  Overall success status of the operation.
+     *                       Supported values:
+     *                       <ul>
+     *                               <li> {@link
+     *                       com.gpudb.protocol.AdminShowClusterOperationsResponse.OverallStatus#OK
+     *                       OK}: The operation was successful, or, if still in
+     *                       progress, the operation is successful so far.
+     *                               <li> {@link
+     *                       com.gpudb.protocol.AdminShowClusterOperationsResponse.OverallStatus#ERROR
+     *                       ERROR}: An error occurred executing the operation.
+     *                       </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -286,8 +662,17 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates if a user stopped this operation at any point while in
+     * @return Whether a user stopped this operation at any point while in
      *         progress.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.UserStopped#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.UserStopped#FALSE
+     *         FALSE}
+     *         </ul>
      * 
      */
     public boolean getUserStopped() {
@@ -296,8 +681,17 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param userStopped  Indicates if a user stopped this operation at any
-     *                     point while in progress.
+     * @param userStopped  Whether a user stopped this operation at any point
+     *                     while in progress.
+     *                     Supported values:
+     *                     <ul>
+     *                             <li> {@link
+     *                     com.gpudb.protocol.AdminShowClusterOperationsResponse.UserStopped#TRUE
+     *                     TRUE}
+     *                             <li> {@link
+     *                     com.gpudb.protocol.AdminShowClusterOperationsResponse.UserStopped#FALSE
+     *                     FALSE}
+     *                     </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -330,7 +724,16 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates if this operation was a dry run.
+     * @return Whether this operation was a dry run.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.DryRun#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.DryRun#FALSE
+     *         FALSE}
+     *         </ul>
      * 
      */
     public boolean getDryRun() {
@@ -339,7 +742,16 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param dryRun  Indicates if this operation was a dry run.
+     * @param dryRun  Whether this operation was a dry run.
+     *                Supported values:
+     *                <ul>
+     *                        <li> {@link
+     *                com.gpudb.protocol.AdminShowClusterOperationsResponse.DryRun#TRUE
+     *                TRUE}
+     *                        <li> {@link
+     *                com.gpudb.protocol.AdminShowClusterOperationsResponse.DryRun#FALSE
+     *                FALSE}
+     *                </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -351,7 +763,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Updates, and error messages if any.
+     * @return Updates and error messages if any.
      * 
      */
     public List<String> getMessages() {
@@ -360,7 +772,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param messages  Updates, and error messages if any.
+     * @param messages  Updates and error messages if any.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -372,8 +784,16 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates that adding ranks is being performed or was performed
-     *         as part of this operation.
+     * @return Whether adding ranks is (or was) part of this operation.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanks#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanks#FALSE
+     *         FALSE}
+     *         </ul>
      * 
      */
     public boolean getAddRanks() {
@@ -382,8 +802,17 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param addRanks  Indicates that adding ranks is being performed or was
-     *                  performed as part of this operation.
+     * @param addRanks  Whether adding ranks is (or was) part of this
+     *                  operation.
+     *                  Supported values:
+     *                  <ul>
+     *                          <li> {@link
+     *                  com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanks#TRUE
+     *                  TRUE}
+     *                          <li> {@link
+     *                  com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanks#FALSE
+     *                  FALSE}
+     *                  </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -395,8 +824,26 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Will be one of NOT_STARTED, IN PROGRESS, INTERRUPTED,
-     *         COMPLETED_OK, or ERROR
+     * @return If this was a rank-adding operation, the add-specific status of
+     *         the operation.
+     *         Valid values are:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanksStatus#NOT_STARTED
+     *         NOT_STARTED}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanksStatus#IN_PROGRESS
+     *         IN_PROGRESS}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanksStatus#INTERRUPTED
+     *         INTERRUPTED}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanksStatus#COMPLETED_OK
+     *         COMPLETED_OK}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanksStatus#ERROR
+     *         ERROR}
+     *         </ul>
      * 
      */
     public String getAddRanksStatus() {
@@ -405,8 +852,26 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param addRanksStatus  Will be one of NOT_STARTED, IN PROGRESS,
-     *                        INTERRUPTED, COMPLETED_OK, or ERROR
+     * @param addRanksStatus  If this was a rank-adding operation, the
+     *                        add-specific status of the operation.
+     *                        Valid values are:
+     *                        <ul>
+     *                                <li> {@link
+     *                        com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanksStatus#NOT_STARTED
+     *                        NOT_STARTED}
+     *                                <li> {@link
+     *                        com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanksStatus#IN_PROGRESS
+     *                        IN_PROGRESS}
+     *                                <li> {@link
+     *                        com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanksStatus#INTERRUPTED
+     *                        INTERRUPTED}
+     *                                <li> {@link
+     *                        com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanksStatus#COMPLETED_OK
+     *                        COMPLETED_OK}
+     *                                <li> {@link
+     *                        com.gpudb.protocol.AdminShowClusterOperationsResponse.AddRanksStatus#ERROR
+     *                        ERROR}
+     *                        </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -465,7 +930,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Current percent complete of the add ranks operation
+     * @return Current percent complete of the add ranks operation.
      * 
      */
     public int getAddRanksPercentComplete() {
@@ -475,7 +940,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
     /**
      * 
      * @param addRanksPercentComplete  Current percent complete of the add
-     *                                 ranks operation
+     *                                 ranks operation.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -487,8 +952,16 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates that removing ranks is being performed or was
-     *         performed as part of this operation.
+     * @return Whether removing ranks is (or was) part of this operation.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanks#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanks#FALSE
+     *         FALSE}
+     *         </ul>
      * 
      */
     public boolean getRemoveRanks() {
@@ -497,8 +970,17 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param removeRanks  Indicates that removing ranks is being performed or
-     *                     was performed as part of this operation.
+     * @param removeRanks  Whether removing ranks is (or was) part of this
+     *                     operation.
+     *                     Supported values:
+     *                     <ul>
+     *                             <li> {@link
+     *                     com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanks#TRUE
+     *                     TRUE}
+     *                             <li> {@link
+     *                     com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanks#FALSE
+     *                     FALSE}
+     *                     </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -510,8 +992,26 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Will be one of NOT_STARTED, IN PROGRESS, INTERRUPTED,
-     *         COMPLETED_OK, or ERROR
+     * @return If this was a rank-removing operation, the removal-specific
+     *         status of the operation.
+     *         Valid values are:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanksStatus#NOT_STARTED
+     *         NOT_STARTED}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanksStatus#IN_PROGRESS
+     *         IN_PROGRESS}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanksStatus#INTERRUPTED
+     *         INTERRUPTED}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanksStatus#COMPLETED_OK
+     *         COMPLETED_OK}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanksStatus#ERROR
+     *         ERROR}
+     *         </ul>
      * 
      */
     public String getRemoveRanksStatus() {
@@ -520,8 +1020,26 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param removeRanksStatus  Will be one of NOT_STARTED, IN PROGRESS,
-     *                           INTERRUPTED, COMPLETED_OK, or ERROR
+     * @param removeRanksStatus  If this was a rank-removing operation, the
+     *                           removal-specific status of the operation.
+     *                           Valid values are:
+     *                           <ul>
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanksStatus#NOT_STARTED
+     *                           NOT_STARTED}
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanksStatus#IN_PROGRESS
+     *                           IN_PROGRESS}
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanksStatus#INTERRUPTED
+     *                           INTERRUPTED}
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanksStatus#COMPLETED_OK
+     *                           COMPLETED_OK}
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.AdminShowClusterOperationsResponse.RemoveRanksStatus#ERROR
+     *                           ERROR}
+     *                           </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -556,7 +1074,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Current percent complete of the remove ranks operation
+     * @return Current percent complete of the remove ranks operation.
      * 
      */
     public int getRemoveRanksPercentComplete() {
@@ -566,7 +1084,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
     /**
      * 
      * @param removeRanksPercentComplete  Current percent complete of the
-     *                                    remove ranks operation
+     *                                    remove ranks operation.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -578,8 +1096,17 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates whether data and/or shard rebalancing is part of this
-     *         operation
+     * @return Whether data and/or shard rebalancing is (or was) part of this
+     *         operation.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.Rebalance#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.Rebalance#FALSE
+     *         FALSE}
+     *         </ul>
      * 
      */
     public boolean getRebalance() {
@@ -588,8 +1115,17 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param rebalance  Indicates whether data and/or shard rebalancing is
-     *                   part of this operation
+     * @param rebalance  Whether data and/or shard rebalancing is (or was) part
+     *                   of this operation.
+     *                   Supported values:
+     *                   <ul>
+     *                           <li> {@link
+     *                   com.gpudb.protocol.AdminShowClusterOperationsResponse.Rebalance#TRUE
+     *                   TRUE}
+     *                           <li> {@link
+     *                   com.gpudb.protocol.AdminShowClusterOperationsResponse.Rebalance#FALSE
+     *                   FALSE}
+     *                   </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -601,8 +1137,17 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates that a rebalance operation included rebalancing of
-     *         unsharded data.
+     * @return Whether rebalancing of unsharded data is (or was) part of this
+     *         operation.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedData#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedData#FALSE
+     *         FALSE}
+     *         </ul>
      * 
      */
     public boolean getRebalanceUnshardedData() {
@@ -611,8 +1156,17 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param rebalanceUnshardedData  Indicates that a rebalance operation
-     *                                included rebalancing of unsharded data.
+     * @param rebalanceUnshardedData  Whether rebalancing of unsharded data is
+     *                                (or was) part of this operation.
+     *                                Supported values:
+     *                                <ul>
+     *                                        <li> {@link
+     *                                com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedData#TRUE
+     *                                TRUE}
+     *                                        <li> {@link
+     *                                com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedData#FALSE
+     *                                FALSE}
+     *                                </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -624,8 +1178,26 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Will be one of NOT_STARTED, IN PROGRESS, INTERRUPTED,
-     *         COMPLETED_OK, or ERROR
+     * @return If this was an operation that included rebalancing unsharded
+     *         data, the rebalancing-specific status of the operation.
+     *         Valid values are:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedDataStatus#NOT_STARTED
+     *         NOT_STARTED}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedDataStatus#IN_PROGRESS
+     *         IN_PROGRESS}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedDataStatus#INTERRUPTED
+     *         INTERRUPTED}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedDataStatus#COMPLETED_OK
+     *         COMPLETED_OK}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedDataStatus#ERROR
+     *         ERROR}
+     *         </ul>
      * 
      */
     public String getRebalanceUnshardedDataStatus() {
@@ -634,9 +1206,28 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param rebalanceUnshardedDataStatus  Will be one of NOT_STARTED, IN
-     *                                      PROGRESS, INTERRUPTED,
-     *                                      COMPLETED_OK, or ERROR
+     * @param rebalanceUnshardedDataStatus  If this was an operation that
+     *                                      included rebalancing unsharded
+     *                                      data, the rebalancing-specific
+     *                                      status of the operation.
+     *                                      Valid values are:
+     *                                      <ul>
+     *                                              <li> {@link
+     *                                      com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedDataStatus#NOT_STARTED
+     *                                      NOT_STARTED}
+     *                                              <li> {@link
+     *                                      com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedDataStatus#IN_PROGRESS
+     *                                      IN_PROGRESS}
+     *                                              <li> {@link
+     *                                      com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedDataStatus#INTERRUPTED
+     *                                      INTERRUPTED}
+     *                                              <li> {@link
+     *                                      com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedDataStatus#COMPLETED_OK
+     *                                      COMPLETED_OK}
+     *                                              <li> {@link
+     *                                      com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceUnshardedDataStatus#ERROR
+     *                                      ERROR}
+     *                                      </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -649,7 +1240,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
     /**
      * 
      * @return Percentage of unsharded tables that completed rebalancing, out
-     *         of all unsharded tables to rebalance
+     *         of all unsharded tables to rebalance.
      * 
      */
     public int getUnshardedRebalancePercentComplete() {
@@ -661,7 +1252,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
      * @param unshardedRebalancePercentComplete  Percentage of unsharded tables
      *                                           that completed rebalancing,
      *                                           out of all unsharded tables to
-     *                                           rebalance
+     *                                           rebalance.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -673,8 +1264,17 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates that a rebalance operation included rebalancing of
-     *         sharded data.
+     * @return Whether rebalancing of sharded data is (or was) part of this
+     *         operation.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedData#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedData#FALSE
+     *         FALSE}
+     *         </ul>
      * 
      */
     public boolean getRebalanceShardedData() {
@@ -683,8 +1283,17 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param rebalanceShardedData  Indicates that a rebalance operation
-     *                              included rebalancing of sharded data.
+     * @param rebalanceShardedData  Whether rebalancing of sharded data is (or
+     *                              was) part of this operation.
+     *                              Supported values:
+     *                              <ul>
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedData#TRUE
+     *                              TRUE}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedData#FALSE
+     *                              FALSE}
+     *                              </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -696,8 +1305,9 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return shard array version that was/is being rebalanced to. Each change
-     *         to the shard array results in the version number incrementing
+     * @return Version of the shard array that is (or was) being rebalanced to.
+     *         Each change to the shard array results in the version number
+     *         incrementing.
      * 
      */
     public long getShardArrayVersion() {
@@ -706,9 +1316,10 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param shardArrayVersion  shard array version that was/is being
-     *                           rebalanced to. Each change to the shard array
-     *                           results in the version number incrementing
+     * @param shardArrayVersion  Version of the shard array that is (or was)
+     *                           being rebalanced to. Each change to the shard
+     *                           array results in the version number
+     *                           incrementing.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -720,8 +1331,26 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Will be one of NOT_STARTED, IN PROGRESS, INTERRUPTED,
-     *         COMPLETED_OK, or ERROR
+     * @return If this was an operation that included rebalancing sharded data,
+     *         the rebalancing-specific status of the operation.
+     *         Valid values are:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedDataStatus#NOT_STARTED
+     *         NOT_STARTED}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedDataStatus#IN_PROGRESS
+     *         IN_PROGRESS}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedDataStatus#INTERRUPTED
+     *         INTERRUPTED}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedDataStatus#COMPLETED_OK
+     *         COMPLETED_OK}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedDataStatus#ERROR
+     *         ERROR}
+     *         </ul>
      * 
      */
     public String getRebalanceShardedDataStatus() {
@@ -730,9 +1359,28 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @param rebalanceShardedDataStatus  Will be one of NOT_STARTED, IN
-     *                                    PROGRESS, INTERRUPTED, COMPLETED_OK,
-     *                                    or ERROR
+     * @param rebalanceShardedDataStatus  If this was an operation that
+     *                                    included rebalancing sharded data,
+     *                                    the rebalancing-specific status of
+     *                                    the operation.
+     *                                    Valid values are:
+     *                                    <ul>
+     *                                            <li> {@link
+     *                                    com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedDataStatus#NOT_STARTED
+     *                                    NOT_STARTED}
+     *                                            <li> {@link
+     *                                    com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedDataStatus#IN_PROGRESS
+     *                                    IN_PROGRESS}
+     *                                            <li> {@link
+     *                                    com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedDataStatus#INTERRUPTED
+     *                                    INTERRUPTED}
+     *                                            <li> {@link
+     *                                    com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedDataStatus#COMPLETED_OK
+     *                                    COMPLETED_OK}
+     *                                            <li> {@link
+     *                                    com.gpudb.protocol.AdminShowClusterOperationsResponse.RebalanceShardedDataStatus#ERROR
+     *                                    ERROR}
+     *                                    </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -744,7 +1392,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Number of shards that will change as part of rebalance
+     * @return Number of shards that will change as part of rebalance.
      * 
      */
     public int getNumShardsChanging() {
@@ -754,7 +1402,7 @@ public class AdminShowClusterOperationsResponse implements IndexedRecord {
     /**
      * 
      * @param numShardsChanging  Number of shards that will change as part of
-     *                           rebalance
+     *                           rebalance.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

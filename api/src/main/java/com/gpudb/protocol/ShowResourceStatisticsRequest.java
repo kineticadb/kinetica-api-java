@@ -17,8 +17,8 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#showResourceStatistics(ShowResourceStatisticsRequest)}.
  * <p>
- * Shows various statistics for storage/memory tiers and resource groups.
- * Statistics are provided on a per rank basis.
+ * Requests various statistics for storage/memory tiers and resource groups.
+ * Returns statistics on a per-rank basis.
  */
 public class ShowResourceStatisticsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

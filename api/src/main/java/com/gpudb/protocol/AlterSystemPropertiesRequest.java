@@ -140,11 +140,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * MAX_GET_RECORDS_SIZE}: The maximum number of records the database will
      * serve for a given data retrieval call
      *         <li> {@link
-     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MEMORY_ALLOCATION_LIMIT_MB
-     * MEMORY_ALLOCATION_LIMIT_MB}: Set the memory allocation limit for all
-     * rank processes in megabytes, 0 means no limit. Overrides any individual
-     * rank memory allocation limits.
-     *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
      * ENABLE_AUDIT}: Enable or disable auditing.
      *         <li> {@link
@@ -157,16 +152,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_DATA
      * AUDIT_DATA}: Enable or disable auditing of request data.
      *         <li> {@link
-     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_JOB_MANAGER
-     * ENABLE_JOB_MANAGER}: Enable JobManager to enforce processing of requests
-     * in the order received.
-     *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_ENABLED
      * CHUNK_CACHE_ENABLED}: Enable chunk level query caching. Flushes the
      * chunk cache when value is false
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
      * CHUNK_CACHE_SIZE}: Size of the chunk cache in bytes.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
+     * SYNCHRONOUS_COMPRESSION}: compress vector on set_compression (instead of
+     * waiting for background thread)
      * </ul>
      * A set of string constants for the parameter {@code propertyUpdatesMap}.
      */
@@ -289,13 +284,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String MAX_GET_RECORDS_SIZE = "max_get_records_size";
 
         /**
-         * Set the memory allocation limit for all rank processes in megabytes,
-         * 0 means no limit. Overrides any individual rank memory allocation
-         * limits.
-         */
-        public static final String MEMORY_ALLOCATION_LIMIT_MB = "memory_allocation_limit_mb";
-
-        /**
          * Enable or disable auditing.
          */
         public static final String ENABLE_AUDIT = "enable_audit";
@@ -316,12 +304,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String AUDIT_DATA = "audit_data";
 
         /**
-         * Enable JobManager to enforce processing of requests in the order
-         * received.
-         */
-        public static final String ENABLE_JOB_MANAGER = "enable_job_manager";
-
-        /**
          * Enable chunk level query caching. Flushes the chunk cache when value
          * is false
          */
@@ -331,6 +313,12 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * Size of the chunk cache in bytes.
          */
         public static final String CHUNK_CACHE_SIZE = "chunk_cache_size";
+
+        /**
+         * compress vector on set_compression (instead of waiting for
+         * background thread)
+         */
+        public static final String SYNCHRONOUS_COMPRESSION = "synchronous_compression";
 
         private PropertyUpdatesMap() {  }
     }
@@ -467,12 +455,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            records the database will serve for a given
      *                            data retrieval call
      *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MEMORY_ALLOCATION_LIMIT_MB
-     *                            MEMORY_ALLOCATION_LIMIT_MB}: Set the memory
-     *                            allocation limit for all rank processes in
-     *                            megabytes, 0 means no limit. Overrides any
-     *                            individual rank memory allocation limits.
-     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
      *                            ENABLE_AUDIT}: Enable or disable auditing.
      *                                    <li> {@link
@@ -488,11 +470,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            AUDIT_DATA}: Enable or disable auditing of
      *                            request data.
      *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_JOB_MANAGER
-     *                            ENABLE_JOB_MANAGER}: Enable JobManager to
-     *                            enforce processing of requests in the order
-     *                            received.
-     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_ENABLED
      *                            CHUNK_CACHE_ENABLED}: Enable chunk level
      *                            query caching. Flushes the chunk cache when
@@ -501,6 +478,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
      *                            CHUNK_CACHE_SIZE}: Size of the chunk cache in
      *                            bytes.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
+     *                            SYNCHRONOUS_COMPRESSION}: compress vector on
+     *                            set_compression (instead of waiting for
+     *                            background thread)
      *                            </ul>
      * @param options  Optional parameters.
      * 
@@ -610,11 +592,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         MAX_GET_RECORDS_SIZE}: The maximum number of records the
      *         database will serve for a given data retrieval call
      *                 <li> {@link
-     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MEMORY_ALLOCATION_LIMIT_MB
-     *         MEMORY_ALLOCATION_LIMIT_MB}: Set the memory allocation limit for
-     *         all rank processes in megabytes, 0 means no limit. Overrides any
-     *         individual rank memory allocation limits.
-     *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
      *         ENABLE_AUDIT}: Enable or disable auditing.
      *                 <li> {@link
@@ -627,16 +604,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_DATA
      *         AUDIT_DATA}: Enable or disable auditing of request data.
      *                 <li> {@link
-     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_JOB_MANAGER
-     *         ENABLE_JOB_MANAGER}: Enable JobManager to enforce processing of
-     *         requests in the order received.
-     *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_ENABLED
      *         CHUNK_CACHE_ENABLED}: Enable chunk level query caching. Flushes
      *         the chunk cache when value is false
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
      *         CHUNK_CACHE_SIZE}: Size of the chunk cache in bytes.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
+     *         SYNCHRONOUS_COMPRESSION}: compress vector on set_compression
+     *         (instead of waiting for background thread)
      *         </ul>
      * 
      */
@@ -761,12 +738,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            records the database will serve for a given
      *                            data retrieval call
      *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MEMORY_ALLOCATION_LIMIT_MB
-     *                            MEMORY_ALLOCATION_LIMIT_MB}: Set the memory
-     *                            allocation limit for all rank processes in
-     *                            megabytes, 0 means no limit. Overrides any
-     *                            individual rank memory allocation limits.
-     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
      *                            ENABLE_AUDIT}: Enable or disable auditing.
      *                                    <li> {@link
@@ -782,11 +753,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            AUDIT_DATA}: Enable or disable auditing of
      *                            request data.
      *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_JOB_MANAGER
-     *                            ENABLE_JOB_MANAGER}: Enable JobManager to
-     *                            enforce processing of requests in the order
-     *                            received.
-     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_ENABLED
      *                            CHUNK_CACHE_ENABLED}: Enable chunk level
      *                            query caching. Flushes the chunk cache when
@@ -795,6 +761,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
      *                            CHUNK_CACHE_SIZE}: Size of the chunk cache in
      *                            bytes.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
+     *                            SYNCHRONOUS_COMPRESSION}: compress vector on
+     *                            set_compression (instead of waiting for
+     *                            background thread)
      *                            </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

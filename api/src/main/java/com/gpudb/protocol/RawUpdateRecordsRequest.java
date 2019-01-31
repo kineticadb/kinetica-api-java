@@ -130,6 +130,19 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
      *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_PARTITION
+     * UPDATE_PARTITION}: Force qualifying records to be deleted and reinserted
+     * so their partition membership will be reevaluated.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
      * USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to {@code true}, all new
      * values in {@code newValuesMaps} are considered as expression values.
@@ -198,6 +211,21 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
          * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
          */
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
+
+        /**
+         * Force qualifying records to be deleted and reinserted so their
+         * partition membership will be reevaluated.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
+         */
+        public static final String UPDATE_PARTITION = "update_partition";
 
         /**
          * When set to {@code true}, all new values in {@code newValuesMaps}
@@ -306,6 +334,23 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 behavior when the updated primary key value already
      *                 exists as described in {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_PARTITION
+     *                 UPDATE_PARTITION}: Force qualifying records to be
+     *                 deleted and reinserted so their partition membership
+     *                 will be reevaluated.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -434,6 +479,23 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 behavior when the updated primary key value already
      *                 exists as described in {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_PARTITION
+     *                 UPDATE_PARTITION}: Force qualifying records to be
+     *                 deleted and reinserted so their partition membership
+     *                 will be reevaluated.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -709,6 +771,19 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_PARTITION
+     *         UPDATE_PARTITION}: Force qualifying records to be deleted and
+     *         reinserted so their partition membership will be reevaluated.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
      *         USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to {@code true},
      *         all new values in {@code newValuesMaps} are considered as
@@ -777,6 +852,23 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 behavior when the updated primary key value already
      *                 exists as described in {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_PARTITION
+     *                 UPDATE_PARTITION}: Force qualifying records to be
+     *                 deleted and reinserted so their partition membership
+     *                 will be reevaluated.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

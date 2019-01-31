@@ -56,7 +56,7 @@ public class DeleteResourceGroupRequest implements IndexedRecord {
      * Constructs a DeleteResourceGroupRequest object with the specified
      * parameters.
      * 
-     * @param name  Name of the group to be deleted.
+     * @param name  Name of the resource group to be deleted.
      * @param options  Optional parameters.
      * 
      */
@@ -67,7 +67,7 @@ public class DeleteResourceGroupRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the group to be deleted.
+     * @return Name of the resource group to be deleted.
      * 
      */
     public String getName() {
@@ -76,7 +76,7 @@ public class DeleteResourceGroupRequest implements IndexedRecord {
 
     /**
      * 
-     * @param name  Name of the group to be deleted.
+     * @param name  Name of the resource group to be deleted.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -69,6 +69,33 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#CONCURRENT_SAFE
+     * CONCURRENT_SAFE}: When enabled, allows this endpoint to be run safely
+     * with other concurrent database operations. Other operations may be
+     * slower while this is running.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_RANK0
+     * VERIFY_RANK0}: When enabled, compares rank0 table meta-data against
+     * workers meta-data
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -101,6 +128,37 @@ public class AdminVerifyDbRequest implements IndexedRecord {
          * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
          */
         public static final String VERIFY_PERSIST = "verify_persist";
+
+        /**
+         * When enabled, allows this endpoint to be run safely with other
+         * concurrent database operations. Other operations may be slower while
+         * this is running.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE}.
+         */
+        public static final String CONCURRENT_SAFE = "concurrent_safe";
+
+        /**
+         * When enabled, compares rank0 table meta-data against workers
+         * meta-data
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
+         */
+        public static final String VERIFY_RANK0 = "verify_rank0";
 
         private Options() {  }
     }
@@ -150,6 +208,39 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#CONCURRENT_SAFE
+     *                 CONCURRENT_SAFE}: When enabled, allows this endpoint to
+     *                 be run safely with other concurrent database operations.
+     *                 Other operations may be slower while this is running.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_RANK0
+     *                 VERIFY_RANK0}: When enabled, compares rank0 table
+     *                 meta-data against workers meta-data
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      */
@@ -176,6 +267,33 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_PERSIST
      *         VERIFY_PERSIST}:
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#CONCURRENT_SAFE
+     *         CONCURRENT_SAFE}: When enabled, allows this endpoint to be run
+     *         safely with other concurrent database operations. Other
+     *         operations may be slower while this is running.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_RANK0
+     *         VERIFY_RANK0}: When enabled, compares rank0 table meta-data
+     *         against workers meta-data
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -214,6 +332,39 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_PERSIST
      *                 VERIFY_PERSIST}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#CONCURRENT_SAFE
+     *                 CONCURRENT_SAFE}: When enabled, allows this endpoint to
+     *                 be run safely with other concurrent database operations.
+     *                 Other operations may be slower while this is running.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_RANK0
+     *                 VERIFY_RANK0}: When enabled, compares rank0 table
+     *                 meta-data against workers meta-data
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

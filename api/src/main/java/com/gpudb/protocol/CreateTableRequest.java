@@ -36,9 +36,11 @@ import org.apache.avro.generic.IndexedRecord;
  * target="_top">replicated</a> distribution scheme,
  * have <a href="../../../../../concepts/tables.html#foreign-keys"
  * target="_top">foreign keys</a> to other
- * tables assigned, or be assigned a
+ * tables assigned, be assigned a
  * <a href="../../../../../concepts/tables.html#partitioning"
- * target="_top">partitioning</a> scheme.
+ * target="_top">partitioning</a> scheme, or have a
+ * <a href="../../../../../rm/concepts.html#tier-strategies" target="_top">tier
+ * strategy</a> assigned.
  */
 public class CreateTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -148,28 +150,28 @@ public class CreateTableRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
      * FOREIGN_SHARD_KEY}: Foreign shard key of the format 'source_column
-     * references shard_by_column from target_table(primary_key_column)'
+     * references shard_by_column from target_table(primary_key_column)'.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#PARTITION_TYPE
      * PARTITION_TYPE}: <a
      * href="../../../../../concepts/tables.html#partitioning"
-     * target="_top">Partitioning</a> scheme to use
+     * target="_top">Partitioning</a> scheme to use.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#RANGE
      * RANGE}: Use <a
      * href="../../../../../concepts/tables.html#partitioning-by-range"
-     * target="_top">range partitioning</a>
+     * target="_top">range partitioning</a>.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#INTERVAL INTERVAL}: Use <a
      * href="../../../../../concepts/tables.html#partitioning-by-interval"
-     * target="_top">interval partitioning</a>
+     * target="_top">interval partitioning</a>.
      * </ul>
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
      * PARTITION_KEYS}: Comma-separated list of partition keys, which are the
      * columns or column expressions by which records will be assigned to
-     * partitions defined by {@code partition_definitions}
+     * partitions defined by {@code partition_definitions}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#PARTITION_DEFINITIONS
      * PARTITION_DEFINITIONS}: Comma-separated list of partition definitions,
@@ -201,7 +203,13 @@ public class CreateTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#STRATEGY_DEFINITION
-     * STRATEGY_DEFINITION}
+     * STRATEGY_DEFINITION}: The <a
+     * href="../../../../../rm/concepts.html#tier-strategies"
+     * target="_top">tier strategy</a> for the table and its columns. See <a
+     * href="../../../../../rm/concepts.html#tier-strategies"
+     * target="_top">tier strategy usage</a> for format and <a
+     * href="../../../../../rm/usage.html#tier-strategies" target="_top">tier
+     * strategy examples</a> for examples.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -300,24 +308,24 @@ public class CreateTableRequest implements IndexedRecord {
 
         /**
          * Foreign shard key of the format 'source_column references
-         * shard_by_column from target_table(primary_key_column)'
+         * shard_by_column from target_table(primary_key_column)'.
          */
         public static final String FOREIGN_SHARD_KEY = "foreign_shard_key";
 
         /**
          * <a href="../../../../../concepts/tables.html#partitioning"
-         * target="_top">Partitioning</a> scheme to use
+         * target="_top">Partitioning</a> scheme to use.
          * Supported values:
          * <ul>
          *         <li> {@link
          * com.gpudb.protocol.CreateTableRequest.Options#RANGE RANGE}: Use <a
          * href="../../../../../concepts/tables.html#partitioning-by-range"
-         * target="_top">range partitioning</a>
+         * target="_top">range partitioning</a>.
          *         <li> {@link
          * com.gpudb.protocol.CreateTableRequest.Options#INTERVAL INTERVAL}:
          * Use <a
          * href="../../../../../concepts/tables.html#partitioning-by-interval"
-         * target="_top">interval partitioning</a>
+         * target="_top">interval partitioning</a>.
          * </ul>
          */
         public static final String PARTITION_TYPE = "partition_type";
@@ -325,21 +333,21 @@ public class CreateTableRequest implements IndexedRecord {
         /**
          * Use <a
          * href="../../../../../concepts/tables.html#partitioning-by-range"
-         * target="_top">range partitioning</a>
+         * target="_top">range partitioning</a>.
          */
         public static final String RANGE = "RANGE";
 
         /**
          * Use <a
          * href="../../../../../concepts/tables.html#partitioning-by-interval"
-         * target="_top">interval partitioning</a>
+         * target="_top">interval partitioning</a>.
          */
         public static final String INTERVAL = "INTERVAL";
 
         /**
          * Comma-separated list of partition keys, which are the columns or
          * column expressions by which records will be assigned to partitions
-         * defined by {@code partition_definitions}
+         * defined by {@code partition_definitions}.
          */
         public static final String PARTITION_KEYS = "partition_keys";
 
@@ -380,6 +388,15 @@ public class CreateTableRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
          */
         public static final String IS_RESULT_TABLE = "is_result_table";
+
+        /**
+         * The <a href="../../../../../rm/concepts.html#tier-strategies"
+         * target="_top">tier strategy</a> for the table and its columns. See
+         * <a href="../../../../../rm/concepts.html#tier-strategies"
+         * target="_top">tier strategy usage</a> for format and <a
+         * href="../../../../../rm/usage.html#tier-strategies"
+         * target="_top">tier strategy examples</a> for examples.
+         */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
 
         private Options() {  }
@@ -509,31 +526,31 @@ public class CreateTableRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
      *                 FOREIGN_SHARD_KEY}: Foreign shard key of the format
      *                 'source_column references shard_by_column from
-     *                 target_table(primary_key_column)'
+     *                 target_table(primary_key_column)'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_TYPE
      *                 PARTITION_TYPE}: <a
      *                 href="../../../../../concepts/tables.html#partitioning"
-     *                 target="_top">Partitioning</a> scheme to use
+     *                 target="_top">Partitioning</a> scheme to use.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#RANGE
      *                 RANGE}: Use <a
      *                 href="../../../../../concepts/tables.html#partitioning-by-range"
-     *                 target="_top">range partitioning</a>
+     *                 target="_top">range partitioning</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#INTERVAL
      *                 INTERVAL}: Use <a
      *                 href="../../../../../concepts/tables.html#partitioning-by-interval"
-     *                 target="_top">interval partitioning</a>
+     *                 target="_top">interval partitioning</a>.
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
      *                 PARTITION_KEYS}: Comma-separated list of partition keys,
      *                 which are the columns or column expressions by which
      *                 records will be assigned to partitions defined by {@code
-     *                 partition_definitions}
+     *                 partition_definitions}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_DEFINITIONS
      *                 PARTITION_DEFINITIONS}: Comma-separated list of
@@ -574,7 +591,14 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#STRATEGY_DEFINITION
-     *                 STRATEGY_DEFINITION}
+     *                 STRATEGY_DEFINITION}: The <a
+     *                 href="../../../../../rm/concepts.html#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns. See <a
+     *                 href="../../../../../rm/concepts.html#tier-strategies"
+     *                 target="_top">tier strategy usage</a> for format and <a
+     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 target="_top">tier strategy examples</a> for examples.
      *                 </ul>
      * 
      */
@@ -728,30 +752,30 @@ public class CreateTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
      *         FOREIGN_SHARD_KEY}: Foreign shard key of the format
      *         'source_column references shard_by_column from
-     *         target_table(primary_key_column)'
+     *         target_table(primary_key_column)'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#PARTITION_TYPE
      *         PARTITION_TYPE}: <a
      *         href="../../../../../concepts/tables.html#partitioning"
-     *         target="_top">Partitioning</a> scheme to use
+     *         target="_top">Partitioning</a> scheme to use.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#RANGE RANGE}: Use
      *         <a
      *         href="../../../../../concepts/tables.html#partitioning-by-range"
-     *         target="_top">range partitioning</a>
+     *         target="_top">range partitioning</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#INTERVAL
      *         INTERVAL}: Use <a
      *         href="../../../../../concepts/tables.html#partitioning-by-interval"
-     *         target="_top">interval partitioning</a>
+     *         target="_top">interval partitioning</a>.
      *         </ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
      *         PARTITION_KEYS}: Comma-separated list of partition keys, which
      *         are the columns or column expressions by which records will be
-     *         assigned to partitions defined by {@code partition_definitions}
+     *         assigned to partitions defined by {@code partition_definitions}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#PARTITION_DEFINITIONS
      *         PARTITION_DEFINITIONS}: Comma-separated list of partition
@@ -787,7 +811,13 @@ public class CreateTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#STRATEGY_DEFINITION
-     *         STRATEGY_DEFINITION}
+     *         STRATEGY_DEFINITION}: The <a
+     *         href="../../../../../rm/concepts.html#tier-strategies"
+     *         target="_top">tier strategy</a> for the table and its columns.
+     *         See <a href="../../../../../rm/concepts.html#tier-strategies"
+     *         target="_top">tier strategy usage</a> for format and <a
+     *         href="../../../../../rm/usage.html#tier-strategies"
+     *         target="_top">tier strategy examples</a> for examples.
      *         </ul>
      * 
      */
@@ -895,31 +925,31 @@ public class CreateTableRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_SHARD_KEY
      *                 FOREIGN_SHARD_KEY}: Foreign shard key of the format
      *                 'source_column references shard_by_column from
-     *                 target_table(primary_key_column)'
+     *                 target_table(primary_key_column)'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_TYPE
      *                 PARTITION_TYPE}: <a
      *                 href="../../../../../concepts/tables.html#partitioning"
-     *                 target="_top">Partitioning</a> scheme to use
+     *                 target="_top">Partitioning</a> scheme to use.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#RANGE
      *                 RANGE}: Use <a
      *                 href="../../../../../concepts/tables.html#partitioning-by-range"
-     *                 target="_top">range partitioning</a>
+     *                 target="_top">range partitioning</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#INTERVAL
      *                 INTERVAL}: Use <a
      *                 href="../../../../../concepts/tables.html#partitioning-by-interval"
-     *                 target="_top">interval partitioning</a>
+     *                 target="_top">interval partitioning</a>.
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
      *                 PARTITION_KEYS}: Comma-separated list of partition keys,
      *                 which are the columns or column expressions by which
      *                 records will be assigned to partitions defined by {@code
-     *                 partition_definitions}
+     *                 partition_definitions}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_DEFINITIONS
      *                 PARTITION_DEFINITIONS}: Comma-separated list of
@@ -960,7 +990,14 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#STRATEGY_DEFINITION
-     *                 STRATEGY_DEFINITION}
+     *                 STRATEGY_DEFINITION}: The <a
+     *                 href="../../../../../rm/concepts.html#tier-strategies"
+     *                 target="_top">tier strategy</a> for the table and its
+     *                 columns. See <a
+     *                 href="../../../../../rm/concepts.html#tier-strategies"
+     *                 target="_top">tier strategy usage</a> for format and <a
+     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 target="_top">tier strategy examples</a> for examples.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

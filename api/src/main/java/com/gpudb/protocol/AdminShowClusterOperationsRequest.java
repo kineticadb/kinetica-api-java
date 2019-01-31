@@ -17,13 +17,12 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#adminShowClusterOperations(AdminShowClusterOperationsRequest)}.
  * <p>
- * Shows detailed status of current or prior cluster operations.
+ * Requests the detailed status of the current operation (by default) or a
+ * prior cluster operation specified by {@code historyIndex}.
+ * Returns details on the requested cluster operation.
  * <p>
- * By default will retrieve the current or most resent cluster operation.  The
- * @{history_index} is used to specify which cluster operation to retrieve. A
- * value of zero will return the most recent, one will return the second most
- * recent, etc.  The response will also indicate how many cluster operations
- * are stored in the history.
+ * The response will also indicate how many cluster operations are stored in
+ * the history.
  */
 public class AdminShowClusterOperationsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -62,8 +61,8 @@ public class AdminShowClusterOperationsRequest implements IndexedRecord {
      * Constructs an AdminShowClusterOperationsRequest object with the
      * specified parameters.
      * 
-     * @param historyIndex  Indicates which cluster operation to retrieve.
-     *                      Zero is most recent.
+     * @param historyIndex  Indicates which cluster operation to retrieve.  Use
+     *                      0 for the most recent.
      * @param options  Optional parameters.
      * 
      */
@@ -74,8 +73,8 @@ public class AdminShowClusterOperationsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates which cluster operation to retrieve.  Zero is most
-     *         recent.
+     * @return Indicates which cluster operation to retrieve.  Use 0 for the
+     *         most recent.
      * 
      */
     public int getHistoryIndex() {
@@ -84,8 +83,8 @@ public class AdminShowClusterOperationsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param historyIndex  Indicates which cluster operation to retrieve.
-     *                      Zero is most recent.
+     * @param historyIndex  Indicates which cluster operation to retrieve.  Use
+     *                      0 for the most recent.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

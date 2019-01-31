@@ -7,7 +7,6 @@
 package com.gpudb.protocol;
 
 
-import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.apache.avro.Schema;
@@ -22,7 +21,7 @@ public class GetVectortileResponse implements IndexedRecord {
             .record("GetVectortileResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("encodedData").type().bytesType().noDefault()
+                .name("encodedData").type().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -32,19 +31,19 @@ public class GetVectortileResponse implements IndexedRecord {
     }
 
 
-    private ByteBuffer encodedData;
+    private String encodedData;
     private Map<String, String> info;
 
 
     public GetVectortileResponse() {
     }
 
-    public ByteBuffer getEncodedData() {
+    public String getEncodedData() {
         return encodedData;
     }
 
-    public GetVectortileResponse setEncodedData(ByteBuffer encodedData) {
-        this.encodedData = (encodedData == null) ? ByteBuffer.wrap( new byte[0] ) : encodedData;
+    public GetVectortileResponse setEncodedData(String encodedData) {
+        this.encodedData = (encodedData == null) ? "" : encodedData;
         return this;
     }
 
@@ -81,7 +80,7 @@ public class GetVectortileResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.encodedData = (ByteBuffer)value;
+                this.encodedData = (String)value;
                 break;
 
             case 1:

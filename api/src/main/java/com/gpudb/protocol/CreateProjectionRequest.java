@@ -179,7 +179,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
      * </ul>
      * The default value is {@link
-     * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}.
+     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID VIEW_ID}:
      * view this projection is part of
@@ -307,7 +307,7 @@ public class CreateProjectionRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
          * </ul>
          * The default value is {@link
-         * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}.
+         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
          */
         public static final String PRESERVE_DICT_ENCODING = "preserve_dict_encoding";
 
@@ -468,8 +468,8 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
-     *                 TRUE}.
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this projection is part of
@@ -663,7 +663,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link
-     *         com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}.
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
      *         VIEW_ID}: view this projection is part of
@@ -795,8 +795,8 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
-     *                 TRUE}.
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this projection is part of
