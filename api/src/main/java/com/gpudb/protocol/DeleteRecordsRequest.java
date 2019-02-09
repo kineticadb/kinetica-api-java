@@ -60,11 +60,14 @@ public class DeleteRecordsRequest implements IndexedRecord {
      * space of the {@code expressions}.
      *         <li> {@link
      * com.gpudb.protocol.DeleteRecordsRequest.Options#RECORD_ID RECORD_ID}: A
-     * record id identifying a single record, obtained at the time of {@link
+     * record ID identifying a single record, obtained at the time of {@link
      * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest) insertion of
      * the record} or by calling {@link
      * com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
-     * with the *return_record_ids* option.
+     * with the *return_record_ids* option. This option cannot be used to
+     * delete records from <a
+     * href="../../../../../concepts/tables.html#replication"
+     * target="_top">replicated</a> tables.
      *         <li> {@link
      * com.gpudb.protocol.DeleteRecordsRequest.Options#DELETE_ALL_RECORDS
      * DELETE_ALL_RECORDS}: If set to {@code true}, all records in the table
@@ -91,11 +94,14 @@ public class DeleteRecordsRequest implements IndexedRecord {
         public static final String GLOBAL_EXPRESSION = "global_expression";
 
         /**
-         * A record id identifying a single record, obtained at the time of
+         * A record ID identifying a single record, obtained at the time of
          * {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)
          * insertion of the record} or by calling {@link
          * com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
-         * with the *return_record_ids* option.
+         * with the *return_record_ids* option. This option cannot be used to
+         * delete records from <a
+         * href="../../../../../concepts/tables.html#replication"
+         * target="_top">replicated</a> tables.
          */
         public static final String RECORD_ID = "record_id";
 
@@ -153,12 +159,15 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *                 reduce the search space of the {@code expressions}.
      *                         <li> {@link
      *                 com.gpudb.protocol.DeleteRecordsRequest.Options#RECORD_ID
-     *                 RECORD_ID}: A record id identifying a single record,
+     *                 RECORD_ID}: A record ID identifying a single record,
      *                 obtained at the time of {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)
      *                 insertion of the record} or by calling {@link
      *                 com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
-     *                 with the *return_record_ids* option.
+     *                 with the *return_record_ids* option. This option cannot
+     *                 be used to delete records from <a
+     *                 href="../../../../../concepts/tables.html#replication"
+     *                 target="_top">replicated</a> tables.
      *                         <li> {@link
      *                 com.gpudb.protocol.DeleteRecordsRequest.Options#DELETE_ALL_RECORDS
      *                 DELETE_ALL_RECORDS}: If set to {@code true}, all records
@@ -250,12 +259,15 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *         search space of the {@code expressions}.
      *                 <li> {@link
      *         com.gpudb.protocol.DeleteRecordsRequest.Options#RECORD_ID
-     *         RECORD_ID}: A record id identifying a single record, obtained at
+     *         RECORD_ID}: A record ID identifying a single record, obtained at
      *         the time of {@link
      *         com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)
      *         insertion of the record} or by calling {@link
      *         com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
-     *         with the *return_record_ids* option.
+     *         with the *return_record_ids* option. This option cannot be used
+     *         to delete records from <a
+     *         href="../../../../../concepts/tables.html#replication"
+     *         target="_top">replicated</a> tables.
      *                 <li> {@link
      *         com.gpudb.protocol.DeleteRecordsRequest.Options#DELETE_ALL_RECORDS
      *         DELETE_ALL_RECORDS}: If set to {@code true}, all records in the
@@ -287,12 +299,15 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *                 reduce the search space of the {@code expressions}.
      *                         <li> {@link
      *                 com.gpudb.protocol.DeleteRecordsRequest.Options#RECORD_ID
-     *                 RECORD_ID}: A record id identifying a single record,
+     *                 RECORD_ID}: A record ID identifying a single record,
      *                 obtained at the time of {@link
      *                 com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)
      *                 insertion of the record} or by calling {@link
      *                 com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
-     *                 with the *return_record_ids* option.
+     *                 with the *return_record_ids* option. This option cannot
+     *                 be used to delete records from <a
+     *                 href="../../../../../concepts/tables.html#replication"
+     *                 target="_top">replicated</a> tables.
      *                         <li> {@link
      *                 com.gpudb.protocol.DeleteRecordsRequest.Options#DELETE_ALL_RECORDS
      *                 DELETE_ALL_RECORDS}: If set to {@code true}, all records

@@ -131,13 +131,6 @@ public class AlterTableRequest implements IndexedRecord {
      * target="_top">time-to-live</a> in minutes of the table, view, or
      * collection specified in {@code tableName}.
      *         <li> {@link
-     * com.gpudb.protocol.AlterTableRequest.Action#MEMORY_TTL MEMORY_TTL}: Sets
-     * the time-to-live in minutes for the individual chunks of the columns of
-     * the table, view, or collection specified in {@code tableName} to free
-     * their memory if unused longer than the given time. Specify an empty
-     * string to restore the global memory_ttl setting and a value of '-1' for
-     * an infinite timeout.
-     *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN ADD_COLUMN}: Adds
      * the column specified in {@code value} to the table specified in {@code
      * tableName}.  Use {@code column_type} and {@code column_properties} in
@@ -289,15 +282,6 @@ public class AlterTableRequest implements IndexedRecord {
          * collection specified in {@code tableName}.
          */
         public static final String TTL = "ttl";
-
-        /**
-         * Sets the time-to-live in minutes for the individual chunks of the
-         * columns of the table, view, or collection specified in {@code
-         * tableName} to free their memory if unused longer than the given
-         * time. Specify an empty string to restore the global memory_ttl
-         * setting and a value of '-1' for an infinite timeout.
-         */
-        public static final String MEMORY_TTL = "memory_ttl";
 
         /**
          * Adds the column specified in {@code value} to the table specified in
@@ -731,14 +715,6 @@ public class AlterTableRequest implements IndexedRecord {
      *                target="_top">time-to-live</a> in minutes of the table,
      *                view, or collection specified in {@code tableName}.
      *                        <li> {@link
-     *                com.gpudb.protocol.AlterTableRequest.Action#MEMORY_TTL
-     *                MEMORY_TTL}: Sets the time-to-live in minutes for the
-     *                individual chunks of the columns of the table, view, or
-     *                collection specified in {@code tableName} to free their
-     *                memory if unused longer than the given time. Specify an
-     *                empty string to restore the global memory_ttl setting and
-     *                a value of '-1' for an infinite timeout.
-     *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
      *                ADD_COLUMN}: Adds the column specified in {@code value}
      *                to the table specified in {@code tableName}.  Use {@code
@@ -1058,14 +1034,6 @@ public class AlterTableRequest implements IndexedRecord {
      *         target="_top">time-to-live</a> in minutes of the table, view, or
      *         collection specified in {@code tableName}.
      *                 <li> {@link
-     *         com.gpudb.protocol.AlterTableRequest.Action#MEMORY_TTL
-     *         MEMORY_TTL}: Sets the time-to-live in minutes for the individual
-     *         chunks of the columns of the table, view, or collection
-     *         specified in {@code tableName} to free their memory if unused
-     *         longer than the given time. Specify an empty string to restore
-     *         the global memory_ttl setting and a value of '-1' for an
-     *         infinite timeout.
-     *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
      *         ADD_COLUMN}: Adds the column specified in {@code value} to the
      *         table specified in {@code tableName}.  Use {@code column_type}
@@ -1225,14 +1193,6 @@ public class AlterTableRequest implements IndexedRecord {
      *                Sets the <a href="../../../../../concepts/ttl.html"
      *                target="_top">time-to-live</a> in minutes of the table,
      *                view, or collection specified in {@code tableName}.
-     *                        <li> {@link
-     *                com.gpudb.protocol.AlterTableRequest.Action#MEMORY_TTL
-     *                MEMORY_TTL}: Sets the time-to-live in minutes for the
-     *                individual chunks of the columns of the table, view, or
-     *                collection specified in {@code tableName} to free their
-     *                memory if unused longer than the given time. Specify an
-     *                empty string to restore the global memory_ttl setting and
-     *                a value of '-1' for an infinite timeout.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
      *                ADD_COLUMN}: Adds the column specified in {@code value}

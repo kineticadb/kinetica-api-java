@@ -309,60 +309,6 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Requests the detailed status of the current operation (by default) or a
-     * prior cluster operation specified by {@code historyIndex}.
-     * Returns details on the requested cluster operation.
-     * <p>
-     * The response will also indicate how many cluster operations are stored
-     * in the history.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminShowClusterOperationsResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminShowClusterOperationsResponse adminShowClusterOperations(AdminShowClusterOperationsRequest request) throws GPUdbException {
-        AdminShowClusterOperationsResponse actualResponse_ = new AdminShowClusterOperationsResponse();
-        submitRequest("/admin/show/cluster/operations", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
-     * Requests the detailed status of the current operation (by default) or a
-     * prior cluster operation specified by {@code historyIndex}.
-     * Returns details on the requested cluster operation.
-     * <p>
-     * The response will also indicate how many cluster operations are stored
-     * in the history.
-     * 
-     * @param historyIndex  Indicates which cluster operation to retrieve.  Use
-     *                      0 for the most recent.
-     * @param options  Optional parameters.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  AdminShowClusterOperationsResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
-    public AdminShowClusterOperationsResponse adminShowClusterOperations(int historyIndex, Map<String, String> options) throws GPUdbException {
-        AdminShowClusterOperationsRequest actualRequest_ = new AdminShowClusterOperationsRequest(historyIndex, options);
-        AdminShowClusterOperationsResponse actualResponse_ = new AdminShowClusterOperationsResponse();
-        submitRequest("/admin/show/cluster/operations", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    /**
      * Get a list of the current jobs in GPUdb.
      * 
      * @param request  Request object containing the parameters for the
@@ -2732,14 +2678,6 @@ public class GPUdb extends GPUdbBase {
      *                target="_top">time-to-live</a> in minutes of the table,
      *                view, or collection specified in {@code tableName}.
      *                        <li> {@link
-     *                com.gpudb.protocol.AlterTableRequest.Action#MEMORY_TTL
-     *                MEMORY_TTL}: Sets the time-to-live in minutes for the
-     *                individual chunks of the columns of the table, view, or
-     *                collection specified in {@code tableName} to free their
-     *                memory if unused longer than the given time. Specify an
-     *                empty string to restore the global memory_ttl setting and
-     *                a value of '-1' for an infinite timeout.
-     *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
      *                ADD_COLUMN}: Adds the column specified in {@code value}
      *                to the table specified in {@code tableName}.  Use {@code
@@ -4972,6 +4910,9 @@ public class GPUdb extends GPUdbBase {
      *                 INTERVAL}: Use <a
      *                 href="../../../../concepts/tables.html#partitioning-by-interval"
      *                 target="_top">interval partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#LIST
+     *                 LIST}: Not yet supported
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -4989,6 +4930,22 @@ public class GPUdb extends GPUdbBase {
      *                 href="../../../../concepts/tables.html#partitioning-by-interval-example"
      *                 target="_top">interval partitioning example</a> for
      *                 example formats.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
+     *                 IS_AUTOMATIC_PARTITION}: If true, a new partition will
+     *                 be created for values which don't fall into an existing
+     *                 partition.  Currently only supported for LIST partitions
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}:
      *                 For a table, sets the <a
@@ -5415,11 +5372,9 @@ public class GPUdb extends GPUdbBase {
      *                    {@link GPUdb#filterByValue(String, String, boolean,
      *                    double, String, String, Map)} work as usual but
      *                    {@link
-     *                    GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)},
+     *                    GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)} and
      *                    {@link
      *                    GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}
-     *                    and {@link
-     *                    GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}
      *                    are not allowed on columns with this property.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#TIMESTAMP
@@ -6112,12 +6067,15 @@ public class GPUdb extends GPUdbBase {
      *                 reduce the search space of the {@code expressions}.
      *                         <li> {@link
      *                 com.gpudb.protocol.DeleteRecordsRequest.Options#RECORD_ID
-     *                 RECORD_ID}: A record id identifying a single record,
+     *                 RECORD_ID}: A record ID identifying a single record,
      *                 obtained at the time of {@link
      *                 GPUdb#insertRecordsRaw(RawInsertRecordsRequest)
      *                 insertion of the record} or by calling {@link
      *                 GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
-     *                 with the *return_record_ids* option.
+     *                 with the *return_record_ids* option. This option cannot
+     *                 be used to delete records from <a
+     *                 href="../../../../concepts/tables.html#replication"
+     *                 target="_top">replicated</a> tables.
      *                         <li> {@link
      *                 com.gpudb.protocol.DeleteRecordsRequest.Options#DELETE_ALL_RECORDS
      *                 DELETE_ALL_RECORDS}: If set to {@code true}, all records
@@ -11222,6 +11180,9 @@ public class GPUdb extends GPUdbBase {
      * false} returns only information about the collection itself; setting
      * {@code show_children} to {@code true} returns a list of tables and views
      * contained in the collection, along with their corresponding detail.
+     * <p>
+     * To retrieve a list of every table, view, and collection in the database,
+     * set {@code tableName} to '*' and {@code show_children} to {@code true}.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -11263,6 +11224,9 @@ public class GPUdb extends GPUdbBase {
      * false} returns only information about the collection itself; setting
      * {@code show_children} to {@code true} returns a list of tables and views
      * contained in the collection, along with their corresponding detail.
+     * <p>
+     * To retrieve a list of every table, view, and collection in the database,
+     * set {@code tableName} to '*' and {@code show_children} to {@code true}.
      * 
      * @param tableName  Name of the table for which to retrieve the
      *                   information. If blank, then information about all

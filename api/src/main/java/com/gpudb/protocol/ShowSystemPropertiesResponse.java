@@ -67,6 +67,14 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_HM_HTTP_PORT
      * CONF_HM_HTTP_PORT}: The host manager port number (an integer value).
+     *         <li> {@link
+     * com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_ENABLE_HA
+     * CONF_ENABLE_HA}: Flag indicating whether high availability (HA) is set
+     * up (a boolean value).
+     *         <li> {@link
+     * com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_HA_RING_HEAD_NODES
+     * CONF_HA_RING_HEAD_NODES}: A comma-separated string of high availability
+     * (HA) ring node URLs.  If HA is not set up, then an empty string.
      * </ul>
      * A set of string constants for the parameter {@code propertyMap}.
      */
@@ -117,6 +125,18 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
          */
         public static final String CONF_HM_HTTP_PORT = "conf.hm_http_port";
 
+        /**
+         * Flag indicating whether high availability (HA) is set up (a boolean
+         * value).
+         */
+        public static final String CONF_ENABLE_HA = "conf.enable_ha";
+
+        /**
+         * A comma-separated string of high availability (HA) ring node URLs.
+         * If HA is not set up, then an empty string.
+         */
+        public static final String CONF_HA_RING_HEAD_NODES = "conf.ha_ring_head_nodes";
+
         private PropertyMap() {  }
     }
 
@@ -165,6 +185,15 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
      *         com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_HM_HTTP_PORT
      *         CONF_HM_HTTP_PORT}: The host manager port number (an integer
      *         value).
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_ENABLE_HA
+     *         CONF_ENABLE_HA}: Flag indicating whether high availability (HA)
+     *         is set up (a boolean value).
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_HA_RING_HEAD_NODES
+     *         CONF_HA_RING_HEAD_NODES}: A comma-separated string of high
+     *         availability (HA) ring node URLs.  If HA is not set up, then an
+     *         empty string.
      *         </ul>
      * 
      */
@@ -207,6 +236,15 @@ public class ShowSystemPropertiesResponse implements IndexedRecord {
      *                     com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_HM_HTTP_PORT
      *                     CONF_HM_HTTP_PORT}: The host manager port number (an
      *                     integer value).
+     *                             <li> {@link
+     *                     com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_ENABLE_HA
+     *                     CONF_ENABLE_HA}: Flag indicating whether high
+     *                     availability (HA) is set up (a boolean value).
+     *                             <li> {@link
+     *                     com.gpudb.protocol.ShowSystemPropertiesResponse.PropertyMap#CONF_HA_RING_HEAD_NODES
+     *                     CONF_HA_RING_HEAD_NODES}: A comma-separated string
+     *                     of high availability (HA) ring node URLs.  If HA is
+     *                     not set up, then an empty string.
      *                     </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

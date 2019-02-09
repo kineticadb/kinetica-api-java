@@ -163,13 +163,6 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String REMAINING_TABLE_TTL = "remaining_table_ttl";
 
         /**
-         * The value of the time-to-live in minutes for unqueried column data
-         * to stay in memory.  Not present for collections or if not set for
-         * this table.
-         */
-        public static final String MEMORY_TTL = "memory_ttl";
-
-        /**
          * Semicolon-separated list of <a
          * href="../../../../../concepts/tables.html#foreign-key"
          * target="_top">foreign keys</a>, of the format 'source_column
@@ -201,6 +194,9 @@ public class ShowTableResponse implements IndexedRecord {
          * href="../../../../../concepts/tables.html#partitioning-by-interval"
          * target="_top">interval partitioning</a>
          *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#LIST LIST}: Not
+         * yet supported
+         *         <li> {@link
          * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#NONE NONE}:
          * Using no partitioning
          * </ul>
@@ -224,6 +220,11 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String INTERVAL = "INTERVAL";
 
         /**
+         * Not yet supported
+         */
+        public static final String LIST = "LIST";
+
+        /**
          * Using no partitioning
          */
         public static final String NONE = "NONE";
@@ -240,6 +241,12 @@ public class ShowTableResponse implements IndexedRecord {
          * target="_top">partitioning</a> documentation for details.
          */
         public static final String PARTITION_DEFINITIONS = "partition_definitions";
+
+        /**
+         * true if partitions will be created for values which don't fall into
+         * existing partitions
+         */
+        public static final String IS_AUTOMATIC_PARTITION = "is_automatic_partition";
 
         /**
          * Semicolon-separated list of columns that have <a

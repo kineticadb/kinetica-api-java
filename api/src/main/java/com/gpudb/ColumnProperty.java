@@ -38,10 +38,9 @@ public final class ColumnProperty {
      * lookups. Queries like {@link GPUdb#filter(FilterRequest)}, {@link
      * GPUdb#filterByList(FilterByListRequest)}, and {@link
      * GPUdb#filterByValue(FilterByValueRequest)} work as usual but {@link
-     * GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}, {@link
-     * GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)} and {@link
-     * GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)} are not allowed
-     * on columns with this property.
+     * GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)} and {@link
+     * GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)} are not allowed on
+     * columns with this property.
      */
     public static final String DISK_OPTIMIZED = "disk_optimized";
 

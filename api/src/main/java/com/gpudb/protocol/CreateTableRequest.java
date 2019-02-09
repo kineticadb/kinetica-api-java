@@ -166,6 +166,8 @@ public class CreateTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableRequest.Options#INTERVAL INTERVAL}: Use <a
      * href="../../../../../concepts/tables.html#partitioning-by-interval"
      * target="_top">interval partitioning</a>.
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#LIST
+     * LIST}: Not yet supported
      * </ul>
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -180,6 +182,20 @@ public class CreateTableRequest implements IndexedRecord {
      * target="_top">range partitioning example</a> or <a
      * href="../../../../../concepts/tables.html#partitioning-by-interval-example"
      * target="_top">interval partitioning example</a> for example formats.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
+     * IS_AUTOMATIC_PARTITION}: If true, a new partition will be created for
+     * values which don't fall into an existing partition.  Currently only
+     * supported for LIST partitions
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TTL
      * TTL}: For a table, sets the <a href="../../../../../concepts/ttl.html"
      * target="_top">TTL</a> of the table specified in {@code tableName}.
@@ -326,6 +342,9 @@ public class CreateTableRequest implements IndexedRecord {
          * Use <a
          * href="../../../../../concepts/tables.html#partitioning-by-interval"
          * target="_top">interval partitioning</a>.
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#LIST LIST}: Not yet
+         * supported
          * </ul>
          */
         public static final String PARTITION_TYPE = "partition_type";
@@ -345,6 +364,11 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String INTERVAL = "INTERVAL";
 
         /**
+         * Not yet supported
+         */
+        public static final String LIST = "LIST";
+
+        /**
          * Comma-separated list of partition keys, which are the columns or
          * column expressions by which records will be assigned to partitions
          * defined by {@code partition_definitions}.
@@ -360,6 +384,22 @@ public class CreateTableRequest implements IndexedRecord {
          * target="_top">interval partitioning example</a> for example formats.
          */
         public static final String PARTITION_DEFINITIONS = "partition_definitions";
+
+        /**
+         * If true, a new partition will be created for values which don't fall
+         * into an existing partition.  Currently only supported for LIST
+         * partitions
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
+         */
+        public static final String IS_AUTOMATIC_PARTITION = "is_automatic_partition";
 
         /**
          * For a table, sets the <a href="../../../../../concepts/ttl.html"
@@ -544,6 +584,9 @@ public class CreateTableRequest implements IndexedRecord {
      *                 INTERVAL}: Use <a
      *                 href="../../../../../concepts/tables.html#partitioning-by-interval"
      *                 target="_top">interval partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#LIST
+     *                 LIST}: Not yet supported
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -561,6 +604,22 @@ public class CreateTableRequest implements IndexedRecord {
      *                 href="../../../../../concepts/tables.html#partitioning-by-interval-example"
      *                 target="_top">interval partitioning example</a> for
      *                 example formats.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
+     *                 IS_AUTOMATIC_PARTITION}: If true, a new partition will
+     *                 be created for values which don't fall into an existing
+     *                 partition.  Currently only supported for LIST partitions
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}:
      *                 For a table, sets the <a
@@ -770,6 +829,9 @@ public class CreateTableRequest implements IndexedRecord {
      *         INTERVAL}: Use <a
      *         href="../../../../../concepts/tables.html#partitioning-by-interval"
      *         target="_top">interval partitioning</a>.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#LIST LIST}: Not
+     *         yet supported
      *         </ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -786,6 +848,20 @@ public class CreateTableRequest implements IndexedRecord {
      *         href="../../../../../concepts/tables.html#partitioning-by-interval-example"
      *         target="_top">interval partitioning example</a> for example
      *         formats.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
+     *         IS_AUTOMATIC_PARTITION}: If true, a new partition will be
+     *         created for values which don't fall into an existing partition.
+     *         Currently only supported for LIST partitions
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}: For a
      *         table, sets the <a href="../../../../../concepts/ttl.html"
@@ -943,6 +1019,9 @@ public class CreateTableRequest implements IndexedRecord {
      *                 INTERVAL}: Use <a
      *                 href="../../../../../concepts/tables.html#partitioning-by-interval"
      *                 target="_top">interval partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#LIST
+     *                 LIST}: Not yet supported
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -960,6 +1039,22 @@ public class CreateTableRequest implements IndexedRecord {
      *                 href="../../../../../concepts/tables.html#partitioning-by-interval-example"
      *                 target="_top">interval partitioning example</a> for
      *                 example formats.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
+     *                 IS_AUTOMATIC_PARTITION}: If true, a new partition will
+     *                 be created for values which don't fall into an existing
+     *                 partition.  Currently only supported for LIST partitions
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}:
      *                 For a table, sets the <a

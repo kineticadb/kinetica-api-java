@@ -31,6 +31,9 @@ import org.apache.avro.generic.IndexedRecord;
  * returns only information about the collection itself; setting {@code
  * show_children} to {@code true} returns a list of tables and views contained
  * in the collection, along with their corresponding detail.
+ * <p>
+ * To retrieve a list of every table, view, and collection in the database, set
+ * {@code tableName} to '*' and {@code show_children} to {@code true}.
  */
 public class ShowTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

@@ -114,10 +114,9 @@ public class CreateTypeRequest implements IndexedRecord {
      * com.gpudb.GPUdb#filter(FilterRequest)}, {@link
      * com.gpudb.GPUdb#filterByList(FilterByListRequest)}, and {@link
      * com.gpudb.GPUdb#filterByValue(FilterByValueRequest)} work as usual but
-     * {@link com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)},
-     * {@link com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)} and
-     * {@link com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}
-     * are not allowed on columns with this property.
+     * {@link com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)} and
+     * {@link com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)} are
+     * not allowed on columns with this property.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#TIMESTAMP TIMESTAMP}:
      * Valid only for 'long' columns. Indicates that this field represents a
@@ -279,10 +278,8 @@ public class CreateTypeRequest implements IndexedRecord {
          * com.gpudb.GPUdb#filterByList(FilterByListRequest)}, and {@link
          * com.gpudb.GPUdb#filterByValue(FilterByValueRequest)} work as usual
          * but {@link
-         * com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}, {@link
-         * com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)} and
-         * {@link
-         * com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}
+         * com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)} and
+         * {@link com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}
          * are not allowed on columns with this property.
          */
         public static final String DISK_OPTIMIZED = "disk_optimized";
@@ -529,11 +526,9 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    and {@link
      *                    com.gpudb.GPUdb#filterByValue(FilterByValueRequest)}
      *                    work as usual but {@link
-     *                    com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)},
-     *                    {@link
-     *                    com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}
+     *                    com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}
      *                    and {@link
-     *                    com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}
+     *                    com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}
      *                    are not allowed on columns with this property.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#TIMESTAMP
@@ -789,11 +784,9 @@ public class CreateTypeRequest implements IndexedRecord {
      *         com.gpudb.GPUdb#filterByList(FilterByListRequest)}, and {@link
      *         com.gpudb.GPUdb#filterByValue(FilterByValueRequest)} work as
      *         usual but {@link
-     *         com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)},
+     *         com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)} and
      *         {@link
      *         com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}
-     *         and {@link
-     *         com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}
      *         are not allowed on columns with this property.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#TIMESTAMP
@@ -979,11 +972,9 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    and {@link
      *                    com.gpudb.GPUdb#filterByValue(FilterByValueRequest)}
      *                    work as usual but {@link
-     *                    com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)},
-     *                    {@link
-     *                    com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}
+     *                    com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}
      *                    and {@link
-     *                    com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}
+     *                    com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}
      *                    are not allowed on columns with this property.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#TIMESTAMP
