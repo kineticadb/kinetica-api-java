@@ -116,6 +116,128 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Add one or more new ranks to the Kinetica cluster. The new ranks will
+     * not contain any data initially, other than replicated tables, and not be
+     * assigned any shards. To rebalance data across the cluster, which
+     * includes shifting some shard key assignments to newly added ranks, see
+     * {@link GPUdb#adminRebalance(AdminRebalanceRequest)}.
+     * <p>
+     * For example, if attempting to add three new ranks (two ranks on host
+     * 172.123.45.67 and one rank on host 172.123.45.68) to a Kinetica cluster
+     * with additional configuration parameters:
+     * <p>
+     * * {@code hosts} would be an array including 172.123.45.67 in the first
+     * two indices (signifying two ranks being added to host 172.123.45.67) and
+     * 172.123.45.68 in the last index (signifying one rank being added to host
+     * 172.123.45.67)
+     * <p>
+     * * {@code configParams} would be an array of maps, with each map
+     * corresponding to the ranks being added in {@code hosts}. The key of each
+     * map would be the configuration parameter name and the value would be the
+     * parameter's value, e.g. 'rank.gpu':'1'
+     * <p>
+     * This endpoint's processing includes copying all replicated table data to
+     * the new rank(s) and therefore could take a long time. The API call may
+     * time out if run directly.  It is recommended to run this endpoint
+     * asynchronously via {@link GPUdb#createJob(CreateJobRequest)}.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminAddRanksResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminAddRanksResponse adminAddRanks(AdminAddRanksRequest request) throws GPUdbException {
+        AdminAddRanksResponse actualResponse_ = new AdminAddRanksResponse();
+        submitRequest("/admin/add/ranks", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Add one or more new ranks to the Kinetica cluster. The new ranks will
+     * not contain any data initially, other than replicated tables, and not be
+     * assigned any shards. To rebalance data across the cluster, which
+     * includes shifting some shard key assignments to newly added ranks, see
+     * {@link GPUdb#adminRebalance(Map)}.
+     * <p>
+     * For example, if attempting to add three new ranks (two ranks on host
+     * 172.123.45.67 and one rank on host 172.123.45.68) to a Kinetica cluster
+     * with additional configuration parameters:
+     * <p>
+     * * {@code hosts} would be an array including 172.123.45.67 in the first
+     * two indices (signifying two ranks being added to host 172.123.45.67) and
+     * 172.123.45.68 in the last index (signifying one rank being added to host
+     * 172.123.45.67)
+     * <p>
+     * * {@code configParams} would be an array of maps, with each map
+     * corresponding to the ranks being added in {@code hosts}. The key of each
+     * map would be the configuration parameter name and the value would be the
+     * parameter's value, e.g. 'rank.gpu':'1'
+     * <p>
+     * This endpoint's processing includes copying all replicated table data to
+     * the new rank(s) and therefore could take a long time. The API call may
+     * time out if run directly.  It is recommended to run this endpoint
+     * asynchronously via {@link GPUdb#createJob(String, String, ByteBuffer,
+     * String, Map)}.
+     * 
+     * @param hosts  The IP address of each rank being added to the cluster.
+     *               Insert one entry per rank, even if they are on the same
+     *               host. The order of the hosts in the array only matters as
+     *               it relates to the {@code configParams}.
+     * @param configParams  Configuration parameters to apply to the new ranks,
+     *                      e.g., which GPU to use. Configuration parameters
+     *                      that start with 'rankN.', where N is the rank
+     *                      number, should omit the N, as the new rank
+     *                      number(s) are not allocated until the ranks are
+     *                      created. Each entry in this array corresponds to
+     *                      the entry at the same array index in the {@code
+     *                      hosts}. This array must either be completely empty
+     *                      or have the same number of elements as the hosts
+     *                      array.  An empty array will result in the new ranks
+     *                      being set only with default parameters.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminAddRanksRequest.Options#DRY_RUN
+     *                 DRY_RUN}: If {@code true}, only validation checks will
+     *                 be performed. No ranks are added.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminAddRanksRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminAddRanksRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminAddRanksRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminAddRanksResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminAddRanksResponse adminAddRanks(List<String> hosts, List<Map<String, String>> configParams, Map<String, String> options) throws GPUdbException {
+        AdminAddRanksRequest actualRequest_ = new AdminAddRanksRequest(hosts, configParams, options);
+        AdminAddRanksResponse actualResponse_ = new AdminAddRanksResponse();
+        submitRequest("/admin/add/ranks", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Perform the requested action on a list of one or more job(s). Based on
      * the type of job and the current state of execution, the action may not
      * be successfully executed. The final result of the attempted actions for
@@ -170,23 +292,6 @@ public class GPUdb extends GPUdbBase {
         AdminAlterJobsRequest actualRequest_ = new AdminAlterJobsRequest(jobIds, action, options);
         AdminAlterJobsResponse actualResponse_ = new AdminAlterJobsResponse();
         submitRequest("/admin/alter/jobs", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    public AdminAlterShardsResponse adminAlterShards(AdminAlterShardsRequest request) throws GPUdbException {
-        AdminAlterShardsResponse actualResponse_ = new AdminAlterShardsResponse();
-        submitRequest("/admin/alter/shards", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    public AdminAlterShardsResponse adminAlterShards(long version, boolean useIndex, List<Integer> rank, List<Integer> tom, List<Integer> index, List<Integer> backupMapList, List<List<Integer>> backupMapValues, Map<String, String> options) throws GPUdbException {
-        AdminAlterShardsRequest actualRequest_ = new AdminAlterShardsRequest(version, useIndex, rank, tom, index, backupMapList, backupMapValues, options);
-        AdminAlterShardsResponse actualResponse_ = new AdminAlterShardsResponse();
-        submitRequest("/admin/alter/shards", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -261,6 +366,216 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Rebalance the cluster so that all the nodes contain approximately an
+     * equal number of records.  The rebalance will also cause the shards to be
+     * equally distributed (as much as possible) across all the ranks.
+     * <p>
+     * This endpoint may take a long time to run, depending on the amount of
+     * data in the system. The API call may time out if run directly.  It is
+     * recommended to run this endpoint asynchronously via {@link
+     * GPUdb#createJob(CreateJobRequest)}.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminRebalanceResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminRebalanceResponse adminRebalance(AdminRebalanceRequest request) throws GPUdbException {
+        AdminRebalanceResponse actualResponse_ = new AdminRebalanceResponse();
+        submitRequest("/admin/rebalance", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Rebalance the cluster so that all the nodes contain approximately an
+     * equal number of records.  The rebalance will also cause the shards to be
+     * equally distributed (as much as possible) across all the ranks.
+     * <p>
+     * This endpoint may take a long time to run, depending on the amount of
+     * data in the system. The API call may time out if run directly.  It is
+     * recommended to run this endpoint asynchronously via {@link
+     * GPUdb#createJob(String, String, ByteBuffer, String, Map)}.
+     * 
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_SHARDED_DATA
+     *                 REBALANCE_SHARDED_DATA}: If {@code true}, sharded data
+     *                 will be rebalanced approximately equally across the
+     *                 cluster. Note that for big clusters, this data transfer
+     *                 could be time consuming and result in delayed query
+     *                 responses.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
+     *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_UNSHARDED_DATA
+     *                 REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded
+     *                 data (data without primary keys and without shard keys)
+     *                 will be rebalanced approximately equally across the
+     *                 cluster. Note that for big clusters, this data transfer
+     *                 could be time consuming and result in delayed query
+     *                 responses.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
+     *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_WHITELIST
+     *                 TABLE_WHITELIST}: Comma-separated list of unsharded
+     *                 table names to rebalance. Not applicable to sharded
+     *                 tables because they are always balanced in accordance
+     *                 with their primary key or shard key. Cannot be used
+     *                 simultaneously with {@code table_blacklist}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_BLACKLIST
+     *                 TABLE_BLACKLIST}: Comma-separated list of unsharded
+     *                 table names to not rebalance. Not applicable to sharded
+     *                 tables because they are always balanced in accordance
+     *                 with their primary key or shard key. Cannot be used
+     *                 simultaneously with {@code table_whitelist}.
+     *                 </ul>
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminRebalanceResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminRebalanceResponse adminRebalance(Map<String, String> options) throws GPUdbException {
+        AdminRebalanceRequest actualRequest_ = new AdminRebalanceRequest(options);
+        AdminRebalanceResponse actualResponse_ = new AdminRebalanceResponse();
+        submitRequest("/admin/rebalance", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Remove one or more ranks from the cluster. All data in the ranks to be
+     * removed is rebalanced to other ranks before the node is removed unless
+     * the {@code rebalance_sharded_data} or {@code rebalance_unsharded_data}
+     * parameters are set to {@code false} in the {@code options}.
+     * <p>
+     * Due to the rebalancing, this endpoint may take a long time to run,
+     * depending on the amount of data in the system. The API call may time out
+     * if run directly.  It is recommended to run this endpoint asynchronously
+     * via {@link GPUdb#createJob(CreateJobRequest)}.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminRemoveRanksResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminRemoveRanksResponse adminRemoveRanks(AdminRemoveRanksRequest request) throws GPUdbException {
+        AdminRemoveRanksResponse actualResponse_ = new AdminRemoveRanksResponse();
+        submitRequest("/admin/remove/ranks", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Remove one or more ranks from the cluster. All data in the ranks to be
+     * removed is rebalanced to other ranks before the node is removed unless
+     * the {@code rebalance_sharded_data} or {@code rebalance_unsharded_data}
+     * parameters are set to {@code false} in the {@code options}.
+     * <p>
+     * Due to the rebalancing, this endpoint may take a long time to run,
+     * depending on the amount of data in the system. The API call may time out
+     * if run directly.  It is recommended to run this endpoint asynchronously
+     * via {@link GPUdb#createJob(String, String, ByteBuffer, String, Map)}.
+     * 
+     * @param ranks  Rank numbers of the ranks to be removed from the cluster.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_SHARDED_DATA
+     *                 REBALANCE_SHARDED_DATA}: When {@code true}, data with
+     *                 primary keys or shard keys will be rebalanced to other
+     *                 ranks prior to rank removal. Note that for big clusters,
+     *                 this data transfer could be time consuming and result in
+     *                 delayed query responses.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE
+     *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_UNSHARDED_DATA
+     *                 REBALANCE_UNSHARDED_DATA}: When {@code true}, unsharded
+     *                 data (data without primary keys and without shard keys)
+     *                 will be rebalanced to other ranks prior to rank removal.
+     *                 Note that for big clusters, this data transfer could be
+     *                 time consuming and result in delayed query responses.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE
+     *                 TRUE}.
+     *                 </ul>
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminRemoveRanksResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminRemoveRanksResponse adminRemoveRanks(List<Integer> ranks, Map<String, String> options) throws GPUdbException {
+        AdminRemoveRanksRequest actualRequest_ = new AdminRemoveRanksRequest(ranks, options);
+        AdminRemoveRanksResponse actualResponse_ = new AdminRemoveRanksResponse();
+        submitRequest("/admin/remove/ranks", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Requests a list of the most recent alerts.
      * Returns lists of alert data, including timestamp and type.
      * 
@@ -303,6 +618,60 @@ public class GPUdb extends GPUdbBase {
         AdminShowAlertsRequest actualRequest_ = new AdminShowAlertsRequest(numAlerts, options);
         AdminShowAlertsResponse actualResponse_ = new AdminShowAlertsResponse();
         submitRequestToHM("/admin/show/alerts", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Requests the detailed status of the current operation (by default) or a
+     * prior cluster operation specified by {@code historyIndex}.
+     * Returns details on the requested cluster operation.
+     * <p>
+     * The response will also indicate how many cluster operations are stored
+     * in the history.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminShowClusterOperationsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminShowClusterOperationsResponse adminShowClusterOperations(AdminShowClusterOperationsRequest request) throws GPUdbException {
+        AdminShowClusterOperationsResponse actualResponse_ = new AdminShowClusterOperationsResponse();
+        submitRequest("/admin/show/cluster/operations", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Requests the detailed status of the current operation (by default) or a
+     * prior cluster operation specified by {@code historyIndex}.
+     * Returns details on the requested cluster operation.
+     * <p>
+     * The response will also indicate how many cluster operations are stored
+     * in the history.
+     * 
+     * @param historyIndex  Indicates which cluster operation to retrieve.  Use
+     *                      0 for the most recent.
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminShowClusterOperationsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminShowClusterOperationsResponse adminShowClusterOperations(int historyIndex, Map<String, String> options) throws GPUdbException {
+        AdminShowClusterOperationsRequest actualRequest_ = new AdminShowClusterOperationsRequest(historyIndex, options);
+        AdminShowClusterOperationsResponse actualResponse_ = new AdminShowClusterOperationsResponse();
+        submitRequest("/admin/show/cluster/operations", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -1077,6 +1446,9 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
      *                 SLEEP_ON_REFRESH}: <DEVELOPER>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#REFRESH_TYPE
+     *                 REFRESH_TYPE}: <DEVELOPER>
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -3997,9 +4369,7 @@ public class GPUdb extends GPUdbBase {
      *                 level.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
-     *                 MAX_QUERY_DIMENSIONS}: The maximum number of tables in a
-     *                 join that can be accessed by a query and are not equated
-     *                 by a foreign-key to primary-key equality predicate
+     *                 MAX_QUERY_DIMENSIONS}: Obsolete in GPUdb v7.0
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#OPTIMIZE_LOOKUPS
      *                 OPTIMIZE_LOOKUPS}: Use more memory to speed up the
@@ -5536,6 +5906,11 @@ public class GPUdb extends GPUdbBase {
      *                    best for columns where the cardinality (the number of
      *                    unique values) is expected to be low. This property
      *                    can save a large amount of memory.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_NOW
+     *                    INIT_WITH_NOW}: For columns with attributes of date,
+     *                    time, datetime or timestamp, at insert time, replace
+     *                    empty strings and invalid timestamps with NOW()
      *                    </ul>
      * @param options  Optional parameters.
      * 
@@ -6611,6 +6986,23 @@ public class GPUdb extends GPUdbBase {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PREPARE_MODE
+     *                 PREPARE_MODE}: If {@code true}, compiles a query into an
+     *                 execution plan and saves it in query cache. Query
+     *                 execution is not performed and an empty response will be
+     *                 returned to user
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -10374,6 +10766,10 @@ public class GPUdb extends GPUdbBase {
      * target="_top">Network Graph Solvers</a> for more information.
      * 
      * @param graphName  Name of the graph resource to query.
+     * @param queries  ['Schema.collection.table.column', 'node_identifier',
+     *                 ... ]; e.g., ['graph_nodes.id AS QUERY_NODE_ID'] It
+     *                 appends to the respective arrays below. QUERY identifier
+     *                 overrides edge_to_node parameter.
      * @param edgeToNode  If set to {@code true}, the query gives the adjacency
      *                    list from edge(s) to node(s); otherwise, the
      *                    adjacency list is from node(s) to edge(s).
@@ -10466,27 +10862,10 @@ public class GPUdb extends GPUdbBase {
      * @throws GPUdbException  if an error occurs during the operation.
      * 
      */
-    public QueryGraphResponse queryGraph(String graphName, boolean edgeToNode, List<Long> edgeOrNodeIntIds, List<String> edgeOrNodeStringIds, List<String> edgeOrNodeWktIds, String adjacencyTable, Map<String, String> options) throws GPUdbException {
-        QueryGraphRequest actualRequest_ = new QueryGraphRequest(graphName, edgeToNode, edgeOrNodeIntIds, edgeOrNodeStringIds, edgeOrNodeWktIds, adjacencyTable, options);
+    public QueryGraphResponse queryGraph(String graphName, List<String> queries, boolean edgeToNode, List<Long> edgeOrNodeIntIds, List<String> edgeOrNodeStringIds, List<String> edgeOrNodeWktIds, String adjacencyTable, Map<String, String> options) throws GPUdbException {
+        QueryGraphRequest actualRequest_ = new QueryGraphRequest(graphName, queries, edgeToNode, edgeOrNodeIntIds, edgeOrNodeStringIds, edgeOrNodeWktIds, adjacencyTable, options);
         QueryGraphResponse actualResponse_ = new QueryGraphResponse();
         submitRequest("/query/graph", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    public AdminReplaceTomResponse adminReplaceTom(AdminReplaceTomRequest request) throws GPUdbException {
-        AdminReplaceTomResponse actualResponse_ = new AdminReplaceTomResponse();
-        submitRequest("/replace/tom", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    public AdminReplaceTomResponse adminReplaceTom(long oldRankTom, long newRankTom, Map<String, String> options) throws GPUdbException {
-        AdminReplaceTomRequest actualRequest_ = new AdminReplaceTomRequest(oldRankTom, newRankTom, options);
-        AdminReplaceTomResponse actualResponse_ = new AdminReplaceTomResponse();
-        submitRequest("/replace/tom", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 

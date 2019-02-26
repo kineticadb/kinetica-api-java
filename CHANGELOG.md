@@ -2,6 +2,10 @@
 
 ## Version 7.0.0
 
+### Version 7.0.0.2 - 2019-02-26
+-   Added a new column property: INIT_WITH_NOW
+
+
 ### Version 7.0.0.1 - 2019-02-08
 -   Added support for high availability (HA) failover logic to the
     GPUdb class

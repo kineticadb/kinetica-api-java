@@ -305,6 +305,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
      * SLEEP_ON_REFRESH}: <DEVELOPER>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#REFRESH_TYPE
+     * REFRESH_TYPE}: <DEVELOPER>
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -542,6 +545,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
          */
         public static final String SLEEP_ON_REFRESH = "sleep_on_refresh";
 
+        /**
+         * <DEVELOPER>
+         */
+        public static final String REFRESH_TYPE = "refresh_type";
+
         private Options() {  }
     }
 
@@ -771,6 +779,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
      *                 SLEEP_ON_REFRESH}: <DEVELOPER>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#REFRESH_TYPE
+     *                 REFRESH_TYPE}: <DEVELOPER>
      *                 </ul>
      * 
      */
@@ -1006,6 +1017,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
      *                 SLEEP_ON_REFRESH}: <DEVELOPER>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#REFRESH_TYPE
+     *                 REFRESH_TYPE}: <DEVELOPER>
      *                 </ul>
      * 
      */
@@ -1336,6 +1350,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
      *         SLEEP_ON_REFRESH}: <DEVELOPER>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateGroupByRequest.Options#REFRESH_TYPE
+     *         REFRESH_TYPE}: <DEVELOPER>
      *         </ul>
      * 
      */
@@ -1538,6 +1555,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
      *                 SLEEP_ON_REFRESH}: <DEVELOPER>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#REFRESH_TYPE
+     *                 REFRESH_TYPE}: <DEVELOPER>
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -62,9 +62,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * automatically created. If empty, then the join will be at the top level.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
-     * MAX_QUERY_DIMENSIONS}: The maximum number of tables in a join that can
-     * be accessed by a query and are not equated by a foreign-key to
-     * primary-key equality predicate
+     * MAX_QUERY_DIMENSIONS}: Obsolete in GPUdb v7.0
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#OPTIMIZE_LOOKUPS
      * OPTIMIZE_LOOKUPS}: Use more memory to speed up the joining of tables.
@@ -154,9 +152,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * The maximum number of tables in a join that can be accessed by a
-         * query and are not equated by a foreign-key to primary-key equality
-         * predicate
+         * Obsolete in GPUdb v7.0
          */
         public static final String MAX_QUERY_DIMENSIONS = "max_query_dimensions";
 
@@ -333,9 +329,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 level.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
-     *                 MAX_QUERY_DIMENSIONS}: The maximum number of tables in a
-     *                 join that can be accessed by a query and are not equated
-     *                 by a foreign-key to primary-key equality predicate
+     *                 MAX_QUERY_DIMENSIONS}: Obsolete in GPUdb v7.0
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#OPTIMIZE_LOOKUPS
      *                 OPTIMIZE_LOOKUPS}: Use more memory to speed up the
@@ -569,9 +563,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         at the top level.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
-     *         MAX_QUERY_DIMENSIONS}: The maximum number of tables in a join
-     *         that can be accessed by a query and are not equated by a
-     *         foreign-key to primary-key equality predicate
+     *         MAX_QUERY_DIMENSIONS}: Obsolete in GPUdb v7.0
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#OPTIMIZE_LOOKUPS
      *         OPTIMIZE_LOOKUPS}: Use more memory to speed up the joining of
@@ -678,9 +670,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 level.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
-     *                 MAX_QUERY_DIMENSIONS}: The maximum number of tables in a
-     *                 join that can be accessed by a query and are not equated
-     *                 by a foreign-key to primary-key equality predicate
+     *                 MAX_QUERY_DIMENSIONS}: Obsolete in GPUdb v7.0
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#OPTIMIZE_LOOKUPS
      *                 OPTIMIZE_LOOKUPS}: Use more memory to speed up the

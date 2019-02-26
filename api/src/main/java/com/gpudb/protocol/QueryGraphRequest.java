@@ -30,6 +30,7 @@ public class QueryGraphRequest implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("graphName").type().stringType().noDefault()
+                .name("queries").type().array().items().stringType().noDefault()
                 .name("edgeToNode").type().booleanType().noDefault()
                 .name("edgeOrNodeIntIds").type().array().items().longType().noDefault()
                 .name("edgeOrNodeStringIds").type().array().items().stringType().noDefault()
@@ -185,6 +186,7 @@ public class QueryGraphRequest implements IndexedRecord {
     }
 
     private String graphName;
+    private List<String> queries;
     private boolean edgeToNode;
     private List<Long> edgeOrNodeIntIds;
     private List<String> edgeOrNodeStringIds;
@@ -198,6 +200,7 @@ public class QueryGraphRequest implements IndexedRecord {
      */
     public QueryGraphRequest() {
         graphName = "";
+        queries = new ArrayList<>();
         edgeOrNodeIntIds = new ArrayList<>();
         edgeOrNodeStringIds = new ArrayList<>();
         edgeOrNodeWktIds = new ArrayList<>();
@@ -209,6 +212,10 @@ public class QueryGraphRequest implements IndexedRecord {
      * Constructs a QueryGraphRequest object with the specified parameters.
      * 
      * @param graphName  Name of the graph resource to query.
+     * @param queries  ['Schema.collection.table.column', 'node_identifier',
+     *                 ... ]; e.g., ['graph_nodes.id AS QUERY_NODE_ID'] It
+     *                 appends to the respective arrays below. QUERY identifier
+     *                 overrides edge_to_node parameter.
      * @param edgeToNode  If set to {@code true}, the query gives the adjacency
      *                    list from edge(s) to node(s); otherwise, the
      *                    adjacency list is from node(s) to edge(s).
@@ -295,8 +302,9 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 </ul>
      * 
      */
-    public QueryGraphRequest(String graphName, boolean edgeToNode, List<Long> edgeOrNodeIntIds, List<String> edgeOrNodeStringIds, List<String> edgeOrNodeWktIds, String adjacencyTable, Map<String, String> options) {
+    public QueryGraphRequest(String graphName, List<String> queries, boolean edgeToNode, List<Long> edgeOrNodeIntIds, List<String> edgeOrNodeStringIds, List<String> edgeOrNodeWktIds, String adjacencyTable, Map<String, String> options) {
         this.graphName = (graphName == null) ? "" : graphName;
+        this.queries = (queries == null) ? new ArrayList<String>() : queries;
         this.edgeToNode = edgeToNode;
         this.edgeOrNodeIntIds = (edgeOrNodeIntIds == null) ? new ArrayList<Long>() : edgeOrNodeIntIds;
         this.edgeOrNodeStringIds = (edgeOrNodeStringIds == null) ? new ArrayList<String>() : edgeOrNodeStringIds;
@@ -323,6 +331,33 @@ public class QueryGraphRequest implements IndexedRecord {
      */
     public QueryGraphRequest setGraphName(String graphName) {
         this.graphName = (graphName == null) ? "" : graphName;
+        return this;
+    }
+
+    /**
+     * 
+     * @return ['Schema.collection.table.column', 'node_identifier', ... ];
+     *         e.g., ['graph_nodes.id AS QUERY_NODE_ID'] It appends to the
+     *         respective arrays below. QUERY identifier overrides edge_to_node
+     *         parameter.
+     * 
+     */
+    public List<String> getQueries() {
+        return queries;
+    }
+
+    /**
+     * 
+     * @param queries  ['Schema.collection.table.column', 'node_identifier',
+     *                 ... ]; e.g., ['graph_nodes.id AS QUERY_NODE_ID'] It
+     *                 appends to the respective arrays below. QUERY identifier
+     *                 overrides edge_to_node parameter.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public QueryGraphRequest setQueries(List<String> queries) {
+        this.queries = (queries == null) ? new ArrayList<String>() : queries;
         return this;
     }
 
@@ -625,21 +660,24 @@ public class QueryGraphRequest implements IndexedRecord {
                 return this.graphName;
 
             case 1:
-                return this.edgeToNode;
+                return this.queries;
 
             case 2:
-                return this.edgeOrNodeIntIds;
+                return this.edgeToNode;
 
             case 3:
-                return this.edgeOrNodeStringIds;
+                return this.edgeOrNodeIntIds;
 
             case 4:
-                return this.edgeOrNodeWktIds;
+                return this.edgeOrNodeStringIds;
 
             case 5:
-                return this.adjacencyTable;
+                return this.edgeOrNodeWktIds;
 
             case 6:
+                return this.adjacencyTable;
+
+            case 7:
                 return this.options;
 
             default:
@@ -666,26 +704,30 @@ public class QueryGraphRequest implements IndexedRecord {
                 break;
 
             case 1:
-                this.edgeToNode = (Boolean)value;
+                this.queries = (List<String>)value;
                 break;
 
             case 2:
-                this.edgeOrNodeIntIds = (List<Long>)value;
+                this.edgeToNode = (Boolean)value;
                 break;
 
             case 3:
-                this.edgeOrNodeStringIds = (List<String>)value;
+                this.edgeOrNodeIntIds = (List<Long>)value;
                 break;
 
             case 4:
-                this.edgeOrNodeWktIds = (List<String>)value;
+                this.edgeOrNodeStringIds = (List<String>)value;
                 break;
 
             case 5:
-                this.adjacencyTable = (String)value;
+                this.edgeOrNodeWktIds = (List<String>)value;
                 break;
 
             case 6:
+                this.adjacencyTable = (String)value;
+                break;
+
+            case 7:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -707,6 +749,7 @@ public class QueryGraphRequest implements IndexedRecord {
         QueryGraphRequest that = (QueryGraphRequest)obj;
 
         return ( this.graphName.equals( that.graphName )
+                 && this.queries.equals( that.queries )
                  && ( this.edgeToNode == that.edgeToNode )
                  && this.edgeOrNodeIntIds.equals( that.edgeOrNodeIntIds )
                  && this.edgeOrNodeStringIds.equals( that.edgeOrNodeStringIds )
@@ -723,6 +766,10 @@ public class QueryGraphRequest implements IndexedRecord {
         builder.append( gd.toString( "graphName" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.graphName ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "queries" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.queries ) );
         builder.append( ", " );
         builder.append( gd.toString( "edgeToNode" ) );
         builder.append( ": " );
@@ -756,6 +803,7 @@ public class QueryGraphRequest implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.graphName.hashCode();
+        hashCode = (31 * hashCode) + this.queries.hashCode();
         hashCode = (31 * hashCode) + ((Boolean)this.edgeToNode).hashCode();
         hashCode = (31 * hashCode) + this.edgeOrNodeIntIds.hashCode();
         hashCode = (31 * hashCode) + this.edgeOrNodeStringIds.hashCode();

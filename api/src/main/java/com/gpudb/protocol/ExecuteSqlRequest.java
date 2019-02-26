@@ -237,6 +237,20 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#PREPARE_MODE PREPARE_MODE}:
+     * If {@code true}, compiles a query into an execution plan and saves it in
+     * query cache. Query execution is not performed and an empty response will
+     * be returned to user
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -256,15 +270,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
          * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
          */
         public static final String PARALLEL_EXECUTION = "parallel_execution";
-
-        /**
-         * true
-         */
         public static final String TRUE = "true";
-
-        /**
-         * false
-         */
         public static final String FALSE = "false";
 
         /**
@@ -441,6 +447,22 @@ public class ExecuteSqlRequest implements IndexedRecord {
          * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
          */
         public static final String VALIDATE_CHANGE_COLUMN = "validate_change_column";
+
+        /**
+         * If {@code true}, compiles a query into an execution plan and saves
+         * it in query cache. Query execution is not performed and an empty
+         * response will be returned to user
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
+         */
+        public static final String PREPARE_MODE = "prepare_mode";
 
         private Options() {  }
     }
@@ -671,6 +693,23 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PREPARE_MODE
+     *                 PREPARE_MODE}: If {@code true}, compiles a query into an
+     *                 execution plan and saves it in query cache. Query
+     *                 execution is not performed and an empty response will be
+     *                 returned to user
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      */
@@ -904,6 +943,23 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PREPARE_MODE
+     *                 PREPARE_MODE}: If {@code true}, compiles a query into an
+     *                 execution plan and saves it in query cache. Query
+     *                 execution is not performed and an empty response will be
+     *                 returned to user
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      */
@@ -1253,6 +1309,20 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#PREPARE_MODE
+     *         PREPARE_MODE}: If {@code true}, compiles a query into an
+     *         execution plan and saves it in query cache. Query execution is
+     *         not performed and an empty response will be returned to user
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      *         </ul>
      * 
      */
@@ -1452,6 +1522,23 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PREPARE_MODE
+     *                 PREPARE_MODE}: If {@code true}, compiles a query into an
+     *                 execution plan and saves it in query cache. Query
+     *                 execution is not performed and an empty response will be
+     *                 returned to user
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
