@@ -149,9 +149,24 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * target="_top">TTL</a> of the paging table.
      *         <li> {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
-     * DISTRIBUTED_JOINS}: If {@code false}, disables the use of distributed
+     * DISTRIBUTED_JOINS}: If {@code true}, enables the use of distributed
      * joins in servicing the given query.  Any query requiring a distributed
-     * join to succeed will fail, though hints can be used in the query to
+     * join will succeed, though hints can be used in the query to change the
+     * distribution of the source data to allow the query to succeed.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_OPERATIONS
+     * DISTRIBUTED_OPERATIONS}: If {@code true}, enables the use of distributed
+     * operations in servicing the given query.  Any query requiring a
+     * distributed join will succeed, though hints can be used in the query to
      * change the distribution of the source data to allow the query to
      * succeed.
      * Supported values:
@@ -162,7 +177,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * FALSE}
      * </ul>
      * The default value is {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
      * SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries will be
@@ -251,6 +266,18 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#PLANNER_JOIN_VALIDATIONS
+     * PLANNER_JOIN_VALIDATIONS}: <DEVELOPER>
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -347,9 +374,9 @@ public class ExecuteSqlRequest implements IndexedRecord {
         public static final String PAGING_TABLE_TTL = "paging_table_ttl";
 
         /**
-         * If {@code false}, disables the use of distributed joins in servicing
-         * the given query.  Any query requiring a distributed join to succeed
-         * will fail, though hints can be used in the query to change the
+         * If {@code true}, enables the use of distributed joins in servicing
+         * the given query.  Any query requiring a distributed join will
+         * succeed, though hints can be used in the query to change the
          * distribution of the source data to allow the query to succeed.
          * Supported values:
          * <ul>
@@ -359,9 +386,26 @@ public class ExecuteSqlRequest implements IndexedRecord {
          * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
          * </ul>
          * The default value is {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
          */
         public static final String DISTRIBUTED_JOINS = "distributed_joins";
+
+        /**
+         * If {@code true}, enables the use of distributed operations in
+         * servicing the given query.  Any query requiring a distributed join
+         * will succeed, though hints can be used in the query to change the
+         * distribution of the source data to allow the query to succeed.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
+         */
+        public static final String DISTRIBUTED_OPERATIONS = "distributed_operations";
 
         /**
          * If {@code false}, scalar subqueries will be translated into joins
@@ -463,6 +507,20 @@ public class ExecuteSqlRequest implements IndexedRecord {
          * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
          */
         public static final String PREPARE_MODE = "prepare_mode";
+
+        /**
+         * <DEVELOPER>
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+         */
+        public static final String PLANNER_JOIN_VALIDATIONS = "planner_join_validations";
 
         private Options() {  }
     }
@@ -591,10 +649,10 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 target="_top">TTL</a> of the paging table.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
-     *                 DISTRIBUTED_JOINS}: If {@code false}, disables the use
-     *                 of distributed joins in servicing the given query.  Any
-     *                 query requiring a distributed join to succeed will fail,
-     *                 though hints can be used in the query to change the
+     *                 DISTRIBUTED_JOINS}: If {@code true}, enables the use of
+     *                 distributed joins in servicing the given query.  Any
+     *                 query requiring a distributed join will succeed, though
+     *                 hints can be used in the query to change the
      *                 distribution of the source data to allow the query to
      *                 succeed.
      *                 Supported values:
@@ -606,7 +664,27 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_OPERATIONS
+     *                 DISTRIBUTED_OPERATIONS}: If {@code true}, enables the
+     *                 use of distributed operations in servicing the given
+     *                 query.  Any query requiring a distributed join will
+     *                 succeed, though hints can be used in the query to change
+     *                 the distribution of the source data to allow the query
+     *                 to succeed.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
      *                 SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries
@@ -710,6 +788,19 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PLANNER_JOIN_VALIDATIONS
+     *                 PLANNER_JOIN_VALIDATIONS}: <DEVELOPER>
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 </ul>
      * 
      */
@@ -841,10 +932,10 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 target="_top">TTL</a> of the paging table.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
-     *                 DISTRIBUTED_JOINS}: If {@code false}, disables the use
-     *                 of distributed joins in servicing the given query.  Any
-     *                 query requiring a distributed join to succeed will fail,
-     *                 though hints can be used in the query to change the
+     *                 DISTRIBUTED_JOINS}: If {@code true}, enables the use of
+     *                 distributed joins in servicing the given query.  Any
+     *                 query requiring a distributed join will succeed, though
+     *                 hints can be used in the query to change the
      *                 distribution of the source data to allow the query to
      *                 succeed.
      *                 Supported values:
@@ -856,7 +947,27 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_OPERATIONS
+     *                 DISTRIBUTED_OPERATIONS}: If {@code true}, enables the
+     *                 use of distributed operations in servicing the given
+     *                 query.  Any query requiring a distributed join will
+     *                 succeed, though hints can be used in the query to change
+     *                 the distribution of the source data to allow the query
+     *                 to succeed.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
      *                 SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries
@@ -960,6 +1071,19 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PLANNER_JOIN_VALIDATIONS
+     *                 PLANNER_JOIN_VALIDATIONS}: <DEVELOPER>
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 </ul>
      * 
      */
@@ -1220,11 +1344,11 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         the paging table.
      *                 <li> {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
-     *         DISTRIBUTED_JOINS}: If {@code false}, disables the use of
+     *         DISTRIBUTED_JOINS}: If {@code true}, enables the use of
      *         distributed joins in servicing the given query.  Any query
-     *         requiring a distributed join to succeed will fail, though hints
-     *         can be used in the query to change the distribution of the
-     *         source data to allow the query to succeed.
+     *         requiring a distributed join will succeed, though hints can be
+     *         used in the query to change the distribution of the source data
+     *         to allow the query to succeed.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -1233,7 +1357,23 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_OPERATIONS
+     *         DISTRIBUTED_OPERATIONS}: If {@code true}, enables the use of
+     *         distributed operations in servicing the given query.  Any query
+     *         requiring a distributed join will succeed, though hints can be
+     *         used in the query to change the distribution of the source data
+     *         to allow the query to succeed.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
      *         SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries will be
@@ -1323,6 +1463,18 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#PLANNER_JOIN_VALIDATIONS
+     *         PLANNER_JOIN_VALIDATIONS}: <DEVELOPER>
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *         </ul>
      * 
      */
@@ -1420,10 +1572,10 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 target="_top">TTL</a> of the paging table.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
-     *                 DISTRIBUTED_JOINS}: If {@code false}, disables the use
-     *                 of distributed joins in servicing the given query.  Any
-     *                 query requiring a distributed join to succeed will fail,
-     *                 though hints can be used in the query to change the
+     *                 DISTRIBUTED_JOINS}: If {@code true}, enables the use of
+     *                 distributed joins in servicing the given query.  Any
+     *                 query requiring a distributed join will succeed, though
+     *                 hints can be used in the query to change the
      *                 distribution of the source data to allow the query to
      *                 succeed.
      *                 Supported values:
@@ -1435,7 +1587,27 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_OPERATIONS
+     *                 DISTRIBUTED_OPERATIONS}: If {@code true}, enables the
+     *                 use of distributed operations in servicing the given
+     *                 query.  Any query requiring a distributed join will
+     *                 succeed, though hints can be used in the query to change
+     *                 the distribution of the source data to allow the query
+     *                 to succeed.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
      *                 SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries
@@ -1539,6 +1711,19 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PLANNER_JOIN_VALIDATIONS
+     *                 PLANNER_JOIN_VALIDATIONS}: <DEVELOPER>
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

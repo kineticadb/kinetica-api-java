@@ -74,8 +74,8 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
      *                   performed. Must be an existing view.
      * @param worldTableName  Name of the table containing the complete series
      *                        (track) information.
-     * @param viewName  Optional name of the view containing the series
-     *                  (tracks) which have to be updated.
+     * @param viewName  name of the view containing the series (tracks) which
+     *                  have to be updated.
      * @param reserved
      * @param options  Optional parameters.
      * 
@@ -136,8 +136,8 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional name of the view containing the series (tracks) which
-     *         have to be updated.
+     * @return name of the view containing the series (tracks) which have to be
+     *         updated.
      * 
      */
     public String getViewName() {
@@ -146,8 +146,8 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param viewName  Optional name of the view containing the series
-     *                  (tracks) which have to be updated.
+     * @param viewName  name of the view containing the series (tracks) which
+     *                  have to be updated.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -139,6 +139,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT NO_COUNT}:
      * return a count of 0 for the join table for logging and for show_table.
      * optimization needed for large overlapped equi-join stencils
+     *         <li> {@link
+     * com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
+     * CHUNK_SIZE}: Maximum size of a joined-chunk for this table. Defaults to
+     * the gpudb.conf file chunk size
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -270,6 +274,12 @@ public class CreateJoinTableRequest implements IndexedRecord {
          * stencils
          */
         public static final String NO_COUNT = "no_count";
+
+        /**
+         * Maximum size of a joined-chunk for this table. Defaults to the
+         * gpudb.conf file chunk size
+         */
+        public static final String CHUNK_SIZE = "chunk_size";
 
         private Options() {  }
     }
@@ -424,6 +434,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 NO_COUNT}: return a count of 0 for the join table for
      *                 logging and for show_table. optimization needed for
      *                 large overlapped equi-join stencils
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
+     *                 CHUNK_SIZE}: Maximum size of a joined-chunk for this
+     *                 table. Defaults to the gpudb.conf file chunk size
      *                 </ul>
      * 
      */
@@ -650,6 +664,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         NO_COUNT}: return a count of 0 for the join table for logging
      *         and for show_table. optimization needed for large overlapped
      *         equi-join stencils
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
+     *         CHUNK_SIZE}: Maximum size of a joined-chunk for this table.
+     *         Defaults to the gpudb.conf file chunk size
      *         </ul>
      * 
      */
@@ -765,6 +783,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 NO_COUNT}: return a count of 0 for the join table for
      *                 logging and for show_table. optimization needed for
      *                 large overlapped equi-join stencils
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
+     *                 CHUNK_SIZE}: Maximum size of a joined-chunk for this
+     *                 table. Defaults to the gpudb.conf file chunk size
      *                 </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

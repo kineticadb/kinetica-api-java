@@ -91,6 +91,23 @@ public class AppendRecordsRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AppendRecordsRequest.Options#TRUNCATE_STRINGS
+     * TRUNCATE_STRINGS}: If set to {true}@{, it allows to append unbounded
+     * string to charN string. If 'truncate_strings' is 'true', the desination
+     * column is charN datatype, and the source column is unnbounded string, it
+     * will truncate the source string to length of N first, and then append
+     * the truncated string to the destination charN column. The default value
+     * is false.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AppendRecordsRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
      * </ul>
      * A set of string constants for the parameter {@code options}.
      */
@@ -149,6 +166,25 @@ public class AppendRecordsRequest implements IndexedRecord {
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * If set to {true}@{, it allows to append unbounded string to charN
+         * string. If 'truncate_strings' is 'true', the desination column is
+         * charN datatype, and the source column is unnbounded string, it will
+         * truncate the source string to length of N first, and then append the
+         * truncated string to the destination charN column. The default value
+         * is false.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AppendRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
+         */
+        public static final String TRUNCATE_STRINGS = "truncate_strings";
 
         private Options() {  }
     }
@@ -226,6 +262,27 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 being inserted will remain unchanged and the new record
      *                 discarded.  If the specified table does not have a
      *                 primary key, then this option is ignored.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {true}@{, it allows to
+     *                 append unbounded string to charN string. If
+     *                 'truncate_strings' is 'true', the desination column is
+     *                 charN datatype, and the source column is unnbounded
+     *                 string, it will truncate the source string to length of
+     *                 N first, and then append the truncated string to the
+     *                 destination charN column. The default value is false.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -378,6 +435,23 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AppendRecordsRequest.Options#TRUNCATE_STRINGS
+     *         TRUNCATE_STRINGS}: If set to {true}@{, it allows to append
+     *         unbounded string to charN string. If 'truncate_strings' is
+     *         'true', the desination column is charN datatype, and the source
+     *         column is unnbounded string, it will truncate the source string
+     *         to length of N first, and then append the truncated string to
+     *         the destination charN column. The default value is false.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AppendRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
      *         </ul>
      * 
      */
@@ -428,6 +502,27 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 being inserted will remain unchanged and the new record
      *                 discarded.  If the specified table does not have a
      *                 primary key, then this option is ignored.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {true}@{, it allows to
+     *                 append unbounded string to charN string. If
+     *                 'truncate_strings' is 'true', the desination column is
+     *                 charN datatype, and the source column is unnbounded
+     *                 string, it will truncate the source string to length of
+     *                 N first, and then append the truncated string to the
+     *                 destination charN column. The default value is false.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

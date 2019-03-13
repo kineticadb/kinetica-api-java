@@ -394,6 +394,31 @@ public abstract class GPUdbBase {
     }   // end class SubmitException
 
 
+    /**
+     * A special exception indicating the the server is shutting down
+     */
+    public class GPUdbExitException extends GPUdbException {
+        /**
+         * Creates a new {@link GPUdbExitException} with the specified message.
+         *
+         * @param message  the message
+         */
+        public GPUdbExitException(String message) {
+            super(message);
+        }
+
+        /**
+         * Creates a new {@link GPUdbExitException} with the specified message and
+         * cause.
+         *
+         * @param message  the message
+         * @param cause    the cause
+         */
+        public GPUdbExitException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
     public static final class GPUdbHAUnavailableException extends GPUdbException {
         /**
          * Creates a new {@link GPUdbHAUnavailableException} with the specified message.
@@ -546,6 +571,8 @@ public abstract class GPUdbBase {
      * number of results should be returned.
      */
     public static final long END_OF_SET = -9999;
+    private static final String DB_OFFLINE_ERROR_MESSAGE = "System is offline";
+    private static final String DB_EXITING_ERROR_MESSAGE = "Kinetica is exiting";
 
     // Fields
 
@@ -575,7 +602,13 @@ public abstract class GPUdbBase {
         try {
             // Not using an unmodifiable list because we'll have to update it
             // with the HA ring head node addresses
-            urls = list( new URL(url) );
+            urls = new ArrayList<URL>();
+
+            // Split the string on commas, if any
+            String[] url_strings = url.split(",");
+            for (int i = 0; i < url_strings.length; ++i ) {
+                urls.add( new URL( url_strings[i] ) );
+            }
         } catch (MalformedURLException ex) {
             throw new GPUdbException(ex.getMessage(), ex);
         }
@@ -633,59 +666,57 @@ public abstract class GPUdbBase {
         knownTypeObjectMaps = new ConcurrentHashMap<>(16, 0.75f, 1);
         knownTypes = new ConcurrentHashMap<>(16, 0.75f, 1);
 
-        // If only one URL is given, get the HA ring head node addresses, if any
-        if ( this.urls.size() == 1 ) {
-            ShowSystemPropertiesResponse response = null;
-            try {
-                response = submitRequest(appendPathToURL(this.urls.get(0), "/show/system/properties"),
-                                         new ShowSystemPropertiesRequest(),
-                                         new ShowSystemPropertiesResponse(),
-                                         false);
-            } catch (MalformedURLException ex) {
-                // Note: Not worth dying just because the HA ring node
-                // addresses couldn't be found
-            } catch (GPUdbException ex) {
-                // Note: Not worth dying just because the HA ring node
-                // addresses couldn't be found
-            }
+        // Get the HA ring head node addresses, if any
+        ShowSystemPropertiesResponse response = null;
+        try {
+            response = submitRequest(appendPathToURL(this.urls.get(0), "/show/system/properties"),
+                                     new ShowSystemPropertiesRequest(),
+                                     new ShowSystemPropertiesResponse(),
+                                     false);
+        } catch (MalformedURLException ex) {
+            // Note: Not worth dying just because the HA ring node
+            // addresses couldn't be found
+        } catch (GPUdbException ex) {
+            // Note: Not worth dying just because the HA ring node
+            // addresses couldn't be found
+        }
 
-            // Do the rest only if we were able to get the system properties
-            if ( response != null ) {
-                Map<String, String> systemProperties = response.getPropertyMap();
-                String is_ha_enabled_str = systemProperties.get( ShowSystemPropertiesResponse.PropertyMap.CONF_ENABLE_HA );
+        // Do the rest only if we were able to get the system properties
+        if ( response != null ) {
+            Map<String, String> systemProperties = response.getPropertyMap();
+            String is_ha_enabled_str = systemProperties.get( ShowSystemPropertiesResponse.PropertyMap.CONF_ENABLE_HA );
 
-                // Only attempt to parse the HA ring node addresses if HA is enabled
-                if ( (is_ha_enabled_str != null)
-                     && (is_ha_enabled_str.compareToIgnoreCase( "true" ) == 0 ) ) {
+            // Only attempt to parse the HA ring node addresses if HA is enabled
+            if ( (is_ha_enabled_str != null)
+                 && (is_ha_enabled_str.compareToIgnoreCase( "true" ) == 0 ) ) {
 
-                    // Parse the HA ringt head node addresses, if any
-                    String ha_ring_head_nodes_str = systemProperties.get( ShowSystemPropertiesResponse.PropertyMap.CONF_HA_RING_HEAD_NODES );
-                    if ( (ha_ring_head_nodes_str != null) && !ha_ring_head_nodes_str.isEmpty() ) {
-                        List<URL> ha_urls = new ArrayList<URL>();
-                        try {
-                            String[] ha_ring_head_nodes = ha_ring_head_nodes_str.split(",");
-                            for (int i = 0; i < ha_ring_head_nodes.length; ++i ) {
-                                ha_urls.add( new URL( ha_ring_head_nodes[i] ) );
-                            }
-                        } catch (MalformedURLException ex) {
-                            throw new GPUdbException( "Error parsing HA ring head "
-                                                      + "node address from the "
-                                                      + "database configuration "
-                                                      + "parameters: "
-                                                      + ex.getMessage(), ex);
+                // Parse the HA ringt head node addresses, if any
+                String ha_ring_head_nodes_str = systemProperties.get( ShowSystemPropertiesResponse.PropertyMap.CONF_HA_RING_HEAD_NODES );
+                if ( (ha_ring_head_nodes_str != null) && !ha_ring_head_nodes_str.isEmpty() ) {
+                    List<URL> ha_urls = new ArrayList<URL>();
+                    try {
+                        String[] ha_ring_head_nodes = ha_ring_head_nodes_str.split(",");
+                        for (int i = 0; i < ha_ring_head_nodes.length; ++i ) {
+                            ha_urls.add( new URL( ha_ring_head_nodes[i] ) );
                         }
-
-                        // Ensure that the given URL is included in the HA ring
-                        // head node addresses
-                        if ( !ha_urls.contains( this.urls.get( 0 ) ) ) {
-                            ha_urls.add( this.urls.get( 0 ) );
-                        }
-
-                        // Now save these head node addresses
-                        this.urls = Collections.unmodifiableList( ha_urls );
+                    } catch (MalformedURLException ex) {
+                        throw new GPUdbException( "Error parsing HA ring head "
+                                                  + "node address from the "
+                                                  + "database configuration "
+                                                  + "parameters: "
+                                                  + ex.getMessage(), ex);
                     }
-                } // nothing to do if this property isn't returned
-            }
+
+                    // Ensure that the first of the given URL is included in the
+                    // HA ring head node addresses
+                    if ( !ha_urls.contains( this.urls.get( 0 ) ) ) {
+                        ha_urls.add( this.urls.get( 0 ) );
+                    }
+
+                    // Now save these head node addresses
+                    this.urls = Collections.unmodifiableList( ha_urls );
+                }
+            } // nothing to do if this property isn't returned
         }
         
         // Create URLs for the host manager
@@ -1299,7 +1330,7 @@ public abstract class GPUdbBase {
      */
     public <T extends IndexedRecord> T submitRequest( String endpoint,
                                                       IndexedRecord request,
-                                                      T response ) throws SubmitException {
+                                                      T response ) throws SubmitException, GPUdbException {
         return submitRequest(endpoint, request, response, false);
     }
 
@@ -1327,7 +1358,7 @@ public abstract class GPUdbBase {
     public <T extends IndexedRecord> T submitRequest( String endpoint,
                                                       IndexedRecord request,
                                                       T response,
-                                                      boolean enableCompression ) throws SubmitException {
+                                                      boolean enableCompression ) throws SubmitException, GPUdbException {
         // Send the request to the database server head node
         URL url = getURL();
         URL originalURL = url;
@@ -1336,13 +1367,34 @@ public abstract class GPUdbBase {
             try {
                 return submitRequest(appendPathToURL(url, endpoint), request, response, enableCompression);
             } catch (MalformedURLException ex) {
+                // There's an error in creating the URL
                 throw new GPUdbRuntimeException(ex.getMessage(), ex);
+            } catch (GPUdbExitException ex) {
+                // Handle our special exit exception
+                try {
+                    url = switchURL( originalURL );
+                } catch (GPUdbHAUnavailableException ha_ex) {
+                    // We've now tried all the HA clusters and circled back
+                    throw new GPUdbException( ha_ex.getMessage() );
+                }
             } catch (SubmitException ex) {
+                // Some error occurred during the HTTP request
                 try {
                     url = switchURL( originalURL );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
                     throw new SubmitException(null, ex.getRequest(), ex.getRequestSize(), ha_ex.getMessage(), ex.getCause());
+                }
+            } catch (GPUdbException ex) {
+                // Any other GPUdbException is a valid failure
+                throw ex;
+            } catch (Exception ex) {
+                // And other random exceptions probably are also connection errors
+                try {
+                    url = switchURL( originalURL );
+                } catch (GPUdbHAUnavailableException ha_ex) {
+                    // We've now tried all the HA clusters and circled back
+                    throw new GPUdbException( ha_ex.getMessage() );
                 }
             }
         } // end while
@@ -1365,7 +1417,7 @@ public abstract class GPUdbBase {
      */
     public <T extends IndexedRecord> T submitRequestToHM( String endpoint,
                                                           IndexedRecord request,
-                                                          T response ) throws SubmitException {
+                                                          T response ) throws SubmitException, GPUdbException {
         return submitRequestToHM(endpoint, request, response, false );
     }
 
@@ -1394,45 +1446,60 @@ public abstract class GPUdbBase {
     public <T extends IndexedRecord> T submitRequestToHM( String endpoint,
                                                           IndexedRecord request,
                                                           T response,
-                                                          boolean enableCompression ) throws SubmitException {
+                                                          boolean enableCompression ) throws SubmitException, GPUdbException {
         // Send the request to the host manager
         URL hmUrl = getHmURL();
         URL originalURL = hmUrl;
 
         while (true) {
-            boolean retry = false;
-
             try {
-                return submitRequest(appendPathToURL(hmUrl, endpoint), request, response, enableCompression);
+                 return submitRequest(appendPathToURL(hmUrl, endpoint), request, response, enableCompression);
             } catch (MalformedURLException ex) {
+                // There's an error in creating the URL
                 throw new GPUdbRuntimeException(ex.getMessage(), ex);
-            } catch (SubmitException ex) {
+            } catch (GPUdbExitException ex) {
+                // Handle our special exit exception
                 try {
                     hmUrl = switchHmURL( originalURL );
                 } catch (GPUdbHAUnavailableException ha_ex) {
-                    // We've now tried all the HA clusters and circled back;
-                    // need to try updating the host manager port and re-try
-                    retry = true;
+                    // We've now tried all the HA clusters and circled back
+                    throw new GPUdbException( ha_ex.getMessage() );
+                }
+            } catch (SubmitException ex) {
+                // Some error occurred during the HTTP request;
+                // first check if the host manager port is wrong
+                try {
+                    this.updateHostManagerPort();
+                } catch (Exception ex2) {
+                    // Upon any error, try to use other clusters
+                    try {
+                        hmUrl = switchHmURL( originalURL );
+                    } catch (GPUdbHAUnavailableException ha_ex) {
+                        // We've now tried all the HA clusters and circled back
+                        throw new SubmitException(null, ex.getRequest(), ex.getRequestSize(), ha_ex.getMessage(), ex.getCause());
+                    }
                 }
                 
-                
-                // Try to automatically update the host manager port
-                if ( retry ) {
+            } catch (GPUdbException ex) {
+                // the host manager can still be going even if the database is down
+                if ( ex.getMessage().contains( DB_OFFLINE_ERROR_MESSAGE ) ) {
                     try {
-                        updateHostManagerPort();
-                        hmUrl = getHmURL();
-                    } catch (GPUdbException ex2) {
-                        throw new SubmitException(null, ex.getRequest(), ex.getRequestSize(), ex2.getMessage());
+                        hmUrl = switchHmURL( originalURL );
+                    } catch (GPUdbHAUnavailableException ha_ex) {
+                        // We've now tried all the HA clusters and circled back
+                        throw new GPUdbException( ha_ex.getMessage() );
                     }
+                }
 
-                    // Ping the new URL
-                    try {
-                        return submitRequest(appendPathToURL(hmUrl, endpoint), request, response, enableCompression);
-                    } catch (MalformedURLException ex2) {
-                        throw new GPUdbRuntimeException(ex2.getMessage(), ex2);
-                    } catch (SubmitException ex2) {
-                        throw new SubmitException(null, ex2.getRequest(), ex2.getRequestSize(), ex2.getMessage(), ex2.getCause());
-                    }
+                // Any other GPUdbException is a valid failure
+                throw ex;
+            } catch (Exception ex) {
+                // And other random exceptions probably are also connection errors
+                try {
+                    hmUrl = switchHmURL( originalURL );
+                } catch (GPUdbHAUnavailableException ha_ex) {
+                    // We've now tried all the HA clusters and circled back
+                    throw new GPUdbException( ha_ex.getMessage() );
                 }
             }
         } // end while
@@ -1459,7 +1526,32 @@ public abstract class GPUdbBase {
      *
      * @throws SubmitException if an error occurs while submitting the request
      */
-    public <T extends IndexedRecord> T submitRequest(URL url, IndexedRecord request, T response, boolean enableCompression) throws SubmitException {
+    public <T extends IndexedRecord> T submitRequest(URL url, IndexedRecord request, T response, boolean enableCompression) throws SubmitException, GPUdbExitException, GPUdbException {
+
+        return submitRequestRaw( url, request, response, enableCompression );
+    }
+
+    /**
+     * Submits an arbitrary request to GPUdb via the specified URL and saves the
+     * response into a pre-created response object, optionally compressing the
+     * request before sending. The request and response objects must implement
+     * the Avro {@link IndexedRecord} interface. The request will only be
+     * compressed if {@code enableCompression} is {@code true} and the
+     * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} was
+     * called with the {@link Options#setUseSnappy(boolean) Snappy compression
+     * flag} set to {@code true}.
+     *
+     * @param <T>                the type of the response object
+     * @param url                the URL to send the request to
+     * @param request            the request object
+     * @param response           the response object
+     * @param enableCompression  whether to compress the request
+     * @return                   the response object (same as {@code response}
+     *                           parameter)
+     *
+     * @throws SubmitException if an error occurs while submitting the request
+     */
+    public <T extends IndexedRecord> T submitRequestRaw(URL url, IndexedRecord request, T response, boolean enableCompression) throws SubmitException, GPUdbExitException, GPUdbException {
         int requestSize = -1;
         HttpURLConnection connection = null;
 
@@ -1516,7 +1608,9 @@ public abstract class GPUdbBase {
 
             try (InputStream inputStream = connection.getResponseCode() < 400 ? connection.getInputStream() : connection.getErrorStream()) {
                 if (inputStream == null) {
-                    throw new IOException("Server returned HTTP " + connection.getResponseCode() + " (" + connection.getResponseMessage() + ").");
+                    // Some error occurred during the submission process
+                    String message = ("Server returned HTTP " + connection.getResponseCode() + " (" + connection.getResponseMessage() + ").");
+                    throw new SubmitException(url, request, requestSize, message);
                 }
 
                 try {
@@ -1528,11 +1622,15 @@ public abstract class GPUdbBase {
                     String message = decoder.readString();
 
                     if (status.equals("ERROR")) {
-                        throw new SubmitException(url, request, requestSize, message);
+                        // Check if Kinetica is shutting down
+                        if ( message.contains( DB_EXITING_ERROR_MESSAGE ) ) {
+                            throw new GPUdbExitException( message );
+                        }
+                        // A legitimate error
+                        throw new GPUdbException( message );
                     }
 
                     // Skip over data_type field
-
                     decoder.skipString();
 
                     // Decode data field
@@ -1547,9 +1645,17 @@ public abstract class GPUdbBase {
                     }
                 }
             }
+        } catch (GPUdbExitException ex) {
+            // DB is shutting down
+            throw ex;
         } catch (SubmitException ex) {
+            // Some sort of submission error
+            throw ex;
+        } catch (GPUdbException ex) {
+            // Some legitimate error
             throw ex;
         } catch (Exception ex) {
+            // Some sort of submission error
             throw new SubmitException(url, request, requestSize, ex.getMessage(), ex);
         } finally {
             if (connection != null) {
@@ -1559,7 +1665,7 @@ public abstract class GPUdbBase {
                 }
             }
         }
-    }
+    }   // end submitRequestRaw
 
     // Utilities
 

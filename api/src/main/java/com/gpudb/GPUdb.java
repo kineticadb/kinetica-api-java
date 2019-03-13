@@ -3689,6 +3689,27 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {true}@{, it allows to
+     *                 append unbounded string to charN string. If
+     *                 'truncate_strings' is 'true', the desination column is
+     *                 charN datatype, and the source column is unnbounded
+     *                 string, it will truncate the source string to length of
+     *                 N first, and then append the truncated string to the
+     *                 destination charN column. The default value is false.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -4463,6 +4484,10 @@ public class GPUdb extends GPUdbBase {
      *                 NO_COUNT}: return a count of 0 for the join table for
      *                 logging and for show_table. optimization needed for
      *                 large overlapped equi-join stencils
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
+     *                 CHUNK_SIZE}: Maximum size of a joined-chunk for this
+     *                 table. Defaults to the gpudb.conf file chunk size
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -6884,10 +6909,10 @@ public class GPUdb extends GPUdbBase {
      *                 target="_top">TTL</a> of the paging table.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
-     *                 DISTRIBUTED_JOINS}: If {@code false}, disables the use
-     *                 of distributed joins in servicing the given query.  Any
-     *                 query requiring a distributed join to succeed will fail,
-     *                 though hints can be used in the query to change the
+     *                 DISTRIBUTED_JOINS}: If {@code true}, enables the use of
+     *                 distributed joins in servicing the given query.  Any
+     *                 query requiring a distributed join will succeed, though
+     *                 hints can be used in the query to change the
      *                 distribution of the source data to allow the query to
      *                 succeed.
      *                 Supported values:
@@ -6899,7 +6924,27 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_OPERATIONS
+     *                 DISTRIBUTED_OPERATIONS}: If {@code true}, enables the
+     *                 use of distributed operations in servicing the given
+     *                 query.  Any query requiring a distributed join will
+     *                 succeed, though hints can be used in the query to change
+     *                 the distribution of the source data to allow the query
+     *                 to succeed.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#SSQ_OPTIMIZATION
      *                 SSQ_OPTIMIZATION}: If {@code false}, scalar subqueries
@@ -7003,6 +7048,19 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PLANNER_JOIN_VALIDATIONS
+     *                 PLANNER_JOIN_VALIDATIONS}: <DEVELOPER>
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 </ul>
      * 
      * @return Response object containing the results of the operation.
@@ -10737,9 +10795,64 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Employs a topological query on a network graph generated a-priori by
-     * {@link GPUdb#createGraph(CreateGraphRequest)}. See <a
-     * href="../../../../graph_solver/network_graph_solver.html"
-     * target="_top">Network Graph Solvers</a> for more information.
+     * {@link GPUdb#createGraph(CreateGraphRequest)} and returns a list of
+     * adjacent edge(s) or node(s), also known as an adjacency list, depending
+     * on what's been provided to the endpoint; providing edges will return
+     * nodes and providing nodes will return edges. There are two ways to
+     * provide edge(s) or node(s) to be queried: using column names and <a
+     * href="../../../../graph_solver/network_graph_solver.html#query-identifiers"
+     * target="_top">query identifiers</a> with the {@code queries} with or
+     * using a list of specific IDs with one of the {@code edgeOrNodeIntIds},
+     * {@code edgeOrNodeStringIds}, and {@code edgeOrNodeWktIds} arrays and
+     * {@code edgeToNode} to determine if the IDs are edges or nodes.
+     * <p>
+     * To determine the node(s) or edge(s) adjacent to a value from a given
+     * column, provide a list of column names aliased as a particular query
+     * identifier to {@code queries}. This field can be populated with column
+     * values from any table as long as the type is supported by the given
+     * identifier. See <a
+     * href="../../../../graph_solver/network_graph_solver.html#query-identifiers"
+     * target="_top">Query Identifiers</a> for more information. I
+     * <p>
+     * To query for nodes that are adjacent to a given set of edges, set {@code
+     * edgeToNode} to {@code true} and provide values to the {@code
+     * edgeOrNodeIntIds}, {@code edgeOrNodeStringIds}, and {@code
+     * edgeOrNodeWktIds} arrays; it is assumed the values in the arrays are
+     * edges and the corresponding adjacency list array in the response will be
+     * populated with nodes.
+     * <p>
+     * To query for edges that are adjacent to a given set of nodes, set {@code
+     * edgeToNode} to {@code false} and provide values to the {@code
+     * edgeOrNodeIntIds}, {@code edgeOrNodeStringIds}, and {@code
+     * edgeOrNodeWktIds} arrays; it is assumed the values in arrays are nodes
+     * and the given node(s) will be queried for adjacent edges and the
+     * corresponding adjacency list array in the response will be populated
+     * with edges.
+     * <p>
+     * To query for adjacencies relative to a given column and a given set of
+     * edges/nodes, the {@code queries} and {@code edgeOrNodeIntIds} / {@code
+     * edgeOrNodeStringIds} / {@code edgeOrNodeWktIds} parameters can be used
+     * in conjuction with each other. If both {@code queries} and one of the
+     * arrays are populated, values from {@code queries} will be prioritized
+     * over values in the array and all values parsed from the {@code queries}
+     * array will be appended to the corresponding arrays (depending on the
+     * type). If using both {@code queries} and the edge_or_node arrays, the
+     * types must match, e.g., if {@code queries} utilizes the 'QUERY_NODE_ID'
+     * identifier, only the {@code edgeOrNodeIntIds} array should be used. Note
+     * that using {@code queries} will override {@code edgeToNode}, so if
+     * {@code queries} contains a node-based query identifier, e.g.,
+     * 'table.column AS QUERY_NODE_ID', it is assumed that the {@code
+     * edgeOrNodeIntIds} will contain node IDs.
+     * <p>
+     * To return the adjacency list in the response, leave {@code
+     * adjacencyTable} empty. To return the adjacency list in a table and not
+     * in the response, provide a value to {@code adjacencyTable} and set
+     * {@code export_query_results} to {@code false}. To return the adjacency
+     * list both in a table and the response, provide a value to {@code
+     * adjacencyTable} and set {@code export_query_results} to {@code true}.
+     * <p>
+     * See <a href="../../../../graph_solver/network_graph_solver.html"
+     * target="_top">Network Graph Solver</a> for more information.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -10761,18 +10874,78 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Employs a topological query on a network graph generated a-priori by
-     * {@link GPUdb#createGraph(String, boolean, List, List, List, List, Map)}.
+     * {@link GPUdb#createGraph(String, boolean, List, List, List, List, Map)}
+     * and returns a list of adjacent edge(s) or node(s), also known as an
+     * adjacency list, depending on what's been provided to the endpoint;
+     * providing edges will return nodes and providing nodes will return edges.
+     * There are two ways to provide edge(s) or node(s) to be queried: using
+     * column names and <a
+     * href="../../../../graph_solver/network_graph_solver.html#query-identifiers"
+     * target="_top">query identifiers</a> with the {@code queries} with or
+     * using a list of specific IDs with one of the {@code edgeOrNodeIntIds},
+     * {@code edgeOrNodeStringIds}, and {@code edgeOrNodeWktIds} arrays and
+     * {@code edgeToNode} to determine if the IDs are edges or nodes.
+     * <p>
+     * To determine the node(s) or edge(s) adjacent to a value from a given
+     * column, provide a list of column names aliased as a particular query
+     * identifier to {@code queries}. This field can be populated with column
+     * values from any table as long as the type is supported by the given
+     * identifier. See <a
+     * href="../../../../graph_solver/network_graph_solver.html#query-identifiers"
+     * target="_top">Query Identifiers</a> for more information. I
+     * <p>
+     * To query for nodes that are adjacent to a given set of edges, set {@code
+     * edgeToNode} to {@code true} and provide values to the {@code
+     * edgeOrNodeIntIds}, {@code edgeOrNodeStringIds}, and {@code
+     * edgeOrNodeWktIds} arrays; it is assumed the values in the arrays are
+     * edges and the corresponding adjacency list array in the response will be
+     * populated with nodes.
+     * <p>
+     * To query for edges that are adjacent to a given set of nodes, set {@code
+     * edgeToNode} to {@code false} and provide values to the {@code
+     * edgeOrNodeIntIds}, {@code edgeOrNodeStringIds}, and {@code
+     * edgeOrNodeWktIds} arrays; it is assumed the values in arrays are nodes
+     * and the given node(s) will be queried for adjacent edges and the
+     * corresponding adjacency list array in the response will be populated
+     * with edges.
+     * <p>
+     * To query for adjacencies relative to a given column and a given set of
+     * edges/nodes, the {@code queries} and {@code edgeOrNodeIntIds} / {@code
+     * edgeOrNodeStringIds} / {@code edgeOrNodeWktIds} parameters can be used
+     * in conjuction with each other. If both {@code queries} and one of the
+     * arrays are populated, values from {@code queries} will be prioritized
+     * over values in the array and all values parsed from the {@code queries}
+     * array will be appended to the corresponding arrays (depending on the
+     * type). If using both {@code queries} and the edge_or_node arrays, the
+     * types must match, e.g., if {@code queries} utilizes the 'QUERY_NODE_ID'
+     * identifier, only the {@code edgeOrNodeIntIds} array should be used. Note
+     * that using {@code queries} will override {@code edgeToNode}, so if
+     * {@code queries} contains a node-based query identifier, e.g.,
+     * 'table.column AS QUERY_NODE_ID', it is assumed that the {@code
+     * edgeOrNodeIntIds} will contain node IDs.
+     * <p>
+     * To return the adjacency list in the response, leave {@code
+     * adjacencyTable} empty. To return the adjacency list in a table and not
+     * in the response, provide a value to {@code adjacencyTable} and set
+     * {@code export_query_results} to {@code false}. To return the adjacency
+     * list both in a table and the response, provide a value to {@code
+     * adjacencyTable} and set {@code export_query_results} to {@code true}.
+     * <p>
      * See <a href="../../../../graph_solver/network_graph_solver.html"
-     * target="_top">Network Graph Solvers</a> for more information.
+     * target="_top">Network Graph Solver</a> for more information.
      * 
      * @param graphName  Name of the graph resource to query.
-     * @param queries  ['Schema.collection.table.column', 'node_identifier',
-     *                 ... ]; e.g., ['graph_nodes.id AS QUERY_NODE_ID'] It
-     *                 appends to the respective arrays below. QUERY identifier
-     *                 overrides edge_to_node parameter.
-     * @param edgeToNode  If set to {@code true}, the query gives the adjacency
-     *                    list from edge(s) to node(s); otherwise, the
-     *                    adjacency list is from node(s) to edge(s).
+     * @param queries  Nodes or edges to be queried specified using <a
+     *                 href="../../../../graph_solver/network_graph_solver.html#query-identifiers"
+     *                 target="_top">query identifiers</a>, e.g., 'table.column
+     *                 AS QUERY_NODE_ID' or 'table.column AS
+     *                 QUERY_EDGE_WKTLINE'. Multiple columns can be used as
+     *                 long as the same identifier is used for all columns.
+     *                 Passing in a query identifier will override the {@code
+     *                 edgeToNode} parameter.
+     * @param edgeToNode  If set to {@code true}, the given edge(s) will be
+     *                    queried for adjacent nodes. If set to {@code false},
+     *                    the given node(s) will be queried for adjacent edges.
      *                    Supported values:
      *                    <ul>
      *                            <li> {@link
@@ -10804,14 +10977,22 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.QueryGraphRequest.Options#NUMBER_OF_RINGS
      *                 NUMBER_OF_RINGS}: Sets the number of rings of edges
      *                 around the node to query for adjacency, with '1' being
-     *                 the edges directly attached to the queried nodes. This
+     *                 the edges directly attached to the queried nodes. For
+     *                 example, if {@code number_of_rings} is set to '2', the
+     *                 edge(s) directly attached to the queried nodes will be
+     *                 returned; in addition, the edge(s) attached to the
+     *                 node(s) attached to the initial ring of edge(s)
+     *                 surrounding the queried node(s) will be returned. This
      *                 setting is ignored if {@code edgeToNode} is set to
-     *                 {@code true}.
+     *                 {@code true}. This setting cannot be less than '1'.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#INCLUDE_ALL_EDGES
-     *                 INCLUDE_ALL_EDGES}: Includes only the edges directed out
-     *                 of the node for the query if set to {@code false}. If
-     *                 set to {@code true}, all edges are queried.
+     *                 INCLUDE_ALL_EDGES}: This parameter is only applicable if
+     *                 the queried graph is directed and {@code edgeToNode} is
+     *                 set to {@code false}. If set to {@code true}, all
+     *                 inbound edges and outbound edges relative to the node
+     *                 will be returned. If set to {@code false}, only outbound
+     *                 edges relative to the node will be returned.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -10839,9 +11020,15 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#ENABLE_GRAPH_DRAW
-     *                 ENABLE_GRAPH_DRAW}: If set to {@code true}, adds an
-     *                 'EDGE_WKTLINE' column identifier to the given {@code
-     *                 adjacencyTable}.
+     *                 ENABLE_GRAPH_DRAW}: If set to {@code true}, adds a
+     *                 WKT-type column named 'QUERY_EDGE_WKTLINE' to the given
+     *                 {@code adjacencyTable} and inputs WKT values from the
+     *                 source graph (if available) or auto-generated WKT values
+     *                 (if there are no WKT values in the source graph). A
+     *                 subsequent call to the <a
+     *                 href="../../../../api/rest/wms_rest.html"
+     *                 target="_top">/wms</a> endpoint can then be made to
+     *                 display the query results on a map.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -12643,8 +12830,8 @@ public class GPUdb extends GPUdbBase {
      *                   performed. Must be an existing view.
      * @param worldTableName  Name of the table containing the complete series
      *                        (track) information.
-     * @param viewName  Optional name of the view containing the series
-     *                  (tracks) which have to be updated.
+     * @param viewName  name of the view containing the series (tracks) which
+     *                  have to be updated.
      * @param reserved
      * @param options  Optional parameters.
      * 

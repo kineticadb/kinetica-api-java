@@ -1,5 +1,12 @@
 # GPUdb Java API Changelog
 
+## Version 7.0.1
+
+### Version 7.0.1.0 - 2019-03-13
+-   Added support for comma-separated URLs for the GPUdb constructor that
+    takes a string.
+
+
 ## Version 7.0.0
 
 ### Version 7.0.0.2 - 2019-02-26
