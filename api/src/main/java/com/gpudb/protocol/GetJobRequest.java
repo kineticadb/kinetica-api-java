@@ -53,7 +53,8 @@ public class GetJobRequest implements IndexedRecord {
      * 
      * @param jobId  A unique identifier for the job whose status and result is
      *               to be fetched.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public GetJobRequest(long jobId, Map<String, String> options) {
@@ -86,7 +87,7 @@ public class GetJobRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -95,7 +96,8 @@ public class GetJobRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -5,9 +5,7 @@
  */
 package com.gpudb.protocol;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -16,23 +14,18 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#adminAlterJobs(AdminAlterJobsRequest)}.
+ * A set of parameters for {@link com.gpudb.GPUdb#alterRole(AlterRoleRequest)}.
  * <p>
- * Perform the requested action on a list of one or more job(s). Based on the
- * type of job and the current state of execution, the action may not be
- * successfully executed. The final result of the attempted actions for each
- * specified job is returned in the status array of the response. See <a
- * href="../../../../../gpudbAdmin/job_manager.html" target="_top">Job
- * Manager</a> for more information.
+ * Alters a Role.
  */
-public class AdminAlterJobsRequest implements IndexedRecord {
+public class AlterRoleRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("AdminAlterJobsRequest")
+            .record("AlterRoleRequest")
             .namespace("com.gpudb")
             .fields()
-                .name("jobIds").type().array().items().longType().noDefault()
+                .name("name").type().stringType().noDefault()
                 .name("action").type().stringType().noDefault()
+                .name("value").type().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -50,84 +43,103 @@ public class AdminAlterJobsRequest implements IndexedRecord {
 
 
     /**
-     * Action to be performed on the jobs specified by job_ids.
+     * Modification operation to be applied to the role.
      * Supported values:
      * <ul>
      *         <li> {@link
-     * com.gpudb.protocol.AdminAlterJobsRequest.Action#CANCEL CANCEL}
+     * com.gpudb.protocol.AlterRoleRequest.Action#SET_RESOURCE_GROUP
+     * SET_RESOURCE_GROUP}: Sets the resource group for an internal role. The
+     * resource group must exist, otherwise, an empty string assigns the role
+     * to the default resource group.
      * </ul>
      * A set of string constants for the parameter {@code action}.
      */
     public static final class Action {
-        public static final String CANCEL = "cancel";
+
+        /**
+         * Sets the resource group for an internal role. The resource group
+         * must exist, otherwise, an empty string assigns the role to the
+         * default resource group.
+         */
+        public static final String SET_RESOURCE_GROUP = "set_resource_group";
 
         private Action() {  }
     }
 
-    private List<Long> jobIds;
+    private String name;
     private String action;
+    private String value;
     private Map<String, String> options;
 
 
     /**
-     * Constructs an AdminAlterJobsRequest object with default parameters.
+     * Constructs an AlterRoleRequest object with default parameters.
      */
-    public AdminAlterJobsRequest() {
-        jobIds = new ArrayList<>();
+    public AlterRoleRequest() {
+        name = "";
         action = "";
+        value = "";
         options = new LinkedHashMap<>();
     }
 
     /**
-     * Constructs an AdminAlterJobsRequest object with the specified
-     * parameters.
+     * Constructs an AlterRoleRequest object with the specified parameters.
      * 
-     * @param jobIds  Jobs to be modified.
-     * @param action  Action to be performed on the jobs specified by job_ids.
+     * @param name  Name of the role to be altered. Must be an existing role.
+     * @param action  Modification operation to be applied to the role.
      *                Supported values:
      *                <ul>
      *                        <li> {@link
-     *                com.gpudb.protocol.AdminAlterJobsRequest.Action#CANCEL
-     *                CANCEL}
+     *                com.gpudb.protocol.AlterRoleRequest.Action#SET_RESOURCE_GROUP
+     *                SET_RESOURCE_GROUP}: Sets the resource group for an
+     *                internal role. The resource group must exist, otherwise,
+     *                an empty string assigns the role to the default resource
+     *                group.
      *                </ul>
+     * @param value  The value of the modification, depending on {@code
+     *               action}.
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
      * 
      */
-    public AdminAlterJobsRequest(List<Long> jobIds, String action, Map<String, String> options) {
-        this.jobIds = (jobIds == null) ? new ArrayList<Long>() : jobIds;
+    public AlterRoleRequest(String name, String action, String value, Map<String, String> options) {
+        this.name = (name == null) ? "" : name;
         this.action = (action == null) ? "" : action;
+        this.value = (value == null) ? "" : value;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
      * 
-     * @return Jobs to be modified.
+     * @return Name of the role to be altered. Must be an existing role.
      * 
      */
-    public List<Long> getJobIds() {
-        return jobIds;
+    public String getName() {
+        return name;
     }
 
     /**
      * 
-     * @param jobIds  Jobs to be modified.
+     * @param name  Name of the role to be altered. Must be an existing role.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminAlterJobsRequest setJobIds(List<Long> jobIds) {
-        this.jobIds = (jobIds == null) ? new ArrayList<Long>() : jobIds;
+    public AlterRoleRequest setName(String name) {
+        this.name = (name == null) ? "" : name;
         return this;
     }
 
     /**
      * 
-     * @return Action to be performed on the jobs specified by job_ids.
+     * @return Modification operation to be applied to the role.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.AdminAlterJobsRequest.Action#CANCEL CANCEL}
+     *         com.gpudb.protocol.AlterRoleRequest.Action#SET_RESOURCE_GROUP
+     *         SET_RESOURCE_GROUP}: Sets the resource group for an internal
+     *         role. The resource group must exist, otherwise, an empty string
+     *         assigns the role to the default resource group.
      *         </ul>
      * 
      */
@@ -137,19 +149,44 @@ public class AdminAlterJobsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param action  Action to be performed on the jobs specified by job_ids.
+     * @param action  Modification operation to be applied to the role.
      *                Supported values:
      *                <ul>
      *                        <li> {@link
-     *                com.gpudb.protocol.AdminAlterJobsRequest.Action#CANCEL
-     *                CANCEL}
+     *                com.gpudb.protocol.AlterRoleRequest.Action#SET_RESOURCE_GROUP
+     *                SET_RESOURCE_GROUP}: Sets the resource group for an
+     *                internal role. The resource group must exist, otherwise,
+     *                an empty string assigns the role to the default resource
+     *                group.
      *                </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminAlterJobsRequest setAction(String action) {
+    public AlterRoleRequest setAction(String action) {
         this.action = (action == null) ? "" : action;
+        return this;
+    }
+
+    /**
+     * 
+     * @return The value of the modification, depending on {@code action}.
+     * 
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * 
+     * @param value  The value of the modification, depending on {@code
+     *               action}.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AlterRoleRequest setValue(String value) {
+        this.value = (value == null) ? "" : value;
         return this;
     }
 
@@ -170,7 +207,7 @@ public class AdminAlterJobsRequest implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminAlterJobsRequest setOptions(Map<String, String> options) {
+    public AlterRoleRequest setOptions(Map<String, String> options) {
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
@@ -202,12 +239,15 @@ public class AdminAlterJobsRequest implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.jobIds;
+                return this.name;
 
             case 1:
                 return this.action;
 
             case 2:
+                return this.value;
+
+            case 3:
                 return this.options;
 
             default:
@@ -230,7 +270,7 @@ public class AdminAlterJobsRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.jobIds = (List<Long>)value;
+                this.name = (String)value;
                 break;
 
             case 1:
@@ -238,6 +278,10 @@ public class AdminAlterJobsRequest implements IndexedRecord {
                 break;
 
             case 2:
+                this.value = (String)value;
+                break;
+
+            case 3:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -256,10 +300,11 @@ public class AdminAlterJobsRequest implements IndexedRecord {
             return false;
         }
 
-        AdminAlterJobsRequest that = (AdminAlterJobsRequest)obj;
+        AlterRoleRequest that = (AlterRoleRequest)obj;
 
-        return ( this.jobIds.equals( that.jobIds )
+        return ( this.name.equals( that.name )
                  && this.action.equals( that.action )
+                 && this.value.equals( that.value )
                  && this.options.equals( that.options ) );
     }
 
@@ -268,13 +313,17 @@ public class AdminAlterJobsRequest implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "jobIds" ) );
+        builder.append( gd.toString( "name" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.jobIds ) );
+        builder.append( gd.toString( this.name ) );
         builder.append( ", " );
         builder.append( gd.toString( "action" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.action ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "value" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.value ) );
         builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
@@ -287,8 +336,9 @@ public class AdminAlterJobsRequest implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.jobIds.hashCode();
+        hashCode = (31 * hashCode) + this.name.hashCode();
         hashCode = (31 * hashCode) + this.action.hashCode();
+        hashCode = (31 * hashCode) + this.value.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

@@ -707,7 +707,8 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    time, datetime or timestamp, at insert time, replace
      *                    empty strings and invalid timestamps with NOW()
      *                    </ul>
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public CreateTypeRequest(String typeDefinition, String label, Map<String, List<String>> properties, Map<String, String> options) {
@@ -1174,7 +1175,7 @@ public class CreateTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -1183,7 +1184,8 @@ public class CreateTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -56,7 +56,8 @@ public class DeleteUserRequest implements IndexedRecord {
      * Constructs a DeleteUserRequest object with the specified parameters.
      * 
      * @param name  Name of the user to be deleted. Must be an existing user.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public DeleteUserRequest(String name, Map<String, String> options) {
@@ -87,7 +88,7 @@ public class DeleteUserRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -96,7 +97,8 @@ public class DeleteUserRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

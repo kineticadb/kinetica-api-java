@@ -144,8 +144,10 @@ public class GrantPermissionTableRequest implements IndexedRecord {
      *                   access. Must be an existing table, collection, or
      *                   view. If a collection, the permission also applies to
      *                   tables and views in the collection.
-     * @param filterExpression  Reserved for future use.
-     * @param options  Optional parameters.
+     * @param filterExpression  Reserved for future use.  The default value is
+     *                          ''.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public GrantPermissionTableRequest(String name, String permission, String tableName, String filterExpression, Map<String, String> options) {
@@ -266,7 +268,7 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Reserved for future use.
+     * @return Reserved for future use.  The default value is ''.
      * 
      */
     public String getFilterExpression() {
@@ -275,7 +277,8 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param filterExpression  Reserved for future use.
+     * @param filterExpression  Reserved for future use.  The default value is
+     *                          ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -287,7 +290,7 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -296,7 +299,8 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

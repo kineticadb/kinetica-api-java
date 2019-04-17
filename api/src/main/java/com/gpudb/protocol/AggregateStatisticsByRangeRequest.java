@@ -39,6 +39,9 @@ import org.apache.avro.generic.IndexedRecord;
  * values. Binning-columns whose value matches the nth member of the bin_values
  * list are placed in the nth bin. When a list is provided the binning-column
  * must be of type string or int.
+ * <p>
+ * NOTE:  The Kinetica instance being accessed must be running a CUDA
+ * (GPU-based) build to service this request.
  */
 public class AggregateStatisticsByRangeRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -90,6 +93,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      * ORDER_COLUMN_NAME}: Name of the column used for candlestick charting
      * techniques.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -152,7 +156,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      *                   operation will be performed.
      * @param selectExpression  For a non-empty expression statistics are
      *                          calculated for those records for which the
-     *                          expression is true.
+     *                          expression is true.  The default value is ''.
      * @param columnName  Name of the binning-column used to divide the set
      *                    samples into bins.
      * @param valueColumnName  Name of the value-column for which statistics
@@ -186,6 +190,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      *                 ORDER_COLUMN_NAME}: Name of the column used for
      *                 candlestick charting techniques.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AggregateStatisticsByRangeRequest(String tableName, String selectExpression, String columnName, String valueColumnName, String stats, double start, double end, double interval, Map<String, String> options) {
@@ -226,7 +231,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
     /**
      * 
      * @return For a non-empty expression statistics are calculated for those
-     *         records for which the expression is true.
+     *         records for which the expression is true.  The default value is
+     *         ''.
      * 
      */
     public String getSelectExpression() {
@@ -237,7 +243,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      * 
      * @param selectExpression  For a non-empty expression statistics are
      *                          calculated for those records for which the
-     *                          expression is true.
+     *                          expression is true.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -408,6 +414,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      *         ORDER_COLUMN_NAME}: Name of the column used for candlestick
      *         charting techniques.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -437,6 +444,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      *                 ORDER_COLUMN_NAME}: Name of the column used for
      *                 candlestick charting techniques.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

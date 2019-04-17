@@ -94,7 +94,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_BY SORT_BY}:
      * Optional column that the data should be sorted by. Used in conjunction
      * with {@code sort_order}. The {@code order_by} option can be used in lieu
-     * of {@code sort_by} / {@code sort_order}.
+     * of {@code sort_by} / {@code sort_order}.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      * SORT_ORDER}: String indicating how the returned values should be sorted
@@ -115,7 +115,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.GetRecordsByColumnRequest.Options#ORDER_BY ORDER_BY}:
      * Comma-separated list of the columns to be sorted by as well as the sort
-     * direction, e.g., 'timestamp asc, x desc'.
+     * direction, e.g., 'timestamp asc, x desc'.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.GetRecordsByColumnRequest.Options#CONVERT_WKTS_TO_WKBS
      * CONVERT_WKTS_TO_WKBS}: If true, then WKT string columns will be returned
@@ -130,6 +130,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.GetRecordsByColumnRequest.Options#FALSE FALSE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -142,7 +143,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
         /**
          * Optional column that the data should be sorted by. Used in
          * conjunction with {@code sort_order}. The {@code order_by} option can
-         * be used in lieu of {@code sort_by} / {@code sort_order}.
+         * be used in lieu of {@code sort_by} / {@code sort_order}.  The
+         * default value is ''.
          */
         public static final String SORT_BY = "sort_by";
 
@@ -169,7 +171,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
         /**
          * Comma-separated list of the columns to be sorted by as well as the
-         * sort direction, e.g., 'timestamp asc, x desc'.
+         * sort direction, e.g., 'timestamp asc, x desc'.  The default value is
+         * ''.
          */
         public static final String ORDER_BY = "order_by";
 
@@ -237,7 +240,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 SORT_BY}: Optional column that the data should be sorted
      *                 by. Used in conjunction with {@code sort_order}. The
      *                 {@code order_by} option can be used in lieu of {@code
-     *                 sort_by} / {@code sort_order}.
+     *                 sort_by} / {@code sort_order}.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      *                 SORT_ORDER}: String indicating how the returned values
@@ -260,7 +263,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#ORDER_BY
      *                 ORDER_BY}: Comma-separated list of the columns to be
      *                 sorted by as well as the sort direction, e.g.,
-     *                 'timestamp asc, x desc'.
+     *                 'timestamp asc, x desc'.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#CONVERT_WKTS_TO_WKBS
      *                 CONVERT_WKTS_TO_WKBS}: If true, then WKT string columns
@@ -278,6 +281,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public GetRecordsByColumnRequest(String tableName, List<String> columnNames, long offset, long limit, Map<String, String> options) {
@@ -330,7 +334,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 SORT_BY}: Optional column that the data should be sorted
      *                 by. Used in conjunction with {@code sort_order}. The
      *                 {@code order_by} option can be used in lieu of {@code
-     *                 sort_by} / {@code sort_order}.
+     *                 sort_by} / {@code sort_order}.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      *                 SORT_ORDER}: String indicating how the returned values
@@ -353,7 +357,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#ORDER_BY
      *                 ORDER_BY}: Comma-separated list of the columns to be
      *                 sorted by as well as the sort direction, e.g.,
-     *                 'timestamp asc, x desc'.
+     *                 'timestamp asc, x desc'.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#CONVERT_WKTS_TO_WKBS
      *                 CONVERT_WKTS_TO_WKBS}: If true, then WKT string columns
@@ -371,6 +375,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public GetRecordsByColumnRequest(String tableName, List<String> columnNames, long offset, long limit, String encoding, Map<String, String> options) {
@@ -539,7 +544,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *         SORT_BY}: Optional column that the data should be sorted by.
      *         Used in conjunction with {@code sort_order}. The {@code
      *         order_by} option can be used in lieu of {@code sort_by} / {@code
-     *         sort_order}.
+     *         sort_order}.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      *         SORT_ORDER}: String indicating how the returned values should be
@@ -561,6 +566,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#ORDER_BY
      *         ORDER_BY}: Comma-separated list of the columns to be sorted by
      *         as well as the sort direction, e.g., 'timestamp asc, x desc'.
+     *         The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#CONVERT_WKTS_TO_WKBS
      *         CONVERT_WKTS_TO_WKBS}: If true, then WKT string columns will be
@@ -577,6 +583,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#FALSE
      *         FALSE}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -596,7 +603,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 SORT_BY}: Optional column that the data should be sorted
      *                 by. Used in conjunction with {@code sort_order}. The
      *                 {@code order_by} option can be used in lieu of {@code
-     *                 sort_by} / {@code sort_order}.
+     *                 sort_by} / {@code sort_order}.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#SORT_ORDER
      *                 SORT_ORDER}: String indicating how the returned values
@@ -619,7 +626,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#ORDER_BY
      *                 ORDER_BY}: Comma-separated list of the columns to be
      *                 sorted by as well as the sort direction, e.g.,
-     *                 'timestamp asc, x desc'.
+     *                 'timestamp asc, x desc'.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#CONVERT_WKTS_TO_WKBS
      *                 CONVERT_WKTS_TO_WKBS}: If true, then WKT string columns
@@ -637,6 +644,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

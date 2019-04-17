@@ -84,6 +84,7 @@ public class AdminAddRanksRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.AdminAddRanksRequest.Options#FALSE FALSE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -159,6 +160,7 @@ public class AdminAddRanksRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AdminAddRanksRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AdminAddRanksRequest(List<String> hosts, List<Map<String, String>> configParams, Map<String, String> options) {
@@ -251,6 +253,7 @@ public class AdminAddRanksRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.AdminAddRanksRequest.Options#FALSE FALSE}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -278,6 +281,7 @@ public class AdminAddRanksRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AdminAddRanksRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

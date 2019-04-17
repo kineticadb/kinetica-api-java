@@ -40,6 +40,28 @@ public class CreateRoleRequest implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateRoleRequest.Options#RESOURCE_GROUP
+     * RESOURCE_GROUP}: Name of an existing resource group to associate with
+     * this user
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * Name of an existing resource group to associate with this user
+         */
+        public static final String RESOURCE_GROUP = "resource_group";
+
+        private Options() {  }
+    }
+
     private String name;
     private Map<String, String> options;
 
@@ -60,6 +82,13 @@ public class CreateRoleRequest implements IndexedRecord {
      *              digit. Must not be the same name as an existing user or
      *              role.
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateRoleRequest.Options#RESOURCE_GROUP
+     *                 RESOURCE_GROUP}: Name of an existing resource group to
+     *                 associate with this user
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public CreateRoleRequest(String name, Map<String, String> options) {
@@ -96,6 +125,13 @@ public class CreateRoleRequest implements IndexedRecord {
     /**
      * 
      * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateRoleRequest.Options#RESOURCE_GROUP
+     *         RESOURCE_GROUP}: Name of an existing resource group to associate
+     *         with this user
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -105,6 +141,13 @@ public class CreateRoleRequest implements IndexedRecord {
     /**
      * 
      * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateRoleRequest.Options#RESOURCE_GROUP
+     *                 RESOURCE_GROUP}: Name of an existing resource group to
+     *                 associate with this user
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

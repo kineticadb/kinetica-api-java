@@ -65,7 +65,8 @@ public class AggregateMinMaxGeometryRequest implements IndexedRecord {
      *                   performed. Must be an existing table.
      * @param columnName  Name of a geospatial geometry column on which the
      *                    min-max will be calculated.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public AggregateMinMaxGeometryRequest(String tableName, String columnName, Map<String, String> options) {
@@ -122,7 +123,7 @@ public class AggregateMinMaxGeometryRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -131,7 +132,8 @@ public class AggregateMinMaxGeometryRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

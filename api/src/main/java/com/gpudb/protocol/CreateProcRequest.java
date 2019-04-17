@@ -100,14 +100,17 @@ public class CreateProcRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateProcRequest.Options#MAX_CONCURRENCY_PER_NODE
      * MAX_CONCURRENCY_PER_NODE}: The maximum number of concurrent instances of
      * the proc that will be executed per node. 0 allows unlimited concurrency.
+     * The default value is '0'.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
          * The maximum number of concurrent instances of the proc that will be
-         * executed per node. 0 allows unlimited concurrency.
+         * executed per node. 0 allows unlimited concurrency.  The default
+         * value is '0'.
          */
         public static final String MAX_CONCURRENCY_PER_NODE = "max_concurrency_per_node";
 
@@ -163,7 +166,8 @@ public class CreateProcRequest implements IndexedRecord {
      *               map are file names, and the values are the binary contents
      *               of the files. The file names may include subdirectory
      *               names (e.g. 'subdir/file') but must not resolve to a
-     *               directory above the root for the proc.
+     *               directory above the root for the proc.  The default value
+     *               is an empty {@link Map}.
      * @param command  The command (excluding arguments) that will be invoked
      *                 when the proc is executed. It will be invoked from the
      *                 directory containing the proc {@code files} and may be
@@ -175,17 +179,21 @@ public class CreateProcRequest implements IndexedRecord {
      *                 command refers to a file in that directory, it must be
      *                 preceded with './' as per Linux convention. If not
      *                 specified, and exactly one file is provided in {@code
-     *                 files}, that file will be invoked.
+     *                 files}, that file will be invoked.  The default value is
+     *                 ''.
      * @param args  An array of command-line arguments that will be passed to
-     *              {@code command} when the proc is executed.
+     *              {@code command} when the proc is executed.  The default
+     *              value is an empty {@link List}.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProcRequest.Options#MAX_CONCURRENCY_PER_NODE
      *                 MAX_CONCURRENCY_PER_NODE}: The maximum number of
      *                 concurrent instances of the proc that will be executed
-     *                 per node. 0 allows unlimited concurrency.
+     *                 per node. 0 allows unlimited concurrency.  The default
+     *                 value is '0'.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public CreateProcRequest(String procName, String executionMode, Map<String, ByteBuffer> files, String command, List<String> args, Map<String, String> options) {
@@ -284,7 +292,7 @@ public class CreateProcRequest implements IndexedRecord {
      *         are file names, and the values are the binary contents of the
      *         files. The file names may include subdirectory names (e.g.
      *         'subdir/file') but must not resolve to a directory above the
-     *         root for the proc.
+     *         root for the proc.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, ByteBuffer> getFiles() {
@@ -297,7 +305,8 @@ public class CreateProcRequest implements IndexedRecord {
      *               map are file names, and the values are the binary contents
      *               of the files. The file names may include subdirectory
      *               names (e.g. 'subdir/file') but must not resolve to a
-     *               directory above the root for the proc.
+     *               directory above the root for the proc.  The default value
+     *               is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -319,7 +328,7 @@ public class CreateProcRequest implements IndexedRecord {
      *         command refers to a file in that directory, it must be preceded
      *         with './' as per Linux convention. If not specified, and exactly
      *         one file is provided in {@code files}, that file will be
-     *         invoked.
+     *         invoked.  The default value is ''.
      * 
      */
     public String getCommand() {
@@ -339,7 +348,8 @@ public class CreateProcRequest implements IndexedRecord {
      *                 command refers to a file in that directory, it must be
      *                 preceded with './' as per Linux convention. If not
      *                 specified, and exactly one file is provided in {@code
-     *                 files}, that file will be invoked.
+     *                 files}, that file will be invoked.  The default value is
+     *                 ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -352,7 +362,8 @@ public class CreateProcRequest implements IndexedRecord {
     /**
      * 
      * @return An array of command-line arguments that will be passed to {@code
-     *         command} when the proc is executed.
+     *         command} when the proc is executed.  The default value is an
+     *         empty {@link List}.
      * 
      */
     public List<String> getArgs() {
@@ -362,7 +373,8 @@ public class CreateProcRequest implements IndexedRecord {
     /**
      * 
      * @param args  An array of command-line arguments that will be passed to
-     *              {@code command} when the proc is executed.
+     *              {@code command} when the proc is executed.  The default
+     *              value is an empty {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -380,8 +392,9 @@ public class CreateProcRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateProcRequest.Options#MAX_CONCURRENCY_PER_NODE
      *         MAX_CONCURRENCY_PER_NODE}: The maximum number of concurrent
      *         instances of the proc that will be executed per node. 0 allows
-     *         unlimited concurrency.
+     *         unlimited concurrency.  The default value is '0'.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -396,8 +409,10 @@ public class CreateProcRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateProcRequest.Options#MAX_CONCURRENCY_PER_NODE
      *                 MAX_CONCURRENCY_PER_NODE}: The maximum number of
      *                 concurrent instances of the proc that will be executed
-     *                 per node. 0 allows unlimited concurrency.
+     *                 per node. 0 allows unlimited concurrency.  The default
+     *                 value is '0'.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

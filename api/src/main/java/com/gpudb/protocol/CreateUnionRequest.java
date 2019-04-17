@@ -83,7 +83,7 @@ public class CreateUnionRequest implements IndexedRecord {
      * COLLECTION_NAME}: Name of a collection which is to contain the output
      * table. If the collection provided is non-existent, the collection will
      * be automatically created. If empty, the output table will be a top-level
-     * table.
+     * table.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
      * MATERIALIZE_ON_GPU}: If {@code true}, then the columns of the output
@@ -167,7 +167,7 @@ public class CreateUnionRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID VIEW_ID}: view the
-     * output table will be a part of
+     * output table will be a part of.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#FORCE_REPLICATED
      * FORCE_REPLICATED}: If {@code true}, then the table specified in {@code
@@ -182,6 +182,7 @@ public class CreateUnionRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -190,7 +191,7 @@ public class CreateUnionRequest implements IndexedRecord {
          * Name of a collection which is to contain the output table. If the
          * collection provided is non-existent, the collection will be
          * automatically created. If empty, the output table will be a
-         * top-level table.
+         * top-level table.  The default value is ''.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -348,7 +349,7 @@ public class CreateUnionRequest implements IndexedRecord {
         public static final String PERSIST = "persist";
 
         /**
-         * view the output table will be a part of
+         * view the output table will be a part of.  The default value is ''.
          */
         public static final String VIEW_ID = "view_id";
 
@@ -409,7 +410,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 contain the output table. If the collection provided is
      *                 non-existent, the collection will be automatically
      *                 created. If empty, the output table will be a top-level
-     *                 table.
+     *                 table.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true}, then the columns
@@ -512,7 +513,8 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view the output table will be a part of
+     *                 VIEW_ID}: view the output table will be a part of.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#FORCE_REPLICATED
      *                 FORCE_REPLICATED}: If {@code true}, then the table
@@ -530,6 +532,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public CreateUnionRequest(String tableName, List<String> tableNames, List<List<String>> inputColumnNames, List<String> outputColumnNames, Map<String, String> options) {
@@ -643,7 +646,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *         COLLECTION_NAME}: Name of a collection which is to contain the
      *         output table. If the collection provided is non-existent, the
      *         collection will be automatically created. If empty, the output
-     *         table will be a top-level table.
+     *         table will be a top-level table.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
      *         MATERIALIZE_ON_GPU}: If {@code true}, then the columns of the
@@ -736,7 +739,8 @@ public class CreateUnionRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID VIEW_ID}:
-     *         view the output table will be a part of
+     *         view the output table will be a part of.  The default value is
+     *         ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#FORCE_REPLICATED
      *         FORCE_REPLICATED}: If {@code true}, then the table specified in
@@ -752,6 +756,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -768,7 +773,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 contain the output table. If the collection provided is
      *                 non-existent, the collection will be automatically
      *                 created. If empty, the output table will be a top-level
-     *                 table.
+     *                 table.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true}, then the columns
@@ -871,7 +876,8 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view the output table will be a part of
+     *                 VIEW_ID}: view the output table will be a part of.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#FORCE_REPLICATED
      *                 FORCE_REPLICATED}: If {@code true}, then the table
@@ -889,6 +895,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

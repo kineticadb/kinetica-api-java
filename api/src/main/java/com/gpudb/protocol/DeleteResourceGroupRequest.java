@@ -57,7 +57,8 @@ public class DeleteResourceGroupRequest implements IndexedRecord {
      * parameters.
      * 
      * @param name  Name of the resource group to be deleted.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public DeleteResourceGroupRequest(String name, Map<String, String> options) {
@@ -88,7 +89,7 @@ public class DeleteResourceGroupRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -97,7 +98,8 @@ public class DeleteResourceGroupRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

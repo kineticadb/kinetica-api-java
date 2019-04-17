@@ -57,7 +57,8 @@ public class DeleteProcRequest implements IndexedRecord {
      * 
      * @param procName  Name of the proc to be deleted. Must be the name of a
      *                  currently existing proc.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public DeleteProcRequest(String procName, Map<String, String> options) {
@@ -90,7 +91,7 @@ public class DeleteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -99,7 +100,8 @@ public class DeleteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -93,6 +93,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
      * balanced in accordance with their primary key or shard key. Cannot be
      * used simultaneously with {@code table_whitelist}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -222,6 +223,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 with their primary key or shard key. Cannot be used
      *                 simultaneously with {@code table_whitelist}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AdminRebalanceRequest(Map<String, String> options) {
@@ -277,6 +279,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *         shard key. Cannot be used simultaneously with {@code
      *         table_whitelist}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -341,6 +344,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 with their primary key or shard key. Cannot be used
      *                 simultaneously with {@code table_whitelist}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

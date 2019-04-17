@@ -60,7 +60,8 @@ public class ShowTableMetadataRequest implements IndexedRecord {
      * 
      * @param tableNames  Tables whose metadata will be fetched. All provided
      *                    tables must exist, or an error is returned.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public ShowTableMetadataRequest(List<String> tableNames, Map<String, String> options) {
@@ -93,7 +94,7 @@ public class ShowTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -102,7 +103,8 @@ public class ShowTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

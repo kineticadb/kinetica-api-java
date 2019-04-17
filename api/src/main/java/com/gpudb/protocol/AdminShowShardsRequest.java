@@ -55,7 +55,8 @@ public class AdminShowShardsRequest implements IndexedRecord {
      * Constructs an AdminShowShardsRequest object with the specified
      * parameters.
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public AdminShowShardsRequest(Map<String, String> options) {
@@ -64,7 +65,7 @@ public class AdminShowShardsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -73,7 +74,8 @@ public class AdminShowShardsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

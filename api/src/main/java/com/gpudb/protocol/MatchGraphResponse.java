@@ -14,19 +14,17 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#showSystemTiming(ShowSystemTimingRequest)}.
- * <p>
- * Returns the last 100 database requests along with the request timing and
- * internal job id. The admin tool uses it to present request timing
- * information to the user.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#matchGraph(MatchGraphRequest)}.
  */
-public class ShowSystemTimingRequest implements IndexedRecord {
+public class MatchGraphResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("ShowSystemTimingRequest")
+            .record("MatchGraphResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("options").type().map().values().stringType().noDefault()
+                .name("result").type().booleanType().noDefault()
+                .name("matchScore").type().floatType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -41,48 +39,77 @@ public class ShowSystemTimingRequest implements IndexedRecord {
         return schema$;
     }
 
-    private Map<String, String> options;
+    private boolean result;
+    private float matchScore;
+    private Map<String, String> info;
 
 
     /**
-     * Constructs a ShowSystemTimingRequest object with default parameters.
+     * Constructs a MatchGraphResponse object with default parameters.
      */
-    public ShowSystemTimingRequest() {
-        options = new LinkedHashMap<>();
-    }
-
-    /**
-     * Constructs a ShowSystemTimingRequest object with the specified
-     * parameters.
-     * 
-     * @param options  Optional parameters, currently unused.  The default
-     *                 value is an empty {@link Map}.
-     * 
-     */
-    public ShowSystemTimingRequest(Map<String, String> options) {
-        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
+    public MatchGraphResponse() {
     }
 
     /**
      * 
-     * @return Optional parameters, currently unused.  The default value is an
-     *         empty {@link Map}.
+     * @return Successful solution.
      * 
      */
-    public Map<String, String> getOptions() {
-        return options;
+    public boolean getResult() {
+        return result;
     }
 
     /**
      * 
-     * @param options  Optional parameters, currently unused.  The default
-     *                 value is an empty {@link Map}.
+     * @param result  Successful solution.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowSystemTimingRequest setOptions(Map<String, String> options) {
-        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
+    public MatchGraphResponse setResult(boolean result) {
+        this.result = result;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Mean square error.
+     * 
+     */
+    public float getMatchScore() {
+        return matchScore;
+    }
+
+    /**
+     * 
+     * @param matchScore  Mean square error.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public MatchGraphResponse setMatchScore(float matchScore) {
+        this.matchScore = matchScore;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public MatchGraphResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
 
@@ -113,7 +140,13 @@ public class ShowSystemTimingRequest implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.options;
+                return this.result;
+
+            case 1:
+                return this.matchScore;
+
+            case 2:
+                return this.info;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -135,7 +168,15 @@ public class ShowSystemTimingRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.options = (Map<String, String>)value;
+                this.result = (Boolean)value;
+                break;
+
+            case 1:
+                this.matchScore = (Float)value;
+                break;
+
+            case 2:
+                this.info = (Map<String, String>)value;
                 break;
 
             default:
@@ -153,9 +194,11 @@ public class ShowSystemTimingRequest implements IndexedRecord {
             return false;
         }
 
-        ShowSystemTimingRequest that = (ShowSystemTimingRequest)obj;
+        MatchGraphResponse that = (MatchGraphResponse)obj;
 
-        return ( this.options.equals( that.options ) );
+        return ( ( this.result == that.result )
+                 && ( (Float)this.matchScore ).equals( (Float)that.matchScore )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -163,9 +206,17 @@ public class ShowSystemTimingRequest implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "options" ) );
+        builder.append( gd.toString( "result" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.options ) );
+        builder.append( gd.toString( this.result ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "matchScore" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.matchScore ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -174,7 +225,9 @@ public class ShowSystemTimingRequest implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.options.hashCode();
+        hashCode = (31 * hashCode) + ((Boolean)this.result).hashCode();
+        hashCode = (31 * hashCode) + ((Float)this.matchScore).hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

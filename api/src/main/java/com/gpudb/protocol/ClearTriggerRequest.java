@@ -58,7 +58,8 @@ public class ClearTriggerRequest implements IndexedRecord {
      * Constructs a ClearTriggerRequest object with the specified parameters.
      * 
      * @param triggerId  ID for the trigger to be deactivated.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public ClearTriggerRequest(String triggerId, Map<String, String> options) {
@@ -89,7 +90,7 @@ public class ClearTriggerRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -98,7 +99,8 @@ public class ClearTriggerRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

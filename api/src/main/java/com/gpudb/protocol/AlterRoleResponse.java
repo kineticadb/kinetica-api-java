@@ -14,19 +14,16 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#showSystemTiming(ShowSystemTimingRequest)}.
- * <p>
- * Returns the last 100 database requests along with the request timing and
- * internal job id. The admin tool uses it to present request timing
- * information to the user.
+ * A set of results returned by {@link
+ * com.gpudb.GPUdb#alterRole(AlterRoleRequest)}.
  */
-public class ShowSystemTimingRequest implements IndexedRecord {
+public class AlterRoleResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("ShowSystemTimingRequest")
+            .record("AlterRoleResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("options").type().map().values().stringType().noDefault()
+                .name("name").type().stringType().noDefault()
+                .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
 
@@ -41,48 +38,55 @@ public class ShowSystemTimingRequest implements IndexedRecord {
         return schema$;
     }
 
-    private Map<String, String> options;
+    private String name;
+    private Map<String, String> info;
 
 
     /**
-     * Constructs a ShowSystemTimingRequest object with default parameters.
+     * Constructs an AlterRoleResponse object with default parameters.
      */
-    public ShowSystemTimingRequest() {
-        options = new LinkedHashMap<>();
-    }
-
-    /**
-     * Constructs a ShowSystemTimingRequest object with the specified
-     * parameters.
-     * 
-     * @param options  Optional parameters, currently unused.  The default
-     *                 value is an empty {@link Map}.
-     * 
-     */
-    public ShowSystemTimingRequest(Map<String, String> options) {
-        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
+    public AlterRoleResponse() {
     }
 
     /**
      * 
-     * @return Optional parameters, currently unused.  The default value is an
-     *         empty {@link Map}.
+     * @return Value of {@code name}.
      * 
      */
-    public Map<String, String> getOptions() {
-        return options;
+    public String getName() {
+        return name;
     }
 
     /**
      * 
-     * @param options  Optional parameters, currently unused.  The default
-     *                 value is an empty {@link Map}.
+     * @param name  Value of {@code name}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowSystemTimingRequest setOptions(Map<String, String> options) {
-        this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
+    public AlterRoleResponse setName(String name) {
+        this.name = (name == null) ? "" : name;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Additional information.
+     * 
+     */
+    public Map<String, String> getInfo() {
+        return info;
+    }
+
+    /**
+     * 
+     * @param info  Additional information.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AlterRoleResponse setInfo(Map<String, String> info) {
+        this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
 
@@ -113,7 +117,10 @@ public class ShowSystemTimingRequest implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.options;
+                return this.name;
+
+            case 1:
+                return this.info;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -135,7 +142,11 @@ public class ShowSystemTimingRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.options = (Map<String, String>)value;
+                this.name = (String)value;
+                break;
+
+            case 1:
+                this.info = (Map<String, String>)value;
                 break;
 
             default:
@@ -153,9 +164,10 @@ public class ShowSystemTimingRequest implements IndexedRecord {
             return false;
         }
 
-        ShowSystemTimingRequest that = (ShowSystemTimingRequest)obj;
+        AlterRoleResponse that = (AlterRoleResponse)obj;
 
-        return ( this.options.equals( that.options ) );
+        return ( this.name.equals( that.name )
+                 && this.info.equals( that.info ) );
     }
 
     @Override
@@ -163,9 +175,13 @@ public class ShowSystemTimingRequest implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "options" ) );
+        builder.append( gd.toString( "name" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.options ) );
+        builder.append( gd.toString( this.name ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "info" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.info ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -174,7 +190,8 @@ public class ShowSystemTimingRequest implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.options.hashCode();
+        hashCode = (31 * hashCode) + this.name.hashCode();
+        hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }
 

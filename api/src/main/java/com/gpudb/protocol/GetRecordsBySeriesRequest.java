@@ -109,13 +109,14 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      *                        entire original series/tracks. Can be blank.
      * @param offset  A positive integer indicating the number of initial
      *                series/tracks to skip (useful for paging through the
-     *                results).  The minimum allowed value is 0. The maximum
-     *                allowed value is MAX_INT.
+     *                results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
      *               series/tracks to be returned. Or END_OF_SET (-9999) to
      *               indicate that the max number of results should be
-     *               returned.
-     * @param options  Optional parameters.
+     *               returned.  The default value is 250.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public GetRecordsBySeriesRequest(String tableName, String worldTableName, int offset, int limit, Map<String, String> options) {
@@ -142,12 +143,12 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      *                        entire original series/tracks. Can be blank.
      * @param offset  A positive integer indicating the number of initial
      *                series/tracks to skip (useful for paging through the
-     *                results).  The minimum allowed value is 0. The maximum
-     *                allowed value is MAX_INT.
+     *                results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
      *               series/tracks to be returned. Or END_OF_SET (-9999) to
      *               indicate that the max number of results should be
-     *               returned.
+     *               returned.  The default value is 250.
      * @param encoding  Specifies the encoding for returned records; either
      *                  'binary' or 'json'.
      *                  Supported values:
@@ -162,7 +163,8 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      *                  The default value is {@link
      *                  com.gpudb.protocol.GetRecordsBySeriesRequest.Encoding#BINARY
      *                  BINARY}.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public GetRecordsBySeriesRequest(String tableName, String worldTableName, int offset, int limit, String encoding, Map<String, String> options) {
@@ -233,8 +235,8 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      * 
      * @return A positive integer indicating the number of initial
      *         series/tracks to skip (useful for paging through the results).
-     *         The minimum allowed value is 0. The maximum allowed value is
-     *         MAX_INT.
+     *         The default value is 0.The minimum allowed value is 0. The
+     *         maximum allowed value is MAX_INT.
      * 
      */
     public int getOffset() {
@@ -245,8 +247,8 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      * 
      * @param offset  A positive integer indicating the number of initial
      *                series/tracks to skip (useful for paging through the
-     *                results).  The minimum allowed value is 0. The maximum
-     *                allowed value is MAX_INT.
+     *                results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -260,7 +262,8 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      * 
      * @return A positive integer indicating the maximum number of
      *         series/tracks to be returned. Or END_OF_SET (-9999) to indicate
-     *         that the max number of results should be returned.
+     *         that the max number of results should be returned.  The default
+     *         value is 250.
      * 
      */
     public int getLimit() {
@@ -272,7 +275,7 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      * @param limit  A positive integer indicating the maximum number of
      *               series/tracks to be returned. Or END_OF_SET (-9999) to
      *               indicate that the max number of results should be
-     *               returned.
+     *               returned.  The default value is 250.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -330,7 +333,7 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -339,7 +342,8 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

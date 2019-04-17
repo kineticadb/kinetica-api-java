@@ -91,6 +91,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE FALSE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -144,11 +145,12 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *                   table.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned, or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.
+     *               that the max number of results should be returned.  The
+     *               default value is 10000.
      * @param options
      *                 <ul>
      *                         <li> {@link
@@ -169,6 +171,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public GetRecordsFromCollectionRequest(String tableName, long offset, long limit, Map<String, String> options) {
@@ -188,11 +191,12 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *                   table.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned, or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.
+     *               that the max number of results should be returned.  The
+     *               default value is 10000.
      * @param encoding  Specifies the encoding for returned records; either
      *                  'binary' or 'json'.
      *                  Supported values:
@@ -227,6 +231,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public GetRecordsFromCollectionRequest(String tableName, long offset, long limit, String encoding, Map<String, String> options) {
@@ -265,8 +270,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * 
      * @return A positive integer indicating the number of initial results to
      *         skip (this can be useful for paging through the results).  The
-     *         minimum allowed value is 0. The maximum allowed value is
-     *         MAX_INT.
+     *         default value is 0.The minimum allowed value is 0. The maximum
+     *         allowed value is MAX_INT.
      * 
      */
     public long getOffset() {
@@ -277,8 +282,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * 
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -292,7 +297,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * 
      * @return A positive integer indicating the maximum number of results to
      *         be returned, or END_OF_SET (-9999) to indicate that the max
-     *         number of results should be returned.
+     *         number of results should be returned.  The default value is
+     *         10000.
      * 
      */
     public long getLimit() {
@@ -303,7 +309,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * 
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned, or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.
+     *               that the max number of results should be returned.  The
+     *               default value is 10000.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -381,6 +388,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *         com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
      *         FALSE}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -409,6 +417,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

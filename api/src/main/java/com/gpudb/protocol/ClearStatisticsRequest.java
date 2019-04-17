@@ -60,12 +60,14 @@ public class ClearStatisticsRequest implements IndexedRecord {
      * Constructs a ClearStatisticsRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Name of a table. Must be an existing table.
+     * @param tableName  Name of a table. Must be an existing table.  The
+     *                   default value is ''.
      * @param columnName  Name of the column in {@code tableName} for which to
      *                    clear statistics. The column must be from an existing
      *                    table. An empty string clears statistics for all
-     *                    columns in the table.
-     * @param options  Optional parameters.
+     *                    columns in the table.  The default value is ''.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public ClearStatisticsRequest(String tableName, String columnName, Map<String, String> options) {
@@ -76,7 +78,8 @@ public class ClearStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of a table. Must be an existing table.
+     * @return Name of a table. Must be an existing table.  The default value
+     *         is ''.
      * 
      */
     public String getTableName() {
@@ -85,7 +88,8 @@ public class ClearStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of a table. Must be an existing table.
+     * @param tableName  Name of a table. Must be an existing table.  The
+     *                   default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -99,7 +103,8 @@ public class ClearStatisticsRequest implements IndexedRecord {
      * 
      * @return Name of the column in {@code tableName} for which to clear
      *         statistics. The column must be from an existing table. An empty
-     *         string clears statistics for all columns in the table.
+     *         string clears statistics for all columns in the table.  The
+     *         default value is ''.
      * 
      */
     public String getColumnName() {
@@ -111,7 +116,7 @@ public class ClearStatisticsRequest implements IndexedRecord {
      * @param columnName  Name of the column in {@code tableName} for which to
      *                    clear statistics. The column must be from an existing
      *                    table. An empty string clears statistics for all
-     *                    columns in the table.
+     *                    columns in the table.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -123,7 +128,7 @@ public class ClearStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -132,7 +137,8 @@ public class ClearStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

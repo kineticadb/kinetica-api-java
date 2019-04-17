@@ -5,9 +5,7 @@
  */
 package com.gpudb.protocol;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -24,8 +22,6 @@ public class AdminRebalanceResponse implements IndexedRecord {
             .record("AdminRebalanceResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("tableNames").type().array().items().stringType().noDefault()
-                .name("message").type().array().items().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -41,8 +37,6 @@ public class AdminRebalanceResponse implements IndexedRecord {
         return schema$;
     }
 
-    private List<String> tableNames;
-    private List<String> message;
     private Map<String, String> info;
 
 
@@ -50,48 +44,6 @@ public class AdminRebalanceResponse implements IndexedRecord {
      * Constructs an AdminRebalanceResponse object with default parameters.
      */
     public AdminRebalanceResponse() {
-    }
-
-    /**
-     * 
-     * @return Names of the rebalanced tables.
-     * 
-     */
-    public List<String> getTableNames() {
-        return tableNames;
-    }
-
-    /**
-     * 
-     * @param tableNames  Names of the rebalanced tables.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public AdminRebalanceResponse setTableNames(List<String> tableNames) {
-        this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
-        return this;
-    }
-
-    /**
-     * 
-     * @return Error Messages from rebalancing the tables.
-     * 
-     */
-    public List<String> getMessage() {
-        return message;
-    }
-
-    /**
-     * 
-     * @param message  Error Messages from rebalancing the tables.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public AdminRebalanceResponse setMessage(List<String> message) {
-        this.message = (message == null) ? new ArrayList<String>() : message;
-        return this;
     }
 
     /**
@@ -142,12 +94,6 @@ public class AdminRebalanceResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.tableNames;
-
-            case 1:
-                return this.message;
-
-            case 2:
                 return this.info;
 
             default:
@@ -170,14 +116,6 @@ public class AdminRebalanceResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.tableNames = (List<String>)value;
-                break;
-
-            case 1:
-                this.message = (List<String>)value;
-                break;
-
-            case 2:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -198,9 +136,7 @@ public class AdminRebalanceResponse implements IndexedRecord {
 
         AdminRebalanceResponse that = (AdminRebalanceResponse)obj;
 
-        return ( this.tableNames.equals( that.tableNames )
-                 && this.message.equals( that.message )
-                 && this.info.equals( that.info ) );
+        return ( this.info.equals( that.info ) );
     }
 
     @Override
@@ -208,14 +144,6 @@ public class AdminRebalanceResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "tableNames" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.tableNames ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "message" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.message ) );
-        builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.info ) );
@@ -227,8 +155,6 @@ public class AdminRebalanceResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.tableNames.hashCode();
-        hashCode = (31 * hashCode) + this.message.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

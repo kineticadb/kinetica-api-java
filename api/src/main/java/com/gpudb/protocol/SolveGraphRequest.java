@@ -200,14 +200,15 @@ public class SolveGraphRequest implements IndexedRecord {
      * INVERSE_SHORTEST_PATH} solvers only. Sets the maximum solution cost
      * radius, which ignores the {@code destinationNodeIds} list and instead
      * outputs the nodes within the radius sorted by ascending cost. If set to
-     * '0.0', the setting is ignored.
+     * '0.0', the setting is ignored.  The default value is '0.0'.
      *         <li> {@link
      * com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_TARGETS
      * MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and {@code
      * INVERSE_SHORTEST_PATH} solvers only. Sets the maximum number of solution
      * targets, which ignores the {@code destinationNodeIds} list and instead
      * outputs no more than n number of nodes sorted by ascending cost where n
-     * is equal to the setting value. If set to 0, the setting is ignored.
+     * is equal to the setting value. If set to 0, the setting is ignored.  The
+     * default value is '0'.
      *         <li> {@link
      * com.gpudb.protocol.SolveGraphRequest.Options#EXPORT_SOLVE_RESULTS
      * EXPORT_SOLVE_RESULTS}: Returns solution results inside the {@code
@@ -242,6 +243,7 @@ public class SolveGraphRequest implements IndexedRecord {
      * {@code restriction_threshold_value} will not be included in the
      * solution.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -251,7 +253,7 @@ public class SolveGraphRequest implements IndexedRecord {
          * only. Sets the maximum solution cost radius, which ignores the
          * {@code destinationNodeIds} list and instead outputs the nodes within
          * the radius sorted by ascending cost. If set to '0.0', the setting is
-         * ignored.
+         * ignored.  The default value is '0.0'.
          */
         public static final String MAX_SOLUTION_RADIUS = "max_solution_radius";
 
@@ -260,7 +262,8 @@ public class SolveGraphRequest implements IndexedRecord {
          * only. Sets the maximum number of solution targets, which ignores the
          * {@code destinationNodeIds} list and instead outputs no more than n
          * number of nodes sorted by ascending cost where n is equal to the
-         * setting value. If set to 0, the setting is ignored.
+         * setting value. If set to 0, the setting is ignored.  The default
+         * value is '0'.
          */
         public static final String MAX_SOLUTION_TARGETS = "max_solution_targets";
 
@@ -355,7 +358,8 @@ public class SolveGraphRequest implements IndexedRecord {
      *                        will be added (in the case of
      *                        'WEIGHTS_VALUESPECIFIED') to or multiplied with
      *                        (in the case of 'WEIGHTS_FACTORSPECIFIED') the
-     *                        existing weight(s).
+     *                        existing weight(s).  The default value is an
+     *                        empty {@link List}.
      * @param restrictions  Additional restrictions to apply to the nodes/edges
      *                      of an existing graph. Restrictions must be
      *                      specified using <a
@@ -375,7 +379,8 @@ public class SolveGraphRequest implements IndexedRecord {
      *                      false}, any provided weights will be added (in the
      *                      case of 'RESTRICTIONS_VALUECOMPARED') to or
      *                      replaced (in the case of
-     *                      'RESTRICTIONS_ONOFFCOMPARED').
+     *                      'RESTRICTIONS_ONOFFCOMPARED').  The default value
+     *                      is an empty {@link List}.
      * @param solverType  The type of solver to use for the graph.
      *                    Supported values:
      *                    <ul>
@@ -438,6 +443,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *                            for pageranks. If the {@code solverType} is
      *                            set to {@code BACKHAUL_ROUTING}, it is the
      *                            list of all fixed and remote asset nodes.
+     *                            The default value is an empty {@link List}.
      * @param nodeType  Source and destination node identifier type.
      *                  Supported values:
      *                  <ul>
@@ -459,7 +465,8 @@ public class SolveGraphRequest implements IndexedRecord {
      *                  NODE_ID}.
      * @param sourceNode  If {@code nodeType} is {@code NODE_WKTPOINT} or
      *                    {@code NODE_NAME}, the node (string) of the source
-     *                    (starting point) for the graph solution.
+     *                    (starting point) for the graph solution.  The default
+     *                    value is ''.
      * @param destinationNodes  If {@code nodeType} is {@code NODE_WKTPOINT} or
      *                          {@code NODE_NAME}, the list of destination node
      *                          or page rank indices (strings) for the graph
@@ -467,8 +474,10 @@ public class SolveGraphRequest implements IndexedRecord {
      *                          {@code BACKHAUL_ROUTING}, it is the list of all
      *                          fixed and remote asset nodes. The string type
      *                          should be consistent with the {@code nodeType}
-     *                          parameter.
-     * @param solutionTable  Name of the table to store the solution.
+     *                          parameter.  The default value is an empty
+     *                          {@link List}.
+     * @param solutionTable  Name of the table to store the solution.  The
+     *                       default value is 'graph_solutions'.
      * @param options  Additional parameters
      *                 <ul>
      *                         <li> {@link
@@ -478,7 +487,8 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 maximum solution cost radius, which ignores the {@code
      *                 destinationNodeIds} list and instead outputs the nodes
      *                 within the radius sorted by ascending cost. If set to
-     *                 '0.0', the setting is ignored.
+     *                 '0.0', the setting is ignored.  The default value is
+     *                 '0.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_TARGETS
      *                 MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and
@@ -487,7 +497,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 {@code destinationNodeIds} list and instead outputs no
      *                 more than n number of nodes sorted by ascending cost
      *                 where n is equal to the setting value. If set to 0, the
-     *                 setting is ignored.
+     *                 setting is ignored.  The default value is '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#EXPORT_SOLVE_RESULTS
      *                 EXPORT_SOLVE_RESULTS}: Returns solution results inside
@@ -529,6 +539,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 restriction_threshold_value} will not be included in the
      *                 solution.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public SolveGraphRequest(String graphName, List<String> weightsOnEdges, List<String> restrictions, String solverType, long sourceNodeId, List<Long> destinationNodeIds, String nodeType, String sourceNode, List<String> destinationNodes, String solutionTable, Map<String, String> options) {
@@ -579,6 +590,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *         WEIGHTS_VALUESPECIFIED'. Any provided weights will be added (in
      *         the case of 'WEIGHTS_VALUESPECIFIED') to or multiplied with (in
      *         the case of 'WEIGHTS_FACTORSPECIFIED') the existing weight(s).
+     *         The default value is an empty {@link List}.
      * 
      */
     public List<String> getWeightsOnEdges() {
@@ -602,7 +614,8 @@ public class SolveGraphRequest implements IndexedRecord {
      *                        will be added (in the case of
      *                        'WEIGHTS_VALUESPECIFIED') to or multiplied with
      *                        (in the case of 'WEIGHTS_FACTORSPECIFIED') the
-     *                        existing weight(s).
+     *                        existing weight(s).  The default value is an
+     *                        empty {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -628,7 +641,8 @@ public class SolveGraphRequest implements IndexedRecord {
      *         {@code remove_previous_restrictions} is set to {@code false},
      *         any provided weights will be added (in the case of
      *         'RESTRICTIONS_VALUECOMPARED') to or replaced (in the case of
-     *         'RESTRICTIONS_ONOFFCOMPARED').
+     *         'RESTRICTIONS_ONOFFCOMPARED').  The default value is an empty
+     *         {@link List}.
      * 
      */
     public List<String> getRestrictions() {
@@ -656,7 +670,8 @@ public class SolveGraphRequest implements IndexedRecord {
      *                      false}, any provided weights will be added (in the
      *                      case of 'RESTRICTIONS_VALUECOMPARED') to or
      *                      replaced (in the case of
-     *                      'RESTRICTIONS_ONOFFCOMPARED').
+     *                      'RESTRICTIONS_ONOFFCOMPARED').  The default value
+     *                      is an empty {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -816,7 +831,8 @@ public class SolveGraphRequest implements IndexedRecord {
      * 
      * @return List of destination node indices, or indices for pageranks. If
      *         the {@code solverType} is set to {@code BACKHAUL_ROUTING}, it is
-     *         the list of all fixed and remote asset nodes.
+     *         the list of all fixed and remote asset nodes.  The default value
+     *         is an empty {@link List}.
      * 
      */
     public List<Long> getDestinationNodeIds() {
@@ -829,6 +845,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *                            for pageranks. If the {@code solverType} is
      *                            set to {@code BACKHAUL_ROUTING}, it is the
      *                            list of all fixed and remote asset nodes.
+     *                            The default value is an empty {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -897,7 +914,7 @@ public class SolveGraphRequest implements IndexedRecord {
      * 
      * @return If {@code nodeType} is {@code NODE_WKTPOINT} or {@code
      *         NODE_NAME}, the node (string) of the source (starting point) for
-     *         the graph solution.
+     *         the graph solution.  The default value is ''.
      * 
      */
     public String getSourceNode() {
@@ -908,7 +925,8 @@ public class SolveGraphRequest implements IndexedRecord {
      * 
      * @param sourceNode  If {@code nodeType} is {@code NODE_WKTPOINT} or
      *                    {@code NODE_NAME}, the node (string) of the source
-     *                    (starting point) for the graph solution.
+     *                    (starting point) for the graph solution.  The default
+     *                    value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -925,7 +943,8 @@ public class SolveGraphRequest implements IndexedRecord {
      *         (strings) for the graph solution. If the {@code solverType} is
      *         set to {@code BACKHAUL_ROUTING}, it is the list of all fixed and
      *         remote asset nodes. The string type should be consistent with
-     *         the {@code nodeType} parameter.
+     *         the {@code nodeType} parameter.  The default value is an empty
+     *         {@link List}.
      * 
      */
     public List<String> getDestinationNodes() {
@@ -941,7 +960,8 @@ public class SolveGraphRequest implements IndexedRecord {
      *                          {@code BACKHAUL_ROUTING}, it is the list of all
      *                          fixed and remote asset nodes. The string type
      *                          should be consistent with the {@code nodeType}
-     *                          parameter.
+     *                          parameter.  The default value is an empty
+     *                          {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -953,7 +973,8 @@ public class SolveGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to store the solution.
+     * @return Name of the table to store the solution.  The default value is
+     *         'graph_solutions'.
      * 
      */
     public String getSolutionTable() {
@@ -962,7 +983,8 @@ public class SolveGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @param solutionTable  Name of the table to store the solution.
+     * @param solutionTable  Name of the table to store the solution.  The
+     *                       default value is 'graph_solutions'.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -982,7 +1004,8 @@ public class SolveGraphRequest implements IndexedRecord {
      *         INVERSE_SHORTEST_PATH} solvers only. Sets the maximum solution
      *         cost radius, which ignores the {@code destinationNodeIds} list
      *         and instead outputs the nodes within the radius sorted by
-     *         ascending cost. If set to '0.0', the setting is ignored.
+     *         ascending cost. If set to '0.0', the setting is ignored.  The
+     *         default value is '0.0'.
      *                 <li> {@link
      *         com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_TARGETS
      *         MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and {@code
@@ -990,7 +1013,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *         solution targets, which ignores the {@code destinationNodeIds}
      *         list and instead outputs no more than n number of nodes sorted
      *         by ascending cost where n is equal to the setting value. If set
-     *         to 0, the setting is ignored.
+     *         to 0, the setting is ignored.  The default value is '0'.
      *                 <li> {@link
      *         com.gpudb.protocol.SolveGraphRequest.Options#EXPORT_SOLVE_RESULTS
      *         EXPORT_SOLVE_RESULTS}: Returns solution results inside the
@@ -1026,6 +1049,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *         value greater than the {@code restriction_threshold_value} will
      *         not be included in the solution.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -1043,7 +1067,8 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 maximum solution cost radius, which ignores the {@code
      *                 destinationNodeIds} list and instead outputs the nodes
      *                 within the radius sorted by ascending cost. If set to
-     *                 '0.0', the setting is ignored.
+     *                 '0.0', the setting is ignored.  The default value is
+     *                 '0.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_TARGETS
      *                 MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and
@@ -1052,7 +1077,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 {@code destinationNodeIds} list and instead outputs no
      *                 more than n number of nodes sorted by ascending cost
      *                 where n is equal to the setting value. If set to 0, the
-     *                 setting is ignored.
+     *                 setting is ignored.  The default value is '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#EXPORT_SOLVE_RESULTS
      *                 EXPORT_SOLVE_RESULTS}: Returns solution results inside
@@ -1094,6 +1119,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 restriction_threshold_value} will not be included in the
      *                 solution.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

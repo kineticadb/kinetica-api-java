@@ -141,7 +141,8 @@ public class RevokePermissionTableRequest implements IndexedRecord {
      * @param tableName  Name of the table to which the permission grants
      *                   access. Must be an existing table, collection, or
      *                   view.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public RevokePermissionTableRequest(String name, String permission, String tableName, Map<String, String> options) {
@@ -259,7 +260,7 @@ public class RevokePermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -268,7 +269,8 @@ public class RevokePermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

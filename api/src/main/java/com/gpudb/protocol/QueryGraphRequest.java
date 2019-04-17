@@ -139,7 +139,7 @@ public class QueryGraphRequest implements IndexedRecord {
      * addition, the edge(s) attached to the node(s) attached to the initial
      * ring of edge(s) surrounding the queried node(s) will be returned. This
      * setting is ignored if {@code edgeToNode} is set to {@code true}. This
-     * setting cannot be less than '1'.
+     * setting cannot be less than '1'.  The default value is '1'.
      *         <li> {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#INCLUDE_ALL_EDGES
      * INCLUDE_ALL_EDGES}: This parameter is only applicable if the queried
@@ -188,6 +188,7 @@ public class QueryGraphRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -200,7 +201,8 @@ public class QueryGraphRequest implements IndexedRecord {
          * addition, the edge(s) attached to the node(s) attached to the
          * initial ring of edge(s) surrounding the queried node(s) will be
          * returned. This setting is ignored if {@code edgeToNode} is set to
-         * {@code true}. This setting cannot be less than '1'.
+         * {@code true}. This setting cannot be less than '1'.  The default
+         * value is '1'.
          */
         public static final String NUMBER_OF_RINGS = "number_of_rings";
 
@@ -324,6 +326,7 @@ public class QueryGraphRequest implements IndexedRecord {
      *                        adjacencies. If left blank, the query results are
      *                        instead returned in the response even if {@code
      *                        export_query_results} is set to {@code false}.
+     *                        The default value is ''.
      * @param options  Additional parameters
      *                 <ul>
      *                         <li> {@link
@@ -337,7 +340,8 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 node(s) attached to the initial ring of edge(s)
      *                 surrounding the queried node(s) will be returned. This
      *                 setting is ignored if {@code edgeToNode} is set to
-     *                 {@code true}. This setting cannot be less than '1'.
+     *                 {@code true}. This setting cannot be less than '1'.  The
+     *                 default value is '1'.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#INCLUDE_ALL_EDGES
      *                 INCLUDE_ALL_EDGES}: This parameter is only applicable if
@@ -394,6 +398,7 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public QueryGraphRequest(String graphName, List<String> queries, boolean edgeToNode, List<Long> edgeOrNodeIntIds, List<String> edgeOrNodeStringIds, List<String> edgeOrNodeWktIds, String adjacencyTable, Map<String, String> options) {
@@ -585,6 +590,7 @@ public class QueryGraphRequest implements IndexedRecord {
      * @return Name of the table to store the resulting adjacencies. If left
      *         blank, the query results are instead returned in the response
      *         even if {@code export_query_results} is set to {@code false}.
+     *         The default value is ''.
      * 
      */
     public String getAdjacencyTable() {
@@ -597,6 +603,7 @@ public class QueryGraphRequest implements IndexedRecord {
      *                        adjacencies. If left blank, the query results are
      *                        instead returned in the response even if {@code
      *                        export_query_results} is set to {@code false}.
+     *                        The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -620,7 +627,7 @@ public class QueryGraphRequest implements IndexedRecord {
      *         attached to the node(s) attached to the initial ring of edge(s)
      *         surrounding the queried node(s) will be returned. This setting
      *         is ignored if {@code edgeToNode} is set to {@code true}. This
-     *         setting cannot be less than '1'.
+     *         setting cannot be less than '1'.  The default value is '1'.
      *                 <li> {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#INCLUDE_ALL_EDGES
      *         INCLUDE_ALL_EDGES}: This parameter is only applicable if the
@@ -671,6 +678,7 @@ public class QueryGraphRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -692,7 +700,8 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 node(s) attached to the initial ring of edge(s)
      *                 surrounding the queried node(s) will be returned. This
      *                 setting is ignored if {@code edgeToNode} is set to
-     *                 {@code true}. This setting cannot be less than '1'.
+     *                 {@code true}. This setting cannot be less than '1'.  The
+     *                 default value is '1'.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#INCLUDE_ALL_EDGES
      *                 INCLUDE_ALL_EDGES}: This parameter is only applicable if
@@ -749,6 +758,7 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

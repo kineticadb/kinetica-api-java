@@ -60,6 +60,7 @@ public class DeleteGraphRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.DeleteGraphRequest.Options#TRUE TRUE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -123,6 +124,7 @@ public class DeleteGraphRequest implements IndexedRecord {
      *                 com.gpudb.protocol.DeleteGraphRequest.Options#TRUE
      *                 TRUE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public DeleteGraphRequest(String graphName, Map<String, String> options) {
@@ -172,6 +174,7 @@ public class DeleteGraphRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.DeleteGraphRequest.Options#TRUE TRUE}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -201,6 +204,7 @@ public class DeleteGraphRequest implements IndexedRecord {
      *                 com.gpudb.protocol.DeleteGraphRequest.Options#TRUE
      *                 TRUE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

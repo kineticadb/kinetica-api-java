@@ -54,7 +54,8 @@ public class AdminVerifyDbResponse implements IndexedRecord {
 
     /**
      * 
-     * @return True if no errors were found, false otherwise.
+     * @return True if no errors were found, false otherwise.  The default
+     *         value is false.
      * 
      */
     public boolean getVerifiedOk() {
@@ -63,7 +64,8 @@ public class AdminVerifyDbResponse implements IndexedRecord {
 
     /**
      * 
-     * @param verifiedOk  True if no errors were found, false otherwise.
+     * @param verifiedOk  True if no errors were found, false otherwise.  The
+     *                    default value is false.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -76,7 +78,7 @@ public class AdminVerifyDbResponse implements IndexedRecord {
     /**
      * 
      * @return List of errors found while validating the database internal
-     *         state.
+     *         state.  The default value is an empty {@link List}.
      * 
      */
     public List<String> getErrorList() {
@@ -86,7 +88,8 @@ public class AdminVerifyDbResponse implements IndexedRecord {
     /**
      * 
      * @param errorList  List of errors found while validating the database
-     *                   internal state.
+     *                   internal state.  The default value is an empty {@link
+     *                   List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

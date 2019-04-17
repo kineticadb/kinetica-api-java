@@ -63,6 +63,7 @@ public class FilterByBoxRequest implements IndexedRecord {
      * will be automatically created. If empty, then the newly created view
      * will be top-level.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -109,7 +110,7 @@ public class FilterByBoxRequest implements IndexedRecord {
      *                  containing the results of the query. Has the same
      *                  naming restrictions as <a
      *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.
+     *                  target="_top">tables</a>.  The default value is ''.
      * @param xColumnName  Name of the column on which to perform the bounding
      *                     box query. Must be a valid numeric column.
      * @param minX  Lower bound for the column chosen by {@code xColumnName}.
@@ -132,6 +133,7 @@ public class FilterByBoxRequest implements IndexedRecord {
      *                 automatically created. If empty, then the newly created
      *                 view will be top-level.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public FilterByBoxRequest(String tableName, String viewName, String xColumnName, double minX, double maxX, String yColumnName, double minY, double maxY, Map<String, String> options) {
@@ -174,7 +176,7 @@ public class FilterByBoxRequest implements IndexedRecord {
      * @return Optional name of the result view that will be created containing
      *         the results of the query. Has the same naming restrictions as <a
      *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.
+     *         target="_top">tables</a>.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -187,7 +189,7 @@ public class FilterByBoxRequest implements IndexedRecord {
      *                  containing the results of the query. Has the same
      *                  naming restrictions as <a
      *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.
+     *                  target="_top">tables</a>.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -346,6 +348,7 @@ public class FilterByBoxRequest implements IndexedRecord {
      *         the collection will be automatically created. If empty, then the
      *         newly created view will be top-level.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -364,6 +367,7 @@ public class FilterByBoxRequest implements IndexedRecord {
      *                 automatically created. If empty, then the newly created
      *                 view will be top-level.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

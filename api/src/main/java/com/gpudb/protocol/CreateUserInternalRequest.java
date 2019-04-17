@@ -51,6 +51,7 @@ public class CreateUserInternalRequest implements IndexedRecord {
      * RESOURCE_GROUP}: Name of an existing resource group to associate with
      * this user
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -94,6 +95,7 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *                 RESOURCE_GROUP}: Name of an existing resource group to
      *                 associate with this user
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public CreateUserInternalRequest(String name, String password, Map<String, String> options) {
@@ -160,6 +162,7 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *         RESOURCE_GROUP}: Name of an existing resource group to associate
      *         with this user
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -175,6 +178,7 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *                 RESOURCE_GROUP}: Name of an existing resource group to
      *                 associate with this user
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

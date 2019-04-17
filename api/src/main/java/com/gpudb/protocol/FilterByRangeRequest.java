@@ -64,6 +64,7 @@ public class FilterByRangeRequest implements IndexedRecord {
      * will be automatically created. If empty, then the newly created view
      * will be top-level.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -107,7 +108,7 @@ public class FilterByRangeRequest implements IndexedRecord {
      *                  containing the results. Has the same naming
      *                  restrictions as <a
      *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.
+     *                  target="_top">tables</a>.  The default value is ''.
      * @param columnName  Name of a column on which the operation would be
      *                    applied.
      * @param lowerBound  Value of the lower bound (inclusive).
@@ -122,6 +123,7 @@ public class FilterByRangeRequest implements IndexedRecord {
      *                 automatically created. If empty, then the newly created
      *                 view will be top-level.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public FilterByRangeRequest(String tableName, String viewName, String columnName, double lowerBound, double upperBound, Map<String, String> options) {
@@ -162,7 +164,7 @@ public class FilterByRangeRequest implements IndexedRecord {
      * @return If provided, then this will be the name of the view containing
      *         the results. Has the same naming restrictions as <a
      *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.
+     *         target="_top">tables</a>.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -175,7 +177,7 @@ public class FilterByRangeRequest implements IndexedRecord {
      *                  containing the results. Has the same naming
      *                  restrictions as <a
      *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.
+     *                  target="_top">tables</a>.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -260,6 +262,7 @@ public class FilterByRangeRequest implements IndexedRecord {
      *         the collection will be automatically created. If empty, then the
      *         newly created view will be top-level.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -278,6 +281,7 @@ public class FilterByRangeRequest implements IndexedRecord {
      *                 automatically created. If empty, then the newly created
      *                 view will be top-level.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

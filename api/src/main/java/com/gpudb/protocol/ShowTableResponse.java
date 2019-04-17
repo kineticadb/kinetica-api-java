@@ -115,7 +115,8 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String CREATE_UNION = "create_union";
 
         /**
-         * The json representation of request creating this table.
+         * The json representation of request creating this table.  The default
+         * value is ''.
          */
         public static final String REQUEST_AVRO_JSON = "request_avro_json";
 
@@ -167,14 +168,14 @@ public class ShowTableResponse implements IndexedRecord {
          * href="../../../../../concepts/tables.html#foreign-key"
          * target="_top">foreign keys</a>, of the format 'source_column
          * references target_table(primary_key_column)'. Not present for
-         * collections.
+         * collections.  The default value is ''.
          */
         public static final String FOREIGN_KEYS = "foreign_keys";
 
         /**
          * Foreign shard key description of the format: <fk_foreign_key>
          * references <pk_column_name> from <pk_table_name>(<pk_primary_key>).
-         * Not present for collections.
+         * Not present for collections.  The default value is ''.
          */
         public static final String FOREIGN_SHARD_KEY = "foreign_shard_key";
 
@@ -230,7 +231,7 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String NONE = "NONE";
 
         /**
-         * Comma-separated list of partition keys
+         * Comma-separated list of partition keys.  The default value is ''.
          */
         public static final String PARTITION_KEYS = "partition_keys";
 
@@ -238,20 +239,22 @@ public class ShowTableResponse implements IndexedRecord {
          * Comma-separated list of partition definitions, whose format depends
          * on the partition_type.  See <a
          * href="../../../../../concepts/tables.html#partitioning"
-         * target="_top">partitioning</a> documentation for details.
+         * target="_top">partitioning</a> documentation for details.  The
+         * default value is ''.
          */
         public static final String PARTITION_DEFINITIONS = "partition_definitions";
 
         /**
          * true if partitions will be created for values which don't fall into
-         * existing partitions
+         * existing partitions.  The default value is ''.
          */
         public static final String IS_AUTOMATIC_PARTITION = "is_automatic_partition";
 
         /**
          * Semicolon-separated list of columns that have <a
          * href="../../../../../concepts/indexes.html#column-index"
-         * target="_top">indexes</a>. Not present for collections.
+         * target="_top">indexes</a>. Not present for collections.  The default
+         * value is ''.
          */
         public static final String ATTRIBUTE_INDEXES = "attribute_indexes";
 
@@ -261,13 +264,14 @@ public class ShowTableResponse implements IndexedRecord {
          * target="_top">compressed</a> columns with the corresponding
          * compression type for each; e.g.:
          * {first_name,snappy};{last_name,lz4hc}. Not present for collections.
+         * The default value is ''.
          */
         public static final String COMPRESSED_COLUMNS = "compressed_columns";
 
         /**
          * JSON-encoded string representing a map of column name to information
          * including memory usage if if the {@code get_column_info} option is
-         * {@code true}.
+         * {@code true}.  The default value is ''.
          */
         public static final String COLUMN_INFO = "column_info";
 
@@ -313,55 +317,60 @@ public class ShowTableResponse implements IndexedRecord {
 
         /**
          * for materialized view the name of the view this member table is part
-         * of - if same as the table_name then this is the root of the view
+         * of - if same as the table_name then this is the root of the view.
+         * The default value is ''.
          */
         public static final String VIEW_TABLE_NAME = "view_table_name";
 
         /**
          * true if the view named view_table_name is persisted - reported for
          * each view member.  Means method of recreating this member is saved -
-         * not the members data
+         * not the members data.  The default value is ''.
          */
         public static final String IS_VIEW_PERSISTED = "is_view_persisted";
 
         /**
          * true if some input table of the materialized view that affects this
-         * member table has been modified since the last refresh
+         * member table has been modified since the last refresh.  The default
+         * value is ''.
          */
         public static final String IS_DIRTY = "is_dirty";
 
         /**
          * for materialized view current refresh_method - one of manual,
-         * periodic, on_change
+         * periodic, on_change.  The default value is ''.
          */
         public static final String REFRESH_METHOD = "refresh_method";
 
         /**
          * for materialized view with periodic refresh_method the current
-         * intial datetime string that periodic refreshes began
+         * intial datetime string that periodic refreshes began.  The default
+         * value is ''.
          */
         public static final String REFRESH_START_TIME = "refresh_start_time";
 
         /**
          * for materialized view with periodic refresh_method the current
-         * refresh period in seconds
+         * refresh period in seconds.  The default value is ''.
          */
         public static final String REFRESH_PERIOD = "refresh_period";
 
         /**
          * for materialized view the a datatime string indicating the last time
-         * the view was refreshed
+         * the view was refreshed.  The default value is ''.
          */
         public static final String LAST_REFRESH_TIME = "last_refresh_time";
 
         /**
          * for materialized view with periodic refresh_method a datetime string
-         * indicating the next time the view is to be refreshed
+         * indicating the next time the view is to be refreshed.  The default
+         * value is ''.
          */
         public static final String NEXT_REFRESH_TIME = "next_refresh_time";
 
         /**
-         * user-specified chunk size, if provided at table creation time
+         * user-specified chunk size, if provided at table creation time.  The
+         * default value is ''.
          */
         public static final String USER_CHUNK_SIZE = "user_chunk_size";
 

@@ -1,29 +1,47 @@
 # GPUdb Java API Changelog
 
-## Version 7.0.1
+## Version 7.0
 
-### Version 7.0.1.0 - 2019-03-13
+### Version 7.0.2
+
+#### Version 7.0.2.0 - 2019-04-05
+-   Added support for selecting a primary host for the GPUdb class
+
+
+### Version 7.0.1
+
+#### Version 7.0.1.1 - 2019-04-02
+-   Added missing types for Type.fromDynamicSchema():
+    --  datetime
+    --  geometry (mapped to wkt)
+-   Added method hasProperty(String) to Type.Column; provides a convenient
+    functionality to check if a given column property applies to the given
+    column.
+
+
+#### Version 7.0.1.0 - 2019-03-11
 -   Added support for comma-separated URLs for the GPUdb constructor that
     takes a string.
 
 
-## Version 7.0.0
+### Version 7.0.0
 
-### Version 7.0.0.2 - 2019-02-26
+#### Version 7.0.0.2 - 2019-02-26
 -   Added a new column property: INIT_WITH_NOW
 
 
-### Version 7.0.0.1 - 2019-02-08
+#### Version 7.0.0.1 - 2019-02-08
 -   Added support for high availability (HA) failover logic to the
     GPUdb class
 
 
-### Version 7.0.0.0 - 2019-01-31
+#### Version 7.0.0.0 - 2019-01-31
 -   Added support for cluster reconfiguration to the multi-head I/O operations
 
 
+## Version 6.2
 
-## Version 6.2.0 - 2018-09-26
+### Version 6.2.0 - 2018-09-26
 
 -   New RecordRetriever class to support multi-head record lookup by
     shard key

@@ -54,6 +54,7 @@ public class AdminShowJobsRequest implements IndexedRecord {
      * com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE FALSE}
      * </ul>
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -102,6 +103,7 @@ public class AdminShowJobsRequest implements IndexedRecord {
      *                 FALSE}
      *                 </ul>
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AdminShowJobsRequest(Map<String, String> options) {
@@ -123,6 +125,7 @@ public class AdminShowJobsRequest implements IndexedRecord {
      *         com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE FALSE}
      *         </ul>
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -146,6 +149,7 @@ public class AdminShowJobsRequest implements IndexedRecord {
      *                 FALSE}
      *                 </ul>
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

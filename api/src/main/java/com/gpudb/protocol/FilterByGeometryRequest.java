@@ -136,6 +136,7 @@ public class FilterByGeometryRequest implements IndexedRecord {
      * will be automatically created. If empty, then the newly created view
      * will be top-level.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -182,11 +183,12 @@ public class FilterByGeometryRequest implements IndexedRecord {
      *                  containing the results. Has the same naming
      *                  restrictions as <a
      *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.
+     *                  target="_top">tables</a>.  The default value is ''.
      * @param columnName  Name of the column to be used in the filter. Must be
      *                    a geospatial geometry column.
      * @param inputWkt  A geometry in WKT format that will be used to filter
-     *                  the objects in {@code tableName}.
+     *                  the objects in {@code tableName}.  The default value is
+     *                  ''.
      * @param operation  The geometric filtering operation to perform
      *                   Supported values:
      *                   <ul>
@@ -231,6 +233,7 @@ public class FilterByGeometryRequest implements IndexedRecord {
      *                 automatically created. If empty, then the newly created
      *                 view will be top-level.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public FilterByGeometryRequest(String tableName, String viewName, String columnName, String inputWkt, String operation, Map<String, String> options) {
@@ -272,7 +275,7 @@ public class FilterByGeometryRequest implements IndexedRecord {
      * @return If provided, then this will be the name of the view containing
      *         the results. Has the same naming restrictions as <a
      *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.
+     *         target="_top">tables</a>.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -285,7 +288,7 @@ public class FilterByGeometryRequest implements IndexedRecord {
      *                  containing the results. Has the same naming
      *                  restrictions as <a
      *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.
+     *                  target="_top">tables</a>.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -321,7 +324,7 @@ public class FilterByGeometryRequest implements IndexedRecord {
     /**
      * 
      * @return A geometry in WKT format that will be used to filter the objects
-     *         in {@code tableName}.
+     *         in {@code tableName}.  The default value is ''.
      * 
      */
     public String getInputWkt() {
@@ -331,7 +334,8 @@ public class FilterByGeometryRequest implements IndexedRecord {
     /**
      * 
      * @param inputWkt  A geometry in WKT format that will be used to filter
-     *                  the objects in {@code tableName}.
+     *                  the objects in {@code tableName}.  The default value is
+     *                  ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -435,6 +439,7 @@ public class FilterByGeometryRequest implements IndexedRecord {
      *         the collection will be automatically created. If empty, then the
      *         newly created view will be top-level.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -453,6 +458,7 @@ public class FilterByGeometryRequest implements IndexedRecord {
      *                 automatically created. If empty, then the newly created
      *                 view will be top-level.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

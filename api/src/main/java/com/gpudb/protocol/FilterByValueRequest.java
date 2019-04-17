@@ -65,6 +65,7 @@ public class FilterByValueRequest implements IndexedRecord {
      * will be automatically created. If empty, then the newly created view
      * will be top-level.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -109,11 +110,12 @@ public class FilterByValueRequest implements IndexedRecord {
      *                  containing the results. Has the same naming
      *                  restrictions as <a
      *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.
+     *                  target="_top">tables</a>.  The default value is ''.
      * @param isString  Indicates whether the value being searched for is
      *                  string or numeric.
-     * @param value  The value to search for.
-     * @param valueStr  The string value to search for.
+     * @param value  The value to search for.  The default value is 0.
+     * @param valueStr  The string value to search for.  The default value is
+     *                  ''.
      * @param columnName  Name of a column on which the filter by value would
      *                    be applied.
      * @param options  Optional parameters.
@@ -126,6 +128,7 @@ public class FilterByValueRequest implements IndexedRecord {
      *                 automatically created. If empty, then the newly created
      *                 view will be top-level.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public FilterByValueRequest(String tableName, String viewName, boolean isString, double value, String valueStr, String columnName, Map<String, String> options) {
@@ -165,7 +168,7 @@ public class FilterByValueRequest implements IndexedRecord {
      * @return If provided, then this will be the name of the view containing
      *         the results. Has the same naming restrictions as <a
      *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.
+     *         target="_top">tables</a>.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -178,7 +181,7 @@ public class FilterByValueRequest implements IndexedRecord {
      *                  containing the results. Has the same naming
      *                  restrictions as <a
      *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.
+     *                  target="_top">tables</a>.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -213,7 +216,7 @@ public class FilterByValueRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The value to search for.
+     * @return The value to search for.  The default value is 0.
      * 
      */
     public double getValue() {
@@ -222,7 +225,7 @@ public class FilterByValueRequest implements IndexedRecord {
 
     /**
      * 
-     * @param value  The value to search for.
+     * @param value  The value to search for.  The default value is 0.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -234,7 +237,7 @@ public class FilterByValueRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The string value to search for.
+     * @return The string value to search for.  The default value is ''.
      * 
      */
     public String getValueStr() {
@@ -243,7 +246,8 @@ public class FilterByValueRequest implements IndexedRecord {
 
     /**
      * 
-     * @param valueStr  The string value to search for.
+     * @param valueStr  The string value to search for.  The default value is
+     *                  ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -286,6 +290,7 @@ public class FilterByValueRequest implements IndexedRecord {
      *         the collection will be automatically created. If empty, then the
      *         newly created view will be top-level.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -304,6 +309,7 @@ public class FilterByValueRequest implements IndexedRecord {
      *                 automatically created. If empty, then the newly created
      *                 view will be top-level.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

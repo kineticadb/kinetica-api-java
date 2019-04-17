@@ -86,15 +86,19 @@ public class CreateGraphRequest implements IndexedRecord {
      * MERGE_TOLERANCE}: If node geospatial positions are input (e.g.,
      * WKTPOINT, X, Y), determines the minimum separation allowed between
      * unique nodes. If nodes are within the tolerance of each other, they will
-     * be merged as a single node.
+     * be merged as a single node.  The default value is '1.0E-4'.
      *         <li> {@link com.gpudb.protocol.CreateGraphRequest.Options#MIN_X
-     * MIN_X}: Minimum x (longitude) value for spatial graph associations.
+     * MIN_X}: Minimum x (longitude) value for spatial graph associations.  The
+     * default value is '-180.0'.
      *         <li> {@link com.gpudb.protocol.CreateGraphRequest.Options#MAX_X
-     * MAX_X}: Maximum x (longitude) value for spatial graph associations.
+     * MAX_X}: Maximum x (longitude) value for spatial graph associations.  The
+     * default value is '180.0'.
      *         <li> {@link com.gpudb.protocol.CreateGraphRequest.Options#MIN_Y
-     * MIN_Y}: Minimum y (latitude) value for spatial graph associations.
+     * MIN_Y}: Minimum y (latitude) value for spatial graph associations.  The
+     * default value is '-90.0'.
      *         <li> {@link com.gpudb.protocol.CreateGraphRequest.Options#MAX_Y
-     * MAX_Y}: Maximum y (latitude) value for spatial graph associations.
+     * MAX_Y}: Maximum y (latitude) value for spatial graph associations.  The
+     * default value is '90.0'.
      *         <li> {@link
      * com.gpudb.protocol.CreateGraphRequest.Options#RECREATE RECREATE}: If set
      * to {@code true} and the graph (using {@code graphName}) already exists,
@@ -186,8 +190,9 @@ public class CreateGraphRequest implements IndexedRecord {
      * If the {@code graph_table} name is NOT left blank, the created graph is
      * also created as a table with the given name and following identifier
      * columns: 'EDGE_ID', 'EDGE_NODE1_ID', 'EDGE_NODE2_ID'. If left blank, no
-     * table is created.
+     * table is created.  The default value is ''.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -203,27 +208,31 @@ public class CreateGraphRequest implements IndexedRecord {
          * If node geospatial positions are input (e.g., WKTPOINT, X, Y),
          * determines the minimum separation allowed between unique nodes. If
          * nodes are within the tolerance of each other, they will be merged as
-         * a single node.
+         * a single node.  The default value is '1.0E-4'.
          */
         public static final String MERGE_TOLERANCE = "merge_tolerance";
 
         /**
-         * Minimum x (longitude) value for spatial graph associations.
+         * Minimum x (longitude) value for spatial graph associations.  The
+         * default value is '-180.0'.
          */
         public static final String MIN_X = "min_x";
 
         /**
-         * Maximum x (longitude) value for spatial graph associations.
+         * Maximum x (longitude) value for spatial graph associations.  The
+         * default value is '180.0'.
          */
         public static final String MAX_X = "max_x";
 
         /**
-         * Minimum y (latitude) value for spatial graph associations.
+         * Minimum y (latitude) value for spatial graph associations.  The
+         * default value is '-90.0'.
          */
         public static final String MIN_Y = "min_y";
 
         /**
-         * Maximum y (latitude) value for spatial graph associations.
+         * Maximum y (latitude) value for spatial graph associations.  The
+         * default value is '90.0'.
          */
         public static final String MAX_Y = "max_y";
 
@@ -331,7 +340,7 @@ public class CreateGraphRequest implements IndexedRecord {
          * If the {@code graph_table} name is NOT left blank, the created graph
          * is also created as a table with the given name and following
          * identifier columns: 'EDGE_ID', 'EDGE_NODE1_ID', 'EDGE_NODE2_ID'. If
-         * left blank, no table is created.
+         * left blank, no table is created.  The default value is ''.
          */
         public static final String GRAPH_TABLE = "graph_table";
 
@@ -438,23 +447,23 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 (e.g., WKTPOINT, X, Y), determines the minimum
      *                 separation allowed between unique nodes. If nodes are
      *                 within the tolerance of each other, they will be merged
-     *                 as a single node.
+     *                 as a single node.  The default value is '1.0E-4'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#MIN_X
      *                 MIN_X}: Minimum x (longitude) value for spatial graph
-     *                 associations.
+     *                 associations.  The default value is '-180.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#MAX_X
      *                 MAX_X}: Maximum x (longitude) value for spatial graph
-     *                 associations.
+     *                 associations.  The default value is '180.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#MIN_Y
      *                 MIN_Y}: Minimum y (latitude) value for spatial graph
-     *                 associations.
+     *                 associations.  The default value is '-90.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#MAX_Y
      *                 MAX_Y}: Maximum y (latitude) value for spatial graph
-     *                 associations.
+     *                 associations.  The default value is '90.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#RECREATE
      *                 RECREATE}: If set to {@code true} and the graph (using
@@ -565,8 +574,9 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 left blank, the created graph is also created as a table
      *                 with the given name and following identifier columns:
      *                 'EDGE_ID', 'EDGE_NODE1_ID', 'EDGE_NODE2_ID'. If left
-     *                 blank, no table is created.
+     *                 blank, no table is created.  The default value is ''.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public CreateGraphRequest(String graphName, boolean directedGraph, List<String> nodes, List<String> edges, List<String> weights, List<String> restrictions, Map<String, String> options) {
@@ -820,19 +830,24 @@ public class CreateGraphRequest implements IndexedRecord {
      *         MERGE_TOLERANCE}: If node geospatial positions are input (e.g.,
      *         WKTPOINT, X, Y), determines the minimum separation allowed
      *         between unique nodes. If nodes are within the tolerance of each
-     *         other, they will be merged as a single node.
+     *         other, they will be merged as a single node.  The default value
+     *         is '1.0E-4'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateGraphRequest.Options#MIN_X MIN_X}:
-     *         Minimum x (longitude) value for spatial graph associations.
+     *         Minimum x (longitude) value for spatial graph associations.  The
+     *         default value is '-180.0'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateGraphRequest.Options#MAX_X MAX_X}:
-     *         Maximum x (longitude) value for spatial graph associations.
+     *         Maximum x (longitude) value for spatial graph associations.  The
+     *         default value is '180.0'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateGraphRequest.Options#MIN_Y MIN_Y}:
-     *         Minimum y (latitude) value for spatial graph associations.
+     *         Minimum y (latitude) value for spatial graph associations.  The
+     *         default value is '-90.0'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateGraphRequest.Options#MAX_Y MAX_Y}:
-     *         Maximum y (latitude) value for spatial graph associations.
+     *         Maximum y (latitude) value for spatial graph associations.  The
+     *         default value is '90.0'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateGraphRequest.Options#RECREATE
      *         RECREATE}: If set to {@code true} and the graph (using {@code
@@ -926,8 +941,10 @@ public class CreateGraphRequest implements IndexedRecord {
      *         GRAPH_TABLE}: If the {@code graph_table} name is NOT left blank,
      *         the created graph is also created as a table with the given name
      *         and following identifier columns: 'EDGE_ID', 'EDGE_NODE1_ID',
-     *         'EDGE_NODE2_ID'. If left blank, no table is created.
+     *         'EDGE_NODE2_ID'. If left blank, no table is created.  The
+     *         default value is ''.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -951,23 +968,23 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 (e.g., WKTPOINT, X, Y), determines the minimum
      *                 separation allowed between unique nodes. If nodes are
      *                 within the tolerance of each other, they will be merged
-     *                 as a single node.
+     *                 as a single node.  The default value is '1.0E-4'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#MIN_X
      *                 MIN_X}: Minimum x (longitude) value for spatial graph
-     *                 associations.
+     *                 associations.  The default value is '-180.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#MAX_X
      *                 MAX_X}: Maximum x (longitude) value for spatial graph
-     *                 associations.
+     *                 associations.  The default value is '180.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#MIN_Y
      *                 MIN_Y}: Minimum y (latitude) value for spatial graph
-     *                 associations.
+     *                 associations.  The default value is '-90.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#MAX_Y
      *                 MAX_Y}: Maximum y (latitude) value for spatial graph
-     *                 associations.
+     *                 associations.  The default value is '90.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#RECREATE
      *                 RECREATE}: If set to {@code true} and the graph (using
@@ -1078,8 +1095,9 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 left blank, the created graph is also created as a table
      *                 with the given name and following identifier columns:
      *                 'EDGE_ID', 'EDGE_NODE1_ID', 'EDGE_NODE2_ID'. If left
-     *                 blank, no table is created.
+     *                 blank, no table is created.  The default value is ''.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

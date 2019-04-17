@@ -135,21 +135,21 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * Comma-separated list of the columns to be sorted by; e.g. 'timestamp
      * asc, x desc'.  The columns specified must be present in input table.  If
      * any alias is given for any column name, the alias must be used, rather
-     * than the original column name.
+     * than the original column name.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
      * CHUNK_SIZE}: Indicates the chunk size to be used for the result table.
      * Must be used in combination with the {@code result_table} option.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT LIMIT}: The
-     * number of records to keep.
+     * number of records to keep.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL TTL}: Sets the <a
      * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
      * table specified in {@code result_table}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#VIEW_ID VIEW_ID}:
-     * view this result table is part of
+     * view this result table is part of.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
      * MATERIALIZE_ON_GPU}: If {@code true} then the output columns will be
@@ -185,6 +185,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -234,7 +235,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
          * Comma-separated list of the columns to be sorted by; e.g. 'timestamp
          * asc, x desc'.  The columns specified must be present in input table.
          * If any alias is given for any column name, the alias must be used,
-         * rather than the original column name.
+         * rather than the original column name.  The default value is ''.
          */
         public static final String ORDER_BY = "order_by";
 
@@ -245,7 +246,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
         public static final String CHUNK_SIZE = "chunk_size";
 
         /**
-         * The number of records to keep.
+         * The number of records to keep.  The default value is ''.
          */
         public static final String LIMIT = "limit";
 
@@ -257,7 +258,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
         public static final String TTL = "ttl";
 
         /**
-         * view this result table is part of
+         * view this result table is part of.  The default value is ''.
          */
         public static final String VIEW_ID = "view_id";
 
@@ -334,7 +335,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                     can be used to include all the non-pivoted columns
      *                     from the source table.
      * @param variableColumnName  Specifies the variable/parameter column name.
-     * @param valueColumnName  Specifies the value column name.
+     *                            The default value is ''.
+     * @param valueColumnName  Specifies the value column name.  The default
+     *                         value is ''.
      * @param pivotedColumns  List of one or more values typically the column
      *                        names of the input table. All the columns in the
      *                        source table must have the same data type.
@@ -384,7 +387,8 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 sorted by; e.g. 'timestamp asc, x desc'.  The columns
      *                 specified must be present in input table.  If any alias
      *                 is given for any column name, the alias must be used,
-     *                 rather than the original column name.
+     *                 rather than the original column name.  The default value
+     *                 is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
@@ -392,7 +396,8 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT
-     *                 LIMIT}: The number of records to keep.
+     *                 LIMIT}: The number of records to keep.  The default
+     *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL
      *                 TTL}: Sets the <a
@@ -401,7 +406,8 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of
+     *                 VIEW_ID}: view this result table is part of.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the output
@@ -444,6 +450,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AggregateUnpivotRequest(String tableName, List<String> columnNames, String variableColumnName, String valueColumnName, List<String> pivotedColumns, Map<String, String> options) {
@@ -466,7 +473,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                     can be used to include all the non-pivoted columns
      *                     from the source table.
      * @param variableColumnName  Specifies the variable/parameter column name.
-     * @param valueColumnName  Specifies the value column name.
+     *                            The default value is ''.
+     * @param valueColumnName  Specifies the value column name.  The default
+     *                         value is ''.
      * @param pivotedColumns  List of one or more values typically the column
      *                        names of the input table. All the columns in the
      *                        source table must have the same data type.
@@ -531,7 +540,8 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 sorted by; e.g. 'timestamp asc, x desc'.  The columns
      *                 specified must be present in input table.  If any alias
      *                 is given for any column name, the alias must be used,
-     *                 rather than the original column name.
+     *                 rather than the original column name.  The default value
+     *                 is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
@@ -539,7 +549,8 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT
-     *                 LIMIT}: The number of records to keep.
+     *                 LIMIT}: The number of records to keep.  The default
+     *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL
      *                 TTL}: Sets the <a
@@ -548,7 +559,8 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of
+     *                 VIEW_ID}: view this result table is part of.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the output
@@ -591,6 +603,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AggregateUnpivotRequest(String tableName, List<String> columnNames, String variableColumnName, String valueColumnName, List<String> pivotedColumns, String encoding, Map<String, String> options) {
@@ -652,7 +665,8 @@ public class AggregateUnpivotRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Specifies the variable/parameter column name.
+     * @return Specifies the variable/parameter column name.  The default value
+     *         is ''.
      * 
      */
     public String getVariableColumnName() {
@@ -662,6 +676,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
     /**
      * 
      * @param variableColumnName  Specifies the variable/parameter column name.
+     *                            The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -673,7 +688,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Specifies the value column name.
+     * @return Specifies the value column name.  The default value is ''.
      * 
      */
     public String getValueColumnName() {
@@ -682,7 +697,8 @@ public class AggregateUnpivotRequest implements IndexedRecord {
 
     /**
      * 
-     * @param valueColumnName  Specifies the value column name.
+     * @param valueColumnName  Specifies the value column name.  The default
+     *                         value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -808,7 +824,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         e.g. 'timestamp asc, x desc'.  The columns specified must be
      *         present in input table.  If any alias is given for any column
      *         name, the alias must be used, rather than the original column
-     *         name.
+     *         name.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
      *         CHUNK_SIZE}: Indicates the chunk size to be used for the result
@@ -816,7 +832,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         option.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT LIMIT}:
-     *         The number of records to keep.
+     *         The number of records to keep.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL TTL}:
      *         Sets the <a href="../../../../../concepts/ttl.html"
@@ -824,7 +840,8 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         result_table}.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#VIEW_ID
-     *         VIEW_ID}: view this result table is part of
+     *         VIEW_ID}: view this result table is part of.  The default value
+     *         is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
      *         MATERIALIZE_ON_GPU}: If {@code true} then the output columns
@@ -860,6 +877,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -914,7 +932,8 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 sorted by; e.g. 'timestamp asc, x desc'.  The columns
      *                 specified must be present in input table.  If any alias
      *                 is given for any column name, the alias must be used,
-     *                 rather than the original column name.
+     *                 rather than the original column name.  The default value
+     *                 is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
@@ -922,7 +941,8 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT
-     *                 LIMIT}: The number of records to keep.
+     *                 LIMIT}: The number of records to keep.  The default
+     *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL
      *                 TTL}: Sets the <a
@@ -931,7 +951,8 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of
+     *                 VIEW_ID}: view this result table is part of.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the output
@@ -974,6 +995,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

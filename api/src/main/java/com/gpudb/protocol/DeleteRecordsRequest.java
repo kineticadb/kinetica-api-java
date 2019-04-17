@@ -57,7 +57,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.DeleteRecordsRequest.Options#GLOBAL_EXPRESSION
      * GLOBAL_EXPRESSION}: An optional global expression to reduce the search
-     * space of the {@code expressions}.
+     * space of the {@code expressions}.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.DeleteRecordsRequest.Options#RECORD_ID RECORD_ID}: A
      * record ID identifying a single record, obtained at the time of {@link
@@ -83,13 +83,14 @@ public class DeleteRecordsRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.DeleteRecordsRequest.Options#FALSE FALSE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
          * An optional global expression to reduce the search space of the
-         * {@code expressions}.
+         * {@code expressions}.  The default value is ''.
          */
         public static final String GLOBAL_EXPRESSION = "global_expression";
 
@@ -156,7 +157,8 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.DeleteRecordsRequest.Options#GLOBAL_EXPRESSION
      *                 GLOBAL_EXPRESSION}: An optional global expression to
-     *                 reduce the search space of the {@code expressions}.
+     *                 reduce the search space of the {@code expressions}.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.DeleteRecordsRequest.Options#RECORD_ID
      *                 RECORD_ID}: A record ID identifying a single record,
@@ -186,6 +188,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.DeleteRecordsRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public DeleteRecordsRequest(String tableName, List<String> expressions, Map<String, String> options) {
@@ -256,7 +259,8 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.DeleteRecordsRequest.Options#GLOBAL_EXPRESSION
      *         GLOBAL_EXPRESSION}: An optional global expression to reduce the
-     *         search space of the {@code expressions}.
+     *         search space of the {@code expressions}.  The default value is
+     *         ''.
      *                 <li> {@link
      *         com.gpudb.protocol.DeleteRecordsRequest.Options#RECORD_ID
      *         RECORD_ID}: A record ID identifying a single record, obtained at
@@ -283,6 +287,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.DeleteRecordsRequest.Options#FALSE FALSE}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -296,7 +301,8 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.DeleteRecordsRequest.Options#GLOBAL_EXPRESSION
      *                 GLOBAL_EXPRESSION}: An optional global expression to
-     *                 reduce the search space of the {@code expressions}.
+     *                 reduce the search space of the {@code expressions}.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.DeleteRecordsRequest.Options#RECORD_ID
      *                 RECORD_ID}: A record ID identifying a single record,
@@ -326,6 +332,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.DeleteRecordsRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

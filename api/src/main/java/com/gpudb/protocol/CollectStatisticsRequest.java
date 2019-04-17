@@ -65,7 +65,8 @@ public class CollectStatisticsRequest implements IndexedRecord {
      * @param columnNames  List of one or more column names in {@code
      *                     tableName} for which to collect statistics
      *                     (cardinality, mean value, etc.).
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public CollectStatisticsRequest(String tableName, List<String> columnNames, Map<String, String> options) {
@@ -121,7 +122,7 @@ public class CollectStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -130,7 +131,8 @@ public class CollectStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

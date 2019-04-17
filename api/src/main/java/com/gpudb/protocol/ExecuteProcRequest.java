@@ -62,7 +62,8 @@ public class ExecuteProcRequest implements IndexedRecord {
      * proc status is cleared with the {@link
      * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest) clear_complete}
      * option of {@link com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}
-     * and all proc instances using the cached data have completed.
+     * and all proc instances using the cached data have completed.  The
+     * default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.ExecuteProcRequest.Options#USE_CACHED_INPUT
      * USE_CACHED_INPUT}: A comma-delimited list of run IDs (as returned from
@@ -73,15 +74,16 @@ public class ExecuteProcRequest implements IndexedRecord {
      * but data from all other tables cached for the specified run IDs will be
      * passed to the proc. If the same table was cached for multiple specified
      * run IDs, the cached data from the first run ID specified in the list
-     * that includes that table will be used.
+     * that includes that table will be used.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.ExecuteProcRequest.Options#KIFS_INPUT_DIRS
      * KIFS_INPUT_DIRS}: A comma-delimited list of KiFS directories whose local
      * files will be made directly accessible to the proc through the API. (All
      * KiFS files, local or not, are also accessible through the file system
      * below the KiFS mount point.) Each name specified must the name of an
-     * existing KiFS directory.
+     * existing KiFS directory.  The default value is ''.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -95,7 +97,8 @@ public class ExecuteProcRequest implements IndexedRecord {
          * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
          * clear_complete} option of {@link
          * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} and all proc
-         * instances using the cached data have completed.
+         * instances using the cached data have completed.  The default value
+         * is ''.
          */
         public static final String CACHE_INPUT = "cache_input";
 
@@ -108,7 +111,8 @@ public class ExecuteProcRequest implements IndexedRecord {
          * data from all other tables cached for the specified run IDs will be
          * passed to the proc. If the same table was cached for multiple
          * specified run IDs, the cached data from the first run ID specified
-         * in the list that includes that table will be used.
+         * in the list that includes that table will be used.  The default
+         * value is ''.
          */
         public static final String USE_CACHED_INPUT = "use_cached_input";
 
@@ -117,7 +121,7 @@ public class ExecuteProcRequest implements IndexedRecord {
          * made directly accessible to the proc through the API. (All KiFS
          * files, local or not, are also accessible through the file system
          * below the KiFS mount point.) Each name specified must the name of an
-         * existing KiFS directory.
+         * existing KiFS directory.  The default value is ''.
          */
         public static final String KIFS_INPUT_DIRS = "kifs_input_dirs";
 
@@ -153,15 +157,17 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                  currently existing proc.
      * @param params  A map containing named parameters to pass to the proc.
      *                Each key/value pair specifies the name of a parameter and
-     *                its value.
+     *                its value.  The default value is an empty {@link Map}.
      * @param binParams  A map containing named binary parameters to pass to
      *                   the proc. Each key/value pair specifies the name of a
-     *                   parameter and its value.
+     *                   parameter and its value.  The default value is an
+     *                   empty {@link Map}.
      * @param inputTableNames  Names of the tables containing data to be passed
      *                         to the proc. Each name specified must be the
      *                         name of a currently existing table. If no table
      *                         names are specified, no data will be passed to
-     *                         the proc.
+     *                         the proc.  The default value is an empty {@link
+     *                         List}.
      * @param inputColumnNames  Map of table names from {@code inputTableNames}
      *                          to lists of names of columns from those tables
      *                          that will be passed to the proc. Each column
@@ -169,7 +175,8 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                          column in the corresponding table. If a table
      *                          name from {@code inputTableNames} is not
      *                          included, all columns from that table will be
-     *                          passed to the proc.
+     *                          passed to the proc.  The default value is an
+     *                          empty {@link Map}.
      * @param outputTableNames  Names of the tables to which output data from
      *                          the proc will be written. If a specified table
      *                          does not exist, it will automatically be
@@ -180,7 +187,8 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                          non-persistent result table, it must not have
      *                          primary or shard keys. If no table names are
      *                          specified, no output data can be returned from
-     *                          the proc.
+     *                          the proc.  The default value is an empty {@link
+     *                          List}.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -196,7 +204,7 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                 clear_complete} option of {@link
      *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}
      *                 and all proc instances using the cached data have
-     *                 completed.
+     *                 completed.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteProcRequest.Options#USE_CACHED_INPUT
      *                 USE_CACHED_INPUT}: A comma-delimited list of run IDs (as
@@ -210,7 +218,7 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                 passed to the proc. If the same table was cached for
      *                 multiple specified run IDs, the cached data from the
      *                 first run ID specified in the list that includes that
-     *                 table will be used.
+     *                 table will be used.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteProcRequest.Options#KIFS_INPUT_DIRS
      *                 KIFS_INPUT_DIRS}: A comma-delimited list of KiFS
@@ -218,8 +226,10 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                 accessible to the proc through the API. (All KiFS files,
      *                 local or not, are also accessible through the file
      *                 system below the KiFS mount point.) Each name specified
-     *                 must the name of an existing KiFS directory.
+     *                 must the name of an existing KiFS directory.  The
+     *                 default value is ''.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public ExecuteProcRequest(String procName, Map<String, String> params, Map<String, ByteBuffer> binParams, List<String> inputTableNames, Map<String, List<String>> inputColumnNames, List<String> outputTableNames, Map<String, String> options) {
@@ -259,6 +269,7 @@ public class ExecuteProcRequest implements IndexedRecord {
      * 
      * @return A map containing named parameters to pass to the proc. Each
      *         key/value pair specifies the name of a parameter and its value.
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getParams() {
@@ -269,7 +280,7 @@ public class ExecuteProcRequest implements IndexedRecord {
      * 
      * @param params  A map containing named parameters to pass to the proc.
      *                Each key/value pair specifies the name of a parameter and
-     *                its value.
+     *                its value.  The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -283,7 +294,7 @@ public class ExecuteProcRequest implements IndexedRecord {
      * 
      * @return A map containing named binary parameters to pass to the proc.
      *         Each key/value pair specifies the name of a parameter and its
-     *         value.
+     *         value.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, ByteBuffer> getBinParams() {
@@ -294,7 +305,8 @@ public class ExecuteProcRequest implements IndexedRecord {
      * 
      * @param binParams  A map containing named binary parameters to pass to
      *                   the proc. Each key/value pair specifies the name of a
-     *                   parameter and its value.
+     *                   parameter and its value.  The default value is an
+     *                   empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -309,7 +321,7 @@ public class ExecuteProcRequest implements IndexedRecord {
      * @return Names of the tables containing data to be passed to the proc.
      *         Each name specified must be the name of a currently existing
      *         table. If no table names are specified, no data will be passed
-     *         to the proc.
+     *         to the proc.  The default value is an empty {@link List}.
      * 
      */
     public List<String> getInputTableNames() {
@@ -322,7 +334,8 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                         to the proc. Each name specified must be the
      *                         name of a currently existing table. If no table
      *                         names are specified, no data will be passed to
-     *                         the proc.
+     *                         the proc.  The default value is an empty {@link
+     *                         List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -339,7 +352,8 @@ public class ExecuteProcRequest implements IndexedRecord {
      *         proc. Each column name specified must be the name of an existing
      *         column in the corresponding table. If a table name from {@code
      *         inputTableNames} is not included, all columns from that table
-     *         will be passed to the proc.
+     *         will be passed to the proc.  The default value is an empty
+     *         {@link Map}.
      * 
      */
     public Map<String, List<String>> getInputColumnNames() {
@@ -355,7 +369,8 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                          column in the corresponding table. If a table
      *                          name from {@code inputTableNames} is not
      *                          included, all columns from that table will be
-     *                          passed to the proc.
+     *                          passed to the proc.  The default value is an
+     *                          empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -374,7 +389,8 @@ public class ExecuteProcRequest implements IndexedRecord {
      *         excluding any primary and shard keys. If a specified table is a
      *         non-persistent result table, it must not have primary or shard
      *         keys. If no table names are specified, no output data can be
-     *         returned from the proc.
+     *         returned from the proc.  The default value is an empty {@link
+     *         List}.
      * 
      */
     public List<String> getOutputTableNames() {
@@ -393,7 +409,8 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                          non-persistent result table, it must not have
      *                          primary or shard keys. If no table names are
      *                          specified, no output data can be returned from
-     *                          the proc.
+     *                          the proc.  The default value is an empty {@link
+     *                          List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -418,7 +435,8 @@ public class ExecuteProcRequest implements IndexedRecord {
      *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)
      *         clear_complete} option of {@link
      *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} and all
-     *         proc instances using the cached data have completed.
+     *         proc instances using the cached data have completed.  The
+     *         default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.ExecuteProcRequest.Options#USE_CACHED_INPUT
      *         USE_CACHED_INPUT}: A comma-delimited list of run IDs (as
@@ -431,6 +449,7 @@ public class ExecuteProcRequest implements IndexedRecord {
      *         will be passed to the proc. If the same table was cached for
      *         multiple specified run IDs, the cached data from the first run
      *         ID specified in the list that includes that table will be used.
+     *         The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.ExecuteProcRequest.Options#KIFS_INPUT_DIRS
      *         KIFS_INPUT_DIRS}: A comma-delimited list of KiFS directories
@@ -438,7 +457,9 @@ public class ExecuteProcRequest implements IndexedRecord {
      *         through the API. (All KiFS files, local or not, are also
      *         accessible through the file system below the KiFS mount point.)
      *         Each name specified must the name of an existing KiFS directory.
+     *         The default value is ''.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -462,7 +483,7 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                 clear_complete} option of {@link
      *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}
      *                 and all proc instances using the cached data have
-     *                 completed.
+     *                 completed.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteProcRequest.Options#USE_CACHED_INPUT
      *                 USE_CACHED_INPUT}: A comma-delimited list of run IDs (as
@@ -476,7 +497,7 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                 passed to the proc. If the same table was cached for
      *                 multiple specified run IDs, the cached data from the
      *                 first run ID specified in the list that includes that
-     *                 table will be used.
+     *                 table will be used.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteProcRequest.Options#KIFS_INPUT_DIRS
      *                 KIFS_INPUT_DIRS}: A comma-delimited list of KiFS
@@ -484,8 +505,10 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                 accessible to the proc through the API. (All KiFS files,
      *                 local or not, are also accessible through the file
      *                 system below the KiFS mount point.) Each name specified
-     *                 must the name of an existing KiFS directory.
+     *                 must the name of an existing KiFS directory.  The
+     *                 default value is ''.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

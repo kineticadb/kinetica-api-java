@@ -62,8 +62,9 @@ public class AdminShowClusterOperationsRequest implements IndexedRecord {
      * specified parameters.
      * 
      * @param historyIndex  Indicates which cluster operation to retrieve.  Use
-     *                      0 for the most recent.
-     * @param options  Optional parameters.
+     *                      0 for the most recent.  The default value is 0.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public AdminShowClusterOperationsRequest(int historyIndex, Map<String, String> options) {
@@ -74,7 +75,7 @@ public class AdminShowClusterOperationsRequest implements IndexedRecord {
     /**
      * 
      * @return Indicates which cluster operation to retrieve.  Use 0 for the
-     *         most recent.
+     *         most recent.  The default value is 0.
      * 
      */
     public int getHistoryIndex() {
@@ -84,7 +85,7 @@ public class AdminShowClusterOperationsRequest implements IndexedRecord {
     /**
      * 
      * @param historyIndex  Indicates which cluster operation to retrieve.  Use
-     *                      0 for the most recent.
+     *                      0 for the most recent.  The default value is 0.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -96,7 +97,7 @@ public class AdminShowClusterOperationsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -105,7 +106,8 @@ public class AdminShowClusterOperationsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

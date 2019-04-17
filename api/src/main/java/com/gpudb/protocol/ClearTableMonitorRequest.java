@@ -59,7 +59,8 @@ public class ClearTableMonitorRequest implements IndexedRecord {
      * 
      * @param topicId  The topic ID returned by {@link
      *                 com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public ClearTableMonitorRequest(String topicId, Map<String, String> options) {
@@ -92,7 +93,7 @@ public class ClearTableMonitorRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -101,7 +102,8 @@ public class ClearTableMonitorRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

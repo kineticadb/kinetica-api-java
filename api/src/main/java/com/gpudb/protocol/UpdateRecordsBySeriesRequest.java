@@ -75,9 +75,10 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
      * @param worldTableName  Name of the table containing the complete series
      *                        (track) information.
      * @param viewName  name of the view containing the series (tracks) which
-     *                  have to be updated.
-     * @param reserved
-     * @param options  Optional parameters.
+     *                  have to be updated.  The default value is ''.
+     * @param reserved  The default value is an empty {@link List}.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public UpdateRecordsBySeriesRequest(String tableName, String worldTableName, String viewName, List<String> reserved, Map<String, String> options) {
@@ -137,7 +138,7 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
     /**
      * 
      * @return name of the view containing the series (tracks) which have to be
-     *         updated.
+     *         updated.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -147,7 +148,7 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
     /**
      * 
      * @param viewName  name of the view containing the series (tracks) which
-     *                  have to be updated.
+     *                  have to be updated.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -156,13 +157,19 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
         this.viewName = (viewName == null) ? "" : viewName;
         return this;
     }
+
+    /**
+     * 
+     * @return The default value is an empty {@link List}.
+     * 
+     */
     public List<String> getReserved() {
         return reserved;
     }
 
     /**
      * 
-     * @param reserved
+     * @param reserved  The default value is an empty {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -174,7 +181,7 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -183,7 +190,8 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

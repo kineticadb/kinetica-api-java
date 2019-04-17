@@ -115,6 +115,7 @@ public class GetRecordsRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING ASCENDING}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -195,11 +196,12 @@ public class GetRecordsRequest implements IndexedRecord {
      *                   collection.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned. Or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.
+     *               that the max number of results should be returned.  The
+     *               default value is 10000.
      * @param options
      *                 <ul>
      *                         <li> {@link
@@ -246,6 +248,7 @@ public class GetRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING
      *                 ASCENDING}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public GetRecordsRequest(String tableName, long offset, long limit, Map<String, String> options) {
@@ -264,11 +267,12 @@ public class GetRecordsRequest implements IndexedRecord {
      *                   collection.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned. Or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.
+     *               that the max number of results should be returned.  The
+     *               default value is 10000.
      * @param encoding  Specifies the encoding for returned records.
      *                  Supported values:
      *                  <ul>
@@ -331,6 +335,7 @@ public class GetRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING
      *                 ASCENDING}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public GetRecordsRequest(String tableName, long offset, long limit, String encoding, Map<String, String> options) {
@@ -369,8 +374,8 @@ public class GetRecordsRequest implements IndexedRecord {
      * 
      * @return A positive integer indicating the number of initial results to
      *         skip (this can be useful for paging through the results).  The
-     *         minimum allowed value is 0. The maximum allowed value is
-     *         MAX_INT.
+     *         default value is 0.The minimum allowed value is 0. The maximum
+     *         allowed value is MAX_INT.
      * 
      */
     public long getOffset() {
@@ -381,8 +386,8 @@ public class GetRecordsRequest implements IndexedRecord {
      * 
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -396,7 +401,8 @@ public class GetRecordsRequest implements IndexedRecord {
      * 
      * @return A positive integer indicating the maximum number of results to
      *         be returned. Or END_OF_SET (-9999) to indicate that the max
-     *         number of results should be returned.
+     *         number of results should be returned.  The default value is
+     *         10000.
      * 
      */
     public long getLimit() {
@@ -407,7 +413,8 @@ public class GetRecordsRequest implements IndexedRecord {
      * 
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned. Or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.
+     *               that the max number of results should be returned.  The
+     *               default value is 10000.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -509,6 +516,7 @@ public class GetRecordsRequest implements IndexedRecord {
      *         com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING
      *         ASCENDING}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -563,6 +571,7 @@ public class GetRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.GetRecordsRequest.Options#ASCENDING
      *                 ASCENDING}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

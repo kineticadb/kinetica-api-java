@@ -56,8 +56,10 @@ public class ListGraphRequest implements IndexedRecord {
      * Constructs a ListGraphRequest object with the specified parameters.
      * 
      * @param graphName  Name of the graph on which to retrieve information. If
-     *                   empty, information about all graphs is returned.
-     * @param options  Optional parameters.
+     *                   empty, information about all graphs is returned.  The
+     *                   default value is ''.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public ListGraphRequest(String graphName, Map<String, String> options) {
@@ -68,7 +70,8 @@ public class ListGraphRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the graph on which to retrieve information. If empty,
-     *         information about all graphs is returned.
+     *         information about all graphs is returned.  The default value is
+     *         ''.
      * 
      */
     public String getGraphName() {
@@ -78,7 +81,8 @@ public class ListGraphRequest implements IndexedRecord {
     /**
      * 
      * @param graphName  Name of the graph on which to retrieve information. If
-     *                   empty, information about all graphs is returned.
+     *                   empty, information about all graphs is returned.  The
+     *                   default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -90,7 +94,7 @@ public class ListGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -99,7 +103,8 @@ public class ListGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

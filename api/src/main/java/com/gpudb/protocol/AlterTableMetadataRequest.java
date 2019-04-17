@@ -73,7 +73,8 @@ public class AlterTableMetadataRequest implements IndexedRecord {
      *                     applied to every table. If the provided map is
      *                     empty, then all existing metadata for the table(s)
      *                     will be cleared.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public AlterTableMetadataRequest(List<String> tableNames, Map<String, String> metadataMap, Map<String, String> options) {
@@ -138,7 +139,7 @@ public class AlterTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -147,7 +148,8 @@ public class AlterTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

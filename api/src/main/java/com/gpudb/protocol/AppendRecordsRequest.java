@@ -54,21 +54,22 @@ public class AppendRecordsRequest implements IndexedRecord {
      * com.gpudb.protocol.AppendRecordsRequest.Options#OFFSET OFFSET}: A
      * positive integer indicating the number of initial results to skip from
      * {@code sourceTableName}. Default is 0. The minimum allowed value is 0.
-     * The maximum allowed value is MAX_INT.
+     * The maximum allowed value is MAX_INT.  The default value is '0'.
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#LIMIT LIMIT}: A positive
      * integer indicating the maximum number of results to be returned from
      * {@code sourceTableName}. Or END_OF_SET (-9999) to indicate that the max
-     * number of results should be returned.
+     * number of results should be returned.  The default value is '-9999'.
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION EXPRESSION}:
-     * Optional filter expression to apply to the {@code sourceTableName}.
+     * Optional filter expression to apply to the {@code sourceTableName}.  The
+     * default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY ORDER_BY}:
      * Comma-separated list of the columns to be sorted by from source table
      * (specified by {@code sourceTableName}), e.g., 'timestamp asc, x desc'.
      * The {@code order_by} columns do not have to be present in {@code
-     * fieldMap}.
+     * fieldMap}.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      * UPDATE_ON_EXISTING_PK}: Specifies the record collision policy for
@@ -109,6 +110,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -116,19 +118,22 @@ public class AppendRecordsRequest implements IndexedRecord {
         /**
          * A positive integer indicating the number of initial results to skip
          * from {@code sourceTableName}. Default is 0. The minimum allowed
-         * value is 0. The maximum allowed value is MAX_INT.
+         * value is 0. The maximum allowed value is MAX_INT.  The default value
+         * is '0'.
          */
         public static final String OFFSET = "offset";
 
         /**
          * A positive integer indicating the maximum number of results to be
          * returned from {@code sourceTableName}. Or END_OF_SET (-9999) to
-         * indicate that the max number of results should be returned.
+         * indicate that the max number of results should be returned.  The
+         * default value is '-9999'.
          */
         public static final String LIMIT = "limit";
 
         /**
          * Optional filter expression to apply to the {@code sourceTableName}.
+         * The default value is ''.
          */
         public static final String EXPRESSION = "expression";
 
@@ -136,7 +141,7 @@ public class AppendRecordsRequest implements IndexedRecord {
          * Comma-separated list of the columns to be sorted by from source
          * table (specified by {@code sourceTableName}), e.g., 'timestamp asc,
          * x desc'. The {@code order_by} columns do not have to be present in
-         * {@code fieldMap}.
+         * {@code fieldMap}.  The default value is ''.
          */
         public static final String ORDER_BY = "order_by";
 
@@ -228,24 +233,26 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 OFFSET}: A positive integer indicating the number of
      *                 initial results to skip from {@code sourceTableName}.
      *                 Default is 0. The minimum allowed value is 0. The
-     *                 maximum allowed value is MAX_INT.
+     *                 maximum allowed value is MAX_INT.  The default value is
+     *                 '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#LIMIT
      *                 LIMIT}: A positive integer indicating the maximum number
      *                 of results to be returned from {@code sourceTableName}.
      *                 Or END_OF_SET (-9999) to indicate that the max number of
-     *                 results should be returned.
+     *                 results should be returned.  The default value is
+     *                 '-9999'.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
-     *                 {@code sourceTableName}.
+     *                 {@code sourceTableName}.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY
      *                 ORDER_BY}: Comma-separated list of the columns to be
      *                 sorted by from source table (specified by {@code
      *                 sourceTableName}), e.g., 'timestamp asc, x desc'. The
      *                 {@code order_by} columns do not have to be present in
-     *                 {@code fieldMap}.
+     *                 {@code fieldMap}.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
@@ -296,6 +303,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AppendRecordsRequest(String tableName, String sourceTableName, Map<String, String> fieldMap, Map<String, String> options) {
@@ -395,22 +403,25 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         com.gpudb.protocol.AppendRecordsRequest.Options#OFFSET OFFSET}:
      *         A positive integer indicating the number of initial results to
      *         skip from {@code sourceTableName}. Default is 0. The minimum
-     *         allowed value is 0. The maximum allowed value is MAX_INT.
+     *         allowed value is 0. The maximum allowed value is MAX_INT.  The
+     *         default value is '0'.
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#LIMIT LIMIT}: A
      *         positive integer indicating the maximum number of results to be
      *         returned from {@code sourceTableName}. Or END_OF_SET (-9999) to
-     *         indicate that the max number of results should be returned.
+     *         indicate that the max number of results should be returned.  The
+     *         default value is '-9999'.
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION
      *         EXPRESSION}: Optional filter expression to apply to the {@code
-     *         sourceTableName}.
+     *         sourceTableName}.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY
      *         ORDER_BY}: Comma-separated list of the columns to be sorted by
      *         from source table (specified by {@code sourceTableName}), e.g.,
      *         'timestamp asc, x desc'. The {@code order_by} columns do not
-     *         have to be present in {@code fieldMap}.
+     *         have to be present in {@code fieldMap}.  The default value is
+     *         ''.
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *         UPDATE_ON_EXISTING_PK}: Specifies the record collision policy
@@ -453,6 +464,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -468,24 +480,26 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 OFFSET}: A positive integer indicating the number of
      *                 initial results to skip from {@code sourceTableName}.
      *                 Default is 0. The minimum allowed value is 0. The
-     *                 maximum allowed value is MAX_INT.
+     *                 maximum allowed value is MAX_INT.  The default value is
+     *                 '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#LIMIT
      *                 LIMIT}: A positive integer indicating the maximum number
      *                 of results to be returned from {@code sourceTableName}.
      *                 Or END_OF_SET (-9999) to indicate that the max number of
-     *                 results should be returned.
+     *                 results should be returned.  The default value is
+     *                 '-9999'.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
-     *                 {@code sourceTableName}.
+     *                 {@code sourceTableName}.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY
      *                 ORDER_BY}: Comma-separated list of the columns to be
      *                 sorted by from source table (specified by {@code
      *                 sourceTableName}), e.g., 'timestamp asc, x desc'. The
      *                 {@code order_by} columns do not have to be present in
-     *                 {@code fieldMap}.
+     *                 {@code fieldMap}.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
@@ -536,6 +550,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

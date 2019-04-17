@@ -82,18 +82,18 @@ public final class Type implements Serializable {
         public Column(String name, Class<?> type, List<String> properties) {
             this.name = name;
             this.type = type;
-            this.properties = properties == null ? new ArrayList<String>() : new ArrayList<>(properties);
+            this.properties = properties == null ? new ArrayList<String>() : new ArrayList<String>(properties);
             init();
         }
 
         private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException {
-            name = (String)stream.readObject();
-            type = (Class<?>)stream.readObject();
+            this.name = (String)stream.readObject();
+            this.type = (Class<?>)stream.readObject();
             int propertyCount = stream.readInt();
-            properties = new ArrayList<>(propertyCount);
+            this.properties = new ArrayList<String>(propertyCount);
 
             for (int i = 0; i < propertyCount; i++) {
-                properties.add((String)stream.readObject());
+                this.properties.add((String)stream.readObject());
             }
 
             init();
@@ -173,6 +173,20 @@ public final class Type implements Serializable {
          */
         public List<String> getProperties() {
             return properties;
+        }
+
+        /**
+         * Checks if the given property applies to the column.
+         *
+         * @return  boolean indicating whether the given property
+         *          exists in the column's properties.
+         *
+         * @see ColumnProperty
+         */
+        public boolean hasProperty( String property ) {
+            if (property == null)
+                return false;
+            return properties.contains( property );
         }
 
         @Override
@@ -308,9 +322,11 @@ public final class Type implements Serializable {
         int fieldCount = schema.getFields().size() - 2;
         // The field/expression names are stored in the second to last element
         // of the returned data
+        @SuppressWarnings("unchecked")
         List<String> expressions = (List<String>)data.get(fieldCount);
         // The field types are stored in the very last element/list of the
         // returned data
+        @SuppressWarnings("unchecked")
         List<String> types = (List<String>)data.get(fieldCount + 1);
 
         // The encoded response is structured column-based; so any element's
@@ -435,13 +451,21 @@ public final class Type implements Serializable {
                 case ColumnProperty.CHAR128:
                 case ColumnProperty.CHAR256:
                 case ColumnProperty.DATE:
+                case ColumnProperty.DATETIME:
                 case ColumnProperty.DECIMAL:
                 case ColumnProperty.INT8:
                 case ColumnProperty.INT16:
                 case ColumnProperty.IPV4:
                 case ColumnProperty.TIME:
                 case ColumnProperty.TIMESTAMP:
+                case ColumnProperty.WKT:
                     columnProperties.add(type);
+                    break;
+
+                case "geometry":
+                    // WKT types could be returned as 'geometry' by the server
+                    columnProperties.add( ColumnProperty.WKT );
+                    break;
             }
 
             columns.add(new Type.Column(name, columnType, columnProperties));
@@ -507,17 +531,17 @@ public final class Type implements Serializable {
      */
     public Type(String label, List<Column> columns) {
         this.label = label;
-        this.columns = columns == null ? new ArrayList<Column>() : new ArrayList<>(columns);
+        this.columns = columns == null ? new ArrayList<Column>() : new ArrayList<Column>(columns);
         init();
     }
 
     private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException {
-        label = (String)stream.readObject();
+        this.label = (String)stream.readObject();
         int columnCount = stream.readInt();
-        columns = new ArrayList<>(columnCount);
+        this.columns = new ArrayList<>(columnCount);
 
         for (int i = 0; i < columnCount; i++) {
-            columns.add((Column)stream.readObject());
+            this.columns.add((Column)stream.readObject());
         }
 
         init();

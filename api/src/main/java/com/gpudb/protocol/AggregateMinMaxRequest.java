@@ -64,7 +64,8 @@ public class AggregateMinMaxRequest implements IndexedRecord {
      *                   performed. Must be an existing table.
      * @param columnName  Name of a column or an expression of one or more
      *                    column on which the min-max will be calculated.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public AggregateMinMaxRequest(String tableName, String columnName, Map<String, String> options) {
@@ -121,7 +122,7 @@ public class AggregateMinMaxRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -130,7 +131,8 @@ public class AggregateMinMaxRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

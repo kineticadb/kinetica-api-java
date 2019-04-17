@@ -227,6 +227,7 @@ public class CreateTableRequest implements IndexedRecord {
      * href="../../../../../rm/usage.html#tier-strategies" target="_top">tier
      * strategy examples</a> for examples.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -659,6 +660,7 @@ public class CreateTableRequest implements IndexedRecord {
      *                 href="../../../../../rm/usage.html#tier-strategies"
      *                 target="_top">tier strategy examples</a> for examples.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public CreateTableRequest(String tableName, String typeId, Map<String, String> options) {
@@ -895,6 +897,7 @@ public class CreateTableRequest implements IndexedRecord {
      *         href="../../../../../rm/usage.html#tier-strategies"
      *         target="_top">tier strategy examples</a> for examples.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -1094,6 +1097,7 @@ public class CreateTableRequest implements IndexedRecord {
      *                 href="../../../../../rm/usage.html#tier-strategies"
      *                 target="_top">tier strategy examples</a> for examples.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

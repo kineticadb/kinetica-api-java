@@ -279,6 +279,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -558,9 +559,11 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *               10000), or END_OF_SET (-9999) to indicate that the maximum
      *               number of results allowed by the server should be
      *               returned.
-     * @param requestSchemaStr  Avro schema of {@code data}.
+     * @param requestSchemaStr  Avro schema of {@code data}.  The default value
+     *                          is ''.
      * @param data  An array of binary-encoded data for the records to be
-     *              binded to the SQL query.
+     *              binded to the SQL query.  The default value is an empty
+     *              {@link List}.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -802,6 +805,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public ExecuteSqlRequest(String statement, long offset, long limit, String requestSchemaStr, List<ByteBuffer> data, Map<String, String> options) {
@@ -841,9 +845,11 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                  The default value is {@link
      *                  com.gpudb.protocol.ExecuteSqlRequest.Encoding#BINARY
      *                  BINARY}.
-     * @param requestSchemaStr  Avro schema of {@code data}.
+     * @param requestSchemaStr  Avro schema of {@code data}.  The default value
+     *                          is ''.
      * @param data  An array of binary-encoded data for the records to be
-     *              binded to the SQL query.
+     *              binded to the SQL query.  The default value is an empty
+     *              {@link List}.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -1085,6 +1091,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public ExecuteSqlRequest(String statement, long offset, long limit, String encoding, String requestSchemaStr, List<ByteBuffer> data, Map<String, String> options) {
@@ -1219,7 +1226,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Avro schema of {@code data}.
+     * @return Avro schema of {@code data}.  The default value is ''.
      * 
      */
     public String getRequestSchemaStr() {
@@ -1228,7 +1235,8 @@ public class ExecuteSqlRequest implements IndexedRecord {
 
     /**
      * 
-     * @param requestSchemaStr  Avro schema of {@code data}.
+     * @param requestSchemaStr  Avro schema of {@code data}.  The default value
+     *                          is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -1241,7 +1249,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
     /**
      * 
      * @return An array of binary-encoded data for the records to be binded to
-     *         the SQL query.
+     *         the SQL query.  The default value is an empty {@link List}.
      * 
      */
     public List<ByteBuffer> getData() {
@@ -1251,7 +1259,8 @@ public class ExecuteSqlRequest implements IndexedRecord {
     /**
      * 
      * @param data  An array of binary-encoded data for the records to be
-     *              binded to the SQL query.
+     *              binded to the SQL query.  The default value is an empty
+     *              {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -1476,6 +1485,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -1725,6 +1735,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

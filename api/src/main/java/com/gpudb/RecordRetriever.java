@@ -339,11 +339,13 @@ public class RecordRetriever<T> {
         long retrievalAttemptTimestamp = new Timestamp( System.currentTimeMillis() ).getTime();
 
         try {
-            if (routingTable != null) {
+            if ( this.isMultiHeadEnabled && (routingTable != null) ) {
+                // Get from the worker rank
                 RecordKey shardKey = shardKeyBuilder.build(keyValues);
                 URL url = workerUrls.get(shardKey.route(routingTable));
                 response = gpudb.submitRequest(url, request, response, false);
             } else {
+                // Get from the head node
                 response = gpudb.submitRequest("/get/records", request, response, false);
             }
 

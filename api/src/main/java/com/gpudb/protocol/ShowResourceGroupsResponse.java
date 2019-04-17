@@ -5,7 +5,9 @@
  */
 package com.gpudb.protocol;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -22,7 +24,7 @@ public class ShowResourceGroupsResponse implements IndexedRecord {
             .record("ShowResourceGroupsResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("groups").type().map().values().map().values().stringType().noDefault()
+                .name("groups").type().array().items().map().values().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -38,7 +40,7 @@ public class ShowResourceGroupsResponse implements IndexedRecord {
         return schema$;
     }
 
-    private Map<String, Map<String, String>> groups;
+    private List<Map<String, String>> groups;
     private Map<String, String> info;
 
 
@@ -53,7 +55,7 @@ public class ShowResourceGroupsResponse implements IndexedRecord {
      * @return Map of resource group information.
      * 
      */
-    public Map<String, Map<String, String>> getGroups() {
+    public List<Map<String, String>> getGroups() {
         return groups;
     }
 
@@ -64,8 +66,8 @@ public class ShowResourceGroupsResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowResourceGroupsResponse setGroups(Map<String, Map<String, String>> groups) {
-        this.groups = (groups == null) ? new LinkedHashMap<String, Map<String, String>>() : groups;
+    public ShowResourceGroupsResponse setGroups(List<Map<String, String>> groups) {
+        this.groups = (groups == null) ? new ArrayList<Map<String, String>>() : groups;
         return this;
     }
 
@@ -142,7 +144,7 @@ public class ShowResourceGroupsResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.groups = (Map<String, Map<String, String>>)value;
+                this.groups = (List<Map<String, String>>)value;
                 break;
 
             case 1:

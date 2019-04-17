@@ -113,7 +113,8 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
      *                    com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_READ
      *                    SYSTEM_READ}: Read-only access to all tables.
      *                    </ul>
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public GrantPermissionSystemRequest(String name, String permission, Map<String, String> options) {
@@ -193,7 +194,7 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -202,7 +203,8 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

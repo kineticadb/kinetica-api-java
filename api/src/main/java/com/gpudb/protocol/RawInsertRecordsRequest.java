@@ -121,6 +121,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -239,6 +240,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public RawInsertRecordsRequest(String tableName, List<ByteBuffer> list, Map<String, String> options) {
@@ -320,6 +322,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public RawInsertRecordsRequest(String tableName, List<ByteBuffer> list, List<String> listStr, String listEncoding, Map<String, String> options) {
@@ -488,6 +491,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -541,6 +545,7 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

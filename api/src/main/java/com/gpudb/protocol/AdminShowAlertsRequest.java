@@ -60,7 +60,8 @@ public class AdminShowAlertsRequest implements IndexedRecord {
      *                   will include up to {@code numAlerts} depending on how
      *                   many alerts there are in the system. A value of 0
      *                   returns all stored alerts.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public AdminShowAlertsRequest(int numAlerts, Map<String, String> options) {
@@ -96,7 +97,7 @@ public class AdminShowAlertsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -105,7 +106,8 @@ public class AdminShowAlertsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

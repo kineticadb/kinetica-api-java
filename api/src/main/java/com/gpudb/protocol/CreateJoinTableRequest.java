@@ -60,6 +60,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * COLLECTION_NAME}: Name of a collection which is to contain the join. If
      * the collection provided is non-existent, the collection will be
      * automatically created. If empty, then the join will be at the top level.
+     * The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
      * MAX_QUERY_DIMENSIONS}: Obsolete in GPUdb v7.0
@@ -76,74 +77,23 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE FALSE}.
      *         <li> {@link
-     * com.gpudb.protocol.CreateJoinTableRequest.Options#REFRESH_METHOD
-     * REFRESH_METHOD}: Method by which the join can be refreshed when the data
-     * in underlying member tables have changed.
-     * Supported values:
-     * <ul>
-     *         <li> {@link
-     * com.gpudb.protocol.CreateJoinTableRequest.Options#MANUAL MANUAL}:
-     * refresh only occurs when manually requested by calling this endpoint
-     * with refresh option set to {@code refresh} or {@code full_refresh}
-     *         <li> {@link
-     * com.gpudb.protocol.CreateJoinTableRequest.Options#ON_QUERY ON_QUERY}:
-     * incrementally refresh (refresh just those records added) whenever a new
-     * query is issued and new data is inserted into the base table.  A full
-     * refresh of all the records occurs when a new query is issued and there
-     * have been inserts to any non-base-tables since the last query.  <a
-     * href="../../../../../concepts/ttl.html" target="_top">TTL</a> will be
-     * set to not expire; any {@code ttl} specified will be ignored.
-     *         <li> {@link
-     * com.gpudb.protocol.CreateJoinTableRequest.Options#ON_INSERT ON_INSERT}:
-     * incrementally refresh (refresh just those records added) whenever new
-     * data is inserted into a base table.  A full refresh of all the records
-     * occurs when a new query is issued and there have been inserts to any
-     * non-base-tables since the last query.  <a
-     * href="../../../../../concepts/ttl.html" target="_top">TTL</a> will be
-     * set to not expire; any {@code ttl} specified will be ignored.
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.CreateJoinTableRequest.Options#MANUAL MANUAL}.
-     *         <li> {@link
-     * com.gpudb.protocol.CreateJoinTableRequest.Options#REFRESH REFRESH}: Do a
-     * manual refresh of the join if it exists - throws an error otherwise
-     * Supported values:
-     * <ul>
-     *         <li> {@link
-     * com.gpudb.protocol.CreateJoinTableRequest.Options#NO_REFRESH
-     * NO_REFRESH}: don't refresh
-     *         <li> {@link
-     * com.gpudb.protocol.CreateJoinTableRequest.Options#REFRESH REFRESH}:
-     * incrementally refresh (refresh just those records added) if new data has
-     * been inserted into the base table.  A full refresh of all the records
-     * occurs if there have been inserts to any non-base-tables since the last
-     * refresh
-     *         <li> {@link
-     * com.gpudb.protocol.CreateJoinTableRequest.Options#FULL_REFRESH
-     * FULL_REFRESH}: always refresh even if no new records have been added.
-     * Only refresh method guaranteed to do a full refresh (refresh all the
-     * records) if a delete or update has occurred since the last refresh.
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.CreateJoinTableRequest.Options#NO_REFRESH
-     * NO_REFRESH}.
-     *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#TTL TTL}: Sets the <a
      * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
-     * join table specified in {@code joinTableName}.  Ignored if {@code
-     * refresh_method} is either {@code on_insert} or {@code on_query}.
+     * join table specified in {@code joinTableName}.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID VIEW_ID}: view
-     * this projection is part of
+     * this projection is part of.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT NO_COUNT}:
      * return a count of 0 for the join table for logging and for show_table.
-     * optimization needed for large overlapped equi-join stencils
+     * optimization needed for large overlapped equi-join stencils.  The
+     * default value is 'false'.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
      * CHUNK_SIZE}: Maximum size of a joined-chunk for this table. Defaults to
      * the gpudb.conf file chunk size
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -151,7 +101,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
         /**
          * Name of a collection which is to contain the join. If the collection
          * provided is non-existent, the collection will be automatically
-         * created. If empty, then the join will be at the top level.
+         * created. If empty, then the join will be at the top level.  The
+         * default value is ''.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -177,101 +128,21 @@ public class CreateJoinTableRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Method by which the join can be refreshed when the data in
-         * underlying member tables have changed.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.CreateJoinTableRequest.Options#MANUAL MANUAL}:
-         * refresh only occurs when manually requested by calling this endpoint
-         * with refresh option set to {@code refresh} or {@code full_refresh}
-         *         <li> {@link
-         * com.gpudb.protocol.CreateJoinTableRequest.Options#ON_QUERY
-         * ON_QUERY}: incrementally refresh (refresh just those records added)
-         * whenever a new query is issued and new data is inserted into the
-         * base table.  A full refresh of all the records occurs when a new
-         * query is issued and there have been inserts to any non-base-tables
-         * since the last query.  <a href="../../../../../concepts/ttl.html"
-         * target="_top">TTL</a> will be set to not expire; any {@code ttl}
-         * specified will be ignored.
-         *         <li> {@link
-         * com.gpudb.protocol.CreateJoinTableRequest.Options#ON_INSERT
-         * ON_INSERT}: incrementally refresh (refresh just those records added)
-         * whenever new data is inserted into a base table.  A full refresh of
-         * all the records occurs when a new query is issued and there have
-         * been inserts to any non-base-tables since the last query.  <a
-         * href="../../../../../concepts/ttl.html" target="_top">TTL</a> will
-         * be set to not expire; any {@code ttl} specified will be ignored.
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.CreateJoinTableRequest.Options#MANUAL MANUAL}.
-         */
-        public static final String REFRESH_METHOD = "refresh_method";
-
-        /**
-         * refresh only occurs when manually requested by calling this endpoint
-         * with refresh option set to {@code refresh} or {@code full_refresh}
-         */
-        public static final String MANUAL = "manual";
-
-        /**
-         * incrementally refresh (refresh just those records added) whenever a
-         * new query is issued and new data is inserted into the base table.  A
-         * full refresh of all the records occurs when a new query is issued
-         * and there have been inserts to any non-base-tables since the last
-         * query.  <a href="../../../../../concepts/ttl.html"
-         * target="_top">TTL</a> will be set to not expire; any {@code ttl}
-         * specified will be ignored.
-         */
-        public static final String ON_QUERY = "on_query";
-
-        /**
-         * incrementally refresh (refresh just those records added) whenever
-         * new data is inserted into a base table.  A full refresh of all the
-         * records occurs when a new query is issued and there have been
-         * inserts to any non-base-tables since the last query.  <a
-         * href="../../../../../concepts/ttl.html" target="_top">TTL</a> will
-         * be set to not expire; any {@code ttl} specified will be ignored.
-         */
-        public static final String ON_INSERT = "on_insert";
-
-        /**
-         * incrementally refresh (refresh just those records added) if new data
-         * has been inserted into the base table.  A full refresh of all the
-         * records occurs if there have been inserts to any non-base-tables
-         * since the last refresh
-         */
-        public static final String REFRESH = "refresh";
-
-        /**
-         * don't refresh
-         */
-        public static final String NO_REFRESH = "no_refresh";
-
-        /**
-         * always refresh even if no new records have been added.  Only refresh
-         * method guaranteed to do a full refresh (refresh all the records) if
-         * a delete or update has occurred since the last refresh.
-         */
-        public static final String FULL_REFRESH = "full_refresh";
-
-        /**
          * Sets the <a href="../../../../../concepts/ttl.html"
          * target="_top">TTL</a> of the join table specified in {@code
-         * joinTableName}.  Ignored if {@code refresh_method} is either {@code
-         * on_insert} or {@code on_query}.
+         * joinTableName}.
          */
         public static final String TTL = "ttl";
 
         /**
-         * view this projection is part of
+         * view this projection is part of.  The default value is ''.
          */
         public static final String VIEW_ID = "view_id";
 
         /**
          * return a count of 0 for the join table for logging and for
          * show_table. optimization needed for large overlapped equi-join
-         * stencils
+         * stencils.  The default value is 'false'.
          */
         public static final String NO_COUNT = "no_count";
 
@@ -327,7 +198,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                     filter the joined tables.  Corresponds to a SQL
      *                     statement WHERE clause. For details see: <a
      *                     href="../../../../../concepts/expressions.html"
-     *                     target="_top">expressions</a>.
+     *                     target="_top">expressions</a>.  The default value is
+     *                     an empty {@link List}.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -336,7 +208,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 contain the join. If the collection provided is
      *                 non-existent, the collection will be automatically
      *                 created. If empty, then the join will be at the top
-     *                 level.
+     *                 level.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
      *                 MAX_QUERY_DIMENSIONS}: Obsolete in GPUdb v7.0
@@ -357,88 +229,27 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#REFRESH_METHOD
-     *                 REFRESH_METHOD}: Method by which the join can be
-     *                 refreshed when the data in underlying member tables have
-     *                 changed.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#MANUAL
-     *                 MANUAL}: refresh only occurs when manually requested by
-     *                 calling this endpoint with refresh option set to {@code
-     *                 refresh} or {@code full_refresh}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#ON_QUERY
-     *                 ON_QUERY}: incrementally refresh (refresh just those
-     *                 records added) whenever a new query is issued and new
-     *                 data is inserted into the base table.  A full refresh of
-     *                 all the records occurs when a new query is issued and
-     *                 there have been inserts to any non-base-tables since the
-     *                 last query.  <a href="../../../../../concepts/ttl.html"
-     *                 target="_top">TTL</a> will be set to not expire; any
-     *                 {@code ttl} specified will be ignored.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#ON_INSERT
-     *                 ON_INSERT}: incrementally refresh (refresh just those
-     *                 records added) whenever new data is inserted into a base
-     *                 table.  A full refresh of all the records occurs when a
-     *                 new query is issued and there have been inserts to any
-     *                 non-base-tables since the last query.  <a
-     *                 href="../../../../../concepts/ttl.html"
-     *                 target="_top">TTL</a> will be set to not expire; any
-     *                 {@code ttl} specified will be ignored.
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#MANUAL
-     *                 MANUAL}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#REFRESH
-     *                 REFRESH}: Do a manual refresh of the join if it exists -
-     *                 throws an error otherwise
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#NO_REFRESH
-     *                 NO_REFRESH}: don't refresh
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#REFRESH
-     *                 REFRESH}: incrementally refresh (refresh just those
-     *                 records added) if new data has been inserted into the
-     *                 base table.  A full refresh of all the records occurs if
-     *                 there have been inserts to any non-base-tables since the
-     *                 last refresh
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#FULL_REFRESH
-     *                 FULL_REFRESH}: always refresh even if no new records
-     *                 have been added.  Only refresh method guaranteed to do a
-     *                 full refresh (refresh all the records) if a delete or
-     *                 update has occurred since the last refresh.
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#NO_REFRESH
-     *                 NO_REFRESH}.
-     *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#TTL
      *                 TTL}: Sets the <a
      *                 href="../../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the join table specified in
-     *                 {@code joinTableName}.  Ignored if {@code
-     *                 refresh_method} is either {@code on_insert} or {@code
-     *                 on_query}.
+     *                 {@code joinTableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this projection is part of
+     *                 VIEW_ID}: view this projection is part of.  The default
+     *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT
      *                 NO_COUNT}: return a count of 0 for the join table for
      *                 logging and for show_table. optimization needed for
-     *                 large overlapped equi-join stencils
+     *                 large overlapped equi-join stencils.  The default value
+     *                 is 'false'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Maximum size of a joined-chunk for this
      *                 table. Defaults to the gpudb.conf file chunk size
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public CreateJoinTableRequest(String joinTableName, List<String> tableNames, List<String> columnNames, List<String> expressions, Map<String, String> options) {
@@ -542,7 +353,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * @return An optional list of expressions to combine and filter the joined
      *         tables.  Corresponds to a SQL statement WHERE clause. For
      *         details see: <a href="../../../../../concepts/expressions.html"
-     *         target="_top">expressions</a>.
+     *         target="_top">expressions</a>.  The default value is an empty
+     *         {@link List}.
      * 
      */
     public List<String> getExpressions() {
@@ -555,7 +367,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                     filter the joined tables.  Corresponds to a SQL
      *                     statement WHERE clause. For details see: <a
      *                     href="../../../../../concepts/expressions.html"
-     *                     target="_top">expressions</a>.
+     *                     target="_top">expressions</a>.  The default value is
+     *                     an empty {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -574,7 +387,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         COLLECTION_NAME}: Name of a collection which is to contain the
      *         join. If the collection provided is non-existent, the collection
      *         will be automatically created. If empty, then the join will be
-     *         at the top level.
+     *         at the top level.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
      *         MAX_QUERY_DIMENSIONS}: Obsolete in GPUdb v7.0
@@ -592,83 +405,25 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE FALSE}.
      *                 <li> {@link
-     *         com.gpudb.protocol.CreateJoinTableRequest.Options#REFRESH_METHOD
-     *         REFRESH_METHOD}: Method by which the join can be refreshed when
-     *         the data in underlying member tables have changed.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateJoinTableRequest.Options#MANUAL
-     *         MANUAL}: refresh only occurs when manually requested by calling
-     *         this endpoint with refresh option set to {@code refresh} or
-     *         {@code full_refresh}
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateJoinTableRequest.Options#ON_QUERY
-     *         ON_QUERY}: incrementally refresh (refresh just those records
-     *         added) whenever a new query is issued and new data is inserted
-     *         into the base table.  A full refresh of all the records occurs
-     *         when a new query is issued and there have been inserts to any
-     *         non-base-tables since the last query.  <a
-     *         href="../../../../../concepts/ttl.html" target="_top">TTL</a>
-     *         will be set to not expire; any {@code ttl} specified will be
-     *         ignored.
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateJoinTableRequest.Options#ON_INSERT
-     *         ON_INSERT}: incrementally refresh (refresh just those records
-     *         added) whenever new data is inserted into a base table.  A full
-     *         refresh of all the records occurs when a new query is issued and
-     *         there have been inserts to any non-base-tables since the last
-     *         query.  <a href="../../../../../concepts/ttl.html"
-     *         target="_top">TTL</a> will be set to not expire; any {@code ttl}
-     *         specified will be ignored.
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.CreateJoinTableRequest.Options#MANUAL
-     *         MANUAL}.
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateJoinTableRequest.Options#REFRESH
-     *         REFRESH}: Do a manual refresh of the join if it exists - throws
-     *         an error otherwise
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateJoinTableRequest.Options#NO_REFRESH
-     *         NO_REFRESH}: don't refresh
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateJoinTableRequest.Options#REFRESH
-     *         REFRESH}: incrementally refresh (refresh just those records
-     *         added) if new data has been inserted into the base table.  A
-     *         full refresh of all the records occurs if there have been
-     *         inserts to any non-base-tables since the last refresh
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateJoinTableRequest.Options#FULL_REFRESH
-     *         FULL_REFRESH}: always refresh even if no new records have been
-     *         added.  Only refresh method guaranteed to do a full refresh
-     *         (refresh all the records) if a delete or update has occurred
-     *         since the last refresh.
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.CreateJoinTableRequest.Options#NO_REFRESH
-     *         NO_REFRESH}.
-     *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#TTL TTL}: Sets
      *         the <a href="../../../../../concepts/ttl.html"
      *         target="_top">TTL</a> of the join table specified in {@code
-     *         joinTableName}.  Ignored if {@code refresh_method} is either
-     *         {@code on_insert} or {@code on_query}.
+     *         joinTableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
-     *         VIEW_ID}: view this projection is part of
+     *         VIEW_ID}: view this projection is part of.  The default value is
+     *         ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT
      *         NO_COUNT}: return a count of 0 for the join table for logging
      *         and for show_table. optimization needed for large overlapped
-     *         equi-join stencils
+     *         equi-join stencils.  The default value is 'false'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
      *         CHUNK_SIZE}: Maximum size of a joined-chunk for this table.
      *         Defaults to the gpudb.conf file chunk size
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -685,7 +440,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 contain the join. If the collection provided is
      *                 non-existent, the collection will be automatically
      *                 created. If empty, then the join will be at the top
-     *                 level.
+     *                 level.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
      *                 MAX_QUERY_DIMENSIONS}: Obsolete in GPUdb v7.0
@@ -706,88 +461,27 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#REFRESH_METHOD
-     *                 REFRESH_METHOD}: Method by which the join can be
-     *                 refreshed when the data in underlying member tables have
-     *                 changed.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#MANUAL
-     *                 MANUAL}: refresh only occurs when manually requested by
-     *                 calling this endpoint with refresh option set to {@code
-     *                 refresh} or {@code full_refresh}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#ON_QUERY
-     *                 ON_QUERY}: incrementally refresh (refresh just those
-     *                 records added) whenever a new query is issued and new
-     *                 data is inserted into the base table.  A full refresh of
-     *                 all the records occurs when a new query is issued and
-     *                 there have been inserts to any non-base-tables since the
-     *                 last query.  <a href="../../../../../concepts/ttl.html"
-     *                 target="_top">TTL</a> will be set to not expire; any
-     *                 {@code ttl} specified will be ignored.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#ON_INSERT
-     *                 ON_INSERT}: incrementally refresh (refresh just those
-     *                 records added) whenever new data is inserted into a base
-     *                 table.  A full refresh of all the records occurs when a
-     *                 new query is issued and there have been inserts to any
-     *                 non-base-tables since the last query.  <a
-     *                 href="../../../../../concepts/ttl.html"
-     *                 target="_top">TTL</a> will be set to not expire; any
-     *                 {@code ttl} specified will be ignored.
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#MANUAL
-     *                 MANUAL}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#REFRESH
-     *                 REFRESH}: Do a manual refresh of the join if it exists -
-     *                 throws an error otherwise
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#NO_REFRESH
-     *                 NO_REFRESH}: don't refresh
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#REFRESH
-     *                 REFRESH}: incrementally refresh (refresh just those
-     *                 records added) if new data has been inserted into the
-     *                 base table.  A full refresh of all the records occurs if
-     *                 there have been inserts to any non-base-tables since the
-     *                 last refresh
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#FULL_REFRESH
-     *                 FULL_REFRESH}: always refresh even if no new records
-     *                 have been added.  Only refresh method guaranteed to do a
-     *                 full refresh (refresh all the records) if a delete or
-     *                 update has occurred since the last refresh.
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#NO_REFRESH
-     *                 NO_REFRESH}.
-     *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#TTL
      *                 TTL}: Sets the <a
      *                 href="../../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the join table specified in
-     *                 {@code joinTableName}.  Ignored if {@code
-     *                 refresh_method} is either {@code on_insert} or {@code
-     *                 on_query}.
+     *                 {@code joinTableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this projection is part of
+     *                 VIEW_ID}: view this projection is part of.  The default
+     *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT
      *                 NO_COUNT}: return a count of 0 for the join table for
      *                 logging and for show_table. optimization needed for
-     *                 large overlapped equi-join stencils
+     *                 large overlapped equi-join stencils.  The default value
+     *                 is 'false'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Maximum size of a joined-chunk for this
      *                 table. Defaults to the gpudb.conf file chunk size
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

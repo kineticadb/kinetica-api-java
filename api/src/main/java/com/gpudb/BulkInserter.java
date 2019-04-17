@@ -190,6 +190,7 @@ public class BulkInserter<T> {
     private final RecordKeyBuilder<T> shardKeyBuilder;
     private final boolean isReplicatedTable;
     private final boolean isMultiHeadEnabled;
+    private final boolean useHeadNode;
     private final boolean hasPrimaryKey;
     private final boolean updateOnExistingPk;
     private volatile int retryCount;
@@ -317,6 +318,13 @@ public class BulkInserter<T> {
                                       .get( 0 )
                                       .contains( ShowTableResponse.TableDescriptions.REPLICATED );
             
+        // Set if multi-head I/O is turned on at the server
+        this.isMultiHeadEnabled = ( this.workerList != null && !this.workerList.isEmpty() );
+
+        // We should use the head node if multi-head is turned off at the server
+        // or if we're working with a replicated table
+        this.useHeadNode = ( !this.isMultiHeadEnabled || this.isReplicatedTable);
+
         // Validate the batch size
         if (batchSize < 1) {
             throw new IllegalArgumentException("Batch size must be greater than zero.");
@@ -367,12 +375,10 @@ public class BulkInserter<T> {
         this.workerQueues = new ArrayList<>();
 
         try {
-            // Set if multi-head I/O is turned on at the server
-            this.isMultiHeadEnabled = ( this.workerList != null && !this.workerList.isEmpty() );
 
             // If we have multiple workers, then use those (unless the table
             // is replicated)
-            if (this.isMultiHeadEnabled && !this.isReplicatedTable ) {
+            if ( !this.useHeadNode ) {
                 
                 for (URL url : this.workerList) {
                     if (url == null) {
@@ -458,8 +464,7 @@ public class BulkInserter<T> {
         // The worker queues need to be re-constructed when asked for
         // iff multi-head i/o is enabled and the table is not replicated
         if ( doReconstructWorkerQueues
-             && this.isMultiHeadEnabled
-             && !this.isReplicatedTable )
+             && !this.useHeadNode )
         {
             reconstructWorkerQueues();
         }
@@ -768,7 +773,7 @@ public class BulkInserter<T> {
 
         WorkerQueue<T> workerQueue;
 
-        if (this.routingTable == null) {
+        if ( this.useHeadNode ) {
             workerQueue = workerQueues.get(0);
         } else if (shardKey == null) {
             workerQueue = workerQueues.get( routingTable.get( ThreadLocalRandom.current().nextInt( routingTable.size() ) ) - 1 );

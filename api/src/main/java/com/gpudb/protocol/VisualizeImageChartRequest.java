@@ -63,11 +63,11 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#POINTCOLOR
      * POINTCOLOR}: The color of points in the plot represented as a
-     * hexadecimal number.
+     * hexadecimal number.  The default value is '0000FF'.
      *         <li> {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#POINTSIZE
      * POINTSIZE}: The size of points in the plot represented as number of
-     * pixels.
+     * pixels.  The default value is '3'.
      *         <li> {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#POINTSHAPE
      * POINTSHAPE}: The shape of points in the plot.
@@ -125,7 +125,7 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#CB_DELIMITER
      * CB_DELIMITER}: A character or string which separates per-class values in
-     * a class-break style option string.
+     * a class-break style option string.  The default value is ';'.
      *         <li> {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#X_ORDER_BY
      * X_ORDER_BY}: An expression or aggregate expression by which non-numeric
@@ -166,15 +166,16 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      * JITTER_X}: Amplitude of horizontal jitter applied to non-numeric x
-     * column values.
+     * column values.  The default value is '0.0'.
      *         <li> {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_Y
      * JITTER_Y}: Amplitude of vertical jitter applied to non-numeric y column
-     * values.
+     * values.  The default value is '0.0'.
      *         <li> {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#PLOT_ALL
      * PLOT_ALL}: If this options is set to "true", all non-numeric column
      * values are plotted ignoring min_x, max_x, min_y and max_y parameters.
+     * The default value is 'false'.
      * </ul>
      * A set of string constants for the parameter {@code styleOptions}.
      */
@@ -182,11 +183,13 @@ public class VisualizeImageChartRequest implements IndexedRecord {
 
         /**
          * The color of points in the plot represented as a hexadecimal number.
+         * The default value is '0000FF'.
          */
         public static final String POINTCOLOR = "pointcolor";
 
         /**
-         * The size of points in the plot represented as number of pixels.
+         * The size of points in the plot represented as number of pixels.  The
+         * default value is '3'.
          */
         public static final String POINTSIZE = "pointsize";
 
@@ -267,7 +270,7 @@ public class VisualizeImageChartRequest implements IndexedRecord {
 
         /**
          * A character or string which separates per-class values in a
-         * class-break style option string.
+         * class-break style option string.  The default value is ';'.
          */
         public static final String CB_DELIMITER = "cb_delimiter";
 
@@ -325,18 +328,20 @@ public class VisualizeImageChartRequest implements IndexedRecord {
 
         /**
          * Amplitude of horizontal jitter applied to non-numeric x column
-         * values.
+         * values.  The default value is '0.0'.
          */
         public static final String JITTER_X = "jitter_x";
 
         /**
          * Amplitude of vertical jitter applied to non-numeric y column values.
+         * The default value is '0.0'.
          */
         public static final String JITTER_Y = "jitter_y";
 
         /**
          * If this options is set to "true", all non-numeric column values are
-         * plotted ignoring min_x, max_x, min_y and max_y parameters.
+         * plotted ignoring min_x, max_x, min_y and max_y parameters.  The
+         * default value is 'false'.
          */
         public static final String PLOT_ALL = "plot_all";
 
@@ -399,11 +404,13 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#POINTCOLOR
      *                      POINTCOLOR}: The color of points in the plot
-     *                      represented as a hexadecimal number.
+     *                      represented as a hexadecimal number.  The default
+     *                      value is '0000FF'.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#POINTSIZE
      *                      POINTSIZE}: The size of points in the plot
-     *                      represented as number of pixels.
+     *                      represented as number of pixels.  The default value
+     *                      is '3'.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#POINTSHAPE
      *                      POINTSHAPE}: The shape of points in the plot.
@@ -470,7 +477,7 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#CB_DELIMITER
      *                      CB_DELIMITER}: A character or string which
      *                      separates per-class values in a class-break style
-     *                      option string.
+     *                      option string.  The default value is ';'.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#X_ORDER_BY
      *                      X_ORDER_BY}: An expression or aggregate expression
@@ -515,18 +522,22 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *                      JITTER_X}: Amplitude of horizontal jitter applied
-     *                      to non-numeric x column values.
+     *                      to non-numeric x column values.  The default value
+     *                      is '0.0'.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_Y
      *                      JITTER_Y}: Amplitude of vertical jitter applied to
-     *                      non-numeric y column values.
+     *                      non-numeric y column values.  The default value is
+     *                      '0.0'.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#PLOT_ALL
      *                      PLOT_ALL}: If this options is set to "true", all
      *                      non-numeric column values are plotted ignoring
-     *                      min_x, max_x, min_y and max_y parameters.
+     *                      min_x, max_x, min_y and max_y parameters.  The
+     *                      default value is 'false'.
      *                      </ul>
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public VisualizeImageChartRequest(String tableName, List<String> xColumnNames, List<String> yColumnNames, double minX, double maxX, double minY, double maxY, int width, int height, String bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) {
@@ -782,11 +793,11 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#POINTCOLOR
      *         POINTCOLOR}: The color of points in the plot represented as a
-     *         hexadecimal number.
+     *         hexadecimal number.  The default value is '0000FF'.
      *                 <li> {@link
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#POINTSIZE
      *         POINTSIZE}: The size of points in the plot represented as number
-     *         of pixels.
+     *         of pixels.  The default value is '3'.
      *                 <li> {@link
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#POINTSHAPE
      *         POINTSHAPE}: The shape of points in the plot.
@@ -847,7 +858,8 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#CB_DELIMITER
      *         CB_DELIMITER}: A character or string which separates per-class
-     *         values in a class-break style option string.
+     *         values in a class-break style option string.  The default value
+     *         is ';'.
      *                 <li> {@link
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#X_ORDER_BY
      *         X_ORDER_BY}: An expression or aggregate expression by which
@@ -891,16 +903,16 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *         JITTER_X}: Amplitude of horizontal jitter applied to non-numeric
-     *         x column values.
+     *         x column values.  The default value is '0.0'.
      *                 <li> {@link
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_Y
      *         JITTER_Y}: Amplitude of vertical jitter applied to non-numeric y
-     *         column values.
+     *         column values.  The default value is '0.0'.
      *                 <li> {@link
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#PLOT_ALL
      *         PLOT_ALL}: If this options is set to "true", all non-numeric
      *         column values are plotted ignoring min_x, max_x, min_y and max_y
-     *         parameters.
+     *         parameters.  The default value is 'false'.
      *         </ul>
      * 
      */
@@ -915,11 +927,13 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#POINTCOLOR
      *                      POINTCOLOR}: The color of points in the plot
-     *                      represented as a hexadecimal number.
+     *                      represented as a hexadecimal number.  The default
+     *                      value is '0000FF'.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#POINTSIZE
      *                      POINTSIZE}: The size of points in the plot
-     *                      represented as number of pixels.
+     *                      represented as number of pixels.  The default value
+     *                      is '3'.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#POINTSHAPE
      *                      POINTSHAPE}: The shape of points in the plot.
@@ -986,7 +1000,7 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#CB_DELIMITER
      *                      CB_DELIMITER}: A character or string which
      *                      separates per-class values in a class-break style
-     *                      option string.
+     *                      option string.  The default value is ';'.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#X_ORDER_BY
      *                      X_ORDER_BY}: An expression or aggregate expression
@@ -1031,16 +1045,19 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *                      JITTER_X}: Amplitude of horizontal jitter applied
-     *                      to non-numeric x column values.
+     *                      to non-numeric x column values.  The default value
+     *                      is '0.0'.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_Y
      *                      JITTER_Y}: Amplitude of vertical jitter applied to
-     *                      non-numeric y column values.
+     *                      non-numeric y column values.  The default value is
+     *                      '0.0'.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#PLOT_ALL
      *                      PLOT_ALL}: If this options is set to "true", all
      *                      non-numeric column values are plotted ignoring
-     *                      min_x, max_x, min_y and max_y parameters.
+     *                      min_x, max_x, min_y and max_y parameters.  The
+     *                      default value is 'false'.
      *                      </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -1053,7 +1070,7 @@ public class VisualizeImageChartRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -1062,7 +1079,8 @@ public class VisualizeImageChartRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

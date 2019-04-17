@@ -27,6 +27,8 @@ public class AlterResourceGroupRequest implements IndexedRecord {
             .fields()
                 .name("name").type().stringType().noDefault()
                 .name("tierAttributes").type().map().values().map().values().stringType().noDefault()
+                .name("ranking").type().stringType().noDefault()
+                .name("adjoiningResourceGroup").type().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -57,6 +59,7 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      * MAX_MEMORY}: Maximum amount of memory usable in the given tier at one
      * time for this group.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code tierAttributes}.
      */
     public static final class TierAttributes {
@@ -68,6 +71,40 @@ public class AlterResourceGroupRequest implements IndexedRecord {
         public static final String MAX_MEMORY = "max_memory";
 
         private TierAttributes() {  }
+    }
+
+
+    /**
+     * If the resource group ranking has to be updated, this indicates the
+     * relative ranking among existing resource groups where this resource
+     * group will be moved. Left bank if not changing the ranking.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AlterResourceGroupRequest.Ranking#EMPTY_STRING
+     * EMPTY_STRING}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterResourceGroupRequest.Ranking#FIRST FIRST}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterResourceGroupRequest.Ranking#LAST LAST}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterResourceGroupRequest.Ranking#BEFORE BEFORE}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterResourceGroupRequest.Ranking#AFTER AFTER}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AlterResourceGroupRequest.Ranking#EMPTY_STRING
+     * EMPTY_STRING}.
+     * A set of string constants for the parameter {@code ranking}.
+     */
+    public static final class Ranking {
+        public static final String EMPTY_STRING = "";
+        public static final String FIRST = "first";
+        public static final String LAST = "last";
+        public static final String BEFORE = "before";
+        public static final String AFTER = "after";
+
+        private Ranking() {  }
     }
 
 
@@ -100,6 +137,7 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.AlterResourceGroupRequest.Options#FALSE FALSE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -143,6 +181,8 @@ public class AlterResourceGroupRequest implements IndexedRecord {
 
     private String name;
     private Map<String, Map<String, String>> tierAttributes;
+    private String ranking;
+    private String adjoiningResourceGroup;
     private Map<String, String> options;
 
 
@@ -152,6 +192,8 @@ public class AlterResourceGroupRequest implements IndexedRecord {
     public AlterResourceGroupRequest() {
         name = "";
         tierAttributes = new LinkedHashMap<>();
+        ranking = "";
+        adjoiningResourceGroup = "";
         options = new LinkedHashMap<>();
     }
 
@@ -175,6 +217,37 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      *                        MAX_MEMORY}: Maximum amount of memory usable in
      *                        the given tier at one time for this group.
      *                        </ul>
+     *                        The default value is an empty {@link Map}.
+     * @param ranking  If the resource group ranking has to be updated, this
+     *                 indicates the relative ranking among existing resource
+     *                 groups where this resource group will be moved. Left
+     *                 bank if not changing the ranking.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Ranking#EMPTY_STRING
+     *                 EMPTY_STRING}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Ranking#FIRST
+     *                 FIRST}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Ranking#LAST
+     *                 LAST}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Ranking#BEFORE
+     *                 BEFORE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Ranking#AFTER
+     *                 AFTER}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Ranking#EMPTY_STRING
+     *                 EMPTY_STRING}.
+     * @param adjoiningResourceGroup  If the ranking is 'before' or 'after',
+     *                                this field indicates the resource group
+     *                                before or after which the current group
+     *                                will be placed otherwise left blank.  The
+     *                                default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -209,11 +282,14 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
-    public AlterResourceGroupRequest(String name, Map<String, Map<String, String>> tierAttributes, Map<String, String> options) {
+    public AlterResourceGroupRequest(String name, Map<String, Map<String, String>> tierAttributes, String ranking, String adjoiningResourceGroup, Map<String, String> options) {
         this.name = (name == null) ? "" : name;
         this.tierAttributes = (tierAttributes == null) ? new LinkedHashMap<String, Map<String, String>>() : tierAttributes;
+        this.ranking = (ranking == null) ? "" : ranking;
+        this.adjoiningResourceGroup = (adjoiningResourceGroup == null) ? "" : adjoiningResourceGroup;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
@@ -254,6 +330,7 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      *         MAX_MEMORY}: Maximum amount of memory usable in the given tier
      *         at one time for this group.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, Map<String, String>> getTierAttributes() {
@@ -276,12 +353,108 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      *                        MAX_MEMORY}: Maximum amount of memory usable in
      *                        the given tier at one time for this group.
      *                        </ul>
+     *                        The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
     public AlterResourceGroupRequest setTierAttributes(Map<String, Map<String, String>> tierAttributes) {
         this.tierAttributes = (tierAttributes == null) ? new LinkedHashMap<String, Map<String, String>>() : tierAttributes;
+        return this;
+    }
+
+    /**
+     * 
+     * @return If the resource group ranking has to be updated, this indicates
+     *         the relative ranking among existing resource groups where this
+     *         resource group will be moved. Left bank if not changing the
+     *         ranking.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterResourceGroupRequest.Ranking#EMPTY_STRING
+     *         EMPTY_STRING}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterResourceGroupRequest.Ranking#FIRST
+     *         FIRST}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterResourceGroupRequest.Ranking#LAST LAST}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterResourceGroupRequest.Ranking#BEFORE
+     *         BEFORE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterResourceGroupRequest.Ranking#AFTER
+     *         AFTER}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AlterResourceGroupRequest.Ranking#EMPTY_STRING
+     *         EMPTY_STRING}.
+     * 
+     */
+    public String getRanking() {
+        return ranking;
+    }
+
+    /**
+     * 
+     * @param ranking  If the resource group ranking has to be updated, this
+     *                 indicates the relative ranking among existing resource
+     *                 groups where this resource group will be moved. Left
+     *                 bank if not changing the ranking.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Ranking#EMPTY_STRING
+     *                 EMPTY_STRING}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Ranking#FIRST
+     *                 FIRST}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Ranking#LAST
+     *                 LAST}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Ranking#BEFORE
+     *                 BEFORE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Ranking#AFTER
+     *                 AFTER}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Ranking#EMPTY_STRING
+     *                 EMPTY_STRING}.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AlterResourceGroupRequest setRanking(String ranking) {
+        this.ranking = (ranking == null) ? "" : ranking;
+        return this;
+    }
+
+    /**
+     * 
+     * @return If the ranking is 'before' or 'after', this field indicates the
+     *         resource group before or after which the current group will be
+     *         placed otherwise left blank.  The default value is ''.
+     * 
+     */
+    public String getAdjoiningResourceGroup() {
+        return adjoiningResourceGroup;
+    }
+
+    /**
+     * 
+     * @param adjoiningResourceGroup  If the ranking is 'before' or 'after',
+     *                                this field indicates the resource group
+     *                                before or after which the current group
+     *                                will be placed otherwise left blank.  The
+     *                                default value is ''.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AlterResourceGroupRequest setAdjoiningResourceGroup(String adjoiningResourceGroup) {
+        this.adjoiningResourceGroup = (adjoiningResourceGroup == null) ? "" : adjoiningResourceGroup;
         return this;
     }
 
@@ -318,6 +491,7 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterResourceGroupRequest.Options#FALSE
      *         FALSE}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -360,6 +534,7 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -402,6 +577,12 @@ public class AlterResourceGroupRequest implements IndexedRecord {
                 return this.tierAttributes;
 
             case 2:
+                return this.ranking;
+
+            case 3:
+                return this.adjoiningResourceGroup;
+
+            case 4:
                 return this.options;
 
             default:
@@ -432,6 +613,14 @@ public class AlterResourceGroupRequest implements IndexedRecord {
                 break;
 
             case 2:
+                this.ranking = (String)value;
+                break;
+
+            case 3:
+                this.adjoiningResourceGroup = (String)value;
+                break;
+
+            case 4:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -454,6 +643,8 @@ public class AlterResourceGroupRequest implements IndexedRecord {
 
         return ( this.name.equals( that.name )
                  && this.tierAttributes.equals( that.tierAttributes )
+                 && this.ranking.equals( that.ranking )
+                 && this.adjoiningResourceGroup.equals( that.adjoiningResourceGroup )
                  && this.options.equals( that.options ) );
     }
 
@@ -470,6 +661,14 @@ public class AlterResourceGroupRequest implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.tierAttributes ) );
         builder.append( ", " );
+        builder.append( gd.toString( "ranking" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.ranking ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "adjoiningResourceGroup" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.adjoiningResourceGroup ) );
+        builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.options ) );
@@ -483,6 +682,8 @@ public class AlterResourceGroupRequest implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.name.hashCode();
         hashCode = (31 * hashCode) + this.tierAttributes.hashCode();
+        hashCode = (31 * hashCode) + this.ranking.hashCode();
+        hashCode = (31 * hashCode) + this.adjoiningResourceGroup.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

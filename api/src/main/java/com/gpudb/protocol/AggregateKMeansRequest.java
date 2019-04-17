@@ -27,6 +27,9 @@ import org.apache.avro.generic.IndexedRecord;
  * begins with a randomly selected set of k points and then refines the
  * location of the points iteratively and settles to a local minimum.  Various
  * parameters and options are provided to control the heuristic search.
+ * <p>
+ * NOTE:  The Kinetica instance being accessed must be running a CUDA
+ * (GPU-based) build to service this request.
  */
 public class AggregateKMeansRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -69,6 +72,7 @@ public class AggregateKMeansRequest implements IndexedRecord {
      * Number of times to run the k-means algorithm with a different randomly
      * selected starting points - helps avoid local minimum. Default is 1.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -140,6 +144,7 @@ public class AggregateKMeansRequest implements IndexedRecord {
      *                 with a different randomly selected starting points -
      *                 helps avoid local minimum. Default is 1.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AggregateKMeansRequest(String tableName, List<String> columnNames, int k, double tolerance, Map<String, String> options) {
@@ -261,6 +266,7 @@ public class AggregateKMeansRequest implements IndexedRecord {
      *         different randomly selected starting points - helps avoid local
      *         minimum. Default is 1.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -285,6 +291,7 @@ public class AggregateKMeansRequest implements IndexedRecord {
      *                 with a different randomly selected starting points -
      *                 helps avoid local minimum. Default is 1.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

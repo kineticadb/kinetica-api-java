@@ -57,6 +57,7 @@ public class ShowProcRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.ShowProcRequest.Options#FALSE FALSE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -99,7 +100,7 @@ public class ShowProcRequest implements IndexedRecord {
      * @param procName  Name of the proc to show information about. If
      *                  specified, must be the name of a currently existing
      *                  proc. If not specified, information about all procs
-     *                  will be returned.
+     *                  will be returned.  The default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -117,6 +118,7 @@ public class ShowProcRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ShowProcRequest.Options#FALSE FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public ShowProcRequest(String procName, Map<String, String> options) {
@@ -128,7 +130,8 @@ public class ShowProcRequest implements IndexedRecord {
      * 
      * @return Name of the proc to show information about. If specified, must
      *         be the name of a currently existing proc. If not specified,
-     *         information about all procs will be returned.
+     *         information about all procs will be returned.  The default value
+     *         is ''.
      * 
      */
     public String getProcName() {
@@ -140,7 +143,7 @@ public class ShowProcRequest implements IndexedRecord {
      * @param procName  Name of the proc to show information about. If
      *                  specified, must be the name of a currently existing
      *                  proc. If not specified, information about all procs
-     *                  will be returned.
+     *                  will be returned.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -169,6 +172,7 @@ public class ShowProcRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.ShowProcRequest.Options#FALSE FALSE}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -194,6 +198,7 @@ public class ShowProcRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ShowProcRequest.Options#FALSE FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -26,6 +26,8 @@ public class CreateResourceGroupRequest implements IndexedRecord {
             .fields()
                 .name("name").type().stringType().noDefault()
                 .name("tierAttributes").type().map().values().map().values().stringType().noDefault()
+                .name("ranking").type().stringType().noDefault()
+                .name("adjoiningResourceGroup").type().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -56,6 +58,7 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      * MAX_MEMORY}: Maximum amount of memory usable in the given tier at one
      * time for this group.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code tierAttributes}.
      */
     public static final class TierAttributes {
@@ -67,6 +70,32 @@ public class CreateResourceGroupRequest implements IndexedRecord {
         public static final String MAX_MEMORY = "max_memory";
 
         private TierAttributes() {  }
+    }
+
+
+    /**
+     * Indicates the relative ranking among existing resource groups where this
+     * new resource group will be placed.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateResourceGroupRequest.Ranking#FIRST FIRST}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateResourceGroupRequest.Ranking#LAST LAST}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateResourceGroupRequest.Ranking#BEFORE BEFORE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateResourceGroupRequest.Ranking#AFTER AFTER}
+     * </ul>
+     * A set of string constants for the parameter {@code ranking}.
+     */
+    public static final class Ranking {
+        public static final String FIRST = "first";
+        public static final String LAST = "last";
+        public static final String BEFORE = "before";
+        public static final String AFTER = "after";
+
+        private Ranking() {  }
     }
 
 
@@ -85,6 +114,7 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateResourceGroupRequest.Options#MAX_TIER_PRIORITY
      * MAX_TIER_PRIORITY}: Maximum priority of a tiered object for this group.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -110,6 +140,8 @@ public class CreateResourceGroupRequest implements IndexedRecord {
 
     private String name;
     private Map<String, Map<String, String>> tierAttributes;
+    private String ranking;
+    private String adjoiningResourceGroup;
     private Map<String, String> options;
 
 
@@ -119,6 +151,8 @@ public class CreateResourceGroupRequest implements IndexedRecord {
     public CreateResourceGroupRequest() {
         name = "";
         tierAttributes = new LinkedHashMap<>();
+        ranking = "";
+        adjoiningResourceGroup = "";
         options = new LinkedHashMap<>();
     }
 
@@ -143,6 +177,28 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      *                        MAX_MEMORY}: Maximum amount of memory usable in
      *                        the given tier at one time for this group.
      *                        </ul>
+     *                        The default value is an empty {@link Map}.
+     * @param ranking  Indicates the relative ranking among existing resource
+     *                 groups where this new resource group will be placed.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateResourceGroupRequest.Ranking#FIRST
+     *                 FIRST}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateResourceGroupRequest.Ranking#LAST
+     *                 LAST}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateResourceGroupRequest.Ranking#BEFORE
+     *                 BEFORE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateResourceGroupRequest.Ranking#AFTER
+     *                 AFTER}
+     *                 </ul>
+     * @param adjoiningResourceGroup  Name of the resource group relative to
+     *                                which this group will be placed. Must be
+     *                                specified when ranking is before or
+     *                                after.  The default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -159,11 +215,14 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      *                 MAX_TIER_PRIORITY}: Maximum priority of a tiered object
      *                 for this group.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
-    public CreateResourceGroupRequest(String name, Map<String, Map<String, String>> tierAttributes, Map<String, String> options) {
+    public CreateResourceGroupRequest(String name, Map<String, Map<String, String>> tierAttributes, String ranking, String adjoiningResourceGroup, Map<String, String> options) {
         this.name = (name == null) ? "" : name;
         this.tierAttributes = (tierAttributes == null) ? new LinkedHashMap<String, Map<String, String>>() : tierAttributes;
+        this.ranking = (ranking == null) ? "" : ranking;
+        this.adjoiningResourceGroup = (adjoiningResourceGroup == null) ? "" : adjoiningResourceGroup;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
@@ -206,6 +265,7 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      *         MAX_MEMORY}: Maximum amount of memory usable in the given tier
      *         at one time for this group.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, Map<String, String>> getTierAttributes() {
@@ -228,12 +288,91 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      *                        MAX_MEMORY}: Maximum amount of memory usable in
      *                        the given tier at one time for this group.
      *                        </ul>
+     *                        The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
     public CreateResourceGroupRequest setTierAttributes(Map<String, Map<String, String>> tierAttributes) {
         this.tierAttributes = (tierAttributes == null) ? new LinkedHashMap<String, Map<String, String>>() : tierAttributes;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Indicates the relative ranking among existing resource groups
+     *         where this new resource group will be placed.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateResourceGroupRequest.Ranking#FIRST
+     *         FIRST}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateResourceGroupRequest.Ranking#LAST LAST}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateResourceGroupRequest.Ranking#BEFORE
+     *         BEFORE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateResourceGroupRequest.Ranking#AFTER
+     *         AFTER}
+     *         </ul>
+     * 
+     */
+    public String getRanking() {
+        return ranking;
+    }
+
+    /**
+     * 
+     * @param ranking  Indicates the relative ranking among existing resource
+     *                 groups where this new resource group will be placed.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateResourceGroupRequest.Ranking#FIRST
+     *                 FIRST}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateResourceGroupRequest.Ranking#LAST
+     *                 LAST}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateResourceGroupRequest.Ranking#BEFORE
+     *                 BEFORE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateResourceGroupRequest.Ranking#AFTER
+     *                 AFTER}
+     *                 </ul>
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public CreateResourceGroupRequest setRanking(String ranking) {
+        this.ranking = (ranking == null) ? "" : ranking;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Name of the resource group relative to which this group will be
+     *         placed. Must be specified when ranking is before or after.  The
+     *         default value is ''.
+     * 
+     */
+    public String getAdjoiningResourceGroup() {
+        return adjoiningResourceGroup;
+    }
+
+    /**
+     * 
+     * @param adjoiningResourceGroup  Name of the resource group relative to
+     *                                which this group will be placed. Must be
+     *                                specified when ranking is before or
+     *                                after.  The default value is ''.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public CreateResourceGroupRequest setAdjoiningResourceGroup(String adjoiningResourceGroup) {
+        this.adjoiningResourceGroup = (adjoiningResourceGroup == null) ? "" : adjoiningResourceGroup;
         return this;
     }
 
@@ -254,6 +393,7 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      *         MAX_TIER_PRIORITY}: Maximum priority of a tiered object for this
      *         group.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -278,6 +418,7 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      *                 MAX_TIER_PRIORITY}: Maximum priority of a tiered object
      *                 for this group.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -320,6 +461,12 @@ public class CreateResourceGroupRequest implements IndexedRecord {
                 return this.tierAttributes;
 
             case 2:
+                return this.ranking;
+
+            case 3:
+                return this.adjoiningResourceGroup;
+
+            case 4:
                 return this.options;
 
             default:
@@ -350,6 +497,14 @@ public class CreateResourceGroupRequest implements IndexedRecord {
                 break;
 
             case 2:
+                this.ranking = (String)value;
+                break;
+
+            case 3:
+                this.adjoiningResourceGroup = (String)value;
+                break;
+
+            case 4:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -372,6 +527,8 @@ public class CreateResourceGroupRequest implements IndexedRecord {
 
         return ( this.name.equals( that.name )
                  && this.tierAttributes.equals( that.tierAttributes )
+                 && this.ranking.equals( that.ranking )
+                 && this.adjoiningResourceGroup.equals( that.adjoiningResourceGroup )
                  && this.options.equals( that.options ) );
     }
 
@@ -388,6 +545,14 @@ public class CreateResourceGroupRequest implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.tierAttributes ) );
         builder.append( ", " );
+        builder.append( gd.toString( "ranking" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.ranking ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "adjoiningResourceGroup" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.adjoiningResourceGroup ) );
+        builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.options ) );
@@ -401,6 +566,8 @@ public class CreateResourceGroupRequest implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.name.hashCode();
         hashCode = (31 * hashCode) + this.tierAttributes.hashCode();
+        hashCode = (31 * hashCode) + this.ranking.hashCode();
+        hashCode = (31 * hashCode) + this.adjoiningResourceGroup.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

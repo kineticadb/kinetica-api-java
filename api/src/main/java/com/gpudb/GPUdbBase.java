@@ -43,6 +43,7 @@ public abstract class GPUdbBase {
      * override the default options.
      */
     public static final class Options {
+        private String primaryUrl = "";
         private String username;
         private String password;
         private boolean useSnappy = true;
@@ -51,6 +52,17 @@ public abstract class GPUdbBase {
         private Map<String, String> httpHeaders = new HashMap<>();
         private int hmPort = 9300;  // Default host manager port
         private int timeout;
+
+        /**
+         * Gets the URL of the primary cluster of the HA environment.
+         *
+         * @return  the primary URL
+         *
+         * @see #setPrimaryUrl(String)
+         */
+        public String getPrimaryUrl() {
+            return primaryUrl;
+        }
 
         /**
          * Gets the username to be used for authentication to GPUdb.
@@ -153,6 +165,27 @@ public abstract class GPUdbBase {
          */
         public int getTimeout() {
             return timeout;
+        }
+
+        /**
+         * Sets the URL of the primary cluster to use amongst the HA clusters.
+         * This cluster will always be used first.  It can be part of the URLs
+         * used to create the GPUdb object, or be a different one.  In either
+         * case, this URL will always be chosen first to work against.  Also,
+         * the {@link GPUdb} constructors will ensure that no duplicate of this
+         * URL exists in the full set of URLs to use.  If this is not set, then
+         * all available clusters will be treated with equal probability.
+         *
+         * Must be given in the form of 'http[s]://X.X.X.X:PORT[/httpd-path]'.
+         *
+         * @param value  the URL of the primary cluster
+         * @return       the current {@link Options} instance
+         *
+         * @see #getPrimaryUrl()
+         */
+        public Options setPrimaryUrl(String value) {
+            primaryUrl = value;
+            return this;
         }
 
         /**
@@ -576,8 +609,10 @@ public abstract class GPUdbBase {
 
     // Fields
 
+    private Options   options;
     private List<URL> urls;
     private List<URL> hmUrls;
+    private URL primaryUrl = null;
     private final Object urlLock;
     private List<Integer> haUrlIndices;
     private int currentUrlIndex;
@@ -602,12 +637,12 @@ public abstract class GPUdbBase {
         try {
             // Not using an unmodifiable list because we'll have to update it
             // with the HA ring head node addresses
-            urls = new ArrayList<URL>();
+            this.urls = new ArrayList<URL>();
 
             // Split the string on commas, if any
             String[] url_strings = url.split(",");
             for (int i = 0; i < url_strings.length; ++i ) {
-                urls.add( new URL( url_strings[i] ) );
+                this.urls.add( new URL( url_strings[i] ) );
             }
         } catch (MalformedURLException ex) {
             throw new GPUdbException(ex.getMessage(), ex);
@@ -620,37 +655,49 @@ public abstract class GPUdbBase {
         urlLock = new Object();
         // Not using an unmodifiable list because we'll have to update it
         // with the HA ring head node addresses
-        urls = list( url );
+        this.urls = list( url );
         init(options);
     }
 
     protected GPUdbBase(List<URL> urls, Options options) throws GPUdbException {
         urlLock = new Object();
-        // Make an unmodifiable list ONLY if more than one is given (otherwise,
-        // we'd check for HA ring head nodes by querying this cluster
+        // Not using an unmodifiable list because we'll have to update it
+        // with the HA ring head node addresses
         if ( urls.size() > 1 ) {
-            this.urls = Collections.unmodifiableList(urls);
+            this.urls = new ArrayList<>( urls );
         } else {
-            // We'll make an unmodifiable list in init()
             this.urls = urls;
         }
         
         init(options);
     }
 
+
+    /**
+     * Construct the GPUdbBase object based on the given URLs and options.
+     */
     private void init(Options options) throws GPUdbException {
-        username = options.getUsername();
-        password = options.getPassword();
+        // Save the options object
+        this.options  = options;
+
+        // Save some parameters passed in via the options object
+        this.username = options.getUsername();
+        this.password = options.getPassword();
 
         if ((username != null && !username.isEmpty()) || (password != null && !password.isEmpty())) {
-            authorization = "Basic " + Base64.encodeBase64String(((username != null ? username : "") + ":" + (password != null ? password : "")).getBytes()).replace("\n", "");
+            authorization = ("Basic "
+                             + Base64.encodeBase64String( ((username != null ? username : "")
+                                                           + ":"
+                                                           + (password != null ? password : "")).getBytes() )
+                               .replace("\n", "") );
         } else {
             authorization = null;
         }
 
-        useSnappy = options.getUseSnappy();
-        threadCount = options.getThreadCount();
-        executor = options.getExecutor();
+        this.useSnappy   = options.getUseSnappy();
+        this.threadCount = options.getThreadCount();
+        this.executor    = options.getExecutor();
+        this.timeout     = options.getTimeout();
 
         // The headers must be set before any call can be made
         Map<String, String> tempHttpHeaders = new HashMap<>();
@@ -662,91 +709,34 @@ public abstract class GPUdbBase {
         }
 
         httpHeaders = Collections.unmodifiableMap(tempHttpHeaders);
-        timeout = options.getTimeout();
+
+        // Initialize the caches for table types
         knownTypeObjectMaps = new ConcurrentHashMap<>(16, 0.75f, 1);
         knownTypes = new ConcurrentHashMap<>(16, 0.75f, 1);
 
-        // Get the HA ring head node addresses, if any
-        ShowSystemPropertiesResponse response = null;
-        try {
-            response = submitRequest(appendPathToURL(this.urls.get(0), "/show/system/properties"),
-                                     new ShowSystemPropertiesRequest(),
-                                     new ShowSystemPropertiesResponse(),
-                                     false);
-        } catch (MalformedURLException ex) {
-            // Note: Not worth dying just because the HA ring node
-            // addresses couldn't be found
-        } catch (GPUdbException ex) {
-            // Note: Not worth dying just because the HA ring node
-            // addresses couldn't be found
-        }
-
-        // Do the rest only if we were able to get the system properties
-        if ( response != null ) {
-            Map<String, String> systemProperties = response.getPropertyMap();
-            String is_ha_enabled_str = systemProperties.get( ShowSystemPropertiesResponse.PropertyMap.CONF_ENABLE_HA );
-
-            // Only attempt to parse the HA ring node addresses if HA is enabled
-            if ( (is_ha_enabled_str != null)
-                 && (is_ha_enabled_str.compareToIgnoreCase( "true" ) == 0 ) ) {
-
-                // Parse the HA ringt head node addresses, if any
-                String ha_ring_head_nodes_str = systemProperties.get( ShowSystemPropertiesResponse.PropertyMap.CONF_HA_RING_HEAD_NODES );
-                if ( (ha_ring_head_nodes_str != null) && !ha_ring_head_nodes_str.isEmpty() ) {
-                    List<URL> ha_urls = new ArrayList<URL>();
-                    try {
-                        String[] ha_ring_head_nodes = ha_ring_head_nodes_str.split(",");
-                        for (int i = 0; i < ha_ring_head_nodes.length; ++i ) {
-                            ha_urls.add( new URL( ha_ring_head_nodes[i] ) );
-                        }
-                    } catch (MalformedURLException ex) {
-                        throw new GPUdbException( "Error parsing HA ring head "
-                                                  + "node address from the "
-                                                  + "database configuration "
-                                                  + "parameters: "
-                                                  + ex.getMessage(), ex);
-                    }
-
-                    // Ensure that the first of the given URL is included in the
-                    // HA ring head node addresses
-                    if ( !ha_urls.contains( this.urls.get( 0 ) ) ) {
-                        ha_urls.add( this.urls.get( 0 ) );
-                    }
-
-                    // Now save these head node addresses
-                    this.urls = Collections.unmodifiableList( ha_urls );
-                }
-            } // nothing to do if this property isn't returned
-        }
+        // Instantiate the list of HA URL indices around for easy URL picking
+        this.haUrlIndices = new ArrayList<>();
         
         // Create URLs for the host manager
         this.hmUrls = new ArrayList<>();
-        for ( URL url : this.urls ) {
-            try {
-                // Change only the port to be the host manager port
-                URL hmUrl = new URL( url.getProtocol(), url.getHost(),
-                                     options.getHostManagerPort(),
-                                     url.getFile() );
-                this.hmUrls.add( hmUrl );
-            } catch ( MalformedURLException ex ) {
-                throw new GPUdbException( ex.getMessage(), ex );
-            }
-        }
 
-        // Keep a list of HA URL indices around for easy URL picking
-        this.haUrlIndices = new ArrayList<>();
-        for ( int i = 0; i < this.urls.size(); ++i ) {
-            this.haUrlIndices.add( i );
-        }
-        // Randomly order the HA clusters and pick one to start working with
-        Collections.shuffle( this.haUrlIndices );
-        // This will keep track of which cluster to pick next (an index of
-        // randomly shuffled indices)
-        this.currentUrlIndex = 0;
-        
-    }
+        // Handle the primary host URL, if any is given
+        handlePrimaryURL();
+
+        // Update the URLs with the available HA ring information
+        getHAringHeadNodeAdresses();
+
+        // Create the host manager URLs
+        updateHmUrls();
+
+        // Randomize the URL indices (take care of the primary host though)
+        randomizeURLs();
+    }   // end init
+
+
 
     // Properties
+    // ----------
 
     /**
      * Gets the list of URLs for the GPUdb server. At any given time, one
@@ -758,7 +748,7 @@ public abstract class GPUdbBase {
      * @return  the list of URLs
      */
     public List<URL> getURLs() {
-        return urls;
+        return this.urls;
     }
 
     /**
@@ -767,50 +757,12 @@ public abstract class GPUdbBase {
      * @return  the URL
      */
     public URL getURL() {
-        if (urls.size() == 1) {
-            return urls.get(0);
+        if (this.urls.size() == 1) {
+            return this.urls.get(0);
         } else {
             synchronized (urlLock) {
-                return urls.get( this.haUrlIndices.get( this.currentUrlIndex ) );
+                return this.urls.get( this.haUrlIndices.get( this.currentUrlIndex ) );
             }
-        }
-    }
-
-    
-    /**
-     * Switches the URL of the HA ring cluster.  Check if we've circled back to
-     * the old URL.  If we've circled back to it, then re-shuffle the list of
-     * indices so that the next time, we pick up HA clusters in a different random
-     * manner and throw an exception.
-     */
-    private URL switchURL(URL oldURL) throws GPUdbHAUnavailableException {
-
-        synchronized (urlLock) {
-            // If there is only one URL, then we can't switch URLs
-            if ( this.urls.size() == 1 ) {
-                throw new GPUdbHAUnavailableException("GPUdb unavailable at "
-                                                      + this.urls.get(0).toString()
-                                                      + "; no HA available either.");
-            }
-
-            // Increment the index by one (mod url list length)
-            this.currentUrlIndex = (this.currentUrlIndex + 1) % this.urls.size();
-
-            // We've circled back; shuffle the indices again so that future
-            // requests go to a different randomly selected cluster, but also
-            // let the caller know that we've circled back
-            if (urls.get( haUrlIndices.get( currentUrlIndex ) ) == oldURL) {
-                // Re-shuffle and set the index counter to zero
-                Collections.shuffle( this.haUrlIndices );
-                this.currentUrlIndex = 0;
-
-                // Let the user know that we've circled back
-                throw new GPUdbHAUnavailableException("GPUdb unavailable; have tried all HA clusters "
-                                                      + "head nodes (" + this.urls.toString() + ")");
-            }
-
-            // Haven't circled back to the old URL; so return the new one
-            return urls.get( haUrlIndices.get( currentUrlIndex ) );
         }
     }
 
@@ -843,39 +795,12 @@ public abstract class GPUdbBase {
     }
 
     /**
-     * Switches the host manager  URL of the HA ring cluster.  Check if we've
-     * circled back to the old URL.  If we've circled back to it, then 
-     * re-shuffle the list of indices so that the next time, we pick up HA
-     * clusters in a different random manner and throw an exception.
+     * Gets the URL of the primary cluster of the HA environment.
+     *
+     * @return  the primary URL
      */
-    private URL switchHmURL(URL oldURL) throws GPUdbHAUnavailableException {
-        synchronized (urlLock) {
-            // If there is only one URL, then we can't switch URLs
-            if ( this.hmUrls.size() == 1 ) {
-                throw new GPUdbHAUnavailableException("GPUdb unavailable at "
-                                                      + this.hmUrls.get(0).toString()
-                                                      + "; no HA available either.");
-            }
-
-            // Increment the index by one (mod url list length)
-            this.currentUrlIndex = (this.currentUrlIndex + 1) % this.hmUrls.size();
-
-            // We've circled back; shuffle the indices again so that future
-            // requests go to a different randomly selected cluster, but also
-            // let the caller know that we've circled back
-            if (this.hmUrls.get( haUrlIndices.get( currentUrlIndex ) ) == oldURL) {
-                // Re-shuffle and set the index counter to zero
-                Collections.shuffle( this.haUrlIndices );
-                this.currentUrlIndex = 0;
-
-                // Let the user know that we've circled back
-                throw new GPUdbHAUnavailableException("GPUdb unavailable; have tried all HA clusters "
-                                                      + "head nodes (" + this.hmUrls.toString() + ")");
-            }
-
-            // Haven't circled back to the old URL; so return the new one
-            return this.hmUrls.get( haUrlIndices.get( currentUrlIndex ) );
-        }
+    public URL getPrimaryUrl() {
+        return this.primaryUrl;
     }
 
     /**
@@ -1013,12 +938,120 @@ public abstract class GPUdbBase {
     }
 
     
+
+
+    // Helper Functions
+    // ----------------
+
+    /**
+     * Creates/updates the host manager URLs from the regular URLs.
+     */
+    private void updateHmUrls() throws GPUdbException {
+        synchronized (urlLock) {
+            // Clear existing host manager URLs
+            this.hmUrls.clear();
+
+            // Generate the host manager URLs from the head node URLs
+            for ( URL url : this.urls ) {
+                try {
+                    // Change only the port to be the host manager port
+                    URL hmUrl = new URL( url.getProtocol(), url.getHost(),
+                                         options.getHostManagerPort(),
+                                         url.getFile() );
+                    this.hmUrls.add( hmUrl );
+                } catch ( MalformedURLException ex ) {
+                    throw new GPUdbException( ex.getMessage(), ex );
+                }
+            }
+        }
+    }
+    
+
+    /**
+     * Switches the URL of the HA ring cluster.  Check if we've circled back to
+     * the old URL.  If we've circled back to it, then re-shuffle the list of
+     * indices so that the next time, we pick up HA clusters in a different random
+     * manner and throw an exception.
+     */
+    private URL switchURL(URL oldURL) throws GPUdbHAUnavailableException {
+
+        synchronized (urlLock) {
+            // If there is only one URL, then we can't switch URLs
+            if ( this.urls.size() == 1 ) {
+                throw new GPUdbHAUnavailableException("GPUdb unavailable at "
+                                                      + this.urls.get(0).toString()
+                                                      + "; no HA available either.");
+            }
+
+            // Increment the index by one (mod url list length)
+            this.currentUrlIndex = (this.currentUrlIndex + 1) % this.urls.size();
+
+            // We've circled back; shuffle the indices again so that future
+            // requests go to a different randomly selected cluster, but also
+            // let the caller know that we've circled back
+            if (this.urls.get( haUrlIndices.get( currentUrlIndex ) ) == oldURL) {
+                // Re-shuffle and set the index counter to zero
+                Collections.shuffle( this.haUrlIndices );
+                this.currentUrlIndex = 0;
+
+                // Let the user know that we've circled back
+                throw new GPUdbHAUnavailableException("GPUdb unavailable; have tried all HA clusters "
+                                                      + "head nodes (" + this.urls.toString() + ")");
+            }
+
+            // Haven't circled back to the old URL; so return the new one
+            return this.urls.get( haUrlIndices.get( currentUrlIndex ) );
+        }
+    }  // end switchURL
+
+    /**
+     * Switches the host manager  URL of the HA ring cluster.  Check if we've
+     * circled back to the old URL.  If we've circled back to it, then 
+     * re-shuffle the list of indices so that the next time, we pick up HA
+     * clusters in a different random manner and throw an exception.
+     */
+    private URL switchHmURL(URL oldURL) throws GPUdbHAUnavailableException {
+        synchronized (urlLock) {
+            // If there is only one URL, then we can't switch URLs
+            if ( this.hmUrls.size() == 1 ) {
+                throw new GPUdbHAUnavailableException("GPUdb unavailable at "
+                                                      + this.hmUrls.get(0).toString()
+                                                      + "; no HA available either.");
+            }
+
+            // Increment the index by one (mod url list length)
+            this.currentUrlIndex = (this.currentUrlIndex + 1) % this.hmUrls.size();
+
+            // We've circled back; shuffle the indices again so that future
+            // requests go to a different randomly selected cluster, but also
+            // let the caller know that we've circled back
+            if (this.hmUrls.get( haUrlIndices.get( currentUrlIndex ) ) == oldURL) {
+                // Re-shuffle and set the index counter to zero
+                Collections.shuffle( this.haUrlIndices );
+                this.currentUrlIndex = 0;
+
+                // Let the user know that we've circled back
+                throw new GPUdbHAUnavailableException("GPUdb unavailable; have tried all HA clusters "
+                                                      + "head nodes (" + this.hmUrls.toString() + ")");
+            }
+
+            // Haven't circled back to the old URL; so return the new one
+            return this.hmUrls.get( haUrlIndices.get( currentUrlIndex ) );
+        }
+    }   // end switchHmUrl
+
+
     /**
      * Automatically resets the host manager port number for the host manager
      * URLs by finding out what the host manager port is.
+     *
+     * @return  boolean indicating if the host manager port was successfully
+     *          updated to be a *different* value.
      */
-    protected void updateHostManagerPort() throws GPUdbException {
+    protected boolean updateHostManagerPort() throws GPUdbException {
 
+
+        int oldHmPort = this.getHmURL().getPort();
         int hmPort;
 
         // Find out from the database server what the correct port
@@ -1031,26 +1064,191 @@ public abstract class GPUdbBase {
         String port_str = systemProperties.get( ShowSystemPropertiesResponse.PropertyMap.CONF_HM_HTTP_PORT );
 
         if (port_str == null) {
-            throw new GPUdbException("Missing value for '"
-                                     + ShowSystemPropertiesResponse.PropertyMap.CONF_HM_HTTP_PORT
-                                     + "'" );
+            // Instead of throwing an exception, just return the fact that we couldn't
+            // update the port
+            return false;
         }
 
         // Parse the integer value from the string
         try {
             hmPort = Integer.parseInt( port_str );
         } catch (NumberFormatException ex) {
-            throw new GPUdbException( "No parsable value found for host manager port number "
-                                      + "(expected integer, given '" + port_str + "')" );
+            // Instead of throwing an exception, just return the fact that we couldn't
+            // update the port
+            return false;
+        }
+        
+        // Update the host manager URLs with the correct port number
+        try {
+            this.setHostManagerPort( hmPort );
+        } catch (IllegalArgumentException ex) {
+            // Instead of throwing an exception, just return the fact that we couldn't
+            // update the port
+            return false;
+        } catch (GPUdbException ex) {
+            // Instead of throwing an exception, just return the fact that we couldn't
+            // update the port
+            return false;
         }
 
-        // Update the host manager URLs with the correct port number
-        this.setHostManagerPort( hmPort );
-        return;
+        // Return whether we actually updated the port or not
+        if ( oldHmPort != hmPort ) {
+            return true;
+        } else {
+            return false;
+        }
+    }   // end updateHostManagerPort
+
+
+    /**
+     * Ensures that any given primary host is included in the list of all HA
+     * ring head nodes, and is the very first in line.  No-op if no primary
+     * host is given by the user.
+     *
+     * @param primaryUrlStr  a valid URL string containing the address for the
+     *                       HA cluster to be used as the primary host.
+     */
+    private void handlePrimaryURL() throws GPUdbException {
+        String primaryUrlStr = this.options.getPrimaryUrl();
+        // No-op if an empty string is given
+        if ( primaryUrlStr.isEmpty() ) {
+            return;
+        }
+
+        // Parse the URL
+        try {
+            this.primaryUrl = new URL( primaryUrlStr );
+        } catch (MalformedURLException ex) {
+            throw new GPUdbException( "Error parsing the primary host URL: "
+                                      + ex.getMessage(), ex);
+        }
+
+        synchronized (urlLock) {
+            // Check if the primary host exists in the list of user given hosts
+            int primaryIndex = this.urls.indexOf( this.primaryUrl );
+            if ( primaryIndex != -1 ) {
+                // The primary URL already exists in the list
+                if ( primaryIndex > 0 ) {
+                    // Note: Do not combine the nested if with the top level if; will change
+                    //       logic and may end up getting duplicates of the primary URL
+
+                    // Move the primary URL to the front of the list, if not already
+                    java.util.Collections.swap( this.urls, 0, this.urls.indexOf( this.primaryUrl ) );
+                }
+            } else {
+                // The primary URL must be the first element in the list
+                this.urls.add( 0, this.primaryUrl );
+            }
+        }
+
+        // Update the host manager URLs
+        updateHmUrls();
     }
 
 
+    /**
+     * Contact the database to find out any high availability (HA) ring head
+     * node addresses.  If any found, update the list of hosts.
+     */
+    private void getHAringHeadNodeAdresses() throws GPUdbException {
+        // Get the HA ring head node addresses, if any
+        ShowSystemPropertiesResponse response = null;
+        try {
+            response = submitRequest(appendPathToURL(this.urls.get(0), "/show/system/properties"),
+                                     new ShowSystemPropertiesRequest(),
+                                     new ShowSystemPropertiesResponse(),
+                                     false);
+        } catch (MalformedURLException ex) {
+            // Note: Not worth dying just because the HA ring node
+            // addresses couldn't be found
+        } catch (GPUdbException ex) {
+            // Note: Not worth dying just because the HA ring node
+            // addresses couldn't be found
+        }
+
+        // Do the rest only if we were able to get the system properties
+        if ( response != null ) {
+            Map<String, String> systemProperties = response.getPropertyMap();
+            String is_ha_enabled_str = systemProperties.get( ShowSystemPropertiesResponse.PropertyMap.CONF_ENABLE_HA );
+
+            // Only attempt to parse the HA ring node addresses if HA is enabled
+            if ( (is_ha_enabled_str != null)
+                 && (is_ha_enabled_str.compareToIgnoreCase( "true" ) == 0 ) ) {
+
+                // Parse the HA ringt head node addresses, if any
+                String ha_ring_head_nodes_str = systemProperties.get( ShowSystemPropertiesResponse.PropertyMap.CONF_HA_RING_HEAD_NODES );
+                if ( (ha_ring_head_nodes_str != null) && !ha_ring_head_nodes_str.isEmpty() ) {
+                    List<URL> ha_urls = new ArrayList<URL>();
+                    try {
+                        String[] ha_ring_head_nodes = ha_ring_head_nodes_str.split(",");
+                        for (int i = 0; i < ha_ring_head_nodes.length; ++i ) {
+                            ha_urls.add( new URL( ha_ring_head_nodes[i] ) );
+                        }
+                    } catch (MalformedURLException ex) {
+                        throw new GPUdbException( "Error parsing HA ring head "
+                                                  + "node address from the "
+                                                  + "database configuration "
+                                                  + "parameters: "
+                                                  + ex.getMessage(), ex);
+                    }
+
+                    // Ensure that the first of the given URL is included in the
+                    // HA ring head node addresses
+                    if ( !ha_urls.contains( this.urls.get( 0 ) ) ) {
+                        ha_urls.add( this.urls.get( 0 ) );
+                    }
+
+                    // Now save these head node addresses
+                    synchronized (urlLock) {
+                        this.urls = new ArrayList<>( ha_urls );
+                    }
+                }
+
+                // Handle the primary host URL, if any is given
+                handlePrimaryURL();
+                // Update the host manager URLs
+                updateHmUrls();
+                // Randomize the URLs
+                randomizeURLs();
+            } // nothing to do if this property isn't returned
+        }
+    }   // end getHAringHeadNodeAdresses
+
+
+    /**
+     * Randomly shuffles the list of high availability URL indices so that HA
+     * failover happens at a random fashion.  One caveat is when a primary host
+     * is given by the user; in that case, we need to keep the primary host's
+     * index as the first one in the list so that upon failover, when we cricle
+     * back, we always pick the first/primary host up again.
+     */
+    private void randomizeURLs() {
+        // Re-create the list of HA URL indices
+        this.haUrlIndices.clear();
+        for ( int i = 0; i < this.urls.size(); ++i ) {
+            this.haUrlIndices.add( i );
+        }
+
+        if ( this.primaryUrl == null ) {
+            // We don't have any primary URL; so treat all URLs similarly
+            // Randomly order the HA clusters and pick one to start working with
+            Collections.shuffle( this.haUrlIndices );
+        } else {
+            // Shuffle from the 2nd element onward, only if there are more than
+            // two elements, of course
+            if ( this.haUrlIndices.size() > 2 ) {
+                Collections.shuffle( this.haUrlIndices.subList( 1, this.haUrlIndices.size() ) );
+            }
+        }
+
+        // This will keep track of which cluster to pick next (an index of
+        // randomly shuffled indices)
+        this.currentUrlIndex = 0;
+    }
+    
+    
     // Type Management
+    // ---------------
 
     /**
      * Adds a type descriptor for a GPUdb type (excluding types of join tables),
@@ -1453,7 +1651,7 @@ public abstract class GPUdbBase {
 
         while (true) {
             try {
-                 return submitRequest(appendPathToURL(hmUrl, endpoint), request, response, enableCompression);
+                return submitRequest(appendPathToURL(hmUrl, endpoint), request, response, enableCompression);
             } catch (MalformedURLException ex) {
                 // There's an error in creating the URL
                 throw new GPUdbRuntimeException(ex.getMessage(), ex);
@@ -1469,7 +1667,18 @@ public abstract class GPUdbBase {
                 // Some error occurred during the HTTP request;
                 // first check if the host manager port is wrong
                 try {
-                    this.updateHostManagerPort();
+                    if ( this.updateHostManagerPort() ) {
+                        // Get the updated URL
+                        hmUrl = getHmURL();
+                    } else {
+                        // Upon failure, try to use other clusters
+                        try {
+                            hmUrl = switchHmURL( originalURL );
+                        } catch (GPUdbHAUnavailableException ha_ex) {
+                            // We've now tried all the HA clusters and circled back
+                            throw new SubmitException(null, ex.getRequest(), ex.getRequestSize(), ha_ex.getMessage(), ex.getCause());
+                        }
+                    }
                 } catch (Exception ex2) {
                     // Upon any error, try to use other clusters
                     try {
@@ -1479,7 +1688,6 @@ public abstract class GPUdbBase {
                         throw new SubmitException(null, ex.getRequest(), ex.getRequestSize(), ha_ex.getMessage(), ex.getCause());
                     }
                 }
-                
             } catch (GPUdbException ex) {
                 // the host manager can still be going even if the database is down
                 if ( ex.getMessage().contains( DB_OFFLINE_ERROR_MESSAGE ) ) {
