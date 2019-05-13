@@ -396,6 +396,20 @@ public abstract class GPUdbBase {
             this.requestSize = requestSize;
         }
 
+        private SubmitException(URL url, IndexedRecord request, int requestSize, String message, boolean connectionFailure) {
+            super(message, connectionFailure);
+            this.url = url;
+            this.request = request;
+            this.requestSize = requestSize;
+        }
+
+        private SubmitException(URL url, IndexedRecord request, int requestSize, String message, Throwable cause, boolean connectionFailure) {
+            super(message, cause, connectionFailure);
+            this.url = url;
+            this.request = request;
+            this.requestSize = requestSize;
+        }
+
         /**
          * Gets the URL that the failed request was submitted to, or
          * {@code null} if multiple failover URLs all failed.
@@ -605,6 +619,8 @@ public abstract class GPUdbBase {
      */
     public static final long END_OF_SET = -9999;
     private static final String DB_OFFLINE_ERROR_MESSAGE = "System is offline";
+    private static final String DB_CONNECTION_RESET_ERROR_MESSAGE = "Connection reset";
+    private static final String DB_CONNECTION_REFUSED_ERROR_MESSAGE = "Connection refused";
     private static final String DB_EXITING_ERROR_MESSAGE = "Kinetica is exiting";
 
     // Fields
@@ -616,6 +632,7 @@ public abstract class GPUdbBase {
     private final Object urlLock;
     private List<Integer> haUrlIndices;
     private int currentUrlIndex;
+    private int numClusterSwitches;
     private String username;
     private String password;
     private String authorization;
@@ -653,6 +670,11 @@ public abstract class GPUdbBase {
 
     protected GPUdbBase(URL url, Options options) throws GPUdbException {
         urlLock = new Object();
+
+        if ( url == null ) {
+            throw new GPUdbException( "Must provide at least one URL; gave none!" );
+        }
+
         // Not using an unmodifiable list because we'll have to update it
         // with the HA ring head node addresses
         this.urls = list( url );
@@ -661,6 +683,11 @@ public abstract class GPUdbBase {
 
     protected GPUdbBase(List<URL> urls, Options options) throws GPUdbException {
         urlLock = new Object();
+
+        if ( urls.isEmpty() ) {
+            throw new GPUdbException( "Must provide at least one URL; gave none!" );
+        }
+        
         // Not using an unmodifiable list because we'll have to update it
         // with the HA ring head node addresses
         if ( urls.size() > 1 ) {
@@ -720,6 +747,9 @@ public abstract class GPUdbBase {
         // Create URLs for the host manager
         this.hmUrls = new ArrayList<>();
 
+        // We haven't switched to any cluster yet
+        this.numClusterSwitches = 0;
+        
         // Handle the primary host URL, if any is given
         handlePrimaryURL();
 
@@ -802,6 +832,16 @@ public abstract class GPUdbBase {
     public URL getPrimaryUrl() {
         return this.primaryUrl;
     }
+
+
+    /**
+     * Gets the number of times the client has switched to a different
+     * cluster amongst the high availability ring.
+     */
+    public int getNumClusterSwitches() {
+        return this.numClusterSwitches;
+    }
+
 
     /**
      * Gets the username used for authentication to GPUdb. Will be an empty
@@ -980,19 +1020,21 @@ public abstract class GPUdbBase {
             if ( this.urls.size() == 1 ) {
                 throw new GPUdbHAUnavailableException("GPUdb unavailable at "
                                                       + this.urls.get(0).toString()
-                                                      + "; no HA available either.");
+                                                      + " (no HA available to fall back on).");
             }
 
             // Increment the index by one (mod url list length)
             this.currentUrlIndex = (this.currentUrlIndex + 1) % this.urls.size();
+
+            // Keep a running count of how many times we had to switch clusters
+            ++this.numClusterSwitches;
 
             // We've circled back; shuffle the indices again so that future
             // requests go to a different randomly selected cluster, but also
             // let the caller know that we've circled back
             if (this.urls.get( haUrlIndices.get( currentUrlIndex ) ) == oldURL) {
                 // Re-shuffle and set the index counter to zero
-                Collections.shuffle( this.haUrlIndices );
-                this.currentUrlIndex = 0;
+                randomizeURLs();
 
                 // Let the user know that we've circled back
                 throw new GPUdbHAUnavailableException("GPUdb unavailable; have tried all HA clusters "
@@ -1016,19 +1058,21 @@ public abstract class GPUdbBase {
             if ( this.hmUrls.size() == 1 ) {
                 throw new GPUdbHAUnavailableException("GPUdb unavailable at "
                                                       + this.hmUrls.get(0).toString()
-                                                      + "; no HA available either.");
+                                                      + " (no HA available to fall back on).");
             }
 
             // Increment the index by one (mod url list length)
             this.currentUrlIndex = (this.currentUrlIndex + 1) % this.hmUrls.size();
+
+            // Keep a running count of how many times we had to switch clusters
+            ++this.numClusterSwitches;
 
             // We've circled back; shuffle the indices again so that future
             // requests go to a different randomly selected cluster, but also
             // let the caller know that we've circled back
             if (this.hmUrls.get( haUrlIndices.get( currentUrlIndex ) ) == oldURL) {
                 // Re-shuffle and set the index counter to zero
-                Collections.shuffle( this.haUrlIndices );
-                this.currentUrlIndex = 0;
+                randomizeURLs();
 
                 // Let the user know that we've circled back
                 throw new GPUdbHAUnavailableException("GPUdb unavailable; have tried all HA clusters "
@@ -1573,7 +1617,9 @@ public abstract class GPUdbBase {
                     url = switchURL( originalURL );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
-                    throw new GPUdbException( ha_ex.getMessage() );
+                    throw new GPUdbException( ha_ex.getMessage()
+                                              + "; original exception: "
+                                              + ex.getCause(), true );
                 }
             } catch (SubmitException ex) {
                 // Some error occurred during the HTTP request
@@ -1581,7 +1627,11 @@ public abstract class GPUdbBase {
                     url = switchURL( originalURL );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
-                    throw new SubmitException(null, ex.getRequest(), ex.getRequestSize(), ha_ex.getMessage(), ex.getCause());
+                    throw new SubmitException( null, ex.getRequest(), ex.getRequestSize(),
+                                               (ha_ex.getMessage()
+                                                + "; original exception: "
+                                                + ex.getCause()),
+                                               ex.getCause(), true );
                 }
             } catch (GPUdbException ex) {
                 // Any other GPUdbException is a valid failure
@@ -1592,7 +1642,9 @@ public abstract class GPUdbBase {
                     url = switchURL( originalURL );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
-                    throw new GPUdbException( ha_ex.getMessage() );
+                    throw new GPUdbException( ha_ex.getMessage()
+                                              + "; original exception: "
+                                              + ex.getCause(), true );
                 }
             }
         } // end while
@@ -1661,7 +1713,9 @@ public abstract class GPUdbBase {
                     hmUrl = switchHmURL( originalURL );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
-                    throw new GPUdbException( ha_ex.getMessage() );
+                    throw new GPUdbException( ha_ex.getMessage()
+                                              + "; original exception: "
+                                              + ex.getCause(), true );
                 }
             } catch (SubmitException ex) {
                 // Some error occurred during the HTTP request;
@@ -1676,7 +1730,11 @@ public abstract class GPUdbBase {
                             hmUrl = switchHmURL( originalURL );
                         } catch (GPUdbHAUnavailableException ha_ex) {
                             // We've now tried all the HA clusters and circled back
-                            throw new SubmitException(null, ex.getRequest(), ex.getRequestSize(), ha_ex.getMessage(), ex.getCause());
+                            throw new SubmitException( null, ex.getRequest(), ex.getRequestSize(),
+                                                       (ha_ex.getMessage()
+                                                        + "; original exception: "
+                                                        + ex.getCause()),
+                                                       ex.getCause(), true );
                         }
                     }
                 } catch (Exception ex2) {
@@ -1685,7 +1743,11 @@ public abstract class GPUdbBase {
                         hmUrl = switchHmURL( originalURL );
                     } catch (GPUdbHAUnavailableException ha_ex) {
                         // We've now tried all the HA clusters and circled back
-                        throw new SubmitException(null, ex.getRequest(), ex.getRequestSize(), ha_ex.getMessage(), ex.getCause());
+                        throw new SubmitException( null, ex.getRequest(), ex.getRequestSize(),
+                                                   (ha_ex.getMessage()
+                                                    + "; original exception: "
+                                                    + ex.getCause()),
+                                                   ex.getCause(), true );
                     }
                 }
             } catch (GPUdbException ex) {
@@ -1695,19 +1757,24 @@ public abstract class GPUdbBase {
                         hmUrl = switchHmURL( originalURL );
                     } catch (GPUdbHAUnavailableException ha_ex) {
                         // We've now tried all the HA clusters and circled back
-                        throw new GPUdbException( ha_ex.getMessage() );
+                        throw new GPUdbException( ha_ex.getMessage()
+                                                  + "; original exception: "
+                                                  + ex.getCause(), true );
                     }
                 }
-
-                // Any other GPUdbException is a valid failure
-                throw ex;
+                else {
+                    // Any other GPUdbException is a valid failure
+                    throw ex;
+                }
             } catch (Exception ex) {
                 // And other random exceptions probably are also connection errors
                 try {
                     hmUrl = switchHmURL( originalURL );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
-                    throw new GPUdbException( ha_ex.getMessage() );
+                    throw new GPUdbException( ha_ex.getMessage()
+                                              + "; original exception: "
+                                              + ex.getCause(), true );
                 }
             }
         } // end while
@@ -1831,7 +1898,10 @@ public abstract class GPUdbBase {
 
                     if (status.equals("ERROR")) {
                         // Check if Kinetica is shutting down
-                        if ( message.contains( DB_EXITING_ERROR_MESSAGE ) ) {
+                        if ( message.contains( DB_EXITING_ERROR_MESSAGE )
+                             || message.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE )
+                             || message.contains( DB_CONNECTION_RESET_ERROR_MESSAGE ) ) {
+                        // if ( message.contains( DB_EXITING_ERROR_MESSAGE ) ) {
                             throw new GPUdbExitException( message );
                         }
                         // A legitimate error
@@ -1937,7 +2007,7 @@ public abstract class GPUdbBase {
                     url = switchURL( originalURL );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
-                    throw new GPUdbException(ex.getMessage(), ex);
+                    throw new GPUdbException(ex.getMessage(), ex, true);
                 }
             } finally {
                 if (connection != null) {

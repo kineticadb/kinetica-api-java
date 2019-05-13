@@ -30,26 +30,11 @@ import org.apache.avro.generic.IndexedRecord;
  * target="_top">Projection Limitations and Cautions</a>.
  * <p>
  * <a href="../../../../../concepts/window.html" target="_top">Window
- * functions</a> are available through this endpoint as well as {@link
+ * functions</a>, which can perform operations like moving averages, are
+ * available through this endpoint as well as {@link
  * com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
  * <p>
- * Notes:
- * <p>
- * A moving average can be calculated on a given column using the following
- * syntax in the {@code columnNames} parameter:
- * <p>
- * 'moving_average(column_name,num_points_before,num_points_after) as
- * new_column_name'
- * <p>
- * For each record in the moving_average function's 'column_name' parameter, it
- * computes the average over the previous 'num_points_before' records and the
- * subsequent 'num_points_after' records.
- * <p>
- * Note that moving average relies on {@code order_by}, and {@code order_by}
- * requires that all the data being ordered resides on the same processing
- * node, so it won't make sense to use {@code order_by} without moving average.
- * <p>
- * Also, a projection can be created with a different <a
+ * A projection can be created with a different <a
  * href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
  * key</a> than the source table.  By specifying {@code shard_key}, the
  * projection will be sharded according to the specified columns, regardless of

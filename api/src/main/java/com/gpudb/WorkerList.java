@@ -85,10 +85,6 @@ public class WorkerList extends ArrayList<URL> {
         }
         this.isMultiHeadEnabled = true;
 
-        if (gpudb.getURLs().size() > 1) {
-            throw new GPUdbException("Multi-head ingest not supported with failover URLs.");
-        }
-
         s = systemProperties.get("conf.worker_http_server_urls");
 
         if (s != null) {

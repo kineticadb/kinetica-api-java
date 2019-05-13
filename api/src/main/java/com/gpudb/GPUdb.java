@@ -1067,12 +1067,13 @@ public class GPUdb extends GPUdbBase {
      * target="_top">standard naming conventions</a>; column/aggregation
      * expressions will need to be aliased.  If the source table's <a
      * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
-     * key</a> is used as the grouping column(s), the result table will be
-     * sharded, in all other cases it will be replicated.  Sorting will
-     * properly function only if the result table is replicated or if there is
-     * only one processing node and should not be relied upon in other cases.
-     * Not available when any of the values of {@code columnNames} is an
-     * unrestricted-length string.
+     * key</a> is used as the grouping column(s) and all result records are
+     * selected ({@code offset} is 0 and {@code limit} is -9999), the result
+     * table will be sharded, in all other cases it will be replicated.
+     * Sorting will properly function only if the result table is replicated or
+     * if there is only one processing node and should not be relied upon in
+     * other cases.  Not available when any of the values of {@code
+     * columnNames} is an unrestricted-length string.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -1156,12 +1157,13 @@ public class GPUdb extends GPUdbBase {
      * target="_top">standard naming conventions</a>; column/aggregation
      * expressions will need to be aliased.  If the source table's <a
      * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
-     * key</a> is used as the grouping column(s), the result table will be
-     * sharded, in all other cases it will be replicated.  Sorting will
-     * properly function only if the result table is replicated or if there is
-     * only one processing node and should not be relied upon in other cases.
-     * Not available when any of the values of {@code columnNames} is an
-     * unrestricted-length string.
+     * key</a> is used as the grouping column(s) and all result records are
+     * selected ({@code offset} is 0 and {@code limit} is -9999), the result
+     * table will be sharded, in all other cases it will be replicated.
+     * Sorting will properly function only if the result table is replicated or
+     * if there is only one processing node and should not be relied upon in
+     * other cases.  Not available when any of the values of {@code
+     * columnNames} is an unrestricted-length string.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -1254,12 +1256,13 @@ public class GPUdb extends GPUdbBase {
      * target="_top">standard naming conventions</a>; column/aggregation
      * expressions will need to be aliased.  If the source table's <a
      * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
-     * key</a> is used as the grouping column(s), the result table will be
-     * sharded, in all other cases it will be replicated.  Sorting will
-     * properly function only if the result table is replicated or if there is
-     * only one processing node and should not be relied upon in other cases.
-     * Not available when any of the values of {@code columnNames} is an
-     * unrestricted-length string.
+     * key</a> is used as the grouping column(s) and all result records are
+     * selected ({@code offset} is 0 and {@code limit} is -9999), the result
+     * table will be sharded, in all other cases it will be replicated.
+     * Sorting will properly function only if the result table is replicated or
+     * if there is only one processing node and should not be relied upon in
+     * other cases.  Not available when any of the values of {@code
+     * columnNames} is an unrestricted-length string.
      * 
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table/view/collection.
@@ -1460,15 +1463,6 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE
      *                 CUBE}: This option is used to specify the
      *                 multidimensional aggregates.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#THROW_ERROR_ON_REFRESH
-     *                 THROW_ERROR_ON_REFRESH}: <DEVELOPER>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
-     *                 SLEEP_ON_REFRESH}: <DEVELOPER>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#REFRESH_TYPE
-     *                 REFRESH_TYPE}: <DEVELOPER>
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -3251,7 +3245,8 @@ public class GPUdb extends GPUdbBase {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
      *                ADD_PARTITION}: Adds a partition (for range-partitioned
-     *                tables only) specified in {@code value}.  See <a
+     *                or list-partitioned tables) specified in {@code value}.
+     *                See <a
      *                href="../../../../concepts/tables.html#partitioning-by-range-example"
      *                target="_top">range partitioning example</a> for example
      *                format.
@@ -3259,12 +3254,13 @@ public class GPUdb extends GPUdbBase {
      *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
      *                REMOVE_PARTITION}: Removes the partition specified in
      *                {@code value} and relocates all its data to the default
-     *                partition (for range-partitioned tables only).
+     *                partition (for range-partitioned or list-partition
+     *                tables).
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
      *                DELETE_PARTITION}: Deletes the partition specified in
-     *                {@code value} and its data (for range-partitioned tables
-     *                only).
+     *                {@code value} and its data (for range-partitioned or
+     *                list-partitioned tables).
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
      *                SET_GLOBAL_ACCESS_MODE}: Sets the global access mode
@@ -4874,27 +4870,11 @@ public class GPUdb extends GPUdbBase {
      * target="_top">Projection Limitations and Cautions</a>.
      * <p>
      * <a href="../../../../concepts/window.html" target="_top">Window
-     * functions</a> are available through this endpoint as well as {@link
+     * functions</a>, which can perform operations like moving averages, are
+     * available through this endpoint as well as {@link
      * GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
      * <p>
-     * Notes:
-     * <p>
-     * A moving average can be calculated on a given column using the following
-     * syntax in the {@code columnNames} parameter:
-     * <p>
-     * 'moving_average(column_name,num_points_before,num_points_after) as
-     * new_column_name'
-     * <p>
-     * For each record in the moving_average function's 'column_name'
-     * parameter, it computes the average over the previous 'num_points_before'
-     * records and the subsequent 'num_points_after' records.
-     * <p>
-     * Note that moving average relies on {@code order_by}, and {@code
-     * order_by} requires that all the data being ordered resides on the same
-     * processing node, so it won't make sense to use {@code order_by} without
-     * moving average.
-     * <p>
-     * Also, a projection can be created with a different <a
+     * A projection can be created with a different <a
      * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
      * key</a> than the source table.  By specifying {@code shard_key}, the
      * projection will be sharded according to the specified columns,
@@ -4932,27 +4912,11 @@ public class GPUdb extends GPUdbBase {
      * target="_top">Projection Limitations and Cautions</a>.
      * <p>
      * <a href="../../../../concepts/window.html" target="_top">Window
-     * functions</a> are available through this endpoint as well as {@link
+     * functions</a>, which can perform operations like moving averages, are
+     * available through this endpoint as well as {@link
      * GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
      * <p>
-     * Notes:
-     * <p>
-     * A moving average can be calculated on a given column using the following
-     * syntax in the {@code columnNames} parameter:
-     * <p>
-     * 'moving_average(column_name,num_points_before,num_points_after) as
-     * new_column_name'
-     * <p>
-     * For each record in the moving_average function's 'column_name'
-     * parameter, it computes the average over the previous 'num_points_before'
-     * records and the subsequent 'num_points_after' records.
-     * <p>
-     * Note that moving average relies on {@code order_by}, and {@code
-     * order_by} requires that all the data being ordered resides on the same
-     * processing node, so it won't make sense to use {@code order_by} without
-     * moving average.
-     * <p>
-     * Also, a projection can be created with a different <a
+     * A projection can be created with a different <a
      * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
      * key</a> than the source table.  By specifying {@code shard_key}, the
      * projection will be sharded according to the specified columns,
@@ -5460,7 +5424,9 @@ public class GPUdb extends GPUdbBase {
      *                 target="_top">interval partitioning</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#LIST
-     *                 LIST}: Not yet supported
+     *                 LIST}: Allows specifying a list of VALUES for a
+     *                 partition, or optionally to create an AUTOMATIC
+     *                 partition for each unique value
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -7226,19 +7192,6 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PLANNER_JOIN_VALIDATIONS
-     *                 PLANNER_JOIN_VALIDATIONS}: <DEVELOPER>
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -9018,7 +8971,8 @@ public class GPUdb extends GPUdbBase {
      * offset} and {@code limit} parameters.
      * <p>
      * <a href="../../../../concepts/window.html" target="_top">Window
-     * functions</a> are available through this endpoint as well as {@link
+     * functions</a>, which can perform operations like moving averages, are
+     * available through this endpoint as well as {@link
      * GPUdb#createProjection(CreateProjectionRequest)}.
      * <p>
      * When using pagination, if the table (or the underlying table in the case
@@ -9056,7 +9010,8 @@ public class GPUdb extends GPUdbBase {
      * offset} and {@code limit} parameters.
      * <p>
      * <a href="../../../../concepts/window.html" target="_top">Window
-     * functions</a> are available through this endpoint as well as {@link
+     * functions</a>, which can perform operations like moving averages, are
+     * available through this endpoint as well as {@link
      * GPUdb#createProjection(CreateProjectionRequest)}.
      * <p>
      * When using pagination, if the table (or the underlying table in the case
@@ -9104,7 +9059,8 @@ public class GPUdb extends GPUdbBase {
      * offset} and {@code limit} parameters.
      * <p>
      * <a href="../../../../concepts/window.html" target="_top">Window
-     * functions</a> are available through this endpoint as well as {@link
+     * functions</a>, which can perform operations like moving averages, are
+     * available through this endpoint as well as {@link
      * GPUdb#createProjection(String, String, List, Map)}.
      * <p>
      * When using pagination, if the table (or the underlying table in the case
@@ -10870,7 +10826,11 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Matches measured lon/lat points to an underlying graph network.
+     * Matches a directed route implied by a given set of latitude/longitude
+     * points to an existing underlying road network graph using a given
+     * solution type. See <a
+     * href="../../../../graph_solver/network_graph_solver.html"
+     * target="_top">Network Graph Solvers</a> for more information.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -10891,81 +10851,136 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Matches measured lon/lat points to an underlying graph network.
+     * Matches a directed route implied by a given set of latitude/longitude
+     * points to an existing underlying road network graph using a given
+     * solution type. See <a
+     * href="../../../../graph_solver/network_graph_solver.html"
+     * target="_top">Network Graph Solvers</a> for more information.
      * 
-     * @param graphName  Name of the underlying graph network.
-     * @param samplePoints  ['Table.column AS node_identifier', 'Table.column
-     *                      AS SAMPLE_TIME' ]; e.g., 't1.wkt' AS
-     *                      'SAMPLE_WKTPOINT', t1.t' AS 'SAMPLE_TIME'
-     * @param solveMethod  Solver used for mapmatching.
+     * @param graphName  Name of the underlying geospatial graph resource to
+     *                   match to using {@code samplePoints}.
+     * @param samplePoints  Sample points used to match to an underlying
+     *                      geospatial graph. Sample points must be specified
+     *                      using <a
+     *                      href="../../../../graph_solver/network_graph_solver.html#match-identifiers"
+     *                      target="_top">identifiers</a>; identifiers are
+     *                      grouped as <a
+     *                      href="../../../../graph_solver/network_graph_solver.html#match-combinations"
+     *                      target="_top">combinations</a>. Identifiers are
+     *                      used with existing column names, e.g.,
+     *                      'table.column AS SAMPLE_WKTPOINT'.
+     * @param solveMethod  The type of solver to use for graph matching.
      *                     Supported values:
      *                     <ul>
      *                             <li> {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
-     *                     MARKOV_CHAIN}: Hidden Markov Model (HMM) based
-     *                     method.
+     *                     MARKOV_CHAIN}: Matches {@code samplePoints} to the
+     *                     graph using the Hidden Markov Model (HMM)-based
+     *                     method, which conducts a range-tree closest-edge
+     *                     search to find the best combinations of possible
+     *                     road segments ({@code num_segments}) for each sample
+     *                     point to create the best route. The route is secured
+     *                     one point at a time while looking ahead {@code
+     *                     chain_width} number of points, so the prediction is
+     *                     corrected after each point. This solution type is
+     *                     the most accurate but also the most computationally
+     *                     intensive.
      *                             <li> {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#INCREMENTAL_WEIGHTED
-     *                     INCREMENTAL_WEIGHTED}: Uses time and/or distance to
-     *                     influence one or more shortest paths along the
-     *                     sample points.
+     *                     INCREMENTAL_WEIGHTED}: Matches {@code samplePoints}
+     *                     to the graph using time and/or distance between
+     *                     points to influence one or more shortest paths
+     *                     across the sample points.
      *                     </ul>
      *                     The default value is {@link
-     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#INCREMENTAL_WEIGHTED
-     *                     INCREMENTAL_WEIGHTED}.
-     * @param solutionTable  Name of the table to store the solution. Error if
-     *                       table already exists.  The default value is
-     *                       'map_matching_solution'.
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
+     *                     MARKOV_CHAIN}.
+     * @param solutionTable  The name of the table used to store the results;
+     *                       this table contains a <a
+     *                       href="../../../../geospatial/geo_objects.html#geospatial-tracks"
+     *                       target="_top">track</a> of geospatial points for
+     *                       the matched portion of the graph, a track ID, and
+     *                       a score value. Also outputs a details table
+     *                       containing a trip ID (that matches the track ID),
+     *                       the latitude/longitude pair, the timestamp the
+     *                       point was recorded at, and an edge ID
+     *                       corresponding to the matched road segment. Has the
+     *                       same naming restrictions as <a
+     *                       href="../../../../concepts/tables.html"
+     *                       target="_top">tables</a>. Must not be an existing
+     *                       table of the same name.  The default value is ''.
      * @param options  Additional parameters
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#GPS_NOISE
-     *                 GPS_NOISE}: GPS noise value - in meters - to remove
-     *                 redundant samplespoints (95th percentile). -1 to
-     *                 disable.  The default value is '5.0'.
+     *                 GPS_NOISE}: GPS noise value (in meters) to remove
+     *                 redundant sample points. Use -1 to disable noise
+     *                 reduction. The default value accounts for 95% of point
+     *                 variation (+ or -5 meters).  The default value is '5.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#NUM_SEGMENTS
-     *                 NUM_SEGMENTS}: Number of potentially matching road
-     *                 segments for each sample point. (Defaults to 3 for
-     *                 'markov_chain' and 5 for 'incremental_weighted').  The
-     *                 default value is '0'.
+     *                 NUM_SEGMENTS}: Maximum number of potentially matching
+     *                 road segments for each sample point. For the {@code
+     *                 markov_chain} solver, the default is 3; for the {@code
+     *                 incremental_weighted}, the default is 5.  The default
+     *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SEARCH_RADIUS
      *                 SEARCH_RADIUS}: Maximum search radius used when snapping
-     *                 samples points onto potentially matching road segments.
-     *                 This corresponds to approximately 100m when using
-     *                 geodesic coordinates.  The default value is '0.001'.
+     *                 sample points onto potentially matching surrounding
+     *                 segments. The default value corresponds to approximately
+     *                 100 meters.  The default value is '0.001'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#CHAIN_WIDTH
-     *                 CHAIN_WIDTH}: Only applicable if method is
-     *                 'markov_chain'. Length of the sample points window
-     *                 within the Markov kernel.  The default value is '9'.
+     *                 CHAIN_WIDTH}: For the {@code markov_chain} solver only.
+     *                 Length of the sample points lookahead window within the
+     *                 Markov kernel; the larger the number, the more accurate
+     *                 the solution.  The default value is '9'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_SOLVE_LENGTH
-     *                 MAX_SOLVE_LENGTH}: Only applicable if method is
-     *                 'incremental_weighted'. Maximum number of samples along
-     *                 the path to solve on.  The default value is '200'.
+     *                 MAX_SOLVE_LENGTH}: For the {@code incremental_weighted}
+     *                 solver only. Maximum number of samples along the path on
+     *                 which to solve.  The default value is '200'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#TIME_WINDOW_WIDTH
-     *                 TIME_WINDOW_WIDTH}: Only applicable if method is
-     *                 'incremental_weighted'. Time window in which sample
-     *                 points are favored (dt of 1 is the most attractive).
-     *                 The default value is '30'.
+     *                 TIME_WINDOW_WIDTH}: For the {@code incremental_weighted}
+     *                 solver only. Time window, also known as sampling period,
+     *                 in which points are favored. To determine the raw window
+     *                 value, the {@code time_window_width} value is multiplied
+     *                 by the mean sample time (in seconds) across all points,
+     *                 e.g., if {@code time_window_width} is 30 and the mean
+     *                 sample time is 2 seconds, points that are sampled
+     *                 greater than 60 seconds after the previous point are no
+     *                 longer favored in the solution.  The default value is
+     *                 '30'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#DETECT_LOOPS
-     *                 DETECT_LOOPS}: Only applicable if method is
-     *                 'incremental_weighted'. If true, add a break point
-     *                 within any loop.  The default value is 'true'.
+     *                 DETECT_LOOPS}: For the {@code incremental_weighted}
+     *                 solver only. If {@code true}, a loop will be detected
+     *                 and traversed even if it would make a shorter path to
+     *                 ignore the loop.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SOURCE
-     *                 SOURCE}: Optional WKT point on the trace; otherwise the
-     *                 beginning (in time) is taken as the source.  The default
-     *                 value is 'POINT NULL'.
+     *                 SOURCE}: Optional WKT starting point from {@code
+     *                 samplePoints} for the solver. The default behavior for
+     *                 the endpoint is to use time to determine the starting
+     *                 point.  The default value is 'POINT NULL'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#DESTINATION
-     *                 DESTINATION}: Optional WKT point on the trace; otherwise
-     *                 the end (in time) is taken as the destination.  The
-     *                 default value is 'POINT NULL'.
+     *                 DESTINATION}: Optional WKT ending point from {@code
+     *                 samplePoints} for the solver. The default behavior for
+     *                 the endpoint is to use time to determine the destination
+     *                 point.  The default value is 'POINT NULL'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -11144,13 +11159,10 @@ public class GPUdb extends GPUdbBase {
      * {@link GPUdb#createGraph(CreateGraphRequest)} and returns a list of
      * adjacent edge(s) or node(s), also known as an adjacency list, depending
      * on what's been provided to the endpoint; providing edges will return
-     * nodes and providing nodes will return edges. There are two ways to
-     * provide edge(s) or node(s) to be queried: using column names and <a
+     * nodes and providing nodes will return edges. The edge(s) or node(s) to
+     * be queried are specified using column names and <a
      * href="../../../../graph_solver/network_graph_solver.html#query-identifiers"
-     * target="_top">query identifiers</a> with the {@code queries} with or
-     * using a list of specific IDs with one of the {@code edgeOrNodeIntIds},
-     * {@code edgeOrNodeStringIds}, and {@code edgeOrNodeWktIds} arrays and
-     * {@code edgeToNode} to determine if the IDs are edges or nodes.
+     * target="_top">query identifiers</a> with the {@code queries}.
      * <p>
      * To determine the node(s) or edge(s) adjacent to a value from a given
      * column, provide a list of column names aliased as a particular query
@@ -11158,37 +11170,7 @@ public class GPUdb extends GPUdbBase {
      * values from any table as long as the type is supported by the given
      * identifier. See <a
      * href="../../../../graph_solver/network_graph_solver.html#query-identifiers"
-     * target="_top">Query Identifiers</a> for more information. I
-     * <p>
-     * To query for nodes that are adjacent to a given set of edges, set {@code
-     * edgeToNode} to {@code true} and provide values to the {@code
-     * edgeOrNodeIntIds}, {@code edgeOrNodeStringIds}, and {@code
-     * edgeOrNodeWktIds} arrays; it is assumed the values in the arrays are
-     * edges and the corresponding adjacency list array in the response will be
-     * populated with nodes.
-     * <p>
-     * To query for edges that are adjacent to a given set of nodes, set {@code
-     * edgeToNode} to {@code false} and provide values to the {@code
-     * edgeOrNodeIntIds}, {@code edgeOrNodeStringIds}, and {@code
-     * edgeOrNodeWktIds} arrays; it is assumed the values in arrays are nodes
-     * and the given node(s) will be queried for adjacent edges and the
-     * corresponding adjacency list array in the response will be populated
-     * with edges.
-     * <p>
-     * To query for adjacencies relative to a given column and a given set of
-     * edges/nodes, the {@code queries} and {@code edgeOrNodeIntIds} / {@code
-     * edgeOrNodeStringIds} / {@code edgeOrNodeWktIds} parameters can be used
-     * in conjuction with each other. If both {@code queries} and one of the
-     * arrays are populated, values from {@code queries} will be prioritized
-     * over values in the array and all values parsed from the {@code queries}
-     * array will be appended to the corresponding arrays (depending on the
-     * type). If using both {@code queries} and the edge_or_node arrays, the
-     * types must match, e.g., if {@code queries} utilizes the 'QUERY_NODE_ID'
-     * identifier, only the {@code edgeOrNodeIntIds} array should be used. Note
-     * that using {@code queries} will override {@code edgeToNode}, so if
-     * {@code queries} contains a node-based query identifier, e.g.,
-     * 'table.column AS QUERY_NODE_ID', it is assumed that the {@code
-     * edgeOrNodeIntIds} will contain node IDs.
+     * target="_top">Query Identifiers</a> for more information.
      * <p>
      * To return the adjacency list in the response, leave {@code
      * adjacencyTable} empty. To return the adjacency list in a table and not
@@ -11224,13 +11206,10 @@ public class GPUdb extends GPUdbBase {
      * and returns a list of adjacent edge(s) or node(s), also known as an
      * adjacency list, depending on what's been provided to the endpoint;
      * providing edges will return nodes and providing nodes will return edges.
-     * There are two ways to provide edge(s) or node(s) to be queried: using
-     * column names and <a
+     * The edge(s) or node(s) to be queried are specified using column names
+     * and <a
      * href="../../../../graph_solver/network_graph_solver.html#query-identifiers"
-     * target="_top">query identifiers</a> with the {@code queries} with or
-     * using a list of specific IDs with one of the {@code edgeOrNodeIntIds},
-     * {@code edgeOrNodeStringIds}, and {@code edgeOrNodeWktIds} arrays and
-     * {@code edgeToNode} to determine if the IDs are edges or nodes.
+     * target="_top">query identifiers</a> with the {@code queries}.
      * <p>
      * To determine the node(s) or edge(s) adjacent to a value from a given
      * column, provide a list of column names aliased as a particular query
@@ -11238,37 +11217,7 @@ public class GPUdb extends GPUdbBase {
      * values from any table as long as the type is supported by the given
      * identifier. See <a
      * href="../../../../graph_solver/network_graph_solver.html#query-identifiers"
-     * target="_top">Query Identifiers</a> for more information. I
-     * <p>
-     * To query for nodes that are adjacent to a given set of edges, set {@code
-     * edgeToNode} to {@code true} and provide values to the {@code
-     * edgeOrNodeIntIds}, {@code edgeOrNodeStringIds}, and {@code
-     * edgeOrNodeWktIds} arrays; it is assumed the values in the arrays are
-     * edges and the corresponding adjacency list array in the response will be
-     * populated with nodes.
-     * <p>
-     * To query for edges that are adjacent to a given set of nodes, set {@code
-     * edgeToNode} to {@code false} and provide values to the {@code
-     * edgeOrNodeIntIds}, {@code edgeOrNodeStringIds}, and {@code
-     * edgeOrNodeWktIds} arrays; it is assumed the values in arrays are nodes
-     * and the given node(s) will be queried for adjacent edges and the
-     * corresponding adjacency list array in the response will be populated
-     * with edges.
-     * <p>
-     * To query for adjacencies relative to a given column and a given set of
-     * edges/nodes, the {@code queries} and {@code edgeOrNodeIntIds} / {@code
-     * edgeOrNodeStringIds} / {@code edgeOrNodeWktIds} parameters can be used
-     * in conjuction with each other. If both {@code queries} and one of the
-     * arrays are populated, values from {@code queries} will be prioritized
-     * over values in the array and all values parsed from the {@code queries}
-     * array will be appended to the corresponding arrays (depending on the
-     * type). If using both {@code queries} and the edge_or_node arrays, the
-     * types must match, e.g., if {@code queries} utilizes the 'QUERY_NODE_ID'
-     * identifier, only the {@code edgeOrNodeIntIds} array should be used. Note
-     * that using {@code queries} will override {@code edgeToNode}, so if
-     * {@code queries} contains a node-based query identifier, e.g.,
-     * 'table.column AS QUERY_NODE_ID', it is assumed that the {@code
-     * edgeOrNodeIntIds} will contain node IDs.
+     * target="_top">Query Identifiers</a> for more information.
      * <p>
      * To return the adjacency list in the response, leave {@code
      * adjacencyTable} empty. To return the adjacency list in a table and not
@@ -11287,32 +11236,19 @@ public class GPUdb extends GPUdbBase {
      *                 AS QUERY_NODE_ID' or 'table.column AS
      *                 QUERY_EDGE_WKTLINE'. Multiple columns can be used as
      *                 long as the same identifier is used for all columns.
-     *                 Passing in a query identifier will override the {@code
-     *                 edgeToNode} parameter.
-     * @param edgeToNode  If set to {@code true}, the given edge(s) will be
-     *                    queried for adjacent nodes. If set to {@code false},
-     *                    the given node(s) will be queried for adjacent edges.
-     *                    Supported values:
-     *                    <ul>
-     *                            <li> {@link
-     *                    com.gpudb.protocol.QueryGraphRequest.EdgeToNode#TRUE
-     *                    TRUE}
-     *                            <li> {@link
-     *                    com.gpudb.protocol.QueryGraphRequest.EdgeToNode#FALSE
-     *                    FALSE}
-     *                    </ul>
-     *                    The default value is {@link
-     *                    com.gpudb.protocol.QueryGraphRequest.EdgeToNode#TRUE
-     *                    TRUE}.
-     * @param edgeOrNodeIntIds  The unique list of edge or node integer
-     *                          identifiers that will be queried for
-     *                          adjacencies.
-     * @param edgeOrNodeStringIds  The unique list of edge or node string
-     *                             identifiers that will be queried for
-     *                             adjacencies.
-     * @param edgeOrNodeWktIds  The unique list of edge or node WKTPOINT or
-     *                          WKTLINE string identifiers that will be queried
-     *                          for adjacencies.
+     * @param restrictions  Additional restrictions to apply to the nodes/edges
+     *                      of an existing graph. Restrictions must be
+     *                      specified using <a
+     *                      href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      target="_top">identifiers</a>; identifiers are
+     *                      grouped as <a
+     *                      href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      target="_top">combinations</a>. Identifiers can be
+     *                      used with existing column names, e.g.,
+     *                      'table.column AS RESTRICTIONS_EDGE_ID', or
+     *                      expressions, e.g., 'column/2 AS
+     *                      RESTRICTIONS_VALUECOMPARED'.  The default value is
+     *                      an empty {@link List}.
      * @param adjacencyTable  Name of the table to store the resulting
      *                        adjacencies. If left blank, the query results are
      *                        instead returned in the response even if {@code
@@ -11321,26 +11257,23 @@ public class GPUdb extends GPUdbBase {
      * @param options  Additional parameters
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#NUMBER_OF_RINGS
-     *                 NUMBER_OF_RINGS}: Sets the number of rings of edges
-     *                 around the node to query for adjacency, with '1' being
-     *                 the edges directly attached to the queried nodes. For
-     *                 example, if {@code number_of_rings} is set to '2', the
-     *                 edge(s) directly attached to the queried nodes will be
-     *                 returned; in addition, the edge(s) attached to the
-     *                 node(s) attached to the initial ring of edge(s)
-     *                 surrounding the queried node(s) will be returned. This
-     *                 setting is ignored if {@code edgeToNode} is set to
-     *                 {@code true}. This setting cannot be less than '1'.  The
-     *                 default value is '1'.
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#RINGS
+     *                 RINGS}: Sets the number of rings of edges around the
+     *                 node to query for adjacency, with '1' being the edges
+     *                 directly attached to the queried nodes. For example, if
+     *                 {@code rings} is set to '2', the edge(s) directly
+     *                 attached to the queried nodes will be returned; in
+     *                 addition, the edge(s) attached to the node(s) attached
+     *                 to the initial ring of edge(s) surrounding the queried
+     *                 node(s) will be returned. This setting cannot be less
+     *                 than '1'.  The default value is '1'.
      *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#INCLUDE_ALL_EDGES
-     *                 INCLUDE_ALL_EDGES}: This parameter is only applicable if
-     *                 the queried graph is directed and {@code edgeToNode} is
-     *                 set to {@code false}. If set to {@code true}, all
-     *                 inbound edges and outbound edges relative to the node
-     *                 will be returned. If set to {@code false}, only outbound
-     *                 edges relative to the node will be returned.
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FORCE_UNDIRECTED
+     *                 FORCE_UNDIRECTED}: This parameter is only applicable if
+     *                 the queried graph is directed. If set to {@code true},
+     *                 all inbound edges and outbound edges relative to the
+     *                 node will be returned. If set to {@code false}, only
+     *                 outbound edges relative to the node will be returned.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -11352,6 +11285,41 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#BLOCKED_NODES
+     *                 BLOCKED_NODES}: When false, allow a restricted node to
+     *                 be part of a valid traversal but not a target.
+     *                 Otherwise, queries are blocked by restricted nodes.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#LIMIT
+     *                 LIMIT}: When specified, limits the number of query
+     *                 results. Note that if the {@code target_nodes_table} is
+     *                 requested (non-empty), this will limit the size of the
+     *                 corresponding table.  The default value is an empty
+     *                 {@link Map}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
+     *                 TARGET_NODES_TABLE}: If non-empty, returns a table
+     *                 containing the list of the final nodes reached during
+     *                 the traversal. Only valid if blocked_nodes is false.
+     *                 The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
+     *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
+     *                 comparison. Any node or edge with a
+     *                 RESTRICTIONS_VALUECOMPARED value greater than the {@code
+     *                 restriction_threshold_value} will not be included in the
+     *                 solution.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_QUERY_RESULTS
      *                 EXPORT_QUERY_RESULTS}: Returns query results in the
@@ -11398,8 +11366,8 @@ public class GPUdb extends GPUdbBase {
      * @throws GPUdbException  if an error occurs during the operation.
      * 
      */
-    public QueryGraphResponse queryGraph(String graphName, List<String> queries, boolean edgeToNode, List<Long> edgeOrNodeIntIds, List<String> edgeOrNodeStringIds, List<String> edgeOrNodeWktIds, String adjacencyTable, Map<String, String> options) throws GPUdbException {
-        QueryGraphRequest actualRequest_ = new QueryGraphRequest(graphName, queries, edgeToNode, edgeOrNodeIntIds, edgeOrNodeStringIds, edgeOrNodeWktIds, adjacencyTable, options);
+    public QueryGraphResponse queryGraph(String graphName, List<String> queries, List<String> restrictions, String adjacencyTable, Map<String, String> options) throws GPUdbException {
+        QueryGraphRequest actualRequest_ = new QueryGraphRequest(graphName, queries, restrictions, adjacencyTable, options);
         QueryGraphResponse actualResponse_ = new QueryGraphResponse();
         submitRequest("/query/graph", actualRequest_, actualResponse_, false);
         return actualResponse_;
@@ -12715,6 +12683,11 @@ public class GPUdb extends GPUdbBase {
      *                 RESTRICTIONS_VALUECOMPARED value greater than the {@code
      *                 restriction_threshold_value} will not be included in the
      *                 solution.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#UNIFORM_WEIGHTS
+     *                 UNIFORM_WEIGHTS}: When speficied, assigns the given
+     *                 value to all the edges in the graph. Note that weights
+     *                 specified in @{weights_on_edges} override this value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -13418,6 +13391,17 @@ public class GPUdb extends GPUdbBase {
      *                      The default value is {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
      *                      NONE}.
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#MIN_MAX_SCALED
+     *                      MIN_MAX_SCALED}: If this options is set to "false",
+     *                      this endpoint expects request's min/max values are
+     *                      not yet scaled. They will be scaled according to
+     *                      scale_type_x or scale_type_y for response. If this
+     *                      options is set to "true", this endpoint expects
+     *                      request's min/max values are already scaled
+     *                      according to scale_type_x/scale_type_y. Response's
+     *                      min/max values will be equal to request's min/max
+     *                      values.  The default value is 'false'.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *                      JITTER_X}: Amplitude of horizontal jitter applied

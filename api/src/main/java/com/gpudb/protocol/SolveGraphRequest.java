@@ -242,6 +242,11 @@ public class SolveGraphRequest implements IndexedRecord {
      * node or edge with a RESTRICTIONS_VALUECOMPARED value greater than the
      * {@code restriction_threshold_value} will not be included in the
      * solution.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#UNIFORM_WEIGHTS
+     * UNIFORM_WEIGHTS}: When speficied, assigns the given value to all the
+     * edges in the graph. Note that weights specified in @{weights_on_edges}
+     * override this value.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -306,6 +311,13 @@ public class SolveGraphRequest implements IndexedRecord {
          * restriction_threshold_value} will not be included in the solution.
          */
         public static final String RESTRICTION_THRESHOLD_VALUE = "restriction_threshold_value";
+
+        /**
+         * When speficied, assigns the given value to all the edges in the
+         * graph. Note that weights specified in @{weights_on_edges} override
+         * this value.
+         */
+        public static final String UNIFORM_WEIGHTS = "uniform_weights";
 
         private Options() {  }
     }
@@ -538,6 +550,11 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 RESTRICTIONS_VALUECOMPARED value greater than the {@code
      *                 restriction_threshold_value} will not be included in the
      *                 solution.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#UNIFORM_WEIGHTS
+     *                 UNIFORM_WEIGHTS}: When speficied, assigns the given
+     *                 value to all the edges in the graph. Note that weights
+     *                 specified in @{weights_on_edges} override this value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1048,6 +1065,11 @@ public class SolveGraphRequest implements IndexedRecord {
      *         comparison. Any node or edge with a RESTRICTIONS_VALUECOMPARED
      *         value greater than the {@code restriction_threshold_value} will
      *         not be included in the solution.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#UNIFORM_WEIGHTS
+     *         UNIFORM_WEIGHTS}: When speficied, assigns the given value to all
+     *         the edges in the graph. Note that weights specified in
+     *         @{weights_on_edges} override this value.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1118,6 +1140,11 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 RESTRICTIONS_VALUECOMPARED value greater than the {@code
      *                 restriction_threshold_value} will not be included in the
      *                 solution.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#UNIFORM_WEIGHTS
+     *                 UNIFORM_WEIGHTS}: When speficied, assigns the given
+     *                 value to all the edges in the graph. Note that weights
+     *                 specified in @{weights_on_edges} override this value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

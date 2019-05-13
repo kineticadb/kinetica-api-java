@@ -197,6 +197,7 @@ public class BulkInserter<T> {
     private List<Integer> routingTable;
     private long shardVersion;
     private MutableLong shardUpdateTime;
+    private int numClusterSwitches;
     private com.gpudb.WorkerList workerList;
     private List<WorkerQueue<T>> workerQueues;
     private int numRanks;
@@ -306,6 +307,10 @@ public class BulkInserter<T> {
         this.shardVersion = 0;
         this.shardUpdateTime = new MutableLong();
 
+        // Keep track of how many times the db client has switched HA clusters
+        // in order to decide later if it's time to update the worker queues
+        this.numClusterSwitches = gpudb.getNumClusterSwitches();
+        
         // Validate that the table exists
         if ( !gpudb.hasTable( tableName, null ).getTableExists() ) {
             throw new GPUdbException( "Table '" + tableName + "' does not exist!" );
@@ -393,8 +398,8 @@ public class BulkInserter<T> {
                     }
                 }
 
-                // Get the shard mapping
-                updateShardMapping( false );
+                // Update the worker queues, if needed
+                updateWorkerQueues( false );
                 // routingTable = gpudb.adminShowShards(new AdminShowShardsRequest()).getRank();
 
                 this.numRanks = this.workerQueues.size();
@@ -425,41 +430,70 @@ public class BulkInserter<T> {
      *
      * @return  a bool indicating whether the shard mapping was updated or not.
      */
-    private boolean updateShardMapping() throws GPUdbException {
-        return this.updateShardMapping( true );
+    private boolean updateWorkerQueues() throws GPUdbException {
+        return this.updateWorkerQueues( true );
     }
 
 
     /**
-     * Updates the shard mapping based on the latest cluster configuration.
-     * Optionally, also reconstructs the worker queues based on the new sharding.
+     * Updates the worker queues and the shard mapping based on the latest
+     * cluster configuration.   Optionally, also reconstructs the worker
+     * queues based on the new sharding.
      *
      * @param doReconstructWorkerQueues  Boolean flag indicating if the worker
      *                                   queues ought to be re-built.
      *
      * @return  a bool indicating whether the shard mapping was updated or not.
      */
-    private boolean updateShardMapping( boolean doReconstructWorkerQueues ) throws GPUdbException {
-        // Get the latest shard mapping information
-        AdminShowShardsResponse shardInfo = gpudb.adminShowShards(new AdminShowShardsRequest());
+    private boolean updateWorkerQueues( boolean doReconstructWorkerQueues ) throws GPUdbException {
+        try {
+            // Get the latest shard mapping information
+            AdminShowShardsResponse shardInfo = gpudb.adminShowShards(new AdminShowShardsRequest());
 
-        // Get the shard version
-        long newShardVersion = shardInfo.getVersion();
+            // Get the shard version
+            long newShardVersion = shardInfo.getVersion();
 
-        // No-op if the shard version hasn't changed (and it's not the first time)
-        if (this.shardVersion == newShardVersion) {
-            return false; // Did not do anything
-        }
+            // No-op if the shard version hasn't changed (and it's not the first time)
+            if (this.shardVersion == newShardVersion) {
+                // Also check if the db client has failed over to a different HA
+                // ring node
+                int _numClusterSwitches = this.gpudb.getNumClusterSwitches();
+                if ( this.numClusterSwitches == _numClusterSwitches ) {
+                    // Still using the same cluster; so no change needed
+                    return false;
+                }
+
+                // Update the HA ring node switch counter
+                this.numClusterSwitches = _numClusterSwitches;
+            }
         
-        // Save the new shard version and also when we're updating the mapping
-        this.shardVersion = newShardVersion;
+            // Save the new shard version
+            this.shardVersion = newShardVersion;
 
-        synchronized ( this.shardUpdateTime ) {
-            this.shardUpdateTime.setValue( new Timestamp( System.currentTimeMillis() ).getTime() );
+            // Save when we're updating the mapping
+            synchronized ( this.shardUpdateTime ) {
+                this.shardUpdateTime.setValue( new Timestamp( System.currentTimeMillis() ).getTime() );
+            }
+
+            // Update the routing table
+            this.routingTable = shardInfo.getRank();
+        } catch (GPUdbException ex) {
+            // Couldn't get the current shard assignment info; see if this is due
+            // to cluster failure
+            if ( ex.hadConnectionFailure() ) {
+                // Check if the db client has failed over to a different HA ring node
+                int _numClusterSwitches = this.gpudb.getNumClusterSwitches();
+                if ( this.numClusterSwitches == _numClusterSwitches ) {
+                    return false; // nothing to do; some other problem occurred
+                }
+
+                // Update the HA ring node switch counter
+                this.numClusterSwitches = _numClusterSwitches;
+            } else {
+                // Unknown errors not handled here
+                throw ex;
+            }
         }
-
-        // Update the routing table
-        this.routingTable = shardInfo.getRank();
 
         // The worker queues need to be re-constructed when asked for
         // iff multi-head i/o is enabled and the table is not replicated
@@ -470,7 +504,7 @@ public class BulkInserter<T> {
         }
         
         return true; // the shard mapping was updated indeed
-    }  // end updateShardMapping
+    }  // end updateWorkerQueues
 
 
     /**
@@ -694,7 +728,7 @@ public class BulkInserter<T> {
                     // Check if shard re-balancing is under way at the server; if so,
                     // we need to update the shard mapping
                     if ( "true".equals( response.getInfo().get( "data_rerouted" ) ) ) {
-                        updateShardMapping();
+                        updateWorkerQueues();
                     }
 
                     break; // out of the while loop
@@ -703,9 +737,9 @@ public class BulkInserter<T> {
                     // cluster reconfiguration)? Check if the mapping needs to be updated
                     // or has been updated by another thread already after the
                     // insertion was attemtped
-                    boolean updatedShardMapping = updateShardMapping();
+                    boolean updatedWorkerQueues = updateWorkerQueues();
                     synchronized ( this.shardUpdateTime ) {
-                        if ( updatedShardMapping
+                        if ( updatedWorkerQueues
                              || ( insertionAttemptTimestamp < this.shardUpdateTime.longValue() ) ) {
 
                             // We need to try inserting the records again since no worker

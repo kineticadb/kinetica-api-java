@@ -164,6 +164,15 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE NONE}.
      *         <li> {@link
+     * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#MIN_MAX_SCALED
+     * MIN_MAX_SCALED}: If this options is set to "false", this endpoint
+     * expects request's min/max values are not yet scaled. They will be scaled
+     * according to scale_type_x or scale_type_y for response. If this options
+     * is set to "true", this endpoint expects request's min/max values are
+     * already scaled according to scale_type_x/scale_type_y. Response's
+     * min/max values will be equal to request's min/max values.  The default
+     * value is 'false'.
+     *         <li> {@link
      * com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      * JITTER_X}: Amplitude of horizontal jitter applied to non-numeric x
      * column values.  The default value is '0.0'.
@@ -325,6 +334,17 @@ public class VisualizeImageChartRequest implements IndexedRecord {
          * NONE}.
          */
         public static final String SCALE_TYPE_Y = "scale_type_y";
+
+        /**
+         * If this options is set to "false", this endpoint expects request's
+         * min/max values are not yet scaled. They will be scaled according to
+         * scale_type_x or scale_type_y for response. If this options is set to
+         * "true", this endpoint expects request's min/max values are already
+         * scaled according to scale_type_x/scale_type_y. Response's min/max
+         * values will be equal to request's min/max values.  The default value
+         * is 'false'.
+         */
+        public static final String MIN_MAX_SCALED = "min_max_scaled";
 
         /**
          * Amplitude of horizontal jitter applied to non-numeric x column
@@ -519,6 +539,17 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                      The default value is {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
      *                      NONE}.
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#MIN_MAX_SCALED
+     *                      MIN_MAX_SCALED}: If this options is set to "false",
+     *                      this endpoint expects request's min/max values are
+     *                      not yet scaled. They will be scaled according to
+     *                      scale_type_x or scale_type_y for response. If this
+     *                      options is set to "true", this endpoint expects
+     *                      request's min/max values are already scaled
+     *                      according to scale_type_x/scale_type_y. Response's
+     *                      min/max values will be equal to request's min/max
+     *                      values.  The default value is 'false'.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *                      JITTER_X}: Amplitude of horizontal jitter applied
@@ -901,6 +932,16 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
      *         NONE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#MIN_MAX_SCALED
+     *         MIN_MAX_SCALED}: If this options is set to "false", this
+     *         endpoint expects request's min/max values are not yet scaled.
+     *         They will be scaled according to scale_type_x or scale_type_y
+     *         for response. If this options is set to "true", this endpoint
+     *         expects request's min/max values are already scaled according to
+     *         scale_type_x/scale_type_y. Response's min/max values will be
+     *         equal to request's min/max values.  The default value is
+     *         'false'.
+     *                 <li> {@link
      *         com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *         JITTER_X}: Amplitude of horizontal jitter applied to non-numeric
      *         x column values.  The default value is '0.0'.
@@ -1042,6 +1083,17 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                      The default value is {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#NONE
      *                      NONE}.
+     *                              <li> {@link
+     *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#MIN_MAX_SCALED
+     *                      MIN_MAX_SCALED}: If this options is set to "false",
+     *                      this endpoint expects request's min/max values are
+     *                      not yet scaled. They will be scaled according to
+     *                      scale_type_x or scale_type_y for response. If this
+     *                      options is set to "true", this endpoint expects
+     *                      request's min/max values are already scaled
+     *                      according to scale_type_x/scale_type_y. Response's
+     *                      min/max values will be equal to request's min/max
+     *                      values.  The default value is 'false'.
      *                              <li> {@link
      *                      com.gpudb.protocol.VisualizeImageChartRequest.StyleOptions#JITTER_X
      *                      JITTER_X}: Amplitude of horizontal jitter applied

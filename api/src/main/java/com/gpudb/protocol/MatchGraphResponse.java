@@ -52,7 +52,7 @@ public class MatchGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Successful solution.
+     * @return Indicates a successful solution.
      * 
      */
     public boolean getResult() {
@@ -61,7 +61,7 @@ public class MatchGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @param result  Successful solution.
+     * @param result  Indicates a successful solution.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -73,7 +73,8 @@ public class MatchGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Mean square error.
+     * @return The mean square error calculation representing the map matching
+     *         score. Values closer to zero are better.
      * 
      */
     public float getMatchScore() {
@@ -82,7 +83,8 @@ public class MatchGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @param matchScore  Mean square error.
+     * @param matchScore  The mean square error calculation representing the
+     *                    map matching score. Values closer to zero are better.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

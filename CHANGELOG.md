@@ -2,15 +2,23 @@
 
 ## Version 7.0
 
-### Version 7.0.2
+### Version 7.0.3.0 - 2019-05-07
 
-#### Version 7.0.2.0 - 2019-04-05
+#### Added
+-   Support for high availability (HA) to multi-head ingestion
+    and retrieval
+
+#### Changed
+-   Error messages to include the original error message when Kinetica
+    is unavailable and other available HA ring clusters have been tried
+    (and failed).
+
+
+### Version 7.0.2.0 - 2019-04-05
 -   Added support for selecting a primary host for the GPUdb class
 
 
-### Version 7.0.1
-
-#### Version 7.0.1.1 - 2019-04-02
+### Version 7.0.1.1 - 2019-04-02
 -   Added missing types for Type.fromDynamicSchema():
     --  datetime
     --  geometry (mapped to wkt)
@@ -19,23 +27,21 @@
     column.
 
 
-#### Version 7.0.1.0 - 2019-03-11
+### Version 7.0.1.0 - 2019-03-11
 -   Added support for comma-separated URLs for the GPUdb constructor that
     takes a string.
 
 
-### Version 7.0.0
-
-#### Version 7.0.0.2 - 2019-02-26
+### Version 7.0.0.2 - 2019-02-26
 -   Added a new column property: INIT_WITH_NOW
 
 
-#### Version 7.0.0.1 - 2019-02-08
+### Version 7.0.0.1 - 2019-02-08
 -   Added support for high availability (HA) failover logic to the
     GPUdb class
 
 
-#### Version 7.0.0.0 - 2019-01-31
+### Version 7.0.0.0 - 2019-01-31
 -   Added support for cluster reconfiguration to the multi-head I/O operations
 
 

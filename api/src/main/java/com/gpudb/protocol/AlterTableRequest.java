@@ -171,19 +171,19 @@ public class AlterTableRequest implements IndexedRecord {
      * used to define it.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
-     * ADD_PARTITION}: Adds a partition (for range-partitioned tables only)
-     * specified in {@code value}.  See <a
+     * ADD_PARTITION}: Adds a partition (for range-partitioned or
+     * list-partitioned tables) specified in {@code value}.  See <a
      * href="../../../../../concepts/tables.html#partitioning-by-range-example"
      * target="_top">range partitioning example</a> for example format.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
      * REMOVE_PARTITION}: Removes the partition specified in {@code value} and
      * relocates all its data to the default partition (for range-partitioned
-     * tables only).
+     * or list-partition tables).
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
      * DELETE_PARTITION}: Deletes the partition specified in {@code value} and
-     * its data (for range-partitioned tables only).
+     * its data (for range-partitioned or list-partitioned tables).
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
      * SET_GLOBAL_ACCESS_MODE}: Sets the global access mode (i.e. locking) for
@@ -335,8 +335,8 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String DELETE_FOREIGN_KEY = "delete_foreign_key";
 
         /**
-         * Adds a partition (for range-partitioned tables only) specified in
-         * {@code value}.  See <a
+         * Adds a partition (for range-partitioned or list-partitioned tables)
+         * specified in {@code value}.  See <a
          * href="../../../../../concepts/tables.html#partitioning-by-range-example"
          * target="_top">range partitioning example</a> for example format.
          */
@@ -344,14 +344,14 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Removes the partition specified in {@code value} and relocates all
-         * its data to the default partition (for range-partitioned tables
-         * only).
+         * its data to the default partition (for range-partitioned or
+         * list-partition tables).
          */
         public static final String REMOVE_PARTITION = "remove_partition";
 
         /**
          * Deletes the partition specified in {@code value} and its data (for
-         * range-partitioned tables only).
+         * range-partitioned or list-partitioned tables).
          */
         public static final String DELETE_PARTITION = "delete_partition";
 
@@ -762,7 +762,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
      *                ADD_PARTITION}: Adds a partition (for range-partitioned
-     *                tables only) specified in {@code value}.  See <a
+     *                or list-partitioned tables) specified in {@code value}.
+     *                See <a
      *                href="../../../../../concepts/tables.html#partitioning-by-range-example"
      *                target="_top">range partitioning example</a> for example
      *                format.
@@ -770,12 +771,13 @@ public class AlterTableRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
      *                REMOVE_PARTITION}: Removes the partition specified in
      *                {@code value} and relocates all its data to the default
-     *                partition (for range-partitioned tables only).
+     *                partition (for range-partitioned or list-partition
+     *                tables).
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
      *                DELETE_PARTITION}: Deletes the partition specified in
-     *                {@code value} and its data (for range-partitioned tables
-     *                only).
+     *                {@code value} and its data (for range-partitioned or
+     *                list-partitioned tables).
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
      *                SET_GLOBAL_ACCESS_MODE}: Sets the global access mode
@@ -1079,19 +1081,20 @@ public class AlterTableRequest implements IndexedRecord {
      *         string used to define it.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
-     *         ADD_PARTITION}: Adds a partition (for range-partitioned tables
-     *         only) specified in {@code value}.  See <a
+     *         ADD_PARTITION}: Adds a partition (for range-partitioned or
+     *         list-partitioned tables) specified in {@code value}.  See <a
      *         href="../../../../../concepts/tables.html#partitioning-by-range-example"
      *         target="_top">range partitioning example</a> for example format.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
      *         REMOVE_PARTITION}: Removes the partition specified in {@code
      *         value} and relocates all its data to the default partition (for
-     *         range-partitioned tables only).
+     *         range-partitioned or list-partition tables).
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
      *         DELETE_PARTITION}: Deletes the partition specified in {@code
-     *         value} and its data (for range-partitioned tables only).
+     *         value} and its data (for range-partitioned or list-partitioned
+     *         tables).
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
      *         SET_GLOBAL_ACCESS_MODE}: Sets the global access mode (i.e.
@@ -1242,7 +1245,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
      *                ADD_PARTITION}: Adds a partition (for range-partitioned
-     *                tables only) specified in {@code value}.  See <a
+     *                or list-partitioned tables) specified in {@code value}.
+     *                See <a
      *                href="../../../../../concepts/tables.html#partitioning-by-range-example"
      *                target="_top">range partitioning example</a> for example
      *                format.
@@ -1250,12 +1254,13 @@ public class AlterTableRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
      *                REMOVE_PARTITION}: Removes the partition specified in
      *                {@code value} and relocates all its data to the default
-     *                partition (for range-partitioned tables only).
+     *                partition (for range-partitioned or list-partition
+     *                tables).
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
      *                DELETE_PARTITION}: Deletes the partition specified in
-     *                {@code value} and its data (for range-partitioned tables
-     *                only).
+     *                {@code value} and its data (for range-partitioned or
+     *                list-partitioned tables).
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
      *                SET_GLOBAL_ACCESS_MODE}: Sets the global access mode

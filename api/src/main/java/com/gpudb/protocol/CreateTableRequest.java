@@ -167,7 +167,8 @@ public class CreateTableRequest implements IndexedRecord {
      * href="../../../../../concepts/tables.html#partitioning-by-interval"
      * target="_top">interval partitioning</a>.
      *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#LIST
-     * LIST}: Not yet supported
+     * LIST}: Allows specifying a list of VALUES for a partition, or optionally
+     * to create an AUTOMATIC partition for each unique value
      * </ul>
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -344,8 +345,9 @@ public class CreateTableRequest implements IndexedRecord {
          * href="../../../../../concepts/tables.html#partitioning-by-interval"
          * target="_top">interval partitioning</a>.
          *         <li> {@link
-         * com.gpudb.protocol.CreateTableRequest.Options#LIST LIST}: Not yet
-         * supported
+         * com.gpudb.protocol.CreateTableRequest.Options#LIST LIST}: Allows
+         * specifying a list of VALUES for a partition, or optionally to create
+         * an AUTOMATIC partition for each unique value
          * </ul>
          */
         public static final String PARTITION_TYPE = "partition_type";
@@ -365,7 +367,8 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String INTERVAL = "INTERVAL";
 
         /**
-         * Not yet supported
+         * Allows specifying a list of VALUES for a partition, or optionally to
+         * create an AUTOMATIC partition for each unique value
          */
         public static final String LIST = "LIST";
 
@@ -587,7 +590,9 @@ public class CreateTableRequest implements IndexedRecord {
      *                 target="_top">interval partitioning</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#LIST
-     *                 LIST}: Not yet supported
+     *                 LIST}: Allows specifying a list of VALUES for a
+     *                 partition, or optionally to create an AUTOMATIC
+     *                 partition for each unique value
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -832,8 +837,9 @@ public class CreateTableRequest implements IndexedRecord {
      *         href="../../../../../concepts/tables.html#partitioning-by-interval"
      *         target="_top">interval partitioning</a>.
      *                 <li> {@link
-     *         com.gpudb.protocol.CreateTableRequest.Options#LIST LIST}: Not
-     *         yet supported
+     *         com.gpudb.protocol.CreateTableRequest.Options#LIST LIST}: Allows
+     *         specifying a list of VALUES for a partition, or optionally to
+     *         create an AUTOMATIC partition for each unique value
      *         </ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -1024,7 +1030,9 @@ public class CreateTableRequest implements IndexedRecord {
      *                 target="_top">interval partitioning</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#LIST
-     *                 LIST}: Not yet supported
+     *                 LIST}: Allows specifying a list of VALUES for a
+     *                 partition, or optionally to create an AUTOMATIC
+     *                 partition for each unique value
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS

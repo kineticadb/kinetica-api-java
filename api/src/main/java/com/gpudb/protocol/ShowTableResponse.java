@@ -195,8 +195,10 @@ public class ShowTableResponse implements IndexedRecord {
          * href="../../../../../concepts/tables.html#partitioning-by-interval"
          * target="_top">interval partitioning</a>
          *         <li> {@link
-         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#LIST LIST}: Not
-         * yet supported
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#LIST LIST}:
+         * Using LIST partitioning, which allows specifying a list of VALUES
+         * for a partition, or optionally to create an AUTOMATIC partition for
+         * each unique value
          *         <li> {@link
          * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#NONE NONE}:
          * Using no partitioning
@@ -221,7 +223,9 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String INTERVAL = "INTERVAL";
 
         /**
-         * Not yet supported
+         * Using LIST partitioning, which allows specifying a list of VALUES
+         * for a partition, or optionally to create an AUTOMATIC partition for
+         * each unique value
          */
         public static final String LIST = "LIST";
 
@@ -245,8 +249,8 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String PARTITION_DEFINITIONS = "partition_definitions";
 
         /**
-         * true if partitions will be created for values which don't fall into
-         * existing partitions.  The default value is ''.
+         * true if partitions will be created for LIST VALUES which don't fall
+         * into existing partitions.  The default value is ''.
          */
         public static final String IS_AUTOMATIC_PARTITION = "is_automatic_partition";
 
@@ -373,6 +377,12 @@ public class ShowTableResponse implements IndexedRecord {
          * default value is ''.
          */
         public static final String USER_CHUNK_SIZE = "user_chunk_size";
+
+        /**
+         * Semicolon-separated list of shard keys that were equated in joins
+         * (applicable for join tables).  The default value is ''.
+         */
+        public static final String ALTERNATE_SHARD_KEYS = "alternate_shard_keys";
 
         private AdditionalInfo() {  }
     }

@@ -80,9 +80,9 @@ public class QueryGraphResponse implements IndexedRecord {
     /**
      * 
      * @return The adjacency entity integer ID: either edge IDs per node
-     *         requested (if {@code edgeToNode} is set to {@code false}) or two
-     *         node IDs per edge requested (if {@code edgeToNode} is set to
-     *         {@code true}).
+     *         requested (if using QUERY_EDGE_ID or QUERY_NODE1_ID and
+     *         QUERY_NODE2_ID in the input) or two node IDs per edge requested
+     *         (if using QUERY_NODE_ID in the input).
      * 
      */
     public List<Long> getAdjacencyListIntArray() {
@@ -92,10 +92,11 @@ public class QueryGraphResponse implements IndexedRecord {
     /**
      * 
      * @param adjacencyListIntArray  The adjacency entity integer ID: either
-     *                               edge IDs per node requested (if {@code
-     *                               edgeToNode} is set to {@code false}) or
-     *                               two node IDs per edge requested (if {@code
-     *                               edgeToNode} is set to {@code true}).
+     *                               edge IDs per node requested (if using
+     *                               QUERY_EDGE_ID or QUERY_NODE1_ID and
+     *                               QUERY_NODE2_ID in the input) or two node
+     *                               IDs per edge requested (if using
+     *                               QUERY_NODE_ID in the input).
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -108,9 +109,9 @@ public class QueryGraphResponse implements IndexedRecord {
     /**
      * 
      * @return The adjacency entity string ID: either edge IDs per node
-     *         requested (if {@code edgeToNode} is set to {@code false}) or two
-     *         node IDs per edge requested (if {@code edgeToNode} is set to
-     *         {@code true}).
+     *         requested (if using QUERY_EDGE_NAME or QUERY_NODE1_NAME and
+     *         QUERY_NODE2_NAME in the input) or two node IDs per edge
+     *         requested (if using QUERY_NODE_NAME in the input).
      * 
      */
     public List<String> getAdjacencyListStringArray() {
@@ -120,11 +121,11 @@ public class QueryGraphResponse implements IndexedRecord {
     /**
      * 
      * @param adjacencyListStringArray  The adjacency entity string ID: either
-     *                                  edge IDs per node requested (if {@code
-     *                                  edgeToNode} is set to {@code false}) or
-     *                                  two node IDs per edge requested (if
-     *                                  {@code edgeToNode} is set to {@code
-     *                                  true}).
+     *                                  edge IDs per node requested (if using
+     *                                  QUERY_EDGE_NAME or QUERY_NODE1_NAME and
+     *                                  QUERY_NODE2_NAME in the input) or two
+     *                                  node IDs per edge requested (if using
+     *                                  QUERY_NODE_NAME in the input).
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -137,9 +138,10 @@ public class QueryGraphResponse implements IndexedRecord {
     /**
      * 
      * @return The adjacency entity WKTPOINT or WKTLINE ID: either edge IDs per
-     *         node requested (if {@code edgeToNode} is set to {@code false})
-     *         or two node IDs per edge requested (if {@code edgeToNode} is set
-     *         to {@code true}).
+     *         node requested (if using QUERY_EDGE_WKTLINE or
+     *         QUERY_NODE1_WKTPOINT and QUERY_NODE2_WKTPOINT in the input) or
+     *         two node IDs per edge requested (if using QUERY_NODE_WKTPOINT in
+     *         the input).
      * 
      */
     public List<String> getAdjacencyListWktArray() {
@@ -150,10 +152,11 @@ public class QueryGraphResponse implements IndexedRecord {
      * 
      * @param adjacencyListWktArray  The adjacency entity WKTPOINT or WKTLINE
      *                               ID: either edge IDs per node requested (if
-     *                               {@code edgeToNode} is set to {@code
-     *                               false}) or two node IDs per edge requested
-     *                               (if {@code edgeToNode} is set to {@code
-     *                               true}).
+     *                               using QUERY_EDGE_WKTLINE or
+     *                               QUERY_NODE1_WKTPOINT and
+     *                               QUERY_NODE2_WKTPOINT in the input) or two
+     *                               node IDs per edge requested (if using
+     *                               QUERY_NODE_WKTPOINT in the input).
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

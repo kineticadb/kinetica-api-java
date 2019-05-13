@@ -79,11 +79,13 @@ import org.apache.avro.generic.IndexedRecord;
  * naming conventions</a>; column/aggregation expressions will need to be
  * aliased.  If the source table's <a
  * href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
- * key</a> is used as the grouping column(s), the result table will be sharded,
- * in all other cases it will be replicated.  Sorting will properly function
- * only if the result table is replicated or if there is only one processing
- * node and should not be relied upon in other cases.  Not available when any
- * of the values of {@code columnNames} is an unrestricted-length string.
+ * key</a> is used as the grouping column(s) and all result records are
+ * selected ({@code offset} is 0 and {@code limit} is -9999), the result table
+ * will be sharded, in all other cases it will be replicated.  Sorting will
+ * properly function only if the result table is replicated or if there is only
+ * one processing node and should not be relied upon in other cases.  Not
+ * available when any of the values of {@code columnNames} is an
+ * unrestricted-length string.
  */
 public class AggregateGroupByRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -299,15 +301,6 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE CUBE}: This
      * option is used to specify the multidimensional aggregates.
-     *         <li> {@link
-     * com.gpudb.protocol.AggregateGroupByRequest.Options#THROW_ERROR_ON_REFRESH
-     * THROW_ERROR_ON_REFRESH}: <DEVELOPER>
-     *         <li> {@link
-     * com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
-     * SLEEP_ON_REFRESH}: <DEVELOPER>
-     *         <li> {@link
-     * com.gpudb.protocol.AggregateGroupByRequest.Options#REFRESH_TYPE
-     * REFRESH_TYPE}: <DEVELOPER>
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -536,21 +529,6 @@ public class AggregateGroupByRequest implements IndexedRecord {
          */
         public static final String CUBE = "cube";
 
-        /**
-         * <DEVELOPER>
-         */
-        public static final String THROW_ERROR_ON_REFRESH = "throw_error_on_refresh";
-
-        /**
-         * <DEVELOPER>
-         */
-        public static final String SLEEP_ON_REFRESH = "sleep_on_refresh";
-
-        /**
-         * <DEVELOPER>
-         */
-        public static final String REFRESH_TYPE = "refresh_type";
-
         private Options() {  }
     }
 
@@ -776,15 +754,6 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE
      *                 CUBE}: This option is used to specify the
      *                 multidimensional aggregates.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#THROW_ERROR_ON_REFRESH
-     *                 THROW_ERROR_ON_REFRESH}: <DEVELOPER>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
-     *                 SLEEP_ON_REFRESH}: <DEVELOPER>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#REFRESH_TYPE
-     *                 REFRESH_TYPE}: <DEVELOPER>
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1017,15 +986,6 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE
      *                 CUBE}: This option is used to specify the
      *                 multidimensional aggregates.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#THROW_ERROR_ON_REFRESH
-     *                 THROW_ERROR_ON_REFRESH}: <DEVELOPER>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
-     *                 SLEEP_ON_REFRESH}: <DEVELOPER>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#REFRESH_TYPE
-     *                 REFRESH_TYPE}: <DEVELOPER>
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1354,15 +1314,6 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE CUBE}:
      *         This option is used to specify the multidimensional aggregates.
-     *                 <li> {@link
-     *         com.gpudb.protocol.AggregateGroupByRequest.Options#THROW_ERROR_ON_REFRESH
-     *         THROW_ERROR_ON_REFRESH}: <DEVELOPER>
-     *                 <li> {@link
-     *         com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
-     *         SLEEP_ON_REFRESH}: <DEVELOPER>
-     *                 <li> {@link
-     *         com.gpudb.protocol.AggregateGroupByRequest.Options#REFRESH_TYPE
-     *         REFRESH_TYPE}: <DEVELOPER>
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1561,15 +1512,6 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE
      *                 CUBE}: This option is used to specify the
      *                 multidimensional aggregates.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#THROW_ERROR_ON_REFRESH
-     *                 THROW_ERROR_ON_REFRESH}: <DEVELOPER>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#SLEEP_ON_REFRESH
-     *                 SLEEP_ON_REFRESH}: <DEVELOPER>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#REFRESH_TYPE
-     *                 REFRESH_TYPE}: <DEVELOPER>
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

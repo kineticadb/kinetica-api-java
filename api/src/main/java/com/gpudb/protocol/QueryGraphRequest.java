@@ -23,48 +23,17 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#createGraph(CreateGraphRequest)} and returns a list of
  * adjacent edge(s) or node(s), also known as an adjacency list, depending on
  * what's been provided to the endpoint; providing edges will return nodes and
- * providing nodes will return edges. There are two ways to provide edge(s) or
- * node(s) to be queried: using column names and <a
+ * providing nodes will return edges. The edge(s) or node(s) to be queried are
+ * specified using column names and <a
  * href="../../../../../graph_solver/network_graph_solver.html#query-identifiers"
- * target="_top">query identifiers</a> with the {@code queries} with or using a
- * list of specific IDs with one of the {@code edgeOrNodeIntIds}, {@code
- * edgeOrNodeStringIds}, and {@code edgeOrNodeWktIds} arrays and {@code
- * edgeToNode} to determine if the IDs are edges or nodes.
+ * target="_top">query identifiers</a> with the {@code queries}.
  * <p>
  * To determine the node(s) or edge(s) adjacent to a value from a given column,
  * provide a list of column names aliased as a particular query identifier to
  * {@code queries}. This field can be populated with column values from any
  * table as long as the type is supported by the given identifier. See <a
  * href="../../../../../graph_solver/network_graph_solver.html#query-identifiers"
- * target="_top">Query Identifiers</a> for more information. I
- * <p>
- * To query for nodes that are adjacent to a given set of edges, set {@code
- * edgeToNode} to {@code true} and provide values to the {@code
- * edgeOrNodeIntIds}, {@code edgeOrNodeStringIds}, and {@code edgeOrNodeWktIds}
- * arrays; it is assumed the values in the arrays are edges and the
- * corresponding adjacency list array in the response will be populated with
- * nodes.
- * <p>
- * To query for edges that are adjacent to a given set of nodes, set {@code
- * edgeToNode} to {@code false} and provide values to the {@code
- * edgeOrNodeIntIds}, {@code edgeOrNodeStringIds}, and {@code edgeOrNodeWktIds}
- * arrays; it is assumed the values in arrays are nodes and the given node(s)
- * will be queried for adjacent edges and the corresponding adjacency list
- * array in the response will be populated with edges.
- * <p>
- * To query for adjacencies relative to a given column and a given set of
- * edges/nodes, the {@code queries} and {@code edgeOrNodeIntIds} / {@code
- * edgeOrNodeStringIds} / {@code edgeOrNodeWktIds} parameters can be used in
- * conjuction with each other. If both {@code queries} and one of the arrays
- * are populated, values from {@code queries} will be prioritized over values
- * in the array and all values parsed from the {@code queries} array will be
- * appended to the corresponding arrays (depending on the type). If using both
- * {@code queries} and the edge_or_node arrays, the types must match, e.g., if
- * {@code queries} utilizes the 'QUERY_NODE_ID' identifier, only the {@code
- * edgeOrNodeIntIds} array should be used. Note that using {@code queries} will
- * override {@code edgeToNode}, so if {@code queries} contains a node-based
- * query identifier, e.g., 'table.column AS QUERY_NODE_ID', it is assumed that
- * the {@code edgeOrNodeIntIds} will contain node IDs.
+ * target="_top">Query Identifiers</a> for more information.
  * <p>
  * To return the adjacency list in the response, leave {@code adjacencyTable}
  * empty. To return the adjacency list in a table and not in the response,
@@ -83,10 +52,7 @@ public class QueryGraphRequest implements IndexedRecord {
             .fields()
                 .name("graphName").type().stringType().noDefault()
                 .name("queries").type().array().items().stringType().noDefault()
-                .name("edgeToNode").type().booleanType().noDefault()
-                .name("edgeOrNodeIntIds").type().array().items().longType().noDefault()
-                .name("edgeOrNodeStringIds").type().array().items().stringType().noDefault()
-                .name("edgeOrNodeWktIds").type().array().items().stringType().noDefault()
+                .name("restrictions").type().array().items().stringType().noDefault()
                 .name("adjacencyTable").type().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
@@ -105,48 +71,22 @@ public class QueryGraphRequest implements IndexedRecord {
 
 
     /**
-     * If set to {@code true}, the given edge(s) will be queried for adjacent
-     * nodes. If set to {@code false}, the given node(s) will be queried for
-     * adjacent edges.
-     * Supported values:
-     * <ul>
-     *         <li> {@link com.gpudb.protocol.QueryGraphRequest.EdgeToNode#TRUE
-     * TRUE}
-     *         <li> {@link
-     * com.gpudb.protocol.QueryGraphRequest.EdgeToNode#FALSE FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.QueryGraphRequest.EdgeToNode#TRUE TRUE}.
-     * A set of string constants for the parameter {@code edgeToNode}.
-     */
-    public static final class EdgeToNode {
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
-
-        private EdgeToNode() {  }
-    }
-
-
-    /**
      * Additional parameters
      * <ul>
+     *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#RINGS
+     * RINGS}: Sets the number of rings of edges around the node to query for
+     * adjacency, with '1' being the edges directly attached to the queried
+     * nodes. For example, if {@code rings} is set to '2', the edge(s) directly
+     * attached to the queried nodes will be returned; in addition, the edge(s)
+     * attached to the node(s) attached to the initial ring of edge(s)
+     * surrounding the queried node(s) will be returned. This setting cannot be
+     * less than '1'.  The default value is '1'.
      *         <li> {@link
-     * com.gpudb.protocol.QueryGraphRequest.Options#NUMBER_OF_RINGS
-     * NUMBER_OF_RINGS}: Sets the number of rings of edges around the node to
-     * query for adjacency, with '1' being the edges directly attached to the
-     * queried nodes. For example, if {@code number_of_rings} is set to '2',
-     * the edge(s) directly attached to the queried nodes will be returned; in
-     * addition, the edge(s) attached to the node(s) attached to the initial
-     * ring of edge(s) surrounding the queried node(s) will be returned. This
-     * setting is ignored if {@code edgeToNode} is set to {@code true}. This
-     * setting cannot be less than '1'.  The default value is '1'.
-     *         <li> {@link
-     * com.gpudb.protocol.QueryGraphRequest.Options#INCLUDE_ALL_EDGES
-     * INCLUDE_ALL_EDGES}: This parameter is only applicable if the queried
-     * graph is directed and {@code edgeToNode} is set to {@code false}. If set
-     * to {@code true}, all inbound edges and outbound edges relative to the
-     * node will be returned. If set to {@code false}, only outbound edges
-     * relative to the node will be returned.
+     * com.gpudb.protocol.QueryGraphRequest.Options#FORCE_UNDIRECTED
+     * FORCE_UNDIRECTED}: This parameter is only applicable if the queried
+     * graph is directed. If set to {@code true}, all inbound edges and
+     * outbound edges relative to the node will be returned. If set to {@code
+     * false}, only outbound edges relative to the node will be returned.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#TRUE
@@ -156,6 +96,36 @@ public class QueryGraphRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.QueryGraphRequest.Options#BLOCKED_NODES
+     * BLOCKED_NODES}: When false, allow a restricted node to be part of a
+     * valid traversal but not a target. Otherwise, queries are blocked by
+     * restricted nodes.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}.
+     *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#LIMIT
+     * LIMIT}: When specified, limits the number of query results. Note that if
+     * the {@code target_nodes_table} is requested (non-empty), this will limit
+     * the size of the corresponding table.  The default value is an empty
+     * {@link Map}.
+     *         <li> {@link
+     * com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
+     * TARGET_NODES_TABLE}: If non-empty, returns a table containing the list
+     * of the final nodes reached during the traversal. Only valid if
+     * blocked_nodes is false.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
+     * RESTRICTION_THRESHOLD_VALUE}: Value-based restriction comparison. Any
+     * node or edge with a RESTRICTIONS_VALUECOMPARED value greater than the
+     * {@code restriction_threshold_value} will not be included in the
+     * solution.
      *         <li> {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_QUERY_RESULTS
      * EXPORT_QUERY_RESULTS}: Returns query results in the response if set to
@@ -196,22 +166,20 @@ public class QueryGraphRequest implements IndexedRecord {
         /**
          * Sets the number of rings of edges around the node to query for
          * adjacency, with '1' being the edges directly attached to the queried
-         * nodes. For example, if {@code number_of_rings} is set to '2', the
-         * edge(s) directly attached to the queried nodes will be returned; in
+         * nodes. For example, if {@code rings} is set to '2', the edge(s)
+         * directly attached to the queried nodes will be returned; in
          * addition, the edge(s) attached to the node(s) attached to the
          * initial ring of edge(s) surrounding the queried node(s) will be
-         * returned. This setting is ignored if {@code edgeToNode} is set to
-         * {@code true}. This setting cannot be less than '1'.  The default
-         * value is '1'.
+         * returned. This setting cannot be less than '1'.  The default value
+         * is '1'.
          */
-        public static final String NUMBER_OF_RINGS = "number_of_rings";
+        public static final String RINGS = "rings";
 
         /**
-         * This parameter is only applicable if the queried graph is directed
-         * and {@code edgeToNode} is set to {@code false}. If set to {@code
-         * true}, all inbound edges and outbound edges relative to the node
-         * will be returned. If set to {@code false}, only outbound edges
-         * relative to the node will be returned.
+         * This parameter is only applicable if the queried graph is directed.
+         * If set to {@code true}, all inbound edges and outbound edges
+         * relative to the node will be returned. If set to {@code false}, only
+         * outbound edges relative to the node will be returned.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -222,9 +190,47 @@ public class QueryGraphRequest implements IndexedRecord {
          * The default value is {@link
          * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
          */
-        public static final String INCLUDE_ALL_EDGES = "include_all_edges";
+        public static final String FORCE_UNDIRECTED = "force_undirected";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * When false, allow a restricted node to be part of a valid traversal
+         * but not a target. Otherwise, queries are blocked by restricted
+         * nodes.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}.
+         */
+        public static final String BLOCKED_NODES = "blocked_nodes";
+
+        /**
+         * When specified, limits the number of query results. Note that if the
+         * {@code target_nodes_table} is requested (non-empty), this will limit
+         * the size of the corresponding table.  The default value is an empty
+         * {@link Map}.
+         */
+        public static final String LIMIT = "limit";
+
+        /**
+         * If non-empty, returns a table containing the list of the final nodes
+         * reached during the traversal. Only valid if blocked_nodes is false.
+         * The default value is ''.
+         */
+        public static final String TARGET_NODES_TABLE = "target_nodes_table";
+
+        /**
+         * Value-based restriction comparison. Any node or edge with a
+         * RESTRICTIONS_VALUECOMPARED value greater than the {@code
+         * restriction_threshold_value} will not be included in the solution.
+         */
+        public static final String RESTRICTION_THRESHOLD_VALUE = "restriction_threshold_value";
 
         /**
          * Returns query results in the response if set to {@code true}.
@@ -265,10 +271,7 @@ public class QueryGraphRequest implements IndexedRecord {
 
     private String graphName;
     private List<String> queries;
-    private boolean edgeToNode;
-    private List<Long> edgeOrNodeIntIds;
-    private List<String> edgeOrNodeStringIds;
-    private List<String> edgeOrNodeWktIds;
+    private List<String> restrictions;
     private String adjacencyTable;
     private Map<String, String> options;
 
@@ -279,9 +282,7 @@ public class QueryGraphRequest implements IndexedRecord {
     public QueryGraphRequest() {
         graphName = "";
         queries = new ArrayList<>();
-        edgeOrNodeIntIds = new ArrayList<>();
-        edgeOrNodeStringIds = new ArrayList<>();
-        edgeOrNodeWktIds = new ArrayList<>();
+        restrictions = new ArrayList<>();
         adjacencyTable = "";
         options = new LinkedHashMap<>();
     }
@@ -296,32 +297,19 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 AS QUERY_NODE_ID' or 'table.column AS
      *                 QUERY_EDGE_WKTLINE'. Multiple columns can be used as
      *                 long as the same identifier is used for all columns.
-     *                 Passing in a query identifier will override the {@code
-     *                 edgeToNode} parameter.
-     * @param edgeToNode  If set to {@code true}, the given edge(s) will be
-     *                    queried for adjacent nodes. If set to {@code false},
-     *                    the given node(s) will be queried for adjacent edges.
-     *                    Supported values:
-     *                    <ul>
-     *                            <li> {@link
-     *                    com.gpudb.protocol.QueryGraphRequest.EdgeToNode#TRUE
-     *                    TRUE}
-     *                            <li> {@link
-     *                    com.gpudb.protocol.QueryGraphRequest.EdgeToNode#FALSE
-     *                    FALSE}
-     *                    </ul>
-     *                    The default value is {@link
-     *                    com.gpudb.protocol.QueryGraphRequest.EdgeToNode#TRUE
-     *                    TRUE}.
-     * @param edgeOrNodeIntIds  The unique list of edge or node integer
-     *                          identifiers that will be queried for
-     *                          adjacencies.
-     * @param edgeOrNodeStringIds  The unique list of edge or node string
-     *                             identifiers that will be queried for
-     *                             adjacencies.
-     * @param edgeOrNodeWktIds  The unique list of edge or node WKTPOINT or
-     *                          WKTLINE string identifiers that will be queried
-     *                          for adjacencies.
+     * @param restrictions  Additional restrictions to apply to the nodes/edges
+     *                      of an existing graph. Restrictions must be
+     *                      specified using <a
+     *                      href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      target="_top">identifiers</a>; identifiers are
+     *                      grouped as <a
+     *                      href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      target="_top">combinations</a>. Identifiers can be
+     *                      used with existing column names, e.g.,
+     *                      'table.column AS RESTRICTIONS_EDGE_ID', or
+     *                      expressions, e.g., 'column/2 AS
+     *                      RESTRICTIONS_VALUECOMPARED'.  The default value is
+     *                      an empty {@link List}.
      * @param adjacencyTable  Name of the table to store the resulting
      *                        adjacencies. If left blank, the query results are
      *                        instead returned in the response even if {@code
@@ -330,26 +318,23 @@ public class QueryGraphRequest implements IndexedRecord {
      * @param options  Additional parameters
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#NUMBER_OF_RINGS
-     *                 NUMBER_OF_RINGS}: Sets the number of rings of edges
-     *                 around the node to query for adjacency, with '1' being
-     *                 the edges directly attached to the queried nodes. For
-     *                 example, if {@code number_of_rings} is set to '2', the
-     *                 edge(s) directly attached to the queried nodes will be
-     *                 returned; in addition, the edge(s) attached to the
-     *                 node(s) attached to the initial ring of edge(s)
-     *                 surrounding the queried node(s) will be returned. This
-     *                 setting is ignored if {@code edgeToNode} is set to
-     *                 {@code true}. This setting cannot be less than '1'.  The
-     *                 default value is '1'.
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#RINGS
+     *                 RINGS}: Sets the number of rings of edges around the
+     *                 node to query for adjacency, with '1' being the edges
+     *                 directly attached to the queried nodes. For example, if
+     *                 {@code rings} is set to '2', the edge(s) directly
+     *                 attached to the queried nodes will be returned; in
+     *                 addition, the edge(s) attached to the node(s) attached
+     *                 to the initial ring of edge(s) surrounding the queried
+     *                 node(s) will be returned. This setting cannot be less
+     *                 than '1'.  The default value is '1'.
      *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#INCLUDE_ALL_EDGES
-     *                 INCLUDE_ALL_EDGES}: This parameter is only applicable if
-     *                 the queried graph is directed and {@code edgeToNode} is
-     *                 set to {@code false}. If set to {@code true}, all
-     *                 inbound edges and outbound edges relative to the node
-     *                 will be returned. If set to {@code false}, only outbound
-     *                 edges relative to the node will be returned.
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FORCE_UNDIRECTED
+     *                 FORCE_UNDIRECTED}: This parameter is only applicable if
+     *                 the queried graph is directed. If set to {@code true},
+     *                 all inbound edges and outbound edges relative to the
+     *                 node will be returned. If set to {@code false}, only
+     *                 outbound edges relative to the node will be returned.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -361,6 +346,41 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#BLOCKED_NODES
+     *                 BLOCKED_NODES}: When false, allow a restricted node to
+     *                 be part of a valid traversal but not a target.
+     *                 Otherwise, queries are blocked by restricted nodes.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#LIMIT
+     *                 LIMIT}: When specified, limits the number of query
+     *                 results. Note that if the {@code target_nodes_table} is
+     *                 requested (non-empty), this will limit the size of the
+     *                 corresponding table.  The default value is an empty
+     *                 {@link Map}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
+     *                 TARGET_NODES_TABLE}: If non-empty, returns a table
+     *                 containing the list of the final nodes reached during
+     *                 the traversal. Only valid if blocked_nodes is false.
+     *                 The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
+     *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
+     *                 comparison. Any node or edge with a
+     *                 RESTRICTIONS_VALUECOMPARED value greater than the {@code
+     *                 restriction_threshold_value} will not be included in the
+     *                 solution.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_QUERY_RESULTS
      *                 EXPORT_QUERY_RESULTS}: Returns query results in the
@@ -401,13 +421,10 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 The default value is an empty {@link Map}.
      * 
      */
-    public QueryGraphRequest(String graphName, List<String> queries, boolean edgeToNode, List<Long> edgeOrNodeIntIds, List<String> edgeOrNodeStringIds, List<String> edgeOrNodeWktIds, String adjacencyTable, Map<String, String> options) {
+    public QueryGraphRequest(String graphName, List<String> queries, List<String> restrictions, String adjacencyTable, Map<String, String> options) {
         this.graphName = (graphName == null) ? "" : graphName;
         this.queries = (queries == null) ? new ArrayList<String>() : queries;
-        this.edgeToNode = edgeToNode;
-        this.edgeOrNodeIntIds = (edgeOrNodeIntIds == null) ? new ArrayList<Long>() : edgeOrNodeIntIds;
-        this.edgeOrNodeStringIds = (edgeOrNodeStringIds == null) ? new ArrayList<String>() : edgeOrNodeStringIds;
-        this.edgeOrNodeWktIds = (edgeOrNodeWktIds == null) ? new ArrayList<String>() : edgeOrNodeWktIds;
+        this.restrictions = (restrictions == null) ? new ArrayList<String>() : restrictions;
         this.adjacencyTable = (adjacencyTable == null) ? "" : adjacencyTable;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
@@ -440,8 +457,7 @@ public class QueryGraphRequest implements IndexedRecord {
      *         target="_top">query identifiers</a>, e.g., 'table.column AS
      *         QUERY_NODE_ID' or 'table.column AS QUERY_EDGE_WKTLINE'. Multiple
      *         columns can be used as long as the same identifier is used for
-     *         all columns. Passing in a query identifier will override the
-     *         {@code edgeToNode} parameter.
+     *         all columns.
      * 
      */
     public List<String> getQueries() {
@@ -456,8 +472,6 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 AS QUERY_NODE_ID' or 'table.column AS
      *                 QUERY_EDGE_WKTLINE'. Multiple columns can be used as
      *                 long as the same identifier is used for all columns.
-     *                 Passing in a query identifier will override the {@code
-     *                 edgeToNode} parameter.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -469,119 +483,43 @@ public class QueryGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @return If set to {@code true}, the given edge(s) will be queried for
-     *         adjacent nodes. If set to {@code false}, the given node(s) will
-     *         be queried for adjacent edges.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.QueryGraphRequest.EdgeToNode#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.QueryGraphRequest.EdgeToNode#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.QueryGraphRequest.EdgeToNode#TRUE TRUE}.
+     * @return Additional restrictions to apply to the nodes/edges of an
+     *         existing graph. Restrictions must be specified using <a
+     *         href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *         target="_top">identifiers</a>; identifiers are grouped as <a
+     *         href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *         target="_top">combinations</a>. Identifiers can be used with
+     *         existing column names, e.g., 'table.column AS
+     *         RESTRICTIONS_EDGE_ID', or expressions, e.g., 'column/2 AS
+     *         RESTRICTIONS_VALUECOMPARED'.  The default value is an empty
+     *         {@link List}.
      * 
      */
-    public boolean getEdgeToNode() {
-        return edgeToNode;
+    public List<String> getRestrictions() {
+        return restrictions;
     }
 
     /**
      * 
-     * @param edgeToNode  If set to {@code true}, the given edge(s) will be
-     *                    queried for adjacent nodes. If set to {@code false},
-     *                    the given node(s) will be queried for adjacent edges.
-     *                    Supported values:
-     *                    <ul>
-     *                            <li> {@link
-     *                    com.gpudb.protocol.QueryGraphRequest.EdgeToNode#TRUE
-     *                    TRUE}
-     *                            <li> {@link
-     *                    com.gpudb.protocol.QueryGraphRequest.EdgeToNode#FALSE
-     *                    FALSE}
-     *                    </ul>
-     *                    The default value is {@link
-     *                    com.gpudb.protocol.QueryGraphRequest.EdgeToNode#TRUE
-     *                    TRUE}.
+     * @param restrictions  Additional restrictions to apply to the nodes/edges
+     *                      of an existing graph. Restrictions must be
+     *                      specified using <a
+     *                      href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      target="_top">identifiers</a>; identifiers are
+     *                      grouped as <a
+     *                      href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      target="_top">combinations</a>. Identifiers can be
+     *                      used with existing column names, e.g.,
+     *                      'table.column AS RESTRICTIONS_EDGE_ID', or
+     *                      expressions, e.g., 'column/2 AS
+     *                      RESTRICTIONS_VALUECOMPARED'.  The default value is
+     *                      an empty {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public QueryGraphRequest setEdgeToNode(boolean edgeToNode) {
-        this.edgeToNode = edgeToNode;
-        return this;
-    }
-
-    /**
-     * 
-     * @return The unique list of edge or node integer identifiers that will be
-     *         queried for adjacencies.
-     * 
-     */
-    public List<Long> getEdgeOrNodeIntIds() {
-        return edgeOrNodeIntIds;
-    }
-
-    /**
-     * 
-     * @param edgeOrNodeIntIds  The unique list of edge or node integer
-     *                          identifiers that will be queried for
-     *                          adjacencies.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public QueryGraphRequest setEdgeOrNodeIntIds(List<Long> edgeOrNodeIntIds) {
-        this.edgeOrNodeIntIds = (edgeOrNodeIntIds == null) ? new ArrayList<Long>() : edgeOrNodeIntIds;
-        return this;
-    }
-
-    /**
-     * 
-     * @return The unique list of edge or node string identifiers that will be
-     *         queried for adjacencies.
-     * 
-     */
-    public List<String> getEdgeOrNodeStringIds() {
-        return edgeOrNodeStringIds;
-    }
-
-    /**
-     * 
-     * @param edgeOrNodeStringIds  The unique list of edge or node string
-     *                             identifiers that will be queried for
-     *                             adjacencies.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public QueryGraphRequest setEdgeOrNodeStringIds(List<String> edgeOrNodeStringIds) {
-        this.edgeOrNodeStringIds = (edgeOrNodeStringIds == null) ? new ArrayList<String>() : edgeOrNodeStringIds;
-        return this;
-    }
-
-    /**
-     * 
-     * @return The unique list of edge or node WKTPOINT or WKTLINE string
-     *         identifiers that will be queried for adjacencies.
-     * 
-     */
-    public List<String> getEdgeOrNodeWktIds() {
-        return edgeOrNodeWktIds;
-    }
-
-    /**
-     * 
-     * @param edgeOrNodeWktIds  The unique list of edge or node WKTPOINT or
-     *                          WKTLINE string identifiers that will be queried
-     *                          for adjacencies.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public QueryGraphRequest setEdgeOrNodeWktIds(List<String> edgeOrNodeWktIds) {
-        this.edgeOrNodeWktIds = (edgeOrNodeWktIds == null) ? new ArrayList<String>() : edgeOrNodeWktIds;
+    public QueryGraphRequest setRestrictions(List<String> restrictions) {
+        this.restrictions = (restrictions == null) ? new ArrayList<String>() : restrictions;
         return this;
     }
 
@@ -618,24 +556,22 @@ public class QueryGraphRequest implements IndexedRecord {
      * @return Additional parameters
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.QueryGraphRequest.Options#NUMBER_OF_RINGS
-     *         NUMBER_OF_RINGS}: Sets the number of rings of edges around the
-     *         node to query for adjacency, with '1' being the edges directly
-     *         attached to the queried nodes. For example, if {@code
-     *         number_of_rings} is set to '2', the edge(s) directly attached to
-     *         the queried nodes will be returned; in addition, the edge(s)
-     *         attached to the node(s) attached to the initial ring of edge(s)
-     *         surrounding the queried node(s) will be returned. This setting
-     *         is ignored if {@code edgeToNode} is set to {@code true}. This
-     *         setting cannot be less than '1'.  The default value is '1'.
+     *         com.gpudb.protocol.QueryGraphRequest.Options#RINGS RINGS}: Sets
+     *         the number of rings of edges around the node to query for
+     *         adjacency, with '1' being the edges directly attached to the
+     *         queried nodes. For example, if {@code rings} is set to '2', the
+     *         edge(s) directly attached to the queried nodes will be returned;
+     *         in addition, the edge(s) attached to the node(s) attached to the
+     *         initial ring of edge(s) surrounding the queried node(s) will be
+     *         returned. This setting cannot be less than '1'.  The default
+     *         value is '1'.
      *                 <li> {@link
-     *         com.gpudb.protocol.QueryGraphRequest.Options#INCLUDE_ALL_EDGES
-     *         INCLUDE_ALL_EDGES}: This parameter is only applicable if the
-     *         queried graph is directed and {@code edgeToNode} is set to
-     *         {@code false}. If set to {@code true}, all inbound edges and
-     *         outbound edges relative to the node will be returned. If set to
-     *         {@code false}, only outbound edges relative to the node will be
-     *         returned.
+     *         com.gpudb.protocol.QueryGraphRequest.Options#FORCE_UNDIRECTED
+     *         FORCE_UNDIRECTED}: This parameter is only applicable if the
+     *         queried graph is directed. If set to {@code true}, all inbound
+     *         edges and outbound edges relative to the node will be returned.
+     *         If set to {@code false}, only outbound edges relative to the
+     *         node will be returned.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -645,6 +581,37 @@ public class QueryGraphRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#BLOCKED_NODES
+     *         BLOCKED_NODES}: When false, allow a restricted node to be part
+     *         of a valid traversal but not a target. Otherwise, queries are
+     *         blocked by restricted nodes.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#LIMIT LIMIT}: When
+     *         specified, limits the number of query results. Note that if the
+     *         {@code target_nodes_table} is requested (non-empty), this will
+     *         limit the size of the corresponding table.  The default value is
+     *         an empty {@link Map}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
+     *         TARGET_NODES_TABLE}: If non-empty, returns a table containing
+     *         the list of the final nodes reached during the traversal. Only
+     *         valid if blocked_nodes is false.  The default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
+     *         RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
+     *         comparison. Any node or edge with a RESTRICTIONS_VALUECOMPARED
+     *         value greater than the {@code restriction_threshold_value} will
+     *         not be included in the solution.
      *                 <li> {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_QUERY_RESULTS
      *         EXPORT_QUERY_RESULTS}: Returns query results in the response if
@@ -690,26 +657,23 @@ public class QueryGraphRequest implements IndexedRecord {
      * @param options  Additional parameters
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#NUMBER_OF_RINGS
-     *                 NUMBER_OF_RINGS}: Sets the number of rings of edges
-     *                 around the node to query for adjacency, with '1' being
-     *                 the edges directly attached to the queried nodes. For
-     *                 example, if {@code number_of_rings} is set to '2', the
-     *                 edge(s) directly attached to the queried nodes will be
-     *                 returned; in addition, the edge(s) attached to the
-     *                 node(s) attached to the initial ring of edge(s)
-     *                 surrounding the queried node(s) will be returned. This
-     *                 setting is ignored if {@code edgeToNode} is set to
-     *                 {@code true}. This setting cannot be less than '1'.  The
-     *                 default value is '1'.
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#RINGS
+     *                 RINGS}: Sets the number of rings of edges around the
+     *                 node to query for adjacency, with '1' being the edges
+     *                 directly attached to the queried nodes. For example, if
+     *                 {@code rings} is set to '2', the edge(s) directly
+     *                 attached to the queried nodes will be returned; in
+     *                 addition, the edge(s) attached to the node(s) attached
+     *                 to the initial ring of edge(s) surrounding the queried
+     *                 node(s) will be returned. This setting cannot be less
+     *                 than '1'.  The default value is '1'.
      *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#INCLUDE_ALL_EDGES
-     *                 INCLUDE_ALL_EDGES}: This parameter is only applicable if
-     *                 the queried graph is directed and {@code edgeToNode} is
-     *                 set to {@code false}. If set to {@code true}, all
-     *                 inbound edges and outbound edges relative to the node
-     *                 will be returned. If set to {@code false}, only outbound
-     *                 edges relative to the node will be returned.
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FORCE_UNDIRECTED
+     *                 FORCE_UNDIRECTED}: This parameter is only applicable if
+     *                 the queried graph is directed. If set to {@code true},
+     *                 all inbound edges and outbound edges relative to the
+     *                 node will be returned. If set to {@code false}, only
+     *                 outbound edges relative to the node will be returned.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -721,6 +685,41 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#BLOCKED_NODES
+     *                 BLOCKED_NODES}: When false, allow a restricted node to
+     *                 be part of a valid traversal but not a target.
+     *                 Otherwise, queries are blocked by restricted nodes.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#LIMIT
+     *                 LIMIT}: When specified, limits the number of query
+     *                 results. Note that if the {@code target_nodes_table} is
+     *                 requested (non-empty), this will limit the size of the
+     *                 corresponding table.  The default value is an empty
+     *                 {@link Map}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
+     *                 TARGET_NODES_TABLE}: If non-empty, returns a table
+     *                 containing the list of the final nodes reached during
+     *                 the traversal. Only valid if blocked_nodes is false.
+     *                 The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
+     *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
+     *                 comparison. Any node or edge with a
+     *                 RESTRICTIONS_VALUECOMPARED value greater than the {@code
+     *                 restriction_threshold_value} will not be included in the
+     *                 solution.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_QUERY_RESULTS
      *                 EXPORT_QUERY_RESULTS}: Returns query results in the
@@ -801,21 +800,12 @@ public class QueryGraphRequest implements IndexedRecord {
                 return this.queries;
 
             case 2:
-                return this.edgeToNode;
+                return this.restrictions;
 
             case 3:
-                return this.edgeOrNodeIntIds;
-
-            case 4:
-                return this.edgeOrNodeStringIds;
-
-            case 5:
-                return this.edgeOrNodeWktIds;
-
-            case 6:
                 return this.adjacencyTable;
 
-            case 7:
+            case 4:
                 return this.options;
 
             default:
@@ -846,26 +836,14 @@ public class QueryGraphRequest implements IndexedRecord {
                 break;
 
             case 2:
-                this.edgeToNode = (Boolean)value;
+                this.restrictions = (List<String>)value;
                 break;
 
             case 3:
-                this.edgeOrNodeIntIds = (List<Long>)value;
-                break;
-
-            case 4:
-                this.edgeOrNodeStringIds = (List<String>)value;
-                break;
-
-            case 5:
-                this.edgeOrNodeWktIds = (List<String>)value;
-                break;
-
-            case 6:
                 this.adjacencyTable = (String)value;
                 break;
 
-            case 7:
+            case 4:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -888,10 +866,7 @@ public class QueryGraphRequest implements IndexedRecord {
 
         return ( this.graphName.equals( that.graphName )
                  && this.queries.equals( that.queries )
-                 && ( this.edgeToNode == that.edgeToNode )
-                 && this.edgeOrNodeIntIds.equals( that.edgeOrNodeIntIds )
-                 && this.edgeOrNodeStringIds.equals( that.edgeOrNodeStringIds )
-                 && this.edgeOrNodeWktIds.equals( that.edgeOrNodeWktIds )
+                 && this.restrictions.equals( that.restrictions )
                  && this.adjacencyTable.equals( that.adjacencyTable )
                  && this.options.equals( that.options ) );
     }
@@ -909,21 +884,9 @@ public class QueryGraphRequest implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.queries ) );
         builder.append( ", " );
-        builder.append( gd.toString( "edgeToNode" ) );
+        builder.append( gd.toString( "restrictions" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.edgeToNode ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "edgeOrNodeIntIds" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.edgeOrNodeIntIds ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "edgeOrNodeStringIds" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.edgeOrNodeStringIds ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "edgeOrNodeWktIds" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.edgeOrNodeWktIds ) );
+        builder.append( gd.toString( this.restrictions ) );
         builder.append( ", " );
         builder.append( gd.toString( "adjacencyTable" ) );
         builder.append( ": " );
@@ -942,10 +905,7 @@ public class QueryGraphRequest implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.graphName.hashCode();
         hashCode = (31 * hashCode) + this.queries.hashCode();
-        hashCode = (31 * hashCode) + ((Boolean)this.edgeToNode).hashCode();
-        hashCode = (31 * hashCode) + this.edgeOrNodeIntIds.hashCode();
-        hashCode = (31 * hashCode) + this.edgeOrNodeStringIds.hashCode();
-        hashCode = (31 * hashCode) + this.edgeOrNodeWktIds.hashCode();
+        hashCode = (31 * hashCode) + this.restrictions.hashCode();
         hashCode = (31 * hashCode) + this.adjacencyTable.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;

@@ -25,7 +25,8 @@ import org.apache.avro.generic.IndexedRecord;
  * {@code limit} parameters.
  * <p>
  * <a href="../../../../../concepts/window.html" target="_top">Window
- * functions</a> are available through this endpoint as well as {@link
+ * functions</a>, which can perform operations like moving averages, are
+ * available through this endpoint as well as {@link
  * com.gpudb.GPUdb#createProjection(CreateProjectionRequest)}.
  * <p>
  * When using pagination, if the table (or the underlying table in the case of

@@ -266,18 +266,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
-     *         <li> {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#PLANNER_JOIN_VALIDATIONS
-     * PLANNER_JOIN_VALIDATIONS}: <DEVELOPER>
-     * Supported values:
-     * <ul>
-     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE
-     * TRUE}
-     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     * FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -508,20 +496,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
          * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
          */
         public static final String PREPARE_MODE = "prepare_mode";
-
-        /**
-         * <DEVELOPER>
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
-         */
-        public static final String PLANNER_JOIN_VALIDATIONS = "planner_join_validations";
 
         private Options() {  }
     }
@@ -791,19 +765,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PLANNER_JOIN_VALIDATIONS
-     *                 PLANNER_JOIN_VALIDATIONS}: <DEVELOPER>
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1077,19 +1038,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PLANNER_JOIN_VALIDATIONS
-     *                 PLANNER_JOIN_VALIDATIONS}: <DEVELOPER>
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1472,18 +1420,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#PLANNER_JOIN_VALIDATIONS
-     *         PLANNER_JOIN_VALIDATIONS}: <DEVELOPER>
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1721,19 +1657,6 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PLANNER_JOIN_VALIDATIONS
-     *                 PLANNER_JOIN_VALIDATIONS}: <DEVELOPER>
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
