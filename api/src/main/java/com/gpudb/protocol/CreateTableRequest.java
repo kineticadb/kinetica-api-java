@@ -167,8 +167,9 @@ public class CreateTableRequest implements IndexedRecord {
      * href="../../../../../concepts/tables.html#partitioning-by-interval"
      * target="_top">interval partitioning</a>.
      *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#LIST
-     * LIST}: Allows specifying a list of VALUES for a partition, or optionally
-     * to create an AUTOMATIC partition for each unique value
+     * LIST}: Use <a
+     * href="../../../../../concepts/tables.html#partitioning-by-list"
+     * target="_top">list partitioning</a>.
      * </ul>
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -179,15 +180,19 @@ public class CreateTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableRequest.Options#PARTITION_DEFINITIONS
      * PARTITION_DEFINITIONS}: Comma-separated list of partition definitions,
      * whose format depends on the choice of {@code partition_type}.  See <a
-     * href="../../../../../concepts/tables.html#partitioning-by-range-example"
-     * target="_top">range partitioning example</a> or <a
-     * href="../../../../../concepts/tables.html#partitioning-by-interval-example"
-     * target="_top">interval partitioning example</a> for example formats.
+     * href="../../../../../concepts/tables.html#partitioning-by-range"
+     * target="_top">range partitioning</a>, <a
+     * href="../../../../../concepts/tables.html#partitioning-by-interval"
+     * target="_top">interval partitioning</a>, or <a
+     * href="../../../../../concepts/tables.html#partitioning-by-list"
+     * target="_top">list partitioning</a> for example formats.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
      * IS_AUTOMATIC_PARTITION}: If true, a new partition will be created for
      * values which don't fall into an existing partition.  Currently only
-     * supported for LIST partitions
+     * supported for <a
+     * href="../../../../../concepts/tables.html#partitioning-by-list"
+     * target="_top">list partitions</a>.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TRUE
@@ -345,9 +350,9 @@ public class CreateTableRequest implements IndexedRecord {
          * href="../../../../../concepts/tables.html#partitioning-by-interval"
          * target="_top">interval partitioning</a>.
          *         <li> {@link
-         * com.gpudb.protocol.CreateTableRequest.Options#LIST LIST}: Allows
-         * specifying a list of VALUES for a partition, or optionally to create
-         * an AUTOMATIC partition for each unique value
+         * com.gpudb.protocol.CreateTableRequest.Options#LIST LIST}: Use <a
+         * href="../../../../../concepts/tables.html#partitioning-by-list"
+         * target="_top">list partitioning</a>.
          * </ul>
          */
         public static final String PARTITION_TYPE = "partition_type";
@@ -367,8 +372,9 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String INTERVAL = "INTERVAL";
 
         /**
-         * Allows specifying a list of VALUES for a partition, or optionally to
-         * create an AUTOMATIC partition for each unique value
+         * Use <a
+         * href="../../../../../concepts/tables.html#partitioning-by-list"
+         * target="_top">list partitioning</a>.
          */
         public static final String LIST = "LIST";
 
@@ -382,17 +388,20 @@ public class CreateTableRequest implements IndexedRecord {
         /**
          * Comma-separated list of partition definitions, whose format depends
          * on the choice of {@code partition_type}.  See <a
-         * href="../../../../../concepts/tables.html#partitioning-by-range-example"
-         * target="_top">range partitioning example</a> or <a
-         * href="../../../../../concepts/tables.html#partitioning-by-interval-example"
-         * target="_top">interval partitioning example</a> for example formats.
+         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * target="_top">range partitioning</a>, <a
+         * href="../../../../../concepts/tables.html#partitioning-by-interval"
+         * target="_top">interval partitioning</a>, or <a
+         * href="../../../../../concepts/tables.html#partitioning-by-list"
+         * target="_top">list partitioning</a> for example formats.
          */
         public static final String PARTITION_DEFINITIONS = "partition_definitions";
 
         /**
          * If true, a new partition will be created for values which don't fall
-         * into an existing partition.  Currently only supported for LIST
-         * partitions
+         * into an existing partition.  Currently only supported for <a
+         * href="../../../../../concepts/tables.html#partitioning-by-list"
+         * target="_top">list partitions</a>.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -590,9 +599,9 @@ public class CreateTableRequest implements IndexedRecord {
      *                 target="_top">interval partitioning</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#LIST
-     *                 LIST}: Allows specifying a list of VALUES for a
-     *                 partition, or optionally to create an AUTOMATIC
-     *                 partition for each unique value
+     *                 LIST}: Use <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                 target="_top">list partitioning</a>.
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -605,16 +614,19 @@ public class CreateTableRequest implements IndexedRecord {
      *                 PARTITION_DEFINITIONS}: Comma-separated list of
      *                 partition definitions, whose format depends on the
      *                 choice of {@code partition_type}.  See <a
-     *                 href="../../../../../concepts/tables.html#partitioning-by-range-example"
-     *                 target="_top">range partitioning example</a> or <a
-     *                 href="../../../../../concepts/tables.html#partitioning-by-interval-example"
-     *                 target="_top">interval partitioning example</a> for
-     *                 example formats.
+     *                 href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                 target="_top">range partitioning</a>, <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *                 target="_top">interval partitioning</a>, or <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                 target="_top">list partitioning</a> for example formats.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
      *                 IS_AUTOMATIC_PARTITION}: If true, a new partition will
      *                 be created for values which don't fall into an existing
-     *                 partition.  Currently only supported for LIST partitions
+     *                 partition.  Currently only supported for <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                 target="_top">list partitions</a>.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -837,9 +849,9 @@ public class CreateTableRequest implements IndexedRecord {
      *         href="../../../../../concepts/tables.html#partitioning-by-interval"
      *         target="_top">interval partitioning</a>.
      *                 <li> {@link
-     *         com.gpudb.protocol.CreateTableRequest.Options#LIST LIST}: Allows
-     *         specifying a list of VALUES for a partition, or optionally to
-     *         create an AUTOMATIC partition for each unique value
+     *         com.gpudb.protocol.CreateTableRequest.Options#LIST LIST}: Use <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-list"
+     *         target="_top">list partitioning</a>.
      *         </ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -851,16 +863,19 @@ public class CreateTableRequest implements IndexedRecord {
      *         PARTITION_DEFINITIONS}: Comma-separated list of partition
      *         definitions, whose format depends on the choice of {@code
      *         partition_type}.  See <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-range-example"
-     *         target="_top">range partitioning example</a> or <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-interval-example"
-     *         target="_top">interval partitioning example</a> for example
-     *         formats.
+     *         href="../../../../../concepts/tables.html#partitioning-by-range"
+     *         target="_top">range partitioning</a>, <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *         target="_top">interval partitioning</a>, or <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-list"
+     *         target="_top">list partitioning</a> for example formats.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
      *         IS_AUTOMATIC_PARTITION}: If true, a new partition will be
      *         created for values which don't fall into an existing partition.
-     *         Currently only supported for LIST partitions
+     *         Currently only supported for <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-list"
+     *         target="_top">list partitions</a>.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -1030,9 +1045,9 @@ public class CreateTableRequest implements IndexedRecord {
      *                 target="_top">interval partitioning</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#LIST
-     *                 LIST}: Allows specifying a list of VALUES for a
-     *                 partition, or optionally to create an AUTOMATIC
-     *                 partition for each unique value
+     *                 LIST}: Use <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                 target="_top">list partitioning</a>.
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -1045,16 +1060,19 @@ public class CreateTableRequest implements IndexedRecord {
      *                 PARTITION_DEFINITIONS}: Comma-separated list of
      *                 partition definitions, whose format depends on the
      *                 choice of {@code partition_type}.  See <a
-     *                 href="../../../../../concepts/tables.html#partitioning-by-range-example"
-     *                 target="_top">range partitioning example</a> or <a
-     *                 href="../../../../../concepts/tables.html#partitioning-by-interval-example"
-     *                 target="_top">interval partitioning example</a> for
-     *                 example formats.
+     *                 href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                 target="_top">range partitioning</a>, <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *                 target="_top">interval partitioning</a>, or <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                 target="_top">list partitioning</a> for example formats.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
      *                 IS_AUTOMATIC_PARTITION}: If true, a new partition will
      *                 be created for values which don't fall into an existing
-     *                 partition.  Currently only supported for LIST partitions
+     *                 partition.  Currently only supported for <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                 target="_top">list partitions</a>.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

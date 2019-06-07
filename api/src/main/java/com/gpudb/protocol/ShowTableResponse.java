@@ -196,9 +196,9 @@ public class ShowTableResponse implements IndexedRecord {
          * target="_top">interval partitioning</a>
          *         <li> {@link
          * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#LIST LIST}:
-         * Using LIST partitioning, which allows specifying a list of VALUES
-         * for a partition, or optionally to create an AUTOMATIC partition for
-         * each unique value
+         * Using <a
+         * href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+         * target="_top">manual list partitioning</a>
          *         <li> {@link
          * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#NONE NONE}:
          * Using no partitioning
@@ -223,9 +223,9 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String INTERVAL = "INTERVAL";
 
         /**
-         * Using LIST partitioning, which allows specifying a list of VALUES
-         * for a partition, or optionally to create an AUTOMATIC partition for
-         * each unique value
+         * Using <a
+         * href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+         * target="_top">manual list partitioning</a>
          */
         public static final String LIST = "LIST";
 

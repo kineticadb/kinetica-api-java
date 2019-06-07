@@ -101,7 +101,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#COMMUNICATOR_TEST
      * COMMUNICATOR_TEST}: Invoke the communicator test and report timing
-     * results. Value string is is a comma separated list of <key>=<value>
+     * results. Value string is is a semicolon separated list of <key>=<value>
      * expressions.  Expressions are: num_transactions=<num> where num is the
      * number of request reply transactions to invoke per test;
      * message_size=<bytes> where bytes is the size of the messages to send in
@@ -239,7 +239,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
         /**
          * Invoke the communicator test and report timing results. Value string
-         * is is a comma separated list of <key>=<value> expressions.
+         * is is a semicolon separated list of <key>=<value> expressions.
          * Expressions are: num_transactions=<num> where num is the number of
          * request reply transactions to invoke per test; message_size=<bytes>
          * where bytes is the size of the messages to send in bytes;
@@ -417,8 +417,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#COMMUNICATOR_TEST
      *                            COMMUNICATOR_TEST}: Invoke the communicator
      *                            test and report timing results. Value string
-     *                            is is a comma separated list of <key>=<value>
-     *                            expressions.  Expressions are:
+     *                            is is a semicolon separated list of
+     *                            <key>=<value> expressions.  Expressions are:
      *                            num_transactions=<num> where num is the
      *                            number of request reply transactions to
      *                            invoke per test; message_size=<bytes> where
@@ -574,7 +574,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#COMMUNICATOR_TEST
      *         COMMUNICATOR_TEST}: Invoke the communicator test and report
-     *         timing results. Value string is is a comma separated list of
+     *         timing results. Value string is is a semicolon separated list of
      *         <key>=<value> expressions.  Expressions are:
      *         num_transactions=<num> where num is the number of request reply
      *         transactions to invoke per test; message_size=<bytes> where
@@ -720,8 +720,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#COMMUNICATOR_TEST
      *                            COMMUNICATOR_TEST}: Invoke the communicator
      *                            test and report timing results. Value string
-     *                            is is a comma separated list of <key>=<value>
-     *                            expressions.  Expressions are:
+     *                            is is a semicolon separated list of
+     *                            <key>=<value> expressions.  Expressions are:
      *                            num_transactions=<num> where num is the
      *                            number of request reply transactions to
      *                            invoke per test; message_size=<bytes> where

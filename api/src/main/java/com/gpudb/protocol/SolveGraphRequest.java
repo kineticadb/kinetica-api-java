@@ -68,7 +68,13 @@ public class SolveGraphRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.SolveGraphRequest.SolverType#PAGE_RANK PAGE_RANK}:
      * Solves for the probability of each destination node being visited based
-     * on the links of the graph topology.
+     * on the links of the graph topology. Weights are not required to use this
+     * solver.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.SolverType#PROBABILITY_RANK
+     * PROBABILITY_RANK}: Solves for the transitional probability (Hidden
+     * Markov) for each node based on the weights (probability assigned over
+     * given edges).
      *         <li> {@link
      * com.gpudb.protocol.SolveGraphRequest.SolverType#CENTRALITY CENTRALITY}:
      * Solves for the degree of a node to depict how many pairs of individuals
@@ -110,9 +116,16 @@ public class SolveGraphRequest implements IndexedRecord {
 
         /**
          * Solves for the probability of each destination node being visited
-         * based on the links of the graph topology.
+         * based on the links of the graph topology. Weights are not required
+         * to use this solver.
          */
         public static final String PAGE_RANK = "PAGE_RANK";
+
+        /**
+         * Solves for the transitional probability (Hidden Markov) for each
+         * node based on the weights (probability assigned over given edges).
+         */
+        public static final String PROBABILITY_RANK = "PROBABILITY_RANK";
 
         /**
          * Solves for the degree of a node to depict how many pairs of
@@ -202,6 +215,14 @@ public class SolveGraphRequest implements IndexedRecord {
      * outputs the nodes within the radius sorted by ascending cost. If set to
      * '0.0', the setting is ignored.  The default value is '0.0'.
      *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#MIN_SOLUTION_RADIUS
+     * MIN_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and {@code
+     * INVERSE_SHORTEST_PATH} solvers only. Applicable only when {@code
+     * max_solution_radius} is set. Sets the minimum solution cost radius,
+     * which ignores the {@code destinationNodeIds} list and instead outputs
+     * the nodes within the radius sorted by ascending cost. If set to '0.0',
+     * the setting is ignored.  The default value is '0.0'.
+     *         <li> {@link
      * com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_TARGETS
      * MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and {@code
      * INVERSE_SHORTEST_PATH} solvers only. Sets the maximum number of solution
@@ -244,9 +265,9 @@ public class SolveGraphRequest implements IndexedRecord {
      * solution.
      *         <li> {@link
      * com.gpudb.protocol.SolveGraphRequest.Options#UNIFORM_WEIGHTS
-     * UNIFORM_WEIGHTS}: When speficied, assigns the given value to all the
-     * edges in the graph. Note that weights specified in @{weights_on_edges}
-     * override this value.
+     * UNIFORM_WEIGHTS}: When specified, assigns the given value to all the
+     * edges in the graph. Note that weights provided in {@code weightsOnEdges}
+     * will override this value.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -261,6 +282,16 @@ public class SolveGraphRequest implements IndexedRecord {
          * ignored.  The default value is '0.0'.
          */
         public static final String MAX_SOLUTION_RADIUS = "max_solution_radius";
+
+        /**
+         * For {@code SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
+         * only. Applicable only when {@code max_solution_radius} is set. Sets
+         * the minimum solution cost radius, which ignores the {@code
+         * destinationNodeIds} list and instead outputs the nodes within the
+         * radius sorted by ascending cost. If set to '0.0', the setting is
+         * ignored.  The default value is '0.0'.
+         */
+        public static final String MIN_SOLUTION_RADIUS = "min_solution_radius";
 
         /**
          * For {@code SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
@@ -313,9 +344,9 @@ public class SolveGraphRequest implements IndexedRecord {
         public static final String RESTRICTION_THRESHOLD_VALUE = "restriction_threshold_value";
 
         /**
-         * When speficied, assigns the given value to all the edges in the
-         * graph. Note that weights specified in @{weights_on_edges} override
-         * this value.
+         * When specified, assigns the given value to all the edges in the
+         * graph. Note that weights provided in {@code weightsOnEdges} will
+         * override this value.
          */
         public static final String UNIFORM_WEIGHTS = "uniform_weights";
 
@@ -364,14 +395,17 @@ public class SolveGraphRequest implements IndexedRecord {
      *                        href="../../../../../graph_solver/network_graph_solver.html#id-combos"
      *                        target="_top">combinations</a>. Identifiers can
      *                        be used with existing column names, e.g.,
-     *                        'table.column AS WEIGHTS_EDGE_ID', or
-     *                        expressions, e.g., 'ST_LENGTH(wkt) AS
+     *                        'table.column AS WEIGHTS_EDGE_ID', expressions,
+     *                        e.g., 'ST_LENGTH(wkt) AS WEIGHTS_VALUESPECIFIED',
+     *                        or raw values, e.g., '{4, 15, 2} AS
      *                        WEIGHTS_VALUESPECIFIED'. Any provided weights
      *                        will be added (in the case of
      *                        'WEIGHTS_VALUESPECIFIED') to or multiplied with
      *                        (in the case of 'WEIGHTS_FACTORSPECIFIED') the
-     *                        existing weight(s).  The default value is an
-     *                        empty {@link List}.
+     *                        existing weight(s). If using raw values in an
+     *                        identifier combination, the number of values
+     *                        specified must match across the combination.  The
+     *                        default value is an empty {@link List}.
      * @param restrictions  Additional restrictions to apply to the nodes/edges
      *                      of an existing graph. Restrictions must be
      *                      specified using <a
@@ -381,9 +415,13 @@ public class SolveGraphRequest implements IndexedRecord {
      *                      href="../../../../../graph_solver/network_graph_solver.html#id-combos"
      *                      target="_top">combinations</a>. Identifiers can be
      *                      used with existing column names, e.g.,
-     *                      'table.column AS RESTRICTIONS_EDGE_ID', or
+     *                      'table.column AS RESTRICTIONS_EDGE_ID',
      *                      expressions, e.g., 'column/2 AS
-     *                      RESTRICTIONS_VALUECOMPARED'. If {@code
+     *                      RESTRICTIONS_VALUECOMPARED', or raw values, e.g.,
+     *                      '{0, 0, 0, 1} AS RESTRICTIONS_ONOFFCOMPARED'. If
+     *                      using raw values in an identifier combination, the
+     *                      number of values specified must match across the
+     *                      combination. If {@code
      *                      remove_previous_restrictions} is set to {@code
      *                      true}, any provided restrictions will replace the
      *                      existing restrictions. If {@code
@@ -406,7 +444,13 @@ public class SolveGraphRequest implements IndexedRecord {
      *                    com.gpudb.protocol.SolveGraphRequest.SolverType#PAGE_RANK
      *                    PAGE_RANK}: Solves for the probability of each
      *                    destination node being visited based on the links of
-     *                    the graph topology.
+     *                    the graph topology. Weights are not required to use
+     *                    this solver.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.SolveGraphRequest.SolverType#PROBABILITY_RANK
+     *                    PROBABILITY_RANK}: Solves for the transitional
+     *                    probability (Hidden Markov) for each node based on
+     *                    the weights (probability assigned over given edges).
      *                            <li> {@link
      *                    com.gpudb.protocol.SolveGraphRequest.SolverType#CENTRALITY
      *                    CENTRALITY}: Solves for the degree of a node to
@@ -502,6 +546,16 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 '0.0', the setting is ignored.  The default value is
      *                 '0.0'.
      *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#MIN_SOLUTION_RADIUS
+     *                 MIN_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and
+     *                 {@code INVERSE_SHORTEST_PATH} solvers only. Applicable
+     *                 only when {@code max_solution_radius} is set. Sets the
+     *                 minimum solution cost radius, which ignores the {@code
+     *                 destinationNodeIds} list and instead outputs the nodes
+     *                 within the radius sorted by ascending cost. If set to
+     *                 '0.0', the setting is ignored.  The default value is
+     *                 '0.0'.
+     *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_TARGETS
      *                 MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and
      *                 {@code INVERSE_SHORTEST_PATH} solvers only. Sets the
@@ -552,9 +606,10 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 solution.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#UNIFORM_WEIGHTS
-     *                 UNIFORM_WEIGHTS}: When speficied, assigns the given
+     *                 UNIFORM_WEIGHTS}: When specified, assigns the given
      *                 value to all the edges in the graph. Note that weights
-     *                 specified in @{weights_on_edges} override this value.
+     *                 provided in {@code weightsOnEdges} will override this
+     *                 value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -603,11 +658,14 @@ public class SolveGraphRequest implements IndexedRecord {
      *         href="../../../../../graph_solver/network_graph_solver.html#id-combos"
      *         target="_top">combinations</a>. Identifiers can be used with
      *         existing column names, e.g., 'table.column AS WEIGHTS_EDGE_ID',
-     *         or expressions, e.g., 'ST_LENGTH(wkt) AS
-     *         WEIGHTS_VALUESPECIFIED'. Any provided weights will be added (in
-     *         the case of 'WEIGHTS_VALUESPECIFIED') to or multiplied with (in
-     *         the case of 'WEIGHTS_FACTORSPECIFIED') the existing weight(s).
-     *         The default value is an empty {@link List}.
+     *         expressions, e.g., 'ST_LENGTH(wkt) AS WEIGHTS_VALUESPECIFIED',
+     *         or raw values, e.g., '{4, 15, 2} AS WEIGHTS_VALUESPECIFIED'. Any
+     *         provided weights will be added (in the case of
+     *         'WEIGHTS_VALUESPECIFIED') to or multiplied with (in the case of
+     *         'WEIGHTS_FACTORSPECIFIED') the existing weight(s). If using raw
+     *         values in an identifier combination, the number of values
+     *         specified must match across the combination.  The default value
+     *         is an empty {@link List}.
      * 
      */
     public List<String> getWeightsOnEdges() {
@@ -625,14 +683,17 @@ public class SolveGraphRequest implements IndexedRecord {
      *                        href="../../../../../graph_solver/network_graph_solver.html#id-combos"
      *                        target="_top">combinations</a>. Identifiers can
      *                        be used with existing column names, e.g.,
-     *                        'table.column AS WEIGHTS_EDGE_ID', or
-     *                        expressions, e.g., 'ST_LENGTH(wkt) AS
+     *                        'table.column AS WEIGHTS_EDGE_ID', expressions,
+     *                        e.g., 'ST_LENGTH(wkt) AS WEIGHTS_VALUESPECIFIED',
+     *                        or raw values, e.g., '{4, 15, 2} AS
      *                        WEIGHTS_VALUESPECIFIED'. Any provided weights
      *                        will be added (in the case of
      *                        'WEIGHTS_VALUESPECIFIED') to or multiplied with
      *                        (in the case of 'WEIGHTS_FACTORSPECIFIED') the
-     *                        existing weight(s).  The default value is an
-     *                        empty {@link List}.
+     *                        existing weight(s). If using raw values in an
+     *                        identifier combination, the number of values
+     *                        specified must match across the combination.  The
+     *                        default value is an empty {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -651,8 +712,11 @@ public class SolveGraphRequest implements IndexedRecord {
      *         href="../../../../../graph_solver/network_graph_solver.html#id-combos"
      *         target="_top">combinations</a>. Identifiers can be used with
      *         existing column names, e.g., 'table.column AS
-     *         RESTRICTIONS_EDGE_ID', or expressions, e.g., 'column/2 AS
-     *         RESTRICTIONS_VALUECOMPARED'. If {@code
+     *         RESTRICTIONS_EDGE_ID', expressions, e.g., 'column/2 AS
+     *         RESTRICTIONS_VALUECOMPARED', or raw values, e.g., '{0, 0, 0, 1}
+     *         AS RESTRICTIONS_ONOFFCOMPARED'. If using raw values in an
+     *         identifier combination, the number of values specified must
+     *         match across the combination. If {@code
      *         remove_previous_restrictions} is set to {@code true}, any
      *         provided restrictions will replace the existing restrictions. If
      *         {@code remove_previous_restrictions} is set to {@code false},
@@ -677,9 +741,13 @@ public class SolveGraphRequest implements IndexedRecord {
      *                      href="../../../../../graph_solver/network_graph_solver.html#id-combos"
      *                      target="_top">combinations</a>. Identifiers can be
      *                      used with existing column names, e.g.,
-     *                      'table.column AS RESTRICTIONS_EDGE_ID', or
+     *                      'table.column AS RESTRICTIONS_EDGE_ID',
      *                      expressions, e.g., 'column/2 AS
-     *                      RESTRICTIONS_VALUECOMPARED'. If {@code
+     *                      RESTRICTIONS_VALUECOMPARED', or raw values, e.g.,
+     *                      '{0, 0, 0, 1} AS RESTRICTIONS_ONOFFCOMPARED'. If
+     *                      using raw values in an identifier combination, the
+     *                      number of values specified must match across the
+     *                      combination. If {@code
      *                      remove_previous_restrictions} is set to {@code
      *                      true}, any provided restrictions will replace the
      *                      existing restrictions. If {@code
@@ -711,7 +779,13 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.SolveGraphRequest.SolverType#PAGE_RANK
      *         PAGE_RANK}: Solves for the probability of each destination node
-     *         being visited based on the links of the graph topology.
+     *         being visited based on the links of the graph topology. Weights
+     *         are not required to use this solver.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.SolverType#PROBABILITY_RANK
+     *         PROBABILITY_RANK}: Solves for the transitional probability
+     *         (Hidden Markov) for each node based on the weights (probability
+     *         assigned over given edges).
      *                 <li> {@link
      *         com.gpudb.protocol.SolveGraphRequest.SolverType#CENTRALITY
      *         CENTRALITY}: Solves for the degree of a node to depict how many
@@ -763,7 +837,13 @@ public class SolveGraphRequest implements IndexedRecord {
      *                    com.gpudb.protocol.SolveGraphRequest.SolverType#PAGE_RANK
      *                    PAGE_RANK}: Solves for the probability of each
      *                    destination node being visited based on the links of
-     *                    the graph topology.
+     *                    the graph topology. Weights are not required to use
+     *                    this solver.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.SolveGraphRequest.SolverType#PROBABILITY_RANK
+     *                    PROBABILITY_RANK}: Solves for the transitional
+     *                    probability (Hidden Markov) for each node based on
+     *                    the weights (probability assigned over given edges).
      *                            <li> {@link
      *                    com.gpudb.protocol.SolveGraphRequest.SolverType#CENTRALITY
      *                    CENTRALITY}: Solves for the degree of a node to
@@ -1024,6 +1104,15 @@ public class SolveGraphRequest implements IndexedRecord {
      *         ascending cost. If set to '0.0', the setting is ignored.  The
      *         default value is '0.0'.
      *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#MIN_SOLUTION_RADIUS
+     *         MIN_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and {@code
+     *         INVERSE_SHORTEST_PATH} solvers only. Applicable only when {@code
+     *         max_solution_radius} is set. Sets the minimum solution cost
+     *         radius, which ignores the {@code destinationNodeIds} list and
+     *         instead outputs the nodes within the radius sorted by ascending
+     *         cost. If set to '0.0', the setting is ignored.  The default
+     *         value is '0.0'.
+     *                 <li> {@link
      *         com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_TARGETS
      *         MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and {@code
      *         INVERSE_SHORTEST_PATH} solvers only. Sets the maximum number of
@@ -1067,9 +1156,9 @@ public class SolveGraphRequest implements IndexedRecord {
      *         not be included in the solution.
      *                 <li> {@link
      *         com.gpudb.protocol.SolveGraphRequest.Options#UNIFORM_WEIGHTS
-     *         UNIFORM_WEIGHTS}: When speficied, assigns the given value to all
-     *         the edges in the graph. Note that weights specified in
-     *         @{weights_on_edges} override this value.
+     *         UNIFORM_WEIGHTS}: When specified, assigns the given value to all
+     *         the edges in the graph. Note that weights provided in {@code
+     *         weightsOnEdges} will override this value.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1087,6 +1176,16 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 MAX_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and
      *                 {@code INVERSE_SHORTEST_PATH} solvers only. Sets the
      *                 maximum solution cost radius, which ignores the {@code
+     *                 destinationNodeIds} list and instead outputs the nodes
+     *                 within the radius sorted by ascending cost. If set to
+     *                 '0.0', the setting is ignored.  The default value is
+     *                 '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#MIN_SOLUTION_RADIUS
+     *                 MIN_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and
+     *                 {@code INVERSE_SHORTEST_PATH} solvers only. Applicable
+     *                 only when {@code max_solution_radius} is set. Sets the
+     *                 minimum solution cost radius, which ignores the {@code
      *                 destinationNodeIds} list and instead outputs the nodes
      *                 within the radius sorted by ascending cost. If set to
      *                 '0.0', the setting is ignored.  The default value is
@@ -1142,9 +1241,10 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 solution.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#UNIFORM_WEIGHTS
-     *                 UNIFORM_WEIGHTS}: When speficied, assigns the given
+     *                 UNIFORM_WEIGHTS}: When specified, assigns the given
      *                 value to all the edges in the graph. Note that weights
-     *                 specified in @{weights_on_edges} override this value.
+     *                 provided in {@code weightsOnEdges} will override this
+     *                 value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

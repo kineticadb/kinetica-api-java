@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>7.0.2.0</version>
+    <version>7.0.3.0</version>
     <packaging>jar</packaging>
     <name>Kinetica Java API</name>
     <distributionManagement>
@@ -44,7 +44,7 @@
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gpudb-api.version>7.0.2.0</gpudb-api.version>
+        <gpudb-api.version>7.0.3.0</gpudb-api.version>
     </properties>
     <profiles>
         <profile>
@@ -108,7 +108,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- <plugin>
+            <plugin>
                 <groupId>com.code54.mojo</groupId>
                 <artifactId>buildversion-plugin</artifactId>
                 <version>1.0.3</version>
@@ -119,7 +119,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin> -->
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>

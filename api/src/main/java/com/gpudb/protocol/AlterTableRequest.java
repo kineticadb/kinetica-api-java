@@ -38,8 +38,11 @@ import org.apache.avro.generic.IndexedRecord;
  * target="_top">foreign key</a>
  * on a particular column.
  * <p>
- * Manage a <a href="../../../../../concepts/tables.html#partitioning"
- * target="_top">range-partitioned</a>
+ * Manage a
+ * <a href="../../../../../concepts/tables.html#partitioning-by-range"
+ * target="_top">range-partitioned</a> or a
+ * <a href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+ * target="_top">manual list-partitioned</a>
  * table's partitions.
  * <p>
  * Set (or reset) the <a href="../../../../../rm/concepts.html#tier-strategies"
@@ -114,7 +117,10 @@ public class AlterTableRequest implements IndexedRecord {
      * returned.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
-     * MOVE_TO_COLLECTION}: Moves a table into a collection {@code value}.
+     * MOVE_TO_COLLECTION}: Moves a table or view into a collection named
+     * {@code value}.  If the collection provided is non-existent, the
+     * collection will be automatically created. If {@code value} is empty,
+     * then the table or view will be top-level.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#PROTECTED PROTECTED}: Sets
      * whether the given {@code tableName} should be <a
@@ -171,19 +177,27 @@ public class AlterTableRequest implements IndexedRecord {
      * used to define it.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
-     * ADD_PARTITION}: Adds a partition (for range-partitioned or
-     * list-partitioned tables) specified in {@code value}.  See <a
-     * href="../../../../../concepts/tables.html#partitioning-by-range-example"
-     * target="_top">range partitioning example</a> for example format.
+     * ADD_PARTITION}: Adds the partition specified in {@code value}, to either
+     * a <a href="../../../../../concepts/tables.html#partitioning-by-range"
+     * target="_top">range-partitioned</a> or <a
+     * href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     * target="_top">manual list-partitioned</a> table.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
-     * REMOVE_PARTITION}: Removes the partition specified in {@code value} and
-     * relocates all its data to the default partition (for range-partitioned
-     * or list-partition tables).
+     * REMOVE_PARTITION}: Removes the partition specified in {@code value} (and
+     * relocates all of its data to the default partition) from either a <a
+     * href="../../../../../concepts/tables.html#partitioning-by-range"
+     * target="_top">range-partitioned</a> or <a
+     * href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     * target="_top">manual list-partitioned</a> table.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
-     * DELETE_PARTITION}: Deletes the partition specified in {@code value} and
-     * its data (for range-partitioned or list-partitioned tables).
+     * DELETE_PARTITION}: Deletes the partition specified in {@code value} (and
+     * all of its data) from either a <a
+     * href="../../../../../concepts/tables.html#partitioning-by-range"
+     * target="_top">range-partitioned</a> or <a
+     * href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     * target="_top">manual list-partitioned</a> table.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
      * SET_GLOBAL_ACCESS_MODE}: Sets the global access mode (i.e. locking) for
@@ -257,7 +271,10 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String DELETE_INDEX = "delete_index";
 
         /**
-         * Moves a table into a collection {@code value}.
+         * Moves a table or view into a collection named {@code value}.  If the
+         * collection provided is non-existent, the collection will be
+         * automatically created. If {@code value} is empty, then the table or
+         * view will be top-level.
          */
         public static final String MOVE_TO_COLLECTION = "move_to_collection";
 
@@ -335,23 +352,31 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String DELETE_FOREIGN_KEY = "delete_foreign_key";
 
         /**
-         * Adds a partition (for range-partitioned or list-partitioned tables)
-         * specified in {@code value}.  See <a
-         * href="../../../../../concepts/tables.html#partitioning-by-range-example"
-         * target="_top">range partitioning example</a> for example format.
+         * Adds the partition specified in {@code value}, to either a <a
+         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * target="_top">range-partitioned</a> or <a
+         * href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+         * target="_top">manual list-partitioned</a> table.
          */
         public static final String ADD_PARTITION = "add_partition";
 
         /**
-         * Removes the partition specified in {@code value} and relocates all
-         * its data to the default partition (for range-partitioned or
-         * list-partition tables).
+         * Removes the partition specified in {@code value} (and relocates all
+         * of its data to the default partition) from either a <a
+         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * target="_top">range-partitioned</a> or <a
+         * href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+         * target="_top">manual list-partitioned</a> table.
          */
         public static final String REMOVE_PARTITION = "remove_partition";
 
         /**
-         * Deletes the partition specified in {@code value} and its data (for
-         * range-partitioned or list-partitioned tables).
+         * Deletes the partition specified in {@code value} (and all of its
+         * data) from either a <a
+         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * target="_top">range-partitioned</a> or <a
+         * href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+         * target="_top">manual list-partitioned</a> table.
          */
         public static final String DELETE_PARTITION = "delete_partition";
 
@@ -695,8 +720,11 @@ public class AlterTableRequest implements IndexedRecord {
      *                turned on, an error will be returned.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
-     *                MOVE_TO_COLLECTION}: Moves a table into a collection
-     *                {@code value}.
+     *                MOVE_TO_COLLECTION}: Moves a table or view into a
+     *                collection named {@code value}.  If the collection
+     *                provided is non-existent, the collection will be
+     *                automatically created. If {@code value} is empty, then
+     *                the table or view will be top-level.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#PROTECTED
      *                PROTECTED}: Sets whether the given {@code tableName}
@@ -761,23 +789,29 @@ public class AlterTableRequest implements IndexedRecord {
      *                or the complete string used to define it.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
-     *                ADD_PARTITION}: Adds a partition (for range-partitioned
-     *                or list-partitioned tables) specified in {@code value}.
-     *                See <a
-     *                href="../../../../../concepts/tables.html#partitioning-by-range-example"
-     *                target="_top">range partitioning example</a> for example
-     *                format.
+     *                ADD_PARTITION}: Adds the partition specified in {@code
+     *                value}, to either a <a
+     *                href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                target="_top">range-partitioned</a> or <a
+     *                href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *                target="_top">manual list-partitioned</a> table.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
      *                REMOVE_PARTITION}: Removes the partition specified in
-     *                {@code value} and relocates all its data to the default
-     *                partition (for range-partitioned or list-partition
-     *                tables).
+     *                {@code value} (and relocates all of its data to the
+     *                default partition) from either a <a
+     *                href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                target="_top">range-partitioned</a> or <a
+     *                href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *                target="_top">manual list-partitioned</a> table.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
      *                DELETE_PARTITION}: Deletes the partition specified in
-     *                {@code value} and its data (for range-partitioned or
-     *                list-partitioned tables).
+     *                {@code value} (and all of its data) from either a <a
+     *                href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                target="_top">range-partitioned</a> or <a
+     *                href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *                target="_top">manual list-partitioned</a> table.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
      *                SET_GLOBAL_ACCESS_MODE}: Sets the global access mode
@@ -1018,8 +1052,11 @@ public class AlterTableRequest implements IndexedRecord {
      *         error will be returned.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
-     *         MOVE_TO_COLLECTION}: Moves a table into a collection {@code
-     *         value}.
+     *         MOVE_TO_COLLECTION}: Moves a table or view into a collection
+     *         named {@code value}.  If the collection provided is
+     *         non-existent, the collection will be automatically created. If
+     *         {@code value} is empty, then the table or view will be
+     *         top-level.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#PROTECTED
      *         PROTECTED}: Sets whether the given {@code tableName} should be
@@ -1081,20 +1118,29 @@ public class AlterTableRequest implements IndexedRecord {
      *         string used to define it.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
-     *         ADD_PARTITION}: Adds a partition (for range-partitioned or
-     *         list-partitioned tables) specified in {@code value}.  See <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-range-example"
-     *         target="_top">range partitioning example</a> for example format.
+     *         ADD_PARTITION}: Adds the partition specified in {@code value},
+     *         to either a <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-range"
+     *         target="_top">range-partitioned</a> or <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *         target="_top">manual list-partitioned</a> table.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
      *         REMOVE_PARTITION}: Removes the partition specified in {@code
-     *         value} and relocates all its data to the default partition (for
-     *         range-partitioned or list-partition tables).
+     *         value} (and relocates all of its data to the default partition)
+     *         from either a <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-range"
+     *         target="_top">range-partitioned</a> or <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *         target="_top">manual list-partitioned</a> table.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
      *         DELETE_PARTITION}: Deletes the partition specified in {@code
-     *         value} and its data (for range-partitioned or list-partitioned
-     *         tables).
+     *         value} (and all of its data) from either a <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-range"
+     *         target="_top">range-partitioned</a> or <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *         target="_top">manual list-partitioned</a> table.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
      *         SET_GLOBAL_ACCESS_MODE}: Sets the global access mode (i.e.
@@ -1178,8 +1224,11 @@ public class AlterTableRequest implements IndexedRecord {
      *                turned on, an error will be returned.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
-     *                MOVE_TO_COLLECTION}: Moves a table into a collection
-     *                {@code value}.
+     *                MOVE_TO_COLLECTION}: Moves a table or view into a
+     *                collection named {@code value}.  If the collection
+     *                provided is non-existent, the collection will be
+     *                automatically created. If {@code value} is empty, then
+     *                the table or view will be top-level.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#PROTECTED
      *                PROTECTED}: Sets whether the given {@code tableName}
@@ -1244,23 +1293,29 @@ public class AlterTableRequest implements IndexedRecord {
      *                or the complete string used to define it.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
-     *                ADD_PARTITION}: Adds a partition (for range-partitioned
-     *                or list-partitioned tables) specified in {@code value}.
-     *                See <a
-     *                href="../../../../../concepts/tables.html#partitioning-by-range-example"
-     *                target="_top">range partitioning example</a> for example
-     *                format.
+     *                ADD_PARTITION}: Adds the partition specified in {@code
+     *                value}, to either a <a
+     *                href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                target="_top">range-partitioned</a> or <a
+     *                href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *                target="_top">manual list-partitioned</a> table.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
      *                REMOVE_PARTITION}: Removes the partition specified in
-     *                {@code value} and relocates all its data to the default
-     *                partition (for range-partitioned or list-partition
-     *                tables).
+     *                {@code value} (and relocates all of its data to the
+     *                default partition) from either a <a
+     *                href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                target="_top">range-partitioned</a> or <a
+     *                href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *                target="_top">manual list-partitioned</a> table.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
      *                DELETE_PARTITION}: Deletes the partition specified in
-     *                {@code value} and its data (for range-partitioned or
-     *                list-partitioned tables).
+     *                {@code value} (and all of its data) from either a <a
+     *                href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                target="_top">range-partitioned</a> or <a
+     *                href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *                target="_top">manual list-partitioned</a> table.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
      *                SET_GLOBAL_ACCESS_MODE}: Sets the global access mode

@@ -294,6 +294,12 @@ public class VisualizeImageContourRequest implements IndexedRecord {
 
         public static final String LABELS_MAX_ANGLE = "labels_max_angle";
 
+        public static final String ISOCHRONE_CONCAVITY = "isochrone_concavity";
+
+        public static final String ISOCHRONE_OUTPUT_TABLE = "isochrone_output_table";
+
+        public static final String ISOCHRONE_IMAGE = "isochrone_image";
+
 
         private Options() {  }
     }
