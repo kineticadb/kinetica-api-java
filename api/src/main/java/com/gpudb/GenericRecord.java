@@ -135,7 +135,9 @@ public final class GenericRecord extends RecordBase implements Serializable  {
      * For string columns with date, time, or datetime property, parse the
      * string and convert to the appropriate Kinetica format using the given
      * timezone (system timezone if none given).  If the column is not of a
-     * relevant type, throw an error.
+     * relevant type, set the value without any parsing (so that any string or
+     * other typed values can be set using this method without resorting to
+     * first check the column's type before calling it).
      *
      * Caveat is that due to string manipulation, this is considerably slower
      * than {@link #put}.  So, use this method only if you know that a
@@ -189,6 +191,9 @@ public final class GenericRecord extends RecordBase implements Serializable  {
                     throw new GPUdbException("Value '" + (String)value + "' for column '"
                                              + column.getName() + "' with sub-type "
                                              + "'date' did not match any pattern");
+                } else {
+                    // Value was successfully parsed
+                    values[index] = stringValue;
                 }
             } else if ( column.hasProperty( ColumnProperty.TIME ) ) {
                 // Parse the input time string with the best matching format
@@ -212,6 +217,9 @@ public final class GenericRecord extends RecordBase implements Serializable  {
                                              + column.getName() + "' with sub-type "
                                              + "'time' did not match any pattern");
                 }
+
+                // Value was successfully parsed
+                values[index] = stringValue;
             } else if ( column.hasProperty( ColumnProperty.DATETIME ) ) {
                 // Try to parse the datetime with one of the formats at a time
                 for ( int i = 0; i < acceptedDateTimeFormats.length; ++i ) {
@@ -253,11 +261,13 @@ public final class GenericRecord extends RecordBase implements Serializable  {
                     throw new GPUdbException("Value '" + (String)value + "' for column '"
                                              + column.getName() + "' with sub-type "
                                              + "'date' did not match any pattern");
+                } else {
+                    // Value was successfully parsed
+                    values[index] = stringValue;
                 }
             } else {
-                // Unknown property
-                throw new GPUdbException( "Unknown column type; got properties: "
-                                          + column.getProperties() );
+                // For any other data types, just set the value
+                values[index] = value;
             }
         } catch ( DateTimeParseException ex ) {
             throw new GPUdbException ( "Failed to parse value '"
@@ -266,9 +276,6 @@ public final class GenericRecord extends RecordBase implements Serializable  {
                                        + ex.toString(),
                                        ex );
         }
-
-        // Finally, set the value in the GenericRecord column
-        values[index] = stringValue;
     }   // end putDateTime
 
 
