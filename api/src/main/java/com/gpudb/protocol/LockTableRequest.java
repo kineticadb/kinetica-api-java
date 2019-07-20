@@ -145,7 +145,8 @@ public class LockTableRequest implements IndexedRecord {
      *                  The default value is {@link
      *                  com.gpudb.protocol.LockTableRequest.LockType#STATUS
      *                  STATUS}.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public LockTableRequest(String tableName, String lockType, Map<String, String> options) {
@@ -245,7 +246,7 @@ public class LockTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -254,7 +255,8 @@ public class LockTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

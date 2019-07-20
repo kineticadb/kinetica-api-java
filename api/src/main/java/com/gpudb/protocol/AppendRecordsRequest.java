@@ -54,22 +54,24 @@ public class AppendRecordsRequest implements IndexedRecord {
      * com.gpudb.protocol.AppendRecordsRequest.Options#OFFSET OFFSET}: A
      * positive integer indicating the number of initial results to skip from
      * source table (specified by {@code sourceTableName}). Default is 0. The
-     * minimum allowed value is 0. The maximum allowed value is MAX_INT.
+     * minimum allowed value is 0. The maximum allowed value is MAX_INT.  The
+     * default value is '0'.
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#LIMIT LIMIT}: A positive
      * integer indicating the maximum number of results to be returned from
      * source table (specified by {@code sourceTableName}). Or END_OF_SET
      * (-9999) to indicate that the max number of results should be returned.
+     * The default value is '-9999'.
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION EXPRESSION}:
      * Optional filter expression to apply to the source table (specified by
-     * {@code sourceTableName}). Empty by default.
+     * {@code sourceTableName}). Empty by default.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY ORDER_BY}:
      * Comma-separated list of the columns and expressions to be sorted by from
      * the source table (specified by {@code sourceTableName}); e.g. 'timestamp
      * asc, x desc'.  The {@code order_by} columns do not have to be present in
-     * {@code fieldMap}.
+     * {@code fieldMap}.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      * UPDATE_ON_EXISTING_PK}: Specifies the record collision policy for
@@ -92,7 +94,25 @@ public class AppendRecordsRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AppendRecordsRequest.Options#TRUNCATE_STRINGS
+     * TRUNCATE_STRINGS}: If set to {true}@{, it allows to append unbounded
+     * string to charN string. If 'truncate_strings' is 'true', the desination
+     * column is charN datatype, and the source column is unnbounded string, it
+     * will truncate the source string to length of N first, and then append
+     * the truncated string to the destination charN column. The default value
+     * is false.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AppendRecordsRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}
      * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
+     * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -101,7 +121,7 @@ public class AppendRecordsRequest implements IndexedRecord {
          * A positive integer indicating the number of initial results to skip
          * from source table (specified by {@code sourceTableName}). Default is
          * 0. The minimum allowed value is 0. The maximum allowed value is
-         * MAX_INT.
+         * MAX_INT.  The default value is '0'.
          */
         public static final String OFFSET = "offset";
 
@@ -109,13 +129,14 @@ public class AppendRecordsRequest implements IndexedRecord {
          * A positive integer indicating the maximum number of results to be
          * returned from source table (specified by {@code sourceTableName}).
          * Or END_OF_SET (-9999) to indicate that the max number of results
-         * should be returned.
+         * should be returned.  The default value is '-9999'.
          */
         public static final String LIMIT = "limit";
 
         /**
          * Optional filter expression to apply to the source table (specified
-         * by {@code sourceTableName}). Empty by default.
+         * by {@code sourceTableName}). Empty by default.  The default value is
+         * ''.
          */
         public static final String EXPRESSION = "expression";
 
@@ -123,7 +144,7 @@ public class AppendRecordsRequest implements IndexedRecord {
          * Comma-separated list of the columns and expressions to be sorted by
          * from the source table (specified by {@code sourceTableName}); e.g.
          * 'timestamp asc, x desc'.  The {@code order_by} columns do not have
-         * to be present in {@code fieldMap}.
+         * to be present in {@code fieldMap}.  The default value is ''.
          */
         public static final String ORDER_BY = "order_by";
 
@@ -153,6 +174,25 @@ public class AppendRecordsRequest implements IndexedRecord {
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * If set to {true}@{, it allows to append unbounded string to charN
+         * string. If 'truncate_strings' is 'true', the desination column is
+         * charN datatype, and the source column is unnbounded string, it will
+         * truncate the source string to length of N first, and then append the
+         * truncated string to the destination charN column. The default value
+         * is false.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AppendRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
+         */
+        public static final String TRUNCATE_STRINGS = "truncate_strings";
 
         private Options() {  }
     }
@@ -197,26 +237,27 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 initial results to skip from source table (specified by
      *                 {@code sourceTableName}). Default is 0. The minimum
      *                 allowed value is 0. The maximum allowed value is
-     *                 MAX_INT.
+     *                 MAX_INT.  The default value is '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#LIMIT
      *                 LIMIT}: A positive integer indicating the maximum number
      *                 of results to be returned from source table (specified
      *                 by {@code sourceTableName}). Or END_OF_SET (-9999) to
      *                 indicate that the max number of results should be
-     *                 returned.
+     *                 returned.  The default value is '-9999'.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
      *                 source table (specified by {@code sourceTableName}).
-     *                 Empty by default.
+     *                 Empty by default.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY
      *                 ORDER_BY}: Comma-separated list of the columns and
      *                 expressions to be sorted by from the source table
      *                 (specified by {@code sourceTableName}); e.g. 'timestamp
      *                 asc, x desc'.  The {@code order_by} columns do not have
-     *                 to be present in {@code fieldMap}.
+     *                 to be present in {@code fieldMap}.  The default value is
+     *                 ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
@@ -245,7 +286,29 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {true}@{, it allows to
+     *                 append unbounded string to charN string. If
+     *                 'truncate_strings' is 'true', the desination column is
+     *                 charN datatype, and the source column is unnbounded
+     *                 string, it will truncate the source string to length of
+     *                 N first, and then append the truncated string to the
+     *                 destination charN column. The default value is false.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
+     *                 FALSE}
      *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AppendRecordsRequest(String tableName, String sourceTableName, Map<String, String> fieldMap, Map<String, String> options) {
@@ -346,23 +409,26 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         A positive integer indicating the number of initial results to
      *         skip from source table (specified by {@code sourceTableName}).
      *         Default is 0. The minimum allowed value is 0. The maximum
-     *         allowed value is MAX_INT.
+     *         allowed value is MAX_INT.  The default value is '0'.
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#LIMIT LIMIT}: A
      *         positive integer indicating the maximum number of results to be
      *         returned from source table (specified by {@code
      *         sourceTableName}). Or END_OF_SET (-9999) to indicate that the
-     *         max number of results should be returned.
+     *         max number of results should be returned.  The default value is
+     *         '-9999'.
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION
      *         EXPRESSION}: Optional filter expression to apply to the source
      *         table (specified by {@code sourceTableName}). Empty by default.
+     *         The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY
      *         ORDER_BY}: Comma-separated list of the columns and expressions
      *         to be sorted by from the source table (specified by {@code
      *         sourceTableName}); e.g. 'timestamp asc, x desc'.  The {@code
      *         order_by} columns do not have to be present in {@code fieldMap}.
+     *         The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *         UPDATE_ON_EXISTING_PK}: Specifies the record collision policy
@@ -387,7 +453,25 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AppendRecordsRequest.Options#TRUNCATE_STRINGS
+     *         TRUNCATE_STRINGS}: If set to {true}@{, it allows to append
+     *         unbounded string to charN string. If 'truncate_strings' is
+     *         'true', the desination column is charN datatype, and the source
+     *         column is unnbounded string, it will truncate the source string
+     *         to length of N first, and then append the truncated string to
+     *         the destination charN column. The default value is false.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AppendRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}
      *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -404,26 +488,27 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 initial results to skip from source table (specified by
      *                 {@code sourceTableName}). Default is 0. The minimum
      *                 allowed value is 0. The maximum allowed value is
-     *                 MAX_INT.
+     *                 MAX_INT.  The default value is '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#LIMIT
      *                 LIMIT}: A positive integer indicating the maximum number
      *                 of results to be returned from source table (specified
      *                 by {@code sourceTableName}). Or END_OF_SET (-9999) to
      *                 indicate that the max number of results should be
-     *                 returned.
+     *                 returned.  The default value is '-9999'.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
      *                 source table (specified by {@code sourceTableName}).
-     *                 Empty by default.
+     *                 Empty by default.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#ORDER_BY
      *                 ORDER_BY}: Comma-separated list of the columns and
      *                 expressions to be sorted by from the source table
      *                 (specified by {@code sourceTableName}); e.g. 'timestamp
      *                 asc, x desc'.  The {@code order_by} columns do not have
-     *                 to be present in {@code fieldMap}.
+     *                 to be present in {@code fieldMap}.  The default value is
+     *                 ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
@@ -452,7 +537,29 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {true}@{, it allows to
+     *                 append unbounded string to charN string. If
+     *                 'truncate_strings' is 'true', the desination column is
+     *                 charN datatype, and the source column is unnbounded
+     *                 string, it will truncate the source string to length of
+     *                 N first, and then append the truncated string to the
+     *                 destination charN column. The default value is false.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
+     *                 FALSE}
      *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AppendRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

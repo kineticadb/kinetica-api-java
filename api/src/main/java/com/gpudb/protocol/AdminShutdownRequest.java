@@ -60,7 +60,8 @@ public class AdminShutdownRequest implements IndexedRecord {
      * 
      * @param exitType  Reserved for future use. User can pass an empty string.
      * @param authorization  No longer used. User can pass an empty string.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public AdminShutdownRequest(String exitType, String authorization, Map<String, String> options) {
@@ -113,7 +114,7 @@ public class AdminShutdownRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -122,7 +123,8 @@ public class AdminShutdownRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -81,6 +81,7 @@ public class FilterByListRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.FilterByListRequest.Options#IN_LIST IN_LIST}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -154,7 +155,7 @@ public class FilterByListRequest implements IndexedRecord {
      *                  containing the results. Has the same naming
      *                  restrictions as <a
      *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.
+     *                  target="_top">tables</a>.  The default value is ''.
      * @param columnValuesMap  List of values for the corresponding column in
      *                         the table
      * @param options  Optional parameters.
@@ -185,6 +186,7 @@ public class FilterByListRequest implements IndexedRecord {
      *                 com.gpudb.protocol.FilterByListRequest.Options#IN_LIST
      *                 IN_LIST}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public FilterByListRequest(String tableName, String viewName, Map<String, List<String>> columnValuesMap, Map<String, String> options) {
@@ -230,7 +232,7 @@ public class FilterByListRequest implements IndexedRecord {
      * @return If provided, then this will be the name of the view containing
      *         the results. Has the same naming restrictions as <a
      *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.
+     *         target="_top">tables</a>.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -243,7 +245,7 @@ public class FilterByListRequest implements IndexedRecord {
      *                  containing the results. Has the same naming
      *                  restrictions as <a
      *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.
+     *                  target="_top">tables</a>.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -303,6 +305,7 @@ public class FilterByListRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.FilterByListRequest.Options#IN_LIST IN_LIST}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -339,6 +342,7 @@ public class FilterByListRequest implements IndexedRecord {
      *                 com.gpudb.protocol.FilterByListRequest.Options#IN_LIST
      *                 IN_LIST}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

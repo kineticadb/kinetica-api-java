@@ -56,7 +56,8 @@ public class HasTypeRequest implements IndexedRecord {
      * 
      * @param typeId  Id of the type returned in response to {@link
      *                com.gpudb.GPUdb#createType(CreateTypeRequest)} request.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public HasTypeRequest(String typeId, Map<String, String> options) {
@@ -89,7 +90,7 @@ public class HasTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -98,7 +99,8 @@ public class HasTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

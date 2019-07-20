@@ -54,7 +54,8 @@ public class ShowSystemStatusRequest implements IndexedRecord {
      * Constructs a ShowSystemStatusRequest object with the specified
      * parameters.
      * 
-     * @param options  Optional parameters, currently unused.
+     * @param options  Optional parameters, currently unused.  The default
+     *                 value is an empty {@link Map}.
      * 
      */
     public ShowSystemStatusRequest(Map<String, String> options) {
@@ -63,7 +64,8 @@ public class ShowSystemStatusRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters, currently unused.
+     * @return Optional parameters, currently unused.  The default value is an
+     *         empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -72,7 +74,8 @@ public class ShowSystemStatusRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters, currently unused.
+     * @param options  Optional parameters, currently unused.  The default
+     *                 value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -93,7 +93,7 @@ public class ShowTableResponse implements IndexedRecord {
     public static final class AdditionalInfo {
 
         /**
-         * method by which this table was created.
+         * Method by which this table was created.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -113,7 +113,7 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String CREATE_UNION = "create_union";
 
         /**
-         * The json representation of request creating this table.
+         * The JSON representation of request creating this table.
          */
         public static final String REQUEST_AVRO_JSON = "request_avro_json";
 
@@ -191,8 +191,8 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String FOREIGN_KEYS = "foreign_keys";
 
         /**
-         * Foreign shard key description of the format: <fk_foreign_key>
-         * references <pk_column_name> from <pk_table_name>(<pk_primary_key>).
+         * Foreign shard key description of the format '<fk_foreign_key>
+         * references <pk_column_name> from <pk_table_name>(<pk_primary_key>)'.
          * Not present for collections.
          */
         public static final String FOREIGN_SHARD_KEY = "foreign_shard_key";
@@ -215,7 +215,7 @@ public class ShowTableResponse implements IndexedRecord {
 
         /**
          * JSON-encoded string representing a map of column name to information
-         * including memory usage if if the {@code get_column_info} option is
+         * including memory usage if the {@code get_column_info} option is
          * {@code true}.
          */
         public static final String COLUMN_INFO = "column_info";
@@ -261,51 +261,82 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String READ_WRITE = "read_write";
 
         /**
-         * for materialized view the name of the view this member table is part
-         * of - if same as the table_name then this is the root of the view
+         * If this entity is a member of a materialized view, the name of that
+         * view.  If this name is the same as the view's name, then this is the
+         * root of the view.
          */
         public static final String VIEW_TABLE_NAME = "view_table_name";
 
         /**
-         * true if the view named view_table_name is persisted - reported for
-         * each view member.  Means method of recreating this member is saved -
-         * not the members data
+         * If this entity is a member of a materialized view, whether that view
+         * is persisted.  If true, signifies that the method of recreating this
+         * member is saved, but not its data.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#FALSE FALSE}
+         * </ul>
          */
         public static final String IS_VIEW_PERSISTED = "is_view_persisted";
 
         /**
-         * true if some input table of the materialized view that affects this
-         * member table has been modified since the last refresh
+         * If this entity is a member of a materialized view, whether some
+         * input table of the materialized view that affects this member table
+         * has been modified since the last refresh.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#FALSE FALSE}
+         * </ul>
          */
         public static final String IS_DIRTY = "is_dirty";
 
         /**
-         * for materialized view current refresh_method - one of manual,
-         * periodic, on_change
+         * If this entity is a member of a materialized view, the current
+         * refresh method of that view.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#MANUAL MANUAL}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#PERIODIC
+         * PERIODIC}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#ON_CHANGE
+         * ON_CHANGE}
+         * </ul>
          */
         public static final String REFRESH_METHOD = "refresh_method";
+        public static final String MANUAL = "manual";
+        public static final String PERIODIC = "periodic";
+        public static final String ON_CHANGE = "on_change";
 
         /**
-         * for materialized view with periodic refresh_method the current
-         * intial datetime string that periodic refreshes began
+         * If this entity is a member of a materialized view with a periodic
+         * refresh method, the current initial date/time that the view's
+         * periodic refreshes began
          */
         public static final String REFRESH_START_TIME = "refresh_start_time";
 
         /**
-         * for materialized view with periodic refresh_method the current
-         * refresh period in seconds
+         * If this entity is a member of a materialized view with a periodic
+         * refresh method, the current refresh period of that view in seconds.
          */
         public static final String REFRESH_PERIOD = "refresh_period";
 
         /**
-         * for materialized view the a datatime string indicating the last time
-         * the view was refreshed
+         * If this entity is a member of a materialized view, the last
+         * date/time that view was refreshed.
          */
         public static final String LAST_REFRESH_TIME = "last_refresh_time";
 
         /**
-         * for materialized with periodic refresh_method a datetime string
-         * indicating the next time the view is to be refreshed
+         * If this entity is a member of a materialized view with a periodic
+         * refresh method, the next date/time that view is to be refreshed.
          */
         public static final String NEXT_REFRESH_TIME = "next_refresh_time";
 

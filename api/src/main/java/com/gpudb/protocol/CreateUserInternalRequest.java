@@ -66,7 +66,8 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *              role.
      * @param password  Initial password of the user to be created. May be an
      *                  empty string for no password.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public CreateUserInternalRequest(String name, String password, Map<String, String> options) {
@@ -126,7 +127,7 @@ public class CreateUserInternalRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -135,7 +136,8 @@ public class CreateUserInternalRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -89,7 +89,8 @@ public class CreateTriggerByRangeRequest implements IndexedRecord {
      *                    activated.
      * @param min  The lower bound (inclusive) for the trigger range.
      * @param max  The upper bound (inclusive) for the trigger range.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public CreateTriggerByRangeRequest(String requestId, List<String> tableNames, String columnName, double min, double max, Map<String, String> options) {
@@ -212,7 +213,7 @@ public class CreateTriggerByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -221,7 +222,8 @@ public class CreateTriggerByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

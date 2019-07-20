@@ -70,7 +70,8 @@ public class AggregateConvexHullRequest implements IndexedRecord {
      *                     the points for the operation being performed.
      * @param yColumnName  Name of the column containing the y coordinates of
      *                     the points for the operation being performed.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public AggregateConvexHullRequest(String tableName, String xColumnName, String yColumnName, Map<String, String> options) {
@@ -152,7 +153,7 @@ public class AggregateConvexHullRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -161,7 +162,8 @@ public class AggregateConvexHullRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

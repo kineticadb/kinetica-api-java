@@ -24,7 +24,7 @@ import org.apache.avro.generic.IndexedRecord;
  * and any additional optional parameter (e.g. color). To have a symbol used
  * for rendering create a table with a string column named 'SYMBOLCODE' (along
  * with 'x' or 'y' for example). Then when the table is rendered (via <a
- * href="../../../../rest/wms_rest.html" target="_top">WMS</a>) if the
+ * href="../../../../../api/rest/wms_rest.html" target="_top">WMS</a>) if the
  * 'dosymbology' parameter is 'true' then the value of the 'SYMBOLCODE' column
  * is used to pick the symbol displayed for each point.
  */
@@ -81,6 +81,7 @@ public class InsertSymbolRequest implements IndexedRecord {
      * in red, used 'FF0000'. If 'color' is not provided then '00FF00' (i.e.
      * green) is used by default.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -146,6 +147,7 @@ public class InsertSymbolRequest implements IndexedRecord {
      *                 used 'FF0000'. If 'color' is not provided then '00FF00'
      *                 (i.e. green) is used by default.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public InsertSymbolRequest(String symbolId, String symbolFormat, ByteBuffer symbolData, Map<String, String> options) {
@@ -260,6 +262,7 @@ public class InsertSymbolRequest implements IndexedRecord {
      *         path rendered in red, used 'FF0000'. If 'color' is not provided
      *         then '00FF00' (i.e. green) is used by default.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -279,6 +282,7 @@ public class InsertSymbolRequest implements IndexedRecord {
      *                 used 'FF0000'. If 'color' is not provided then '00FF00'
      *                 (i.e. green) is used by default.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

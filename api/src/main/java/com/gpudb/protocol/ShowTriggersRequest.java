@@ -61,7 +61,8 @@ public class ShowTriggersRequest implements IndexedRecord {
      * @param triggerIds  List of IDs of the triggers whose information is to
      *                    be retrieved. An empty list means information will be
      *                    retrieved on all active triggers.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public ShowTriggersRequest(List<String> triggerIds, Map<String, String> options) {
@@ -96,7 +97,7 @@ public class ShowTriggersRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -105,7 +106,8 @@ public class ShowTriggersRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

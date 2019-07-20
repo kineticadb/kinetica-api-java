@@ -104,7 +104,8 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
      *                 the trigger is activated. This usually translates to the
      *                 y-coordinates of a geospatial region. Must be the same
      *                 length as xvals.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public CreateTriggerByAreaRequest(String requestId, List<String> tableNames, String xColumnName, List<Double> xVector, String yColumnName, List<Double> yVector, Map<String, String> options) {
@@ -265,7 +266,7 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -274,7 +275,8 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

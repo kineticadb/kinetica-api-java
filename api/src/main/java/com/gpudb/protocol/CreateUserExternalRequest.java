@@ -60,7 +60,8 @@ public class CreateUserExternalRequest implements IndexedRecord {
      * @param name  Name of the user to be created. Must exactly match the
      *              user's name in the external LDAP, prefixed with a @. Must
      *              not be the same name as an existing user.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public CreateUserExternalRequest(String name, Map<String, String> options) {
@@ -95,7 +96,7 @@ public class CreateUserExternalRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -104,7 +105,8 @@ public class CreateUserExternalRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

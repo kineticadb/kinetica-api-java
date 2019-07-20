@@ -89,7 +89,8 @@ public class FilterByTableRequest implements IndexedRecord {
      * com.gpudb.protocol.FilterByTableRequest.Options#NORMAL NORMAL}.
      *         <li> {@link
      * com.gpudb.protocol.FilterByTableRequest.Options#BUFFER BUFFER}: Buffer
-     * size, in meters. Only relevant for {@code spatial} mode.
+     * size, in meters. Only relevant for {@code spatial} mode.  The default
+     * value is '0'.
      *         <li> {@link
      * com.gpudb.protocol.FilterByTableRequest.Options#BUFFER_METHOD
      * BUFFER_METHOD}: Method used to buffer polygons.  Only relevant for
@@ -106,20 +107,21 @@ public class FilterByTableRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.FilterByTableRequest.Options#MAX_PARTITION_SIZE
      * MAX_PARTITION_SIZE}: Maximum number of points in a partition. Only
-     * relevant for {@code spatial} mode.
+     * relevant for {@code spatial} mode.  The default value is '0'.
      *         <li> {@link
      * com.gpudb.protocol.FilterByTableRequest.Options#MAX_PARTITION_SCORE
      * MAX_PARTITION_SCORE}: Maximum number of points * edges in a partition.
-     * Only relevant for {@code spatial} mode.
+     * Only relevant for {@code spatial} mode.  The default value is '8000000'.
      *         <li> {@link
      * com.gpudb.protocol.FilterByTableRequest.Options#X_COLUMN_NAME
      * X_COLUMN_NAME}: Name of column containing x value of point being
-     * filtered in {@code spatial} mode.
+     * filtered in {@code spatial} mode.  The default value is 'x'.
      *         <li> {@link
      * com.gpudb.protocol.FilterByTableRequest.Options#Y_COLUMN_NAME
      * Y_COLUMN_NAME}: Name of column containing y value of point being
-     * filtered in {@code spatial} mode.
+     * filtered in {@code spatial} mode.  The default value is 'y'.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -167,7 +169,8 @@ public class FilterByTableRequest implements IndexedRecord {
         public static final String SPATIAL = "spatial";
 
         /**
-         * Buffer size, in meters. Only relevant for {@code spatial} mode.
+         * Buffer size, in meters. Only relevant for {@code spatial} mode.  The
+         * default value is '0'.
          */
         public static final String BUFFER = "buffer";
 
@@ -194,25 +197,25 @@ public class FilterByTableRequest implements IndexedRecord {
 
         /**
          * Maximum number of points in a partition. Only relevant for {@code
-         * spatial} mode.
+         * spatial} mode.  The default value is '0'.
          */
         public static final String MAX_PARTITION_SIZE = "max_partition_size";
 
         /**
          * Maximum number of points * edges in a partition. Only relevant for
-         * {@code spatial} mode.
+         * {@code spatial} mode.  The default value is '8000000'.
          */
         public static final String MAX_PARTITION_SCORE = "max_partition_score";
 
         /**
          * Name of column containing x value of point being filtered in {@code
-         * spatial} mode.
+         * spatial} mode.  The default value is 'x'.
          */
         public static final String X_COLUMN_NAME = "x_column_name";
 
         /**
          * Name of column containing y value of point being filtered in {@code
-         * spatial} mode.
+         * spatial} mode.  The default value is 'y'.
          */
         public static final String Y_COLUMN_NAME = "y_column_name";
 
@@ -248,7 +251,7 @@ public class FilterByTableRequest implements IndexedRecord {
      *                  containing the results. Has the same naming
      *                  restrictions as <a
      *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.
+     *                  target="_top">tables</a>.  The default value is ''.
      * @param columnName  Name of the column by whose value the data will be
      *                    filtered from the table designated by {@code
      *                    tableName}.
@@ -305,7 +308,7 @@ public class FilterByTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#BUFFER
      *                 BUFFER}: Buffer size, in meters. Only relevant for
-     *                 {@code spatial} mode.
+     *                 {@code spatial} mode.  The default value is '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#BUFFER_METHOD
      *                 BUFFER_METHOD}: Method used to buffer polygons.  Only
@@ -325,20 +328,25 @@ public class FilterByTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#MAX_PARTITION_SIZE
      *                 MAX_PARTITION_SIZE}: Maximum number of points in a
-     *                 partition. Only relevant for {@code spatial} mode.
+     *                 partition. Only relevant for {@code spatial} mode.  The
+     *                 default value is '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#MAX_PARTITION_SCORE
      *                 MAX_PARTITION_SCORE}: Maximum number of points * edges
      *                 in a partition. Only relevant for {@code spatial} mode.
+     *                 The default value is '8000000'.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#X_COLUMN_NAME
      *                 X_COLUMN_NAME}: Name of column containing x value of
-     *                 point being filtered in {@code spatial} mode.
+     *                 point being filtered in {@code spatial} mode.  The
+     *                 default value is 'x'.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#Y_COLUMN_NAME
      *                 Y_COLUMN_NAME}: Name of column containing y value of
-     *                 point being filtered in {@code spatial} mode.
+     *                 point being filtered in {@code spatial} mode.  The
+     *                 default value is 'y'.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public FilterByTableRequest(String tableName, String viewName, String columnName, String sourceTableName, String sourceTableColumnName, Map<String, String> options) {
@@ -378,7 +386,7 @@ public class FilterByTableRequest implements IndexedRecord {
      * @return If provided, then this will be the name of the view containing
      *         the results. Has the same naming restrictions as <a
      *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.
+     *         target="_top">tables</a>.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -391,7 +399,7 @@ public class FilterByTableRequest implements IndexedRecord {
      *                  containing the results. Has the same naming
      *                  restrictions as <a
      *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.
+     *                  target="_top">tables</a>.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -519,6 +527,7 @@ public class FilterByTableRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.FilterByTableRequest.Options#BUFFER BUFFER}:
      *         Buffer size, in meters. Only relevant for {@code spatial} mode.
+     *         The default value is '0'.
      *                 <li> {@link
      *         com.gpudb.protocol.FilterByTableRequest.Options#BUFFER_METHOD
      *         BUFFER_METHOD}: Method used to buffer polygons.  Only relevant
@@ -536,20 +545,23 @@ public class FilterByTableRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.FilterByTableRequest.Options#MAX_PARTITION_SIZE
      *         MAX_PARTITION_SIZE}: Maximum number of points in a partition.
-     *         Only relevant for {@code spatial} mode.
+     *         Only relevant for {@code spatial} mode.  The default value is
+     *         '0'.
      *                 <li> {@link
      *         com.gpudb.protocol.FilterByTableRequest.Options#MAX_PARTITION_SCORE
      *         MAX_PARTITION_SCORE}: Maximum number of points * edges in a
-     *         partition. Only relevant for {@code spatial} mode.
+     *         partition. Only relevant for {@code spatial} mode.  The default
+     *         value is '8000000'.
      *                 <li> {@link
      *         com.gpudb.protocol.FilterByTableRequest.Options#X_COLUMN_NAME
      *         X_COLUMN_NAME}: Name of column containing x value of point being
-     *         filtered in {@code spatial} mode.
+     *         filtered in {@code spatial} mode.  The default value is 'x'.
      *                 <li> {@link
      *         com.gpudb.protocol.FilterByTableRequest.Options#Y_COLUMN_NAME
      *         Y_COLUMN_NAME}: Name of column containing y value of point being
-     *         filtered in {@code spatial} mode.
+     *         filtered in {@code spatial} mode.  The default value is 'y'.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -602,7 +614,7 @@ public class FilterByTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#BUFFER
      *                 BUFFER}: Buffer size, in meters. Only relevant for
-     *                 {@code spatial} mode.
+     *                 {@code spatial} mode.  The default value is '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#BUFFER_METHOD
      *                 BUFFER_METHOD}: Method used to buffer polygons.  Only
@@ -622,20 +634,25 @@ public class FilterByTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#MAX_PARTITION_SIZE
      *                 MAX_PARTITION_SIZE}: Maximum number of points in a
-     *                 partition. Only relevant for {@code spatial} mode.
+     *                 partition. Only relevant for {@code spatial} mode.  The
+     *                 default value is '0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#MAX_PARTITION_SCORE
      *                 MAX_PARTITION_SCORE}: Maximum number of points * edges
      *                 in a partition. Only relevant for {@code spatial} mode.
+     *                 The default value is '8000000'.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#X_COLUMN_NAME
      *                 X_COLUMN_NAME}: Name of column containing x value of
-     *                 point being filtered in {@code spatial} mode.
+     *                 point being filtered in {@code spatial} mode.  The
+     *                 default value is 'x'.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#Y_COLUMN_NAME
      *                 Y_COLUMN_NAME}: Name of column containing y value of
-     *                 point being filtered in {@code spatial} mode.
+     *                 point being filtered in {@code spatial} mode.  The
+     *                 default value is 'y'.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -239,9 +239,14 @@ public class CreateTypeRequest implements IndexedRecord {
      *         <li> {@link com.gpudb.protocol.CreateTypeRequest.Properties#DICT
      * DICT}: This property indicates that this column should be dictionary
      * encoded. It can only be used in conjunction with string columns marked
-     * with a charN property. This property is appropriate for columns where
-     * the cardinality (the number of unique values) is expected to be low, and
-     * can save a large amount of memory.
+     * with a charN or date property or with int or long columns. This property
+     * is appropriate for columns where the cardinality (the number of unique
+     * values) is expected to be low, and can save a large amount of memory.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_NOW
+     * INIT_WITH_NOW}: For columns with attributes of date, time, datetime or
+     * timestamp, at insert time, replace empty strings and invalid timestamps
+     * with NOW()
      * </ul>
      * A set of string constants for the parameter {@code properties}.
      */
@@ -454,11 +459,18 @@ public class CreateTypeRequest implements IndexedRecord {
         /**
          * This property indicates that this column should be dictionary
          * encoded. It can only be used in conjunction with string columns
-         * marked with a charN property. This property is appropriate for
-         * columns where the cardinality (the number of unique values) is
-         * expected to be low, and can save a large amount of memory.
+         * marked with a charN or date property or with int or long columns.
+         * This property is appropriate for columns where the cardinality (the
+         * number of unique values) is expected to be low, and can save a large
+         * amount of memory.
          */
         public static final String DICT = "dict";
+
+        /**
+         * For columns with attributes of date, time, datetime or timestamp, at
+         * insert time, replace empty strings and invalid timestamps with NOW()
+         */
+        public static final String INIT_WITH_NOW = "init_with_now";
 
         private Properties() {  }
     }
@@ -685,12 +697,18 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    DICT}: This property indicates that this column
      *                    should be dictionary encoded. It can only be used in
      *                    conjunction with string columns marked with a charN
-     *                    property. This property is appropriate for columns
-     *                    where the cardinality (the number of unique values)
-     *                    is expected to be low, and can save a large amount of
-     *                    memory.
+     *                    or date property or with int or long columns. This
+     *                    property is appropriate for columns where the
+     *                    cardinality (the number of unique values) is expected
+     *                    to be low, and can save a large amount of memory.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_NOW
+     *                    INIT_WITH_NOW}: For columns with attributes of date,
+     *                    time, datetime or timestamp, at insert time, replace
+     *                    empty strings and invalid timestamps with NOW()
      *                    </ul>
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public CreateTypeRequest(String typeDefinition, String label, Map<String, List<String>> properties, Map<String, String> options) {
@@ -921,9 +939,15 @@ public class CreateTypeRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTypeRequest.Properties#DICT DICT}: This
      *         property indicates that this column should be dictionary
      *         encoded. It can only be used in conjunction with string columns
-     *         marked with a charN property. This property is appropriate for
-     *         columns where the cardinality (the number of unique values) is
-     *         expected to be low, and can save a large amount of memory.
+     *         marked with a charN or date property or with int or long
+     *         columns. This property is appropriate for columns where the
+     *         cardinality (the number of unique values) is expected to be low,
+     *         and can save a large amount of memory.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_NOW
+     *         INIT_WITH_NOW}: For columns with attributes of date, time,
+     *         datetime or timestamp, at insert time, replace empty strings and
+     *         invalid timestamps with NOW()
      *         </ul>
      * 
      */
@@ -1131,10 +1155,15 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    DICT}: This property indicates that this column
      *                    should be dictionary encoded. It can only be used in
      *                    conjunction with string columns marked with a charN
-     *                    property. This property is appropriate for columns
-     *                    where the cardinality (the number of unique values)
-     *                    is expected to be low, and can save a large amount of
-     *                    memory.
+     *                    or date property or with int or long columns. This
+     *                    property is appropriate for columns where the
+     *                    cardinality (the number of unique values) is expected
+     *                    to be low, and can save a large amount of memory.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_NOW
+     *                    INIT_WITH_NOW}: For columns with attributes of date,
+     *                    time, datetime or timestamp, at insert time, replace
+     *                    empty strings and invalid timestamps with NOW()
      *                    </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -1147,7 +1176,7 @@ public class CreateTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -1156,7 +1185,8 @@ public class CreateTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

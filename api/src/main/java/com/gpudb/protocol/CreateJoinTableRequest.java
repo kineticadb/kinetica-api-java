@@ -60,6 +60,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * COLLECTION_NAME}: Name of a collection which is to contain the join. If
      * the collection provided is non-existent, the collection will be
      * automatically created. If empty, then the join will be at the top level.
+     * The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
      * MAX_QUERY_DIMENSIONS}: The maximum number of tables in a join that can
@@ -136,12 +137,24 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * refresh_method} is either {@code on_insert} or {@code on_query}.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID VIEW_ID}: view
-     * this projection is part of
+     * this projection is part of.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT NO_COUNT}:
      * return a count of 0 for the join table for logging and for show_table.
-     * optimization needed for large overlapped equi-join stencils
+     * optimization needed for large overlapped equi-join stencils.  The
+     * default value is 'false'.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
+     * CHUNK_SIZE}: Maximum size of a joined-chunk for this table. Defaults to
+     * the gpudb.conf file chunk size
+     *         <li> {@link
+     * com.gpudb.protocol.CreateJoinTableRequest.Options#ALLOW_RIGHT_PRIMARY_KEY_JOIN
+     * ALLOW_RIGHT_PRIMARY_KEY_JOIN}: When true allows right joins from a key
+     * to a primary key to be done as primary key joins.  Such a join table
+     * cannot be joined to other join tables.  When false the right join shall
+     * be done as an equi-join.  The default value is 'false'.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -149,7 +162,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
         /**
          * Name of a collection which is to contain the join. If the collection
          * provided is non-existent, the collection will be automatically
-         * created. If empty, then the join will be at the top level.
+         * created. If empty, then the join will be at the top level.  The
+         * default value is ''.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -264,16 +278,30 @@ public class CreateJoinTableRequest implements IndexedRecord {
         public static final String TTL = "ttl";
 
         /**
-         * view this projection is part of
+         * view this projection is part of.  The default value is ''.
          */
         public static final String VIEW_ID = "view_id";
 
         /**
          * return a count of 0 for the join table for logging and for
          * show_table. optimization needed for large overlapped equi-join
-         * stencils
+         * stencils.  The default value is 'false'.
          */
         public static final String NO_COUNT = "no_count";
+
+        /**
+         * Maximum size of a joined-chunk for this table. Defaults to the
+         * gpudb.conf file chunk size
+         */
+        public static final String CHUNK_SIZE = "chunk_size";
+
+        /**
+         * When true allows right joins from a key to a primary key to be done
+         * as primary key joins.  Such a join table cannot be joined to other
+         * join tables.  When false the right join shall be done as an
+         * equi-join.  The default value is 'false'.
+         */
+        public static final String ALLOW_RIGHT_PRIMARY_KEY_JOIN = "allow_right_primary_key_join";
 
         private Options() {  }
     }
@@ -321,7 +349,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                     filter the joined tables.  Corresponds to a SQL
      *                     statement WHERE clause. For details see: <a
      *                     href="../../../../../concepts/expressions.html"
-     *                     target="_top">expressions</a>.
+     *                     target="_top">expressions</a>.  The default value is
+     *                     an empty {@link List}.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -330,7 +359,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 contain the join. If the collection provided is
      *                 non-existent, the collection will be automatically
      *                 created. If empty, then the join will be at the top
-     *                 level.
+     *                 level.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
      *                 MAX_QUERY_DIMENSIONS}: The maximum number of tables in a
@@ -424,13 +453,27 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 on_query}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this projection is part of
+     *                 VIEW_ID}: view this projection is part of.  The default
+     *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT
      *                 NO_COUNT}: return a count of 0 for the join table for
      *                 logging and for show_table. optimization needed for
-     *                 large overlapped equi-join stencils
+     *                 large overlapped equi-join stencils.  The default value
+     *                 is 'false'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
+     *                 CHUNK_SIZE}: Maximum size of a joined-chunk for this
+     *                 table. Defaults to the gpudb.conf file chunk size
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#ALLOW_RIGHT_PRIMARY_KEY_JOIN
+     *                 ALLOW_RIGHT_PRIMARY_KEY_JOIN}: When true allows right
+     *                 joins from a key to a primary key to be done as primary
+     *                 key joins.  Such a join table cannot be joined to other
+     *                 join tables.  When false the right join shall be done as
+     *                 an equi-join.  The default value is 'false'.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public CreateJoinTableRequest(String joinTableName, List<String> tableNames, List<String> columnNames, List<String> expressions, Map<String, String> options) {
@@ -534,7 +577,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * @return An optional list of expressions to combine and filter the joined
      *         tables.  Corresponds to a SQL statement WHERE clause. For
      *         details see: <a href="../../../../../concepts/expressions.html"
-     *         target="_top">expressions</a>.
+     *         target="_top">expressions</a>.  The default value is an empty
+     *         {@link List}.
      * 
      */
     public List<String> getExpressions() {
@@ -547,7 +591,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                     filter the joined tables.  Corresponds to a SQL
      *                     statement WHERE clause. For details see: <a
      *                     href="../../../../../concepts/expressions.html"
-     *                     target="_top">expressions</a>.
+     *                     target="_top">expressions</a>.  The default value is
+     *                     an empty {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -566,7 +611,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         COLLECTION_NAME}: Name of a collection which is to contain the
      *         join. If the collection provided is non-existent, the collection
      *         will be automatically created. If empty, then the join will be
-     *         at the top level.
+     *         at the top level.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
      *         MAX_QUERY_DIMENSIONS}: The maximum number of tables in a join
@@ -652,13 +697,26 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         {@code on_insert} or {@code on_query}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
-     *         VIEW_ID}: view this projection is part of
+     *         VIEW_ID}: view this projection is part of.  The default value is
+     *         ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT
      *         NO_COUNT}: return a count of 0 for the join table for logging
      *         and for show_table. optimization needed for large overlapped
-     *         equi-join stencils
+     *         equi-join stencils.  The default value is 'false'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
+     *         CHUNK_SIZE}: Maximum size of a joined-chunk for this table.
+     *         Defaults to the gpudb.conf file chunk size
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateJoinTableRequest.Options#ALLOW_RIGHT_PRIMARY_KEY_JOIN
+     *         ALLOW_RIGHT_PRIMARY_KEY_JOIN}: When true allows right joins from
+     *         a key to a primary key to be done as primary key joins.  Such a
+     *         join table cannot be joined to other join tables.  When false
+     *         the right join shall be done as an equi-join.  The default value
+     *         is 'false'.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -675,7 +733,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 contain the join. If the collection provided is
      *                 non-existent, the collection will be automatically
      *                 created. If empty, then the join will be at the top
-     *                 level.
+     *                 level.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
      *                 MAX_QUERY_DIMENSIONS}: The maximum number of tables in a
@@ -769,13 +827,27 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 on_query}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this projection is part of
+     *                 VIEW_ID}: view this projection is part of.  The default
+     *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#NO_COUNT
      *                 NO_COUNT}: return a count of 0 for the join table for
      *                 logging and for show_table. optimization needed for
-     *                 large overlapped equi-join stencils
+     *                 large overlapped equi-join stencils.  The default value
+     *                 is 'false'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
+     *                 CHUNK_SIZE}: Maximum size of a joined-chunk for this
+     *                 table. Defaults to the gpudb.conf file chunk size
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#ALLOW_RIGHT_PRIMARY_KEY_JOIN
+     *                 ALLOW_RIGHT_PRIMARY_KEY_JOIN}: When true allows right
+     *                 joins from a key to a primary key to be done as primary
+     *                 key joins.  Such a join table cannot be joined to other
+     *                 join tables.  When false the right join shall be done as
+     *                 an equi-join.  The default value is 'false'.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

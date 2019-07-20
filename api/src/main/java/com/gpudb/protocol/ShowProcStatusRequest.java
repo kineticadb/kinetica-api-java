@@ -63,6 +63,7 @@ public class ShowProcStatusRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE FALSE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -107,7 +108,7 @@ public class ShowProcStatusRequest implements IndexedRecord {
      *               instance for which the status will be returned. If the run
      *               ID is not found, nothing will be returned. If not
      *               specified, the statuses of all running and completed proc
-     *               instances will be returned.
+     *               instances will be returned.  The default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -129,6 +130,7 @@ public class ShowProcStatusRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public ShowProcStatusRequest(String runId, Map<String, String> options) {
@@ -141,7 +143,8 @@ public class ShowProcStatusRequest implements IndexedRecord {
      * @return The run ID of a specific running or completed proc instance for
      *         which the status will be returned. If the run ID is not found,
      *         nothing will be returned. If not specified, the statuses of all
-     *         running and completed proc instances will be returned.
+     *         running and completed proc instances will be returned.  The
+     *         default value is ''.
      * 
      */
     public String getRunId() {
@@ -154,7 +157,7 @@ public class ShowProcStatusRequest implements IndexedRecord {
      *               instance for which the status will be returned. If the run
      *               ID is not found, nothing will be returned. If not
      *               specified, the statuses of all running and completed proc
-     *               instances will be returned.
+     *               instances will be returned.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -184,6 +187,7 @@ public class ShowProcStatusRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE FALSE}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -213,6 +217,7 @@ public class ShowProcStatusRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -192,8 +192,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * Must be used in combination with the {@code result_table} option.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID VIEW_ID}: view
-     * this result table is part of
+     * this result table is part of.  The default value is ''.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -305,7 +306,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
         public static final String CHUNK_SIZE = "chunk_size";
 
         /**
-         * view this result table is part of
+         * view this result table is part of.  The default value is ''.
          */
         public static final String VIEW_ID = "view_id";
 
@@ -345,7 +346,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned. Or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.
+     *               that the max number of results should be returned.  The
+     *               default value is 10000.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -452,8 +454,10 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of
+     *                 VIEW_ID}: view this result table is part of.  The
+     *                 default value is ''.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AggregateUniqueRequest(String tableName, String columnName, long offset, long limit, Map<String, String> options) {
@@ -480,7 +484,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned. Or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.
+     *               that the max number of results should be returned.  The
+     *               default value is 10000.
      * @param encoding  Specifies the encoding for returned records.
      *                  Supported values:
      *                  <ul>
@@ -602,8 +607,10 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of
+     *                 VIEW_ID}: view this result table is part of.  The
+     *                 default value is ''.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AggregateUniqueRequest(String tableName, String columnName, long offset, long limit, String encoding, Map<String, String> options) {
@@ -693,7 +700,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * 
      * @return A positive integer indicating the maximum number of results to
      *         be returned. Or END_OF_SET (-9999) to indicate that the max
-     *         number of results should be returned.
+     *         number of results should be returned.  The default value is
+     *         10000.
      * 
      */
     public long getLimit() {
@@ -704,7 +712,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * 
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned. Or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.
+     *               that the max number of results should be returned.  The
+     *               default value is 10000.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -858,8 +867,10 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         option.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID
-     *         VIEW_ID}: view this result table is part of
+     *         VIEW_ID}: view this result table is part of.  The default value
+     *         is ''.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -974,8 +985,10 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of
+     *                 VIEW_ID}: view this result table is part of.  The
+     *                 default value is ''.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

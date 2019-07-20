@@ -30,26 +30,11 @@ import org.apache.avro.generic.IndexedRecord;
  * target="_top">Projection Limitations and Cautions</a>.
  * <p>
  * <a href="../../../../../concepts/window.html" target="_top">Window
- * functions</a> are available through this endpoint as well as {@link
+ * functions</a>, which can perform operations like moving averages, are
+ * available through this endpoint as well as {@link
  * com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
  * <p>
- * Notes:
- * <p>
- * A moving average can be calculated on a given column using the following
- * syntax in the {@code columnNames} parameter:
- * <p>
- * 'moving_average(column_name,num_points_before,num_points_after) as
- * new_column_name'
- * <p>
- * For each record in the moving_average function's 'column_name' parameter, it
- * computes the average over the previous 'num_points_before' records and the
- * subsequent 'num_points_after' records.
- * <p>
- * Note that moving average relies on {@code order_by}, and {@code order_by}
- * requires that all the data being ordered resides on the same processing
- * node, so it won't make sense to use {@code order_by} without moving average.
- * <p>
- * Also, a projection can be created with a different <a
+ * A projection can be created with a different <a
  * href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
  * key</a> than the source table.  By specifying {@code shard_key}, the
  * projection will be sharded according to the specified columns, regardless of
@@ -90,13 +75,13 @@ public class CreateProjectionRequest implements IndexedRecord {
      * target="_top">collection</a> to which the projection is to be assigned
      * as a child. If the collection provided is non-existent, the collection
      * will be automatically created. If empty, then the projection will be at
-     * the top level.
+     * the top level.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      * EXPRESSION}: An optional filter <a
      * href="../../../../../concepts/expressions.html"
      * target="_top">expression</a> to be applied to the source table prior to
-     * the projection.
+     * the projection.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#IS_REPLICATED
      * IS_REPLICATED}: If {@code true} then the projection will be replicated
@@ -112,13 +97,13 @@ public class CreateProjectionRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT LIMIT}: The
-     * number of records to keep.
+     * number of records to keep.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#ORDER_BY ORDER_BY}:
      * Comma-separated list of the columns to be sorted by; e.g. 'timestamp
      * asc, x desc'.  The columns specified must be present in {@code
      * columnNames}.  If any alias is given for any column name, the alias must
-     * be used, rather than the original column name.
+     * be used, rather than the original column name.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
      * MATERIALIZE_ON_GPU}: If {@code true} then the columns of the projection
@@ -150,7 +135,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      * Comma-separated list of the columns to be sharded on; e.g. 'column1,
      * column2'.  The columns specified must be present in {@code columnNames}.
      * If any alias is given for any column name, the alias must be used,
-     * rather than the original column name.
+     * rather than the original column name.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#PERSIST PERSIST}: If
      * {@code true}, then the projection specified in {@code projectionName}
@@ -179,11 +164,12 @@ public class CreateProjectionRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
      * </ul>
      * The default value is {@link
-     * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}.
+     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID VIEW_ID}:
-     * view this projection is part of
+     * view this projection is part of.  The default value is ''.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -193,7 +179,7 @@ public class CreateProjectionRequest implements IndexedRecord {
          * target="_top">collection</a> to which the projection is to be
          * assigned as a child. If the collection provided is non-existent, the
          * collection will be automatically created. If empty, then the
-         * projection will be at the top level.
+         * projection will be at the top level.  The default value is ''.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -201,7 +187,7 @@ public class CreateProjectionRequest implements IndexedRecord {
          * An optional filter <a
          * href="../../../../../concepts/expressions.html"
          * target="_top">expression</a> to be applied to the source table prior
-         * to the projection.
+         * to the projection.  The default value is ''.
          */
         public static final String EXPRESSION = "expression";
 
@@ -223,7 +209,7 @@ public class CreateProjectionRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * The number of records to keep.
+         * The number of records to keep.  The default value is ''.
          */
         public static final String LIMIT = "limit";
 
@@ -231,7 +217,8 @@ public class CreateProjectionRequest implements IndexedRecord {
          * Comma-separated list of the columns to be sorted by; e.g. 'timestamp
          * asc, x desc'.  The columns specified must be present in {@code
          * columnNames}.  If any alias is given for any column name, the alias
-         * must be used, rather than the original column name.
+         * must be used, rather than the original column name.  The default
+         * value is ''.
          */
         public static final String ORDER_BY = "order_by";
 
@@ -274,7 +261,8 @@ public class CreateProjectionRequest implements IndexedRecord {
          * Comma-separated list of the columns to be sharded on; e.g. 'column1,
          * column2'.  The columns specified must be present in {@code
          * columnNames}.  If any alias is given for any column name, the alias
-         * must be used, rather than the original column name.
+         * must be used, rather than the original column name.  The default
+         * value is ''.
          */
         public static final String SHARD_KEY = "shard_key";
 
@@ -307,12 +295,12 @@ public class CreateProjectionRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
          * </ul>
          * The default value is {@link
-         * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}.
+         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
          */
         public static final String PRESERVE_DICT_ENCODING = "preserve_dict_encoding";
 
         /**
-         * view this projection is part of
+         * view this projection is part of.  The default value is ''.
          */
         public static final String VIEW_ID = "view_id";
 
@@ -359,13 +347,13 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 to be assigned as a child. If the collection provided is
      *                 non-existent, the collection will be automatically
      *                 created. If empty, then the projection will be at the
-     *                 top level.
+     *                 top level.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      *                 EXPRESSION}: An optional filter <a
      *                 href="../../../../../concepts/expressions.html"
      *                 target="_top">expression</a> to be applied to the source
-     *                 table prior to the projection.
+     *                 table prior to the projection.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#IS_REPLICATED
      *                 IS_REPLICATED}: If {@code true} then the projection will
@@ -384,14 +372,16 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT
-     *                 LIMIT}: The number of records to keep.
+     *                 LIMIT}: The number of records to keep.  The default
+     *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#ORDER_BY
      *                 ORDER_BY}: Comma-separated list of the columns to be
      *                 sorted by; e.g. 'timestamp asc, x desc'.  The columns
      *                 specified must be present in {@code columnNames}.  If
      *                 any alias is given for any column name, the alias must
-     *                 be used, rather than the original column name.
+     *                 be used, rather than the original column name.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
@@ -432,7 +422,8 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 sharded on; e.g. 'column1, column2'.  The columns
      *                 specified must be present in {@code columnNames}.  If
      *                 any alias is given for any column name, the alias must
-     *                 be used, rather than the original column name.
+     *                 be used, rather than the original column name.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#PERSIST
      *                 PERSIST}: If {@code true}, then the projection specified
@@ -468,12 +459,14 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
-     *                 TRUE}.
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this projection is part of
+     *                 VIEW_ID}: view this projection is part of.  The default
+     *                 value is ''.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public CreateProjectionRequest(String tableName, String projectionName, List<String> columnNames, Map<String, String> options) {
@@ -569,13 +562,13 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         target="_top">collection</a> to which the projection is to be
      *         assigned as a child. If the collection provided is non-existent,
      *         the collection will be automatically created. If empty, then the
-     *         projection will be at the top level.
+     *         projection will be at the top level.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      *         EXPRESSION}: An optional filter <a
      *         href="../../../../../concepts/expressions.html"
      *         target="_top">expression</a> to be applied to the source table
-     *         prior to the projection.
+     *         prior to the projection.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#IS_REPLICATED
      *         IS_REPLICATED}: If {@code true} then the projection will be
@@ -591,14 +584,14 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT LIMIT}:
-     *         The number of records to keep.
+     *         The number of records to keep.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#ORDER_BY
      *         ORDER_BY}: Comma-separated list of the columns to be sorted by;
      *         e.g. 'timestamp asc, x desc'.  The columns specified must be
      *         present in {@code columnNames}.  If any alias is given for any
      *         column name, the alias must be used, rather than the original
-     *         column name.
+     *         column name.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
      *         MATERIALIZE_ON_GPU}: If {@code true} then the columns of the
@@ -633,7 +626,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         on; e.g. 'column1, column2'.  The columns specified must be
      *         present in {@code columnNames}.  If any alias is given for any
      *         column name, the alias must be used, rather than the original
-     *         column name.
+     *         column name.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#PERSIST
      *         PERSIST}: If {@code true}, then the projection specified in
@@ -663,11 +656,13 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link
-     *         com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}.
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
-     *         VIEW_ID}: view this projection is part of
+     *         VIEW_ID}: view this projection is part of.  The default value is
+     *         ''.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -686,13 +681,13 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 to be assigned as a child. If the collection provided is
      *                 non-existent, the collection will be automatically
      *                 created. If empty, then the projection will be at the
-     *                 top level.
+     *                 top level.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      *                 EXPRESSION}: An optional filter <a
      *                 href="../../../../../concepts/expressions.html"
      *                 target="_top">expression</a> to be applied to the source
-     *                 table prior to the projection.
+     *                 table prior to the projection.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#IS_REPLICATED
      *                 IS_REPLICATED}: If {@code true} then the projection will
@@ -711,14 +706,16 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#LIMIT
-     *                 LIMIT}: The number of records to keep.
+     *                 LIMIT}: The number of records to keep.  The default
+     *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#ORDER_BY
      *                 ORDER_BY}: Comma-separated list of the columns to be
      *                 sorted by; e.g. 'timestamp asc, x desc'.  The columns
      *                 specified must be present in {@code columnNames}.  If
      *                 any alias is given for any column name, the alias must
-     *                 be used, rather than the original column name.
+     *                 be used, rather than the original column name.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
@@ -759,7 +756,8 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 sharded on; e.g. 'column1, column2'.  The columns
      *                 specified must be present in {@code columnNames}.  If
      *                 any alias is given for any column name, the alias must
-     *                 be used, rather than the original column name.
+     *                 be used, rather than the original column name.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#PERSIST
      *                 PERSIST}: If {@code true}, then the projection specified
@@ -795,12 +793,14 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 FALSE}
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
-     *                 TRUE}.
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this projection is part of
+     *                 VIEW_ID}: view this projection is part of.  The default
+     *                 value is ''.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

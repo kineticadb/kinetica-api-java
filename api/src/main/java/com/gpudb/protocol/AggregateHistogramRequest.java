@@ -23,10 +23,14 @@ import org.apache.avro.generic.IndexedRecord;
  * each bin, the start value is inclusive, but the end value is
  * exclusive--except for the very last bin for which the end value is also
  * inclusive.  The value returned for each bin is the number of records in it,
- * except when a column name is provided as a *value_column* in {@code
- * options}.  In this latter case the sum of the values corresponding to the
- * *value_column* is used as the result instead.  The total number of bins
- * requested cannot exceed 10,000.
+ * except when a column name is provided as a {@code value_column}.  In this
+ * latter case the sum of the values corresponding to the {@code value_column}
+ * is used as the result instead.  The total number of bins requested cannot
+ * exceed 10,000.
+ * <p>
+ * NOTE:  The Kinetica instance being accessed must be running a CUDA
+ * (GPU-based) build to service a request that specifies a {@code value_column}
+ * option.
  */
 public class AggregateHistogramRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -63,6 +67,7 @@ public class AggregateHistogramRequest implements IndexedRecord {
      * values (values are summed).  The column must be a numerical type (int,
      * double, long, float).
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -116,6 +121,7 @@ public class AggregateHistogramRequest implements IndexedRecord {
      *                 column must be a numerical type (int, double, long,
      *                 float).
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AggregateHistogramRequest(String tableName, String columnName, double start, double end, double interval, Map<String, String> options) {
@@ -248,6 +254,7 @@ public class AggregateHistogramRequest implements IndexedRecord {
      *         the bin values (values are summed).  The column must be a
      *         numerical type (int, double, long, float).
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -265,6 +272,7 @@ public class AggregateHistogramRequest implements IndexedRecord {
      *                 column must be a numerical type (int, double, long,
      *                 float).
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

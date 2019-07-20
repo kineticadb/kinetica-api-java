@@ -67,7 +67,8 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table to monitor. Must not refer to a
      *                   collection.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public CreateTableMonitorRequest(String tableName, Map<String, String> options) {
@@ -99,7 +100,7 @@ public class CreateTableMonitorRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -108,7 +109,8 @@ public class CreateTableMonitorRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

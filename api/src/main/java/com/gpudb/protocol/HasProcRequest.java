@@ -55,7 +55,8 @@ public class HasProcRequest implements IndexedRecord {
      * Constructs a HasProcRequest object with the specified parameters.
      * 
      * @param procName  Name of the proc to check for existence.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public HasProcRequest(String procName, Map<String, String> options) {
@@ -86,7 +87,7 @@ public class HasProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -95,7 +96,8 @@ public class HasProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

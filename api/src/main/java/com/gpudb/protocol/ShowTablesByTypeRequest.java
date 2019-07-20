@@ -67,7 +67,8 @@ public class ShowTablesByTypeRequest implements IndexedRecord {
      *                com.gpudb.GPUdb#createType(CreateTypeRequest)}.
      * @param label  Optional user supplied label which can be used instead of
      *               the type_id to retrieve all tables with the given label.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public ShowTablesByTypeRequest(String typeId, String label, Map<String, String> options) {
@@ -124,7 +125,7 @@ public class ShowTablesByTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -133,7 +134,8 @@ public class ShowTablesByTypeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

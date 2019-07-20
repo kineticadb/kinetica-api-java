@@ -49,6 +49,7 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
      * PROPERTIES}: A list of comma separated names of properties requested. If
      * not specified, all properties will be returned.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -84,6 +85,7 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
      *                 properties requested. If not specified, all properties
      *                 will be returned.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public ShowSystemPropertiesRequest(Map<String, String> options) {
@@ -99,6 +101,7 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
      *         PROPERTIES}: A list of comma separated names of properties
      *         requested. If not specified, all properties will be returned.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -115,6 +118,7 @@ public class ShowSystemPropertiesRequest implements IndexedRecord {
      *                 properties requested. If not specified, all properties
      *                 will be returned.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

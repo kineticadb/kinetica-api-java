@@ -79,11 +79,13 @@ import org.apache.avro.generic.IndexedRecord;
  * naming conventions</a>; column/aggregation expressions will need to be
  * aliased.  If the source table's <a
  * href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
- * key</a> is used as the grouping column(s), the result table will be sharded,
- * in all other cases it will be replicated.  Sorting will properly function
- * only if the result table is replicated or if there is only one processing
- * node and should not be relied upon in other cases.  Not available when any
- * of the values of {@code columnNames} is an unrestricted-length string.
+ * key</a> is used as the grouping column(s) and all result records are
+ * selected ({@code offset} is 0 and {@code limit} is -9999), the result table
+ * will be sharded, in all other cases it will be replicated.  Sorting will
+ * properly function only if the result table is replicated or if there is only
+ * one processing node and should not be relied upon in other cases.  Not
+ * available when any of the values of {@code columnNames} is an
+ * unrestricted-length string.
  */
 public class AggregateGroupByRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -264,7 +266,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * result_table} option.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID VIEW_ID}:
-     * view this result table is part of
+     * view this result table is part of.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      * MATERIALIZE_ON_GPU}: If {@code true} then the columns of the groupby
@@ -300,6 +302,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE CUBE}: This
      * option is used to specify the multidimensional aggregates.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -476,7 +479,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String CREATE_INDEXES = "create_indexes";
 
         /**
-         * view this result table is part of
+         * view this result table is part of.  The default value is ''.
          */
         public static final String VIEW_ID = "view_id";
 
@@ -561,7 +564,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned Or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.
+     *               that the max number of results should be returned.  The
+     *               default value is 1000.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -706,7 +710,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of
+     *                 VIEW_ID}: view this result table is part of.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
@@ -750,6 +755,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 CUBE}: This option is used to specify the
      *                 multidimensional aggregates.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AggregateGroupByRequest(String tableName, List<String> columnNames, long offset, long limit, Map<String, String> options) {
@@ -775,7 +781,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned Or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.
+     *               that the max number of results should be returned.  The
+     *               default value is 1000.
      * @param encoding  Specifies the encoding for returned records.
      *                  Supported values:
      *                  <ul>
@@ -935,7 +942,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of
+     *                 VIEW_ID}: view this result table is part of.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
@@ -979,6 +987,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 CUBE}: This option is used to specify the
      *                 multidimensional aggregates.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AggregateGroupByRequest(String tableName, List<String> columnNames, long offset, long limit, String encoding, Map<String, String> options) {
@@ -1067,7 +1076,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * 
      * @return A positive integer indicating the maximum number of results to
      *         be returned Or END_OF_SET (-9999) to indicate that the max
-     *         number of results should be returned.
+     *         number of results should be returned.  The default value is
+     *         1000.
      * 
      */
     public long getLimit() {
@@ -1078,7 +1088,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * 
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned Or END_OF_SET (-9999) to indicate
-     *               that the max number of results should be returned.
+     *               that the max number of results should be returned.  The
+     *               default value is 1000.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -1265,7 +1276,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         with the {@code result_table} option.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
-     *         VIEW_ID}: view this result table is part of
+     *         VIEW_ID}: view this result table is part of.  The default value
+     *         is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *         MATERIALIZE_ON_GPU}: If {@code true} then the columns of the
@@ -1303,6 +1315,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#CUBE CUBE}:
      *         This option is used to specify the multidimensional aggregates.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -1455,7 +1468,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of
+     *                 VIEW_ID}: view this result table is part of.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
@@ -1499,6 +1513,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 CUBE}: This option is used to specify the
      *                 multidimensional aggregates.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -75,6 +75,7 @@ public class AdminOfflineRequest implements IndexedRecord {
      * FALSE}
      * </ul>
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -135,6 +136,7 @@ public class AdminOfflineRequest implements IndexedRecord {
      *                 FALSE}
      *                 </ul>
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AdminOfflineRequest(boolean offline, Map<String, String> options) {
@@ -194,6 +196,7 @@ public class AdminOfflineRequest implements IndexedRecord {
      *         com.gpudb.protocol.AdminOfflineRequest.Options#FALSE FALSE}
      *         </ul>
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -217,6 +220,7 @@ public class AdminOfflineRequest implements IndexedRecord {
      *                 FALSE}
      *                 </ul>
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

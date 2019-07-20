@@ -16,21 +16,28 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#showTable(ShowTableRequest)}.
  * <p>
- * Retrieves detailed information about a table, view, or collection, specified
- * in {@code tableName}. If the supplied {@code tableName} is a collection, the
- * call can return information about either the collection itself or the tables
- * and views it contains. If {@code tableName} is empty, information about all
- * collections and top-level tables and views can be returned.
+ * Retrieves detailed information about tables, views, and collections.
+ * <p>
+ * If {@code tableName} specifies a table or view, information specific to that
+ * entity will be returned.
+ * <p>
+ * If {@code tableName} specifies a collection, the call can return information
+ * about either the collection itself (setting the {@code show_children} option
+ * to {@code false}) or the tables and views it contains (setting {@code
+ * show_children} to {@code true}).
+ * <p>
+ * If {@code tableName} is empty, information about all collections and
+ * top-level tables and views can be returned.  Note:  {@code show_children}
+ * must be set to {@code true}.
+ * <p>
+ * If {@code tableName} is '*', information about all tables, collections, and
+ * views will be returned.  Note:  {@code show_children} must be set to {@code
+ * true}.
  * <p>
  * If the option {@code get_sizes} is set to {@code true}, then the sizes
  * (objects and elements) of each table are returned (in {@code sizes} and
  * {@code fullSizes}), along with the total number of objects in the requested
  * table (in {@code totalSize} and {@code totalFullSize}).
- * <p>
- * For a collection, setting the {@code show_children} option to {@code false}
- * returns only information about the collection itself; setting {@code
- * show_children} to {@code true} returns a list of tables and views contained
- * in the collection, along with their corresponding detail.
  */
 public class ShowTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -85,11 +92,11 @@ public class ShowTableRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.ShowTableRequest.Options#SHOW_CHILDREN
      * SHOW_CHILDREN}: If {@code tableName} is a collection, then {@code true}
-     * will return information about the children of the collection, and {@code
-     * false} will return information about the collection itself. If {@code
-     * tableName} is a table or view, {@code show_children} must be {@code
-     * false}. If {@code tableName} is empty, then {@code show_children} must
-     * be {@code true}.
+     * will return information about the children of the collection, while
+     * {@code false} will return information about the collection itself.
+     * <p>
+     * If {@code tableName} is empty or '*', then {@code show_children} must be
+     * {@code true} (or not specified); otherwise, no results will be returned.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#TRUE
@@ -127,6 +134,7 @@ public class ShowTableRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -165,11 +173,12 @@ public class ShowTableRequest implements IndexedRecord {
 
         /**
          * If {@code tableName} is a collection, then {@code true} will return
-         * information about the children of the collection, and {@code false}
-         * will return information about the collection itself. If {@code
-         * tableName} is a table or view, {@code show_children} must be {@code
-         * false}. If {@code tableName} is empty, then {@code show_children}
-         * must be {@code true}.
+         * information about the children of the collection, while {@code
+         * false} will return information about the collection itself.
+         * <p>
+         * If {@code tableName} is empty or '*', then {@code show_children}
+         * must be {@code true} (or not specified); otherwise, no results will
+         * be returned.
          * Supported values:
          * <ul>
          *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#TRUE
@@ -268,12 +277,11 @@ public class ShowTableRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ShowTableRequest.Options#SHOW_CHILDREN
      *                 SHOW_CHILDREN}: If {@code tableName} is a collection,
      *                 then {@code true} will return information about the
-     *                 children of the collection, and {@code false} will
-     *                 return information about the collection itself. If
-     *                 {@code tableName} is a table or view, {@code
-     *                 show_children} must be {@code false}. If {@code
-     *                 tableName} is empty, then {@code show_children} must be
-     *                 {@code true}.
+     *                 children of the collection, while {@code false} will
+     *                 return information about the collection itself.
+     *                 If {@code tableName} is empty or '*', then {@code
+     *                 show_children} must be {@code true} (or not specified);
+     *                 otherwise, no results will be returned.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -313,6 +321,7 @@ public class ShowTableRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public ShowTableRequest(String tableName, Map<String, String> options) {
@@ -380,11 +389,11 @@ public class ShowTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.ShowTableRequest.Options#SHOW_CHILDREN
      *         SHOW_CHILDREN}: If {@code tableName} is a collection, then
      *         {@code true} will return information about the children of the
-     *         collection, and {@code false} will return information about the
-     *         collection itself. If {@code tableName} is a table or view,
-     *         {@code show_children} must be {@code false}. If {@code
-     *         tableName} is empty, then {@code show_children} must be {@code
-     *         true}.
+     *         collection, while {@code false} will return information about
+     *         the collection itself.
+     *         If {@code tableName} is empty or '*', then {@code show_children}
+     *         must be {@code true} (or not specified); otherwise, no results
+     *         will be returned.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -422,6 +431,7 @@ public class ShowTableRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -463,12 +473,11 @@ public class ShowTableRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ShowTableRequest.Options#SHOW_CHILDREN
      *                 SHOW_CHILDREN}: If {@code tableName} is a collection,
      *                 then {@code true} will return information about the
-     *                 children of the collection, and {@code false} will
-     *                 return information about the collection itself. If
-     *                 {@code tableName} is a table or view, {@code
-     *                 show_children} must be {@code false}. If {@code
-     *                 tableName} is empty, then {@code show_children} must be
-     *                 {@code true}.
+     *                 children of the collection, while {@code false} will
+     *                 return information about the collection itself.
+     *                 If {@code tableName} is empty or '*', then {@code
+     *                 show_children} must be {@code true} (or not specified);
+     *                 otherwise, no results will be returned.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -508,6 +517,7 @@ public class ShowTableRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ShowTableRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

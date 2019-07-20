@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>6.2.0</version>
+    <version>6.2.2.0</version>
     <packaging>jar</packaging>
     <name>Kinetica Java API</name>
     <distributionManagement>
@@ -34,12 +34,17 @@
             <artifactId>commons-codec</artifactId>
             <version>1.10</version>
         </dependency>
+        <dependency>
+            <groupId>org.threeten</groupId>
+            <artifactId>threetenbp</artifactId>
+            <version>1.4.0</version>
+        </dependency>
     </dependencies>
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gpudb-api.version>6.2.0</gpudb-api.version>
+        <gpudb-api.version>6.2.1.1</gpudb-api.version>
     </properties>
     <profiles>
         <profile>
@@ -64,6 +69,45 @@
     </pluginRepositories>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.apache.avro</pattern>
+                                    <shadedPattern>com.gpudb.avro</shadedPattern>
+                                </relocation>
+                                <!--
+                                <relocation>
+                                    <pattern>org.apache.avro.Schema</pattern>
+                                    <shadedPattern>com.gpudb.avro.Schema</shadedPattern>
+                                </relocation>
+                                -->
+                            </relocations>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>avroshaded</shadedClassifierName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>com.code54.mojo</groupId>
                 <artifactId>buildversion-plugin</artifactId>

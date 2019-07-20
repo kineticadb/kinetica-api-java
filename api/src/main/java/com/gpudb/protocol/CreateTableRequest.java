@@ -157,6 +157,7 @@ public class CreateTableRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -440,6 +441,7 @@ public class CreateTableRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public CreateTableRequest(String tableName, String typeId, Map<String, String> options) {
@@ -617,6 +619,7 @@ public class CreateTableRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -752,6 +755,7 @@ public class CreateTableRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
      *                 FALSE}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

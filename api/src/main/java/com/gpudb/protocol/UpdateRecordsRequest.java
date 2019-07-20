@@ -47,16 +47,17 @@ public class UpdateRecordsRequest<T> {
      *         <li> {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#GLOBAL_EXPRESSION
      * GLOBAL_EXPRESSION}: An optional global expression to reduce the search
-     * space of the predicates listed in {@code expressions}.
+     * space of the predicates listed in {@code expressions}.  The default
+     * value is ''.
      *         <li> {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#BYPASS_SAFETY_CHECKS
-     * BYPASS_SAFETY_CHECKS}: When set to 'true', all predicates are available
-     * for primary key updates.  Keep in mind that it is possible to destroy
-     * data in this case, since a single predicate may match multiple objects
-     * (potentially all of records of a table), and then updating all of those
-     * records to have the same primary key will, due to the primary key
-     * uniqueness constraints, effectively delete all but one of those updated
-     * records.
+     * BYPASS_SAFETY_CHECKS}: When set to {@code true}, all predicates are
+     * available for primary key updates.  Keep in mind that it is possible to
+     * destroy data in this case, since a single predicate may match multiple
+     * objects (potentially all of records of a table), and then updating all
+     * of those records to have the same primary key will, due to the primary
+     * key uniqueness constraints, effectively delete all but one of those
+     * updated records.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -82,9 +83,11 @@ public class UpdateRecordsRequest<T> {
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
-     * USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to 'true', all new_values
-     * in new_values_maps are considered as expression values. When set to
-     * 'false', all new_values in new_values_maps are considered as constants.
+     * USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to {@code true}, all new
+     * values in {@code newValuesMaps} are considered as expression values.
+     * When set to {@code false}, all new values in {@code newValuesMaps} are
+     * considered as constants.  NOTE:  When {@code true}, string constants
+     * will need to be quoted to avoid being evaluated as expressions.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -101,20 +104,21 @@ public class UpdateRecordsRequest<T> {
      * com.gpudb.GPUdb#getRecordsFromCollection(Object,
      * GetRecordsFromCollectionRequest)}).
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
 
         /**
          * An optional global expression to reduce the search space of the
-         * predicates listed in {@code expressions}.
+         * predicates listed in {@code expressions}.  The default value is ''.
          */
         public static final String GLOBAL_EXPRESSION = "global_expression";
 
         /**
-         * When set to 'true', all predicates are available for primary key
-         * updates.  Keep in mind that it is possible to destroy data in this
-         * case, since a single predicate may match multiple objects
+         * When set to {@code true}, all predicates are available for primary
+         * key updates.  Keep in mind that it is possible to destroy data in
+         * this case, since a single predicate may match multiple objects
          * (potentially all of records of a table), and then updating all of
          * those records to have the same primary key will, due to the primary
          * key uniqueness constraints, effectively delete all but one of those
@@ -150,9 +154,11 @@ public class UpdateRecordsRequest<T> {
         public static final String UPDATE_ON_EXISTING_PK = "update_on_existing_pk";
 
         /**
-         * When set to 'true', all new_values in new_values_maps are considered
-         * as expression values. When set to 'false', all new_values in
-         * new_values_maps are considered as constants.
+         * When set to {@code true}, all new values in {@code newValuesMaps}
+         * are considered as expression values. When set to {@code false}, all
+         * new values in {@code newValuesMaps} are considered as constants.
+         * NOTE:  When {@code true}, string constants will need to be quoted to
+         * avoid being evaluated as expressions.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -212,17 +218,17 @@ public class UpdateRecordsRequest<T> {
      *              insert, one for each update.  If one of {@code expressions}
      *              does not yield a matching record to be updated, then the
      *              corresponding element from this list will be added to the
-     *              table.
+     *              table.  The default value is an empty {@link List}.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#GLOBAL_EXPRESSION
      *                 GLOBAL_EXPRESSION}: An optional global expression to
      *                 reduce the search space of the predicates listed in
-     *                 {@code expressions}.
+     *                 {@code expressions}.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#BYPASS_SAFETY_CHECKS
-     *                 BYPASS_SAFETY_CHECKS}: When set to 'true', all
+     *                 BYPASS_SAFETY_CHECKS}: When set to {@code true}, all
      *                 predicates are available for primary key updates.  Keep
      *                 in mind that it is possible to destroy data in this
      *                 case, since a single predicate may match multiple
@@ -263,10 +269,13 @@ public class UpdateRecordsRequest<T> {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
-     *                 USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to 'true',
-     *                 all new_values in new_values_maps are considered as
-     *                 expression values. When set to 'false', all new_values
-     *                 in new_values_maps are considered as constants.
+     *                 USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to {@code
+     *                 true}, all new values in {@code newValuesMaps} are
+     *                 considered as expression values. When set to {@code
+     *                 false}, all new values in {@code newValuesMaps} are
+     *                 considered as constants.  NOTE:  When {@code true},
+     *                 string constants will need to be quoted to avoid being
+     *                 evaluated as expressions.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -287,6 +296,7 @@ public class UpdateRecordsRequest<T> {
      *                 {@link com.gpudb.GPUdb#getRecordsFromCollection(Object,
      *                 GetRecordsFromCollectionRequest)}).
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public UpdateRecordsRequest(String tableName, List<String> expressions, List<Map<String, String>> newValuesMaps, List<T> data, Map<String, String> options) {
@@ -380,7 +390,8 @@ public class UpdateRecordsRequest<T> {
      * @return An *optional* list of new binary-avro encoded records to insert,
      *         one for each update.  If one of {@code expressions} does not
      *         yield a matching record to be updated, then the corresponding
-     *         element from this list will be added to the table.
+     *         element from this list will be added to the table.  The default
+     *         value is an empty {@link List}.
      * 
      */
     public List<T> getData() {
@@ -393,7 +404,7 @@ public class UpdateRecordsRequest<T> {
      *              insert, one for each update.  If one of {@code expressions}
      *              does not yield a matching record to be updated, then the
      *              corresponding element from this list will be added to the
-     *              table.
+     *              table.  The default value is an empty {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -411,10 +422,11 @@ public class UpdateRecordsRequest<T> {
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#GLOBAL_EXPRESSION
      *         GLOBAL_EXPRESSION}: An optional global expression to reduce the
      *         search space of the predicates listed in {@code expressions}.
+     *         The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#BYPASS_SAFETY_CHECKS
-     *         BYPASS_SAFETY_CHECKS}: When set to 'true', all predicates are
-     *         available for primary key updates.  Keep in mind that it is
+     *         BYPASS_SAFETY_CHECKS}: When set to {@code true}, all predicates
+     *         are available for primary key updates.  Keep in mind that it is
      *         possible to destroy data in this case, since a single predicate
      *         may match multiple objects (potentially all of records of a
      *         table), and then updating all of those records to have the same
@@ -445,10 +457,12 @@ public class UpdateRecordsRequest<T> {
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
-     *         USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to 'true', all
-     *         new_values in new_values_maps are considered as expression
-     *         values. When set to 'false', all new_values in new_values_maps
-     *         are considered as constants.
+     *         USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to {@code true},
+     *         all new values in {@code newValuesMaps} are considered as
+     *         expression values. When set to {@code false}, all new values in
+     *         {@code newValuesMaps} are considered as constants.  NOTE:  When
+     *         {@code true}, string constants will need to be quoted to avoid
+     *         being evaluated as expressions.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -466,6 +480,7 @@ public class UpdateRecordsRequest<T> {
      *         com.gpudb.GPUdb#getRecordsFromCollection(Object,
      *         GetRecordsFromCollectionRequest)}).
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -480,10 +495,10 @@ public class UpdateRecordsRequest<T> {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#GLOBAL_EXPRESSION
      *                 GLOBAL_EXPRESSION}: An optional global expression to
      *                 reduce the search space of the predicates listed in
-     *                 {@code expressions}.
+     *                 {@code expressions}.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#BYPASS_SAFETY_CHECKS
-     *                 BYPASS_SAFETY_CHECKS}: When set to 'true', all
+     *                 BYPASS_SAFETY_CHECKS}: When set to {@code true}, all
      *                 predicates are available for primary key updates.  Keep
      *                 in mind that it is possible to destroy data in this
      *                 case, since a single predicate may match multiple
@@ -524,10 +539,13 @@ public class UpdateRecordsRequest<T> {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
-     *                 USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to 'true',
-     *                 all new_values in new_values_maps are considered as
-     *                 expression values. When set to 'false', all new_values
-     *                 in new_values_maps are considered as constants.
+     *                 USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to {@code
+     *                 true}, all new values in {@code newValuesMaps} are
+     *                 considered as expression values. When set to {@code
+     *                 false}, all new values in {@code newValuesMaps} are
+     *                 considered as constants.  NOTE:  When {@code true},
+     *                 string constants will need to be quoted to avoid being
+     *                 evaluated as expressions.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -548,6 +566,7 @@ public class UpdateRecordsRequest<T> {
      *                 {@link com.gpudb.GPUdb#getRecordsFromCollection(Object,
      *                 GetRecordsFromCollectionRequest)}).
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

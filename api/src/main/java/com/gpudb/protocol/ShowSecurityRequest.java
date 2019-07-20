@@ -62,7 +62,8 @@ public class ShowSecurityRequest implements IndexedRecord {
      * @param names  A list of names of users and/or roles about which security
      *               information is requested. If none are provided,
      *               information about all users and roles will be returned.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public ShowSecurityRequest(List<String> names, Map<String, String> options) {
@@ -97,7 +98,7 @@ public class ShowSecurityRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -106,7 +107,8 @@ public class ShowSecurityRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

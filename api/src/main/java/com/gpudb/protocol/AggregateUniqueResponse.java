@@ -6,6 +6,7 @@
 package com.gpudb.protocol;
 
 import com.gpudb.Record;
+import com.gpudb.Type;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.avro.generic.GenericData;
@@ -19,6 +20,7 @@ public class AggregateUniqueResponse {
     private String tableName;
     private List<Record> data;
     private boolean hasMoreRecords;
+    private Type dataType;
 
 
     /**
@@ -90,6 +92,29 @@ public class AggregateUniqueResponse {
         this.hasMoreRecords = hasMoreRecords;
         return this;
     }
+
+    /**
+     * 
+     * @return The {@link Type} object containing the type of the dynamically
+     *         generated data.
+     * 
+     */
+    public Type getDataType() {
+        return dataType;
+    }
+
+    /**
+     * 
+     * @param dataType  The {@link Type} object containing the type of the
+     *                  dynamically generated data.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AggregateUniqueResponse setDataType(Type dataType) {
+        this.dataType = dataType;
+        return this;
+    }
     @Override
     public boolean equals(Object obj) {
         if( obj == this ) {
@@ -104,7 +129,8 @@ public class AggregateUniqueResponse {
 
         return ( this.tableName.equals( that.tableName )
                  && this.data.equals( that.data )
-                 && ( this.hasMoreRecords == that.hasMoreRecords ) );
+                 && ( this.hasMoreRecords == that.hasMoreRecords )
+                 && this.dataType.equals( that.dataType ) );
     }
 
     @Override
@@ -123,6 +149,10 @@ public class AggregateUniqueResponse {
         builder.append( gd.toString( "hasMoreRecords" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.hasMoreRecords ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "dataType" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.dataType ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -134,6 +164,7 @@ public class AggregateUniqueResponse {
         hashCode = (31 * hashCode) + this.tableName.hashCode();
         hashCode = (31 * hashCode) + this.data.hashCode();
         hashCode = (31 * hashCode) + ((Boolean)this.hasMoreRecords).hashCode();
+        hashCode = (31 * hashCode) + this.dataType.hashCode();
         return hashCode;
     }
 

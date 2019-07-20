@@ -226,6 +226,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      * are specified, max must be greater than or equal to min.
      * </ul>
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -690,6 +691,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 specified, max must be greater than or equal to min.
      *                 </ul>
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public InsertRecordsRandomRequest(String tableName, long count, Map<String, Map<String, Double>> options) {
@@ -930,6 +932,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *         than or equal to min.
      *         </ul>
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, Map<String, Double>> getOptions() {
@@ -1141,6 +1144,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 specified, max must be greater than or equal to min.
      *                 </ul>
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -123,7 +123,8 @@ public class CreateJobRequest implements IndexedRecord {
      *                 appropriate endpoint to see what values must (or can) be
      *                 specified.  If this parameter is used, then {@code
      *                 requestEncoding} must be {@code json}.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public CreateJobRequest(String endpoint, String requestEncoding, ByteBuffer data, String dataStr, Map<String, String> options) {
@@ -273,7 +274,7 @@ public class CreateJobRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -282,7 +283,8 @@ public class CreateJobRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

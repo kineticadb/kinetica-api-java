@@ -92,7 +92,8 @@ public class AlterUserRequest implements IndexedRecord {
      *                </ul>
      * @param value  The value of the modification, depending on {@code
      *               action}.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public AlterUserRequest(String name, String action, String value, Map<String, String> options) {
@@ -182,7 +183,7 @@ public class AlterUserRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -191,7 +192,8 @@ public class AlterUserRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

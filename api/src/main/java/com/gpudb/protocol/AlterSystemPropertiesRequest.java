@@ -134,16 +134,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * REQUEST_TIMEOUT}: Number of minutes after which filtering (e.g., {@link
      * com.gpudb.GPUdb#filter(FilterRequest)}) and aggregating (e.g., {@link
      * com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}) queries
-     * will timeout.
+     * will timeout.  The default value is '20'.
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_GET_RECORDS_SIZE
      * MAX_GET_RECORDS_SIZE}: The maximum number of records the database will
-     * serve for a given data retrieval call
+     * serve for a given data retrieval call.  The default value is '20000'.
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MEMORY_ALLOCATION_LIMIT_MB
      * MEMORY_ALLOCATION_LIMIT_MB}: Set the memory allocation limit for all
      * rank processes in megabytes, 0 means no limit. Overrides any individual
-     * rank memory allocation limits.
+     * rank memory allocation limits.  The default value is '0'.
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
      * ENABLE_AUDIT}: Enable or disable auditing.
@@ -166,7 +166,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * chunk cache when value is false
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
-     * CHUNK_CACHE_SIZE}: Size of the chunk cache in bytes.
+     * CHUNK_CACHE_SIZE}: Size of the chunk cache in bytes.  The default value
+     * is '10000000'.
      * </ul>
      * A set of string constants for the parameter {@code propertyUpdatesMap}.
      */
@@ -278,20 +279,20 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * com.gpudb.GPUdb#filter(FilterRequest)}) and aggregating (e.g.,
          * {@link
          * com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)})
-         * queries will timeout.
+         * queries will timeout.  The default value is '20'.
          */
         public static final String REQUEST_TIMEOUT = "request_timeout";
 
         /**
          * The maximum number of records the database will serve for a given
-         * data retrieval call
+         * data retrieval call.  The default value is '20000'.
          */
         public static final String MAX_GET_RECORDS_SIZE = "max_get_records_size";
 
         /**
          * Set the memory allocation limit for all rank processes in megabytes,
          * 0 means no limit. Overrides any individual rank memory allocation
-         * limits.
+         * limits.  The default value is '0'.
          */
         public static final String MEMORY_ALLOCATION_LIMIT_MB = "memory_allocation_limit_mb";
 
@@ -328,7 +329,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String CHUNK_CACHE_ENABLED = "chunk_cache_enabled";
 
         /**
-         * Size of the chunk cache in bytes.
+         * Size of the chunk cache in bytes.  The default value is '10000000'.
          */
         public static final String CHUNK_CACHE_SIZE = "chunk_cache_size";
 
@@ -460,18 +461,21 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.GPUdb#filter(FilterRequest)}) and
      *                            aggregating (e.g., {@link
      *                            com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)})
-     *                            queries will timeout.
+     *                            queries will timeout.  The default value is
+     *                            '20'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_GET_RECORDS_SIZE
      *                            MAX_GET_RECORDS_SIZE}: The maximum number of
      *                            records the database will serve for a given
-     *                            data retrieval call
+     *                            data retrieval call.  The default value is
+     *                            '20000'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MEMORY_ALLOCATION_LIMIT_MB
      *                            MEMORY_ALLOCATION_LIMIT_MB}: Set the memory
      *                            allocation limit for all rank processes in
      *                            megabytes, 0 means no limit. Overrides any
      *                            individual rank memory allocation limits.
+     *                            The default value is '0'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
      *                            ENABLE_AUDIT}: Enable or disable auditing.
@@ -500,9 +504,10 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
      *                            CHUNK_CACHE_SIZE}: Size of the chunk cache in
-     *                            bytes.
+     *                            bytes.  The default value is '10000000'.
      *                            </ul>
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public AlterSystemPropertiesRequest(Map<String, String> propertyUpdatesMap, Map<String, String> options) {
@@ -604,16 +609,18 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         {@link com.gpudb.GPUdb#filter(FilterRequest)}) and aggregating
      *         (e.g., {@link
      *         com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)})
-     *         queries will timeout.
+     *         queries will timeout.  The default value is '20'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_GET_RECORDS_SIZE
      *         MAX_GET_RECORDS_SIZE}: The maximum number of records the
-     *         database will serve for a given data retrieval call
+     *         database will serve for a given data retrieval call.  The
+     *         default value is '20000'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MEMORY_ALLOCATION_LIMIT_MB
      *         MEMORY_ALLOCATION_LIMIT_MB}: Set the memory allocation limit for
      *         all rank processes in megabytes, 0 means no limit. Overrides any
-     *         individual rank memory allocation limits.
+     *         individual rank memory allocation limits.  The default value is
+     *         '0'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
      *         ENABLE_AUDIT}: Enable or disable auditing.
@@ -636,7 +643,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         the chunk cache when value is false
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
-     *         CHUNK_CACHE_SIZE}: Size of the chunk cache in bytes.
+     *         CHUNK_CACHE_SIZE}: Size of the chunk cache in bytes.  The
+     *         default value is '10000000'.
      *         </ul>
      * 
      */
@@ -754,18 +762,21 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.GPUdb#filter(FilterRequest)}) and
      *                            aggregating (e.g., {@link
      *                            com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)})
-     *                            queries will timeout.
+     *                            queries will timeout.  The default value is
+     *                            '20'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MAX_GET_RECORDS_SIZE
      *                            MAX_GET_RECORDS_SIZE}: The maximum number of
      *                            records the database will serve for a given
-     *                            data retrieval call
+     *                            data retrieval call.  The default value is
+     *                            '20000'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#MEMORY_ALLOCATION_LIMIT_MB
      *                            MEMORY_ALLOCATION_LIMIT_MB}: Set the memory
      *                            allocation limit for all rank processes in
      *                            megabytes, 0 means no limit. Overrides any
      *                            individual rank memory allocation limits.
+     *                            The default value is '0'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_AUDIT
      *                            ENABLE_AUDIT}: Enable or disable auditing.
@@ -794,7 +805,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
      *                            CHUNK_CACHE_SIZE}: Size of the chunk cache in
-     *                            bytes.
+     *                            bytes.  The default value is '10000000'.
      *                            </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -807,7 +818,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -816,7 +827,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

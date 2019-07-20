@@ -60,11 +60,12 @@ public class FilterRequest implements IndexedRecord {
      * will be automatically created. If empty, then the newly created view
      * will be top-level.
      *         <li> {@link com.gpudb.protocol.FilterRequest.Options#VIEW_ID
-     * VIEW_ID}: view this filtered-view is part of
+     * VIEW_ID}: view this filtered-view is part of.  The default value is ''.
      *         <li> {@link com.gpudb.protocol.FilterRequest.Options#TTL TTL}:
      * Sets the <a href="../../../../../concepts/ttl.html"
      * target="_top">TTL</a> of the view specified in {@code viewName}.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -78,7 +79,7 @@ public class FilterRequest implements IndexedRecord {
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * view this filtered-view is part of
+         * view this filtered-view is part of.  The default value is ''.
          */
         public static final String VIEW_ID = "view_id";
 
@@ -120,7 +121,7 @@ public class FilterRequest implements IndexedRecord {
      *                  containing the results. Has the same naming
      *                  restrictions as <a
      *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.
+     *                  target="_top">tables</a>.  The default value is ''.
      * @param expression  The select expression to filter the specified table.
      *                    For details see <a
      *                    href="../../../../../concepts/expressions.html"
@@ -136,13 +137,15 @@ public class FilterRequest implements IndexedRecord {
      *                 view will be top-level.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this filtered-view is part of
+     *                 VIEW_ID}: view this filtered-view is part of.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterRequest.Options#TTL TTL}: Sets
      *                 the <a href="../../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the view specified in {@code
      *                 viewName}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public FilterRequest(String tableName, String viewName, String expression, Map<String, String> options) {
@@ -188,7 +191,7 @@ public class FilterRequest implements IndexedRecord {
      * @return If provided, then this will be the name of the view containing
      *         the results. Has the same naming restrictions as <a
      *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.
+     *         target="_top">tables</a>.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -201,7 +204,7 @@ public class FilterRequest implements IndexedRecord {
      *                  containing the results. Has the same naming
      *                  restrictions as <a
      *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.
+     *                  target="_top">tables</a>.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -249,11 +252,12 @@ public class FilterRequest implements IndexedRecord {
      *         newly created view will be top-level.
      *                 <li> {@link
      *         com.gpudb.protocol.FilterRequest.Options#VIEW_ID VIEW_ID}: view
-     *         this filtered-view is part of
+     *         this filtered-view is part of.  The default value is ''.
      *                 <li> {@link com.gpudb.protocol.FilterRequest.Options#TTL
      *         TTL}: Sets the <a href="../../../../../concepts/ttl.html"
      *         target="_top">TTL</a> of the view specified in {@code viewName}.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -273,13 +277,15 @@ public class FilterRequest implements IndexedRecord {
      *                 view will be top-level.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this filtered-view is part of
+     *                 VIEW_ID}: view this filtered-view is part of.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterRequest.Options#TTL TTL}: Sets
      *                 the <a href="../../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the view specified in {@code
      *                 viewName}.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericData;
 import org.codehaus.jackson.JsonNode;
@@ -174,6 +175,20 @@ public final class Type implements Serializable {
             return properties;
         }
 
+        /**
+         * Checks if the given property applies to the column.
+         *
+         * @return  boolean indicating whether the given property
+         *          exists in the column's properties.
+         *
+         * @see ColumnProperty
+         */
+        public boolean hasProperty( String property ) {
+            if (property == null)
+                return false;
+            return properties.contains( property );
+        }
+
         @Override
         public boolean equals(Object obj) {
             if (obj == this) {
@@ -276,6 +291,189 @@ public final class Type implements Serializable {
         return new Type(response.getLabels().get(0), response.getTypeSchemas().get(0), response.getProperties().get(0));
     }
 
+
+    /**
+     * Creates a {@link Type} object with the specified dynamic schema metadata and 
+     * encoded dynamic table data.
+     *
+     * @param schemaString   a String object containing the dynamic schema
+     * @param encodedData    the binary encoded data that contains metadata on
+     *                       the dynamic schema
+     * @return               the created {@link Type} object
+     *
+     * @throws GPUdbException if an error occurs during the processing of the metadata
+     */
+    public static Type fromDynamicSchema(String schemaString, ByteBuffer encodedData) throws GPUdbException {
+        Schema schema;
+        try {
+            schema = new Schema.Parser().parse(schemaString);
+        } catch (Exception ex) {
+            throw new GPUdbException("Schema is invalid.", ex);
+        }
+
+        if (schema.getType() != Schema.Type.RECORD) {
+            throw new GPUdbException("Schema must be of type record.");
+        }
+
+        IndexedRecord data = Avro.decode(schema, encodedData);
+
+        // The schema string will have, in addtion to the dynamically generated records' type,
+        // two more fields ('column_headers' and 'column_datatypes')
+        int fieldCount = schema.getFields().size() - 2;
+        // The field/expression names are stored in the second to last element
+        // of the returned data
+        List<String> expressions = (List<String>)data.get(fieldCount);
+        // The field types are stored in the very last element/list of the
+        // returned data
+        List<String> types = (List<String>)data.get(fieldCount + 1);
+
+        // The encoded response is structured column-based; so any element's
+        // size (i.e. list size) gives the total number of records
+        int recordCount = ((List<?>)data.get(0)).size();
+        
+        // The number of columns given in the encoded data must match
+        // the given schema string
+        if (expressions.size() < fieldCount)
+        {
+            throw new GPUdbException("Every field must have a corresponding expression.");
+        }
+
+        // The number of types must match the number fields given in the schema
+        if (types.size() < fieldCount)
+        {
+            throw new GPUdbException("Every field must have a corresponding type.");
+        }
+
+        List<Type.Column> columns = new ArrayList<>();
+
+        // Extract the column information from the given schema and the encoded data
+        for (int i = 0; i < fieldCount; i++) {
+            Field field = schema.getFields().get(i);
+
+            if (field.schema().getType() != Schema.Type.ARRAY) {
+                throw new GPUdbException("Field " + field.name() + " must be of type array.");
+            }
+
+            Schema fieldSchema = field.schema().getElementType();
+            Schema.Type fieldType = fieldSchema.getType();
+            List<String> columnProperties = new ArrayList<>();
+
+            if (fieldType == Schema.Type.UNION) {
+                List<Schema> fieldUnionTypes = fieldSchema.getTypes();
+
+                if (fieldUnionTypes.size() == 2 && fieldUnionTypes.get(1).getType() == Schema.Type.NULL) {
+                    fieldType = fieldUnionTypes.get(0).getType();
+                    columnProperties.add(ColumnProperty.NULLABLE);
+                } else {
+                    throw new GPUdbException("Field " + field.name() + " has invalid type.");
+                }
+            }
+
+            Class<?> columnType;
+
+            switch (fieldType) {
+                case BYTES:
+                    columnType = ByteBuffer.class;
+                    break;
+
+                case DOUBLE:
+                    columnType = Double.class;
+                    break;
+
+                case FLOAT:
+                    columnType = Float.class;
+                    break;
+
+                case INT:
+                    columnType = Integer.class;
+                    break;
+
+                case LONG:
+                    columnType = Long.class;
+                    break;
+
+                case STRING:
+                    columnType = String.class;
+                    break;
+
+                default:
+                    throw new GPUdbException("Field " + field.name() + " must be of type bytes, double, float, int, long or string.");
+            }
+
+            if (((List<?>)data.get(i)).size() != recordCount) {
+                throw new GPUdbException("Fields must all have the same number of elements.");
+            }
+
+            String name = expressions.get(i);
+
+            for (int j = 0; j < i; j++) {
+                if (name.equals(columns.get(j).getName())) {
+                    for (int n = 2; ; n++) {
+                        String tempName = name + "_" + n;
+                        boolean found = false;
+
+                        for (int k = 0; k < i; k++) {
+                            if (tempName.equals(columns.get(k).getName())) {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (!found) {
+                            for (int k = i + 1; k < fieldCount; k++) {
+                                if (tempName.equals(expressions.get(k))) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!found) {
+                            name = tempName;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            String type = types.get(i);
+
+            switch (type) {
+                case ColumnProperty.CHAR1:
+                case ColumnProperty.CHAR2:
+                case ColumnProperty.CHAR4:
+                case ColumnProperty.CHAR8:
+                case ColumnProperty.CHAR16:
+                case ColumnProperty.CHAR32:
+                case ColumnProperty.CHAR64:
+                case ColumnProperty.CHAR128:
+                case ColumnProperty.CHAR256:
+                case ColumnProperty.DATE:
+                case ColumnProperty.DATETIME:
+                case ColumnProperty.DECIMAL:
+                case ColumnProperty.INT8:
+                case ColumnProperty.INT16:
+                case ColumnProperty.IPV4:
+                case ColumnProperty.TIME:
+                case ColumnProperty.TIMESTAMP:
+                case ColumnProperty.WKT:
+                    columnProperties.add(type);
+                    break;
+
+                case "geometry":
+                    // WKT types could be returned as 'geometry' by the server
+                    columnProperties.add( ColumnProperty.WKT );
+                    break;
+            }
+
+            columns.add(new Type.Column(name, columnType, columnProperties));
+        }   // end for loop
+
+        // Create the type from the extracted column information
+        return new Type("", columns);
+    }
+
+    
     private transient String label;
     private transient List<Column> columns;
     private transient Map<String, Integer> columnMap;

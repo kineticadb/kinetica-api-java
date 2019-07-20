@@ -112,8 +112,9 @@ public class MergeRecordsRequest implements IndexedRecord {
      * {@code tableName}.
      *         <li> {@link
      * com.gpudb.protocol.MergeRecordsRequest.Options#VIEW_ID VIEW_ID}: view
-     * this result table is part of
+     * this result table is part of.  The default value is ''.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -181,7 +182,7 @@ public class MergeRecordsRequest implements IndexedRecord {
         public static final String CHUNK_SIZE = "chunk_size";
 
         /**
-         * view this result table is part of
+         * view this result table is part of.  The default value is ''.
          */
         public static final String VIEW_ID = "view_id";
 
@@ -286,8 +287,10 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                 merged table specified in {@code tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of
+     *                 VIEW_ID}: view this result table is part of.  The
+     *                 default value is ''.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public MergeRecordsRequest(String tableName, List<String> sourceTableNames, List<Map<String, String>> fieldMaps, Map<String, String> options) {
@@ -440,8 +443,9 @@ public class MergeRecordsRequest implements IndexedRecord {
      *         table specified in {@code tableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.MergeRecordsRequest.Options#VIEW_ID VIEW_ID}:
-     *         view this result table is part of
+     *         view this result table is part of.  The default value is ''.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -514,8 +518,10 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                 merged table specified in {@code tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of
+     *                 VIEW_ID}: view this result table is part of.  The
+     *                 default value is ''.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

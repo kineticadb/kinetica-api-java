@@ -436,6 +436,7 @@ public class AlterTableRequest implements IndexedRecord {
      * ADD_COLUMN_EXPRESSION}: expression for new column's values (optional
      * with add_column). Any valid expressions including existing columns.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -782,6 +783,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                 values (optional with add_column). Any valid expressions
      *                 including existing columns.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AlterTableRequest(String tableName, String action, String value, Map<String, String> options) {
@@ -1203,6 +1205,7 @@ public class AlterTableRequest implements IndexedRecord {
      *         (optional with add_column). Any valid expressions including
      *         existing columns.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -1298,6 +1301,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                 values (optional with add_column). Any valid expressions
      *                 including existing columns.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

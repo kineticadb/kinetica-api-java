@@ -116,6 +116,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      * specifies the first time at which a refresh is to be done.  Value is a
      * datetime string with format 'YYYY-MM-DD HH:MM:SS'.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -325,6 +326,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 refresh is to be done.  Value is a datetime string with
      *                 format 'YYYY-MM-DD HH:MM:SS'.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public CreateMaterializedViewRequest(String tableName, Map<String, String> options) {
@@ -429,6 +431,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *         done.  Value is a datetime string with format 'YYYY-MM-DD
      *         HH:MM:SS'.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -515,6 +518,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 refresh is to be done.  Value is a datetime string with
      *                 format 'YYYY-MM-DD HH:MM:SS'.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

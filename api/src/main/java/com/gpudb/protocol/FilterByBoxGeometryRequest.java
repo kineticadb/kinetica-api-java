@@ -62,6 +62,7 @@ public class FilterByBoxGeometryRequest implements IndexedRecord {
      * will be automatically created. If empty, then the newly created view
      * will be top-level.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -105,7 +106,8 @@ public class FilterByBoxGeometryRequest implements IndexedRecord {
      *                   will be performed. Must be an existing table.
      * @param viewName  Optional name of the result view that will be created
      *                  containing the results of the query. Must not be an
-     *                  already existing collection, table or view.
+     *                  already existing collection, table or view.  The
+     *                  default value is ''.
      * @param columnName  Name of the geospatial geometry column to be
      *                    filtered.
      * @param minX  Lower bound for the x-coordinate of the rectangular box.
@@ -126,6 +128,7 @@ public class FilterByBoxGeometryRequest implements IndexedRecord {
      *                 automatically created. If empty, then the newly created
      *                 view will be top-level.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public FilterByBoxGeometryRequest(String tableName, String viewName, String columnName, double minX, double maxX, double minY, double maxY, Map<String, String> options) {
@@ -166,7 +169,7 @@ public class FilterByBoxGeometryRequest implements IndexedRecord {
      * 
      * @return Optional name of the result view that will be created containing
      *         the results of the query. Must not be an already existing
-     *         collection, table or view.
+     *         collection, table or view.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -177,7 +180,8 @@ public class FilterByBoxGeometryRequest implements IndexedRecord {
      * 
      * @param viewName  Optional name of the result view that will be created
      *                  containing the results of the query. Must not be an
-     *                  already existing collection, table or view.
+     *                  already existing collection, table or view.  The
+     *                  default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -312,6 +316,7 @@ public class FilterByBoxGeometryRequest implements IndexedRecord {
      *         the collection will be automatically created. If empty, then the
      *         newly created view will be top-level.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -330,6 +335,7 @@ public class FilterByBoxGeometryRequest implements IndexedRecord {
      *                 automatically created. If empty, then the newly created
      *                 view will be top-level.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -63,6 +63,7 @@ public class FilterByAreaGeometryRequest implements IndexedRecord {
      * will be automatically created. If empty, then the newly created view
      * will be top-level.
      * </ul>
+     * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
@@ -110,7 +111,7 @@ public class FilterByAreaGeometryRequest implements IndexedRecord {
      *                   collection specified by {@code viewName}.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results. Must not be an already existing
-     *                  collection, table or view.
+     *                  collection, table or view.  The default value is ''.
      * @param columnName  Name of the geospatial geometry column to be
      *                    filtered.
      * @param xVector  List of x coordinates of the vertices of the polygon
@@ -127,6 +128,7 @@ public class FilterByAreaGeometryRequest implements IndexedRecord {
      *                 automatically created. If empty, then the newly created
      *                 view will be top-level.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public FilterByAreaGeometryRequest(String tableName, String viewName, String columnName, List<Double> xVector, List<Double> yVector, Map<String, String> options) {
@@ -173,7 +175,7 @@ public class FilterByAreaGeometryRequest implements IndexedRecord {
      * 
      * @return If provided, then this will be the name of the view containing
      *         the results. Must not be an already existing collection, table
-     *         or view.
+     *         or view.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -184,7 +186,7 @@ public class FilterByAreaGeometryRequest implements IndexedRecord {
      * 
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results. Must not be an already existing
-     *                  collection, table or view.
+     *                  collection, table or view.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -273,6 +275,7 @@ public class FilterByAreaGeometryRequest implements IndexedRecord {
      *         the collection will be automatically created. If empty, then the
      *         newly created view will be top-level.
      *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -291,6 +294,7 @@ public class FilterByAreaGeometryRequest implements IndexedRecord {
      *                 automatically created. If empty, then the newly created
      *                 view will be top-level.
      *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

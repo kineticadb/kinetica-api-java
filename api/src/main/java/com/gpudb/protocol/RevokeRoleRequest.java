@@ -62,7 +62,8 @@ public class RevokeRoleRequest implements IndexedRecord {
      *              be an existing role.
      * @param member  Name of the user or role that will be revoked membership
      *                in {@code role}. Must be an existing user or role.
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      */
     public RevokeRoleRequest(String role, String member, Map<String, String> options) {
@@ -119,7 +120,7 @@ public class RevokeRoleRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.
+     * @return Optional parameters.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -128,7 +129,8 @@ public class RevokeRoleRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
