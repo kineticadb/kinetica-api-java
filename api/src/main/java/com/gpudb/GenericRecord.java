@@ -18,6 +18,7 @@ import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.DateTimeParseException;
+import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
 
 
@@ -33,28 +34,33 @@ public final class GenericRecord extends RecordBase implements Serializable  {
     private transient Type type;
     private transient Object[] values;
 
+    // Accepted time formats
+    private final static transient String timeFormat =
+        "HH:mm[:ss][.S[S[S]]][ ][XXX][Z][z][VV][x]";
+    private final static transient DateTimeFormatter acceptedTimeFormat =
+        new DateTimeFormatterBuilder().appendPattern( "HH:mm[:ss]" )
+        .appendOptional( // optional fraction of second
+                        new DateTimeFormatterBuilder()
+                        .appendFraction( ChronoField.MICRO_OF_SECOND, 0, 6, true)
+                        .toFormatter() )
+        .appendOptional( // optional timezone related information
+                        new DateTimeFormatterBuilder()
+                        .appendPattern( "[ ][XXX][Z][z][VV][x]" )
+                        .toFormatter() )
+        .toFormatter();
+    
     // Date patterns used around the world
     private final static transient String datePatternYMD = "yyyy[-][/][.]MM[-][/][.]dd";
     private final static transient String datePatternMDY = "MM[-][/][.]dd[-][/][.]yyyy";
     private final static transient String datePatternDMY = "dd[-][/][.]MM[-][/][.]yyyy";
 
-    // Date, time, and datetime formats the API will accept
-    private final static transient DateTimeFormatter acceptedDateFormats[] =
-    { DateTimeFormatter.ofPattern( datePatternYMD ),
-      DateTimeFormatter.ofPattern( datePatternMDY ),
-      DateTimeFormatter.ofPattern( datePatternDMY )
-    };
-    
-    private final static transient DateTimeFormatter acceptedTimeFormats =
-        DateTimeFormatter.ofPattern("[HH:mm][:ss][.SSS][ ][XXX][Z][z][VV][x]");
-    
-    private final static transient String datetimePatternYMD = "yyyy[-][/][.]MM[-][/][.]dd[[ ]['T']HH:mm[:ss][.SSS][ ][XXX][Z][z][VV][x]]";
-    private final static transient String datetimePatternMDY = "MM[-][/][.]dd[-][/][.]yyyy[[ ]['T']HH:mm[:ss][.SSS][ ][XXX][Z][z][VV][x]]";
-    private final static transient String datetimePatternDMY = "dd[-][/][.]MM[-][/][.]yyyy[[ ]['T']HH:mm[:ss][.SSS][ ][XXX][Z][z][VV][x]]";
     private final static transient DateTimeFormatter acceptedDateTimeFormats[] =
-    { DateTimeFormatter.ofPattern( datetimePatternYMD ),
-      DateTimeFormatter.ofPattern( datetimePatternMDY ),
-      DateTimeFormatter.ofPattern( datetimePatternDMY )
+    { new DateTimeFormatterBuilder().appendPattern( datePatternYMD + "[ ]['T']" )
+        .appendOptional( acceptedTimeFormat ).toFormatter(),
+      new DateTimeFormatterBuilder().appendPattern( datePatternMDY + "[ ]['T']" )
+        .appendOptional( acceptedTimeFormat ).toFormatter(),
+      new DateTimeFormatterBuilder().appendPattern( datePatternDMY + "[ ]['T']" )
+        .appendOptional( acceptedTimeFormat ).toFormatter()
     };
 
 
@@ -112,6 +118,57 @@ public final class GenericRecord extends RecordBase implements Serializable  {
         values[index] = value;
     }
 
+    /**
+     * For string columns with date, time, or datetime property, parse the
+     * string and convert to the appropriate Kinetica format using the system
+     * timezone.  If the column is not of a relevant type, set the value
+     * without any parsing (so that any string or other typed values can be set
+     * using this method without resorting to first check the column's type
+     * before calling it).
+     *
+     * Caveat is that due to string manipulation, this is considerably slower
+     * than {@link #put}.  So, use this method only if you know that a
+     * non-Kinetica date/time/datetime format is being used.
+     *
+     * @param name      The name of the column.
+     * @param value     The value to be parsed (based on the given column's type).
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public void putDateTime(String name, Object value) throws GPUdbException {
+        putDateTime( name, value, null );
+    }
+
+
+    /**
+     * For string columns with date, time, or datetime property, parse the
+     * string and convert to the appropriate Kinetica format using the given
+     * timezone (system timezone if none given).  If the column is not of a
+     * relevant type, set the value without any parsing (so that any string or
+     * other typed values can be set using this method without resorting to
+     * first check the column's type before calling it).
+     *
+     * Caveat is that due to string manipulation, this is considerably slower
+     * than {@link #put}.  So, use this method only if you know that a
+     * non-Kinetica date/time/datetime format is being used.
+     *
+     * @param name      The name of the column.
+     * @param value     The value to be parsed (based on the given column's type).
+     * @param timezone  Optional parameter specifying the timezone to use for
+     *                  parsing the given value.  If null, the system timezone is
+     *                  used.
+     *
+     * @throws GPUdbException  if an error occurs during the operation.
+     */
+    public void putDateTime(String name, Object value, TimeZone timezone) throws GPUdbException {
+        int index = getType().getColumnIndex(name);
+
+        if (index == -1) {
+            throw new IllegalArgumentException("Field " + name + " does not exist.");
+        }
+
+        putDateTime(index, value, timezone);
+    }
 
     /**
      * For string columns with date, time, or datetime property, parse the
@@ -142,6 +199,18 @@ public final class GenericRecord extends RecordBase implements Serializable  {
      * Caveat is that due to string manipulation, this is considerably slower
      * than {@link #put}.  So, use this method only if you know that a
      * non-Kinetica date/time/datetime format is being used.
+     *
+     * The following patterns are accepted for date and datetime columns:
+     * 1) yyyy[-][/][.]MM[-][/][.]dd[ ]['T'][HH:mm[:ss][.S[S][S][S][S][S]][ ][XXX][Z][z][VV][x]]
+     * 2) MM[-][/][.]dd[-][/][.]yyyy[ ]['T'][HH:mm[:ss][.S[S][S][S][S][S]][ ][XXX][Z][z][VV][x]]
+     * 3) dd[-][/][.]MM[-][/][.]yyyy[ ]['T'][HH:mm[:ss][.S[S][S][S][S][S]][ ][XXX][Z][z][VV][x]]
+     * The following pattern is accepted by time-type columns:
+     *   HH:mm[:ss][.S[S][S][S][S][S]][ ][XXX][Z][z][VV][x]
+     *
+     * In other words, the date component can be any of YMD, MDY, or DMY pattern
+     * withh '-', '.', or '/' as the separator.  And, the time component must have
+     * hours and minutes, but can optionally have seconds, fraction of a second
+     * (up to six digits) and some form of a timezone identifier.
      *
      * @param index     The index of the column.
      * @param value     The value to be parsed (based on the given column's type).
@@ -175,12 +244,36 @@ public final class GenericRecord extends RecordBase implements Serializable  {
         try {
             if ( column.hasProperty( ColumnProperty.DATE ) ) {
                 // Try to parse the date with one of the formats at a time
-                for ( int i = 0; i < acceptedDateFormats.length; ++i ) {
+                for ( int i = 0; i < acceptedDateTimeFormats.length; ++i ) {
                     try {
-                        LocalDate date = acceptedDateFormats[i].parse( (String)value,
-                                                                       LocalDate.FROM);
-                        stringValue = date.format( kineticaDateFormat );
-                        break; // no need to try other formats
+                        TemporalAccessor ta = acceptedDateTimeFormats[i].parseBest( (String)value,
+                                                                                    ZonedDateTime.FROM,
+                                                                                    LocalDateTime.FROM,
+                                                                                    LocalDate.FROM );
+                        // See if this format matched the input
+                        if ( ta instanceof ZonedDateTime ) {
+                            // Get the appropriate zone ID
+                            ZoneId zone = (ZoneId)(ZoneOffset.ofTotalSeconds( timezone.getRawOffset() / 1000 ) );
+                            // Parse the datetime local to the given time zone
+                            // and then extract just the date
+                            stringValue = ZonedDateTime.from( ta )
+                                .withZoneSameInstant( zone )
+                                .toLocalDateTime()
+                                .format( kineticaDateFormat );
+                            break; // no need to try other formats
+                        } else if ( ta instanceof LocalDateTime ) {
+                            // Parse the datetime as is (since there is no
+                            // timezone specified in the string itself) and
+                            // then just extract the date
+                            stringValue = LocalDateTime.from( ta ).format( kineticaDateFormat );
+                            break; // no need to try other formats
+                        } else if ( ta instanceof LocalDate ) {
+                            // Parse the datetime as is (no time component
+                            // given)
+                            stringValue = LocalDate.from( ta ).format( kineticaDateFormat );
+                            break; // no need to try other formats
+                        }
+                        // Didn't match this format; try the next one (next iteration)
                     } catch (DateTimeParseException ignore) {
                         // Just ignore any parse exception
                     }
@@ -195,11 +288,12 @@ public final class GenericRecord extends RecordBase implements Serializable  {
                     // Value was successfully parsed
                     values[index] = stringValue;
                 }
+
             } else if ( column.hasProperty( ColumnProperty.TIME ) ) {
                 // Parse the input time string with the best matching format
-                TemporalAccessor ta = acceptedTimeFormats.parseBest( (String)value,
-                                                                     OffsetTime.FROM,
-                                                                     LocalTime.FROM );
+                TemporalAccessor ta = acceptedTimeFormat.parseBest( (String)value,
+                                                                    OffsetTime.FROM,
+                                                                    LocalTime.FROM );
                 if ( ta instanceof OffsetTime ) {
                     // Got an offset; but first parse the time as is
                     OffsetTime offsetTime = OffsetTime.from( ta );
@@ -260,7 +354,7 @@ public final class GenericRecord extends RecordBase implements Serializable  {
                     // Did not match any format
                     throw new GPUdbException("Value '" + (String)value + "' for column '"
                                              + column.getName() + "' with sub-type "
-                                             + "'date' did not match any pattern");
+                                             + "'datetime' did not match any pattern");
                 } else {
                     // Value was successfully parsed
                     values[index] = stringValue;

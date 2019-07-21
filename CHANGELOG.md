@@ -8,6 +8,11 @@
 -   A 'putDateTime' method to GenericRecord that parses string values
     with a variety of different date, time, and datetime formats
     and converts them to the appropriate Kinetica format for the column's type.
+    Of the accepteble formats, the date component can be any of YMD, MDY, or
+    DMY pattern with '-', '.', or '/' as the separator.  And, the time component
+    (optional for both date and datetime, but required for time) must have hours
+    and minutes, but can optionally have seconds, fraction of a second (up to six
+    digits) and some form of a timezone identifier.
 
 
 ### Version 6.2.1.1 - 2019-03-30
