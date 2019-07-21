@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>7.0.3.0</version>
+    <version>7.0.5.0</version>
     <packaging>jar</packaging>
     <name>Kinetica Java API</name>
     <distributionManagement>
@@ -39,12 +39,17 @@
             <artifactId>commons-codec</artifactId>
             <version>1.10</version>
         </dependency>
+        <dependency>
+            <groupId>org.threeten</groupId>
+            <artifactId>threetenbp</artifactId>
+            <version>1.4.0</version>
+        </dependency>
     </dependencies>
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gpudb-api.version>7.0.3.0</gpudb-api.version>
+        <gpudb-api.version>7.0.4.0</gpudb-api.version>
     </properties>
     <profiles>
         <profile>

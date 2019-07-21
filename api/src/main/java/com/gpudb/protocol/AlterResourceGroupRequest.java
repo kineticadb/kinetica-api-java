@@ -17,7 +17,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#alterResourceGroup(AlterResourceGroupRequest)}.
  * <p>
- * Alters properties of exisiting resource group to facilitate resource
+ * Alters the properties of an exisiting resource group to facilitate resource
  * management.
  */
 public class AlterResourceGroupRequest implements IndexedRecord {
@@ -75,9 +75,11 @@ public class AlterResourceGroupRequest implements IndexedRecord {
 
 
     /**
-     * If the resource group ranking has to be updated, this indicates the
+     * If the resource group ranking is to be updated, this indicates the
      * relative ranking among existing resource groups where this resource
-     * group will be moved. Left bank if not changing the ranking.
+     * group will be moved; leave blank if not changing the ranking.  When
+     * using {@code before} or {@code after}, specify which resource group this
+     * one will be inserted before or after in {@code adjoiningResourceGroup}.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -218,10 +220,13 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      *                        the given tier at one time for this group.
      *                        </ul>
      *                        The default value is an empty {@link Map}.
-     * @param ranking  If the resource group ranking has to be updated, this
+     * @param ranking  If the resource group ranking is to be updated, this
      *                 indicates the relative ranking among existing resource
-     *                 groups where this resource group will be moved. Left
-     *                 bank if not changing the ranking.
+     *                 groups where this resource group will be moved; leave
+     *                 blank if not changing the ranking.  When using {@code
+     *                 before} or {@code after}, specify which resource group
+     *                 this one will be inserted before or after in {@code
+     *                 adjoiningResourceGroup}.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -243,11 +248,11 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterResourceGroupRequest.Ranking#EMPTY_STRING
      *                 EMPTY_STRING}.
-     * @param adjoiningResourceGroup  If the ranking is 'before' or 'after',
-     *                                this field indicates the resource group
-     *                                before or after which the current group
-     *                                will be placed otherwise left blank.  The
-     *                                default value is ''.
+     * @param adjoiningResourceGroup  If {@code ranking} is {@code before} or
+     *                                {@code after}, this field indicates the
+     *                                resource group before or after which the
+     *                                current group will be placed; otherwise,
+     *                                leave blank.  The default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -365,10 +370,12 @@ public class AlterResourceGroupRequest implements IndexedRecord {
 
     /**
      * 
-     * @return If the resource group ranking has to be updated, this indicates
+     * @return If the resource group ranking is to be updated, this indicates
      *         the relative ranking among existing resource groups where this
-     *         resource group will be moved. Left bank if not changing the
-     *         ranking.
+     *         resource group will be moved; leave blank if not changing the
+     *         ranking.  When using {@code before} or {@code after}, specify
+     *         which resource group this one will be inserted before or after
+     *         in {@code adjoiningResourceGroup}.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -397,10 +404,13 @@ public class AlterResourceGroupRequest implements IndexedRecord {
 
     /**
      * 
-     * @param ranking  If the resource group ranking has to be updated, this
+     * @param ranking  If the resource group ranking is to be updated, this
      *                 indicates the relative ranking among existing resource
-     *                 groups where this resource group will be moved. Left
-     *                 bank if not changing the ranking.
+     *                 groups where this resource group will be moved; leave
+     *                 blank if not changing the ranking.  When using {@code
+     *                 before} or {@code after}, specify which resource group
+     *                 this one will be inserted before or after in {@code
+     *                 adjoiningResourceGroup}.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -433,9 +443,10 @@ public class AlterResourceGroupRequest implements IndexedRecord {
 
     /**
      * 
-     * @return If the ranking is 'before' or 'after', this field indicates the
-     *         resource group before or after which the current group will be
-     *         placed otherwise left blank.  The default value is ''.
+     * @return If {@code ranking} is {@code before} or {@code after}, this
+     *         field indicates the resource group before or after which the
+     *         current group will be placed; otherwise, leave blank.  The
+     *         default value is ''.
      * 
      */
     public String getAdjoiningResourceGroup() {
@@ -444,11 +455,11 @@ public class AlterResourceGroupRequest implements IndexedRecord {
 
     /**
      * 
-     * @param adjoiningResourceGroup  If the ranking is 'before' or 'after',
-     *                                this field indicates the resource group
-     *                                before or after which the current group
-     *                                will be placed otherwise left blank.  The
-     *                                default value is ''.
+     * @param adjoiningResourceGroup  If {@code ranking} is {@code before} or
+     *                                {@code after}, this field indicates the
+     *                                resource group before or after which the
+     *                                current group will be placed; otherwise,
+     *                                leave blank.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

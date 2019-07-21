@@ -220,8 +220,8 @@ public final class ColumnProperty {
     public static final String DICT = "dict";
 
     /**
-     * For columns with attributes of date, time, datetime or timestamp, at
-     * insert time, replace empty strings and invalid timestamps with NOW()
+     * For 'date', 'time', 'datetime', or 'timestamp' column types, replace
+     * empty strings and invalid timestamps with 'NOW()' upon insert.
      */
     public static final String INIT_WITH_NOW = "init_with_now";
 

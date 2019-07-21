@@ -2,6 +2,27 @@
 
 ## Version 7.0
 
+### Version 7.0.5.0 - 2019-07-21
+
+#### Added
+-   A 'putDateTime' method to GenericRecord that parses string values
+    with a variety of different date, time, and datetime formats
+    and converts them to the appropriate Kinetica format for the column's type.
+    Of the accepteble formats, the date component can be any of YMD, MDY, or
+    DMY pattern with '-', '.', or '/' as the separator.  And, the time component
+    (optional for both date and datetime, but required for time) must have hours
+    and minutes, but can optionally have seconds, fraction of a second (up to six
+    digits) and some form of a timezone identifier.
+
+### Version 7.0.4.0 - 2019-06-26
+
+#### Added
+-   Minor documentation and some options for some endpoints
+
+#### Changed
+-   Parameters for /visualize/isoschrone
+
+
 ### Version 7.0.3.0 - 2019-05-07
 
 #### Added

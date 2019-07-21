@@ -75,7 +75,9 @@ public class CreateResourceGroupRequest implements IndexedRecord {
 
     /**
      * Indicates the relative ranking among existing resource groups where this
-     * new resource group will be placed.
+     * new resource group will be placed.  When using {@code before} or {@code
+     * after}, specify which resource group this one will be inserted before or
+     * after in {@code adjoiningResourceGroup}.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -180,6 +182,9 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      *                        The default value is an empty {@link Map}.
      * @param ranking  Indicates the relative ranking among existing resource
      *                 groups where this new resource group will be placed.
+     *                 When using {@code before} or {@code after}, specify
+     *                 which resource group this one will be inserted before or
+     *                 after in {@code adjoiningResourceGroup}.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -195,10 +200,11 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateResourceGroupRequest.Ranking#AFTER
      *                 AFTER}
      *                 </ul>
-     * @param adjoiningResourceGroup  Name of the resource group relative to
-     *                                which this group will be placed. Must be
-     *                                specified when ranking is before or
-     *                                after.  The default value is ''.
+     * @param adjoiningResourceGroup  If {@code ranking} is {@code before} or
+     *                                {@code after}, this field indicates the
+     *                                resource group before or after which the
+     *                                current group will be placed; otherwise,
+     *                                leave blank.  The default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -301,7 +307,10 @@ public class CreateResourceGroupRequest implements IndexedRecord {
     /**
      * 
      * @return Indicates the relative ranking among existing resource groups
-     *         where this new resource group will be placed.
+     *         where this new resource group will be placed.  When using {@code
+     *         before} or {@code after}, specify which resource group this one
+     *         will be inserted before or after in {@code
+     *         adjoiningResourceGroup}.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -326,6 +335,9 @@ public class CreateResourceGroupRequest implements IndexedRecord {
      * 
      * @param ranking  Indicates the relative ranking among existing resource
      *                 groups where this new resource group will be placed.
+     *                 When using {@code before} or {@code after}, specify
+     *                 which resource group this one will be inserted before or
+     *                 after in {@code adjoiningResourceGroup}.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -352,8 +364,9 @@ public class CreateResourceGroupRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the resource group relative to which this group will be
-     *         placed. Must be specified when ranking is before or after.  The
+     * @return If {@code ranking} is {@code before} or {@code after}, this
+     *         field indicates the resource group before or after which the
+     *         current group will be placed; otherwise, leave blank.  The
      *         default value is ''.
      * 
      */
@@ -363,10 +376,11 @@ public class CreateResourceGroupRequest implements IndexedRecord {
 
     /**
      * 
-     * @param adjoiningResourceGroup  Name of the resource group relative to
-     *                                which this group will be placed. Must be
-     *                                specified when ranking is before or
-     *                                after.  The default value is ''.
+     * @param adjoiningResourceGroup  If {@code ranking} is {@code before} or
+     *                                {@code after}, this field indicates the
+     *                                resource group before or after which the
+     *                                current group will be placed; otherwise,
+     *                                leave blank.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

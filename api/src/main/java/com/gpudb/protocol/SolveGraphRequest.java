@@ -426,8 +426,8 @@ public class SolveGraphRequest implements IndexedRecord {
      *                      true}, any provided restrictions will replace the
      *                      existing restrictions. If {@code
      *                      remove_previous_restrictions} is set to {@code
-     *                      false}, any provided weights will be added (in the
-     *                      case of 'RESTRICTIONS_VALUECOMPARED') to or
+     *                      false}, any provided restrictions will be added (in
+     *                      the case of 'RESTRICTIONS_VALUECOMPARED') to or
      *                      replaced (in the case of
      *                      'RESTRICTIONS_ONOFFCOMPARED').  The default value
      *                      is an empty {@link List}.
@@ -720,7 +720,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *         remove_previous_restrictions} is set to {@code true}, any
      *         provided restrictions will replace the existing restrictions. If
      *         {@code remove_previous_restrictions} is set to {@code false},
-     *         any provided weights will be added (in the case of
+     *         any provided restrictions will be added (in the case of
      *         'RESTRICTIONS_VALUECOMPARED') to or replaced (in the case of
      *         'RESTRICTIONS_ONOFFCOMPARED').  The default value is an empty
      *         {@link List}.
@@ -752,8 +752,8 @@ public class SolveGraphRequest implements IndexedRecord {
      *                      true}, any provided restrictions will replace the
      *                      existing restrictions. If {@code
      *                      remove_previous_restrictions} is set to {@code
-     *                      false}, any provided weights will be added (in the
-     *                      case of 'RESTRICTIONS_VALUECOMPARED') to or
+     *                      false}, any provided restrictions will be added (in
+     *                      the case of 'RESTRICTIONS_VALUECOMPARED') to or
      *                      replaced (in the case of
      *                      'RESTRICTIONS_ONOFFCOMPARED').  The default value
      *                      is an empty {@link List}.

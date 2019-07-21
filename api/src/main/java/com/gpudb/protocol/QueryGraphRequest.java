@@ -148,6 +148,19 @@ public class QueryGraphRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.QueryGraphRequest.Options#AND_LABELS AND_LABELS}: If
+     * set to {@code true}, the result of the query has entities that satisfy
+     * all of the target labels, instead of any.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -248,6 +261,21 @@ public class QueryGraphRequest implements IndexedRecord {
          * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
          */
         public static final String ENABLE_GRAPH_DRAW = "enable_graph_draw";
+
+        /**
+         * If set to {@code true}, the result of the query has entities that
+         * satisfy all of the target labels, instead of any.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
+         */
+        public static final String AND_LABELS = "and_labels";
 
         private Options() {  }
     }
@@ -403,6 +431,22 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 href="../../../../../api/rest/wms_rest.html"
      *                 target="_top">/wms</a> endpoint can then be made to
      *                 display the query results on a map.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#AND_LABELS
+     *                 AND_LABELS}: If set to {@code true}, the result of the
+     *                 query has entities that satisfy all of the target
+     *                 labels, instead of any.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -670,6 +714,19 @@ public class QueryGraphRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#AND_LABELS
+     *         AND_LABELS}: If set to {@code true}, the result of the query has
+     *         entities that satisfy all of the target labels, instead of any.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -768,6 +825,22 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 href="../../../../../api/rest/wms_rest.html"
      *                 target="_top">/wms</a> endpoint can then be made to
      *                 display the query results on a map.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#AND_LABELS
+     *                 AND_LABELS}: If set to {@code true}, the result of the
+     *                 query has entities that satisfy all of the target
+     *                 labels, instead of any.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

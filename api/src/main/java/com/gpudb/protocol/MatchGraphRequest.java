@@ -68,6 +68,10 @@ public class MatchGraphRequest implements IndexedRecord {
      * INCREMENTAL_WEIGHTED}: Matches {@code samplePoints} to the graph using
      * time and/or distance between points to influence one or more shortest
      * paths across the sample points.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_OD_PAIRS
+     * MATCH_OD_PAIRS}: Matches {@code samplePoints} to find the most probable
+     * path between origin and destination pairs with cost constraints
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -94,6 +98,12 @@ public class MatchGraphRequest implements IndexedRecord {
          * sample points.
          */
         public static final String INCREMENTAL_WEIGHTED = "incremental_weighted";
+
+        /**
+         * Matches {@code samplePoints} to find the most probable path between
+         * origin and destination pairs with cost constraints
+         */
+        public static final String MATCH_OD_PAIRS = "match_od_pairs";
 
         private SolveMethod() {  }
     }
@@ -309,6 +319,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     to the graph using time and/or distance between
      *                     points to influence one or more shortest paths
      *                     across the sample points.
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_OD_PAIRS
+     *                     MATCH_OD_PAIRS}: Matches {@code samplePoints} to
+     *                     find the most probable path between origin and
+     *                     destination pairs with cost constraints
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -497,6 +512,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *         INCREMENTAL_WEIGHTED}: Matches {@code samplePoints} to the graph
      *         using time and/or distance between points to influence one or
      *         more shortest paths across the sample points.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_OD_PAIRS
+     *         MATCH_OD_PAIRS}: Matches {@code samplePoints} to find the most
+     *         probable path between origin and destination pairs with cost
+     *         constraints
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -531,6 +551,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     to the graph using time and/or distance between
      *                     points to influence one or more shortest paths
      *                     across the sample points.
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_OD_PAIRS
+     *                     MATCH_OD_PAIRS}: Matches {@code samplePoints} to
+     *                     find the most probable path between origin and
+     *                     destination pairs with cost constraints
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN

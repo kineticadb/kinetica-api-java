@@ -245,9 +245,9 @@ public class CreateTypeRequest implements IndexedRecord {
      * memory.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_NOW
-     * INIT_WITH_NOW}: For columns with attributes of date, time, datetime or
-     * timestamp, at insert time, replace empty strings and invalid timestamps
-     * with NOW()
+     * INIT_WITH_NOW}: For 'date', 'time', 'datetime', or 'timestamp' column
+     * types, replace empty strings and invalid timestamps with 'NOW()' upon
+     * insert.
      * </ul>
      * A set of string constants for the parameter {@code properties}.
      */
@@ -467,8 +467,8 @@ public class CreateTypeRequest implements IndexedRecord {
         public static final String DICT = "dict";
 
         /**
-         * For columns with attributes of date, time, datetime or timestamp, at
-         * insert time, replace empty strings and invalid timestamps with NOW()
+         * For 'date', 'time', 'datetime', or 'timestamp' column types, replace
+         * empty strings and invalid timestamps with 'NOW()' upon insert.
          */
         public static final String INIT_WITH_NOW = "init_with_now";
 
@@ -703,9 +703,9 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    can save a large amount of memory.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_NOW
-     *                    INIT_WITH_NOW}: For columns with attributes of date,
-     *                    time, datetime or timestamp, at insert time, replace
-     *                    empty strings and invalid timestamps with NOW()
+     *                    INIT_WITH_NOW}: For 'date', 'time', 'datetime', or
+     *                    'timestamp' column types, replace empty strings and
+     *                    invalid timestamps with 'NOW()' upon insert.
      *                    </ul>
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
@@ -944,9 +944,9 @@ public class CreateTypeRequest implements IndexedRecord {
      *         This property can save a large amount of memory.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_NOW
-     *         INIT_WITH_NOW}: For columns with attributes of date, time,
-     *         datetime or timestamp, at insert time, replace empty strings and
-     *         invalid timestamps with NOW()
+     *         INIT_WITH_NOW}: For 'date', 'time', 'datetime', or 'timestamp'
+     *         column types, replace empty strings and invalid timestamps with
+     *         'NOW()' upon insert.
      *         </ul>
      * 
      */
@@ -1160,9 +1160,9 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    can save a large amount of memory.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_NOW
-     *                    INIT_WITH_NOW}: For columns with attributes of date,
-     *                    time, datetime or timestamp, at insert time, replace
-     *                    empty strings and invalid timestamps with NOW()
+     *                    INIT_WITH_NOW}: For 'date', 'time', 'datetime', or
+     *                    'timestamp' column types, replace empty strings and
+     *                    invalid timestamps with 'NOW()' upon insert.
      *                    </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

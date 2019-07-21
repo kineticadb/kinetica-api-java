@@ -58,6 +58,18 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
      *         <li> {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_NULLS
+     * VERIFY_NULLS}: When enabled, verifies that null values are set to zero
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_PERSIST
      * VERIFY_PERSIST}:
      * Supported values:
@@ -116,6 +128,20 @@ public class AdminVerifyDbRequest implements IndexedRecord {
         public static final String REBUILD_ON_ERROR = "rebuild_on_error";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * When enabled, verifies that null values are set to zero
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
+         */
+        public static final String VERIFY_NULLS = "verify_nulls";
 
         /**
          * Supported values:
@@ -182,6 +208,22 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#REBUILD_ON_ERROR
      *                 REBUILD_ON_ERROR}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_NULLS
+     *                 VERIFY_NULLS}: When enabled, verifies that null values
+     *                 are set to zero
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -267,6 +309,19 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_NULLS
+     *         VERIFY_NULLS}: When enabled, verifies that null values are set
+     *         to zero
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_PERSIST
      *         VERIFY_PERSIST}:
      *         Supported values:
@@ -320,6 +375,22 @@ public class AdminVerifyDbRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#REBUILD_ON_ERROR
      *                 REBUILD_ON_ERROR}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminVerifyDbRequest.Options#VERIFY_NULLS
+     *                 VERIFY_NULLS}: When enabled, verifies that null values
+     *                 are set to zero
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
