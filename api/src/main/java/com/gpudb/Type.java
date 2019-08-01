@@ -40,10 +40,49 @@ public final class Type implements Serializable {
     public static final class Column implements Serializable {
         private static final long serialVersionUID = 1L;
 
+        /**
+         * An enumeration of all the Kinetica column types (including
+         * sub-types that are determined by the properties used).
+         */
+        public static enum ColumnType {
+            // Basic types
+            INTEGER,
+            LONG,
+            FLOAT,
+            DOUBLE,
+            STRING,
+            BYTES,
+            // Integer sub-types
+            INT8,
+            INT16,
+            // Long sub-types
+            TIMESTAMP,
+            // String sub-types
+            DATE,
+            DATETIME,
+            TIME,
+            DECIMAL,
+            CHAR1,
+            CHAR2,
+            CHAR4,
+            CHAR8,
+            CHAR16,
+            CHAR32,
+            CHAR64,
+            CHAR128,
+            CHAR256,
+            IPV4,
+            WKT,
+            // Bytes sub-types
+            WKB
+        }
+
+        
         private transient String name;
         private transient Class<?> type;
         private transient boolean isNullable;
         private transient List<String> properties;
+        private transient ColumnType columnType;
 
         /**
          * Creates a {@link Column} object with the specified metadata.
@@ -135,7 +174,68 @@ public final class Type implements Serializable {
             }
 
             properties = Collections.unmodifiableList(properties);
-        }
+
+            // Set the column type enumeration
+            // -------------------------------
+            // First by class type
+            if( type == Integer.class) {
+                columnType = ColumnType.INTEGER;
+            } else if( type == Long.class) {
+                columnType = ColumnType.LONG;
+            } else if( type == Double.class) {
+                columnType = ColumnType.DOUBLE;
+            } else if( type == Float.class) {
+                columnType = ColumnType.FLOAT;
+            } else if( type == String.class ) {
+                columnType = ColumnType.STRING;
+            } else if( type == ByteBuffer.class ) {
+                columnType = ColumnType.BYTES;
+            }
+            // Then, any sub-type based on properties
+            if ( properties.contains( ColumnProperty.INT8 ) ) {
+                columnType = ColumnType.INT8;
+            } else if ( properties.contains( ColumnProperty.INT16 ) ) {
+                columnType = ColumnType.INT16;
+            } else if ( properties.contains( ColumnProperty.TIMESTAMP ) ) {
+                columnType = ColumnType.TIMESTAMP;
+            } else if ( properties.contains( ColumnProperty.DECIMAL ) ) {
+                columnType = ColumnType.DECIMAL;
+            } else if ( properties.contains( ColumnProperty.DATE ) ) {
+                columnType = ColumnType.DATE;
+            } else if ( properties.contains( ColumnProperty.TIME ) ) {
+                columnType = ColumnType.TIME;
+            } else if ( properties.contains( ColumnProperty.DATETIME ) ) {
+                columnType = ColumnType.DATETIME;
+            } else if ( properties.contains( ColumnProperty.CHAR1 ) ) {
+                columnType = ColumnType.CHAR1;
+            } else if ( properties.contains( ColumnProperty.CHAR2 ) ) {
+                columnType = ColumnType.CHAR2;
+            } else if ( properties.contains( ColumnProperty.CHAR4 ) ) {
+                columnType = ColumnType.CHAR4;
+            } else if ( properties.contains( ColumnProperty.CHAR8 ) ) {
+                columnType = ColumnType.CHAR8;
+            } else if ( properties.contains( ColumnProperty.CHAR16 ) ) {
+                columnType = ColumnType.CHAR16;
+            } else if ( properties.contains( ColumnProperty.CHAR32 ) ) {
+                columnType = ColumnType.CHAR32;
+            } else if ( properties.contains( ColumnProperty.CHAR64 ) ) {
+                columnType = ColumnType.CHAR64;
+            } else if ( properties.contains( ColumnProperty.CHAR128 ) ) {
+                columnType = ColumnType.CHAR128;
+            } else if ( properties.contains( ColumnProperty.CHAR256 ) ) {
+                columnType = ColumnType.CHAR256;
+            } else if ( properties.contains( ColumnProperty.IPV4 ) ) {
+                columnType = ColumnType.IPV4;
+            } else if ( properties.contains( ColumnProperty.WKT ) ) {
+                // Decide if it's WKT or WKB based on the base type
+                if ( columnType == ColumnType.STRING ) {
+                    columnType = ColumnType.WKT;
+                } else if ( columnType == ColumnType.BYTES ) {
+                    columnType = ColumnType.WKB;
+                }
+            }
+            
+        }   // end init
 
         /**
          * Gets the name of the column.
@@ -153,6 +253,19 @@ public final class Type implements Serializable {
          */
         public Class<?> getType() {
             return type;
+        }
+
+        /**
+         * Gets the enumeration of the type of the column.  This is far
+         * more efficient than using {@link #hasProperty(String)} to
+         * check for given column properties.  With this enumeration,
+         * switch statements can be used to do different things for
+         * different column types.
+         *
+         * @return  the enumeration representing the type of the column
+         */
+        public ColumnType getColumnType() {
+            return columnType;
         }
 
         /**

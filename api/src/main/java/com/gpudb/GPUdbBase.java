@@ -37,6 +37,7 @@ import org.xerial.snappy.Snappy;
  * its functionality is accessed via instances of the {@link GPUdb} class.
  */
 public abstract class GPUdbBase {
+
     /**
      * A set of configurable options for the GPUdb API. May be passed into the
      * {@link GPUdb#GPUdb(String, GPUdbBase.Options) GPUdb constructor} to
@@ -393,6 +394,32 @@ public abstract class GPUdbBase {
         }
     }
 
+
+
+    /**
+     * A enumeration of high-availability synchronicity override modes.
+     */
+    public enum HASynchronicityMode {
+        // No override; defer to the HA process for synchronizing
+        // endpoints (which has different logic for different endpoints)
+        DEFAULT( "none" ),
+        // Synchronize all endpoint calls
+        SYNCHRONOUS( "sync" ),
+        // Do NOT synchronize any endpoint call
+        ASYNCHRONOUS( "async" );
+
+        private String syncMode;
+
+        HASynchronicityMode( String syncMode ) {
+            this.syncMode = syncMode;
+        }
+
+        public String getMode() {
+            return this.syncMode;
+        }
+    }
+
+    
     /**
      * Pass-through OutputStream that counts the number of bytes written to it
      * (for diagnostic purposes).
@@ -522,6 +549,8 @@ public abstract class GPUdbBase {
      */
     public static final long END_OF_SET = -9999;
 
+    protected static final String HA_SYNC_MODE = "ha_sync_mode";
+    
     // Fields
 
     private List<URL> urls;
@@ -537,6 +566,7 @@ public abstract class GPUdbBase {
     private ExecutorService executor;
     private Map<String, String> httpHeaders;
     private int timeout;
+    private HASynchronicityMode haSyncMode;
     private ConcurrentHashMap<Class<?>, TypeObjectMap<?>> knownTypeObjectMaps;
     private ConcurrentHashMap<String, Object> knownTypes;
 
@@ -610,6 +640,9 @@ public abstract class GPUdbBase {
         timeout = options.getTimeout();
         knownTypeObjectMaps = new ConcurrentHashMap<>(16, 0.75f, 1);
         knownTypes = new ConcurrentHashMap<>(16, 0.75f, 1);
+
+        // Set the default sync mode
+        this.haSyncMode = HASynchronicityMode.DEFAULT;
     }
 
     // Properties
@@ -642,20 +675,6 @@ public abstract class GPUdbBase {
         }
     }
 
-    private URL switchURL(URL oldURL) {
-        synchronized (urlLock) {
-            if (urls.get(currentURL) == oldURL) {
-                ++currentURL;
-
-                if (currentURL >= urls.size()) {
-                    currentURL = 0;
-                }
-            }
-
-            return urls.get(currentURL);
-        }
-    }
-
     /**
      * Gets the list of URLs for the GPUdb host manager. At any given time, one
      * URL will be active and used for all GPUdb calls (call {@link #getHmURL
@@ -684,20 +703,18 @@ public abstract class GPUdbBase {
         }
     }
 
-    private URL switchHmURL(URL oldURL) {
-        synchronized (urlLock) {
-            if (this.hmUrls.get( currentHmURL ) == oldURL) {
-                ++currentHmURL;
 
-                if (currentHmURL >= this.hmUrls.size()) {
-                    currentHmURL = 0;
-                }
-            }
-
-            return this.hmUrls.get(currentHmURL);
-        }
+    /**
+     * Gets the current high availability synchronicity override mode.
+     *
+     * @return the ha synchronicity override mode
+     *
+     * @see GPUdbBase#setHASyncMode(HASynchronicityMode)
+     */
+    public HASynchronicityMode getHASyncMode() {
+        return this.haSyncMode;
     }
-
+    
     /**
      * Gets the username used for authentication to GPUdb. Will be an empty
      * string if none was provided to the {@link GPUdb#GPUdb(String,
@@ -798,6 +815,23 @@ public abstract class GPUdbBase {
         return timeout;
     }
 
+    
+    /**
+     * Sets the current high availability synchronicity override mode.
+     * Until it is changed, all subsequent endpoint calls made to the
+     * server will maintain the given synchronicity across all clusters
+     * in the high availability ring.  When set to {@link
+     * HASynchronicityMode#DEFAULT}, normal operation will resume (where
+     * the high availability process determines which endpoints will be
+     * synchronous and which ones will be asynchronous).
+     *
+     * @param syncMode  the ha synchronicity override mode
+     */
+    public void setHASyncMode( HASynchronicityMode syncMode) {
+        this.haSyncMode = syncMode;
+    }
+
+    
     /**
      * Re-sets the host manager port number for the host manager URLs. Some
      * endpoints are supported only at the host manager, rather than the
@@ -1128,6 +1162,71 @@ public abstract class GPUdbBase {
 
     // Requests
 
+
+    /**
+     * Create and initialize an HTTP connection object with the request headers
+     *  (including authorization header), connection type, time out etc.
+     *
+     * @param url  the URL to which the connection needs to be made
+     * @return     the initialized HTTP connection object
+     */
+    protected HttpURLConnection initializeHttpConnection( URL url ) throws Exception {
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+
+        // Set the timeout
+        connection.setConnectTimeout( timeout );
+        connection.setReadTimeout( timeout );
+
+        // Set the request type
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true);
+
+        // Set the user defined headers
+        for (Map.Entry<String, String> entry : httpHeaders.entrySet()) {
+            connection.setRequestProperty(entry.getKey(), entry.getValue());
+        }
+
+        // Set the sync mode header
+        connection.setRequestProperty( HA_SYNC_MODE, this.haSyncMode.getMode() );
+
+        // Set the authorization header
+        if (authorization != null) {
+            connection.setRequestProperty ("Authorization", authorization);
+        }
+
+        return connection;
+    }
+    
+
+    private URL switchURL(URL oldURL) {
+        synchronized (urlLock) {
+            if (urls.get(currentURL) == oldURL) {
+                ++currentURL;
+
+                if (currentURL >= urls.size()) {
+                    currentURL = 0;
+                }
+            }
+
+            return urls.get(currentURL);
+        }
+    }
+
+    private URL switchHmURL(URL oldURL) {
+        synchronized (urlLock) {
+            if (this.hmUrls.get( currentHmURL ) == oldURL) {
+                ++currentHmURL;
+
+                if (currentHmURL >= this.hmUrls.size()) {
+                    currentHmURL = 0;
+                }
+            }
+
+            return this.hmUrls.get(currentHmURL);
+        }
+    }
+
+    
     /**
      * Submits an arbitrary request to GPUdb and saves the response into a
      * pre-created response object. The request and response objects must
@@ -1319,19 +1418,7 @@ public abstract class GPUdbBase {
         HttpURLConnection connection = null;
 
         try {
-            connection = (HttpURLConnection)url.openConnection();
-            connection.setConnectTimeout(timeout);
-            connection.setReadTimeout(timeout);
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
-
-            for (Map.Entry<String, String> entry : httpHeaders.entrySet()) {
-                connection.setRequestProperty(entry.getKey(), entry.getValue());
-            }
-
-            if (authorization != null) {
-                connection.setRequestProperty ("Authorization", authorization);
-            }
+            connection = initializeHttpConnection( url );
 
             if (enableCompression && useSnappy) {
                 byte[] encodedRequest = Snappy.compress(Avro.encode(request).array());
@@ -1433,18 +1520,10 @@ public abstract class GPUdbBase {
             HttpURLConnection connection = null;
 
             try {
-                connection = (HttpURLConnection)getURL().openConnection();
-                connection.setConnectTimeout(timeout);
-                connection.setReadTimeout(timeout);
+                connection = initializeHttpConnection( getURL() );
+
+                // Ping is a get, unlike all endpoints which are post
                 connection.setRequestMethod("GET");
-
-                for (Map.Entry<String, String> entry : httpHeaders.entrySet()) {
-                    connection.setRequestProperty(entry.getKey(), entry.getValue());
-                }
-
-                if (authorization != null) {
-                    connection.setRequestProperty("Authorization", authorization);
-                }
 
                 byte[] buffer = new byte[1024];
                 int index = 0;

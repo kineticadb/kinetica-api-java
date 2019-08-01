@@ -2,6 +2,20 @@
 
 ## Version 6.2
 
+### Version 6.2.3.0 - 2019-08-01
+
+#### Added
+-   Support for overriding the high availability synchronicity mode for
+    endpoints; set the mode (enum HASynchronicityMode) with the setter
+    method setHASyncMode():
+    - DEFAULT
+    - SYNCHRONOUS
+    - ASYNCRHONOUS
+-   Enumeration, Type.Column.ColumnType, to indicate a column's type.
+    Use getter Type.Column.getColumnType() to obtain it.  This is more
+    efficient than checking for strings in the column's property list.
+
+
 ### Version 6.2.2.0 - 2019-07-20
 
 #### Added
