@@ -41,8 +41,28 @@ public final class Type implements Serializable {
         private static final long serialVersionUID = 1L;
 
         /**
+         * An enumeration of base types for column (excluding
+         * any property-related subtypes).  This is synonimous
+         * to using the Class type for the column, but the enumeration
+         * provides the ability to use switches instead of if statements
+         * for checking which type the column is.
+         */
+        public static enum ColumnBaseType {
+            // Basic types
+            INTEGER,
+            LONG,
+            FLOAT,
+            DOUBLE,
+            STRING,
+            BYTES
+        }
+
+        
+        /**
          * An enumeration of all the Kinetica column types (including
          * sub-types that are determined by the properties used).
+         * Note that multiple column types will map to a single base
+         * type ({@link ColumnBaseType}).
          */
         public static enum ColumnType {
             // Basic types
@@ -83,6 +103,7 @@ public final class Type implements Serializable {
         private transient boolean isNullable;
         private transient List<String> properties;
         private transient ColumnType columnType;
+        private transient ColumnBaseType columnBaseType;
 
         /**
          * Creates a {@link Column} object with the specified metadata.
@@ -175,21 +196,27 @@ public final class Type implements Serializable {
 
             properties = Collections.unmodifiableList(properties);
 
-            // Set the column type enumeration
-            // -------------------------------
-            // First by class type
+            // Set the column type enumerations
+            // --------------------------------
+            // First the base types
             if( type == Integer.class) {
                 columnType = ColumnType.INTEGER;
+                columnBaseType = ColumnBaseType.INTEGER;
             } else if( type == Long.class) {
                 columnType = ColumnType.LONG;
+                columnBaseType = ColumnBaseType.LONG;
             } else if( type == Double.class) {
                 columnType = ColumnType.DOUBLE;
+                columnBaseType = ColumnBaseType.DOUBLE;
             } else if( type == Float.class) {
                 columnType = ColumnType.FLOAT;
+                columnBaseType = ColumnBaseType.FLOAT;
             } else if( type == String.class ) {
                 columnType = ColumnType.STRING;
+                columnBaseType = ColumnBaseType.STRING;
             } else if( type == ByteBuffer.class ) {
                 columnType = ColumnType.BYTES;
+                columnBaseType = ColumnBaseType.BYTES;
             }
             // Then, any sub-type based on properties
             if ( properties.contains( ColumnProperty.INT8 ) ) {
@@ -253,6 +280,24 @@ public final class Type implements Serializable {
          */
         public Class<?> getType() {
             return type;
+        }
+
+        /**
+         * Gets the enumeration of the *base* type of the column.  This is far
+         * more efficient than using {@link #getType()} and then comparing
+         * it to various Java classes, e.g. Integer.class.  With this
+         * enumeration, switch statements can be used to do different things for
+         * different column types.  This enumeration is preferred when the
+         * same thing needs to be done for all sub-types of a given base type.
+         * For example, string has a lot of sub-types; rather than having to
+         * group multiple case statements (and ensuring that no applicable
+         * enumeration is missed) for {@link ColumnType}, this enumeration
+         * can be used to cover all string cases.
+         *
+         * @return  the enumeration representing the *base* type of the column
+         */
+        public ColumnBaseType getColumnBaseType() {
+            return columnBaseType;
         }
 
         /**

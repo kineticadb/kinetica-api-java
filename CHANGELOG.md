@@ -11,9 +11,11 @@
     - DEFAULT
     - SYNCHRONOUS
     - ASYNCRHONOUS
--   Enumeration, Type.Column.ColumnType, to indicate a column's type.
-    Use getter Type.Column.getColumnType() to obtain it.  This is more
-    efficient than checking for strings in the column's property list.
+-   Enumerations, Type.Column.ColumnType and Type.Column.ColumnBaseType,
+    to indicate a column's type.  Use getters Type.Column.getColumnType()
+    and Type.Column.getColumnBaseType() to obtain the appropriate enumeration.
+    This is more efficient than checking for strings in the column's property
+    list or checking for Java class equivalency.
 
 
 ### Version 6.2.2.0 - 2019-07-20
