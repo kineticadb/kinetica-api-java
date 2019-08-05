@@ -467,6 +467,15 @@ public class GPUdb extends GPUdbBase {
      *                 tables because they are always balanced in accordance
      *                 with their primary key or shard key. Cannot be used
      *                 simultaneously with {@code table_whitelist}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#AGGRESSIVENESS
+     *                 AGGRESSIVENESS}: Influences how much data to send per
+     *                 rebalance round.  A higher aggressiveness setting will
+     *                 complete the rebalance faster.  A lower aggressiveness
+     *                 setting will take longer, but allow for better
+     *                 interleaving between the rebalance and other queries.
+     *                 Allowed values are 1 through 10.  The default value is
+     *                 '1'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -567,6 +576,16 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#AGGRESSIVENESS
+     *                 AGGRESSIVENESS}: Influences how much data to send per
+     *                 rebalance round, during the rebalance portion of
+     *                 removing ranks.  A higher aggressiveness setting will
+     *                 complete the rebalance faster.  A lower aggressiveness
+     *                 setting will take longer, but allow for better
+     *                 interleaving between the rebalance and other queries.
+     *                 Allowed values are 1 through 10.  The default value is
+     *                 '1'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -717,8 +736,11 @@ public class GPUdb extends GPUdbBase {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#SHOW_DETAILS
-     *                 SHOW_DETAILS}:
+     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#SHOW_ASYNC_JOBS
+     *                 SHOW_ASYNC_JOBS}: If {@code true}, then the completed
+     *                 async jobs are also included in the response. By
+     *                 default, once the async jobs are completed they are no
+     *                 longer included in the jobs list.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -728,6 +750,9 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE
      *                 FALSE}
      *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -3882,13 +3907,10 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUNCATE_STRINGS
-     *                 TRUNCATE_STRINGS}: If set to {true}@{, it allows to
-     *                 append unbounded string to charN string. If
-     *                 'truncate_strings' is 'true', the desination column is
-     *                 charN datatype, and the source column is unnbounded
-     *                 string, it will truncate the source string to length of
-     *                 N first, and then append the truncated string to the
-     *                 destination charN column. The default value is false.
+     *                 TRUNCATE_STRINGS}: If set to {true}@{, it allows
+     *                 appending longer strings to smaller charN string columns
+     *                 by truncating the longer string to fit.  The default
+     *                 value is false.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -9766,6 +9788,61 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Grants a proc-level permission to a user or role.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  GrantPermissionProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public GrantPermissionProcResponse grantPermissionProc(GrantPermissionProcRequest request) throws GPUdbException {
+        GrantPermissionProcResponse actualResponse_ = new GrantPermissionProcResponse();
+        submitRequest("/grant/permission/proc", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Grants a proc-level permission to a user or role.
+     * 
+     * @param name  Name of the user or role to which the permission will be
+     *              granted. Must be an existing user or role.
+     * @param permission  Permission to grant to the user or role.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionProcRequest.Permission#PROC_EXECUTE
+     *                    PROC_EXECUTE}: Execute access to the proc.
+     *                    </ul>
+     * @param procName  Name of the proc to which the permission grants access.
+     *                  Must be an existing proc, or an empty string to grant
+     *                  access to all procs.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  GrantPermissionProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public GrantPermissionProcResponse grantPermissionProc(String name, String permission, String procName, Map<String, String> options) throws GPUdbException {
+        GrantPermissionProcRequest actualRequest_ = new GrantPermissionProcRequest(name, permission, procName, options);
+        GrantPermissionProcResponse actualResponse_ = new GrantPermissionProcResponse();
+        submitRequest("/grant/permission/proc", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Grants a system-level permission to a user or role.
      * 
      * @param request  Request object containing the parameters for the
@@ -10262,6 +10339,23 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
+     *                 are too long for their charN string fields will be
+     *                 truncated to fit.  The default value is false.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -10338,6 +10432,23 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#RETURN_RECORD_IDS
      *                 RETURN_RECORD_IDS}: If {@code true} then return the
      *                 internal record id along for each inserted record.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
+     *                 are too long for their charN string fields will be
+     *                 truncated to fit.  The default value is false.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -11353,20 +11464,19 @@ public class GPUdb extends GPUdbBase {
      *                        href="../../../../graph_solver/network_graph_solver.html#using-labels"
      *                        target="_top">Using Labels</a> for more
      *                        information.  The default value is ''.
+     * @param rings  Only applicable when querying nodes. Sets the number of
+     *               rings around the node to query for adjacency, with '1'
+     *               being the edges directly attached to the queried node.
+     *               Also known as number of hops. For example, if it is set to
+     *               '2', the edge(s) directly attached to the queried node(s)
+     *               will be returned; in addition, the edge(s) attached to the
+     *               node(s) attached to the initial ring of edge(s)
+     *               surrounding the queried node(s) will be returned. This
+     *               setting can be '0' in which case if the node type id
+     *               label, it'll then query for all that has the same
+     *               property.  The default value is 1.
      * @param options  Additional parameters
      *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#RINGS
-     *                 RINGS}: Only applicable when querying nodes. Sets the
-     *                 number of rings around the node to query for adjacency,
-     *                 with '1' being the edges directly attached to the
-     *                 queried node. Also known as number of hops. For example,
-     *                 if {@code rings} is set to '2', the edge(s) directly
-     *                 attached to the queried node(s) will be returned; in
-     *                 addition, the edge(s) attached to the node(s) attached
-     *                 to the initial ring of edge(s) surrounding the queried
-     *                 node(s) will be returned. This setting cannot be less
-     *                 than '1'.  The default value is '1'.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#FORCE_UNDIRECTED
      *                 FORCE_UNDIRECTED}: This parameter is only applicable if
@@ -11396,12 +11506,9 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
      *                 TARGET_NODES_TABLE}: Name of the table to store the list
-     *                 of the final nodes reached during the traversal. If the
-     *                 'QUERY_TARGET_NODE_LABEL' <a
-     *                 href="../../../../graph_solver/network_graph_solver.html#query-identifiers"
-     *                 target="_top">query identifier</a> is NOT used in {@code
-     *                 queries}, the table will not be created.  The default
-     *                 value is ''.
+     *                 of the final nodes reached during the traversal. If this
+     *                 value is not given it'll default to
+     *                 adjacemcy_table+'_nodes'.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
@@ -11478,10 +11585,65 @@ public class GPUdb extends GPUdbBase {
      * @throws GPUdbException  if an error occurs during the operation.
      * 
      */
-    public QueryGraphResponse queryGraph(String graphName, List<String> queries, List<String> restrictions, String adjacencyTable, Map<String, String> options) throws GPUdbException {
-        QueryGraphRequest actualRequest_ = new QueryGraphRequest(graphName, queries, restrictions, adjacencyTable, options);
+    public QueryGraphResponse queryGraph(String graphName, List<String> queries, List<String> restrictions, String adjacencyTable, int rings, Map<String, String> options) throws GPUdbException {
+        QueryGraphRequest actualRequest_ = new QueryGraphRequest(graphName, queries, restrictions, adjacencyTable, rings, options);
         QueryGraphResponse actualResponse_ = new QueryGraphResponse();
         submitRequest("/query/graph", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Revokes a proc-level permission from a user or role.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  RevokePermissionProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public RevokePermissionProcResponse revokePermissionProc(RevokePermissionProcRequest request) throws GPUdbException {
+        RevokePermissionProcResponse actualResponse_ = new RevokePermissionProcResponse();
+        submitRequest("/revoke/permission/proc", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Revokes a proc-level permission from a user or role.
+     * 
+     * @param name  Name of the user or role from which the permission will be
+     *              revoked. Must be an existing user or role.
+     * @param permission  Permission to revoke from the user or role.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionProcRequest.Permission#PROC_EXECUTE
+     *                    PROC_EXECUTE}: Execute access to the proc.
+     *                    </ul>
+     * @param procName  Name of the proc to which the permission grants access.
+     *                  Must be an existing proc, or an empty string if the
+     *                  permission grants access to all procs.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  RevokePermissionProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public RevokePermissionProcResponse revokePermissionProc(String name, String permission, String procName, Map<String, String> options) throws GPUdbException {
+        RevokePermissionProcRequest actualRequest_ = new RevokePermissionProcRequest(name, permission, procName, options);
+        RevokePermissionProcResponse actualResponse_ = new RevokePermissionProcResponse();
+        submitRequest("/revoke/permission/proc", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -11656,6 +11818,69 @@ public class GPUdb extends GPUdbBase {
         RevokeRoleRequest actualRequest_ = new RevokeRoleRequest(role, member, options);
         RevokeRoleResponse actualResponse_ = new RevokeRoleResponse();
         submitRequest("/revoke/role", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Shows information and characteristics of graphs that exist on the graph
+     * server, depending on the options specified.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowGraphResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowGraphResponse showGraph(ShowGraphRequest request) throws GPUdbException {
+        ShowGraphResponse actualResponse_ = new ShowGraphResponse();
+        submitRequest("/show/graph", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Shows information and characteristics of graphs that exist on the graph
+     * server, depending on the options specified.
+     * 
+     * @param graphName  Name of the graph on which to retrieve information. If
+     *                   empty, information about all graphs is returned.  The
+     *                   default value is ''.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowGraphRequest.Options#SHOW_ORIGINAL_REQUEST
+     *                 SHOW_ORIGINAL_REQUEST}: If set to {@code true}, the
+     *                 request that was originally used.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowGraphRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowGraphRequest.Options#TRUE TRUE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowGraphResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowGraphResponse showGraph(String graphName, Map<String, String> options) throws GPUdbException {
+        ShowGraphRequest actualRequest_ = new ShowGraphRequest(graphName, options);
+        ShowGraphResponse actualResponse_ = new ShowGraphResponse();
+        submitRequest("/show/graph", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 

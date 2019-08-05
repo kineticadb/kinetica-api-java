@@ -120,6 +120,20 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUNCATE_STRINGS
+     * TRUNCATE_STRINGS}: If set to {true}@{, any strings which are too long
+     * for their charN string fields will be truncated to fit.  The default
+     * value is false.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -164,6 +178,21 @@ public class RawInsertRecordsRequest implements IndexedRecord {
          * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
          */
         public static final String RETURN_RECORD_IDS = "return_record_ids";
+
+        /**
+         * If set to {true}@{, any strings which are too long for their charN
+         * string fields will be truncated to fit.  The default value is false.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
+         */
+        public static final String TRUNCATE_STRINGS = "truncate_strings";
 
         private Options() {  }
     }
@@ -227,6 +256,23 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#RETURN_RECORD_IDS
      *                 RETURN_RECORD_IDS}: If {@code true} then return the
      *                 internal record id along for each inserted record.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
+     *                 are too long for their charN string fields will be
+     *                 truncated to fit.  The default value is false.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -309,6 +355,23 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#RETURN_RECORD_IDS
      *                 RETURN_RECORD_IDS}: If {@code true} then return the
      *                 internal record id along for each inserted record.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
+     *                 are too long for their charN string fields will be
+     *                 truncated to fit.  The default value is false.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -490,6 +553,20 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUNCATE_STRINGS
+     *         TRUNCATE_STRINGS}: If set to {true}@{, any strings which are too
+     *         long for their charN string fields will be truncated to fit.
+     *         The default value is false.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -532,6 +609,23 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#RETURN_RECORD_IDS
      *                 RETURN_RECORD_IDS}: If {@code true} then return the
      *                 internal record id along for each inserted record.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
+     *                 are too long for their charN string fields will be
+     *                 truncated to fit.  The default value is false.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

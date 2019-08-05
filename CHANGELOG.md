@@ -2,6 +2,24 @@
 
 ## Version 7.0
 
+### Version 7.0.6.0 - 2019-08-05
+
+#### Added
+-   Support for passing /get/records options to RecordRetriever; can be set
+    via the constructors and also be set by the setter method.
+-   Support for overriding the high availability synchronicity mode for
+    endpoints; set the mode (enum HASynchronicityMode) with the setter
+    method setHASyncMode():
+    - DEFAULT
+    - SYNCHRONOUS
+    - ASYNCRHONOUS
+-   Enumerations, Type.Column.ColumnType and Type.Column.ColumnBaseType,
+    to indicate a column's type.  Use getters Type.Column.getColumnType()
+    and Type.Column.getColumnBaseType() to obtain the appropriate enumeration.
+    This is more efficient than checking for strings in the column's property
+    list or checking for Java class equivalency.
+
+
 ### Version 7.0.5.0 - 2019-07-21
 
 #### Added

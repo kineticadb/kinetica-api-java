@@ -29,6 +29,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
                 .name("endpointName").type().array().items().stringType().noDefault()
                 .name("timeReceived").type().array().items().longType().noDefault()
                 .name("authId").type().array().items().stringType().noDefault()
+                .name("sourceIp").type().array().items().stringType().noDefault()
                 .name("userData").type().array().items().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
@@ -50,6 +51,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
     private List<String> endpointName;
     private List<Long> timeReceived;
     private List<String> authId;
+    private List<String> sourceIp;
     private List<String> userData;
     private Map<String, String> info;
 
@@ -134,6 +136,21 @@ public class AdminShowJobsResponse implements IndexedRecord {
         this.authId = (authId == null) ? new ArrayList<String>() : authId;
         return this;
     }
+    public List<String> getSourceIp() {
+        return sourceIp;
+    }
+
+    /**
+     * 
+     * @param sourceIp
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AdminShowJobsResponse setSourceIp(List<String> sourceIp) {
+        this.sourceIp = (sourceIp == null) ? new ArrayList<String>() : sourceIp;
+        return this;
+    }
     public List<String> getUserData() {
         return userData;
     }
@@ -213,9 +230,12 @@ public class AdminShowJobsResponse implements IndexedRecord {
                 return this.authId;
 
             case 5:
-                return this.userData;
+                return this.sourceIp;
 
             case 6:
+                return this.userData;
+
+            case 7:
                 return this.info;
 
             default:
@@ -258,10 +278,14 @@ public class AdminShowJobsResponse implements IndexedRecord {
                 break;
 
             case 5:
-                this.userData = (List<String>)value;
+                this.sourceIp = (List<String>)value;
                 break;
 
             case 6:
+                this.userData = (List<String>)value;
+                break;
+
+            case 7:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -287,6 +311,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
                  && this.endpointName.equals( that.endpointName )
                  && this.timeReceived.equals( that.timeReceived )
                  && this.authId.equals( that.authId )
+                 && this.sourceIp.equals( that.sourceIp )
                  && this.userData.equals( that.userData )
                  && this.info.equals( that.info ) );
     }
@@ -316,6 +341,10 @@ public class AdminShowJobsResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.authId ) );
         builder.append( ", " );
+        builder.append( gd.toString( "sourceIp" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.sourceIp ) );
+        builder.append( ", " );
         builder.append( gd.toString( "userData" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.userData ) );
@@ -336,6 +365,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.endpointName.hashCode();
         hashCode = (31 * hashCode) + this.timeReceived.hashCode();
         hashCode = (31 * hashCode) + this.authId.hashCode();
+        hashCode = (31 * hashCode) + this.sourceIp.hashCode();
         hashCode = (31 * hashCode) + this.userData.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;

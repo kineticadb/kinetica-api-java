@@ -51,6 +51,7 @@ public class QueryGraphRequest implements IndexedRecord {
                 .name("queries").type().array().items().stringType().noDefault()
                 .name("restrictions").type().array().items().stringType().noDefault()
                 .name("adjacencyTable").type().stringType().noDefault()
+                .name("rings").type().intType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -70,15 +71,6 @@ public class QueryGraphRequest implements IndexedRecord {
     /**
      * Additional parameters
      * <ul>
-     *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#RINGS
-     * RINGS}: Only applicable when querying nodes. Sets the number of rings
-     * around the node to query for adjacency, with '1' being the edges
-     * directly attached to the queried node. Also known as number of hops. For
-     * example, if {@code rings} is set to '2', the edge(s) directly attached
-     * to the queried node(s) will be returned; in addition, the edge(s)
-     * attached to the node(s) attached to the initial ring of edge(s)
-     * surrounding the queried node(s) will be returned. This setting cannot be
-     * less than '1'.  The default value is '1'.
      *         <li> {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#FORCE_UNDIRECTED
      * FORCE_UNDIRECTED}: This parameter is only applicable if the queried
@@ -103,10 +95,8 @@ public class QueryGraphRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
      * TARGET_NODES_TABLE}: Name of the table to store the list of the final
-     * nodes reached during the traversal. If the 'QUERY_TARGET_NODE_LABEL' <a
-     * href="../../../../../graph_solver/network_graph_solver.html#query-identifiers"
-     * target="_top">query identifier</a> is NOT used in {@code queries}, the
-     * table will not be created.  The default value is ''.
+     * nodes reached during the traversal. If this value is not given it'll
+     * default to adjacemcy_table+'_nodes'.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      * RESTRICTION_THRESHOLD_VALUE}: Value-based restriction comparison. Any
@@ -168,18 +158,6 @@ public class QueryGraphRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Only applicable when querying nodes. Sets the number of rings around
-         * the node to query for adjacency, with '1' being the edges directly
-         * attached to the queried node. Also known as number of hops. For
-         * example, if {@code rings} is set to '2', the edge(s) directly
-         * attached to the queried node(s) will be returned; in addition, the
-         * edge(s) attached to the node(s) attached to the initial ring of
-         * edge(s) surrounding the queried node(s) will be returned. This
-         * setting cannot be less than '1'.  The default value is '1'.
-         */
-        public static final String RINGS = "rings";
-
-        /**
          * This parameter is only applicable if the queried graph {@code
          * graphName} is directed and when querying nodes. If set to {@code
          * true}, all inbound edges and outbound edges relative to the node
@@ -209,10 +187,8 @@ public class QueryGraphRequest implements IndexedRecord {
 
         /**
          * Name of the table to store the list of the final nodes reached
-         * during the traversal. If the 'QUERY_TARGET_NODE_LABEL' <a
-         * href="../../../../../graph_solver/network_graph_solver.html#query-identifiers"
-         * target="_top">query identifier</a> is NOT used in {@code queries},
-         * the table will not be created.  The default value is ''.
+         * during the traversal. If this value is not given it'll default to
+         * adjacemcy_table+'_nodes'.  The default value is ''.
          */
         public static final String TARGET_NODES_TABLE = "target_nodes_table";
 
@@ -284,6 +260,7 @@ public class QueryGraphRequest implements IndexedRecord {
     private List<String> queries;
     private List<String> restrictions;
     private String adjacencyTable;
+    private int rings;
     private Map<String, String> options;
 
 
@@ -343,20 +320,19 @@ public class QueryGraphRequest implements IndexedRecord {
      *                        href="../../../../../graph_solver/network_graph_solver.html#using-labels"
      *                        target="_top">Using Labels</a> for more
      *                        information.  The default value is ''.
+     * @param rings  Only applicable when querying nodes. Sets the number of
+     *               rings around the node to query for adjacency, with '1'
+     *               being the edges directly attached to the queried node.
+     *               Also known as number of hops. For example, if it is set to
+     *               '2', the edge(s) directly attached to the queried node(s)
+     *               will be returned; in addition, the edge(s) attached to the
+     *               node(s) attached to the initial ring of edge(s)
+     *               surrounding the queried node(s) will be returned. This
+     *               setting can be '0' in which case if the node type id
+     *               label, it'll then query for all that has the same
+     *               property.  The default value is 1.
      * @param options  Additional parameters
      *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#RINGS
-     *                 RINGS}: Only applicable when querying nodes. Sets the
-     *                 number of rings around the node to query for adjacency,
-     *                 with '1' being the edges directly attached to the
-     *                 queried node. Also known as number of hops. For example,
-     *                 if {@code rings} is set to '2', the edge(s) directly
-     *                 attached to the queried node(s) will be returned; in
-     *                 addition, the edge(s) attached to the node(s) attached
-     *                 to the initial ring of edge(s) surrounding the queried
-     *                 node(s) will be returned. This setting cannot be less
-     *                 than '1'.  The default value is '1'.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#FORCE_UNDIRECTED
      *                 FORCE_UNDIRECTED}: This parameter is only applicable if
@@ -386,12 +362,9 @@ public class QueryGraphRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
      *                 TARGET_NODES_TABLE}: Name of the table to store the list
-     *                 of the final nodes reached during the traversal. If the
-     *                 'QUERY_TARGET_NODE_LABEL' <a
-     *                 href="../../../../../graph_solver/network_graph_solver.html#query-identifiers"
-     *                 target="_top">query identifier</a> is NOT used in {@code
-     *                 queries}, the table will not be created.  The default
-     *                 value is ''.
+     *                 of the final nodes reached during the traversal. If this
+     *                 value is not given it'll default to
+     *                 adjacemcy_table+'_nodes'.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
@@ -462,11 +435,12 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 The default value is an empty {@link Map}.
      * 
      */
-    public QueryGraphRequest(String graphName, List<String> queries, List<String> restrictions, String adjacencyTable, Map<String, String> options) {
+    public QueryGraphRequest(String graphName, List<String> queries, List<String> restrictions, String adjacencyTable, int rings, Map<String, String> options) {
         this.graphName = (graphName == null) ? "" : graphName;
         this.queries = (queries == null) ? new ArrayList<String>() : queries;
         this.restrictions = (restrictions == null) ? new ArrayList<String>() : restrictions;
         this.adjacencyTable = (adjacencyTable == null) ? "" : adjacencyTable;
+        this.rings = rings;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
@@ -626,19 +600,48 @@ public class QueryGraphRequest implements IndexedRecord {
 
     /**
      * 
+     * @return Only applicable when querying nodes. Sets the number of rings
+     *         around the node to query for adjacency, with '1' being the edges
+     *         directly attached to the queried node. Also known as number of
+     *         hops. For example, if it is set to '2', the edge(s) directly
+     *         attached to the queried node(s) will be returned; in addition,
+     *         the edge(s) attached to the node(s) attached to the initial ring
+     *         of edge(s) surrounding the queried node(s) will be returned.
+     *         This setting can be '0' in which case if the node type id label,
+     *         it'll then query for all that has the same property.  The
+     *         default value is 1.
+     * 
+     */
+    public int getRings() {
+        return rings;
+    }
+
+    /**
+     * 
+     * @param rings  Only applicable when querying nodes. Sets the number of
+     *               rings around the node to query for adjacency, with '1'
+     *               being the edges directly attached to the queried node.
+     *               Also known as number of hops. For example, if it is set to
+     *               '2', the edge(s) directly attached to the queried node(s)
+     *               will be returned; in addition, the edge(s) attached to the
+     *               node(s) attached to the initial ring of edge(s)
+     *               surrounding the queried node(s) will be returned. This
+     *               setting can be '0' in which case if the node type id
+     *               label, it'll then query for all that has the same
+     *               property.  The default value is 1.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public QueryGraphRequest setRings(int rings) {
+        this.rings = rings;
+        return this;
+    }
+
+    /**
+     * 
      * @return Additional parameters
      *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.QueryGraphRequest.Options#RINGS RINGS}: Only
-     *         applicable when querying nodes. Sets the number of rings around
-     *         the node to query for adjacency, with '1' being the edges
-     *         directly attached to the queried node. Also known as number of
-     *         hops. For example, if {@code rings} is set to '2', the edge(s)
-     *         directly attached to the queried node(s) will be returned; in
-     *         addition, the edge(s) attached to the node(s) attached to the
-     *         initial ring of edge(s) surrounding the queried node(s) will be
-     *         returned. This setting cannot be less than '1'.  The default
-     *         value is '1'.
      *                 <li> {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#FORCE_UNDIRECTED
      *         FORCE_UNDIRECTED}: This parameter is only applicable if the
@@ -665,12 +668,9 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
      *         TARGET_NODES_TABLE}: Name of the table to store the list of the
-     *         final nodes reached during the traversal. If the
-     *         'QUERY_TARGET_NODE_LABEL' <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#query-identifiers"
-     *         target="_top">query identifier</a> is NOT used in {@code
-     *         queries}, the table will not be created.  The default value is
-     *         ''.
+     *         final nodes reached during the traversal. If this value is not
+     *         given it'll default to adjacemcy_table+'_nodes'.  The default
+     *         value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      *         RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
@@ -740,18 +740,6 @@ public class QueryGraphRequest implements IndexedRecord {
      * @param options  Additional parameters
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#RINGS
-     *                 RINGS}: Only applicable when querying nodes. Sets the
-     *                 number of rings around the node to query for adjacency,
-     *                 with '1' being the edges directly attached to the
-     *                 queried node. Also known as number of hops. For example,
-     *                 if {@code rings} is set to '2', the edge(s) directly
-     *                 attached to the queried node(s) will be returned; in
-     *                 addition, the edge(s) attached to the node(s) attached
-     *                 to the initial ring of edge(s) surrounding the queried
-     *                 node(s) will be returned. This setting cannot be less
-     *                 than '1'.  The default value is '1'.
-     *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#FORCE_UNDIRECTED
      *                 FORCE_UNDIRECTED}: This parameter is only applicable if
      *                 the queried graph {@code graphName} is directed and when
@@ -780,12 +768,9 @@ public class QueryGraphRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
      *                 TARGET_NODES_TABLE}: Name of the table to store the list
-     *                 of the final nodes reached during the traversal. If the
-     *                 'QUERY_TARGET_NODE_LABEL' <a
-     *                 href="../../../../../graph_solver/network_graph_solver.html#query-identifiers"
-     *                 target="_top">query identifier</a> is NOT used in {@code
-     *                 queries}, the table will not be created.  The default
-     *                 value is ''.
+     *                 of the final nodes reached during the traversal. If this
+     *                 value is not given it'll default to
+     *                 adjacemcy_table+'_nodes'.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
@@ -902,6 +887,9 @@ public class QueryGraphRequest implements IndexedRecord {
                 return this.adjacencyTable;
 
             case 4:
+                return this.rings;
+
+            case 5:
                 return this.options;
 
             default:
@@ -940,6 +928,10 @@ public class QueryGraphRequest implements IndexedRecord {
                 break;
 
             case 4:
+                this.rings = (Integer)value;
+                break;
+
+            case 5:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -964,6 +956,7 @@ public class QueryGraphRequest implements IndexedRecord {
                  && this.queries.equals( that.queries )
                  && this.restrictions.equals( that.restrictions )
                  && this.adjacencyTable.equals( that.adjacencyTable )
+                 && ( this.rings == that.rings )
                  && this.options.equals( that.options ) );
     }
 
@@ -988,6 +981,10 @@ public class QueryGraphRequest implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.adjacencyTable ) );
         builder.append( ", " );
+        builder.append( gd.toString( "rings" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.rings ) );
+        builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.options ) );
@@ -1003,6 +1000,7 @@ public class QueryGraphRequest implements IndexedRecord {
         hashCode = (31 * hashCode) + this.queries.hashCode();
         hashCode = (31 * hashCode) + this.restrictions.hashCode();
         hashCode = (31 * hashCode) + this.adjacencyTable.hashCode();
+        hashCode = (31 * hashCode) + this.rings;
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

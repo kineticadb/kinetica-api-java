@@ -92,6 +92,13 @@ public class AdminRebalanceRequest implements IndexedRecord {
      * rebalance. Not applicable to sharded tables because they are always
      * balanced in accordance with their primary key or shard key. Cannot be
      * used simultaneously with {@code table_whitelist}.
+     *         <li> {@link
+     * com.gpudb.protocol.AdminRebalanceRequest.Options#AGGRESSIVENESS
+     * AGGRESSIVENESS}: Influences how much data to send per rebalance round.
+     * A higher aggressiveness setting will complete the rebalance faster.  A
+     * lower aggressiveness setting will take longer, but allow for better
+     * interleaving between the rebalance and other queries. Allowed values are
+     * 1 through 10.  The default value is '1'.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -149,6 +156,15 @@ public class AdminRebalanceRequest implements IndexedRecord {
          * simultaneously with {@code table_whitelist}.
          */
         public static final String TABLE_BLACKLIST = "table_blacklist";
+
+        /**
+         * Influences how much data to send per rebalance round.  A higher
+         * aggressiveness setting will complete the rebalance faster.  A lower
+         * aggressiveness setting will take longer, but allow for better
+         * interleaving between the rebalance and other queries. Allowed values
+         * are 1 through 10.  The default value is '1'.
+         */
+        public static final String AGGRESSIVENESS = "aggressiveness";
 
         private Options() {  }
     }
@@ -222,6 +238,15 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 tables because they are always balanced in accordance
      *                 with their primary key or shard key. Cannot be used
      *                 simultaneously with {@code table_whitelist}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#AGGRESSIVENESS
+     *                 AGGRESSIVENESS}: Influences how much data to send per
+     *                 rebalance round.  A higher aggressiveness setting will
+     *                 complete the rebalance faster.  A lower aggressiveness
+     *                 setting will take longer, but allow for better
+     *                 interleaving between the rebalance and other queries.
+     *                 Allowed values are 1 through 10.  The default value is
+     *                 '1'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -278,6 +303,14 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *         are always balanced in accordance with their primary key or
      *         shard key. Cannot be used simultaneously with {@code
      *         table_whitelist}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminRebalanceRequest.Options#AGGRESSIVENESS
+     *         AGGRESSIVENESS}: Influences how much data to send per rebalance
+     *         round.  A higher aggressiveness setting will complete the
+     *         rebalance faster.  A lower aggressiveness setting will take
+     *         longer, but allow for better interleaving between the rebalance
+     *         and other queries. Allowed values are 1 through 10.  The default
+     *         value is '1'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -343,6 +376,15 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 tables because they are always balanced in accordance
      *                 with their primary key or shard key. Cannot be used
      *                 simultaneously with {@code table_whitelist}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#AGGRESSIVENESS
+     *                 AGGRESSIVENESS}: Influences how much data to send per
+     *                 rebalance round.  A higher aggressiveness setting will
+     *                 complete the rebalance faster.  A lower aggressiveness
+     *                 setting will take longer, but allow for better
+     *                 interleaving between the rebalance and other queries.
+     *                 Allowed values are 1 through 10.  The default value is
+     *                 '1'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

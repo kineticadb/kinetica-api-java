@@ -84,6 +84,14 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AdminRemoveRanksRequest.Options#AGGRESSIVENESS
+     * AGGRESSIVENESS}: Influences how much data to send per rebalance round,
+     * during the rebalance portion of removing ranks.  A higher aggressiveness
+     * setting will complete the rebalance faster.  A lower aggressiveness
+     * setting will take longer, but allow for better interleaving between the
+     * rebalance and other queries. Allowed values are 1 through 10.  The
+     * default value is '1'.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -125,6 +133,16 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
          * com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE TRUE}.
          */
         public static final String REBALANCE_UNSHARDED_DATA = "rebalance_unsharded_data";
+
+        /**
+         * Influences how much data to send per rebalance round, during the
+         * rebalance portion of removing ranks.  A higher aggressiveness
+         * setting will complete the rebalance faster.  A lower aggressiveness
+         * setting will take longer, but allow for better interleaving between
+         * the rebalance and other queries. Allowed values are 1 through 10.
+         * The default value is '1'.
+         */
+        public static final String AGGRESSIVENESS = "aggressiveness";
 
         private Options() {  }
     }
@@ -186,6 +204,16 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#AGGRESSIVENESS
+     *                 AGGRESSIVENESS}: Influences how much data to send per
+     *                 rebalance round, during the rebalance portion of
+     *                 removing ranks.  A higher aggressiveness setting will
+     *                 complete the rebalance faster.  A lower aggressiveness
+     *                 setting will take longer, but allow for better
+     *                 interleaving between the rebalance and other queries.
+     *                 Allowed values are 1 through 10.  The default value is
+     *                 '1'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -251,6 +279,14 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminRemoveRanksRequest.Options#AGGRESSIVENESS
+     *         AGGRESSIVENESS}: Influences how much data to send per rebalance
+     *         round, during the rebalance portion of removing ranks.  A higher
+     *         aggressiveness setting will complete the rebalance faster.  A
+     *         lower aggressiveness setting will take longer, but allow for
+     *         better interleaving between the rebalance and other queries.
+     *         Allowed values are 1 through 10.  The default value is '1'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -301,6 +337,16 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#AGGRESSIVENESS
+     *                 AGGRESSIVENESS}: Influences how much data to send per
+     *                 rebalance round, during the rebalance portion of
+     *                 removing ranks.  A higher aggressiveness setting will
+     *                 complete the rebalance faster.  A lower aggressiveness
+     *                 setting will take longer, but allow for better
+     *                 interleaving between the rebalance and other queries.
+     *                 Allowed values are 1 through 10.  The default value is
+     *                 '1'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

@@ -28,6 +28,7 @@ public class RecordRetriever<T> {
     private final TypeObjectMap<T> typeObjectMap;
     private final RecordKeyBuilder<T> shardKeyBuilder;
     private final boolean isMultiHeadEnabled;
+    private Map<String, String> options;
     private int numRanks;
     private long shardVersion;
     private MutableLong shardUpdateTime;
@@ -48,8 +49,27 @@ public class RecordRetriever<T> {
      * @throws IllegalArgumentException if an invalid parameter is specified
      */
     public RecordRetriever(GPUdb gpudb, String tableName, Type type) throws GPUdbException {
-        this(gpudb, tableName, type, null, null);
+        this(gpudb, tableName, type, null, null, null);
     }
+
+    
+    /**
+     * Creates a {@link RecordRetriever} with the specified parameters.
+     *
+     * @param gpudb      the GPUdb instance to retrieve records from
+     * @param tableName  the table to retrieve records from
+     * @param type       the type of records being retrieved
+     * @param options    optional parameters to pass to GPUdb while retrieving
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     */
+    public RecordRetriever( GPUdb gpudb, String tableName, Type type,
+                            Map<String, String> options ) throws GPUdbException {
+        this(gpudb, tableName, type, null, null, options);
+    }
+
 
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
@@ -65,7 +85,28 @@ public class RecordRetriever<T> {
      * @throws IllegalArgumentException if an invalid parameter is specified
      */
     public RecordRetriever(GPUdb gpudb, String tableName, Type type, WorkerList workers) throws GPUdbException {
-        this(gpudb, tableName, type, null, workers);
+        this(gpudb, tableName, type, null, workers, null);
+    }
+
+
+    /**
+     * Creates a {@link RecordRetriever} with the specified parameters.
+     *
+     * @param gpudb      the GPUdb instance to retrieve records from
+     * @param tableName  the table to retrieve records from
+     * @param type       the type of records being retrieved
+     * @param workers    worker list for multi-head retrieval ({@code null} to
+     *                   disable multi-head retrieval)
+     * @param options    optional parameters to pass to GPUdb while retrieving
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     */
+    public RecordRetriever( GPUdb gpudb, String tableName, Type type,
+                            WorkerList workers,
+                            Map<String, String> options) throws GPUdbException {
+        this(gpudb, tableName, type, null, workers, options);
     }
 
     /**
@@ -80,10 +121,33 @@ public class RecordRetriever<T> {
      *
      * @throws IllegalArgumentException if an invalid parameter is specified
      */
-    public RecordRetriever(GPUdb gpudb, String tableName, TypeObjectMap<T> typeObjectMap) throws GPUdbException {
-        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, null);
+    public RecordRetriever( GPUdb gpudb, String tableName,
+                            TypeObjectMap<T> typeObjectMap) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, null, null);
     }
 
+
+    /**
+     * Creates a {@link RecordRetriever} with the specified parameters.
+     *
+     * @param gpudb          the GPUdb instance to retrieve records from
+     * @param tableName      the table to retrieve records from
+     * @param typeObjectMap  type object map for the type of records being
+     *                       retrieved
+     * @param options        optional parameters to pass to GPUdb while retrieving
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     */
+    public RecordRetriever( GPUdb gpudb, String tableName,
+                            TypeObjectMap<T> typeObjectMap,
+                            Map<String, String> options ) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, null, options);
+    }
+
+
+    
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
      *
@@ -98,11 +162,42 @@ public class RecordRetriever<T> {
      *
      * @throws IllegalArgumentException if an invalid parameter is specified
      */
-    public RecordRetriever(GPUdb gpudb, String tableName, TypeObjectMap<T> typeObjectMap, WorkerList workers) throws GPUdbException {
-        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, workers);
+    public RecordRetriever( GPUdb gpudb, String tableName,
+                            TypeObjectMap<T> typeObjectMap,
+                            WorkerList workers) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, workers, null);
     }
 
-    private RecordRetriever(GPUdb gpudb, String tableName, Type type, TypeObjectMap<T> typeObjectMap, WorkerList workers) throws GPUdbException {
+    
+    /**
+     * Creates a {@link RecordRetriever} with the specified parameters.
+     *
+     * @param gpudb          the GPUdb instance to retrieve records from
+     * @param tableName      the table to retrieve records from
+     * @param typeObjectMap  type object map for the type of records being
+     *                       retrieved
+     * @param workers        worker list for multi-head retrieval ({@code null}
+     *                       to disable multi-head retrieval)
+     * @param options        optional parameters to pass to GPUdb while retrieving
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     */
+    public RecordRetriever( GPUdb gpudb, String tableName,
+                            TypeObjectMap<T> typeObjectMap,
+                            WorkerList workers,
+                            Map<String, String> options ) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, workers, options);
+    }
+
+    
+    private RecordRetriever( GPUdb gpudb,
+                             String tableName,
+                             Type type,
+                             TypeObjectMap<T> typeObjectMap,
+                             WorkerList workers,
+                             Map<String, String> options ) throws GPUdbException {
         this.gpudb = gpudb;
         this.tableName = tableName;
         this.type = type;
@@ -112,6 +207,15 @@ public class RecordRetriever<T> {
         this.shardVersion = 0;
         this.shardUpdateTime = new MutableLong();
 
+        if (options != null) {
+            this.options = new HashMap<>(options);
+        } else {
+            // We'll need to use at least the 'expressions' in the options
+            this.options = new HashMap<>();
+        }
+        // We will always need to use this for getByKey
+        this.options.put(GetRecordsRequest.Options.FAST_INDEX_LOOKUP, GetRecordsRequest.Options.TRUE);
+        
         // Keep track of how many times the db client has switched HA clusters
         // in order to decide later if it's time to update the worker queues
         this.numClusterSwitches = gpudb.getNumClusterSwitches();
@@ -327,6 +431,43 @@ public class RecordRetriever<T> {
     }
 
     /**
+     * Gets the options currently used for the retriever methods.  Note
+     * that any {@link GetRecordsRequest.Options.EXPRESSION} options will
+     * get overridden at the next {@link getByKey} call with the appropriate
+     * expression.
+     *
+     * @return  the options used during record retrieval
+     *
+     * @see setOptions
+     */
+    public Map<String, String> getOptions() {
+        return this.options;
+    }
+
+
+    /**
+     * Sets the options to be used for the retriever methods.
+     *
+     * @param options  the options to be used during record retrieval
+     *
+     * @return         the current {@link RecordRetriever} instance
+     *
+     * @see com.gpudb.protocol.GetRecordsRequest.Options.EXPRESSION
+     */
+    public RecordRetriever setOptions( Map<String, String> options ) {
+        if (options != null) {
+            this.options = new HashMap<>(options);
+        } else {
+            // We'll need to use at least the 'expressions' in the options
+            this.options = new HashMap<>();
+        }
+        // We will always need to use this for getByKey
+        this.options.put(GetRecordsRequest.Options.FAST_INDEX_LOOKUP, GetRecordsRequest.Options.TRUE);
+
+        return this;
+    }
+
+    /**
      * Retrieves records for a given shard key, optionally further limited by an
      * additional expression. All records matching the key and satisfying the
      * expression will be returned, up to the system-defined limit. For
@@ -360,10 +501,12 @@ public class RecordRetriever<T> {
             expression = "(" + shardKeyBuilder.buildExpression(keyValues) + ") and (" + expression + ")";
         }
 
-        Map<String, String> options = new HashMap<>();
-        options.put(GetRecordsRequest.Options.EXPRESSION, expression);
-        options.put(GetRecordsRequest.Options.FAST_INDEX_LOOKUP, GetRecordsRequest.Options.TRUE);
-        GetRecordsRequest request = new GetRecordsRequest(tableName, 0, GPUdb.END_OF_SET, options);
+        // Update the options with the correct expression
+        this.options.put(GetRecordsRequest.Options.EXPRESSION, expression);
+        // // Currently being set in the private constructor
+        // this.options.put(GetRecordsRequest.Options.FAST_INDEX_LOOKUP, GetRecordsRequest.Options.TRUE);
+
+        GetRecordsRequest request = new GetRecordsRequest(tableName, 0, GPUdb.END_OF_SET, this.options);
         RawGetRecordsResponse response = new RawGetRecordsResponse();
 
         GetRecordsResponse<T> decodedResponse = new GetRecordsResponse<>();
@@ -427,4 +570,20 @@ public class RecordRetriever<T> {
         return decodedResponse;
     }  // getByKey()
 
+
+    /**
+     * Note: If a regular retriever method is implemented (other than "by key"),
+     *       then some changes would need to be made to the options.  Currently,
+     *       `getByKey()` sets the `expressions` option and keeps it there since
+     *       it will get overridden during the next `getByKey()` call.  However,
+     *       if there is a method like `getAllRecords()` from the worker ranks
+     *       directly, then such a saved expression in the options would change/
+     *       limit the records fetched.  In that case, the options handling would
+     *       have to be modified as necessary.  Also, currently, the `fast index
+     *       lookup` option is always set in the constructor; that would not
+     *       necessarily apply; we would need to take care of that as well.
+     *
+     *       The `setOptions()` method would have to be changed as well.
+     */
+    
 }  // class RecordRetriever

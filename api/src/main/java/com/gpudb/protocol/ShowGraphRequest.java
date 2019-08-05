@@ -14,16 +14,17 @@ import org.apache.avro.generic.IndexedRecord;
 
 
 /**
- * A set of parameters for {@link
- * com.gpudb.GPUdb#adminShowJobs(AdminShowJobsRequest)}.
+ * A set of parameters for {@link com.gpudb.GPUdb#showGraph(ShowGraphRequest)}.
  * <p>
- * Get a list of the current jobs in GPUdb.
+ * Shows information and characteristics of graphs that exist on the graph
+ * server, depending on the options specified.
  */
-public class AdminShowJobsRequest implements IndexedRecord {
+public class ShowGraphRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("AdminShowJobsRequest")
+            .record("ShowGraphRequest")
             .namespace("com.gpudb")
             .fields()
+                .name("graphName").type().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -44,19 +45,18 @@ public class AdminShowJobsRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
-     * com.gpudb.protocol.AdminShowJobsRequest.Options#SHOW_ASYNC_JOBS
-     * SHOW_ASYNC_JOBS}: If {@code true}, then the completed async jobs are
-     * also included in the response. By default, once the async jobs are
-     * completed they are no longer included in the jobs list.
+     * com.gpudb.protocol.ShowGraphRequest.Options#SHOW_ORIGINAL_REQUEST
+     * SHOW_ORIGINAL_REQUEST}: If set to {@code true}, the request that was
+     * originally used.
      * Supported values:
      * <ul>
-     *         <li> {@link com.gpudb.protocol.AdminShowJobsRequest.Options#TRUE
+     *         <li> {@link com.gpudb.protocol.ShowGraphRequest.Options#TRUE
      * TRUE}
-     *         <li> {@link
-     * com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE FALSE}
+     *         <li> {@link com.gpudb.protocol.ShowGraphRequest.Options#FALSE
+     * FALSE}
      * </ul>
      * The default value is {@link
-     * com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE FALSE}.
+     * com.gpudb.protocol.ShowGraphRequest.Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -64,65 +64,89 @@ public class AdminShowJobsRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * If {@code true}, then the completed async jobs are also included in
-         * the response. By default, once the async jobs are completed they are
-         * no longer included in the jobs list.
+         * If set to {@code true}, the request that was originally used.
          * Supported values:
          * <ul>
+         *         <li> {@link com.gpudb.protocol.ShowGraphRequest.Options#TRUE
+         * TRUE}
          *         <li> {@link
-         * com.gpudb.protocol.AdminShowJobsRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE FALSE}
+         * com.gpudb.protocol.ShowGraphRequest.Options#FALSE FALSE}
          * </ul>
          * The default value is {@link
-         * com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE FALSE}.
+         * com.gpudb.protocol.ShowGraphRequest.Options#TRUE TRUE}.
          */
-        public static final String SHOW_ASYNC_JOBS = "show_async_jobs";
+        public static final String SHOW_ORIGINAL_REQUEST = "show_original_request";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
 
         private Options() {  }
     }
 
+    private String graphName;
     private Map<String, String> options;
 
 
     /**
-     * Constructs an AdminShowJobsRequest object with default parameters.
+     * Constructs a ShowGraphRequest object with default parameters.
      */
-    public AdminShowJobsRequest() {
+    public ShowGraphRequest() {
+        graphName = "";
         options = new LinkedHashMap<>();
     }
 
     /**
-     * Constructs an AdminShowJobsRequest object with the specified parameters.
+     * Constructs a ShowGraphRequest object with the specified parameters.
      * 
+     * @param graphName  Name of the graph on which to retrieve information. If
+     *                   empty, information about all graphs is returned.  The
+     *                   default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#SHOW_ASYNC_JOBS
-     *                 SHOW_ASYNC_JOBS}: If {@code true}, then the completed
-     *                 async jobs are also included in the response. By
-     *                 default, once the async jobs are completed they are no
-     *                 longer included in the jobs list.
+     *                 com.gpudb.protocol.ShowGraphRequest.Options#SHOW_ORIGINAL_REQUEST
+     *                 SHOW_ORIGINAL_REQUEST}: If set to {@code true}, the
+     *                 request that was originally used.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#TRUE
-     *                 TRUE}
+     *                 com.gpudb.protocol.ShowGraphRequest.Options#TRUE TRUE}
      *                         <li> {@link
-     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE
-     *                 FALSE}
+     *                 com.gpudb.protocol.ShowGraphRequest.Options#FALSE FALSE}
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE
-     *                 FALSE}.
+     *                 com.gpudb.protocol.ShowGraphRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
      */
-    public AdminShowJobsRequest(Map<String, String> options) {
+    public ShowGraphRequest(String graphName, Map<String, String> options) {
+        this.graphName = (graphName == null) ? "" : graphName;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
+    }
+
+    /**
+     * 
+     * @return Name of the graph on which to retrieve information. If empty,
+     *         information about all graphs is returned.  The default value is
+     *         ''.
+     * 
+     */
+    public String getGraphName() {
+        return graphName;
+    }
+
+    /**
+     * 
+     * @param graphName  Name of the graph on which to retrieve information. If
+     *                   empty, information about all graphs is returned.  The
+     *                   default value is ''.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowGraphRequest setGraphName(String graphName) {
+        this.graphName = (graphName == null) ? "" : graphName;
+        return this;
     }
 
     /**
@@ -130,19 +154,18 @@ public class AdminShowJobsRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.AdminShowJobsRequest.Options#SHOW_ASYNC_JOBS
-     *         SHOW_ASYNC_JOBS}: If {@code true}, then the completed async jobs
-     *         are also included in the response. By default, once the async
-     *         jobs are completed they are no longer included in the jobs list.
+     *         com.gpudb.protocol.ShowGraphRequest.Options#SHOW_ORIGINAL_REQUEST
+     *         SHOW_ORIGINAL_REQUEST}: If set to {@code true}, the request that
+     *         was originally used.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.AdminShowJobsRequest.Options#TRUE TRUE}
+     *         com.gpudb.protocol.ShowGraphRequest.Options#TRUE TRUE}
      *                 <li> {@link
-     *         com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE FALSE}
+     *         com.gpudb.protocol.ShowGraphRequest.Options#FALSE FALSE}
      *         </ul>
      *         The default value is {@link
-     *         com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE FALSE}.
+     *         com.gpudb.protocol.ShowGraphRequest.Options#TRUE TRUE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -156,30 +179,25 @@ public class AdminShowJobsRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#SHOW_ASYNC_JOBS
-     *                 SHOW_ASYNC_JOBS}: If {@code true}, then the completed
-     *                 async jobs are also included in the response. By
-     *                 default, once the async jobs are completed they are no
-     *                 longer included in the jobs list.
+     *                 com.gpudb.protocol.ShowGraphRequest.Options#SHOW_ORIGINAL_REQUEST
+     *                 SHOW_ORIGINAL_REQUEST}: If set to {@code true}, the
+     *                 request that was originally used.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#TRUE
-     *                 TRUE}
+     *                 com.gpudb.protocol.ShowGraphRequest.Options#TRUE TRUE}
      *                         <li> {@link
-     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE
-     *                 FALSE}
+     *                 com.gpudb.protocol.ShowGraphRequest.Options#FALSE FALSE}
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.AdminShowJobsRequest.Options#FALSE
-     *                 FALSE}.
+     *                 com.gpudb.protocol.ShowGraphRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminShowJobsRequest setOptions(Map<String, String> options) {
+    public ShowGraphRequest setOptions(Map<String, String> options) {
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
@@ -211,6 +229,9 @@ public class AdminShowJobsRequest implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
+                return this.graphName;
+
+            case 1:
                 return this.options;
 
             default:
@@ -233,6 +254,10 @@ public class AdminShowJobsRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
+                this.graphName = (String)value;
+                break;
+
+            case 1:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -251,9 +276,10 @@ public class AdminShowJobsRequest implements IndexedRecord {
             return false;
         }
 
-        AdminShowJobsRequest that = (AdminShowJobsRequest)obj;
+        ShowGraphRequest that = (ShowGraphRequest)obj;
 
-        return ( this.options.equals( that.options ) );
+        return ( this.graphName.equals( that.graphName )
+                 && this.options.equals( that.options ) );
     }
 
     @Override
@@ -261,6 +287,10 @@ public class AdminShowJobsRequest implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
+        builder.append( gd.toString( "graphName" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.graphName ) );
+        builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.options ) );
@@ -272,6 +302,7 @@ public class AdminShowJobsRequest implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
+        hashCode = (31 * hashCode) + this.graphName.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }
