@@ -20,6 +20,11 @@
     list or checking for Java class equivalency.
 
 
+#### Changed
+-   Error message format when endpoint submission fails altogether (whether
+    no connection can be made or if the database returns some error).
+
+
 ### Version 7.0.5.0 - 2019-07-21
 
 #### Added

@@ -1077,9 +1077,10 @@ public abstract class GPUdbBase {
         synchronized (urlLock) {
             // If there is only one URL, then we can't switch URLs
             if ( this.urls.size() == 1 ) {
-                throw new GPUdbHAUnavailableException("GPUdb unavailable at "
+                throw new GPUdbHAUnavailableException(" (GPUdb server at "
                                                       + this.urls.get(0).toString()
-                                                      + " (no HA available to fall back on).");
+                                                      + " returned error; no HA clusters "
+                                                      + "available to fall back on).");
             }
 
             // Increment the index by one (mod url list length)
@@ -1096,8 +1097,9 @@ public abstract class GPUdbBase {
                 randomizeURLs();
 
                 // Let the user know that we've circled back
-                throw new GPUdbHAUnavailableException("GPUdb unavailable; have tried all HA clusters "
-                                                      + "head nodes (" + this.urls.toString() + ")");
+                throw new GPUdbHAUnavailableException(" (all GPUdb clusters with "
+                                                      + "head nodes [" + this.urls.toString()
+                                                      + "] returned error)");
             }
 
             // Haven't circled back to the old URL; so return the new one
@@ -1115,9 +1117,10 @@ public abstract class GPUdbBase {
         synchronized (urlLock) {
             // If there is only one URL, then we can't switch URLs
             if ( this.hmUrls.size() == 1 ) {
-                throw new GPUdbHAUnavailableException("GPUdb unavailable at "
+                throw new GPUdbHAUnavailableException(" (host manager at "
                                                       + this.hmUrls.get(0).toString()
-                                                      + " (no HA available to fall back on).");
+                                                      + "returned error; no HA clusters "
+                                                      + "available to fall back on).");
             }
 
             // Increment the index by one (mod url list length)
@@ -1134,8 +1137,9 @@ public abstract class GPUdbBase {
                 randomizeURLs();
 
                 // Let the user know that we've circled back
-                throw new GPUdbHAUnavailableException("GPUdb unavailable; have tried all HA clusters "
-                                                      + "head nodes (" + this.hmUrls.toString() + ")");
+                throw new GPUdbHAUnavailableException(" (all host managers at GPUdb clusters with "
+                                                      + "head nodes [" + this.hmUrls.toString()
+                                                      + "] returned error)");
             }
 
             // Haven't circled back to the old URL; so return the new one
@@ -1712,9 +1716,10 @@ public abstract class GPUdbBase {
                     url = switchURL( originalURL );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
-                    throw new GPUdbException( ha_ex.getMessage()
-                                              + "; original exception: "
-                                              + ex.getCause(), true );
+                    // Get the original cause to propagate to the user
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new GPUdbException( originalCause
+                                              + ha_ex.getMessage(), true );
                 }
             } catch (SubmitException ex) {
                 // Some error occurred during the HTTP request
@@ -1722,10 +1727,11 @@ public abstract class GPUdbBase {
                     url = switchURL( originalURL );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
+                    // Get the original cause to propagate to the user
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                     throw new SubmitException( null, ex.getRequest(), ex.getRequestSize(),
-                                               (ha_ex.getMessage()
-                                                + "; original exception: "
-                                                + ex.getCause()),
+                                               (originalCause
+                                                + ha_ex.getMessage()),
                                                ex.getCause(), true );
                 }
             } catch (GPUdbException ex) {
@@ -1737,9 +1743,10 @@ public abstract class GPUdbBase {
                     url = switchURL( originalURL );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
-                    throw new GPUdbException( ha_ex.getMessage()
-                                              + "; original exception: "
-                                              + ex.getCause(), true );
+                    // Get the original cause to propagate to the user
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new GPUdbException( originalCause
+                                              + ha_ex.getMessage(), true );
                 }
             }
         } // end while
@@ -1808,9 +1815,10 @@ public abstract class GPUdbBase {
                     hmUrl = switchHmURL( originalURL );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
-                    throw new GPUdbException( ha_ex.getMessage()
-                                              + "; original exception: "
-                                              + ex.getCause(), true );
+                    // Get the original cause to propagate to the user
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new GPUdbException( originalCause
+                                              + ha_ex.getMessage(), true );
                 }
             } catch (SubmitException ex) {
                 // Some error occurred during the HTTP request;
@@ -1825,10 +1833,11 @@ public abstract class GPUdbBase {
                             hmUrl = switchHmURL( originalURL );
                         } catch (GPUdbHAUnavailableException ha_ex) {
                             // We've now tried all the HA clusters and circled back
+                            // Get the original cause to propagate to the user
+                            String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                             throw new SubmitException( null, ex.getRequest(), ex.getRequestSize(),
-                                                       (ha_ex.getMessage()
-                                                        + "; original exception: "
-                                                        + ex.getCause()),
+                                                       (originalCause
+                                                        + ha_ex.getMessage()),
                                                        ex.getCause(), true );
                         }
                     }
@@ -1838,10 +1847,11 @@ public abstract class GPUdbBase {
                         hmUrl = switchHmURL( originalURL );
                     } catch (GPUdbHAUnavailableException ha_ex) {
                         // We've now tried all the HA clusters and circled back
+                        // Get the original cause to propagate to the user
+                        String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
                         throw new SubmitException( null, ex.getRequest(), ex.getRequestSize(),
-                                                   (ha_ex.getMessage()
-                                                    + "; original exception: "
-                                                    + ex.getCause()),
+                                                   (originalCause
+                                                    + ha_ex.getMessage()),
                                                    ex.getCause(), true );
                     }
                 }
@@ -1852,9 +1862,10 @@ public abstract class GPUdbBase {
                         hmUrl = switchHmURL( originalURL );
                     } catch (GPUdbHAUnavailableException ha_ex) {
                         // We've now tried all the HA clusters and circled back
-                        throw new GPUdbException( ha_ex.getMessage()
-                                                  + "; original exception: "
-                                                  + ex.getCause(), true );
+                        // Get the original cause to propagate to the user
+                        String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                        throw new GPUdbException( originalCause
+                                                  + ha_ex.getMessage(), true );
                     }
                 }
                 else {
@@ -1867,9 +1878,10 @@ public abstract class GPUdbBase {
                     hmUrl = switchHmURL( originalURL );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
-                    throw new GPUdbException( ha_ex.getMessage()
-                                              + "; original exception: "
-                                              + ex.getCause(), true );
+                    // Get the original cause to propagate to the user
+                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                    throw new GPUdbException( originalCause
+                                              + ha_ex.getMessage(), true );
                 }
             }
         } // end while
