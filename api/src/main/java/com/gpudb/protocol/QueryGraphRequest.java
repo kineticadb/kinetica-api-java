@@ -96,7 +96,7 @@ public class QueryGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
      * TARGET_NODES_TABLE}: Name of the table to store the list of the final
      * nodes reached during the traversal. If this value is not given it'll
-     * default to adjacemcy_table+'_nodes'.  The default value is ''.
+     * default to adjacency_table+'_nodes'.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      * RESTRICTION_THRESHOLD_VALUE}: Value-based restriction comparison. Any
@@ -107,8 +107,8 @@ public class QueryGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_QUERY_RESULTS
      * EXPORT_QUERY_RESULTS}: Returns query results in the response. If set to
      * {@code true}, the {@code adjacencyListIntArray} (if the query was based
-     * on IDs), @{adjacency_list_string_array} (if the query was based on
-     * names), or @{output_adjacency_list_wkt_array} (if the query was based on
+     * on IDs), {@code adjacencyListStringArray} (if the query was based on
+     * names), or {@code adjacencyListWktArray} (if the query was based on
      * WKTs) will be populated with the results. If set to {@code false}, none
      * of the arrays will be populated.
      * Supported values:
@@ -188,7 +188,7 @@ public class QueryGraphRequest implements IndexedRecord {
         /**
          * Name of the table to store the list of the final nodes reached
          * during the traversal. If this value is not given it'll default to
-         * adjacemcy_table+'_nodes'.  The default value is ''.
+         * adjacency_table+'_nodes'.  The default value is ''.
          */
         public static final String TARGET_NODES_TABLE = "target_nodes_table";
 
@@ -202,8 +202,8 @@ public class QueryGraphRequest implements IndexedRecord {
         /**
          * Returns query results in the response. If set to {@code true}, the
          * {@code adjacencyListIntArray} (if the query was based on IDs),
-         * @{adjacency_list_string_array} (if the query was based on names), or
-         * @{output_adjacency_list_wkt_array} (if the query was based on WKTs)
+         * {@code adjacencyListStringArray} (if the query was based on names),
+         * or {@code adjacencyListWktArray} (if the query was based on WKTs)
          * will be populated with the results. If set to {@code false}, none of
          * the arrays will be populated.
          * Supported values:
@@ -364,7 +364,7 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 TARGET_NODES_TABLE}: Name of the table to store the list
      *                 of the final nodes reached during the traversal. If this
      *                 value is not given it'll default to
-     *                 adjacemcy_table+'_nodes'.  The default value is ''.
+     *                 adjacency_table+'_nodes'.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
@@ -377,8 +377,8 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 EXPORT_QUERY_RESULTS}: Returns query results in the
      *                 response. If set to {@code true}, the {@code
      *                 adjacencyListIntArray} (if the query was based on IDs),
-     *                 @{adjacency_list_string_array} (if the query was based
-     *                 on names), or @{output_adjacency_list_wkt_array} (if the
+     *                 {@code adjacencyListStringArray} (if the query was based
+     *                 on names), or {@code adjacencyListWktArray} (if the
      *                 query was based on WKTs) will be populated with the
      *                 results. If set to {@code false}, none of the arrays
      *                 will be populated.
@@ -669,7 +669,7 @@ public class QueryGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
      *         TARGET_NODES_TABLE}: Name of the table to store the list of the
      *         final nodes reached during the traversal. If this value is not
-     *         given it'll default to adjacemcy_table+'_nodes'.  The default
+     *         given it'll default to adjacency_table+'_nodes'.  The default
      *         value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
@@ -681,8 +681,8 @@ public class QueryGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_QUERY_RESULTS
      *         EXPORT_QUERY_RESULTS}: Returns query results in the response. If
      *         set to {@code true}, the {@code adjacencyListIntArray} (if the
-     *         query was based on IDs), @{adjacency_list_string_array} (if the
-     *         query was based on names), or @{output_adjacency_list_wkt_array}
+     *         query was based on IDs), {@code adjacencyListStringArray} (if
+     *         the query was based on names), or {@code adjacencyListWktArray}
      *         (if the query was based on WKTs) will be populated with the
      *         results. If set to {@code false}, none of the arrays will be
      *         populated.
@@ -770,7 +770,7 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 TARGET_NODES_TABLE}: Name of the table to store the list
      *                 of the final nodes reached during the traversal. If this
      *                 value is not given it'll default to
-     *                 adjacemcy_table+'_nodes'.  The default value is ''.
+     *                 adjacency_table+'_nodes'.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
@@ -783,8 +783,8 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 EXPORT_QUERY_RESULTS}: Returns query results in the
      *                 response. If set to {@code true}, the {@code
      *                 adjacencyListIntArray} (if the query was based on IDs),
-     *                 @{adjacency_list_string_array} (if the query was based
-     *                 on names), or @{output_adjacency_list_wkt_array} (if the
+     *                 {@code adjacencyListStringArray} (if the query was based
+     *                 on names), or {@code adjacencyListWktArray} (if the
      *                 query was based on WKTs) will be populated with the
      *                 results. If set to {@code false}, none of the arrays
      *                 will be populated.

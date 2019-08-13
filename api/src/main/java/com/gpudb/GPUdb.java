@@ -2018,8 +2018,8 @@ public class GPUdb extends GPUdbBase {
      * can be used for numeric valued binning-columns, a min, max and interval
      * are specified. The number of bins, nbins, is the integer upper bound of
      * (max-min)/interval. Values that fall in the range
-     * [min+n\*interval,min+(n+1)\*interval) are placed in the nth bin where n
-     * ranges from 0..nbin-2. The final bin is [min+(nbin-1)\*interval,max]. In
+     * [min+n*interval,min+(n+1)*interval) are placed in the nth bin where n
+     * ranges from 0..nbin-2. The final bin is [min+(nbin-1)*interval,max]. In
      * the second method, {@code options} bin_values specifies a list of
      * binning column values. Binning-columns whose value matches the nth
      * member of the bin_values list are placed in the nth bin. When a list is
@@ -2063,8 +2063,8 @@ public class GPUdb extends GPUdbBase {
      * can be used for numeric valued binning-columns, a min, max and interval
      * are specified. The number of bins, nbins, is the integer upper bound of
      * (max-min)/interval. Values that fall in the range
-     * [min+n\*interval,min+(n+1)\*interval) are placed in the nth bin where n
-     * ranges from 0..nbin-2. The final bin is [min+(nbin-1)\*interval,max]. In
+     * [min+n*interval,min+(n+1)*interval) are placed in the nth bin where n
+     * ranges from 0..nbin-2. The final bin is [min+(nbin-1)*interval,max]. In
      * the second method, {@code options} bin_values specifies a list of
      * binning column values. Binning-columns whose value matches the nth
      * member of the bin_values list are placed in the nth bin. When a list is
@@ -2089,7 +2089,7 @@ public class GPUdb extends GPUdbBase {
      * @param end  The upper bound of the binning-column.
      * @param interval  The interval of a bin. Set members fall into bin i if
      *                  the binning-column falls in the range
-     *                  [start+interval``*``i, start+interval``*``(i+1)).
+     *                  [start+interval*i, start+interval*(i+1)).
      * @param options  Map of optional parameters:
      *                 <ul>
      *                         <li> {@link
@@ -11508,7 +11508,7 @@ public class GPUdb extends GPUdbBase {
      *                 TARGET_NODES_TABLE}: Name of the table to store the list
      *                 of the final nodes reached during the traversal. If this
      *                 value is not given it'll default to
-     *                 adjacemcy_table+'_nodes'.  The default value is ''.
+     *                 adjacency_table+'_nodes'.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
@@ -11521,8 +11521,8 @@ public class GPUdb extends GPUdbBase {
      *                 EXPORT_QUERY_RESULTS}: Returns query results in the
      *                 response. If set to {@code true}, the {@code
      *                 adjacencyListIntArray} (if the query was based on IDs),
-     *                 @{adjacency_list_string_array} (if the query was based
-     *                 on names), or @{output_adjacency_list_wkt_array} (if the
+     *                 {@code adjacencyListStringArray} (if the query was based
+     *                 on names), or {@code adjacencyListWktArray} (if the
      *                 query was based on WKTs) will be populated with the
      *                 results. If set to {@code false}, none of the arrays
      *                 will be populated.

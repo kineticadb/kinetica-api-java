@@ -643,10 +643,11 @@ public abstract class GPUdbBase {
      * number of results should be returned.
      */
     public static final long END_OF_SET = -9999;
-    private static final String DB_OFFLINE_ERROR_MESSAGE = "System is offline";
-    private static final String DB_CONNECTION_RESET_ERROR_MESSAGE = "Connection reset";
+    private static final String DB_OFFLINE_ERROR_MESSAGE            = "System is offline";
+    private static final String DB_CONNECTION_RESET_ERROR_MESSAGE   = "Connection reset";
     private static final String DB_CONNECTION_REFUSED_ERROR_MESSAGE = "Connection refused";
-    private static final String DB_EXITING_ERROR_MESSAGE = "Kinetica is exiting";
+    private static final String DB_EXITING_ERROR_MESSAGE            = "Kinetica is exiting";
+    private static final String DB_SYSTEM_LIMITED_ERROR_MESSAGE     = "system limited";
 
     protected static final String HA_SYNC_MODE = "ha_sync_mode";
     
@@ -1995,8 +1996,8 @@ public abstract class GPUdbBase {
                         // Check if Kinetica is shutting down
                         if ( message.contains( DB_EXITING_ERROR_MESSAGE )
                              || message.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE )
-                             || message.contains( DB_CONNECTION_RESET_ERROR_MESSAGE ) ) {
-                        // if ( message.contains( DB_EXITING_ERROR_MESSAGE ) ) {
+                             || message.contains( DB_CONNECTION_RESET_ERROR_MESSAGE )
+                             || message.contains( DB_SYSTEM_LIMITED_ERROR_MESSAGE ) ) {
                             throw new GPUdbExitException( message );
                         }
                         // A legitimate error

@@ -33,9 +33,9 @@ import org.apache.avro.generic.IndexedRecord;
  * be used for numeric valued binning-columns, a min, max and interval are
  * specified. The number of bins, nbins, is the integer upper bound of
  * (max-min)/interval. Values that fall in the range
- * [min+n\*interval,min+(n+1)\*interval) are placed in the nth bin where n
- * ranges from 0..nbin-2. The final bin is [min+(nbin-1)\*interval,max]. In the
- * second method, {@code options} bin_values specifies a list of binning column
+ * [min+n*interval,min+(n+1)*interval) are placed in the nth bin where n ranges
+ * from 0..nbin-2. The final bin is [min+(nbin-1)*interval,max]. In the second
+ * method, {@code options} bin_values specifies a list of binning column
  * values. Binning-columns whose value matches the nth member of the bin_values
  * list are placed in the nth bin. When a list is provided the binning-column
  * must be of type string or int.
@@ -168,7 +168,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      * @param end  The upper bound of the binning-column.
      * @param interval  The interval of a bin. Set members fall into bin i if
      *                  the binning-column falls in the range
-     *                  [start+interval``*``i, start+interval``*``(i+1)).
+     *                  [start+interval*i, start+interval*(i+1)).
      * @param options  Map of optional parameters:
      *                 <ul>
      *                         <li> {@link
@@ -369,8 +369,8 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
     /**
      * 
      * @return The interval of a bin. Set members fall into bin i if the
-     *         binning-column falls in the range [start+interval``*``i,
-     *         start+interval``*``(i+1)).
+     *         binning-column falls in the range [start+interval*i,
+     *         start+interval*(i+1)).
      * 
      */
     public double getInterval() {
@@ -381,7 +381,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      * 
      * @param interval  The interval of a bin. Set members fall into bin i if
      *                  the binning-column falls in the range
-     *                  [start+interval``*``i, start+interval``*``(i+1)).
+     *                  [start+interval*i, start+interval*(i+1)).
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
