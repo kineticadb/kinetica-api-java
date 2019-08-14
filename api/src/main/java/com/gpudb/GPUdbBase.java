@@ -647,7 +647,7 @@ public abstract class GPUdbBase {
     private static final String DB_CONNECTION_RESET_ERROR_MESSAGE   = "Connection reset";
     private static final String DB_CONNECTION_REFUSED_ERROR_MESSAGE = "Connection refused";
     private static final String DB_EXITING_ERROR_MESSAGE            = "Kinetica is exiting";
-    private static final String DB_SYSTEM_LIMITED_ERROR_MESSAGE     = "system limited";
+    private static final String DB_SYSTEM_LIMITED_ERROR_MESSAGE     = "system-limited-fatal";
 
     protected static final String HA_SYNC_MODE = "ha_sync_mode";
     
