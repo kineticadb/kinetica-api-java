@@ -39,6 +39,30 @@ public class KillProcRequest implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.KillProcRequest.Options#RUN_TAG
+     * RUN_TAG}: Kill only proc instances where a matching run tag was provided
+     * to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The default
+     * value is ''.
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * Kill only proc instances where a matching run tag was provided to
+         * {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The
+         * default value is ''.
+         */
+        public static final String RUN_TAG = "run_tag";
+
+        private Options() {  }
+    }
+
     private String runId;
     private Map<String, String> options;
 
@@ -58,8 +82,16 @@ public class KillProcRequest implements IndexedRecord {
      *               not found or the proc instance has already completed, this
      *               does nothing. If not specified, all running proc instances
      *               will be killed.  The default value is ''.
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.KillProcRequest.Options#RUN_TAG
+     *                 RUN_TAG}: Kill only proc instances where a matching run
+     *                 tag was provided to {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The
+     *                 default value is ''.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public KillProcRequest(String runId, Map<String, String> options) {
@@ -96,7 +128,15 @@ public class KillProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.  The default value is an empty {@link Map}.
+     * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.KillProcRequest.Options#RUN_TAG RUN_TAG}:
+     *         Kill only proc instances where a matching run tag was provided
+     *         to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The
+     *         default value is ''.
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -105,8 +145,16 @@ public class KillProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.KillProcRequest.Options#RUN_TAG
+     *                 RUN_TAG}: Kill only proc instances where a matching run
+     *                 tag was provided to {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The
+     *                 default value is ''.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -6008,6 +6008,13 @@ public class GPUdb extends GPUdbBase {
      *                    timestamp must fall between the year 1000 and the
      *                    year 2900.
      *                            <li> {@link
+     *                    com.gpudb.protocol.CreateTypeRequest.Properties#ULONG
+     *                    ULONG}: Valid only for 'string' columns.  It
+     *                    represents an unsigned long integer data type. The
+     *                    string can only be interpreted as an unsigned long
+     *                    data type with minimum value of zero, and maximum
+     *                    value of 18446744073709551615.
+     *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DECIMAL
      *                    DECIMAL}: Valid only for 'string' columns.  It
      *                    represents a SQL type NUMERIC(19, 4) data type.
@@ -6980,6 +6987,12 @@ public class GPUdb extends GPUdbBase {
      *                 system below the KiFS mount point.) Each name specified
      *                 must the name of an existing KiFS directory.  The
      *                 default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#RUN_TAG
+     *                 RUN_TAG}: A string that, if not empty, can be used in
+     *                 subsequent calls to {@link GPUdb#showProcStatus(String,
+     *                 Map)} or {@link GPUdb#killProc(String, Map)} to identify
+     *                 the proc instance.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -9876,6 +9889,10 @@ public class GPUdb extends GPUdbBase {
      *                    SYSTEM_ADMIN}: Full access to all data and system
      *                    functions.
      *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_USER_ADMIN
+     *                    SYSTEM_USER_ADMIN}: Access to administer users and
+     *                    roles that do not have system_admin permission.
+     *                            <li> {@link
      *                    com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_WRITE
      *                    SYSTEM_WRITE}: Read and write access to all tables.
      *                            <li> {@link
@@ -10869,8 +10886,16 @@ public class GPUdb extends GPUdbBase {
      *               not found or the proc instance has already completed, this
      *               does nothing. If not specified, all running proc instances
      *               will be killed.  The default value is ''.
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.KillProcRequest.Options#RUN_TAG
+     *                 RUN_TAG}: Kill only proc instances where a matching run
+     *                 tag was provided to {@link GPUdb#executeProc(String,
+     *                 Map, Map, List, Map, List, Map)}.  The default value is
+     *                 ''.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -11093,6 +11118,12 @@ public class GPUdb extends GPUdbBase {
      *                     MATCH_OD_PAIRS}: Matches {@code samplePoints} to
      *                     find the most probable path between origin and
      *                     destination pairs with cost constraints
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SUPPLY_DEMAND
+     *                     MATCH_SUPPLY_DEMAND}: Matches {@code samplePoints}
+     *                     to optimize scheduling multiple supplies (trucks)
+     *                     with varying sizes to varying demand sites with
+     *                     varying capacities per depot
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -11183,6 +11214,24 @@ public class GPUdb extends GPUdbBase {
      *                 samplePoints} for the solver. The default behavior for
      *                 the endpoint is to use time to determine the destination
      *                 point.  The default value is 'POINT NULL'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#PARTIAL_LOADING
+     *                 PARTIAL_LOADING}: For the {@code match_supply_demand}
+     *                 solver only. When false (non-default), trucks do not
+     *                 off-load at the demand (store) side if the remainder is
+     *                 less than the store's need
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 Partial off loading at multiple store (demand) locations
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: No partial off loading allowed if supply is less
+     *                 than the store's demand.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -11508,7 +11557,7 @@ public class GPUdb extends GPUdbBase {
      *                 TARGET_NODES_TABLE}: Name of the table to store the list
      *                 of the final nodes reached during the traversal. If this
      *                 value is not given it'll default to
-     *                 adjacency_table+'_nodes'.  The default value is ''.
+     *                 adjacemcy_table+'_nodes'.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
@@ -11521,8 +11570,8 @@ public class GPUdb extends GPUdbBase {
      *                 EXPORT_QUERY_RESULTS}: Returns query results in the
      *                 response. If set to {@code true}, the {@code
      *                 adjacencyListIntArray} (if the query was based on IDs),
-     *                 {@code adjacencyListStringArray} (if the query was based
-     *                 on names), or {@code adjacencyListWktArray} (if the
+     *                 @{adjacency_list_string_array} (if the query was based
+     *                 on names), or @{output_adjacency_list_wkt_array} (if the
      *                 query was based on WKTs) will be populated with the
      *                 results. If set to {@code false}, none of the arrays
      *                 will be populated.
@@ -11682,6 +11731,10 @@ public class GPUdb extends GPUdbBase {
      *                    com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_ADMIN
      *                    SYSTEM_ADMIN}: Full access to all data and system
      *                    functions.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_USER_ADMIN
+     *                    SYSTEM_USER_ADMIN}: Access to administer users and
+     *                    roles that do not have system_admin permission.
      *                            <li> {@link
      *                    com.gpudb.protocol.RevokePermissionSystemRequest.Permission#SYSTEM_WRITE
      *                    SYSTEM_WRITE}: Read and write access to all tables.
@@ -11886,6 +11939,23 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    public ShowGraphGrammarResponse showGraphGrammar(ShowGraphGrammarRequest request) throws GPUdbException {
+        ShowGraphGrammarResponse actualResponse_ = new ShowGraphGrammarResponse();
+        submitRequest("/show/graph/grammar", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public ShowGraphGrammarResponse showGraphGrammar(Map<String, String> options) throws GPUdbException {
+        ShowGraphGrammarRequest actualRequest_ = new ShowGraphGrammarRequest(options);
+        ShowGraphGrammarResponse actualResponse_ = new ShowGraphGrammarResponse();
+        submitRequest("/show/graph/grammar", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
     /**
      * Shows information about a proc.
      * 
@@ -12005,6 +12075,12 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowProcStatusRequest.Options#RUN_TAG
+     *                 RUN_TAG}: Limit statuses to proc instances where a
+     *                 matching run tag was provided to {@link
+     *                 GPUdb#executeProc(String, Map, Map, List, Map, List,
+     *                 Map)}.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

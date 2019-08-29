@@ -1,6 +1,7 @@
 package com.gpudb;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -368,6 +369,71 @@ final class RecordKey {
                 | (calendar.get(Calendar.DAY_OF_WEEK) << 5));
     }
 
+
+
+    /**
+     * Utility function parsing a given string into an unsigned long.
+     * If possible, return true; return false otherwise.
+     */
+    public static boolean isUnsignedLong(String value) {
+        int max_len = 20;
+
+        // Need to have the correct number of characters
+        int str_len = value.length();
+        if ((str_len == 0) || (str_len > max_len)) {
+            return false;
+        }
+
+        // Each character must be a digit
+        for (int i = 0; i < str_len; ++i ) {
+            if ( !Character.isDigit( value.charAt(i) ) ) {
+                return false;
+            }
+        }
+        return true;
+        
+    }
+    
+    public void addUlong(String value) throws GPUdbException {
+        if (value == null) {
+            buffer.putLong(0l);
+            return;
+        }
+
+        // Verify if this is a proper unsigned long value
+        if ( !isUnsignedLong( value ) )
+        {
+            throw new GPUdbException( "Unable to parse string value '" + value
+                                      + "' as an unsigned long" );
+        }
+
+        // Convert the string to an unsigned long value
+        byte[] ulong_bytes = new BigInteger( value ).abs().toByteArray();
+        int byte_count = ulong_bytes.length;
+        int ulong_size = 8;
+
+        // For the max value of unsigned long, the bytes array will have an extra
+        // byte to accommodate the sign bit.  We don't want the sign bit for sharding
+        // anyway.
+        int min_index = 0;
+        if ( byte_count > ulong_size ) {
+            min_index = (byte_count - ulong_size);
+        }
+
+        // Put in the unsigned long (which is in a big endian order)
+        // while skipping any extra byte for the sign bit
+        for (int i = (byte_count-1); i >= min_index; --i ) {
+            buffer.put( ulong_bytes[ i ] );
+        }
+        // Need to pad with zeroes if less than size of a long
+        for (int i = byte_count; i < ulong_size; ++i ) {
+            buffer.put( (byte)0 );
+        }
+
+}
+
+
+    
     public void computeHashes() {
         MurmurHash3.LongPair murmur = new MurmurHash3.LongPair();
         MurmurHash3.murmurhash3_x64_128(buffer.array(), 0, buffer.capacity(), 10, murmur);

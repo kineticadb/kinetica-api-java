@@ -38,6 +38,19 @@ public class CreateUserInternalResponse implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Additional information.
+     * <ul>
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code info}.
+     */
+    public static final class Info {
+
+        private Info() {  }
+    }
+
     private String name;
     private Map<String, String> info;
 
@@ -72,6 +85,9 @@ public class CreateUserInternalResponse implements IndexedRecord {
     /**
      * 
      * @return Additional information.
+     *         <ul>
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getInfo() {
@@ -81,6 +97,9 @@ public class CreateUserInternalResponse implements IndexedRecord {
     /**
      * 
      * @param info  Additional information.
+     *              <ul>
+     *              </ul>
+     *              The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

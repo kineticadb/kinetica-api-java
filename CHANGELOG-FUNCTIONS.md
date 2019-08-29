@@ -3,6 +3,22 @@
 
 ## Version 7.0
 
+### Version 7.0.7.0 - 2019-08-15
+
+#### Added
+- Added "match_supply_demand" valid choice to the /match/graph endpoint's solve_method parameter
+- Added a new option "partial_loading" (default=true) to the /match/graph ebdpoint's options
+- Added 'ulong' property for string type in api /create/type/request json file.
+
+
+### Version 7.0.7.0 - 2019-07-30
+
+
+#### Added
+- Added new no-docs api /show/graph/grammar to be consumed by gadmin.
+- Added new no-api /alter/graph, mainly for cancelling graph jobs 
+  (more functionality will be added later)
+
 ### Version 7.0.6.0 - 2019-07-11
 
 #### Added 

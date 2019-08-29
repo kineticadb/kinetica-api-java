@@ -72,6 +72,11 @@ public class MatchGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_OD_PAIRS
      * MATCH_OD_PAIRS}: Matches {@code samplePoints} to find the most probable
      * path between origin and destination pairs with cost constraints
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SUPPLY_DEMAND
+     * MATCH_SUPPLY_DEMAND}: Matches {@code samplePoints} to optimize
+     * scheduling multiple supplies (trucks) with varying sizes to varying
+     * demand sites with varying capacities per depot
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -104,6 +109,13 @@ public class MatchGraphRequest implements IndexedRecord {
          * origin and destination pairs with cost constraints
          */
         public static final String MATCH_OD_PAIRS = "match_od_pairs";
+
+        /**
+         * Matches {@code samplePoints} to optimize scheduling multiple
+         * supplies (trucks) with varying sizes to varying demand sites with
+         * varying capacities per depot
+         */
+        public static final String MATCH_SUPPLY_DEMAND = "match_supply_demand";
 
         private SolveMethod() {  }
     }
@@ -171,6 +183,21 @@ public class MatchGraphRequest implements IndexedRecord {
      * Optional WKT ending point from {@code samplePoints} for the solver. The
      * default behavior for the endpoint is to use time to determine the
      * destination point.  The default value is 'POINT NULL'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#PARTIAL_LOADING
+     * PARTIAL_LOADING}: For the {@code match_supply_demand} solver only. When
+     * false (non-default), trucks do not off-load at the demand (store) side
+     * if the remainder is less than the store's need
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#TRUE
+     * TRUE}: Partial off loading at multiple store (demand) locations
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     * FALSE}: No partial off loading allowed if supply is less than the
+     * store's demand.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -241,7 +268,16 @@ public class MatchGraphRequest implements IndexedRecord {
          * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
          */
         public static final String DETECT_LOOPS = "detect_loops";
+
+        /**
+         * Partial off loading at multiple store (demand) locations
+         */
         public static final String TRUE = "true";
+
+        /**
+         * No partial off loading allowed if supply is less than the store's
+         * demand.
+         */
         public static final String FALSE = "false";
 
         /**
@@ -257,6 +293,25 @@ public class MatchGraphRequest implements IndexedRecord {
          * the destination point.  The default value is 'POINT NULL'.
          */
         public static final String DESTINATION = "destination";
+
+        /**
+         * For the {@code match_supply_demand} solver only. When false
+         * (non-default), trucks do not off-load at the demand (store) side if
+         * the remainder is less than the store's need
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}: Partial off
+         * loading at multiple store (demand) locations
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}: No
+         * partial off loading allowed if supply is less than the store's
+         * demand.
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+         */
+        public static final String PARTIAL_LOADING = "partial_loading";
 
         private Options() {  }
     }
@@ -324,6 +379,12 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     MATCH_OD_PAIRS}: Matches {@code samplePoints} to
      *                     find the most probable path between origin and
      *                     destination pairs with cost constraints
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SUPPLY_DEMAND
+     *                     MATCH_SUPPLY_DEMAND}: Matches {@code samplePoints}
+     *                     to optimize scheduling multiple supplies (trucks)
+     *                     with varying sizes to varying demand sites with
+     *                     varying capacities per depot
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -414,6 +475,24 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 samplePoints} for the solver. The default behavior for
      *                 the endpoint is to use time to determine the destination
      *                 point.  The default value is 'POINT NULL'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#PARTIAL_LOADING
+     *                 PARTIAL_LOADING}: For the {@code match_supply_demand}
+     *                 solver only. When false (non-default), trucks do not
+     *                 off-load at the demand (store) side if the remainder is
+     *                 less than the store's need
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 Partial off loading at multiple store (demand) locations
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: No partial off loading allowed if supply is less
+     *                 than the store's demand.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -517,6 +596,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *         MATCH_OD_PAIRS}: Matches {@code samplePoints} to find the most
      *         probable path between origin and destination pairs with cost
      *         constraints
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SUPPLY_DEMAND
+     *         MATCH_SUPPLY_DEMAND}: Matches {@code samplePoints} to optimize
+     *         scheduling multiple supplies (trucks) with varying sizes to
+     *         varying demand sites with varying capacities per depot
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -556,6 +640,12 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     MATCH_OD_PAIRS}: Matches {@code samplePoints} to
      *                     find the most probable path between origin and
      *                     destination pairs with cost constraints
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SUPPLY_DEMAND
+     *                     MATCH_SUPPLY_DEMAND}: Matches {@code samplePoints}
+     *                     to optimize scheduling multiple supplies (trucks)
+     *                     with varying sizes to varying demand sites with
+     *                     varying capacities per depot
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -684,6 +774,24 @@ public class MatchGraphRequest implements IndexedRecord {
      *         samplePoints} for the solver. The default behavior for the
      *         endpoint is to use time to determine the destination point.  The
      *         default value is 'POINT NULL'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#PARTIAL_LOADING
+     *         PARTIAL_LOADING}: For the {@code match_supply_demand} solver
+     *         only. When false (non-default), trucks do not off-load at the
+     *         demand (store) side if the remainder is less than the store's
+     *         need
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}: Partial
+     *         off loading at multiple store (demand) locations
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}: No
+     *         partial off loading allowed if supply is less than the store's
+     *         demand.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -766,6 +874,24 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 samplePoints} for the solver. The default behavior for
      *                 the endpoint is to use time to determine the destination
      *                 point.  The default value is 'POINT NULL'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#PARTIAL_LOADING
+     *                 PARTIAL_LOADING}: For the {@code match_supply_demand}
+     *                 solver only. When false (non-default), trucks do not
+     *                 off-load at the demand (store) side if the remainder is
+     *                 less than the store's need
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 Partial off loading at multiple store (demand) locations
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: No partial off loading allowed if supply is less
+     *                 than the store's demand.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

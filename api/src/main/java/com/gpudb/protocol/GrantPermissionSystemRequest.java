@@ -50,6 +50,10 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
      * com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_ADMIN
      * SYSTEM_ADMIN}: Full access to all data and system functions.
      *         <li> {@link
+     * com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_USER_ADMIN
+     * SYSTEM_USER_ADMIN}: Access to administer users and roles that do not
+     * have system_admin permission.
+     *         <li> {@link
      * com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_WRITE
      * SYSTEM_WRITE}: Read and write access to all tables.
      *         <li> {@link
@@ -64,6 +68,12 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
          * Full access to all data and system functions.
          */
         public static final String SYSTEM_ADMIN = "system_admin";
+
+        /**
+         * Access to administer users and roles that do not have system_admin
+         * permission.
+         */
+        public static final String SYSTEM_USER_ADMIN = "system_user_admin";
 
         /**
          * Read and write access to all tables.
@@ -106,6 +116,10 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
      *                    com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_ADMIN
      *                    SYSTEM_ADMIN}: Full access to all data and system
      *                    functions.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_USER_ADMIN
+     *                    SYSTEM_USER_ADMIN}: Access to administer users and
+     *                    roles that do not have system_admin permission.
      *                            <li> {@link
      *                    com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_WRITE
      *                    SYSTEM_WRITE}: Read and write access to all tables.
@@ -155,6 +169,10 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
      *         com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_ADMIN
      *         SYSTEM_ADMIN}: Full access to all data and system functions.
      *                 <li> {@link
+     *         com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_USER_ADMIN
+     *         SYSTEM_USER_ADMIN}: Access to administer users and roles that do
+     *         not have system_admin permission.
+     *                 <li> {@link
      *         com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_WRITE
      *         SYSTEM_WRITE}: Read and write access to all tables.
      *                 <li> {@link
@@ -176,6 +194,10 @@ public class GrantPermissionSystemRequest implements IndexedRecord {
      *                    com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_ADMIN
      *                    SYSTEM_ADMIN}: Full access to all data and system
      *                    functions.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_USER_ADMIN
+     *                    SYSTEM_USER_ADMIN}: Access to administer users and
+     *                    roles that do not have system_admin permission.
      *                            <li> {@link
      *                    com.gpudb.protocol.GrantPermissionSystemRequest.Permission#SYSTEM_WRITE
      *                    SYSTEM_WRITE}: Read and write access to all tables.

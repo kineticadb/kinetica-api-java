@@ -82,6 +82,12 @@ public class ExecuteProcRequest implements IndexedRecord {
      * KiFS files, local or not, are also accessible through the file system
      * below the KiFS mount point.) Each name specified must the name of an
      * existing KiFS directory.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteProcRequest.Options#RUN_TAG RUN_TAG}: A string
+     * that, if not empty, can be used in subsequent calls to {@link
+     * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} or {@link
+     * com.gpudb.GPUdb#killProc(KillProcRequest)} to identify the proc
+     * instance.  The default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -124,6 +130,14 @@ public class ExecuteProcRequest implements IndexedRecord {
          * existing KiFS directory.  The default value is ''.
          */
         public static final String KIFS_INPUT_DIRS = "kifs_input_dirs";
+
+        /**
+         * A string that, if not empty, can be used in subsequent calls to
+         * {@link com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} or
+         * {@link com.gpudb.GPUdb#killProc(KillProcRequest)} to identify the
+         * proc instance.  The default value is ''.
+         */
+        public static final String RUN_TAG = "run_tag";
 
         private Options() {  }
     }
@@ -228,6 +242,13 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                 system below the KiFS mount point.) Each name specified
      *                 must the name of an existing KiFS directory.  The
      *                 default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#RUN_TAG
+     *                 RUN_TAG}: A string that, if not empty, can be used in
+     *                 subsequent calls to {@link
+     *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}
+     *                 or {@link com.gpudb.GPUdb#killProc(KillProcRequest)} to
+     *                 identify the proc instance.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -458,6 +479,12 @@ public class ExecuteProcRequest implements IndexedRecord {
      *         accessible through the file system below the KiFS mount point.)
      *         Each name specified must the name of an existing KiFS directory.
      *         The default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteProcRequest.Options#RUN_TAG RUN_TAG}:
+     *         A string that, if not empty, can be used in subsequent calls to
+     *         {@link com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} or
+     *         {@link com.gpudb.GPUdb#killProc(KillProcRequest)} to identify
+     *         the proc instance.  The default value is ''.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -507,6 +534,13 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                 system below the KiFS mount point.) Each name specified
      *                 must the name of an existing KiFS directory.  The
      *                 default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#RUN_TAG
+     *                 RUN_TAG}: A string that, if not empty, can be used in
+     *                 subsequent calls to {@link
+     *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}
+     *                 or {@link com.gpudb.GPUdb#killProc(KillProcRequest)} to
+     *                 identify the proc instance.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

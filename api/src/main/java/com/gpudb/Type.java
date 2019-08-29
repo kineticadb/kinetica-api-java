@@ -92,6 +92,7 @@ public final class Type implements Serializable {
             CHAR128,
             CHAR256,
             IPV4,
+            ULONG,
             WKT,
             // Bytes sub-types
             WKB
@@ -253,6 +254,8 @@ public final class Type implements Serializable {
                 columnType = ColumnType.CHAR256;
             } else if ( properties.contains( ColumnProperty.IPV4 ) ) {
                 columnType = ColumnType.IPV4;
+            } else if ( properties.contains( ColumnProperty.ULONG ) ) {
+                columnType = ColumnType.ULONG;
             } else if ( properties.contains( ColumnProperty.WKT ) ) {
                 // Decide if it's WKT or WKB based on the base type
                 if ( columnType == ColumnType.STRING ) {

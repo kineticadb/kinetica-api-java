@@ -481,14 +481,10 @@ public class BulkInserter<T> {
             // Couldn't get the current shard assignment info; see if this is due
             // to cluster failure
             if ( ex.hadConnectionFailure() ) {
-                // Check if the db client has failed over to a different HA ring node
-                int _numClusterSwitches = this.gpudb.getNumClusterSwitches();
-                if ( this.numClusterSwitches == _numClusterSwitches ) {
-                    return false; // nothing to do; some other problem occurred
-                }
-
-                // Update the HA ring node switch counter
-                this.numClusterSwitches = _numClusterSwitches;
+                // Could not update the worker queues because we can't connect
+                // to the database
+                return false;
+                
             } else {
                 // Unknown errors not handled here
                 throw ex;
@@ -787,22 +783,29 @@ public class BulkInserter<T> {
      *
      * @param record  the record to insert
      *
+     * @throws GPUdbException if an error occurs while calculating shard/primary keys
      * @throws InsertException if an error occurs while inserting
      */
-    public void insert(T record) throws InsertException {
+    public void insert(T record) throws GPUdbException, InsertException {
         RecordKey primaryKey;
         RecordKey shardKey;
 
-        if (primaryKeyBuilder != null) {
-            primaryKey = primaryKeyBuilder.build(record);
-        } else {
-            primaryKey = null;
-        }
+        try {
+            if (primaryKeyBuilder != null) {
+                primaryKey = primaryKeyBuilder.build( record );
+            } else {
+                primaryKey = null;
+            }
 
-        if (shardKeyBuilder != null) {
-            shardKey = shardKeyBuilder.build(record);
-        } else {
-            shardKey = primaryKey;
+            if (shardKeyBuilder != null) {
+                shardKey = shardKeyBuilder.build( record );
+            } else {
+                shardKey = primaryKey;
+            }
+        } catch (GPUdbException ex) {
+            List<T> queuedRecord = new ArrayList<>();
+            queuedRecord.add( record );
+            throw new GPUdbException( "Unable to calculate shard/primary key; please check data for unshardable values");
         }
 
         WorkerQueue<T> workerQueue;
@@ -850,7 +853,7 @@ public class BulkInserter<T> {
      * @throws InsertException if an error occurs while inserting
      */
     @SuppressWarnings("unchecked")
-    public void insert(List<T> records) throws InsertException {
+    public void insert(List<T> records) throws GPUdbException, InsertException {
         for (int i = 0; i < records.size(); ++i) {
             try {
                 insert(records.get(i));

@@ -5,35 +5,11 @@ import java.util.List;
 import org.apache.avro.generic.IndexedRecord;
 
 final class RecordKeyBuilder<T> {
-    private static enum ColumnType {
-        CHAR1,
-        CHAR2,
-        CHAR4,
-        CHAR8,
-        CHAR16,
-        CHAR32,
-        CHAR64,
-        CHAR128,
-        CHAR256,
-        DATE,
-        DATETIME,
-        DECIMAL,
-        DOUBLE,
-        FLOAT,
-        INT,
-        INT8,
-        INT16,
-        IPV4,
-        LONG,
-        STRING,
-        TIME,
-        TIMESTAMP
-    }
 
     private final TypeObjectMap<T> typeObjectMap;
     private final List<Integer> columns;
     private final List<String> columnNames;
-    private final List<ColumnType> columnTypes;
+    private final List<Type.Column.ColumnType> columnTypes;
     private final int bufferSize;
 
     public RecordKeyBuilder(boolean primaryKey, Type type) {
@@ -100,90 +76,191 @@ final class RecordKeyBuilder<T> {
         int size = 0;
 
         for (int i : columns) {
-            Type.Column typeColumn = typeColumns.get(i);
-            columnNames.add(typeColumn.getName());
+            Type.Column column = typeColumns.get(i);
+            columnNames.add( column.getName() );
 
-            if (typeColumn.getType() == Double.class) {
-                columnTypes.add(ColumnType.DOUBLE);
-                size += 8;
-            } else if (typeColumn.getType() == Float.class) {
-                columnTypes.add(ColumnType.FLOAT);
-                size += 4;
-            } else if (typeColumn.getType() == Integer.class) {
-                if (typeColumn.getProperties().contains(ColumnProperty.INT8)) {
-                    columnTypes.add(ColumnType.INT8);
-                    size += 1;
-                } else if (typeColumn.getProperties().contains(ColumnProperty.INT16)) {
-                    columnTypes.add(ColumnType.INT16);
-                    size += 2;
-                } else {
-                    columnTypes.add(ColumnType.INT);
+            switch ( column.getColumnType() ) {
+                case DOUBLE:
+                    columnTypes.add( Type.Column.ColumnType.DOUBLE );
+                    size += 8;
+                    break;
+                case FLOAT:
+                    columnTypes.add( Type.Column.ColumnType.FLOAT );
                     size += 4;
-                }
-            } else if (typeColumn.getType() == Long.class) {
-                if (typeColumn.getProperties().contains(ColumnProperty.TIMESTAMP)) {
-                    columnTypes.add(ColumnType.TIMESTAMP);
-                    size += 8;
-                } else {
-                    columnTypes.add(ColumnType.LONG);
-                    size += 8;
-                }
-            } else if (typeColumn.getType() == String.class) {
-                if (typeColumn.getProperties().contains(ColumnProperty.CHAR1)) {
-                    columnTypes.add(ColumnType.CHAR1);
-                    size += 1;
-                } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR2)) {
-                    columnTypes.add(ColumnType.CHAR2);
-                    size += 2;
-                } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR4)) {
-                    columnTypes.add(ColumnType.CHAR4);
+                    break;
+                case INTEGER:
+                    columnTypes.add( Type.Column.ColumnType.INTEGER );
                     size += 4;
-                } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR8)) {
-                    columnTypes.add(ColumnType.CHAR8);
+                    break;
+                case INT8:
+                    columnTypes.add( Type.Column.ColumnType.INT8 );
+                    size += 1;
+                    break;
+                case INT16:
+                    columnTypes.add( Type.Column.ColumnType.INT16 );
+                    size += 2;
+                    break;
+                case LONG:
+                    columnTypes.add( Type.Column.ColumnType.LONG );
                     size += 8;
-                } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR16)) {
-                    columnTypes.add(ColumnType.CHAR16);
+                    break;
+                case TIMESTAMP:
+                    columnTypes.add( Type.Column.ColumnType.TIMESTAMP );
+                    size += 8;
+                    break;
+                case CHAR1:
+                    columnTypes.add( Type.Column.ColumnType.CHAR1 );
+                    size += 1;
+                    break;
+                case CHAR2:
+                    columnTypes.add( Type.Column.ColumnType.CHAR2 );
+                    size += 2;
+                    break;
+                case CHAR4:
+                    columnTypes.add( Type.Column.ColumnType.CHAR4 );
+                    size += 4;
+                    break;
+                case CHAR8:
+                    columnTypes.add( Type.Column.ColumnType.CHAR8 );
+                    size += 8;
+                    break;
+                case CHAR16:
+                    columnTypes.add( Type.Column.ColumnType.CHAR16 );
                     size += 16;
-                } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR32)) {
-                    columnTypes.add(ColumnType.CHAR32);
+                    break;
+                case CHAR32:
+                    columnTypes.add( Type.Column.ColumnType.CHAR32 );
                     size += 32;
-                } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR64)) {
-                    columnTypes.add(ColumnType.CHAR64);
+                    break;
+                case CHAR64:
+                    columnTypes.add( Type.Column.ColumnType.CHAR64 );
                     size += 64;
-                } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR128)) {
-                    columnTypes.add(ColumnType.CHAR128);
+                    break;
+                case CHAR128:
+                    columnTypes.add( Type.Column.ColumnType.CHAR128 );
                     size += 128;
-                } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR256)) {
-                    columnTypes.add(ColumnType.CHAR256);
+                    break;
+                case CHAR256:
+                    columnTypes.add( Type.Column.ColumnType.CHAR256 );
                     size += 256;
-                } else if (typeColumn.getProperties().contains(ColumnProperty.DATE)) {
-                    columnTypes.add(ColumnType.DATE);
+                    break;
+                case DATE:
+                    columnTypes.add( Type.Column.ColumnType.DATE );
                     size += 4;
-                } else if (typeColumn.getProperties().contains(ColumnProperty.DATETIME)) {
-                    columnTypes.add(ColumnType.DATETIME);
+                    break;
+                case DATETIME:
+                    columnTypes.add( Type.Column.ColumnType.DATETIME );
                     size += 8;
-                } else if (typeColumn.getProperties().contains(ColumnProperty.DECIMAL)) {
-                    columnTypes.add(ColumnType.DECIMAL);
+                    break;
+                case DECIMAL:
+                    columnTypes.add( Type.Column.ColumnType.DECIMAL );
                     size += 8;
-                } else if (typeColumn.getProperties().contains(ColumnProperty.IPV4)) {
-                    columnTypes.add(ColumnType.IPV4);
+                    break;
+                case TIME:
+                    columnTypes.add( Type.Column.ColumnType.TIME );
                     size += 4;
-                } else if (typeColumn.getProperties().contains(ColumnProperty.TIME)) {
-                    columnTypes.add(ColumnType.TIME);
+                    break;
+                case IPV4:
+                    columnTypes.add( Type.Column.ColumnType.IPV4 );
                     size += 4;
-                } else {
-                    columnTypes.add(ColumnType.STRING);
+                    break;
+                case ULONG:
+                    columnTypes.add( Type.Column.ColumnType.ULONG );
                     size += 8;
-                }
-            } else {
-                throw new IllegalArgumentException("Cannot use column " + typeColumn.getName() + " as a key.");
+                    break;
+                case STRING:
+                    columnTypes.add( Type.Column.ColumnType.STRING );
+                    size += 8;
+                    break;
+                default:
+                    // WKT, WKB, and bytes are not allowed for sharding
+                    throw new IllegalArgumentException( "Cannot use column " + column.getName()
+                                                        + " as a key; type/property '"
+                                                        + column.getType() );
             }
+
+
+            // if (typeColumn.getType() == Double.class) {
+            //     columnTypes.add(ColumnType.DOUBLE);
+            //     size += 8;
+            // } else if (typeColumn.getType() == Float.class) {
+            //     columnTypes.add(ColumnType.FLOAT);
+            //     size += 4;
+            // } else if (typeColumn.getType() == Integer.class) {
+            //     if (typeColumn.getProperties().contains(ColumnProperty.INT8)) {
+            //         columnTypes.add(ColumnType.INT8);
+            //         size += 1;
+            //     } else if (typeColumn.getProperties().contains(ColumnProperty.INT16)) {
+            //         columnTypes.add(ColumnType.INT16);
+            //         size += 2;
+            //     } else {
+            //         columnTypes.add(ColumnType.INT);
+            //         size += 4;
+            //     }
+            // } else if (typeColumn.getType() == Long.class) {
+            //     if (typeColumn.getProperties().contains(ColumnProperty.TIMESTAMP)) {
+            //         columnTypes.add(ColumnType.TIMESTAMP);
+            //         size += 8;
+            //     } else {
+            //         columnTypes.add(ColumnType.LONG);
+            //         size += 8;
+            //     }
+            // } else if (typeColumn.getType() == String.class) {
+            //     if (typeColumn.getProperties().contains(ColumnProperty.CHAR1)) {
+            //         columnTypes.add(ColumnType.CHAR1);
+            //         size += 1;
+            //     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR2)) {
+            //         columnTypes.add(ColumnType.CHAR2);
+            //         size += 2;
+            //     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR4)) {
+            //         columnTypes.add(ColumnType.CHAR4);
+            //         size += 4;
+            //     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR8)) {
+            //         columnTypes.add(ColumnType.CHAR8);
+            //         size += 8;
+            //     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR16)) {
+            //         columnTypes.add(ColumnType.CHAR16);
+            //         size += 16;
+            //     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR32)) {
+            //         columnTypes.add(ColumnType.CHAR32);
+            //         size += 32;
+            //     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR64)) {
+            //         columnTypes.add(ColumnType.CHAR64);
+            //         size += 64;
+            //     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR128)) {
+            //         columnTypes.add(ColumnType.CHAR128);
+            //         size += 128;
+            //     } else if (typeColumn.getProperties().contains(ColumnProperty.CHAR256)) {
+            //         columnTypes.add(ColumnType.CHAR256);
+            //         size += 256;
+            //     } else if (typeColumn.getProperties().contains(ColumnProperty.DATE)) {
+            //         columnTypes.add(ColumnType.DATE);
+            //         size += 4;
+            //     } else if (typeColumn.getProperties().contains(ColumnProperty.DATETIME)) {
+            //         columnTypes.add(ColumnType.DATETIME);
+            //         size += 8;
+            //     } else if (typeColumn.getProperties().contains(ColumnProperty.DECIMAL)) {
+            //         columnTypes.add(ColumnType.DECIMAL);
+            //         size += 8;
+            //     } else if (typeColumn.getProperties().contains(ColumnProperty.IPV4)) {
+            //         columnTypes.add(ColumnType.IPV4);
+            //         size += 4;
+            //     } else if (typeColumn.getProperties().contains(ColumnProperty.TIME)) {
+            //         columnTypes.add(ColumnType.TIME);
+            //         size += 4;
+            //     } else {
+            //         columnTypes.add(ColumnType.STRING);
+            //         size += 8;
+            //     }
+            // } else {
+            //     throw new IllegalArgumentException("Cannot use column " + typeColumn.getName() + " as a key.");
+            // }
         }
 
         this.bufferSize = size;
     }
 
-    private void addValue(RecordKey key, int column, Object value) {
+    private void addValue(RecordKey key, int column, Object value) throws GPUdbException {
         switch (columnTypes.get(column)) {
             case CHAR1:
                 key.addChar((String)value, 1);
@@ -241,7 +318,7 @@ final class RecordKeyBuilder<T> {
                 key.addFloat((Float)value);
                 break;
 
-            case INT:
+            case INTEGER:
                 key.addInt((Integer)value);
                 break;
 
@@ -272,10 +349,14 @@ final class RecordKeyBuilder<T> {
             case TIMESTAMP:
                 key.addTimestamp((Long)value);
                 break;
+
+            case ULONG:
+                key.addUlong((String)value);
+                break;
         }
     }
 
-    public RecordKey build(T object) {
+    public RecordKey build(T object) throws GPUdbException {
         if (bufferSize == 0) {
             return null;
         }
@@ -302,7 +383,7 @@ final class RecordKeyBuilder<T> {
         return key;
     }
 
-    public RecordKey build(List<Object> values) {
+    public RecordKey build(List<Object> values) throws GPUdbException {
         if (bufferSize == 0) {
             return null;
         }
@@ -321,7 +402,7 @@ final class RecordKeyBuilder<T> {
         return key;
     }
 
-    public String buildExpression(List<Object> values) {
+    public String buildExpression(List<Object> values) throws GPUdbException {
         if (bufferSize == 0) {
             return null;
         }
@@ -368,6 +449,20 @@ final class RecordKeyBuilder<T> {
                     result.append("\"");
                     break;
 
+                case ULONG:
+                    String value = (String)values.get(i);
+                    // Need to verify if the string is an actual unsigned long value
+                    if ( !RecordKey.isUnsignedLong( value ) )
+                    {
+                        throw new GPUdbException( "Unable to parse string value '" + value
+                                                  + "' as an unsigned long while building expression" );
+                    }
+
+                    // For querying purposes, unsigned long values are treated
+                    // as numbers, not strings
+                    result.append( value );
+                    break;
+
                 case DOUBLE:
                     result.append(Double.toString((Double)values.get(i)));
                     break;
@@ -376,7 +471,7 @@ final class RecordKeyBuilder<T> {
                     result.append(Float.toString((Float)values.get(i)));
                     break;
 
-                case INT:
+                case INTEGER:
                 case INT8:
                 case INT16:
                     result.append(Integer.toString((Integer)values.get(i)));

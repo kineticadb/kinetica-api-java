@@ -62,6 +62,11 @@ public class ShowProcStatusRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ShowProcStatusRequest.Options#RUN_TAG RUN_TAG}: Limit
+     * statuses to proc instances where a matching run tag was provided to
+     * {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The default
+     * value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -85,6 +90,13 @@ public class ShowProcStatusRequest implements IndexedRecord {
         public static final String CLEAR_COMPLETE = "clear_complete";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * Limit statuses to proc instances where a matching run tag was
+         * provided to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
+         * The default value is ''.
+         */
+        public static final String RUN_TAG = "run_tag";
 
         private Options() {  }
     }
@@ -129,6 +141,12 @@ public class ShowProcStatusRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowProcStatusRequest.Options#RUN_TAG
+     *                 RUN_TAG}: Limit statuses to proc instances where a
+     *                 matching run tag was provided to {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The
+     *                 default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -186,6 +204,12 @@ public class ShowProcStatusRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowProcStatusRequest.Options#RUN_TAG
+     *         RUN_TAG}: Limit statuses to proc instances where a matching run
+     *         tag was provided to {@link
+     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The default
+     *         value is ''.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -216,6 +240,12 @@ public class ShowProcStatusRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowProcStatusRequest.Options#RUN_TAG
+     *                 RUN_TAG}: Limit statuses to proc instances where a
+     *                 matching run tag was provided to {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The
+     *                 default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

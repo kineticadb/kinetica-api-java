@@ -516,7 +516,13 @@ public class RecordRetriever<T> {
         try {
             if ( this.isMultiHeadEnabled && (routingTable != null) ) {
                 // Get from the worker rank
-                RecordKey shardKey = shardKeyBuilder.build(keyValues);
+                RecordKey shardKey;
+                try {
+                    shardKey = shardKeyBuilder.build(keyValues);
+                } catch (GPUdbException ex) {
+                    throw new GPUdbException( "Unable to calculate the shard value; please check data for unshardable values");
+                }
+                    
                 URL url = workerUrls.get(shardKey.route(routingTable));
                 response = gpudb.submitRequest(url, request, response, false);
             } else {

@@ -649,7 +649,16 @@ public abstract class GPUdbBase {
     private static final String DB_EXITING_ERROR_MESSAGE            = "Kinetica is exiting";
     private static final String DB_SYSTEM_LIMITED_ERROR_MESSAGE     = "system-limited-fatal";
 
-    protected static final String HA_SYNC_MODE = "ha_sync_mode";
+    // Internally used headers (make sure to add them to PROTECTED_HEADERS
+    protected static final String HEADER_HA_SYNC_MODE  = "ha_sync_mode";
+    protected static final String HEADER_AUTHORIZATION = "Authorization";
+    protected static final String HEADER_CONTENT_TYPE  = "Content-type";
+
+    // Headers that are prt
+    protected static final String[] PROTECTED_HEADERS = new String[]{ HEADER_HA_SYNC_MODE,
+                                                                      HEADER_AUTHORIZATION,
+                                                                      HEADER_CONTENT_TYPE
+    };
     
     // Fields
 
@@ -756,15 +765,13 @@ public abstract class GPUdbBase {
         this.timeout     = options.getTimeout();
 
         // The headers must be set before any call can be made
-        Map<String, String> tempHttpHeaders = new HashMap<>();
+        httpHeaders = new HashMap<>();
 
         for (Map.Entry<String, String> entry : options.getHttpHeaders().entrySet()) {
             if (entry.getKey() != null && entry.getValue() != null) {
-                tempHttpHeaders.put(entry.getKey(), entry.getValue());
+                httpHeaders.put(entry.getKey(), entry.getValue());
             }
         }
-
-        httpHeaders = Collections.unmodifiableMap(tempHttpHeaders);
 
         // Initialize the caches for table types
         knownTypeObjectMaps = new ConcurrentHashMap<>(16, 0.75f, 1);
@@ -986,6 +993,78 @@ public abstract class GPUdbBase {
         return timeout;
     }
 
+
+
+    /**
+     * Adds an HTTP header to the map of additional HTTP headers to send to
+     * GPUdb with each request. If the header is already in the map, its
+     * value is replaced with the specified value.  The user is not allowed
+     * to modify the following headers:
+     * <ul>
+     *    <li> Authorization
+     *    <li> ha_sync_mode
+     *    <li> Content-type
+     * </ul>
+     *
+     * @param header  the HTTP header (cannot be null)
+     * @param value   the value of the HTTP header (cannot be null)
+     *
+     * @see #getHttpHeaders()
+     * @see #removeHttpHeader(String)
+     */
+    public void addHttpHeader(String header, String value) throws GPUdbException {
+        // Check for nulls (not allowed)
+        if ( (header == null) || (value == null) ) {
+            throw new GPUdbException( "'null' not allowed for either header or value!" );
+        }
+        
+        // Ensure that the given header is not a protecte header
+        for ( int i = 0; i < PROTECTED_HEADERS.length; ++i ) {
+            if ( header == PROTECTED_HEADERS[ i ] ) {
+                throw new GPUdbException( "Not allowed to change proteced header: "
+                                          + header );
+            }
+        }
+        
+        this.httpHeaders.put(header, value);
+        return;
+    }
+
+
+    /**
+     * Removes the given HTTP header from the map of additional HTTP headers to
+     * send to GPUdb with each request. The user is not allowed
+     * to remove the following headers:
+     * <ul>
+     *    <li> Authorization
+     *    <li> ha_sync_mode
+     *    <li> Content-type
+     * </ul>
+     *
+     * @param header  the HTTP header (cannot be null)
+     *
+     * @see #getHttpHeaders()
+     * @see #addHttpHeader(String, String)
+     */
+    public void removeHttpHeader(String header) throws GPUdbException {
+        // Check for nulls (not allowed)
+        if ( header == null) {
+            throw new GPUdbException( "Need a non-null value for the header; null given!" );
+        }
+        
+        // Ensure that the given header is not a protecte header
+        for ( int i = 0; i < PROTECTED_HEADERS.length; ++i ) {
+            if ( header == PROTECTED_HEADERS[ i ] ) {
+                throw new GPUdbException( "Not allowed to remove proteced header: "
+                                          + header );
+            }
+        }
+        
+        this.httpHeaders.remove( header );
+        return;
+    }
+
+
     
     /**
      * Sets the current high availability synchronicity override mode.
@@ -1168,16 +1247,16 @@ public abstract class GPUdbBase {
         connection.setDoOutput(true);
 
         // Set the user defined headers
-        for (Map.Entry<String, String> entry : httpHeaders.entrySet()) {
+        for (Map.Entry<String, String> entry : this.httpHeaders.entrySet()) {
             connection.setRequestProperty(entry.getKey(), entry.getValue());
         }
 
         // Set the sync mode header
-        connection.setRequestProperty( HA_SYNC_MODE, this.haSyncMode.getMode() );
+        connection.setRequestProperty( HEADER_HA_SYNC_MODE, this.haSyncMode.getMode() );
 
         // Set the authorization header
         if (authorization != null) {
-            connection.setRequestProperty ("Authorization", authorization);
+            connection.setRequestProperty (HEADER_AUTHORIZATION, authorization);
         }
 
         return connection;
@@ -1944,7 +2023,7 @@ public abstract class GPUdbBase {
             if (enableCompression && useSnappy) {
                 byte[] encodedRequest = Snappy.compress(Avro.encode(request).array());
                 requestSize = encodedRequest.length;
-                connection.setRequestProperty("Content-type", "application/x-snappy");
+                connection.setRequestProperty( HEADER_CONTENT_TYPE, "application/x-snappy" );
                 connection.setFixedLengthStreamingMode(requestSize);
 
                 try (OutputStream outputStream = connection.getOutputStream()) {
@@ -1953,7 +2032,7 @@ public abstract class GPUdbBase {
             } else {
                 byte[] encodedRequest = Avro.encode(request).array();
                 requestSize = encodedRequest.length;
-                connection.setRequestProperty("Content-type", "application/octet-stream");
+                connection.setRequestProperty( HEADER_CONTENT_TYPE, "application/octet-stream" );
                 connection.setFixedLengthStreamingMode(requestSize);
 
                 try (OutputStream outputStream = connection.getOutputStream()) {
@@ -1961,7 +2040,7 @@ public abstract class GPUdbBase {
                 }
 
                 /*
-                connection.setRequestProperty("Content-type", "application/octet-stream");
+                connection.setRequestProperty(HEADER_CONTENT_TYPE, "application/octet-stream");
                 connection.setChunkedStreamingMode(1024);
 
                 try (OutputStream outputStream = connection.getOutputStream()) {

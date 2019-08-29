@@ -2,6 +2,24 @@
 
 ## Version 7.0
 
+### Version 7.0.7.0 - 2019-08-28
+
+#### Added
+-   Support for adding and removing custom headers to the GPUdb object.  See
+    methods:
+    -   GPUdb.addHttpHeader(String, String)
+    -   GPUdb.removeHttpHeader(String)
+-   Support for new column property 'ulong' to multi-head I/O.  ***Compatible
+    with Kinetica Server version 7.0.7.0 and later only.***
+
+#### Fixed
+-   A stack overflow bug in an edge case of high availability failover for
+    multi-head ingestion.
+
+#### Server Version Compatibilty
+-   Kinetica 7.0.7.0 and later
+
+
 ### Version 7.0.6.1 - 2019-08-13
 
 #### Changed
