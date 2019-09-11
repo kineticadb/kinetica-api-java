@@ -786,7 +786,7 @@ public class BulkInserter<T> {
      * @throws GPUdbException if an error occurs while calculating shard/primary keys
      * @throws InsertException if an error occurs while inserting
      */
-    public void insert(T record) throws GPUdbException, InsertException {
+    public void insert(T record) throws InsertException {
         RecordKey primaryKey;
         RecordKey shardKey;
 
@@ -805,7 +805,8 @@ public class BulkInserter<T> {
         } catch (GPUdbException ex) {
             List<T> queuedRecord = new ArrayList<>();
             queuedRecord.add( record );
-            throw new GPUdbException( "Unable to calculate shard/primary key; please check data for unshardable values");
+            throw new InsertException( (URL)null, queuedRecord,
+                                       "Unable to calculate shard/primary key; please check data for unshardable values" );
         }
 
         WorkerQueue<T> workerQueue;
@@ -853,7 +854,7 @@ public class BulkInserter<T> {
      * @throws InsertException if an error occurs while inserting
      */
     @SuppressWarnings("unchecked")
-    public void insert(List<T> records) throws GPUdbException, InsertException {
+    public void insert(List<T> records) throws InsertException {
         for (int i = 0; i < records.size(); ++i) {
             try {
                 insert(records.get(i));

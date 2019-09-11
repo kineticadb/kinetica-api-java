@@ -2,6 +2,14 @@
 
 ## Version 7.0
 
+### Version 7.0.7.1 - 2019-09-11
+
+#### Added
+-   An option to GPUdb.Options for bypassing SSL certificate verification
+    for HTTPS connections.  Obtained by and set by Options.getBypassSslCertCheck()
+    and Options.setBypassSslCertCheck(boolean) methods.
+
+
 ### Version 7.0.7.0 - 2019-08-28
 
 #### Added

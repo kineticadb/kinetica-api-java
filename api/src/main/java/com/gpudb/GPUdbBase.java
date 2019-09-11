@@ -6,6 +6,7 @@ import com.gpudb.protocol.ShowTableRequest;
 import com.gpudb.protocol.ShowTableResponse;
 import com.gpudb.protocol.ShowTypesRequest;
 import com.gpudb.protocol.ShowTypesResponse;
+import com.gpudb.util.ssl.X509TrustManagerBypass;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +32,8 @@ import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.xerial.snappy.Snappy;
+
+
 
 /**
  * Base class for the GPUdb API that provides general functionality not specific
@@ -48,6 +52,7 @@ public abstract class GPUdbBase {
         private String username;
         private String password;
         private boolean useSnappy = true;
+        private boolean bypassSslCertCheck = false;
         private int threadCount = 1;
         private ExecutorService executor;
         private Map<String, String> httpHeaders = new HashMap<>();
@@ -98,6 +103,18 @@ public abstract class GPUdbBase {
          */
         public boolean getUseSnappy() {
             return useSnappy;
+        }
+
+        /**
+         * Gets the value of the flag indicating whether to verify the SSL
+         * certificate for HTTPS connections.
+         *
+         * @return  the value of the SSL certificate verification bypass flag
+         *
+         * @see #setBypassSslCertCheck(boolean)
+         */
+        public boolean getBypassSslCertCheck() {
+            return this.bypassSslCertCheck;
         }
 
         /**
@@ -240,6 +257,24 @@ public abstract class GPUdbBase {
          */
         public Options setUseSnappy(boolean value) {
             useSnappy = value;
+            return this;
+        }
+
+        /**
+         * Sets the flag indicating whether to verify the SSL certificate for
+         * HTTPS connections.  If {@code true}, then the SSL certificate sent
+         * by the server during HTTPS connection handshake will not be verified;
+         * the public key sent by the server will be blindly trusted and used
+         * to encrypt the packets.  The default is {@code false}.
+         *
+         * @param value  the value of the SSL certificate verification bypass
+         *               flag
+         * @return       the current {@link Options} instance
+         *
+         * @see #getBypassSslCertCheck()
+         */
+        public Options setBypassSslCertCheck(boolean value) {
+            this.bypassSslCertCheck = value;
             return this;
         }
 
@@ -674,6 +709,7 @@ public abstract class GPUdbBase {
     private String password;
     private String authorization;
     private boolean useSnappy;
+    private boolean bypassSslCertCheck;
     private int threadCount;
     private ExecutorService executor;
     private Map<String, String> httpHeaders;
@@ -764,6 +800,18 @@ public abstract class GPUdbBase {
         this.executor    = options.getExecutor();
         this.timeout     = options.getTimeout();
 
+        // Handle SSL certificate verification bypass for HTTPS connections
+        this.bypassSslCertCheck = options.getBypassSslCertCheck();
+        if ( this.bypassSslCertCheck ) {
+            // This bypass works only for HTTPS connections
+            try {
+                X509TrustManagerBypass.install();
+            } catch (GeneralSecurityException ex) {
+                // Not doing anything about it since we're trying to bypass
+                // to reduce distractions anyway
+            }
+        }
+            
         // The headers must be set before any call can be made
         httpHeaders = new HashMap<>();
 
@@ -2056,46 +2104,72 @@ public abstract class GPUdbBase {
                 */
             }
 
-            try (InputStream inputStream = connection.getResponseCode() < 400 ? connection.getInputStream() : connection.getErrorStream()) {
-                if (inputStream == null) {
-                    // Some error occurred during the submission process
-                    String message = ("Server returned HTTP " + connection.getResponseCode() + " (" + connection.getResponseMessage() + ").");
-                    throw new SubmitException(url, request, requestSize, message);
+            int response_code = connection.getResponseCode();
+
+            // Ensure that we're not getting any html snippet (may be
+            // returned by the HTTPD server)
+            if ( connection.getContentType().startsWith( "text" ) ) {
+                String responseMsg = connection.getResponseMessage();
+                
+                String errorMsg;
+                if (response_code == 401) {
+                    errorMsg = ("Unauthorized access: '"
+                                + responseMsg + "'");
+                } else {
+                    errorMsg = ("Cannot parse response from server: '"
+                                + responseMsg + "'");
+                }
+                throw new SubmitException( url, request, requestSize, errorMsg );
+            }
+
+            // Parse response based on error code
+            InputStream inputStream;
+            if (response_code == 401) {
+                throw new SubmitException( url, request, requestSize,
+                                           connection.getResponseMessage());
+            }
+            else if (response_code < 400) {
+                inputStream = connection.getInputStream();
+            } else {
+                inputStream = connection.getErrorStream();
+            }
+
+            if (inputStream == null) {
+                throw new IOException("Server returned HTTP " + connection.getResponseCode() + " (" + connection.getResponseMessage() + ").");
+            }
+
+            try {
+                // Manually decode the RawGpudbResponse wrapper directly from
+                // the stream to avoid allocation of intermediate buffers
+
+                BinaryDecoder decoder = DecoderFactory.get().binaryDecoder(inputStream, null);
+                String status = decoder.readString();
+                String message = decoder.readString();
+
+                if (status.equals("ERROR")) {
+                    // Check if Kinetica is shutting down
+                    if ( message.contains( DB_EXITING_ERROR_MESSAGE )
+                         || message.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE )
+                         || message.contains( DB_CONNECTION_RESET_ERROR_MESSAGE )
+                         || message.contains( DB_SYSTEM_LIMITED_ERROR_MESSAGE ) ) {
+                        throw new GPUdbExitException( message );
+                    }
+                    // A legitimate error
+                    throw new GPUdbException( message );
                 }
 
+                // Skip over data_type field
+                decoder.skipString();
+
+                // Decode data field
+                decoder.readInt();
+                return new Avro.DatumReader<T>(response.getSchema()).read(response, decoder);
+            } finally {
+                // Attempt to read any remaining data in the stream
+
                 try {
-                    // Manually decode the RawGpudbResponse wrapper directly from
-                    // the stream to avoid allocation of intermediate buffers
-
-                    BinaryDecoder decoder = DecoderFactory.get().binaryDecoder(inputStream, null);
-                    String status = decoder.readString();
-                    String message = decoder.readString();
-
-                    if (status.equals("ERROR")) {
-                        // Check if Kinetica is shutting down
-                        if ( message.contains( DB_EXITING_ERROR_MESSAGE )
-                             || message.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE )
-                             || message.contains( DB_CONNECTION_RESET_ERROR_MESSAGE )
-                             || message.contains( DB_SYSTEM_LIMITED_ERROR_MESSAGE ) ) {
-                            throw new GPUdbExitException( message );
-                        }
-                        // A legitimate error
-                        throw new GPUdbException( message );
-                    }
-
-                    // Skip over data_type field
-                    decoder.skipString();
-
-                    // Decode data field
-                    decoder.readInt();
-                    return new Avro.DatumReader<T>(response.getSchema()).read(response, decoder);
-                } finally {
-                    // Attempt to read any remaining data in the stream
-
-                    try {
-                        inputStream.skip(Long.MAX_VALUE);
-                    } catch (Exception ex) {
-                    }
+                    inputStream.skip(Long.MAX_VALUE);
+                } catch (Exception ex) {
                 }
             }
         } catch (GPUdbExitException ex) {
