@@ -1192,7 +1192,7 @@ public abstract class GPUdbBase {
             }
         }
     }
-    
+
 
     /**
      * Switches the URL of the HA ring cluster.  Check if we've circled back to
@@ -1200,7 +1200,7 @@ public abstract class GPUdbBase {
      * indices so that the next time, we pick up HA clusters in a different random
      * manner and throw an exception.
      */
-    private URL switchURL(URL oldURL) throws GPUdbHAUnavailableException {
+    protected URL switchURL(URL oldURL) throws GPUdbHAUnavailableException {
 
         synchronized (urlLock) {
             // If there is only one URL, then we can't switch URLs
@@ -1938,15 +1938,33 @@ public abstract class GPUdbBase {
                 // There's an error in creating the URL
                 throw new GPUdbRuntimeException(ex.getMessage(), ex);
             } catch (GPUdbExitException ex) {
-                // Handle our special exit exception
                 try {
-                    hmUrl = switchHmURL( originalURL );
-                } catch (GPUdbHAUnavailableException ha_ex) {
-                    // We've now tried all the HA clusters and circled back
-                    // Get the original cause to propagate to the user
-                    String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
-                    throw new GPUdbException( originalCause
-                                              + ha_ex.getMessage(), true );
+                    if ( this.updateHostManagerPort() ) {
+                        // Get the updated URL
+                        hmUrl = getHmURL();
+                    } else {
+                        // Upon failure, try to use other clusters
+                        try {
+                            hmUrl = switchHmURL( originalURL );
+                        } catch (GPUdbHAUnavailableException ha_ex) {
+                            // We've now tried all the HA clusters and circled back
+                            // Get the original cause to propagate to the user
+                            String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                            throw new GPUdbException( originalCause
+                                                      + ha_ex.getMessage(), true );
+                        }
+                    }
+                } catch (Exception ex2) {
+                    // Upon any error, try to use other clusters
+                    try {
+                        hmUrl = switchHmURL( originalURL );
+                    } catch (GPUdbHAUnavailableException ha_ex) {
+                        // We've now tried all the HA clusters and circled back
+                        // Get the original cause to propagate to the user
+                        String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                        throw new GPUdbException( originalCause
+                                                  + ha_ex.getMessage(), true );
+                    }
                 }
             } catch (SubmitException ex) {
                 // Some error occurred during the HTTP request;
@@ -2074,8 +2092,13 @@ public abstract class GPUdbBase {
                 connection.setRequestProperty( HEADER_CONTENT_TYPE, "application/x-snappy" );
                 connection.setFixedLengthStreamingMode(requestSize);
 
-                try (OutputStream outputStream = connection.getOutputStream()) {
-                    outputStream.write(encodedRequest);
+                try {
+                    try (OutputStream outputStream = connection.getOutputStream()) {
+                        outputStream.write(encodedRequest);
+                    }
+                } catch (IOException ex) {
+                    // Trigger an HA failover at the caller level
+                    throw new GPUdbExitException( ex.toString() );
                 }
             } else {
                 byte[] encodedRequest = Avro.encode(request).array();
@@ -2083,8 +2106,16 @@ public abstract class GPUdbBase {
                 connection.setRequestProperty( HEADER_CONTENT_TYPE, "application/octet-stream" );
                 connection.setFixedLengthStreamingMode(requestSize);
 
-                try (OutputStream outputStream = connection.getOutputStream()) {
-                    outputStream.write(encodedRequest);
+                try {
+                    // Trying with the OutputStream resource so that it can be
+                    // automatically closed (without a finally clause) if something
+                    // breaks
+                    try (OutputStream outputStream = connection.getOutputStream()) {
+                        outputStream.write(encodedRequest);
+                    }
+                } catch (IOException ex) {
+                    // Trigger an HA failover at the caller level
+                    throw new GPUdbExitException( ex.toString() );
                 }
 
                 /*
@@ -2112,7 +2143,7 @@ public abstract class GPUdbBase {
                 String responseMsg = connection.getResponseMessage();
                 
                 String errorMsg;
-                if (response_code == 401) {
+                if (response_code == HttpURLConnection.HTTP_UNAUTHORIZED) {
                     errorMsg = ("Unauthorized access: '"
                                 + responseMsg + "'");
                 } else {
@@ -2124,18 +2155,19 @@ public abstract class GPUdbBase {
 
             // Parse response based on error code
             InputStream inputStream;
-            if (response_code == 401) {
+            if (response_code == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                // Got sttaus 401 -- unauthorized
                 throw new SubmitException( url, request, requestSize,
                                            connection.getResponseMessage());
-            }
-            else if (response_code < 400) {
+            } else if (response_code < 400) {
                 inputStream = connection.getInputStream();
             } else {
                 inputStream = connection.getErrorStream();
             }
 
             if (inputStream == null) {
-                throw new IOException("Server returned HTTP " + connection.getResponseCode() + " (" + connection.getResponseMessage() + ").");
+                // Trigger an HA failover at the caller level
+                throw new GPUdbExitException("Server returned HTTP " + connection.getResponseCode() + " (" + connection.getResponseMessage() + "). returning EXIT exception");
             }
 
             try {
@@ -2148,7 +2180,10 @@ public abstract class GPUdbBase {
 
                 if (status.equals("ERROR")) {
                     // Check if Kinetica is shutting down
-                    if ( message.contains( DB_EXITING_ERROR_MESSAGE )
+                    if ( (response_code == HttpURLConnection.HTTP_UNAVAILABLE)
+                         || (response_code == HttpURLConnection.HTTP_INTERNAL_ERROR)
+                         || (response_code == HttpURLConnection.HTTP_GATEWAY_TIMEOUT)
+                         || message.contains( DB_EXITING_ERROR_MESSAGE )
                          || message.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE )
                          || message.contains( DB_CONNECTION_RESET_ERROR_MESSAGE )
                          || message.contains( DB_SYSTEM_LIMITED_ERROR_MESSAGE ) ) {
@@ -2260,4 +2295,59 @@ public abstract class GPUdbBase {
             }
         }
     }
+
+
+    /**
+     * Verifies that GPUdb is running at the given URL (does not do any HA failover).
+     *
+     * @returns true if Kinetica is running, false otherwise.
+     */
+    public boolean isKineticaRunning(URL url) {
+
+        HttpURLConnection connection = null;
+
+        try {
+            connection = initializeHttpConnection( url );
+
+            // Ping is a get, unlike all endpoints which are post
+            connection.setRequestMethod("GET");
+
+            byte[] buffer = new byte[1024];
+            int index = 0;
+
+            try (InputStream inputStream = connection.getResponseCode() < 400 ? connection.getInputStream() : connection.getErrorStream()) {
+                if (inputStream == null) {
+                    throw new IOException("Server returned HTTP " + connection.getResponseCode() + " (" + connection.getResponseMessage() + ").");
+                }
+
+                int count;
+
+                while ((count = inputStream.read(buffer, index, buffer.length - index)) > -1) {
+                    index += count;
+
+                    if (index == buffer.length) {
+                        buffer = Arrays.copyOf(buffer, buffer.length * 2);
+                    }
+                }
+            }
+
+            String response = new String(Arrays.copyOf(buffer, index));
+
+            if (!response.equals("Kinetica is running!")) {
+                return false;
+            }
+
+            return true;
+        } catch (Exception ex) {
+            return false;
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.disconnect();
+                } catch (Exception ex) {
+                }
+            }
+        }
+    }   // ping URL
+
 }

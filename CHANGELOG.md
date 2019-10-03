@@ -2,6 +2,11 @@
 
 ## Version 7.0
 
+### Version 7.0.7.2 - 2019-10-03
+
+#### Fixed
+-   Multi-head I/O high-availability failover issue when a worker rank dies.
+
 ### Version 7.0.7.1 - 2019-09-11
 
 #### Added
