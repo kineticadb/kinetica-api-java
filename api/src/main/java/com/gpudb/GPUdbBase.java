@@ -683,6 +683,7 @@ public abstract class GPUdbBase {
     private static final String DB_CONNECTION_REFUSED_ERROR_MESSAGE = "Connection refused";
     private static final String DB_EXITING_ERROR_MESSAGE            = "Kinetica is exiting";
     private static final String DB_SYSTEM_LIMITED_ERROR_MESSAGE     = "system-limited-fatal";
+    private static final String DB_EOF_FROM_SERVER_ERROR_MESSAGE    = "Unexpected end of file from server";
 
     // Internally used headers (make sure to add them to PROTECTED_HEADERS
     protected static final String HEADER_HA_SYNC_MODE  = "ha_sync_mode";
@@ -878,7 +879,7 @@ public abstract class GPUdbBase {
             return this.urls.get(0);
         } else {
             synchronized (urlLock) {
-                return this.urls.get( this.haUrlIndices.get( this.currentUrlIndex ) );
+                return this.urls.get( this.haUrlIndices.get( getCurrentUrlIndex() ) );
             }
         }
     }
@@ -906,7 +907,7 @@ public abstract class GPUdbBase {
             return this.hmUrls.get(0);
         } else {
             synchronized (urlLock) {
-                return this.hmUrls.get( this.haUrlIndices.get( this.currentUrlIndex ) );
+                return this.hmUrls.get( this.haUrlIndices.get( getCurrentUrlIndex() ) );
             }
         }
     }
@@ -918,15 +919,6 @@ public abstract class GPUdbBase {
      */
     public URL getPrimaryUrl() {
         return this.primaryUrl;
-    }
-
-
-    /**
-     * Gets the number of times the client has switched to a different
-     * cluster amongst the high availability ring.
-     */
-    public int getNumClusterSwitches() {
-        return this.numClusterSwitches;
     }
 
 
@@ -1171,6 +1163,54 @@ public abstract class GPUdbBase {
     // ----------------
 
     /**
+     * Gets the size of the high availability ring (i.e. how many clusters
+     * are in it).
+     *
+     * @return  the size of the HA cluster
+     */
+    protected int getHARingSize() {
+        return this.urls.size();
+    }
+
+    /**
+     * Gets the number of times the client has switched to a different
+     * cluster amongst the high availability ring.
+     */
+    protected int getNumClusterSwitches() {
+        return this.numClusterSwitches;
+    }
+
+    /**
+     * Gets the number of times the client has switched to a different
+     * cluster amongst the high availability ring.
+     */
+    protected void incrementNumClusterSwitches() {
+        synchronized ( urlLock ) {
+            ++this.numClusterSwitches;
+        }
+    }
+
+
+    /**
+     * Return the current URL index in a thread-safe manner.
+     */
+    private int getCurrentUrlIndex() {
+        synchronized ( urlLock ) {
+            return this.currentUrlIndex;
+        }
+    }
+
+    /**
+     * Set the current URL index in a thread-safe manner.
+     */
+    private void setCurrentUrlIndex(int newIndex) {
+        synchronized ( urlLock ) {
+            this.currentUrlIndex = newIndex;
+        }
+    }
+
+    
+    /**
      * Creates/updates the host manager URLs from the regular URLs.
      */
     private void updateHmUrls() throws GPUdbException {
@@ -1200,7 +1240,7 @@ public abstract class GPUdbBase {
      * indices so that the next time, we pick up HA clusters in a different random
      * manner and throw an exception.
      */
-    protected URL switchURL(URL oldURL) throws GPUdbHAUnavailableException {
+    protected URL switchURL(URL oldURL, int numClusterSwitches) throws GPUdbHAUnavailableException {
 
         synchronized (urlLock) {
             // If there is only one URL, then we can't switch URLs
@@ -1211,16 +1251,35 @@ public abstract class GPUdbBase {
                                                       + "available to fall back on).");
             }
 
+            // Get how many times we've switched clusters since the caller called
+            // this function
+            int countClusterSwitchesSinceInvocation = (getNumClusterSwitches() - numClusterSwitches);
+            // Check if the client has switched clusters more than the number
+            // of clusters available in the HA ring
+            boolean haveSwitchedClustersAcrossTheRing = ( countClusterSwitchesSinceInvocation
+                                                          >= this.urls.size() );
+            if ( haveSwitchedClustersAcrossTheRing ) {
+                throw new GPUdbHAUnavailableException(" (all GPUdb clusters with "
+                                                      + "head nodes [" + this.urls.toString()
+                                                      + "] returned error)");
+            }
+            // Check if another thread beat us to switching the URL
+            if ( (getURL() != oldURL) && (countClusterSwitchesSinceInvocation > 0) ) {
+                // Another thread must have already switched the URL; nothing
+                // to do
+                return getURL();
+            }
+
             // Increment the index by one (mod url list length)
-            this.currentUrlIndex = (this.currentUrlIndex + 1) % this.urls.size();
+            setCurrentUrlIndex( (getCurrentUrlIndex() + 1) % this.urls.size() );
 
             // Keep a running count of how many times we had to switch clusters
-            ++this.numClusterSwitches;
+            this.incrementNumClusterSwitches();
 
             // We've circled back; shuffle the indices again so that future
             // requests go to a different randomly selected cluster, but also
             // let the caller know that we've circled back
-            if (this.urls.get( haUrlIndices.get( currentUrlIndex ) ) == oldURL) {
+            if (getURL() == oldURL) {
                 // Re-shuffle and set the index counter to zero
                 randomizeURLs();
 
@@ -1231,7 +1290,8 @@ public abstract class GPUdbBase {
             }
 
             // Haven't circled back to the old URL; so return the new one
-            return this.urls.get( haUrlIndices.get( currentUrlIndex ) );
+            return getURL();
+            // return this.urls.get( this.haUrlIndices.get( getCurrentUrlIndex() ) );
         }
     }  // end switchURL
 
@@ -1241,7 +1301,7 @@ public abstract class GPUdbBase {
      * re-shuffle the list of indices so that the next time, we pick up HA
      * clusters in a different random manner and throw an exception.
      */
-    private URL switchHmURL(URL oldURL) throws GPUdbHAUnavailableException {
+    private URL switchHmURL(URL oldURL, int numClusterSwitches) throws GPUdbHAUnavailableException {
         synchronized (urlLock) {
             // If there is only one URL, then we can't switch URLs
             if ( this.hmUrls.size() == 1 ) {
@@ -1251,27 +1311,46 @@ public abstract class GPUdbBase {
                                                       + "available to fall back on).");
             }
 
+            // Get how many times we've switched clusters since the caller called
+            // this function
+            int countClusterSwitchesSinceInvocation = (getNumClusterSwitches() - numClusterSwitches);
+            // Check if the client has switched clusters more than the number
+            // of clusters available in the HA ring
+            boolean haveSwitchedClustersAcrossTheRing = ( countClusterSwitchesSinceInvocation
+                                                          >= this.hmUrls.size() );
+            if ( haveSwitchedClustersAcrossTheRing ) {
+                throw new GPUdbHAUnavailableException(" (all host managers at GPUdb clusters "
+                                                      + "at [" + this.hmUrls.toString()
+                                                      + "] returned error)");
+            }
+            // Check if another thread beat us to switching the URL
+            if ( (getHmURL() != oldURL) && (countClusterSwitchesSinceInvocation > 0) ) {
+                // Another thread must have already switched the URL; nothing
+                // to do
+                return getHmURL();
+            }
+
             // Increment the index by one (mod url list length)
-            this.currentUrlIndex = (this.currentUrlIndex + 1) % this.hmUrls.size();
+            setCurrentUrlIndex( (getCurrentUrlIndex() + 1) % this.hmUrls.size() );
 
             // Keep a running count of how many times we had to switch clusters
-            ++this.numClusterSwitches;
+            this.incrementNumClusterSwitches();
 
             // We've circled back; shuffle the indices again so that future
             // requests go to a different randomly selected cluster, but also
             // let the caller know that we've circled back
-            if (this.hmUrls.get( haUrlIndices.get( currentUrlIndex ) ) == oldURL) {
+            if (getHmURL() == oldURL) {
                 // Re-shuffle and set the index counter to zero
                 randomizeURLs();
 
                 // Let the user know that we've circled back
-                throw new GPUdbHAUnavailableException(" (all host managers at GPUdb clusters with "
-                                                      + "head nodes [" + this.hmUrls.toString()
+                throw new GPUdbHAUnavailableException(" (all host managers at GPUdb clusters "
+                                                      + "at [" + this.hmUrls.toString()
                                                       + "] returned error)");
             }
 
             // Haven't circled back to the old URL; so return the new one
-            return this.hmUrls.get( haUrlIndices.get( currentUrlIndex ) );
+            return getHmURL();
         }
     }   // end switchHmUrl
 
@@ -1493,27 +1572,29 @@ public abstract class GPUdbBase {
      * back, we always pick the first/primary host up again.
      */
     private void randomizeURLs() {
-        // Re-create the list of HA URL indices
-        this.haUrlIndices.clear();
-        for ( int i = 0; i < this.urls.size(); ++i ) {
-            this.haUrlIndices.add( i );
-        }
+        synchronized (this.haUrlIndices) {
+            // Re-create the list of HA URL indices
+            this.haUrlIndices.clear();
+            for ( int i = 0; i < this.urls.size(); ++i ) {
+                this.haUrlIndices.add( i );
+            }
 
-        if ( this.primaryUrl == null ) {
-            // We don't have any primary URL; so treat all URLs similarly
-            // Randomly order the HA clusters and pick one to start working with
-            Collections.shuffle( this.haUrlIndices );
-        } else {
-            // Shuffle from the 2nd element onward, only if there are more than
-            // two elements, of course
-            if ( this.haUrlIndices.size() > 2 ) {
-                Collections.shuffle( this.haUrlIndices.subList( 1, this.haUrlIndices.size() ) );
+            if ( this.primaryUrl == null ) {
+                // We don't have any primary URL; so treat all URLs similarly
+                // Randomly order the HA clusters and pick one to start working with
+                Collections.shuffle( this.haUrlIndices );
+            } else {
+                // Shuffle from the 2nd element onward, only if there are more than
+                // two elements, of course
+                if ( this.haUrlIndices.size() > 2 ) {
+                    Collections.shuffle( this.haUrlIndices.subList( 1, this.haUrlIndices.size() ) );
+                }
             }
         }
 
         // This will keep track of which cluster to pick next (an index of
         // randomly shuffled indices)
-        this.currentUrlIndex = 0;
+        setCurrentUrlIndex( 0 );
     }
     
     
@@ -1833,6 +1914,12 @@ public abstract class GPUdbBase {
         URL originalURL = url;
 
         while (true) {
+            // We need a snapshot of the current state re: HA failover.  When
+            // multiple threads work on this object, we'll need to know how
+            // many times we've switched clusters *before* attempting another
+            // request submission.
+            int currentClusterSwitchCount = getNumClusterSwitches();
+
             try {
                 return submitRequest(appendPathToURL(url, endpoint), request, response, enableCompression);
             } catch (MalformedURLException ex) {
@@ -1841,7 +1928,7 @@ public abstract class GPUdbBase {
             } catch (GPUdbExitException ex) {
                 // Handle our special exit exception
                 try {
-                    url = switchURL( originalURL );
+                    url = switchURL( originalURL, currentClusterSwitchCount );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
                     // Get the original cause to propagate to the user
@@ -1852,7 +1939,7 @@ public abstract class GPUdbBase {
             } catch (SubmitException ex) {
                 // Some error occurred during the HTTP request
                 try {
-                    url = switchURL( originalURL );
+                    url = switchURL( originalURL, currentClusterSwitchCount );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
                     // Get the original cause to propagate to the user
@@ -1868,7 +1955,7 @@ public abstract class GPUdbBase {
             } catch (Exception ex) {
                 // And other random exceptions probably are also connection errors
                 try {
-                    url = switchURL( originalURL );
+                    url = switchURL( originalURL, currentClusterSwitchCount );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
                     // Get the original cause to propagate to the user
@@ -1932,6 +2019,12 @@ public abstract class GPUdbBase {
         URL originalURL = hmUrl;
 
         while (true) {
+            // We need a snapshot of the current state re: HA failover.  When
+            // multiple threads work on this object, we'll need to know how
+            // many times we've switched clusters *before* attempting another
+            // request submission.
+            int currentClusterSwitchCount = getNumClusterSwitches();
+
             try {
                 return submitRequest(appendPathToURL(hmUrl, endpoint), request, response, enableCompression);
             } catch (MalformedURLException ex) {
@@ -1945,7 +2038,7 @@ public abstract class GPUdbBase {
                     } else {
                         // Upon failure, try to use other clusters
                         try {
-                            hmUrl = switchHmURL( originalURL );
+                            hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
                         } catch (GPUdbHAUnavailableException ha_ex) {
                             // We've now tried all the HA clusters and circled back
                             // Get the original cause to propagate to the user
@@ -1957,7 +2050,7 @@ public abstract class GPUdbBase {
                 } catch (Exception ex2) {
                     // Upon any error, try to use other clusters
                     try {
-                        hmUrl = switchHmURL( originalURL );
+                        hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
                     } catch (GPUdbHAUnavailableException ha_ex) {
                         // We've now tried all the HA clusters and circled back
                         // Get the original cause to propagate to the user
@@ -1976,7 +2069,7 @@ public abstract class GPUdbBase {
                     } else {
                         // Upon failure, try to use other clusters
                         try {
-                            hmUrl = switchHmURL( originalURL );
+                            hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
                         } catch (GPUdbHAUnavailableException ha_ex) {
                             // We've now tried all the HA clusters and circled back
                             // Get the original cause to propagate to the user
@@ -1990,7 +2083,7 @@ public abstract class GPUdbBase {
                 } catch (Exception ex2) {
                     // Upon any error, try to use other clusters
                     try {
-                        hmUrl = switchHmURL( originalURL );
+                        hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
                     } catch (GPUdbHAUnavailableException ha_ex) {
                         // We've now tried all the HA clusters and circled back
                         // Get the original cause to propagate to the user
@@ -2005,7 +2098,7 @@ public abstract class GPUdbBase {
                 // the host manager can still be going even if the database is down
                 if ( ex.getMessage().contains( DB_OFFLINE_ERROR_MESSAGE ) ) {
                     try {
-                        hmUrl = switchHmURL( originalURL );
+                        hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
                     } catch (GPUdbHAUnavailableException ha_ex) {
                         // We've now tried all the HA clusters and circled back
                         // Get the original cause to propagate to the user
@@ -2021,7 +2114,7 @@ public abstract class GPUdbBase {
             } catch (Exception ex) {
                 // And other random exceptions probably are also connection errors
                 try {
-                    hmUrl = switchHmURL( originalURL );
+                    hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
                     // Get the original cause to propagate to the user
@@ -2208,14 +2301,22 @@ public abstract class GPUdbBase {
                 }
             }
         } catch (GPUdbExitException ex) {
-            // DB is shutting down
+            // An HA failover should be triggered
             throw ex;
         } catch (SubmitException ex) {
             // Some sort of submission error
             throw ex;
         } catch (GPUdbException ex) {
+            if ( ex.getMessage().contains( DB_EOF_FROM_SERVER_ERROR_MESSAGE ) ) {
+                // The server did not send a response; we need to trigger an HA
+                // failover scenario
+                throw new GPUdbExitException( ex.getMessage() );
+            }
             // Some legitimate error
             throw ex;
+        } catch (java.net.SocketException ex) {
+            // Any network issue should trigger an HA failover
+            throw new GPUdbExitException( ex.getMessage() );
         } catch (Exception ex) {
             // Some sort of submission error
             throw new SubmitException(url, request, requestSize, ex.getMessage(), ex);
@@ -2280,7 +2381,7 @@ public abstract class GPUdbBase {
                 throw ex;
             } catch (Exception ex) {
                 try {
-                    url = switchURL( originalURL );
+                    url = switchURL( originalURL, getNumClusterSwitches() );
                 } catch (GPUdbHAUnavailableException ha_ex) {
                     // We've now tried all the HA clusters and circled back
                     throw new GPUdbException(ex.getMessage(), ex, true);

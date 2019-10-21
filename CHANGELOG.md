@@ -2,6 +2,11 @@
 
 ## Version 7.0
 
+### Version 7.0.8.1 - 2019-10-21
+
+#### Fixed
+-   Multi-head I/O high-availability failover thread-safety issues
+
 ### Version 7.0.7.2 - 2019-10-03
 
 #### Fixed
