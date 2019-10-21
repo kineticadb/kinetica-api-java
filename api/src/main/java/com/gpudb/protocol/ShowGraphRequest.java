@@ -17,7 +17,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link com.gpudb.GPUdb#showGraph(ShowGraphRequest)}.
  * <p>
  * Shows information and characteristics of graphs that exist on the graph
- * server, depending on the options specified.
+ * server.
  */
 public class ShowGraphRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -47,7 +47,7 @@ public class ShowGraphRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.ShowGraphRequest.Options#SHOW_ORIGINAL_REQUEST
      * SHOW_ORIGINAL_REQUEST}: If set to {@code true}, the request that was
-     * originally used.
+     * originally used to create the graph is also returned as JSON.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.ShowGraphRequest.Options#TRUE
@@ -64,7 +64,8 @@ public class ShowGraphRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * If set to {@code true}, the request that was originally used.
+         * If set to {@code true}, the request that was originally used to
+         * create the graph is also returned as JSON.
          * Supported values:
          * <ul>
          *         <li> {@link com.gpudb.protocol.ShowGraphRequest.Options#TRUE
@@ -98,14 +99,15 @@ public class ShowGraphRequest implements IndexedRecord {
      * Constructs a ShowGraphRequest object with the specified parameters.
      * 
      * @param graphName  Name of the graph on which to retrieve information. If
-     *                   empty, information about all graphs is returned.  The
-     *                   default value is ''.
+     *                   left as the default value, information about all
+     *                   graphs is returned.  The default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowGraphRequest.Options#SHOW_ORIGINAL_REQUEST
      *                 SHOW_ORIGINAL_REQUEST}: If set to {@code true}, the
-     *                 request that was originally used.
+     *                 request that was originally used to create the graph is
+     *                 also returned as JSON.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -126,9 +128,9 @@ public class ShowGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the graph on which to retrieve information. If empty,
-     *         information about all graphs is returned.  The default value is
-     *         ''.
+     * @return Name of the graph on which to retrieve information. If left as
+     *         the default value, information about all graphs is returned.
+     *         The default value is ''.
      * 
      */
     public String getGraphName() {
@@ -138,8 +140,8 @@ public class ShowGraphRequest implements IndexedRecord {
     /**
      * 
      * @param graphName  Name of the graph on which to retrieve information. If
-     *                   empty, information about all graphs is returned.  The
-     *                   default value is ''.
+     *                   left as the default value, information about all
+     *                   graphs is returned.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -156,7 +158,8 @@ public class ShowGraphRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.ShowGraphRequest.Options#SHOW_ORIGINAL_REQUEST
      *         SHOW_ORIGINAL_REQUEST}: If set to {@code true}, the request that
-     *         was originally used.
+     *         was originally used to create the graph is also returned as
+     *         JSON.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -181,7 +184,8 @@ public class ShowGraphRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowGraphRequest.Options#SHOW_ORIGINAL_REQUEST
      *                 SHOW_ORIGINAL_REQUEST}: If set to {@code true}, the
-     *                 request that was originally used.
+     *                 request that was originally used to create the graph is
+     *                 also returned as JSON.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

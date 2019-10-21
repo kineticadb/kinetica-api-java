@@ -2934,6 +2934,16 @@ public class GPUdb extends GPUdbBase {
      *                            CHUNK_SIZE}: Sets the chunk size of all new
      *                            sets to the specified integer value.
      *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EVICT_COLUMNS
+     *                            EVICT_COLUMNS}: Attempts to evict columns
+     *                            from memory to the persistent store.  Value
+     *                            string is a semicolon separated list of
+     *                            entries, each entry being a table name
+     *                            optionally followed by a comma and a comma
+     *                            separated list of column names to attempt to
+     *                            evict.  An empty value string will attempt to
+     *                            evict all tables and columns.
+     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EXECUTION_MODE
      *                            EXECUTION_MODE}: Sets the execution_mode for
      *                            kernel executions to the specified string
@@ -3907,10 +3917,9 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUNCATE_STRINGS
-     *                 TRUNCATE_STRINGS}: If set to {true}@{, it allows
-     *                 appending longer strings to smaller charN string columns
-     *                 by truncating the longer string to fit.  The default
-     *                 value is false.
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, it allows
+     *                 inserting longer strings into smaller charN string
+     *                 columns by truncating the longer strings to fit.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -4419,10 +4428,13 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#SYNC_DB
-     *                 SYNC_DB}: If set to {@code true}, the graph will be
-     *                 updated if its source table(s) is updated. If set to
-     *                 {@code false}, the graph will not be updated if the
-     *                 source table(s) is updated.
+     *                 SYNC_DB}: If set to {@code true} and {@code
+     *                 save_persist} is set to {@code true}, the graph will be
+     *                 fully reconstructed upon a database restart and be
+     *                 updated to align with any source table(s) updates made
+     *                 since the creation of the graph. If dynamic graph
+     *                 updates upon table inserts are desired, use {@code
+     *                 add_table_monitor} instead.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -4437,7 +4449,12 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#ADD_TABLE_MONITOR
      *                 ADD_TABLE_MONITOR}: Adds a table monitor to every table
-     *                 used in the creation of the graph. For more details on
+     *                 used in the creation of the graph; this table monitor
+     *                 will trigger the graph to update dynamically upon
+     *                 inserts to the source table(s). Note that upon database
+     *                 restart, if {@code save_persist} is also set to {@code
+     *                 true}, the graph will be fully reconstructed and the
+     *                 table monitors will be reattached. For more details on
      *                 table monitors, see {@link
      *                 GPUdb#createTableMonitor(String, Map)}.
      *                 Supported values:
@@ -10358,9 +10375,9 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUNCATE_STRINGS
-     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
-     *                 are too long for their charN string fields will be
-     *                 truncated to fit.  The default value is false.
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, any strings
+     *                 which are too long for their target charN string columns
+     *                 will be truncated to fit.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -10463,9 +10480,9 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUNCATE_STRINGS
-     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
-     *                 are too long for their charN string fields will be
-     *                 truncated to fit.  The default value is false.
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, any strings
+     *                 which are too long for their target charN string columns
+     *                 will be truncated to fit.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -10882,18 +10899,23 @@ public class GPUdb extends GPUdbBase {
     /**
      * Kills a running proc instance.
      * 
-     * @param runId  The run ID of the running proc instance. If the run ID is
-     *               not found or the proc instance has already completed, this
-     *               does nothing. If not specified, all running proc instances
-     *               will be killed.  The default value is ''.
+     * @param runId  The run ID of a running proc instance. If a proc with a
+     *               matching run ID is not found or the proc instance has
+     *               already completed, no procs will be killed. If not
+     *               specified, all running proc instances will be killed.  The
+     *               default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.KillProcRequest.Options#RUN_TAG
-     *                 RUN_TAG}: Kill only proc instances where a matching run
-     *                 tag was provided to {@link GPUdb#executeProc(String,
-     *                 Map, Map, List, Map, List, Map)}.  The default value is
-     *                 ''.
+     *                 RUN_TAG}: If {@code runId} is specified, kill the proc
+     *                 instance that has a matching run ID and a matching run
+     *                 tag that was provided to {@link
+     *                 GPUdb#executeProc(String, Map, Map, List, Map, List,
+     *                 Map)}. If {@code runId} is not specified, kill the proc
+     *                 instance(s) where a matching run tag was provided to
+     *                 {@link GPUdb#executeProc(String, Map, Map, List, Map,
+     *                 List, Map)}.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -11513,27 +11535,27 @@ public class GPUdb extends GPUdbBase {
      *                        href="../../../../graph_solver/network_graph_solver.html#using-labels"
      *                        target="_top">Using Labels</a> for more
      *                        information.  The default value is ''.
-     * @param rings  Only applicable when querying nodes. Sets the number of
-     *               rings around the node to query for adjacency, with '1'
-     *               being the edges directly attached to the queried node.
-     *               Also known as number of hops. For example, if it is set to
-     *               '2', the edge(s) directly attached to the queried node(s)
-     *               will be returned; in addition, the edge(s) attached to the
-     *               node(s) attached to the initial ring of edge(s)
-     *               surrounding the queried node(s) will be returned. This
-     *               setting can be '0' in which case if the node type id
-     *               label, it'll then query for all that has the same
-     *               property.  The default value is 1.
+     * @param rings  Sets the number of rings around the node to query for
+     *               adjacency, with '1' being the edges directly attached to
+     *               the queried node. Also known as number of hops. For
+     *               example, if it is set to '2', the edge(s) directly
+     *               attached to the queried node(s) will be returned; in
+     *               addition, the edge(s) attached to the node(s) attached to
+     *               the initial ring of edge(s) surrounding the queried
+     *               node(s) will be returned. If the value is set to '0', any
+     *               nodes that meet the criteria in {@code queries} and {@code
+     *               restrictions} will be returned. This parameter is only
+     *               applicable when querying nodes.  The default value is 1.
      * @param options  Additional parameters
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#FORCE_UNDIRECTED
-     *                 FORCE_UNDIRECTED}: This parameter is only applicable if
-     *                 the queried graph {@code graphName} is directed and when
-     *                 querying nodes. If set to {@code true}, all inbound
+     *                 FORCE_UNDIRECTED}: If set to {@code true}, all inbound
      *                 edges and outbound edges relative to the node will be
      *                 returned. If set to {@code false}, only outbound edges
-     *                 relative to the node will be returned.
+     *                 relative to the node will be returned. This parameter is
+     *                 only applicable if the queried graph {@code graphName}
+     *                 is directed and when querying nodes.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -11556,8 +11578,10 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
      *                 TARGET_NODES_TABLE}: Name of the table to store the list
      *                 of the final nodes reached during the traversal. If this
-     *                 value is not given it'll default to
-     *                 adjacemcy_table+'_nodes'.  The default value is ''.
+     *                 value is left as the default, the table name will
+     *                 default to the {@code adjacencyTable} value plus a
+     *                 '_nodes' suffix, e.g., '<adjacency_table_name>_nodes'.
+     *                 The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
@@ -11570,8 +11594,8 @@ public class GPUdb extends GPUdbBase {
      *                 EXPORT_QUERY_RESULTS}: Returns query results in the
      *                 response. If set to {@code true}, the {@code
      *                 adjacencyListIntArray} (if the query was based on IDs),
-     *                 @{adjacency_list_string_array} (if the query was based
-     *                 on names), or @{output_adjacency_list_wkt_array} (if the
+     *                 {@code adjacencyListStringArray} (if the query was based
+     *                 on names), or {@code adjacencyListWktArray} (if the
      *                 query was based on WKTs) will be populated with the
      *                 results. If set to {@code false}, none of the arrays
      *                 will be populated.
@@ -11878,7 +11902,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Shows information and characteristics of graphs that exist on the graph
-     * server, depending on the options specified.
+     * server.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -11900,17 +11924,18 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Shows information and characteristics of graphs that exist on the graph
-     * server, depending on the options specified.
+     * server.
      * 
      * @param graphName  Name of the graph on which to retrieve information. If
-     *                   empty, information about all graphs is returned.  The
-     *                   default value is ''.
+     *                   left as the default value, information about all
+     *                   graphs is returned.  The default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowGraphRequest.Options#SHOW_ORIGINAL_REQUEST
      *                 SHOW_ORIGINAL_REQUEST}: If set to {@code true}, the
-     *                 request that was originally used.
+     *                 request that was originally used to create the graph is
+     *                 also returned as JSON.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -12050,11 +12075,11 @@ public class GPUdb extends GPUdbBase {
      * Map, Map, List, Map, List, Map)}) and data segment ID (each invocation
      * of the proc command on a data segment is assigned a data segment ID).
      * 
-     * @param runId  The run ID of a specific running or completed proc
-     *               instance for which the status will be returned. If the run
-     *               ID is not found, nothing will be returned. If not
-     *               specified, the statuses of all running and completed proc
-     *               instances will be returned.  The default value is ''.
+     * @param runId  The run ID of a specific proc instance for which the
+     *               status will be returned. If a proc with a matching run ID
+     *               is not found, the response will be empty. If not
+     *               specified, the statuses of all executed proc instances
+     *               will be returned.  The default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -12077,10 +12102,14 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowProcStatusRequest.Options#RUN_TAG
-     *                 RUN_TAG}: Limit statuses to proc instances where a
-     *                 matching run tag was provided to {@link
+     *                 RUN_TAG}: If {@code runId} is specified, return the
+     *                 status for a proc instance that has a matching run ID
+     *                 and a matching run tag that was provided to {@link
      *                 GPUdb#executeProc(String, Map, Map, List, Map, List,
-     *                 Map)}.  The default value is ''.
+     *                 Map)}. If {@code runId} is not specified, return
+     *                 statuses for all proc instances where a matching run tag
+     *                 was provided to {@link GPUdb#executeProc(String, Map,
+     *                 Map, List, Map, List, Map)}.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -13380,6 +13409,23 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
+     *                 are too long for their charN string fields will be
+     *                 truncated to fit.  The default value is false.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
      *                 USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to {@code
      *                 true}, all new values in {@code newValuesMaps} are
@@ -13519,6 +13565,23 @@ public class GPUdb extends GPUdbBase {
      *                 UPDATE_PARTITION}: Force qualifying records to be
      *                 deleted and reinserted so their partition membership
      *                 will be reevaluated.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
+     *                 are too long for their charN string fields will be
+     *                 truncated to fit.  The default value is false.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -13883,8 +13946,8 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    public VisualizeImageClassbreakResponse visualizeImageClassbreak(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbAttr, List<String> cbVals, String cbPointcolorAttr, List<String> cbPointcolorVals, String cbPointsizeAttr, List<String> cbPointsizeVals, String cbPointshapeAttr, List<String> cbPointshapeVals, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) throws GPUdbException {
-        VisualizeImageClassbreakRequest actualRequest_ = new VisualizeImageClassbreakRequest(tableNames, worldTableNames, xColumnName, yColumnName, geometryColumnName, trackIds, cbAttr, cbVals, cbPointcolorAttr, cbPointcolorVals, cbPointsizeAttr, cbPointsizeVals, cbPointshapeAttr, cbPointshapeVals, minX, maxX, minY, maxY, width, height, projection, bgColor, styleOptions, options);
+    public VisualizeImageClassbreakResponse visualizeImageClassbreak(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbAttr, List<String> cbVals, String cbPointcolorAttr, List<String> cbPointcolorVals, String cbPointsizeAttr, List<String> cbPointsizeVals, String cbPointshapeAttr, List<String> cbPointshapeVals, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options, List<Integer> cbTransparencyVec) throws GPUdbException {
+        VisualizeImageClassbreakRequest actualRequest_ = new VisualizeImageClassbreakRequest(tableNames, worldTableNames, xColumnName, yColumnName, geometryColumnName, trackIds, cbAttr, cbVals, cbPointcolorAttr, cbPointcolorVals, cbPointsizeAttr, cbPointsizeVals, cbPointshapeAttr, cbPointshapeVals, minX, maxX, minY, maxY, width, height, projection, bgColor, styleOptions, options, cbTransparencyVec);
         VisualizeImageClassbreakResponse actualResponse_ = new VisualizeImageClassbreakResponse();
         submitRequest("/visualize/image/classbreak", actualRequest_, actualResponse_, false);
         return actualResponse_;

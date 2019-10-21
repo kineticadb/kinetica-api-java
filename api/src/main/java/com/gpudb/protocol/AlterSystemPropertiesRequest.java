@@ -84,6 +84,13 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * CHUNK_SIZE}: Sets the chunk size of all new sets to the specified
      * integer value.
      *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EVICT_COLUMNS
+     * EVICT_COLUMNS}: Attempts to evict columns from memory to the persistent
+     * store.  Value string is a semicolon separated list of entries, each
+     * entry being a table name optionally followed by a comma and a comma
+     * separated list of column names to attempt to evict.  An empty value
+     * string will attempt to evict all tables and columns.
+     *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EXECUTION_MODE
      * EXECUTION_MODE}: Sets the execution_mode for kernel executions to the
      * specified string value. Possible values are host, device, default
@@ -215,6 +222,15 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * Sets the chunk size of all new sets to the specified integer value.
          */
         public static final String CHUNK_SIZE = "chunk_size";
+
+        /**
+         * Attempts to evict columns from memory to the persistent store.
+         * Value string is a semicolon separated list of entries, each entry
+         * being a table name optionally followed by a comma and a comma
+         * separated list of column names to attempt to evict.  An empty value
+         * string will attempt to evict all tables and columns.
+         */
+        public static final String EVICT_COLUMNS = "evict_columns";
 
         /**
          * Sets the execution_mode for kernel executions to the specified
@@ -395,6 +411,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            CHUNK_SIZE}: Sets the chunk size of all new
      *                            sets to the specified integer value.
      *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EVICT_COLUMNS
+     *                            EVICT_COLUMNS}: Attempts to evict columns
+     *                            from memory to the persistent store.  Value
+     *                            string is a semicolon separated list of
+     *                            entries, each entry being a table name
+     *                            optionally followed by a comma and a comma
+     *                            separated list of column names to attempt to
+     *                            evict.  An empty value string will attempt to
+     *                            evict all tables and columns.
+     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EXECUTION_MODE
      *                            EXECUTION_MODE}: Sets the execution_mode for
      *                            kernel executions to the specified string
@@ -556,6 +582,14 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         CHUNK_SIZE}: Sets the chunk size of all new sets to the
      *         specified integer value.
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EVICT_COLUMNS
+     *         EVICT_COLUMNS}: Attempts to evict columns from memory to the
+     *         persistent store.  Value string is a semicolon separated list of
+     *         entries, each entry being a table name optionally followed by a
+     *         comma and a comma separated list of column names to attempt to
+     *         evict.  An empty value string will attempt to evict all tables
+     *         and columns.
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EXECUTION_MODE
      *         EXECUTION_MODE}: Sets the execution_mode for kernel executions
      *         to the specified string value. Possible values are host, device,
@@ -697,6 +731,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_SIZE
      *                            CHUNK_SIZE}: Sets the chunk size of all new
      *                            sets to the specified integer value.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EVICT_COLUMNS
+     *                            EVICT_COLUMNS}: Attempts to evict columns
+     *                            from memory to the persistent store.  Value
+     *                            string is a semicolon separated list of
+     *                            entries, each entry being a table name
+     *                            optionally followed by a comma and a comma
+     *                            separated list of column names to attempt to
+     *                            evict.  An empty value string will attempt to
+     *                            evict all tables and columns.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EXECUTION_MODE
      *                            EXECUTION_MODE}: Sets the execution_mode for

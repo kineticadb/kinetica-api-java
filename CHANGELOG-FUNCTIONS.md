@@ -3,6 +3,20 @@
 
 ## Version 7.0
 
+### Version 7.0.8.0 - 2019-09-18
+
+#### Added
+
+#### Changed
+
+#### Removed
+
+### Version 7.0.7.0 - 2019-09-18
+
+#### Added
+- Added "truncate_strings" option to /update/records/request json file
+
+
 ### Version 7.0.7.0 - 2019-08-15
 
 #### Added

@@ -95,6 +95,20 @@ public class UpdateRecordsRequest<T> {
      * The default value is {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
      *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUNCATE_STRINGS
+     * TRUNCATE_STRINGS}: If set to {true}@{, any strings which are too long
+     * for their charN string fields will be truncated to fit.  The default
+     * value is false.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
      * USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to {@code true}, all new
      * values in {@code newValuesMaps} are considered as expression values.
@@ -180,6 +194,21 @@ public class UpdateRecordsRequest<T> {
          * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
          */
         public static final String UPDATE_PARTITION = "update_partition";
+
+        /**
+         * If set to {true}@{, any strings which are too long for their charN
+         * string fields will be truncated to fit.  The default value is false.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
+         */
+        public static final String TRUNCATE_STRINGS = "truncate_strings";
 
         /**
          * When set to {@code true}, all new values in {@code newValuesMaps}
@@ -300,6 +329,23 @@ public class UpdateRecordsRequest<T> {
      *                 UPDATE_PARTITION}: Force qualifying records to be
      *                 deleted and reinserted so their partition membership
      *                 will be reevaluated.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
+     *                 are too long for their charN string fields will be
+     *                 truncated to fit.  The default value is false.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -514,6 +560,20 @@ public class UpdateRecordsRequest<T> {
      *         The default value is {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUNCATE_STRINGS
+     *         TRUNCATE_STRINGS}: If set to {true}@{, any strings which are too
+     *         long for their charN string fields will be truncated to fit.
+     *         The default value is false.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#USE_EXPRESSIONS_IN_NEW_VALUES_MAPS
      *         USE_EXPRESSIONS_IN_NEW_VALUES_MAPS}: When set to {@code true},
      *         all new values in {@code newValuesMaps} are considered as
@@ -600,6 +660,23 @@ public class UpdateRecordsRequest<T> {
      *                 UPDATE_PARTITION}: Force qualifying records to be
      *                 deleted and reinserted so their partition membership
      *                 will be reevaluated.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUNCATE_STRINGS
+     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
+     *                 are too long for their charN string fields will be
+     *                 truncated to fit.  The default value is false.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

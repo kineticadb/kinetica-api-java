@@ -47,6 +47,7 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
                 .name("bgColor").type().longType().noDefault()
                 .name("styleOptions").type().map().values().array().items().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
+                .name("cbTransparencyVec").type().array().items().intType().noDefault()
             .endRecord();
 
 
@@ -185,6 +186,7 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
     private long bgColor;
     private Map<String, List<String>> styleOptions;
     private Map<String, String> options;
+    private List<Integer> cbTransparencyVec;
 
 
     public VisualizeImageClassbreakRequest() {
@@ -205,9 +207,10 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         projection = "";
         styleOptions = new LinkedHashMap<>();
         options = new LinkedHashMap<>();
+        cbTransparencyVec = new ArrayList<>();
     }
 
-    public VisualizeImageClassbreakRequest(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbAttr, List<String> cbVals, String cbPointcolorAttr, List<String> cbPointcolorVals, String cbPointsizeAttr, List<String> cbPointsizeVals, String cbPointshapeAttr, List<String> cbPointshapeVals, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) {
+    public VisualizeImageClassbreakRequest(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbAttr, List<String> cbVals, String cbPointcolorAttr, List<String> cbPointcolorVals, String cbPointsizeAttr, List<String> cbPointsizeVals, String cbPointshapeAttr, List<String> cbPointshapeVals, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options, List<Integer> cbTransparencyVec) {
         this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
         this.worldTableNames = (worldTableNames == null) ? new ArrayList<String>() : worldTableNames;
         this.xColumnName = (xColumnName == null) ? "" : xColumnName;
@@ -232,6 +235,7 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         this.bgColor = bgColor;
         this.styleOptions = (styleOptions == null) ? new LinkedHashMap<String, List<String>>() : styleOptions;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
+        this.cbTransparencyVec = (cbTransparencyVec == null) ? new ArrayList<Integer>() : cbTransparencyVec;
     }
 
     public List<String> getTableNames() {
@@ -450,6 +454,15 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         return this;
     }
 
+    public List<Integer> getCbTransparencyVec() {
+        return cbTransparencyVec;
+    }
+
+    public VisualizeImageClassbreakRequest setCbTransparencyVec(List<Integer> cbTransparencyVec) {
+        this.cbTransparencyVec = (cbTransparencyVec == null) ? new ArrayList<Integer>() : cbTransparencyVec;
+        return this;
+    }
+
     @Override
     public Schema getSchema() {
         return schema$;
@@ -529,6 +542,9 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
 
             case 23:
                 return this.options;
+
+            case 24:
+                return this.cbTransparencyVec;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -635,6 +651,10 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
                 this.options = (Map<String, String>)value;
                 break;
 
+            case 24:
+                this.cbTransparencyVec = (List<Integer>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -676,7 +696,8 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
                  && this.projection.equals( that.projection )
                  && ( this.bgColor == that.bgColor )
                  && this.styleOptions.equals( that.styleOptions )
-                 && this.options.equals( that.options ) );
+                 && this.options.equals( that.options )
+                 && this.cbTransparencyVec.equals( that.cbTransparencyVec ) );
     }
 
 
@@ -780,6 +801,10 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.options ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "cbTransparencyVec" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.cbTransparencyVec ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -813,6 +838,7 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         hashCode = (31 * hashCode) + ((Long)this.bgColor).hashCode();
         hashCode = (31 * hashCode) + this.styleOptions.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
+        hashCode = (31 * hashCode) + this.cbTransparencyVec.hashCode();
         return hashCode;
     }
 

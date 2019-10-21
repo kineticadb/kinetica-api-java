@@ -44,9 +44,12 @@ public class KillProcRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link com.gpudb.protocol.KillProcRequest.Options#RUN_TAG
-     * RUN_TAG}: Kill only proc instances where a matching run tag was provided
-     * to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The default
-     * value is ''.
+     * RUN_TAG}: If {@code runId} is specified, kill the proc instance that has
+     * a matching run ID and a matching run tag that was provided to {@link
+     * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. If {@code runId} is
+     * not specified, kill the proc instance(s) where a matching run tag was
+     * provided to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
+     * The default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -54,9 +57,13 @@ public class KillProcRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Kill only proc instances where a matching run tag was provided to
-         * {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The
-         * default value is ''.
+         * If {@code runId} is specified, kill the proc instance that has a
+         * matching run ID and a matching run tag that was provided to {@link
+         * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. If {@code runId}
+         * is not specified, kill the proc instance(s) where a matching run tag
+         * was provided to {@link
+         * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The default value
+         * is ''.
          */
         public static final String RUN_TAG = "run_tag";
 
@@ -78,18 +85,23 @@ public class KillProcRequest implements IndexedRecord {
     /**
      * Constructs a KillProcRequest object with the specified parameters.
      * 
-     * @param runId  The run ID of the running proc instance. If the run ID is
-     *               not found or the proc instance has already completed, this
-     *               does nothing. If not specified, all running proc instances
-     *               will be killed.  The default value is ''.
+     * @param runId  The run ID of a running proc instance. If a proc with a
+     *               matching run ID is not found or the proc instance has
+     *               already completed, no procs will be killed. If not
+     *               specified, all running proc instances will be killed.  The
+     *               default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.KillProcRequest.Options#RUN_TAG
-     *                 RUN_TAG}: Kill only proc instances where a matching run
-     *                 tag was provided to {@link
-     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The
-     *                 default value is ''.
+     *                 RUN_TAG}: If {@code runId} is specified, kill the proc
+     *                 instance that has a matching run ID and a matching run
+     *                 tag that was provided to {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. If
+     *                 {@code runId} is not specified, kill the proc
+     *                 instance(s) where a matching run tag was provided to
+     *                 {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
+     *                 The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -101,10 +113,10 @@ public class KillProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The run ID of the running proc instance. If the run ID is not
-     *         found or the proc instance has already completed, this does
-     *         nothing. If not specified, all running proc instances will be
-     *         killed.  The default value is ''.
+     * @return The run ID of a running proc instance. If a proc with a matching
+     *         run ID is not found or the proc instance has already completed,
+     *         no procs will be killed. If not specified, all running proc
+     *         instances will be killed.  The default value is ''.
      * 
      */
     public String getRunId() {
@@ -113,10 +125,11 @@ public class KillProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @param runId  The run ID of the running proc instance. If the run ID is
-     *               not found or the proc instance has already completed, this
-     *               does nothing. If not specified, all running proc instances
-     *               will be killed.  The default value is ''.
+     * @param runId  The run ID of a running proc instance. If a proc with a
+     *               matching run ID is not found or the proc instance has
+     *               already completed, no procs will be killed. If not
+     *               specified, all running proc instances will be killed.  The
+     *               default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -131,10 +144,14 @@ public class KillProcRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.KillProcRequest.Options#RUN_TAG RUN_TAG}:
-     *         Kill only proc instances where a matching run tag was provided
-     *         to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The
-     *         default value is ''.
+     *         com.gpudb.protocol.KillProcRequest.Options#RUN_TAG RUN_TAG}: If
+     *         {@code runId} is specified, kill the proc instance that has a
+     *         matching run ID and a matching run tag that was provided to
+     *         {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. If
+     *         {@code runId} is not specified, kill the proc instance(s) where
+     *         a matching run tag was provided to {@link
+     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The default
+     *         value is ''.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -149,10 +166,14 @@ public class KillProcRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.KillProcRequest.Options#RUN_TAG
-     *                 RUN_TAG}: Kill only proc instances where a matching run
-     *                 tag was provided to {@link
-     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The
-     *                 default value is ''.
+     *                 RUN_TAG}: If {@code runId} is specified, kill the proc
+     *                 instance that has a matching run ID and a matching run
+     *                 tag that was provided to {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. If
+     *                 {@code runId} is not specified, kill the proc
+     *                 instance(s) where a matching run tag was provided to
+     *                 {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
+     *                 The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

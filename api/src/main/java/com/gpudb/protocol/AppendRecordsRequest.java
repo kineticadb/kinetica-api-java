@@ -94,9 +94,9 @@ public class AppendRecordsRequest implements IndexedRecord {
      * com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.AppendRecordsRequest.Options#TRUNCATE_STRINGS
-     * TRUNCATE_STRINGS}: If set to {true}@{, it allows appending longer
-     * strings to smaller charN string columns by truncating the longer string
-     * to fit.  The default value is false.
+     * TRUNCATE_STRINGS}: If set to {@code true}, it allows inserting longer
+     * strings into smaller charN string columns by truncating the longer
+     * strings to fit.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.AppendRecordsRequest.Options#TRUE
@@ -170,9 +170,9 @@ public class AppendRecordsRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * If set to {true}@{, it allows appending longer strings to smaller
-         * charN string columns by truncating the longer string to fit.  The
-         * default value is false.
+         * If set to {@code true}, it allows inserting longer strings into
+         * smaller charN string columns by truncating the longer strings to
+         * fit.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -277,10 +277,9 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUNCATE_STRINGS
-     *                 TRUNCATE_STRINGS}: If set to {true}@{, it allows
-     *                 appending longer strings to smaller charN string columns
-     *                 by truncating the longer string to fit.  The default
-     *                 value is false.
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, it allows
+     *                 inserting longer strings into smaller charN string
+     *                 columns by truncating the longer strings to fit.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -439,9 +438,9 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         com.gpudb.protocol.AppendRecordsRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.AppendRecordsRequest.Options#TRUNCATE_STRINGS
-     *         TRUNCATE_STRINGS}: If set to {true}@{, it allows appending
-     *         longer strings to smaller charN string columns by truncating the
-     *         longer string to fit.  The default value is false.
+     *         TRUNCATE_STRINGS}: If set to {@code true}, it allows inserting
+     *         longer strings into smaller charN string columns by truncating
+     *         the longer strings to fit.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -518,10 +517,9 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AppendRecordsRequest.Options#TRUNCATE_STRINGS
-     *                 TRUNCATE_STRINGS}: If set to {true}@{, it allows
-     *                 appending longer strings to smaller charN string columns
-     *                 by truncating the longer string to fit.  The default
-     *                 value is false.
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, it allows
+     *                 inserting longer strings into smaller charN string
+     *                 columns by truncating the longer strings to fit.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

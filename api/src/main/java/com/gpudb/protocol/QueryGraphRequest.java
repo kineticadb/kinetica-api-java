@@ -73,11 +73,11 @@ public class QueryGraphRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#FORCE_UNDIRECTED
-     * FORCE_UNDIRECTED}: This parameter is only applicable if the queried
-     * graph {@code graphName} is directed and when querying nodes. If set to
-     * {@code true}, all inbound edges and outbound edges relative to the node
-     * will be returned. If set to {@code false}, only outbound edges relative
-     * to the node will be returned.
+     * FORCE_UNDIRECTED}: If set to {@code true}, all inbound edges and
+     * outbound edges relative to the node will be returned. If set to {@code
+     * false}, only outbound edges relative to the node will be returned. This
+     * parameter is only applicable if the queried graph {@code graphName} is
+     * directed and when querying nodes.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#TRUE
@@ -95,8 +95,10 @@ public class QueryGraphRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
      * TARGET_NODES_TABLE}: Name of the table to store the list of the final
-     * nodes reached during the traversal. If this value is not given it'll
-     * default to adjacemcy_table+'_nodes'.  The default value is ''.
+     * nodes reached during the traversal. If this value is left as the
+     * default, the table name will default to the {@code adjacencyTable} value
+     * plus a '_nodes' suffix, e.g., '<adjacency_table_name>_nodes'.  The
+     * default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      * RESTRICTION_THRESHOLD_VALUE}: Value-based restriction comparison. Any
@@ -107,8 +109,8 @@ public class QueryGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_QUERY_RESULTS
      * EXPORT_QUERY_RESULTS}: Returns query results in the response. If set to
      * {@code true}, the {@code adjacencyListIntArray} (if the query was based
-     * on IDs), @{adjacency_list_string_array} (if the query was based on
-     * names), or @{output_adjacency_list_wkt_array} (if the query was based on
+     * on IDs), {@code adjacencyListStringArray} (if the query was based on
+     * names), or {@code adjacencyListWktArray} (if the query was based on
      * WKTs) will be populated with the results. If set to {@code false}, none
      * of the arrays will be populated.
      * Supported values:
@@ -158,11 +160,11 @@ public class QueryGraphRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * This parameter is only applicable if the queried graph {@code
-         * graphName} is directed and when querying nodes. If set to {@code
-         * true}, all inbound edges and outbound edges relative to the node
-         * will be returned. If set to {@code false}, only outbound edges
-         * relative to the node will be returned.
+         * If set to {@code true}, all inbound edges and outbound edges
+         * relative to the node will be returned. If set to {@code false}, only
+         * outbound edges relative to the node will be returned. This parameter
+         * is only applicable if the queried graph {@code graphName} is
+         * directed and when querying nodes.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -187,8 +189,10 @@ public class QueryGraphRequest implements IndexedRecord {
 
         /**
          * Name of the table to store the list of the final nodes reached
-         * during the traversal. If this value is not given it'll default to
-         * adjacemcy_table+'_nodes'.  The default value is ''.
+         * during the traversal. If this value is left as the default, the
+         * table name will default to the {@code adjacencyTable} value plus a
+         * '_nodes' suffix, e.g., '<adjacency_table_name>_nodes'.  The default
+         * value is ''.
          */
         public static final String TARGET_NODES_TABLE = "target_nodes_table";
 
@@ -202,8 +206,8 @@ public class QueryGraphRequest implements IndexedRecord {
         /**
          * Returns query results in the response. If set to {@code true}, the
          * {@code adjacencyListIntArray} (if the query was based on IDs),
-         * @{adjacency_list_string_array} (if the query was based on names), or
-         * @{output_adjacency_list_wkt_array} (if the query was based on WKTs)
+         * {@code adjacencyListStringArray} (if the query was based on names),
+         * or {@code adjacencyListWktArray} (if the query was based on WKTs)
          * will be populated with the results. If set to {@code false}, none of
          * the arrays will be populated.
          * Supported values:
@@ -320,27 +324,27 @@ public class QueryGraphRequest implements IndexedRecord {
      *                        href="../../../../../graph_solver/network_graph_solver.html#using-labels"
      *                        target="_top">Using Labels</a> for more
      *                        information.  The default value is ''.
-     * @param rings  Only applicable when querying nodes. Sets the number of
-     *               rings around the node to query for adjacency, with '1'
-     *               being the edges directly attached to the queried node.
-     *               Also known as number of hops. For example, if it is set to
-     *               '2', the edge(s) directly attached to the queried node(s)
-     *               will be returned; in addition, the edge(s) attached to the
-     *               node(s) attached to the initial ring of edge(s)
-     *               surrounding the queried node(s) will be returned. This
-     *               setting can be '0' in which case if the node type id
-     *               label, it'll then query for all that has the same
-     *               property.  The default value is 1.
+     * @param rings  Sets the number of rings around the node to query for
+     *               adjacency, with '1' being the edges directly attached to
+     *               the queried node. Also known as number of hops. For
+     *               example, if it is set to '2', the edge(s) directly
+     *               attached to the queried node(s) will be returned; in
+     *               addition, the edge(s) attached to the node(s) attached to
+     *               the initial ring of edge(s) surrounding the queried
+     *               node(s) will be returned. If the value is set to '0', any
+     *               nodes that meet the criteria in {@code queries} and {@code
+     *               restrictions} will be returned. This parameter is only
+     *               applicable when querying nodes.  The default value is 1.
      * @param options  Additional parameters
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#FORCE_UNDIRECTED
-     *                 FORCE_UNDIRECTED}: This parameter is only applicable if
-     *                 the queried graph {@code graphName} is directed and when
-     *                 querying nodes. If set to {@code true}, all inbound
+     *                 FORCE_UNDIRECTED}: If set to {@code true}, all inbound
      *                 edges and outbound edges relative to the node will be
      *                 returned. If set to {@code false}, only outbound edges
-     *                 relative to the node will be returned.
+     *                 relative to the node will be returned. This parameter is
+     *                 only applicable if the queried graph {@code graphName}
+     *                 is directed and when querying nodes.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -363,8 +367,10 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
      *                 TARGET_NODES_TABLE}: Name of the table to store the list
      *                 of the final nodes reached during the traversal. If this
-     *                 value is not given it'll default to
-     *                 adjacemcy_table+'_nodes'.  The default value is ''.
+     *                 value is left as the default, the table name will
+     *                 default to the {@code adjacencyTable} value plus a
+     *                 '_nodes' suffix, e.g., '<adjacency_table_name>_nodes'.
+     *                 The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
@@ -377,8 +383,8 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 EXPORT_QUERY_RESULTS}: Returns query results in the
      *                 response. If set to {@code true}, the {@code
      *                 adjacencyListIntArray} (if the query was based on IDs),
-     *                 @{adjacency_list_string_array} (if the query was based
-     *                 on names), or @{output_adjacency_list_wkt_array} (if the
+     *                 {@code adjacencyListStringArray} (if the query was based
+     *                 on names), or {@code adjacencyListWktArray} (if the
      *                 query was based on WKTs) will be populated with the
      *                 results. If set to {@code false}, none of the arrays
      *                 will be populated.
@@ -600,16 +606,16 @@ public class QueryGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Only applicable when querying nodes. Sets the number of rings
-     *         around the node to query for adjacency, with '1' being the edges
-     *         directly attached to the queried node. Also known as number of
-     *         hops. For example, if it is set to '2', the edge(s) directly
-     *         attached to the queried node(s) will be returned; in addition,
-     *         the edge(s) attached to the node(s) attached to the initial ring
-     *         of edge(s) surrounding the queried node(s) will be returned.
-     *         This setting can be '0' in which case if the node type id label,
-     *         it'll then query for all that has the same property.  The
-     *         default value is 1.
+     * @return Sets the number of rings around the node to query for adjacency,
+     *         with '1' being the edges directly attached to the queried node.
+     *         Also known as number of hops. For example, if it is set to '2',
+     *         the edge(s) directly attached to the queried node(s) will be
+     *         returned; in addition, the edge(s) attached to the node(s)
+     *         attached to the initial ring of edge(s) surrounding the queried
+     *         node(s) will be returned. If the value is set to '0', any nodes
+     *         that meet the criteria in {@code queries} and {@code
+     *         restrictions} will be returned. This parameter is only
+     *         applicable when querying nodes.  The default value is 1.
      * 
      */
     public int getRings() {
@@ -618,17 +624,17 @@ public class QueryGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @param rings  Only applicable when querying nodes. Sets the number of
-     *               rings around the node to query for adjacency, with '1'
-     *               being the edges directly attached to the queried node.
-     *               Also known as number of hops. For example, if it is set to
-     *               '2', the edge(s) directly attached to the queried node(s)
-     *               will be returned; in addition, the edge(s) attached to the
-     *               node(s) attached to the initial ring of edge(s)
-     *               surrounding the queried node(s) will be returned. This
-     *               setting can be '0' in which case if the node type id
-     *               label, it'll then query for all that has the same
-     *               property.  The default value is 1.
+     * @param rings  Sets the number of rings around the node to query for
+     *               adjacency, with '1' being the edges directly attached to
+     *               the queried node. Also known as number of hops. For
+     *               example, if it is set to '2', the edge(s) directly
+     *               attached to the queried node(s) will be returned; in
+     *               addition, the edge(s) attached to the node(s) attached to
+     *               the initial ring of edge(s) surrounding the queried
+     *               node(s) will be returned. If the value is set to '0', any
+     *               nodes that meet the criteria in {@code queries} and {@code
+     *               restrictions} will be returned. This parameter is only
+     *               applicable when querying nodes.  The default value is 1.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -644,12 +650,11 @@ public class QueryGraphRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#FORCE_UNDIRECTED
-     *         FORCE_UNDIRECTED}: This parameter is only applicable if the
-     *         queried graph {@code graphName} is directed and when querying
-     *         nodes. If set to {@code true}, all inbound edges and outbound
-     *         edges relative to the node will be returned. If set to {@code
-     *         false}, only outbound edges relative to the node will be
-     *         returned.
+     *         FORCE_UNDIRECTED}: If set to {@code true}, all inbound edges and
+     *         outbound edges relative to the node will be returned. If set to
+     *         {@code false}, only outbound edges relative to the node will be
+     *         returned. This parameter is only applicable if the queried graph
+     *         {@code graphName} is directed and when querying nodes.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -668,9 +673,10 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
      *         TARGET_NODES_TABLE}: Name of the table to store the list of the
-     *         final nodes reached during the traversal. If this value is not
-     *         given it'll default to adjacemcy_table+'_nodes'.  The default
-     *         value is ''.
+     *         final nodes reached during the traversal. If this value is left
+     *         as the default, the table name will default to the {@code
+     *         adjacencyTable} value plus a '_nodes' suffix, e.g.,
+     *         '<adjacency_table_name>_nodes'.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      *         RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
@@ -681,8 +687,8 @@ public class QueryGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_QUERY_RESULTS
      *         EXPORT_QUERY_RESULTS}: Returns query results in the response. If
      *         set to {@code true}, the {@code adjacencyListIntArray} (if the
-     *         query was based on IDs), @{adjacency_list_string_array} (if the
-     *         query was based on names), or @{output_adjacency_list_wkt_array}
+     *         query was based on IDs), {@code adjacencyListStringArray} (if
+     *         the query was based on names), or {@code adjacencyListWktArray}
      *         (if the query was based on WKTs) will be populated with the
      *         results. If set to {@code false}, none of the arrays will be
      *         populated.
@@ -741,12 +747,12 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#FORCE_UNDIRECTED
-     *                 FORCE_UNDIRECTED}: This parameter is only applicable if
-     *                 the queried graph {@code graphName} is directed and when
-     *                 querying nodes. If set to {@code true}, all inbound
+     *                 FORCE_UNDIRECTED}: If set to {@code true}, all inbound
      *                 edges and outbound edges relative to the node will be
      *                 returned. If set to {@code false}, only outbound edges
-     *                 relative to the node will be returned.
+     *                 relative to the node will be returned. This parameter is
+     *                 only applicable if the queried graph {@code graphName}
+     *                 is directed and when querying nodes.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -769,8 +775,10 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
      *                 TARGET_NODES_TABLE}: Name of the table to store the list
      *                 of the final nodes reached during the traversal. If this
-     *                 value is not given it'll default to
-     *                 adjacemcy_table+'_nodes'.  The default value is ''.
+     *                 value is left as the default, the table name will
+     *                 default to the {@code adjacencyTable} value plus a
+     *                 '_nodes' suffix, e.g., '<adjacency_table_name>_nodes'.
+     *                 The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
@@ -783,8 +791,8 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 EXPORT_QUERY_RESULTS}: Returns query results in the
      *                 response. If set to {@code true}, the {@code
      *                 adjacencyListIntArray} (if the query was based on IDs),
-     *                 @{adjacency_list_string_array} (if the query was based
-     *                 on names), or @{output_adjacency_list_wkt_array} (if the
+     *                 {@code adjacencyListStringArray} (if the query was based
+     *                 on names), or {@code adjacencyListWktArray} (if the
      *                 query was based on WKTs) will be populated with the
      *                 results. If set to {@code false}, none of the arrays
      *                 will be populated.

@@ -77,9 +77,8 @@ public class InsertRecordsRequest<T> {
      * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUNCATE_STRINGS
-     * TRUNCATE_STRINGS}: If set to {true}@{, any strings which are too long
-     * for their charN string fields will be truncated to fit.  The default
-     * value is false.
+     * TRUNCATE_STRINGS}: If set to {@code true}, any strings which are too
+     * long for their target charN string columns will be truncated to fit.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -135,8 +134,8 @@ public class InsertRecordsRequest<T> {
         public static final String RETURN_RECORD_IDS = "return_record_ids";
 
         /**
-         * If set to {true}@{, any strings which are too long for their charN
-         * string fields will be truncated to fit.  The default value is false.
+         * If set to {@code true}, any strings which are too long for their
+         * target charN string columns will be truncated to fit.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -220,9 +219,9 @@ public class InsertRecordsRequest<T> {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUNCATE_STRINGS
-     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
-     *                 are too long for their charN string fields will be
-     *                 truncated to fit.  The default value is false.
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, any strings
+     *                 which are too long for their target charN string columns
+     *                 will be truncated to fit.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -333,9 +332,9 @@ public class InsertRecordsRequest<T> {
      *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUNCATE_STRINGS
-     *         TRUNCATE_STRINGS}: If set to {true}@{, any strings which are too
-     *         long for their charN string fields will be truncated to fit.
-     *         The default value is false.
+     *         TRUNCATE_STRINGS}: If set to {@code true}, any strings which are
+     *         too long for their target charN string columns will be truncated
+     *         to fit.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -401,9 +400,9 @@ public class InsertRecordsRequest<T> {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUNCATE_STRINGS
-     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
-     *                 are too long for their charN string fields will be
-     *                 truncated to fit.  The default value is false.
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, any strings
+     *                 which are too long for their target charN string columns
+     *                 will be truncated to fit.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

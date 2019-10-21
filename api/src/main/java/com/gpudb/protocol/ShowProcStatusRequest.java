@@ -63,10 +63,14 @@ public class ShowProcStatusRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE FALSE}.
      *         <li> {@link
-     * com.gpudb.protocol.ShowProcStatusRequest.Options#RUN_TAG RUN_TAG}: Limit
-     * statuses to proc instances where a matching run tag was provided to
-     * {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The default
-     * value is ''.
+     * com.gpudb.protocol.ShowProcStatusRequest.Options#RUN_TAG RUN_TAG}: If
+     * {@code runId} is specified, return the status for a proc instance that
+     * has a matching run ID and a matching run tag that was provided to {@link
+     * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. If {@code runId} is
+     * not specified, return statuses for all proc instances where a matching
+     * run tag was provided to {@link
+     * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The default value is
+     * ''.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -92,9 +96,13 @@ public class ShowProcStatusRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Limit statuses to proc instances where a matching run tag was
-         * provided to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
-         * The default value is ''.
+         * If {@code runId} is specified, return the status for a proc instance
+         * that has a matching run ID and a matching run tag that was provided
+         * to {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. If
+         * {@code runId} is not specified, return statuses for all proc
+         * instances where a matching run tag was provided to {@link
+         * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The default value
+         * is ''.
          */
         public static final String RUN_TAG = "run_tag";
 
@@ -116,11 +124,11 @@ public class ShowProcStatusRequest implements IndexedRecord {
     /**
      * Constructs a ShowProcStatusRequest object with the specified parameters.
      * 
-     * @param runId  The run ID of a specific running or completed proc
-     *               instance for which the status will be returned. If the run
-     *               ID is not found, nothing will be returned. If not
-     *               specified, the statuses of all running and completed proc
-     *               instances will be returned.  The default value is ''.
+     * @param runId  The run ID of a specific proc instance for which the
+     *               status will be returned. If a proc with a matching run ID
+     *               is not found, the response will be empty. If not
+     *               specified, the statuses of all executed proc instances
+     *               will be returned.  The default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -143,10 +151,14 @@ public class ShowProcStatusRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowProcStatusRequest.Options#RUN_TAG
-     *                 RUN_TAG}: Limit statuses to proc instances where a
-     *                 matching run tag was provided to {@link
-     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The
-     *                 default value is ''.
+     *                 RUN_TAG}: If {@code runId} is specified, return the
+     *                 status for a proc instance that has a matching run ID
+     *                 and a matching run tag that was provided to {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. If
+     *                 {@code runId} is not specified, return statuses for all
+     *                 proc instances where a matching run tag was provided to
+     *                 {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
+     *                 The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -158,11 +170,11 @@ public class ShowProcStatusRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The run ID of a specific running or completed proc instance for
-     *         which the status will be returned. If the run ID is not found,
-     *         nothing will be returned. If not specified, the statuses of all
-     *         running and completed proc instances will be returned.  The
-     *         default value is ''.
+     * @return The run ID of a specific proc instance for which the status will
+     *         be returned. If a proc with a matching run ID is not found, the
+     *         response will be empty. If not specified, the statuses of all
+     *         executed proc instances will be returned.  The default value is
+     *         ''.
      * 
      */
     public String getRunId() {
@@ -171,11 +183,11 @@ public class ShowProcStatusRequest implements IndexedRecord {
 
     /**
      * 
-     * @param runId  The run ID of a specific running or completed proc
-     *               instance for which the status will be returned. If the run
-     *               ID is not found, nothing will be returned. If not
-     *               specified, the statuses of all running and completed proc
-     *               instances will be returned.  The default value is ''.
+     * @param runId  The run ID of a specific proc instance for which the
+     *               status will be returned. If a proc with a matching run ID
+     *               is not found, the response will be empty. If not
+     *               specified, the statuses of all executed proc instances
+     *               will be returned.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -206,8 +218,12 @@ public class ShowProcStatusRequest implements IndexedRecord {
      *         com.gpudb.protocol.ShowProcStatusRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.ShowProcStatusRequest.Options#RUN_TAG
-     *         RUN_TAG}: Limit statuses to proc instances where a matching run
-     *         tag was provided to {@link
+     *         RUN_TAG}: If {@code runId} is specified, return the status for a
+     *         proc instance that has a matching run ID and a matching run tag
+     *         that was provided to {@link
+     *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. If {@code
+     *         runId} is not specified, return statuses for all proc instances
+     *         where a matching run tag was provided to {@link
      *         com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The default
      *         value is ''.
      *         </ul>
@@ -242,10 +258,14 @@ public class ShowProcStatusRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowProcStatusRequest.Options#RUN_TAG
-     *                 RUN_TAG}: Limit statuses to proc instances where a
-     *                 matching run tag was provided to {@link
-     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.  The
-     *                 default value is ''.
+     *                 RUN_TAG}: If {@code runId} is specified, return the
+     *                 status for a proc instance that has a matching run ID
+     *                 and a matching run tag that was provided to {@link
+     *                 com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}. If
+     *                 {@code runId} is not specified, return statuses for all
+     *                 proc instances where a matching run tag was provided to
+     *                 {@link com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
+     *                 The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

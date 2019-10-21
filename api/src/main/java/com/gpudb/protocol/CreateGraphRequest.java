@@ -159,9 +159,11 @@ public class CreateGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateGraphRequest.Options#SYNC_DB SYNC_DB}: If set
-     * to {@code true}, the graph will be updated if its source table(s) is
-     * updated. If set to {@code false}, the graph will not be updated if the
-     * source table(s) is updated.
+     * to {@code true} and {@code save_persist} is set to {@code true}, the
+     * graph will be fully reconstructed upon a database restart and be updated
+     * to align with any source table(s) updates made since the creation of the
+     * graph. If dynamic graph updates upon table inserts are desired, use
+     * {@code add_table_monitor} instead.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.CreateGraphRequest.Options#TRUE
@@ -174,7 +176,11 @@ public class CreateGraphRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateGraphRequest.Options#ADD_TABLE_MONITOR
      * ADD_TABLE_MONITOR}: Adds a table monitor to every table used in the
-     * creation of the graph. For more details on table monitors, see {@link
+     * creation of the graph; this table monitor will trigger the graph to
+     * update dynamically upon inserts to the source table(s). Note that upon
+     * database restart, if {@code save_persist} is also set to {@code true},
+     * the graph will be fully reconstructed and the table monitors will be
+     * reattached. For more details on table monitors, see {@link
      * com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
      * Supported values:
      * <ul>
@@ -305,9 +311,11 @@ public class CreateGraphRequest implements IndexedRecord {
         public static final String SAVE_PERSIST = "save_persist";
 
         /**
-         * If set to {@code true}, the graph will be updated if its source
-         * table(s) is updated. If set to {@code false}, the graph will not be
-         * updated if the source table(s) is updated.
+         * If set to {@code true} and {@code save_persist} is set to {@code
+         * true}, the graph will be fully reconstructed upon a database restart
+         * and be updated to align with any source table(s) updates made since
+         * the creation of the graph. If dynamic graph updates upon table
+         * inserts are desired, use {@code add_table_monitor} instead.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -322,7 +330,11 @@ public class CreateGraphRequest implements IndexedRecord {
 
         /**
          * Adds a table monitor to every table used in the creation of the
-         * graph. For more details on table monitors, see {@link
+         * graph; this table monitor will trigger the graph to update
+         * dynamically upon inserts to the source table(s). Note that upon
+         * database restart, if {@code save_persist} is also set to {@code
+         * true}, the graph will be fully reconstructed and the table monitors
+         * will be reattached. For more details on table monitors, see {@link
          * com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
          * Supported values:
          * <ul>
@@ -549,10 +561,13 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#SYNC_DB
-     *                 SYNC_DB}: If set to {@code true}, the graph will be
-     *                 updated if its source table(s) is updated. If set to
-     *                 {@code false}, the graph will not be updated if the
-     *                 source table(s) is updated.
+     *                 SYNC_DB}: If set to {@code true} and {@code
+     *                 save_persist} is set to {@code true}, the graph will be
+     *                 fully reconstructed upon a database restart and be
+     *                 updated to align with any source table(s) updates made
+     *                 since the creation of the graph. If dynamic graph
+     *                 updates upon table inserts are desired, use {@code
+     *                 add_table_monitor} instead.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -567,7 +582,12 @@ public class CreateGraphRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#ADD_TABLE_MONITOR
      *                 ADD_TABLE_MONITOR}: Adds a table monitor to every table
-     *                 used in the creation of the graph. For more details on
+     *                 used in the creation of the graph; this table monitor
+     *                 will trigger the graph to update dynamically upon
+     *                 inserts to the source table(s). Note that upon database
+     *                 restart, if {@code save_persist} is also set to {@code
+     *                 true}, the graph will be fully reconstructed and the
+     *                 table monitors will be reattached. For more details on
      *                 table monitors, see {@link
      *                 com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
      *                 Supported values:
@@ -945,9 +965,12 @@ public class CreateGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateGraphRequest.Options#SYNC_DB SYNC_DB}:
-     *         If set to {@code true}, the graph will be updated if its source
-     *         table(s) is updated. If set to {@code false}, the graph will not
-     *         be updated if the source table(s) is updated.
+     *         If set to {@code true} and {@code save_persist} is set to {@code
+     *         true}, the graph will be fully reconstructed upon a database
+     *         restart and be updated to align with any source table(s) updates
+     *         made since the creation of the graph. If dynamic graph updates
+     *         upon table inserts are desired, use {@code add_table_monitor}
+     *         instead.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -960,8 +983,12 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateGraphRequest.Options#ADD_TABLE_MONITOR
      *         ADD_TABLE_MONITOR}: Adds a table monitor to every table used in
-     *         the creation of the graph. For more details on table monitors,
-     *         see {@link
+     *         the creation of the graph; this table monitor will trigger the
+     *         graph to update dynamically upon inserts to the source table(s).
+     *         Note that upon database restart, if {@code save_persist} is also
+     *         set to {@code true}, the graph will be fully reconstructed and
+     *         the table monitors will be reattached. For more details on table
+     *         monitors, see {@link
      *         com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
      *         Supported values:
      *         <ul>
@@ -1093,10 +1120,13 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#SYNC_DB
-     *                 SYNC_DB}: If set to {@code true}, the graph will be
-     *                 updated if its source table(s) is updated. If set to
-     *                 {@code false}, the graph will not be updated if the
-     *                 source table(s) is updated.
+     *                 SYNC_DB}: If set to {@code true} and {@code
+     *                 save_persist} is set to {@code true}, the graph will be
+     *                 fully reconstructed upon a database restart and be
+     *                 updated to align with any source table(s) updates made
+     *                 since the creation of the graph. If dynamic graph
+     *                 updates upon table inserts are desired, use {@code
+     *                 add_table_monitor} instead.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1111,7 +1141,12 @@ public class CreateGraphRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#ADD_TABLE_MONITOR
      *                 ADD_TABLE_MONITOR}: Adds a table monitor to every table
-     *                 used in the creation of the graph. For more details on
+     *                 used in the creation of the graph; this table monitor
+     *                 will trigger the graph to update dynamically upon
+     *                 inserts to the source table(s). Note that upon database
+     *                 restart, if {@code save_persist} is also set to {@code
+     *                 true}, the graph will be fully reconstructed and the
+     *                 table monitors will be reattached. For more details on
      *                 table monitors, see {@link
      *                 com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
      *                 Supported values:
