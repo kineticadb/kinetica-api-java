@@ -774,6 +774,7 @@ public class BulkInserter<T> {
         return countUpdated.get();
     }
 
+
     /**
      * Ensures that any queued records are inserted into GPUdb. If an error
      * occurs while inserting the records from any queue, the records will no
@@ -797,10 +798,9 @@ public class BulkInserter<T> {
                 queue = workerQueue.flush();
             }
 
-            flush(queue, workerQueue.getUrl(), true);
+            flush( queue, workerQueue.getUrl(), true );
         }
     }
-
 
     @SuppressWarnings("unchecked")
     private void flush(List<T> queue, URL url, boolean forcedFlush) throws InsertException {
@@ -858,14 +858,12 @@ public class BulkInserter<T> {
                             // Switch to a different cluster in the HA ring, if any
                             forceHAFailover( currURL, currentCountClusterSwitches );
                         } catch (GPUdbException ex2) {
-                            if (retries <= 0) {
-                                // We've now tried all the HA clusters and circled back;
-                                // propagate the error to the user, but only there
-                                // are no more retries left
-                                String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
-                                throw new GPUdbException( originalCause
-                                                          + ex2.getMessage(), true );
-                            }
+                            // We've now tried all the HA clusters and circled back;
+                            // propagate the error to the user, but only there
+                            // are no more retries left
+                            String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
+                            throw new GPUdbException( originalCause
+                                                      + ex2.getMessage(), true );
                         }
                     }
 
@@ -961,6 +959,8 @@ public class BulkInserter<T> {
         }
     }
 
+
+    
     /**
      * Queues a record for insertion into GPUdb. If the queue reaches the
      * {@link #getBatchSize batch size}, all records in the queue will be

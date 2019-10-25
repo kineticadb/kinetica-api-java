@@ -2,6 +2,11 @@
 
 ## Version 7.0
 
+### Version 7.0.8.2 - 2019-10-25
+
+#### Fixed
+-   Multi-head insertion high-availability failover issue when retryCount > 0
+
 ### Version 7.0.8.1 - 2019-10-21
 
 #### Fixed
