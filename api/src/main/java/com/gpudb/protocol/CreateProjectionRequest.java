@@ -40,6 +40,15 @@ import org.apache.avro.generic.IndexedRecord;
  * projection will be sharded according to the specified columns, regardless of
  * how the source table is sharded.  The source table can even be unsharded or
  * replicated.
+ * <p>
+ * If {@code tableName} is empty, selection is performed against a single-row
+ * virtual table.  This can be useful in executing temporal (<a
+ * href="../../../../../concepts/expressions.html#date-time-functions"
+ * target="_top">NOW()</a>), identity (<a
+ * href="../../../../../concepts/expressions.html#user-security-functions"
+ * target="_top">USER()</a>), or constant-based functions (<a
+ * href="../../../../../concepts/expressions.html#scalar-functions"
+ * target="_top">GEODIST(-77.11, 38.88, -71.06, 42.36)</a>).
  */
 public class CreateProjectionRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -119,11 +128,12 @@ public class CreateProjectionRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
-     * CHUNK_SIZE}: Indicates the chunk size to be used for this table.
+     * CHUNK_SIZE}: Indicates the number of records per chunk to be used for
+     * this projection.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#CREATE_INDEXES
      * CREATE_INDEXES}: Comma-separated list of columns on which to create
-     * indexes on the output table.  The columns specified must be present in
+     * indexes on the projection.  The columns specified must be present in
      * {@code columnNames}.  If any alias is given for any column name, the
      * alias must be used, rather than the original column name.
      *         <li> {@link
@@ -154,8 +164,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#PRESERVE_DICT_ENCODING
      * PRESERVE_DICT_ENCODING}: If {@code true}, then columns that were dict
-     * encoded in the source table will be dict encoded in the projection
-     * table.
+     * encoded in the source table will be dict encoded in the projection.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -166,8 +175,21 @@ public class CreateProjectionRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}.
      *         <li> {@link
-     * com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID VIEW_ID}:
-     * view this projection is part of.  The default value is ''.
+     * com.gpudb.protocol.CreateProjectionRequest.Options#RETAIN_PARTITIONS
+     * RETAIN_PARTITIONS}: Determines whether the created projection will
+     * retain the partitioning scheme from the source table.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID VIEW_ID}: ID
+     * of view of which this projection is a member.  The default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -238,13 +260,14 @@ public class CreateProjectionRequest implements IndexedRecord {
         public static final String MATERIALIZE_ON_GPU = "materialize_on_gpu";
 
         /**
-         * Indicates the chunk size to be used for this table.
+         * Indicates the number of records per chunk to be used for this
+         * projection.
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
         /**
          * Comma-separated list of columns on which to create indexes on the
-         * output table.  The columns specified must be present in {@code
+         * projection.  The columns specified must be present in {@code
          * columnNames}.  If any alias is given for any column name, the alias
          * must be used, rather than the original column name.
          */
@@ -286,7 +309,7 @@ public class CreateProjectionRequest implements IndexedRecord {
 
         /**
          * If {@code true}, then columns that were dict encoded in the source
-         * table will be dict encoded in the projection table.
+         * table will be dict encoded in the projection.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -300,7 +323,23 @@ public class CreateProjectionRequest implements IndexedRecord {
         public static final String PRESERVE_DICT_ENCODING = "preserve_dict_encoding";
 
         /**
-         * view this projection is part of.  The default value is ''.
+         * Determines whether the created projection will retain the
+         * partitioning scheme from the source table.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+         */
+        public static final String RETAIN_PARTITIONS = "retain_partitions";
+
+        /**
+         * ID of view of which this projection is a member.  The default value
+         * is ''.
          */
         public static final String VIEW_ID = "view_id";
 
@@ -328,7 +367,10 @@ public class CreateProjectionRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of the existing table on which the projection is
-     *                   to be applied.
+     *                   to be applied.  An empty table name creates a
+     *                   projection from a single-row virtual table, where
+     *                   columns specified should be constants or constant
+     *                   expressions.
      * @param projectionName  Name of the projection to be created. Has the
      *                        same naming restrictions as <a
      *                        href="../../../../../concepts/tables.html"
@@ -400,16 +442,15 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
-     *                 this table.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for this projection.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#CREATE_INDEXES
      *                 CREATE_INDEXES}: Comma-separated list of columns on
-     *                 which to create indexes on the output table.  The
-     *                 columns specified must be present in {@code
-     *                 columnNames}.  If any alias is given for any column
-     *                 name, the alias must be used, rather than the original
-     *                 column name.
+     *                 which to create indexes on the projection.  The columns
+     *                 specified must be present in {@code columnNames}.  If
+     *                 any alias is given for any column name, the alias must
+     *                 be used, rather than the original column name.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#TTL
      *                 TTL}: Sets the <a
@@ -448,7 +489,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#PRESERVE_DICT_ENCODING
      *                 PRESERVE_DICT_ENCODING}: If {@code true}, then columns
      *                 that were dict encoded in the source table will be dict
-     *                 encoded in the projection table.
+     *                 encoded in the projection.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -462,9 +503,26 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
      *                 TRUE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#RETAIN_PARTITIONS
+     *                 RETAIN_PARTITIONS}: Determines whether the created
+     *                 projection will retain the partitioning scheme from the
+     *                 source table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this projection is part of.  The default
-     *                 value is ''.
+     *                 VIEW_ID}: ID of view of which this projection is a
+     *                 member.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -479,7 +537,9 @@ public class CreateProjectionRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the existing table on which the projection is to be
-     *         applied.
+     *         applied.  An empty table name creates a projection from a
+     *         single-row virtual table, where columns specified should be
+     *         constants or constant expressions.
      * 
      */
     public String getTableName() {
@@ -489,7 +549,10 @@ public class CreateProjectionRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the existing table on which the projection is
-     *                   to be applied.
+     *                   to be applied.  An empty table name creates a
+     *                   projection from a single-row virtual table, where
+     *                   columns specified should be constants or constant
+     *                   expressions.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -607,14 +670,15 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
-     *         CHUNK_SIZE}: Indicates the chunk size to be used for this table.
+     *         CHUNK_SIZE}: Indicates the number of records per chunk to be
+     *         used for this projection.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#CREATE_INDEXES
      *         CREATE_INDEXES}: Comma-separated list of columns on which to
-     *         create indexes on the output table.  The columns specified must
-     *         be present in {@code columnNames}.  If any alias is given for
-     *         any column name, the alias must be used, rather than the
-     *         original column name.
+     *         create indexes on the projection.  The columns specified must be
+     *         present in {@code columnNames}.  If any alias is given for any
+     *         column name, the alias must be used, rather than the original
+     *         column name.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#TTL TTL}:
      *         Sets the <a href="../../../../../concepts/ttl.html"
@@ -647,7 +711,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateProjectionRequest.Options#PRESERVE_DICT_ENCODING
      *         PRESERVE_DICT_ENCODING}: If {@code true}, then columns that were
      *         dict encoded in the source table will be dict encoded in the
-     *         projection table.
+     *         projection.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -658,9 +722,22 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#RETAIN_PARTITIONS
+     *         RETAIN_PARTITIONS}: Determines whether the created projection
+     *         will retain the partitioning scheme from the source table.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
-     *         VIEW_ID}: view this projection is part of.  The default value is
-     *         ''.
+     *         VIEW_ID}: ID of view of which this projection is a member.  The
+     *         default value is ''.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -734,16 +811,15 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
-     *                 this table.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for this projection.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#CREATE_INDEXES
      *                 CREATE_INDEXES}: Comma-separated list of columns on
-     *                 which to create indexes on the output table.  The
-     *                 columns specified must be present in {@code
-     *                 columnNames}.  If any alias is given for any column
-     *                 name, the alias must be used, rather than the original
-     *                 column name.
+     *                 which to create indexes on the projection.  The columns
+     *                 specified must be present in {@code columnNames}.  If
+     *                 any alias is given for any column name, the alias must
+     *                 be used, rather than the original column name.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#TTL
      *                 TTL}: Sets the <a
@@ -782,7 +858,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#PRESERVE_DICT_ENCODING
      *                 PRESERVE_DICT_ENCODING}: If {@code true}, then columns
      *                 that were dict encoded in the source table will be dict
-     *                 encoded in the projection table.
+     *                 encoded in the projection.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -796,9 +872,26 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
      *                 TRUE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#RETAIN_PARTITIONS
+     *                 RETAIN_PARTITIONS}: Determines whether the created
+     *                 projection will retain the partitioning scheme from the
+     *                 source table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this projection is part of.  The default
-     *                 value is ''.
+     *                 VIEW_ID}: ID of view of which this projection is a
+     *                 member.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

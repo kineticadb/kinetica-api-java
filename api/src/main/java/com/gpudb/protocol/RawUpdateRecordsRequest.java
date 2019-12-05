@@ -145,9 +145,8 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUNCATE_STRINGS
-     * TRUNCATE_STRINGS}: If set to {true}@{, any strings which are too long
-     * for their charN string fields will be truncated to fit.  The default
-     * value is false.
+     * TRUNCATE_STRINGS}: If set to {@code true}, any strings which are too
+     * long for their charN string fields will be truncated to fit.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -244,8 +243,8 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
         public static final String UPDATE_PARTITION = "update_partition";
 
         /**
-         * If set to {true}@{, any strings which are too long for their charN
-         * string fields will be truncated to fit.  The default value is false.
+         * If set to {@code true}, any strings which are too long for their
+         * charN string fields will be truncated to fit.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -397,9 +396,9 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUNCATE_STRINGS
-     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
-     *                 are too long for their charN string fields will be
-     *                 truncated to fit.  The default value is false.
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, any strings
+     *                 which are too long for their charN string fields will be
+     *                 truncated to fit.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -562,9 +561,9 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUNCATE_STRINGS
-     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
-     *                 are too long for their charN string fields will be
-     *                 truncated to fit.  The default value is false.
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, any strings
+     *                 which are too long for their charN string fields will be
+     *                 truncated to fit.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -860,9 +859,8 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUNCATE_STRINGS
-     *         TRUNCATE_STRINGS}: If set to {true}@{, any strings which are too
-     *         long for their charN string fields will be truncated to fit.
-     *         The default value is false.
+     *         TRUNCATE_STRINGS}: If set to {@code true}, any strings which are
+     *         too long for their charN string fields will be truncated to fit.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -973,9 +971,9 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUNCATE_STRINGS
-     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
-     *                 are too long for their charN string fields will be
-     *                 truncated to fit.  The default value is false.
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, any strings
+     *                 which are too long for their charN string fields will be
+     *                 truncated to fit.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

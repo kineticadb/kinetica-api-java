@@ -138,8 +138,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * than the original column name.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
-     * CHUNK_SIZE}: Indicates the chunk size to be used for the result table.
-     * Must be used in combination with the {@code result_table} option.
+     * CHUNK_SIZE}: Indicates the number of records per chunk to be used for
+     * the result table. Must be used in combination with the {@code
+     * result_table} option.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT LIMIT}: The
      * number of records to keep.  The default value is ''.
@@ -240,8 +241,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
         public static final String ORDER_BY = "order_by";
 
         /**
-         * Indicates the chunk size to be used for the result table. Must be
-         * used in combination with the {@code result_table} option.
+         * Indicates the number of records per chunk to be used for the result
+         * table. Must be used in combination with the {@code result_table}
+         * option.
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
@@ -391,9 +393,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
-     *                 result table. Must be used in combination with the
-     *                 {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT
      *                 LIMIT}: The number of records to keep.  The default
@@ -544,9 +546,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
-     *                 result table. Must be used in combination with the
-     *                 {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT
      *                 LIMIT}: The number of records to keep.  The default
@@ -827,9 +829,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         name.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
-     *         CHUNK_SIZE}: Indicates the chunk size to be used for the result
-     *         table. Must be used in combination with the {@code result_table}
-     *         option.
+     *         CHUNK_SIZE}: Indicates the number of records per chunk to be
+     *         used for the result table. Must be used in combination with the
+     *         {@code result_table} option.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT LIMIT}:
      *         The number of records to keep.  The default value is ''.
@@ -936,9 +938,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
-     *                 result table. Must be used in combination with the
-     *                 {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT
      *                 LIMIT}: The number of records to keep.  The default

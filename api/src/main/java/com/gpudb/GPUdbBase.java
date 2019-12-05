@@ -678,7 +678,8 @@ public abstract class GPUdbBase {
      * number of results should be returned.
      */
     public static final long END_OF_SET = -9999;
-    private static final String DB_OFFLINE_ERROR_MESSAGE            = "System is offline";
+    private static final String DB_HM_OFFLINE_ERROR_MESSAGE         = "System is offline";
+    private static final String DB_OFFLINE_ERROR_MESSAGE            = "Kinetica is offline";
     private static final String DB_CONNECTION_RESET_ERROR_MESSAGE   = "Connection reset";
     private static final String DB_CONNECTION_REFUSED_ERROR_MESSAGE = "Connection refused";
     private static final String DB_EXITING_ERROR_MESSAGE            = "Kinetica is exiting";
@@ -1459,9 +1460,20 @@ public abstract class GPUdbBase {
      */
     private void handlePrimaryURL() throws GPUdbException {
         String primaryUrlStr = this.options.getPrimaryUrl();
-        // No-op if an empty string is given
+
         if ( primaryUrlStr.isEmpty() ) {
-            return;
+            if ( this.urls.size() == 1 ) {
+                // Use the one URL provided by the user as the primary,
+                // but only if the user has not specified any primary URL
+                // also
+                primaryUrlStr = this.urls.get( 0 ).toString();
+
+                // Also save it in the options for the future
+                this.options.setPrimaryUrl( primaryUrlStr );
+            } else {
+                // No extra work is to be done here
+                return;
+            }
         }
 
         // Parse the URL
@@ -2096,7 +2108,7 @@ public abstract class GPUdbBase {
                 }
             } catch (GPUdbException ex) {
                 // the host manager can still be going even if the database is down
-                if ( ex.getMessage().contains( DB_OFFLINE_ERROR_MESSAGE ) ) {
+                if ( ex.getMessage().contains( DB_HM_OFFLINE_ERROR_MESSAGE ) ) {
                     try {
                         hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
                     } catch (GPUdbHAUnavailableException ha_ex) {
@@ -2279,7 +2291,8 @@ public abstract class GPUdbBase {
                          || message.contains( DB_EXITING_ERROR_MESSAGE )
                          || message.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE )
                          || message.contains( DB_CONNECTION_RESET_ERROR_MESSAGE )
-                         || message.contains( DB_SYSTEM_LIMITED_ERROR_MESSAGE ) ) {
+                         || message.contains( DB_SYSTEM_LIMITED_ERROR_MESSAGE )
+                         || message.contains( DB_OFFLINE_ERROR_MESSAGE ) ) {
                         throw new GPUdbExitException( message );
                     }
                     // A legitimate error

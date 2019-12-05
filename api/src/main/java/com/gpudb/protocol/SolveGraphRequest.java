@@ -21,9 +21,15 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * Solves an existing graph for a type of problem (e.g., shortest path, page
  * rank, travelling salesman, etc.) using source nodes, destination nodes, and
- * additional, optional weights and restrictions. See <a
+ * additional, optional weights and restrictions.
+ * <p>
+ * IMPORTANT: It's highly recommended that you review the <a
  * href="../../../../../graph_solver/network_graph_solver.html"
- * target="_top">Network Graph Solvers</a> for more information.
+ * target="_top">Network Graphs & Solvers</a> concepts documentation, the <a
+ * href="../../../../../graph_solver/examples/graph_rest_guide.html"
+ * target="_top">Graph REST Tutorial</a>, and/or some <a
+ * href="../../../../../graph_solver/examples.html#solve-graph"
+ * target="_top">/solve/graph examples</a> before using this endpoint.
  */
 public class SolveGraphRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -34,10 +40,7 @@ public class SolveGraphRequest implements IndexedRecord {
                 .name("weightsOnEdges").type().array().items().stringType().noDefault()
                 .name("restrictions").type().array().items().stringType().noDefault()
                 .name("solverType").type().stringType().noDefault()
-                .name("sourceNodeId").type().longType().noDefault()
-                .name("destinationNodeIds").type().array().items().longType().noDefault()
-                .name("nodeType").type().stringType().noDefault()
-                .name("sourceNode").type().stringType().noDefault()
+                .name("sourceNodes").type().array().items().stringType().noDefault()
                 .name("destinationNodes").type().array().items().stringType().noDefault()
                 .name("solutionTable").type().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
@@ -94,11 +97,12 @@ public class SolveGraphRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.SolveGraphRequest.SolverType#BACKHAUL_ROUTING
      * BACKHAUL_ROUTING}: Solves for optimal routes that connect remote asset
-     * nodes to the fixed (backbone) asset nodes. When {@code BACKHAUL_ROUTING}
-     * is invoked, the {@code destinationNodes} or {@code destinationNodeIds}
-     * array is used for both fixed and remote asset nodes and the {@code
-     * sourceNodeId} represents the number of fixed asset nodes contained in
-     * {@code destinationNodes} / {@code destinationNodeIds}.
+     * nodes to the fixed (backbone) asset nodes.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.SolverType#ALLPATHS ALLPATHS}:
+     * Solves for paths that would give costs between max and min solution
+     * radia - Make sure to limit by the 'max_solution_targets' option. Min
+     * cost shoudl be >= shortest_path cost.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.SolveGraphRequest.SolverType#SHORTEST_PATH
@@ -151,56 +155,18 @@ public class SolveGraphRequest implements IndexedRecord {
 
         /**
          * Solves for optimal routes that connect remote asset nodes to the
-         * fixed (backbone) asset nodes. When {@code BACKHAUL_ROUTING} is
-         * invoked, the {@code destinationNodes} or {@code destinationNodeIds}
-         * array is used for both fixed and remote asset nodes and the {@code
-         * sourceNodeId} represents the number of fixed asset nodes contained
-         * in {@code destinationNodes} / {@code destinationNodeIds}.
+         * fixed (backbone) asset nodes.
          */
         public static final String BACKHAUL_ROUTING = "BACKHAUL_ROUTING";
 
+        /**
+         * Solves for paths that would give costs between max and min solution
+         * radia - Make sure to limit by the 'max_solution_targets' option. Min
+         * cost shoudl be >= shortest_path cost.
+         */
+        public static final String ALLPATHS = "ALLPATHS";
+
         private SolverType() {  }
-    }
-
-
-    /**
-     * Source and destination node identifier type.
-     * Supported values:
-     * <ul>
-     *         <li> {@link
-     * com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_ID NODE_ID}: The
-     * graph's nodes were identified as integers, e.g., 1234.
-     *         <li> {@link
-     * com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_WKTPOINT
-     * NODE_WKTPOINT}: The graph's nodes were identified as geospatial
-     * coordinates, e.g., 'POINT(1.0 2.0)'.
-     *         <li> {@link
-     * com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_NAME NODE_NAME}: The
-     * graph's nodes were identified as strings, e.g., 'Arlington'.
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_ID NODE_ID}.
-     * A set of string constants for the parameter {@code nodeType}.
-     */
-    public static final class NodeType {
-
-        /**
-         * The graph's nodes were identified as integers, e.g., 1234.
-         */
-        public static final String NODE_ID = "NODE_ID";
-
-        /**
-         * The graph's nodes were identified as geospatial coordinates, e.g.,
-         * 'POINT(1.0 2.0)'.
-         */
-        public static final String NODE_WKTPOINT = "NODE_WKTPOINT";
-
-        /**
-         * The graph's nodes were identified as strings, e.g., 'Arlington'.
-         */
-        public static final String NODE_NAME = "NODE_NAME";
-
-        private NodeType() {  }
     }
 
 
@@ -211,7 +177,7 @@ public class SolveGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_RADIUS
      * MAX_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and {@code
      * INVERSE_SHORTEST_PATH} solvers only. Sets the maximum solution cost
-     * radius, which ignores the {@code destinationNodeIds} list and instead
+     * radius, which ignores the {@code destinationNodes} list and instead
      * outputs the nodes within the radius sorted by ascending cost. If set to
      * '0.0', the setting is ignored.  The default value is '0.0'.
      *         <li> {@link
@@ -219,14 +185,14 @@ public class SolveGraphRequest implements IndexedRecord {
      * MIN_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and {@code
      * INVERSE_SHORTEST_PATH} solvers only. Applicable only when {@code
      * max_solution_radius} is set. Sets the minimum solution cost radius,
-     * which ignores the {@code destinationNodeIds} list and instead outputs
-     * the nodes within the radius sorted by ascending cost. If set to '0.0',
-     * the setting is ignored.  The default value is '0.0'.
+     * which ignores the {@code destinationNodes} list and instead outputs the
+     * nodes within the radius sorted by ascending cost. If set to '0.0', the
+     * setting is ignored.  The default value is '0.0'.
      *         <li> {@link
      * com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_TARGETS
      * MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and {@code
      * INVERSE_SHORTEST_PATH} solvers only. Sets the maximum number of solution
-     * targets, which ignores the {@code destinationNodeIds} list and instead
+     * targets, which ignores the {@code destinationNodes} list and instead
      * outputs no more than n number of nodes sorted by ascending cost where n
      * is equal to the setting value. If set to 0, the setting is ignored.  The
      * default value is '0'.
@@ -277,7 +243,7 @@ public class SolveGraphRequest implements IndexedRecord {
         /**
          * For {@code SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
          * only. Sets the maximum solution cost radius, which ignores the
-         * {@code destinationNodeIds} list and instead outputs the nodes within
+         * {@code destinationNodes} list and instead outputs the nodes within
          * the radius sorted by ascending cost. If set to '0.0', the setting is
          * ignored.  The default value is '0.0'.
          */
@@ -287,7 +253,7 @@ public class SolveGraphRequest implements IndexedRecord {
          * For {@code SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
          * only. Applicable only when {@code max_solution_radius} is set. Sets
          * the minimum solution cost radius, which ignores the {@code
-         * destinationNodeIds} list and instead outputs the nodes within the
+         * destinationNodes} list and instead outputs the nodes within the
          * radius sorted by ascending cost. If set to '0.0', the setting is
          * ignored.  The default value is '0.0'.
          */
@@ -296,7 +262,7 @@ public class SolveGraphRequest implements IndexedRecord {
         /**
          * For {@code SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
          * only. Sets the maximum number of solution targets, which ignores the
-         * {@code destinationNodeIds} list and instead outputs no more than n
+         * {@code destinationNodes} list and instead outputs no more than n
          * number of nodes sorted by ascending cost where n is equal to the
          * setting value. If set to 0, the setting is ignored.  The default
          * value is '0'.
@@ -357,10 +323,7 @@ public class SolveGraphRequest implements IndexedRecord {
     private List<String> weightsOnEdges;
     private List<String> restrictions;
     private String solverType;
-    private long sourceNodeId;
-    private List<Long> destinationNodeIds;
-    private String nodeType;
-    private String sourceNode;
+    private List<String> sourceNodes;
     private List<String> destinationNodes;
     private String solutionTable;
     private Map<String, String> options;
@@ -374,9 +337,7 @@ public class SolveGraphRequest implements IndexedRecord {
         weightsOnEdges = new ArrayList<>();
         restrictions = new ArrayList<>();
         solverType = "";
-        destinationNodeIds = new ArrayList<>();
-        nodeType = "";
-        sourceNode = "";
+        sourceNodes = new ArrayList<>();
         destinationNodes = new ArrayList<>();
         solutionTable = "";
         options = new LinkedHashMap<>();
@@ -474,64 +435,26 @@ public class SolveGraphRequest implements IndexedRecord {
      *                    com.gpudb.protocol.SolveGraphRequest.SolverType#BACKHAUL_ROUTING
      *                    BACKHAUL_ROUTING}: Solves for optimal routes that
      *                    connect remote asset nodes to the fixed (backbone)
-     *                    asset nodes. When {@code BACKHAUL_ROUTING} is
-     *                    invoked, the {@code destinationNodes} or {@code
-     *                    destinationNodeIds} array is used for both fixed and
-     *                    remote asset nodes and the {@code sourceNodeId}
-     *                    represents the number of fixed asset nodes contained
-     *                    in {@code destinationNodes} / {@code
-     *                    destinationNodeIds}.
+     *                    asset nodes.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.SolveGraphRequest.SolverType#ALLPATHS
+     *                    ALLPATHS}: Solves for paths that would give costs
+     *                    between max and min solution radia - Make sure to
+     *                    limit by the 'max_solution_targets' option. Min cost
+     *                    shoudl be >= shortest_path cost.
      *                    </ul>
      *                    The default value is {@link
      *                    com.gpudb.protocol.SolveGraphRequest.SolverType#SHORTEST_PATH
      *                    SHORTEST_PATH}.
-     * @param sourceNodeId  If {@code nodeType} is {@code NODE_ID}, the node ID
-     *                      (integer) of the source (starting point) for the
-     *                      graph solution. If the {@code solverType} is set to
-     *                      {@code BACKHAUL_ROUTING}, this number represents
-     *                      the number of fixed asset nodes contained in {@code
-     *                      destinationNodes}, e.g., if {@code sourceNodeId} is
-     *                      set to 24, the first 24 nodes listed in {@code
-     *                      destinationNodes} / {@code destinationNodeIds} are
-     *                      the fixed asset nodes and the rest of the nodes in
-     *                      the array are remote assets.
-     * @param destinationNodeIds  List of destination node indices, or indices
-     *                            for pageranks. If the {@code solverType} is
-     *                            set to {@code BACKHAUL_ROUTING}, it is the
-     *                            list of all fixed and remote asset nodes.
-     *                            The default value is an empty {@link List}.
-     * @param nodeType  Source and destination node identifier type.
-     *                  Supported values:
-     *                  <ul>
-     *                          <li> {@link
-     *                  com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_ID
-     *                  NODE_ID}: The graph's nodes were identified as
-     *                  integers, e.g., 1234.
-     *                          <li> {@link
-     *                  com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_WKTPOINT
-     *                  NODE_WKTPOINT}: The graph's nodes were identified as
-     *                  geospatial coordinates, e.g., 'POINT(1.0 2.0)'.
-     *                          <li> {@link
-     *                  com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_NAME
-     *                  NODE_NAME}: The graph's nodes were identified as
-     *                  strings, e.g., 'Arlington'.
-     *                  </ul>
-     *                  The default value is {@link
-     *                  com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_ID
-     *                  NODE_ID}.
-     * @param sourceNode  If {@code nodeType} is {@code NODE_WKTPOINT} or
-     *                    {@code NODE_NAME}, the node (string) of the source
-     *                    (starting point) for the graph solution.  The default
-     *                    value is ''.
-     * @param destinationNodes  If {@code nodeType} is {@code NODE_WKTPOINT} or
-     *                          {@code NODE_NAME}, the list of destination node
-     *                          or page rank indices (strings) for the graph
-     *                          solution. If the {@code solverType} is set to
-     *                          {@code BACKHAUL_ROUTING}, it is the list of all
-     *                          fixed and remote asset nodes. The string type
-     *                          should be consistent with the {@code nodeType}
-     *                          parameter.  The default value is an empty
-     *                          {@link List}.
+     * @param sourceNodes  It can be one of the nodal identifiers - e.g:
+     *                     'NODE_WKTPOINT' for source nodes. For {@code
+     *                     BACKHAUL_ROUTING}, this list depicts the fixed
+     *                     assets.  The default value is an empty {@link List}.
+     * @param destinationNodes  It can be one of the nodal identifiers - e.g:
+     *                          'NODE_WKTPOINT' for destination (target) nodes.
+     *                          For {@code BACKHAUL_ROUTING}, this list depicts
+     *                          the remote assets.  The default value is an
+     *                          empty {@link List}.
      * @param solutionTable  Name of the table to store the solution.  The
      *                       default value is 'graph_solutions'.
      * @param options  Additional parameters
@@ -541,7 +464,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 MAX_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and
      *                 {@code INVERSE_SHORTEST_PATH} solvers only. Sets the
      *                 maximum solution cost radius, which ignores the {@code
-     *                 destinationNodeIds} list and instead outputs the nodes
+     *                 destinationNodes} list and instead outputs the nodes
      *                 within the radius sorted by ascending cost. If set to
      *                 '0.0', the setting is ignored.  The default value is
      *                 '0.0'.
@@ -551,7 +474,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 {@code INVERSE_SHORTEST_PATH} solvers only. Applicable
      *                 only when {@code max_solution_radius} is set. Sets the
      *                 minimum solution cost radius, which ignores the {@code
-     *                 destinationNodeIds} list and instead outputs the nodes
+     *                 destinationNodes} list and instead outputs the nodes
      *                 within the radius sorted by ascending cost. If set to
      *                 '0.0', the setting is ignored.  The default value is
      *                 '0.0'.
@@ -560,7 +483,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and
      *                 {@code INVERSE_SHORTEST_PATH} solvers only. Sets the
      *                 maximum number of solution targets, which ignores the
-     *                 {@code destinationNodeIds} list and instead outputs no
+     *                 {@code destinationNodes} list and instead outputs no
      *                 more than n number of nodes sorted by ascending cost
      *                 where n is equal to the setting value. If set to 0, the
      *                 setting is ignored.  The default value is '0'.
@@ -614,15 +537,12 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 The default value is an empty {@link Map}.
      * 
      */
-    public SolveGraphRequest(String graphName, List<String> weightsOnEdges, List<String> restrictions, String solverType, long sourceNodeId, List<Long> destinationNodeIds, String nodeType, String sourceNode, List<String> destinationNodes, String solutionTable, Map<String, String> options) {
+    public SolveGraphRequest(String graphName, List<String> weightsOnEdges, List<String> restrictions, String solverType, List<String> sourceNodes, List<String> destinationNodes, String solutionTable, Map<String, String> options) {
         this.graphName = (graphName == null) ? "" : graphName;
         this.weightsOnEdges = (weightsOnEdges == null) ? new ArrayList<String>() : weightsOnEdges;
         this.restrictions = (restrictions == null) ? new ArrayList<String>() : restrictions;
         this.solverType = (solverType == null) ? "" : solverType;
-        this.sourceNodeId = sourceNodeId;
-        this.destinationNodeIds = (destinationNodeIds == null) ? new ArrayList<Long>() : destinationNodeIds;
-        this.nodeType = (nodeType == null) ? "" : nodeType;
-        this.sourceNode = (sourceNode == null) ? "" : sourceNode;
+        this.sourceNodes = (sourceNodes == null) ? new ArrayList<String>() : sourceNodes;
         this.destinationNodes = (destinationNodes == null) ? new ArrayList<String>() : destinationNodes;
         this.solutionTable = (solutionTable == null) ? "" : solutionTable;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
@@ -806,12 +726,13 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.SolveGraphRequest.SolverType#BACKHAUL_ROUTING
      *         BACKHAUL_ROUTING}: Solves for optimal routes that connect remote
-     *         asset nodes to the fixed (backbone) asset nodes. When {@code
-     *         BACKHAUL_ROUTING} is invoked, the {@code destinationNodes} or
-     *         {@code destinationNodeIds} array is used for both fixed and
-     *         remote asset nodes and the {@code sourceNodeId} represents the
-     *         number of fixed asset nodes contained in {@code
-     *         destinationNodes} / {@code destinationNodeIds}.
+     *         asset nodes to the fixed (backbone) asset nodes.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.SolverType#ALLPATHS
+     *         ALLPATHS}: Solves for paths that would give costs between max
+     *         and min solution radia - Make sure to limit by the
+     *         'max_solution_targets' option. Min cost shoudl be >=
+     *         shortest_path cost.
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.SolveGraphRequest.SolverType#SHORTEST_PATH
@@ -867,13 +788,13 @@ public class SolveGraphRequest implements IndexedRecord {
      *                    com.gpudb.protocol.SolveGraphRequest.SolverType#BACKHAUL_ROUTING
      *                    BACKHAUL_ROUTING}: Solves for optimal routes that
      *                    connect remote asset nodes to the fixed (backbone)
-     *                    asset nodes. When {@code BACKHAUL_ROUTING} is
-     *                    invoked, the {@code destinationNodes} or {@code
-     *                    destinationNodeIds} array is used for both fixed and
-     *                    remote asset nodes and the {@code sourceNodeId}
-     *                    represents the number of fixed asset nodes contained
-     *                    in {@code destinationNodes} / {@code
-     *                    destinationNodeIds}.
+     *                    asset nodes.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.SolveGraphRequest.SolverType#ALLPATHS
+     *                    ALLPATHS}: Solves for paths that would give costs
+     *                    between max and min solution radia - Make sure to
+     *                    limit by the 'max_solution_targets' option. Min cost
+     *                    shoudl be >= shortest_path cost.
      *                    </ul>
      *                    The default value is {@link
      *                    com.gpudb.protocol.SolveGraphRequest.SolverType#SHORTEST_PATH
@@ -889,159 +810,37 @@ public class SolveGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @return If {@code nodeType} is {@code NODE_ID}, the node ID (integer) of
-     *         the source (starting point) for the graph solution. If the
-     *         {@code solverType} is set to {@code BACKHAUL_ROUTING}, this
-     *         number represents the number of fixed asset nodes contained in
-     *         {@code destinationNodes}, e.g., if {@code sourceNodeId} is set
-     *         to 24, the first 24 nodes listed in {@code destinationNodes} /
-     *         {@code destinationNodeIds} are the fixed asset nodes and the
-     *         rest of the nodes in the array are remote assets.
+     * @return It can be one of the nodal identifiers - e.g: 'NODE_WKTPOINT'
+     *         for source nodes. For {@code BACKHAUL_ROUTING}, this list
+     *         depicts the fixed assets.  The default value is an empty {@link
+     *         List}.
      * 
      */
-    public long getSourceNodeId() {
-        return sourceNodeId;
+    public List<String> getSourceNodes() {
+        return sourceNodes;
     }
 
     /**
      * 
-     * @param sourceNodeId  If {@code nodeType} is {@code NODE_ID}, the node ID
-     *                      (integer) of the source (starting point) for the
-     *                      graph solution. If the {@code solverType} is set to
-     *                      {@code BACKHAUL_ROUTING}, this number represents
-     *                      the number of fixed asset nodes contained in {@code
-     *                      destinationNodes}, e.g., if {@code sourceNodeId} is
-     *                      set to 24, the first 24 nodes listed in {@code
-     *                      destinationNodes} / {@code destinationNodeIds} are
-     *                      the fixed asset nodes and the rest of the nodes in
-     *                      the array are remote assets.
+     * @param sourceNodes  It can be one of the nodal identifiers - e.g:
+     *                     'NODE_WKTPOINT' for source nodes. For {@code
+     *                     BACKHAUL_ROUTING}, this list depicts the fixed
+     *                     assets.  The default value is an empty {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public SolveGraphRequest setSourceNodeId(long sourceNodeId) {
-        this.sourceNodeId = sourceNodeId;
+    public SolveGraphRequest setSourceNodes(List<String> sourceNodes) {
+        this.sourceNodes = (sourceNodes == null) ? new ArrayList<String>() : sourceNodes;
         return this;
     }
 
     /**
      * 
-     * @return List of destination node indices, or indices for pageranks. If
-     *         the {@code solverType} is set to {@code BACKHAUL_ROUTING}, it is
-     *         the list of all fixed and remote asset nodes.  The default value
-     *         is an empty {@link List}.
-     * 
-     */
-    public List<Long> getDestinationNodeIds() {
-        return destinationNodeIds;
-    }
-
-    /**
-     * 
-     * @param destinationNodeIds  List of destination node indices, or indices
-     *                            for pageranks. If the {@code solverType} is
-     *                            set to {@code BACKHAUL_ROUTING}, it is the
-     *                            list of all fixed and remote asset nodes.
-     *                            The default value is an empty {@link List}.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public SolveGraphRequest setDestinationNodeIds(List<Long> destinationNodeIds) {
-        this.destinationNodeIds = (destinationNodeIds == null) ? new ArrayList<Long>() : destinationNodeIds;
-        return this;
-    }
-
-    /**
-     * 
-     * @return Source and destination node identifier type.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_ID NODE_ID}:
-     *         The graph's nodes were identified as integers, e.g., 1234.
-     *                 <li> {@link
-     *         com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_WKTPOINT
-     *         NODE_WKTPOINT}: The graph's nodes were identified as geospatial
-     *         coordinates, e.g., 'POINT(1.0 2.0)'.
-     *                 <li> {@link
-     *         com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_NAME
-     *         NODE_NAME}: The graph's nodes were identified as strings, e.g.,
-     *         'Arlington'.
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_ID NODE_ID}.
-     * 
-     */
-    public String getNodeType() {
-        return nodeType;
-    }
-
-    /**
-     * 
-     * @param nodeType  Source and destination node identifier type.
-     *                  Supported values:
-     *                  <ul>
-     *                          <li> {@link
-     *                  com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_ID
-     *                  NODE_ID}: The graph's nodes were identified as
-     *                  integers, e.g., 1234.
-     *                          <li> {@link
-     *                  com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_WKTPOINT
-     *                  NODE_WKTPOINT}: The graph's nodes were identified as
-     *                  geospatial coordinates, e.g., 'POINT(1.0 2.0)'.
-     *                          <li> {@link
-     *                  com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_NAME
-     *                  NODE_NAME}: The graph's nodes were identified as
-     *                  strings, e.g., 'Arlington'.
-     *                  </ul>
-     *                  The default value is {@link
-     *                  com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_ID
-     *                  NODE_ID}.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public SolveGraphRequest setNodeType(String nodeType) {
-        this.nodeType = (nodeType == null) ? "" : nodeType;
-        return this;
-    }
-
-    /**
-     * 
-     * @return If {@code nodeType} is {@code NODE_WKTPOINT} or {@code
-     *         NODE_NAME}, the node (string) of the source (starting point) for
-     *         the graph solution.  The default value is ''.
-     * 
-     */
-    public String getSourceNode() {
-        return sourceNode;
-    }
-
-    /**
-     * 
-     * @param sourceNode  If {@code nodeType} is {@code NODE_WKTPOINT} or
-     *                    {@code NODE_NAME}, the node (string) of the source
-     *                    (starting point) for the graph solution.  The default
-     *                    value is ''.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public SolveGraphRequest setSourceNode(String sourceNode) {
-        this.sourceNode = (sourceNode == null) ? "" : sourceNode;
-        return this;
-    }
-
-    /**
-     * 
-     * @return If {@code nodeType} is {@code NODE_WKTPOINT} or {@code
-     *         NODE_NAME}, the list of destination node or page rank indices
-     *         (strings) for the graph solution. If the {@code solverType} is
-     *         set to {@code BACKHAUL_ROUTING}, it is the list of all fixed and
-     *         remote asset nodes. The string type should be consistent with
-     *         the {@code nodeType} parameter.  The default value is an empty
-     *         {@link List}.
+     * @return It can be one of the nodal identifiers - e.g: 'NODE_WKTPOINT'
+     *         for destination (target) nodes. For {@code BACKHAUL_ROUTING},
+     *         this list depicts the remote assets.  The default value is an
+     *         empty {@link List}.
      * 
      */
     public List<String> getDestinationNodes() {
@@ -1050,15 +849,11 @@ public class SolveGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @param destinationNodes  If {@code nodeType} is {@code NODE_WKTPOINT} or
-     *                          {@code NODE_NAME}, the list of destination node
-     *                          or page rank indices (strings) for the graph
-     *                          solution. If the {@code solverType} is set to
-     *                          {@code BACKHAUL_ROUTING}, it is the list of all
-     *                          fixed and remote asset nodes. The string type
-     *                          should be consistent with the {@code nodeType}
-     *                          parameter.  The default value is an empty
-     *                          {@link List}.
+     * @param destinationNodes  It can be one of the nodal identifiers - e.g:
+     *                          'NODE_WKTPOINT' for destination (target) nodes.
+     *                          For {@code BACKHAUL_ROUTING}, this list depicts
+     *                          the remote assets.  The default value is an
+     *                          empty {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -1099,16 +894,16 @@ public class SolveGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_RADIUS
      *         MAX_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and {@code
      *         INVERSE_SHORTEST_PATH} solvers only. Sets the maximum solution
-     *         cost radius, which ignores the {@code destinationNodeIds} list
-     *         and instead outputs the nodes within the radius sorted by
-     *         ascending cost. If set to '0.0', the setting is ignored.  The
-     *         default value is '0.0'.
+     *         cost radius, which ignores the {@code destinationNodes} list and
+     *         instead outputs the nodes within the radius sorted by ascending
+     *         cost. If set to '0.0', the setting is ignored.  The default
+     *         value is '0.0'.
      *                 <li> {@link
      *         com.gpudb.protocol.SolveGraphRequest.Options#MIN_SOLUTION_RADIUS
      *         MIN_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and {@code
      *         INVERSE_SHORTEST_PATH} solvers only. Applicable only when {@code
      *         max_solution_radius} is set. Sets the minimum solution cost
-     *         radius, which ignores the {@code destinationNodeIds} list and
+     *         radius, which ignores the {@code destinationNodes} list and
      *         instead outputs the nodes within the radius sorted by ascending
      *         cost. If set to '0.0', the setting is ignored.  The default
      *         value is '0.0'.
@@ -1116,7 +911,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_TARGETS
      *         MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and {@code
      *         INVERSE_SHORTEST_PATH} solvers only. Sets the maximum number of
-     *         solution targets, which ignores the {@code destinationNodeIds}
+     *         solution targets, which ignores the {@code destinationNodes}
      *         list and instead outputs no more than n number of nodes sorted
      *         by ascending cost where n is equal to the setting value. If set
      *         to 0, the setting is ignored.  The default value is '0'.
@@ -1176,7 +971,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 MAX_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and
      *                 {@code INVERSE_SHORTEST_PATH} solvers only. Sets the
      *                 maximum solution cost radius, which ignores the {@code
-     *                 destinationNodeIds} list and instead outputs the nodes
+     *                 destinationNodes} list and instead outputs the nodes
      *                 within the radius sorted by ascending cost. If set to
      *                 '0.0', the setting is ignored.  The default value is
      *                 '0.0'.
@@ -1186,7 +981,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 {@code INVERSE_SHORTEST_PATH} solvers only. Applicable
      *                 only when {@code max_solution_radius} is set. Sets the
      *                 minimum solution cost radius, which ignores the {@code
-     *                 destinationNodeIds} list and instead outputs the nodes
+     *                 destinationNodes} list and instead outputs the nodes
      *                 within the radius sorted by ascending cost. If set to
      *                 '0.0', the setting is ignored.  The default value is
      *                 '0.0'.
@@ -1195,7 +990,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and
      *                 {@code INVERSE_SHORTEST_PATH} solvers only. Sets the
      *                 maximum number of solution targets, which ignores the
-     *                 {@code destinationNodeIds} list and instead outputs no
+     *                 {@code destinationNodes} list and instead outputs no
      *                 more than n number of nodes sorted by ascending cost
      *                 where n is equal to the setting value. If set to 0, the
      *                 setting is ignored.  The default value is '0'.
@@ -1295,24 +1090,15 @@ public class SolveGraphRequest implements IndexedRecord {
                 return this.solverType;
 
             case 4:
-                return this.sourceNodeId;
+                return this.sourceNodes;
 
             case 5:
-                return this.destinationNodeIds;
-
-            case 6:
-                return this.nodeType;
-
-            case 7:
-                return this.sourceNode;
-
-            case 8:
                 return this.destinationNodes;
 
-            case 9:
+            case 6:
                 return this.solutionTable;
 
-            case 10:
+            case 7:
                 return this.options;
 
             default:
@@ -1351,30 +1137,18 @@ public class SolveGraphRequest implements IndexedRecord {
                 break;
 
             case 4:
-                this.sourceNodeId = (Long)value;
+                this.sourceNodes = (List<String>)value;
                 break;
 
             case 5:
-                this.destinationNodeIds = (List<Long>)value;
-                break;
-
-            case 6:
-                this.nodeType = (String)value;
-                break;
-
-            case 7:
-                this.sourceNode = (String)value;
-                break;
-
-            case 8:
                 this.destinationNodes = (List<String>)value;
                 break;
 
-            case 9:
+            case 6:
                 this.solutionTable = (String)value;
                 break;
 
-            case 10:
+            case 7:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -1399,10 +1173,7 @@ public class SolveGraphRequest implements IndexedRecord {
                  && this.weightsOnEdges.equals( that.weightsOnEdges )
                  && this.restrictions.equals( that.restrictions )
                  && this.solverType.equals( that.solverType )
-                 && ( this.sourceNodeId == that.sourceNodeId )
-                 && this.destinationNodeIds.equals( that.destinationNodeIds )
-                 && this.nodeType.equals( that.nodeType )
-                 && this.sourceNode.equals( that.sourceNode )
+                 && this.sourceNodes.equals( that.sourceNodes )
                  && this.destinationNodes.equals( that.destinationNodes )
                  && this.solutionTable.equals( that.solutionTable )
                  && this.options.equals( that.options ) );
@@ -1429,21 +1200,9 @@ public class SolveGraphRequest implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.solverType ) );
         builder.append( ", " );
-        builder.append( gd.toString( "sourceNodeId" ) );
+        builder.append( gd.toString( "sourceNodes" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.sourceNodeId ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "destinationNodeIds" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.destinationNodeIds ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "nodeType" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.nodeType ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "sourceNode" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.sourceNode ) );
+        builder.append( gd.toString( this.sourceNodes ) );
         builder.append( ", " );
         builder.append( gd.toString( "destinationNodes" ) );
         builder.append( ": " );
@@ -1468,10 +1227,7 @@ public class SolveGraphRequest implements IndexedRecord {
         hashCode = (31 * hashCode) + this.weightsOnEdges.hashCode();
         hashCode = (31 * hashCode) + this.restrictions.hashCode();
         hashCode = (31 * hashCode) + this.solverType.hashCode();
-        hashCode = (31 * hashCode) + ((Long)this.sourceNodeId).hashCode();
-        hashCode = (31 * hashCode) + this.destinationNodeIds.hashCode();
-        hashCode = (31 * hashCode) + this.nodeType.hashCode();
-        hashCode = (31 * hashCode) + this.sourceNode.hashCode();
+        hashCode = (31 * hashCode) + this.sourceNodes.hashCode();
         hashCode = (31 * hashCode) + this.destinationNodes.hashCode();
         hashCode = (31 * hashCode) + this.solutionTable.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();

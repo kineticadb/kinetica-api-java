@@ -39,8 +39,13 @@ import org.apache.avro.generic.IndexedRecord;
  * a table and the response, provide a value to {@code adjacencyTable} and set
  * {@code export_query_results} to {@code true}.
  * <p>
- * See <a href="../../../../../graph_solver/network_graph_solver.html"
- * target="_top">Network Graph Solver</a> for more information.
+ * IMPORTANT: It's highly recommended that you review the <a
+ * href="../../../../../graph_solver/network_graph_solver.html"
+ * target="_top">Network Graphs & Solvers</a> concepts documentation, the <a
+ * href="../../../../../graph_solver/examples/graph_rest_guide.html"
+ * target="_top">Graph REST Tutorial</a>, and/or some <a
+ * href="../../../../../graph_solver/examples.html#query-graph"
+ * target="_top">/query/graph examples</a> before using this endpoint.
  */
 public class QueryGraphRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -77,7 +82,9 @@ public class QueryGraphRequest implements IndexedRecord {
      * outbound edges relative to the node will be returned. If set to {@code
      * false}, only outbound edges relative to the node will be returned. This
      * parameter is only applicable if the queried graph {@code graphName} is
-     * directed and when querying nodes.
+     * directed and when querying nodes. Consult <a
+     * href="../../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     * target="_top">Directed Graphs</a> for more details.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#TRUE
@@ -164,7 +171,9 @@ public class QueryGraphRequest implements IndexedRecord {
          * relative to the node will be returned. If set to {@code false}, only
          * outbound edges relative to the node will be returned. This parameter
          * is only applicable if the queried graph {@code graphName} is
-         * directed and when querying nodes.
+         * directed and when querying nodes. Consult <a
+         * href="../../../../../graph_solver/network_graph_solver.html#directed-graphs"
+         * target="_top">Directed Graphs</a> for more details.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -344,7 +353,9 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 returned. If set to {@code false}, only outbound edges
      *                 relative to the node will be returned. This parameter is
      *                 only applicable if the queried graph {@code graphName}
-     *                 is directed and when querying nodes.
+     *                 is directed and when querying nodes. Consult <a
+     *                 href="../../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     *                 target="_top">Directed Graphs</a> for more details.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -654,7 +665,10 @@ public class QueryGraphRequest implements IndexedRecord {
      *         outbound edges relative to the node will be returned. If set to
      *         {@code false}, only outbound edges relative to the node will be
      *         returned. This parameter is only applicable if the queried graph
-     *         {@code graphName} is directed and when querying nodes.
+     *         {@code graphName} is directed and when querying nodes. Consult
+     *         <a
+     *         href="../../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     *         target="_top">Directed Graphs</a> for more details.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -752,7 +766,9 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 returned. If set to {@code false}, only outbound edges
      *                 relative to the node will be returned. This parameter is
      *                 only applicable if the queried graph {@code graphName}
-     *                 is directed and when querying nodes.
+     *                 is directed and when querying nodes. Consult <a
+     *                 href="../../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     *                 target="_top">Directed Graphs</a> for more details.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

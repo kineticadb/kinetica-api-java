@@ -170,6 +170,10 @@ public class CreateTableRequest implements IndexedRecord {
      * LIST}: Use <a
      * href="../../../../../concepts/tables.html#partitioning-by-list"
      * target="_top">list partitioning</a>.
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#HASH
+     * HASH}: Use <a
+     * href="../../../../../concepts/tables.html#partitioning-by-hash"
+     * target="_top">hash partitioning</a>.
      * </ul>
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -183,9 +187,11 @@ public class CreateTableRequest implements IndexedRecord {
      * href="../../../../../concepts/tables.html#partitioning-by-range"
      * target="_top">range partitioning</a>, <a
      * href="../../../../../concepts/tables.html#partitioning-by-interval"
-     * target="_top">interval partitioning</a>, or <a
+     * target="_top">interval partitioning</a>, <a
      * href="../../../../../concepts/tables.html#partitioning-by-list"
-     * target="_top">list partitioning</a> for example formats.
+     * target="_top">list partitioning</a>, or <a
+     * href="../../../../../concepts/tables.html#partitioning-by-hash"
+     * target="_top">hash partitioning</a> for example formats.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
      * IS_AUTOMATIC_PARTITION}: If true, a new partition will be created for
@@ -207,7 +213,7 @@ public class CreateTableRequest implements IndexedRecord {
      * target="_top">TTL</a> of the table specified in {@code tableName}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE CHUNK_SIZE}:
-     * Indicates the chunk size to be used for this table.
+     * Indicates the number of records per chunk to be used for this table.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
      * IS_RESULT_TABLE}: For a table, indicates whether the table is an
@@ -353,6 +359,10 @@ public class CreateTableRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateTableRequest.Options#LIST LIST}: Use <a
          * href="../../../../../concepts/tables.html#partitioning-by-list"
          * target="_top">list partitioning</a>.
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#HASH HASH}: Use <a
+         * href="../../../../../concepts/tables.html#partitioning-by-hash"
+         * target="_top">hash partitioning</a>.
          * </ul>
          */
         public static final String PARTITION_TYPE = "partition_type";
@@ -379,6 +389,13 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String LIST = "LIST";
 
         /**
+         * Use <a
+         * href="../../../../../concepts/tables.html#partitioning-by-hash"
+         * target="_top">hash partitioning</a>.
+         */
+        public static final String HASH = "HASH";
+
+        /**
          * Comma-separated list of partition keys, which are the columns or
          * column expressions by which records will be assigned to partitions
          * defined by {@code partition_definitions}.
@@ -391,9 +408,11 @@ public class CreateTableRequest implements IndexedRecord {
          * href="../../../../../concepts/tables.html#partitioning-by-range"
          * target="_top">range partitioning</a>, <a
          * href="../../../../../concepts/tables.html#partitioning-by-interval"
-         * target="_top">interval partitioning</a>, or <a
+         * target="_top">interval partitioning</a>, <a
          * href="../../../../../concepts/tables.html#partitioning-by-list"
-         * target="_top">list partitioning</a> for example formats.
+         * target="_top">list partitioning</a>, or <a
+         * href="../../../../../concepts/tables.html#partitioning-by-hash"
+         * target="_top">hash partitioning</a> for example formats.
          */
         public static final String PARTITION_DEFINITIONS = "partition_definitions";
 
@@ -421,7 +440,7 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String TTL = "ttl";
 
         /**
-         * Indicates the chunk size to be used for this table.
+         * Indicates the number of records per chunk to be used for this table.
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
@@ -602,6 +621,11 @@ public class CreateTableRequest implements IndexedRecord {
      *                 LIST}: Use <a
      *                 href="../../../../../concepts/tables.html#partitioning-by-list"
      *                 target="_top">list partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#HASH
+     *                 HASH}: Use <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *                 target="_top">hash partitioning</a>.
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -617,9 +641,11 @@ public class CreateTableRequest implements IndexedRecord {
      *                 href="../../../../../concepts/tables.html#partitioning-by-range"
      *                 target="_top">range partitioning</a>, <a
      *                 href="../../../../../concepts/tables.html#partitioning-by-interval"
-     *                 target="_top">interval partitioning</a>, or <a
+     *                 target="_top">interval partitioning</a>, <a
      *                 href="../../../../../concepts/tables.html#partitioning-by-list"
-     *                 target="_top">list partitioning</a> for example formats.
+     *                 target="_top">list partitioning</a>, or <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *                 target="_top">hash partitioning</a> for example formats.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
      *                 IS_AUTOMATIC_PARTITION}: If true, a new partition will
@@ -646,8 +672,8 @@ public class CreateTableRequest implements IndexedRecord {
      *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
-     *                 this table.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for this table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
      *                 IS_RESULT_TABLE}: For a table, indicates whether the
@@ -852,6 +878,10 @@ public class CreateTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableRequest.Options#LIST LIST}: Use <a
      *         href="../../../../../concepts/tables.html#partitioning-by-list"
      *         target="_top">list partitioning</a>.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#HASH HASH}: Use <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *         target="_top">hash partitioning</a>.
      *         </ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -866,9 +896,11 @@ public class CreateTableRequest implements IndexedRecord {
      *         href="../../../../../concepts/tables.html#partitioning-by-range"
      *         target="_top">range partitioning</a>, <a
      *         href="../../../../../concepts/tables.html#partitioning-by-interval"
-     *         target="_top">interval partitioning</a>, or <a
+     *         target="_top">interval partitioning</a>, <a
      *         href="../../../../../concepts/tables.html#partitioning-by-list"
-     *         target="_top">list partitioning</a> for example formats.
+     *         target="_top">list partitioning</a>, or <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *         target="_top">hash partitioning</a> for example formats.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
      *         IS_AUTOMATIC_PARTITION}: If true, a new partition will be
@@ -892,7 +924,8 @@ public class CreateTableRequest implements IndexedRecord {
      *         tableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE
-     *         CHUNK_SIZE}: Indicates the chunk size to be used for this table.
+     *         CHUNK_SIZE}: Indicates the number of records per chunk to be
+     *         used for this table.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
      *         IS_RESULT_TABLE}: For a table, indicates whether the table is an
@@ -1048,6 +1081,11 @@ public class CreateTableRequest implements IndexedRecord {
      *                 LIST}: Use <a
      *                 href="../../../../../concepts/tables.html#partitioning-by-list"
      *                 target="_top">list partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#HASH
+     *                 HASH}: Use <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *                 target="_top">hash partitioning</a>.
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -1063,9 +1101,11 @@ public class CreateTableRequest implements IndexedRecord {
      *                 href="../../../../../concepts/tables.html#partitioning-by-range"
      *                 target="_top">range partitioning</a>, <a
      *                 href="../../../../../concepts/tables.html#partitioning-by-interval"
-     *                 target="_top">interval partitioning</a>, or <a
+     *                 target="_top">interval partitioning</a>, <a
      *                 href="../../../../../concepts/tables.html#partitioning-by-list"
-     *                 target="_top">list partitioning</a> for example formats.
+     *                 target="_top">list partitioning</a>, or <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *                 target="_top">hash partitioning</a> for example formats.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
      *                 IS_AUTOMATIC_PARTITION}: If true, a new partition will
@@ -1092,8 +1132,8 @@ public class CreateTableRequest implements IndexedRecord {
      *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
-     *                 this table.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for this table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
      *                 IS_RESULT_TABLE}: For a table, indicates whether the

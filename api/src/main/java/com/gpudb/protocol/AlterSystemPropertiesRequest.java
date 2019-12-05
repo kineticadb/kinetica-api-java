@@ -81,8 +81,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * load.
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_SIZE
-     * CHUNK_SIZE}: Sets the chunk size of all new sets to the specified
-     * integer value.
+     * CHUNK_SIZE}: Sets the number of records per chunk to be used for all new
+     * tables.
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EVICT_COLUMNS
      * EVICT_COLUMNS}: Attempts to evict columns from memory to the persistent
@@ -108,11 +108,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#COMMUNICATOR_TEST
      * COMMUNICATOR_TEST}: Invoke the communicator test and report timing
-     * results. Value string is is a semicolon separated list of <key>=<value>
-     * expressions.  Expressions are: num_transactions=<num> where num is the
+     * results. Value string is is a semicolon separated list of [key]=[value]
+     * expressions.  Expressions are: num_transactions=[num] where num is the
      * number of request reply transactions to invoke per test;
-     * message_size=<bytes> where bytes is the size of the messages to send in
-     * bytes; check_values=<enabled> where if enabled is true the value of the
+     * message_size=[bytes] where bytes is the size in bytes of the messages to
+     * send; check_values=[enabled] where if enabled is true the value of the
      * messages received are verified.
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SET_MESSAGE_TIMERS_ENABLED
@@ -135,11 +135,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
      * NETWORK_SPEED}: Invoke the network speed test and report timing results.
-     * Value string is a semicolon-separated list of <key>=<value> expressions.
-     * Valid expressions are: seconds=<time> where time is the time in seconds
-     * to run the test; data_size=<size> where size is the size in bytes of the
-     * block to be transferred; threads=<number of threads>;
-     * to_ranks=<space-separated list of ranks> where the list of ranks is the
+     * Value string is a semicolon-separated list of [key]=[value] expressions.
+     * Valid expressions are: seconds=[time] where time is the time in seconds
+     * to run the test; data_size=[bytes] where bytes is the size in bytes of
+     * the block to be transferred; threads=[number of threads];
+     * to_ranks=[space-separated list of ranks] where the list of ranks is the
      * ranks that rank 0 will send data to and get data from. If to_ranks is
      * unspecified then all worker ranks are used.
      *         <li> {@link
@@ -165,13 +165,13 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_DATA
      * AUDIT_DATA}: Enable or disable auditing of request data.
      *         <li> {@link
-     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_ENABLED
-     * CHUNK_CACHE_ENABLED}: Enable chunk level query caching. Flushes the
-     * chunk cache when value is false
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_AGG_SIZE
+     * SHADOW_AGG_SIZE}: Size of the shadow aggregate chunk cache in bytes.
+     * The default value is '10000000'.
      *         <li> {@link
-     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
-     * CHUNK_CACHE_SIZE}: Size of the chunk cache in bytes.  The default value
-     * is '10000000'.
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_FILTER_SIZE
+     * SHADOW_FILTER_SIZE}: Size of the shdow filter chunk cache in bytes.  The
+     * default value is '10000000'.
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
      * SYNCHRONOUS_COMPRESSION}: compress vector on set_compression (instead of
@@ -219,7 +219,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String SUBTASK_CONCURRENCY_LIMIT = "subtask_concurrency_limit";
 
         /**
-         * Sets the chunk size of all new sets to the specified integer value.
+         * Sets the number of records per chunk to be used for all new tables.
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
@@ -255,11 +255,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
         /**
          * Invoke the communicator test and report timing results. Value string
-         * is is a semicolon separated list of <key>=<value> expressions.
-         * Expressions are: num_transactions=<num> where num is the number of
-         * request reply transactions to invoke per test; message_size=<bytes>
-         * where bytes is the size of the messages to send in bytes;
-         * check_values=<enabled> where if enabled is true the value of the
+         * is is a semicolon separated list of [key]=[value] expressions.
+         * Expressions are: num_transactions=[num] where num is the number of
+         * request reply transactions to invoke per test; message_size=[bytes]
+         * where bytes is the size in bytes of the messages to send;
+         * check_values=[enabled] where if enabled is true the value of the
          * messages received are verified.
          */
         public static final String COMMUNICATOR_TEST = "communicator_test";
@@ -288,13 +288,13 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
         /**
          * Invoke the network speed test and report timing results. Value
-         * string is a semicolon-separated list of <key>=<value> expressions.
-         * Valid expressions are: seconds=<time> where time is the time in
-         * seconds to run the test; data_size=<size> where size is the size in
-         * bytes of the block to be transferred; threads=<number of threads>;
-         * to_ranks=<space-separated list of ranks> where the list of ranks is
-         * the ranks that rank 0 will send data to and get data from. If
-         * to_ranks is unspecified then all worker ranks are used.
+         * string is a semicolon-separated list of [key]=[value] expressions.
+         * Valid expressions are: seconds=[time] where time is the time in
+         * seconds to run the test; data_size=[bytes] where bytes is the size
+         * in bytes of the block to be transferred; threads=[number of
+         * threads]; to_ranks=[space-separated list of ranks] where the list of
+         * ranks is the ranks that rank 0 will send data to and get data from.
+         * If to_ranks is unspecified then all worker ranks are used.
          */
         public static final String NETWORK_SPEED = "network_speed";
 
@@ -334,15 +334,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String AUDIT_DATA = "audit_data";
 
         /**
-         * Enable chunk level query caching. Flushes the chunk cache when value
-         * is false
+         * Size of the shadow aggregate chunk cache in bytes.  The default
+         * value is '10000000'.
          */
-        public static final String CHUNK_CACHE_ENABLED = "chunk_cache_enabled";
+        public static final String SHADOW_AGG_SIZE = "shadow_agg_size";
 
         /**
-         * Size of the chunk cache in bytes.  The default value is '10000000'.
+         * Size of the shdow filter chunk cache in bytes.  The default value is
+         * '10000000'.
          */
-        public static final String CHUNK_CACHE_SIZE = "chunk_cache_size";
+        public static final String SHADOW_FILTER_SIZE = "shadow_filter_size";
 
         /**
          * compress vector on set_compression (instead of waiting for
@@ -408,8 +409,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            group limits and/or system load.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_SIZE
-     *                            CHUNK_SIZE}: Sets the chunk size of all new
-     *                            sets to the specified integer value.
+     *                            CHUNK_SIZE}: Sets the number of records per
+     *                            chunk to be used for all new tables.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EVICT_COLUMNS
      *                            EVICT_COLUMNS}: Attempts to evict columns
@@ -444,14 +445,14 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            COMMUNICATOR_TEST}: Invoke the communicator
      *                            test and report timing results. Value string
      *                            is is a semicolon separated list of
-     *                            <key>=<value> expressions.  Expressions are:
-     *                            num_transactions=<num> where num is the
+     *                            [key]=[value] expressions.  Expressions are:
+     *                            num_transactions=[num] where num is the
      *                            number of request reply transactions to
-     *                            invoke per test; message_size=<bytes> where
-     *                            bytes is the size of the messages to send in
-     *                            bytes; check_values=<enabled> where if
-     *                            enabled is true the value of the messages
-     *                            received are verified.
+     *                            invoke per test; message_size=[bytes] where
+     *                            bytes is the size in bytes of the messages to
+     *                            send; check_values=[enabled] where if enabled
+     *                            is true the value of the messages received
+     *                            are verified.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SET_MESSAGE_TIMERS_ENABLED
      *                            SET_MESSAGE_TIMERS_ENABLED}: Enables the
@@ -477,14 +478,14 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
      *                            NETWORK_SPEED}: Invoke the network speed test
      *                            and report timing results. Value string is a
-     *                            semicolon-separated list of <key>=<value>
+     *                            semicolon-separated list of [key]=[value]
      *                            expressions.  Valid expressions are:
-     *                            seconds=<time> where time is the time in
-     *                            seconds to run the test; data_size=<size>
-     *                            where size is the size in bytes of the block
-     *                            to be transferred; threads=<number of
-     *                            threads>; to_ranks=<space-separated list of
-     *                            ranks> where the list of ranks is the ranks
+     *                            seconds=[time] where time is the time in
+     *                            seconds to run the test; data_size=[bytes]
+     *                            where bytes is the size in bytes of the block
+     *                            to be transferred; threads=[number of
+     *                            threads]; to_ranks=[space-separated list of
+     *                            ranks] where the list of ranks is the ranks
      *                            that rank 0 will send data to and get data
      *                            from. If to_ranks is unspecified then all
      *                            worker ranks are used.
@@ -519,14 +520,15 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            AUDIT_DATA}: Enable or disable auditing of
      *                            request data.
      *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_ENABLED
-     *                            CHUNK_CACHE_ENABLED}: Enable chunk level
-     *                            query caching. Flushes the chunk cache when
-     *                            value is false
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_AGG_SIZE
+     *                            SHADOW_AGG_SIZE}: Size of the shadow
+     *                            aggregate chunk cache in bytes.  The default
+     *                            value is '10000000'.
      *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
-     *                            CHUNK_CACHE_SIZE}: Size of the chunk cache in
-     *                            bytes.  The default value is '10000000'.
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_FILTER_SIZE
+     *                            SHADOW_FILTER_SIZE}: Size of the shdow filter
+     *                            chunk cache in bytes.  The default value is
+     *                            '10000000'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
      *                            SYNCHRONOUS_COMPRESSION}: compress vector on
@@ -579,8 +581,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         limits and/or system load.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_SIZE
-     *         CHUNK_SIZE}: Sets the chunk size of all new sets to the
-     *         specified integer value.
+     *         CHUNK_SIZE}: Sets the number of records per chunk to be used for
+     *         all new tables.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EVICT_COLUMNS
      *         EVICT_COLUMNS}: Attempts to evict columns from memory to the
@@ -609,11 +611,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#COMMUNICATOR_TEST
      *         COMMUNICATOR_TEST}: Invoke the communicator test and report
      *         timing results. Value string is is a semicolon separated list of
-     *         <key>=<value> expressions.  Expressions are:
-     *         num_transactions=<num> where num is the number of request reply
-     *         transactions to invoke per test; message_size=<bytes> where
-     *         bytes is the size of the messages to send in bytes;
-     *         check_values=<enabled> where if enabled is true the value of the
+     *         [key]=[value] expressions.  Expressions are:
+     *         num_transactions=[num] where num is the number of request reply
+     *         transactions to invoke per test; message_size=[bytes] where
+     *         bytes is the size in bytes of the messages to send;
+     *         check_values=[enabled] where if enabled is true the value of the
      *         messages received are verified.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SET_MESSAGE_TIMERS_ENABLED
@@ -638,11 +640,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
      *         NETWORK_SPEED}: Invoke the network speed test and report timing
      *         results. Value string is a semicolon-separated list of
-     *         <key>=<value> expressions.  Valid expressions are:
-     *         seconds=<time> where time is the time in seconds to run the
-     *         test; data_size=<size> where size is the size in bytes of the
-     *         block to be transferred; threads=<number of threads>;
-     *         to_ranks=<space-separated list of ranks> where the list of ranks
+     *         [key]=[value] expressions.  Valid expressions are:
+     *         seconds=[time] where time is the time in seconds to run the
+     *         test; data_size=[bytes] where bytes is the size in bytes of the
+     *         block to be transferred; threads=[number of threads];
+     *         to_ranks=[space-separated list of ranks] where the list of ranks
      *         is the ranks that rank 0 will send data to and get data from. If
      *         to_ranks is unspecified then all worker ranks are used.
      *                 <li> {@link
@@ -670,13 +672,13 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_DATA
      *         AUDIT_DATA}: Enable or disable auditing of request data.
      *                 <li> {@link
-     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_ENABLED
-     *         CHUNK_CACHE_ENABLED}: Enable chunk level query caching. Flushes
-     *         the chunk cache when value is false
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_AGG_SIZE
+     *         SHADOW_AGG_SIZE}: Size of the shadow aggregate chunk cache in
+     *         bytes.  The default value is '10000000'.
      *                 <li> {@link
-     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
-     *         CHUNK_CACHE_SIZE}: Size of the chunk cache in bytes.  The
-     *         default value is '10000000'.
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_FILTER_SIZE
+     *         SHADOW_FILTER_SIZE}: Size of the shdow filter chunk cache in
+     *         bytes.  The default value is '10000000'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
      *         SYNCHRONOUS_COMPRESSION}: compress vector on set_compression
@@ -729,8 +731,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            group limits and/or system load.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_SIZE
-     *                            CHUNK_SIZE}: Sets the chunk size of all new
-     *                            sets to the specified integer value.
+     *                            CHUNK_SIZE}: Sets the number of records per
+     *                            chunk to be used for all new tables.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EVICT_COLUMNS
      *                            EVICT_COLUMNS}: Attempts to evict columns
@@ -765,14 +767,14 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            COMMUNICATOR_TEST}: Invoke the communicator
      *                            test and report timing results. Value string
      *                            is is a semicolon separated list of
-     *                            <key>=<value> expressions.  Expressions are:
-     *                            num_transactions=<num> where num is the
+     *                            [key]=[value] expressions.  Expressions are:
+     *                            num_transactions=[num] where num is the
      *                            number of request reply transactions to
-     *                            invoke per test; message_size=<bytes> where
-     *                            bytes is the size of the messages to send in
-     *                            bytes; check_values=<enabled> where if
-     *                            enabled is true the value of the messages
-     *                            received are verified.
+     *                            invoke per test; message_size=[bytes] where
+     *                            bytes is the size in bytes of the messages to
+     *                            send; check_values=[enabled] where if enabled
+     *                            is true the value of the messages received
+     *                            are verified.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SET_MESSAGE_TIMERS_ENABLED
      *                            SET_MESSAGE_TIMERS_ENABLED}: Enables the
@@ -798,14 +800,14 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
      *                            NETWORK_SPEED}: Invoke the network speed test
      *                            and report timing results. Value string is a
-     *                            semicolon-separated list of <key>=<value>
+     *                            semicolon-separated list of [key]=[value]
      *                            expressions.  Valid expressions are:
-     *                            seconds=<time> where time is the time in
-     *                            seconds to run the test; data_size=<size>
-     *                            where size is the size in bytes of the block
-     *                            to be transferred; threads=<number of
-     *                            threads>; to_ranks=<space-separated list of
-     *                            ranks> where the list of ranks is the ranks
+     *                            seconds=[time] where time is the time in
+     *                            seconds to run the test; data_size=[bytes]
+     *                            where bytes is the size in bytes of the block
+     *                            to be transferred; threads=[number of
+     *                            threads]; to_ranks=[space-separated list of
+     *                            ranks] where the list of ranks is the ranks
      *                            that rank 0 will send data to and get data
      *                            from. If to_ranks is unspecified then all
      *                            worker ranks are used.
@@ -840,14 +842,15 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            AUDIT_DATA}: Enable or disable auditing of
      *                            request data.
      *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_ENABLED
-     *                            CHUNK_CACHE_ENABLED}: Enable chunk level
-     *                            query caching. Flushes the chunk cache when
-     *                            value is false
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_AGG_SIZE
+     *                            SHADOW_AGG_SIZE}: Size of the shadow
+     *                            aggregate chunk cache in bytes.  The default
+     *                            value is '10000000'.
      *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
-     *                            CHUNK_CACHE_SIZE}: Size of the chunk cache in
-     *                            bytes.  The default value is '10000000'.
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_FILTER_SIZE
+     *                            SHADOW_FILTER_SIZE}: Size of the shdow filter
+     *                            chunk cache in bytes.  The default value is
+     *                            '10000000'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
      *                            SYNCHRONOUS_COMPRESSION}: compress vector on

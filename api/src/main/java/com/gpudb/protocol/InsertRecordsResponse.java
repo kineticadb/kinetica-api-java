@@ -42,6 +42,36 @@ public class InsertRecordsResponse implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Additional information.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsResponse.Info#BAD_RECORD_INDICES
+     * BAD_RECORD_INDICES}: If return_individual_errors option is specified or
+     * implied, returns a comma-separated list of invalid indices (0-based)
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsResponse.Info#ERROR_N ERROR_N}: Error
+     * message for record at index N (0-based)
+     * </ul>
+     * A set of string constants for the parameter {@code info}.
+     */
+    public static final class Info {
+
+        /**
+         * If return_individual_errors option is specified or implied, returns
+         * a comma-separated list of invalid indices (0-based)
+         */
+        public static final String BAD_RECORD_INDICES = "bad_record_indices";
+
+        /**
+         * Error message for record at index N (0-based)
+         */
+        public static final String ERROR_N = "error_N";
+
+        private Info() {  }
+    }
+
     private List<String> recordIds;
     private int countInserted;
     private int countUpdated;
@@ -122,6 +152,16 @@ public class InsertRecordsResponse implements IndexedRecord {
     /**
      * 
      * @return Additional information.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsResponse.Info#BAD_RECORD_INDICES
+     *         BAD_RECORD_INDICES}: If return_individual_errors option is
+     *         specified or implied, returns a comma-separated list of invalid
+     *         indices (0-based)
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsResponse.Info#ERROR_N ERROR_N}:
+     *         Error message for record at index N (0-based)
+     *         </ul>
      * 
      */
     public Map<String, String> getInfo() {
@@ -131,6 +171,16 @@ public class InsertRecordsResponse implements IndexedRecord {
     /**
      * 
      * @param info  Additional information.
+     *              <ul>
+     *                      <li> {@link
+     *              com.gpudb.protocol.InsertRecordsResponse.Info#BAD_RECORD_INDICES
+     *              BAD_RECORD_INDICES}: If return_individual_errors option is
+     *              specified or implied, returns a comma-separated list of
+     *              invalid indices (0-based)
+     *                      <li> {@link
+     *              com.gpudb.protocol.InsertRecordsResponse.Info#ERROR_N
+     *              ERROR_N}: Error message for record at index N (0-based)
+     *              </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -18,11 +18,11 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
  * <p>
  * Returns all the unique values from a particular column (specified by {@code
- * columnName}) of a particular table or collection (specified by {@code
- * tableName}). If {@code columnName} is a numeric column the values will be in
- * {@code binaryEncodedResponse}. Otherwise if {@code columnName} is a string
- * column the values will be in {@code jsonEncodedResponse}.  The results can
- * be paged via the {@code offset} and {@code limit} parameters.
+ * columnName}) of a particular table or view (specified by {@code tableName}).
+ * If {@code columnName} is a numeric column the values will be in {@code
+ * binaryEncodedResponse}. Otherwise if {@code columnName} is a string column
+ * the values will be in {@code jsonEncodedResponse}.  The results can be paged
+ * via the {@code offset} and {@code limit} parameters.
  * <p>
  * Columns marked as <a href="../../../../../concepts/types.html#data-handling"
  * target="_top">store-only</a> are unable to be used with this function.
@@ -46,8 +46,8 @@ import org.apache.avro.generic.IndexedRecord;
  * table will be sharded, in all other cases it will be replicated.  Sorting
  * will properly function only if the result table is replicated or if there is
  * only one processing node and should not be relied upon in other cases.  Not
- * available if {@code tableName} is a collection or when the value of {@code
- * columnName} is an unrestricted-length string.
+ * available if the value of {@code columnName} is an unrestricted-length
+ * string.
  */
 public class AggregateUniqueRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -114,8 +114,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * COLLECTION_NAME}: Name of a collection which is to contain the table
      * specified in {@code result_table}. If the collection provided is
      * non-existent, the collection will be automatically created. If empty,
-     * then the table will be a top-level table.  Additionally this option is
-     * invalid if {@code tableName} is a collection.
+     * then the table will be a top-level table.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      * EXPRESSION}: Optional filter expression to apply to the table.
@@ -136,8 +135,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * RESULT_TABLE}: The name of the table used to store the results. If
      * present, no results are returned in the response. Has the same naming
      * restrictions as <a href="../../../../../concepts/tables.html"
-     * target="_top">tables</a>.  Not available if {@code tableName} is a
-     * collection or when {@code columnName} is an unrestricted-length string.
+     * target="_top">tables</a>.  Not available if {@code columnName} is an
+     * unrestricted-length string.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
      * RESULT_TABLE_PERSIST}: If {@code true}, then the result table specified
@@ -170,9 +169,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_GENERATE_PK
-     * RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary key for the
-     * result table. Must be used in combination with the {@code result_table}
-     * option.
+     * RESULT_TABLE_GENERATE_PK}: If {@code true} then set a primary key for
+     * the result table. Must be used in combination with the {@code
+     * result_table} option.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -188,11 +187,13 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * table specified in {@code result_table}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#CHUNK_SIZE
-     * CHUNK_SIZE}: Indicates the chunk size to be used for the result table.
-     * Must be used in combination with the {@code result_table} option.
+     * CHUNK_SIZE}: Indicates the number of records per chunk to be used for
+     * the result table. Must be used in combination with the {@code
+     * result_table} option.
      *         <li> {@link
-     * com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID VIEW_ID}: view
-     * this result table is part of.  The default value is ''.
+     * com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID VIEW_ID}: ID
+     * of view of which the result table will be a member.  The default value
+     * is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -203,8 +204,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
          * Name of a collection which is to contain the table specified in
          * {@code result_table}. If the collection provided is non-existent,
          * the collection will be automatically created. If empty, then the
-         * table will be a top-level table.  Additionally this option is
-         * invalid if {@code tableName} is a collection.
+         * table will be a top-level table.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -236,9 +236,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
          * The name of the table used to store the results. If present, no
          * results are returned in the response. Has the same naming
          * restrictions as <a href="../../../../../concepts/tables.html"
-         * target="_top">tables</a>.  Not available if {@code tableName} is a
-         * collection or when {@code columnName} is an unrestricted-length
-         * string.
+         * target="_top">tables</a>.  Not available if {@code columnName} is an
+         * unrestricted-length string.
          */
         public static final String RESULT_TABLE = "result_table";
 
@@ -278,8 +277,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
         public static final String RESULT_TABLE_FORCE_REPLICATED = "result_table_force_replicated";
 
         /**
-         * If 'true' then set a primary key for the result table. Must be used
-         * in combination with the {@code result_table} option.
+         * If {@code true} then set a primary key for the result table. Must be
+         * used in combination with the {@code result_table} option.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -300,13 +299,15 @@ public class AggregateUniqueRequest implements IndexedRecord {
         public static final String TTL = "ttl";
 
         /**
-         * Indicates the chunk size to be used for the result table. Must be
-         * used in combination with the {@code result_table} option.
+         * Indicates the number of records per chunk to be used for the result
+         * table. Must be used in combination with the {@code result_table}
+         * option.
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
         /**
-         * view this result table is part of.  The default value is ''.
+         * ID of view of which the result table will be a member.  The default
+         * value is ''.
          */
         public static final String VIEW_ID = "view_id";
 
@@ -335,19 +336,26 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * Constructs an AggregateUniqueRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Name of an existing table/collection on which the
+     * @param tableName  Name of an existing table or view on which the
      *                   operation will be performed.
      * @param columnName  Name of the column or an expression containing one or
      *                    more column names on which the unique function would
      *                    be applied.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.  The
-     *               default value is 10000.
+     *               number of records returned will never exceed the server's
+     *               own limit, defined by the <a
+     *               href="../../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -356,8 +364,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 contain the table specified in {@code result_table}. If
      *                 the collection provided is non-existent, the collection
      *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.  Additionally this option is
-     *                 invalid if {@code tableName} is a collection.
+     *                 will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
@@ -385,8 +392,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 response. Has the same naming restrictions as <a
      *                 href="../../../../../concepts/tables.html"
      *                 target="_top">tables</a>.  Not available if {@code
-     *                 tableName} is a collection or when {@code columnName} is
-     *                 an unrestricted-length string.
+     *                 columnName} is an unrestricted-length string.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
@@ -426,9 +432,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_GENERATE_PK
-     *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
-     *                 key for the result table. Must be used in combination
-     *                 with the {@code result_table} option.
+     *                 RESULT_TABLE_GENERATE_PK}: If {@code true} then set a
+     *                 primary key for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -449,13 +455,13 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
-     *                 result table. Must be used in combination with the
-     *                 {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of.  The
-     *                 default value is ''.
+     *                 VIEW_ID}: ID of view of which the result table will be a
+     *                 member.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -473,19 +479,26 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * Constructs an AggregateUniqueRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Name of an existing table/collection on which the
+     * @param tableName  Name of an existing table or view on which the
      *                   operation will be performed.
      * @param columnName  Name of the column or an expression containing one or
      *                    more column names on which the unique function would
      *                    be applied.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.  The
-     *               default value is 10000.
+     *               number of records returned will never exceed the server's
+     *               own limit, defined by the <a
+     *               href="../../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * @param encoding  Specifies the encoding for returned records.
      *                  Supported values:
      *                  <ul>
@@ -509,8 +522,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 contain the table specified in {@code result_table}. If
      *                 the collection provided is non-existent, the collection
      *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.  Additionally this option is
-     *                 invalid if {@code tableName} is a collection.
+     *                 will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
@@ -538,8 +550,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 response. Has the same naming restrictions as <a
      *                 href="../../../../../concepts/tables.html"
      *                 target="_top">tables</a>.  Not available if {@code
-     *                 tableName} is a collection or when {@code columnName} is
-     *                 an unrestricted-length string.
+     *                 columnName} is an unrestricted-length string.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
@@ -579,9 +590,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_GENERATE_PK
-     *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
-     *                 key for the result table. Must be used in combination
-     *                 with the {@code result_table} option.
+     *                 RESULT_TABLE_GENERATE_PK}: If {@code true} then set a
+     *                 primary key for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -602,13 +613,13 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
-     *                 result table. Must be used in combination with the
-     *                 {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of.  The
-     *                 default value is ''.
+     *                 VIEW_ID}: ID of view of which the result table will be a
+     *                 member.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -624,8 +635,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of an existing table/collection on which the operation will
-     *         be performed.
+     * @return Name of an existing table or view on which the operation will be
+     *         performed.
      * 
      */
     public String getTableName() {
@@ -634,7 +645,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of an existing table/collection on which the
+     * @param tableName  Name of an existing table or view on which the
      *                   operation will be performed.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -673,8 +684,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * 
      * @return A positive integer indicating the number of initial results to
      *         skip (this can be useful for paging through the results).  The
-     *         minimum allowed value is 0. The maximum allowed value is
-     *         MAX_INT.
+     *         default value is 0.The minimum allowed value is 0. The maximum
+     *         allowed value is MAX_INT.
      * 
      */
     public long getOffset() {
@@ -685,8 +696,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * 
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -700,8 +711,14 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * 
      * @return A positive integer indicating the maximum number of results to
      *         be returned. Or END_OF_SET (-9999) to indicate that the max
-     *         number of results should be returned.  The default value is
-     *         10000.
+     *         number of results should be returned.  The number of records
+     *         returned will never exceed the server's own limit, defined by
+     *         the <a href="../../../../../config/index.html#general"
+     *         target="_top">max_get_records_size</a> parameter in the server
+     *         configuration.  Use {@code hasMoreRecords} to see if more
+     *         records exist in the result to be fetched, and {@code offset} &
+     *         {@code limit} to request subsequent pages of results.  The
+     *         default value is -9999.
      * 
      */
     public long getLimit() {
@@ -713,7 +730,14 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.  The
-     *               default value is 10000.
+     *               number of records returned will never exceed the server's
+     *               own limit, defined by the <a
+     *               href="../../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -781,8 +805,6 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         table specified in {@code result_table}. If the collection
      *         provided is non-existent, the collection will be automatically
      *         created. If empty, then the table will be a top-level table.
-     *         Additionally this option is invalid if {@code tableName} is a
-     *         collection.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      *         EXPRESSION}: Optional filter expression to apply to the table.
@@ -808,9 +830,8 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         If present, no results are returned in the response. Has the
      *         same naming restrictions as <a
      *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.  Not available if {@code tableName} is
-     *         a collection or when {@code columnName} is an
-     *         unrestricted-length string.
+     *         target="_top">tables</a>.  Not available if {@code columnName}
+     *         is an unrestricted-length string.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
      *         RESULT_TABLE_PERSIST}: If {@code true}, then the result table
@@ -843,9 +864,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_GENERATE_PK
-     *         RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary key for
-     *         the result table. Must be used in combination with the {@code
-     *         result_table} option.
+     *         RESULT_TABLE_GENERATE_PK}: If {@code true} then set a primary
+     *         key for the result table. Must be used in combination with the
+     *         {@code result_table} option.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -862,13 +883,13 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         result_table}.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#CHUNK_SIZE
-     *         CHUNK_SIZE}: Indicates the chunk size to be used for the result
-     *         table. Must be used in combination with the {@code result_table}
-     *         option.
+     *         CHUNK_SIZE}: Indicates the number of records per chunk to be
+     *         used for the result table. Must be used in combination with the
+     *         {@code result_table} option.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID
-     *         VIEW_ID}: view this result table is part of.  The default value
-     *         is ''.
+     *         VIEW_ID}: ID of view of which the result table will be a member.
+     *         The default value is ''.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -887,8 +908,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 contain the table specified in {@code result_table}. If
      *                 the collection provided is non-existent, the collection
      *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.  Additionally this option is
-     *                 invalid if {@code tableName} is a collection.
+     *                 will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
@@ -916,8 +936,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 response. Has the same naming restrictions as <a
      *                 href="../../../../../concepts/tables.html"
      *                 target="_top">tables</a>.  Not available if {@code
-     *                 tableName} is a collection or when {@code columnName} is
-     *                 an unrestricted-length string.
+     *                 columnName} is an unrestricted-length string.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
@@ -957,9 +976,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_GENERATE_PK
-     *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
-     *                 key for the result table. Must be used in combination
-     *                 with the {@code result_table} option.
+     *                 RESULT_TABLE_GENERATE_PK}: If {@code true} then set a
+     *                 primary key for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -980,13 +999,13 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
-     *                 result table. Must be used in combination with the
-     *                 {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of.  The
-     *                 default value is ''.
+     *                 VIEW_ID}: ID of view of which the result table will be a
+     *                 member.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

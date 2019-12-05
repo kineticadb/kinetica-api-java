@@ -20,9 +20,15 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#createGraph(CreateGraphRequest)}.
  * <p>
  * Creates a new graph network using given nodes, edges, weights, and
- * restrictions. See <a
+ * restrictions.
+
+ * IMPORTANT: It's highly recommended that you review the <a
  * href="../../../../../graph_solver/network_graph_solver.html"
- * target="_top">Network Graph Solvers</a> for more information.
+ * target="_top">Network Graphs & Solvers</a> concepts documentation, the <a
+ * href="../../../../../graph_solver/examples/graph_rest_guide.html"
+ * target="_top">Graph REST Tutorial</a>, and/or some <a
+ * href="../../../../../graph_solver/examples.html" target="_top">graph
+ * examples</a> before using this endpoint.
  */
 public class CreateGraphRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -52,8 +58,10 @@ public class CreateGraphRequest implements IndexedRecord {
 
 
     /**
-     * If set to {@code true}, the graph will be directed (0 to 1, 1 to 2,
-     * etc.). If set to {@code false}, the graph will not be directed.
+     * If set to {@code true}, the graph will be directed. If set to {@code
+     * false}, the graph will not be directed. Consult <a
+     * href="../../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     * target="_top">Directed Graphs</a> for more details.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -103,6 +111,19 @@ public class CreateGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateGraphRequest.Options#RECREATE RECREATE}: If set
      * to {@code true} and the graph (using {@code graphName}) already exists,
      * the graph is deleted and recreated.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateGraphRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
+     *         <li> {@link com.gpudb.protocol.CreateGraphRequest.Options#MODIFY
+     * MODIFY}: If set to {@code true} and {@code true} and if the graph (using
+     * {@code graphName}) already exists, the graph is updated with these
+     * components.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.CreateGraphRequest.Options#TRUE
@@ -260,6 +281,22 @@ public class CreateGraphRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
+         * If set to {@code true} and {@code true} and if the graph (using
+         * {@code graphName}) already exists, the graph is updated with these
+         * components.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
+         */
+        public static final String MODIFY = "modify";
+
+        /**
          * If set to {@code true}, returns the graph topology in the response
          * as arrays.
          * Supported values:
@@ -384,9 +421,12 @@ public class CreateGraphRequest implements IndexedRecord {
      * Constructs a CreateGraphRequest object with the specified parameters.
      * 
      * @param graphName  Name of the graph resource to generate.
-     * @param directedGraph  If set to {@code true}, the graph will be directed
-     *                       (0 to 1, 1 to 2, etc.). If set to {@code false},
-     *                       the graph will not be directed.
+     * @param directedGraph  If set to {@code true}, the graph will be
+     *                       directed. If set to {@code false}, the graph will
+     *                       not be directed. Consult <a
+     *                       href="../../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     *                       target="_top">Directed Graphs</a> for more
+     *                       details.
      *                       Supported values:
      *                       <ul>
      *                               <li> {@link
@@ -494,6 +534,22 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 RECREATE}: If set to {@code true} and the graph (using
      *                 {@code graphName}) already exists, the graph is deleted
      *                 and recreated.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#MODIFY
+     *                 MODIFY}: If set to {@code true} and {@code true} and if
+     *                 the graph (using {@code graphName}) already exists, the
+     *                 graph is updated with these components.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -645,9 +701,10 @@ public class CreateGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @return If set to {@code true}, the graph will be directed (0 to 1, 1 to
-     *         2, etc.). If set to {@code false}, the graph will not be
-     *         directed.
+     * @return If set to {@code true}, the graph will be directed. If set to
+     *         {@code false}, the graph will not be directed. Consult <a
+     *         href="../../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     *         target="_top">Directed Graphs</a> for more details.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -665,9 +722,12 @@ public class CreateGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @param directedGraph  If set to {@code true}, the graph will be directed
-     *                       (0 to 1, 1 to 2, etc.). If set to {@code false},
-     *                       the graph will not be directed.
+     * @param directedGraph  If set to {@code true}, the graph will be
+     *                       directed. If set to {@code false}, the graph will
+     *                       not be directed. Consult <a
+     *                       href="../../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     *                       target="_top">Directed Graphs</a> for more
+     *                       details.
      *                       Supported values:
      *                       <ul>
      *                               <li> {@link
@@ -918,6 +978,20 @@ public class CreateGraphRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateGraphRequest.Options#MODIFY MODIFY}: If
+     *         set to {@code true} and {@code true} and if the graph (using
+     *         {@code graphName}) already exists, the graph is updated with
+     *         these components.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateGraphRequest.Options#EXPORT_CREATE_RESULTS
      *         EXPORT_CREATE_RESULTS}: If set to {@code true}, returns the
      *         graph topology in the response as arrays.
@@ -1053,6 +1127,22 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 RECREATE}: If set to {@code true} and the graph (using
      *                 {@code graphName}) already exists, the graph is deleted
      *                 and recreated.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#MODIFY
+     *                 MODIFY}: If set to {@code true} and {@code true} and if
+     *                 the graph (using {@code graphName}) already exists, the
+     *                 graph is updated with these components.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

@@ -35,6 +35,15 @@ import org.apache.avro.generic.IndexedRecord;
  * calls based on the type of the update, e.g., the contiguity across pages
  * cannot be relied upon.
  * <p>
+ * If {@code tableName} is empty, selection is performed against a single-row
+ * virtual table.  This can be useful in executing temporal (<a
+ * href="../../../../../concepts/expressions.html#date-time-functions"
+ * target="_top">NOW()</a>), identity (<a
+ * href="../../../../../concepts/expressions.html#user-security-functions"
+ * target="_top">USER()</a>), or constant-based functions (<a
+ * href="../../../../../concepts/expressions.html#scalar-functions"
+ * target="_top">GEODIST(-77.11, 38.88, -71.06, 42.36)</a>).
+ * <p>
  * The response is returned as a dynamic schema. For details see: <a
  * href="../../../../../api/index.html#dynamic-schemas" target="_top">dynamic
  * schemas documentation</a>.
@@ -219,17 +228,26 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of the table on which this operation will be
-     *                   performed. The table cannot be a parent set.
+     *                   performed.  An empty table name retrieves one record
+     *                   from a single-row virtual table, where columns
+     *                   specified should be constants or constant expressions.
+     *                   The table cannot be a parent set.
      * @param columnNames  The list of column values to retrieve.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned (if not provided the default is
-     *               10000), or END_OF_SET (-9999) to indicate that the maximum
-     *               number of results allowed by the server should be
-     *               returned.
+     *               results to be returned, or END_OF_SET (-9999) to indicate
+     *               that the maximum number of results allowed by the server
+     *               should be returned.  The number of records returned will
+     *               never exceed the server's own limit, defined by the <a
+     *               href="../../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * @param options
      *                 <ul>
      *                         <li> {@link
@@ -299,17 +317,26 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of the table on which this operation will be
-     *                   performed. The table cannot be a parent set.
+     *                   performed.  An empty table name retrieves one record
+     *                   from a single-row virtual table, where columns
+     *                   specified should be constants or constant expressions.
+     *                   The table cannot be a parent set.
      * @param columnNames  The list of column values to retrieve.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned (if not provided the default is
-     *               10000), or END_OF_SET (-9999) to indicate that the maximum
-     *               number of results allowed by the server should be
-     *               returned.
+     *               results to be returned, or END_OF_SET (-9999) to indicate
+     *               that the maximum number of results allowed by the server
+     *               should be returned.  The number of records returned will
+     *               never exceed the server's own limit, defined by the <a
+     *               href="../../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * @param encoding  Specifies the encoding for returned records; either
      *                  'binary' or 'json'.
      *                  Supported values:
@@ -390,8 +417,10 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which this operation will be performed. The
-     *         table cannot be a parent set.
+     * @return Name of the table on which this operation will be performed.  An
+     *         empty table name retrieves one record from a single-row virtual
+     *         table, where columns specified should be constants or constant
+     *         expressions.  The table cannot be a parent set.
      * 
      */
     public String getTableName() {
@@ -401,7 +430,10 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table on which this operation will be
-     *                   performed. The table cannot be a parent set.
+     *                   performed.  An empty table name retrieves one record
+     *                   from a single-row virtual table, where columns
+     *                   specified should be constants or constant expressions.
+     *                   The table cannot be a parent set.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -436,8 +468,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * 
      * @return A positive integer indicating the number of initial results to
      *         skip (this can be useful for paging through the results).  The
-     *         minimum allowed value is 0. The maximum allowed value is
-     *         MAX_INT.
+     *         default value is 0.The minimum allowed value is 0. The maximum
+     *         allowed value is MAX_INT.
      * 
      */
     public long getOffset() {
@@ -448,8 +480,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * 
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -462,9 +494,16 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
     /**
      * 
      * @return A positive integer indicating the maximum number of results to
-     *         be returned (if not provided the default is 10000), or
-     *         END_OF_SET (-9999) to indicate that the maximum number of
-     *         results allowed by the server should be returned.
+     *         be returned, or END_OF_SET (-9999) to indicate that the maximum
+     *         number of results allowed by the server should be returned.  The
+     *         number of records returned will never exceed the server's own
+     *         limit, defined by the <a
+     *         href="../../../../../config/index.html#general"
+     *         target="_top">max_get_records_size</a> parameter in the server
+     *         configuration.  Use {@code hasMoreRecords} to see if more
+     *         records exist in the result to be fetched, and {@code offset} &
+     *         {@code limit} to request subsequent pages of results.  The
+     *         default value is -9999.
      * 
      */
     public long getLimit() {
@@ -474,10 +513,16 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
     /**
      * 
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned (if not provided the default is
-     *               10000), or END_OF_SET (-9999) to indicate that the maximum
-     *               number of results allowed by the server should be
-     *               returned.
+     *               results to be returned, or END_OF_SET (-9999) to indicate
+     *               that the maximum number of results allowed by the server
+     *               should be returned.  The number of records returned will
+     *               never exceed the server's own limit, defined by the <a
+     *               href="../../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

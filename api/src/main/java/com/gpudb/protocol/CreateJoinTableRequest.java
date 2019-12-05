@@ -90,8 +90,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * default value is 'false'.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
-     * CHUNK_SIZE}: Maximum size of a joined-chunk for this table. Defaults to
-     * the gpudb.conf file chunk size
+     * CHUNK_SIZE}: Maximum number of records per joined-chunk for this table.
+     * Defaults to the gpudb.conf file chunk size
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -147,8 +147,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
         public static final String NO_COUNT = "no_count";
 
         /**
-         * Maximum size of a joined-chunk for this table. Defaults to the
-         * gpudb.conf file chunk size
+         * Maximum number of records per joined-chunk for this table. Defaults
+         * to the gpudb.conf file chunk size
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
@@ -246,8 +246,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 is 'false'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Maximum size of a joined-chunk for this
-     *                 table. Defaults to the gpudb.conf file chunk size
+     *                 CHUNK_SIZE}: Maximum number of records per joined-chunk
+     *                 for this table. Defaults to the gpudb.conf file chunk
+     *                 size
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -420,8 +421,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         equi-join stencils.  The default value is 'false'.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
-     *         CHUNK_SIZE}: Maximum size of a joined-chunk for this table.
-     *         Defaults to the gpudb.conf file chunk size
+     *         CHUNK_SIZE}: Maximum number of records per joined-chunk for this
+     *         table. Defaults to the gpudb.conf file chunk size
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -478,8 +479,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 is 'false'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Maximum size of a joined-chunk for this
-     *                 table. Defaults to the gpudb.conf file chunk size
+     *                 CHUNK_SIZE}: Maximum number of records per joined-chunk
+     *                 for this table. Defaults to the gpudb.conf file chunk
+     *                 size
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

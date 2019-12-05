@@ -542,6 +542,19 @@ public class AlterTableRequest implements IndexedRecord {
      * href="../../../../../rm/usage.html#tier-strategies" target="_top">tier
      * strategy examples</a> for examples.  This option will be ignored if
      * {@code value} is also specified.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE INDEX_TYPE}:
+     * Type of index to create.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#COLUMN
+     * COLUMN}: Standard column index.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP CHUNK_SKIP}:
+     * Chunk skip index.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AlterTableRequest.Options#COLUMN COLUMN}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -672,6 +685,32 @@ public class AlterTableRequest implements IndexedRecord {
          * will be ignored if {@code value} is also specified.
          */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
+
+        /**
+         * Type of index to create.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AlterTableRequest.Options#COLUMN COLUMN}:
+         * Standard column index.
+         *         <li> {@link
+         * com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP CHUNK_SKIP}:
+         * Chunk skip index.
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AlterTableRequest.Options#COLUMN COLUMN}.
+         */
+        public static final String INDEX_TYPE = "index_type";
+
+        /**
+         * Standard column index.
+         */
+        public static final String COLUMN = "column";
+
+        /**
+         * Chunk skip index.
+         */
+        public static final String CHUNK_SKIP = "chunk_skip";
 
         private Options() {  }
     }
@@ -993,6 +1032,21 @@ public class AlterTableRequest implements IndexedRecord {
      *                 target="_top">tier strategy examples</a> for examples.
      *                 This option will be ignored if {@code value} is also
      *                 specified.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE
+     *                 INDEX_TYPE}: Type of index to create.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN
+     *                 COLUMN}: Standard column index.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP
+     *                 CHUNK_SKIP}: Chunk skip index.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN
+     *                 COLUMN}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1520,6 +1574,20 @@ public class AlterTableRequest implements IndexedRecord {
      *         href="../../../../../rm/usage.html#tier-strategies"
      *         target="_top">tier strategy examples</a> for examples.  This
      *         option will be ignored if {@code value} is also specified.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE
+     *         INDEX_TYPE}: Type of index to create.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#COLUMN COLUMN}:
+     *         Standard column index.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP
+     *         CHUNK_SKIP}: Chunk skip index.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AlterTableRequest.Options#COLUMN COLUMN}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1648,6 +1716,21 @@ public class AlterTableRequest implements IndexedRecord {
      *                 target="_top">tier strategy examples</a> for examples.
      *                 This option will be ignored if {@code value} is also
      *                 specified.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE
+     *                 INDEX_TYPE}: Type of index to create.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN
+     *                 COLUMN}: Standard column index.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP
+     *                 CHUNK_SKIP}: Chunk skip index.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN
+     *                 COLUMN}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

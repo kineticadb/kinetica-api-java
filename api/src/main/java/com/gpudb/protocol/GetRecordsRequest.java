@@ -201,7 +201,14 @@ public class GetRecordsRequest implements IndexedRecord {
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.  The
-     *               default value is 10000.
+     *               number of records returned will never exceed the server's
+     *               own limit, defined by the <a
+     *               href="../../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * @param options
      *                 <ul>
      *                         <li> {@link
@@ -272,7 +279,14 @@ public class GetRecordsRequest implements IndexedRecord {
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.  The
-     *               default value is 10000.
+     *               number of records returned will never exceed the server's
+     *               own limit, defined by the <a
+     *               href="../../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * @param encoding  Specifies the encoding for returned records.
      *                  Supported values:
      *                  <ul>
@@ -401,8 +415,14 @@ public class GetRecordsRequest implements IndexedRecord {
      * 
      * @return A positive integer indicating the maximum number of results to
      *         be returned. Or END_OF_SET (-9999) to indicate that the max
-     *         number of results should be returned.  The default value is
-     *         10000.
+     *         number of results should be returned.  The number of records
+     *         returned will never exceed the server's own limit, defined by
+     *         the <a href="../../../../../config/index.html#general"
+     *         target="_top">max_get_records_size</a> parameter in the server
+     *         configuration.  Use {@code hasMoreRecords} to see if more
+     *         records exist in the result to be fetched, and {@code offset} &
+     *         {@code limit} to request subsequent pages of results.  The
+     *         default value is -9999.
      * 
      */
     public long getLimit() {
@@ -414,7 +434,14 @@ public class GetRecordsRequest implements IndexedRecord {
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.  The
-     *               default value is 10000.
+     *               number of records returned will never exceed the server's
+     *               own limit, defined by the <a
+     *               href="../../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

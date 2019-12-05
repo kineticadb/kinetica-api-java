@@ -24,7 +24,11 @@ public class GPUdb extends GPUdbBase {
      * cannot be changed subsequently; to use different options, a new
      * {@link GPUdb} instance must be created.
      * 
-     * @param url  The URL of the GPUdb server.
+     * @param url  The URL of the GPUdb server.  Can be a comma-separated
+     *             string containing multiple full URLs, or a single URL.
+     *             For example 'http://172.42.40.1:9191,,http://172.42.40.2:9191'.
+     *             If a single URL is given, the given URL will be used as
+     *             the primary URL.
      * 
      * @throws GPUdbException if an error occurs during creation.
      */
@@ -38,7 +42,8 @@ public class GPUdb extends GPUdbBase {
      * cannot be changed subsequently; to use different options, a new
      * {@link GPUdb} instance must be created.
      * 
-     * @param url  The URL of the GPUdb server.
+     * @param url  The URL of the GPUdb server.  The given URL will be used as
+     *             the primary URL.
      * 
      * @throws GPUdbException if an error occurs during creation.
      */
@@ -56,7 +61,8 @@ public class GPUdb extends GPUdbBase {
      * cannot be changed subsequently; to use different options, a new
      * {@link GPUdb} instance must be created.
      *
-     * @param urls  The URLs of the GPUdb server.
+     * @param urls  The URLs of the GPUdb server.  If a single URL is given,
+     *              it will be used as the primary URL.
      * 
      * @throws GPUdbException if an error occurs during creation.
      */
@@ -70,7 +76,11 @@ public class GPUdb extends GPUdbBase {
      * options cannot be changed subsequently; to use different options,
      * a new {@link GPUdb} instance must be created.
      * 
-     * @param url  The URL of the GPUdb server.
+     * @param url  The URL of the GPUdb server.  Can be a comma-separated
+     *             string containing multiple full URLs, or a single URL.
+     *             For example 'http://172.42.40.1:9191,,http://172.42.40.2:9191'.
+     *             If a single URL is given, and no primary URL is specified via
+     *             the options, the given URL will be used as the primary URL.
      * 
      * @param options  The options, e.g. primary cluster URL, to use.
      * 
@@ -87,7 +97,8 @@ public class GPUdb extends GPUdbBase {
      * options cannot be changed subsequently; to use different options,
      * a new {@link GPUdb} instance must be created.
      * 
-     * @param url  The URL of the GPUdb server.
+     * @param url  The URL of the GPUdb server.  If no primary URL is specified via
+     *             the options, the given URL will be used as the primary URL.
      * 
      * @param options  The options, e.g. primary cluster URL, to use.
      * 
@@ -108,7 +119,9 @@ public class GPUdb extends GPUdbBase {
      * cannot be changed subsequently; to use different options, a new
      * {@link GPUdb} instance must be created.
      *
-     * @param urls  The URLs of the GPUdb server.
+     * @param urls  The URLs of the GPUdb server.  If a single URL is given, 
+     *              and no primary URL is specified via the options, the given
+     *              URL will be used as the primary URL.
      *
      * @param options  The options, e.g. primary cluster URL, to use.
      *
@@ -1046,7 +1059,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Calculates unique combinations (groups) of values for the given columns
-     * in a given table/view/collection and computes aggregates on each unique
+     * in a given table or view and computes aggregates on each unique
      * combination. This is somewhat analogous to an SQL-style SELECT...GROUP
      * BY.
      * <p>
@@ -1136,7 +1149,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Calculates unique combinations (groups) of values for the given columns
-     * in a given table/view/collection and computes aggregates on each unique
+     * in a given table or view and computes aggregates on each unique
      * combination. This is somewhat analogous to an SQL-style SELECT...GROUP
      * BY.
      * <p>
@@ -1235,7 +1248,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Calculates unique combinations (groups) of values for the given columns
-     * in a given table/view/collection and computes aggregates on each unique
+     * in a given table or view and computes aggregates on each unique
      * combination. This is somewhat analogous to an SQL-style SELECT...GROUP
      * BY.
      * <p>
@@ -1305,18 +1318,25 @@ public class GPUdb extends GPUdbBase {
      * other cases.  Not available when any of the values of {@code
      * columnNames} is an unrestricted-length string.
      * 
-     * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table/view/collection.
+     * @param tableName  Name of an existing table or view on which the
+     *                   operation will be performed.
      * @param columnNames  List of one or more column names, expressions, and
      *                     aggregate expressions.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned Or END_OF_SET (-9999) to indicate
+     *               results to be returned, or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.  The
-     *               default value is 1000.
+     *               number of records returned will never exceed the server's
+     *               own limit, defined by the <a
+     *               href="../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -1325,8 +1345,7 @@ public class GPUdb extends GPUdbBase {
      *                 contain the table specified in {@code result_table}. If
      *                 the collection provided is non-existent, the collection
      *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.  Additionally this option is
-     *                 invalid if {@code tableName} is a collection.
+     *                 will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
      *                 EXPRESSION}: Filter expression to apply to the table
@@ -1427,9 +1446,9 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_GENERATE_PK
-     *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
-     *                 key for the result table. Must be used in combination
-     *                 with the {@code result_table} option.
+     *                 RESULT_TABLE_GENERATE_PK}: If {@code true} then set a
+     *                 primary key for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1449,9 +1468,9 @@ public class GPUdb extends GPUdbBase {
      *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
-     *                 result table. Must be used in combination with the
-     *                 {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CREATE_INDEXES
      *                 CREATE_INDEXES}: Comma-separated list of columns on
@@ -1460,8 +1479,8 @@ public class GPUdb extends GPUdbBase {
      *                 option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of.  The
-     *                 default value is ''.
+     *                 VIEW_ID}: ID of view of which the result table will be a
+     *                 member.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
@@ -2131,12 +2150,12 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Returns all the unique values from a particular column (specified by
-     * {@code columnName}) of a particular table or collection (specified by
-     * {@code tableName}). If {@code columnName} is a numeric column the values
-     * will be in {@code binaryEncodedResponse}. Otherwise if {@code
-     * columnName} is a string column the values will be in {@code
-     * jsonEncodedResponse}.  The results can be paged via the {@code offset}
-     * and {@code limit} parameters.
+     * {@code columnName}) of a particular table or view (specified by {@code
+     * tableName}). If {@code columnName} is a numeric column the values will
+     * be in {@code binaryEncodedResponse}. Otherwise if {@code columnName} is
+     * a string column the values will be in {@code jsonEncodedResponse}.  The
+     * results can be paged via the {@code offset} and {@code limit}
+     * parameters.
      * <p>
      * Columns marked as <a
      * href="../../../../concepts/types.html#data-handling"
@@ -2162,8 +2181,8 @@ public class GPUdb extends GPUdbBase {
      * sharded, in all other cases it will be replicated.  Sorting will
      * properly function only if the result table is replicated or if there is
      * only one processing node and should not be relied upon in other cases.
-     * Not available if {@code tableName} is a collection or when the value of
-     * {@code columnName} is an unrestricted-length string.
+     * Not available if the value of {@code columnName} is an
+     * unrestricted-length string.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -2185,12 +2204,12 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Returns all the unique values from a particular column (specified by
-     * {@code columnName}) of a particular table or collection (specified by
-     * {@code tableName}). If {@code columnName} is a numeric column the values
-     * will be in {@code binaryEncodedResponse}. Otherwise if {@code
-     * columnName} is a string column the values will be in {@code
-     * jsonEncodedResponse}.  The results can be paged via the {@code offset}
-     * and {@code limit} parameters.
+     * {@code columnName}) of a particular table or view (specified by {@code
+     * tableName}). If {@code columnName} is a numeric column the values will
+     * be in {@code binaryEncodedResponse}. Otherwise if {@code columnName} is
+     * a string column the values will be in {@code jsonEncodedResponse}.  The
+     * results can be paged via the {@code offset} and {@code limit}
+     * parameters.
      * <p>
      * Columns marked as <a
      * href="../../../../concepts/types.html#data-handling"
@@ -2216,8 +2235,8 @@ public class GPUdb extends GPUdbBase {
      * sharded, in all other cases it will be replicated.  Sorting will
      * properly function only if the result table is replicated or if there is
      * only one processing node and should not be relied upon in other cases.
-     * Not available if {@code tableName} is a collection or when the value of
-     * {@code columnName} is an unrestricted-length string.
+     * Not available if the value of {@code columnName} is an
+     * unrestricted-length string.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -2248,12 +2267,12 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Returns all the unique values from a particular column (specified by
-     * {@code columnName}) of a particular table or collection (specified by
-     * {@code tableName}). If {@code columnName} is a numeric column the values
-     * will be in {@code binaryEncodedResponse}. Otherwise if {@code
-     * columnName} is a string column the values will be in {@code
-     * jsonEncodedResponse}.  The results can be paged via the {@code offset}
-     * and {@code limit} parameters.
+     * {@code columnName}) of a particular table or view (specified by {@code
+     * tableName}). If {@code columnName} is a numeric column the values will
+     * be in {@code binaryEncodedResponse}. Otherwise if {@code columnName} is
+     * a string column the values will be in {@code jsonEncodedResponse}.  The
+     * results can be paged via the {@code offset} and {@code limit}
+     * parameters.
      * <p>
      * Columns marked as <a
      * href="../../../../concepts/types.html#data-handling"
@@ -2279,22 +2298,29 @@ public class GPUdb extends GPUdbBase {
      * sharded, in all other cases it will be replicated.  Sorting will
      * properly function only if the result table is replicated or if there is
      * only one processing node and should not be relied upon in other cases.
-     * Not available if {@code tableName} is a collection or when the value of
-     * {@code columnName} is an unrestricted-length string.
+     * Not available if the value of {@code columnName} is an
+     * unrestricted-length string.
      * 
-     * @param tableName  Name of an existing table/collection on which the
+     * @param tableName  Name of an existing table or view on which the
      *                   operation will be performed.
      * @param columnName  Name of the column or an expression containing one or
      *                    more column names on which the unique function would
      *                    be applied.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.  The
-     *               default value is 10000.
+     *               number of records returned will never exceed the server's
+     *               own limit, defined by the <a
+     *               href="../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -2303,8 +2329,7 @@ public class GPUdb extends GPUdbBase {
      *                 contain the table specified in {@code result_table}. If
      *                 the collection provided is non-existent, the collection
      *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.  Additionally this option is
-     *                 invalid if {@code tableName} is a collection.
+     *                 will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
@@ -2332,8 +2357,7 @@ public class GPUdb extends GPUdbBase {
      *                 response. Has the same naming restrictions as <a
      *                 href="../../../../concepts/tables.html"
      *                 target="_top">tables</a>.  Not available if {@code
-     *                 tableName} is a collection or when {@code columnName} is
-     *                 an unrestricted-length string.
+     *                 columnName} is an unrestricted-length string.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
@@ -2373,9 +2397,9 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_GENERATE_PK
-     *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
-     *                 key for the result table. Must be used in combination
-     *                 with the {@code result_table} option.
+     *                 RESULT_TABLE_GENERATE_PK}: If {@code true} then set a
+     *                 primary key for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -2395,13 +2419,13 @@ public class GPUdb extends GPUdbBase {
      *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
-     *                 result table. Must be used in combination with the
-     *                 {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of.  The
-     *                 default value is ''.
+     *                 VIEW_ID}: ID of view of which the result table will be a
+     *                 member.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -2592,9 +2616,9 @@ public class GPUdb extends GPUdbBase {
      *                 is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
-     *                 result table. Must be used in combination with the
-     *                 {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#LIMIT
      *                 LIMIT}: The number of records to keep.  The default
@@ -2931,8 +2955,8 @@ public class GPUdb extends GPUdbBase {
      *                            group limits and/or system load.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_SIZE
-     *                            CHUNK_SIZE}: Sets the chunk size of all new
-     *                            sets to the specified integer value.
+     *                            CHUNK_SIZE}: Sets the number of records per
+     *                            chunk to be used for all new tables.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EVICT_COLUMNS
      *                            EVICT_COLUMNS}: Attempts to evict columns
@@ -2967,14 +2991,14 @@ public class GPUdb extends GPUdbBase {
      *                            COMMUNICATOR_TEST}: Invoke the communicator
      *                            test and report timing results. Value string
      *                            is is a semicolon separated list of
-     *                            <key>=<value> expressions.  Expressions are:
-     *                            num_transactions=<num> where num is the
+     *                            [key]=[value] expressions.  Expressions are:
+     *                            num_transactions=[num] where num is the
      *                            number of request reply transactions to
-     *                            invoke per test; message_size=<bytes> where
-     *                            bytes is the size of the messages to send in
-     *                            bytes; check_values=<enabled> where if
-     *                            enabled is true the value of the messages
-     *                            received are verified.
+     *                            invoke per test; message_size=[bytes] where
+     *                            bytes is the size in bytes of the messages to
+     *                            send; check_values=[enabled] where if enabled
+     *                            is true the value of the messages received
+     *                            are verified.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SET_MESSAGE_TIMERS_ENABLED
      *                            SET_MESSAGE_TIMERS_ENABLED}: Enables the
@@ -3000,14 +3024,14 @@ public class GPUdb extends GPUdbBase {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
      *                            NETWORK_SPEED}: Invoke the network speed test
      *                            and report timing results. Value string is a
-     *                            semicolon-separated list of <key>=<value>
+     *                            semicolon-separated list of [key]=[value]
      *                            expressions.  Valid expressions are:
-     *                            seconds=<time> where time is the time in
-     *                            seconds to run the test; data_size=<size>
-     *                            where size is the size in bytes of the block
-     *                            to be transferred; threads=<number of
-     *                            threads>; to_ranks=<space-separated list of
-     *                            ranks> where the list of ranks is the ranks
+     *                            seconds=[time] where time is the time in
+     *                            seconds to run the test; data_size=[bytes]
+     *                            where bytes is the size in bytes of the block
+     *                            to be transferred; threads=[number of
+     *                            threads]; to_ranks=[space-separated list of
+     *                            ranks] where the list of ranks is the ranks
      *                            that rank 0 will send data to and get data
      *                            from. If to_ranks is unspecified then all
      *                            worker ranks are used.
@@ -3042,14 +3066,15 @@ public class GPUdb extends GPUdbBase {
      *                            AUDIT_DATA}: Enable or disable auditing of
      *                            request data.
      *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_ENABLED
-     *                            CHUNK_CACHE_ENABLED}: Enable chunk level
-     *                            query caching. Flushes the chunk cache when
-     *                            value is false
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_AGG_SIZE
+     *                            SHADOW_AGG_SIZE}: Size of the shadow
+     *                            aggregate chunk cache in bytes.  The default
+     *                            value is '10000000'.
      *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CHUNK_CACHE_SIZE
-     *                            CHUNK_CACHE_SIZE}: Size of the chunk cache in
-     *                            bytes.  The default value is '10000000'.
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_FILTER_SIZE
+     *                            SHADOW_FILTER_SIZE}: Size of the shdow filter
+     *                            chunk cache in bytes.  The default value is
+     *                            '10000000'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
      *                            SYNCHRONOUS_COMPRESSION}: compress vector on
@@ -3511,6 +3536,21 @@ public class GPUdb extends GPUdbBase {
      *                 target="_top">tier strategy examples</a> for examples.
      *                 This option will be ignored if {@code value} is also
      *                 specified.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE
+     *                 INDEX_TYPE}: Type of index to create.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN
+     *                 COLUMN}: Standard column index.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP
+     *                 CHUNK_SKIP}: Chunk skip index.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN
+     *                 COLUMN}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -4222,9 +4262,15 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Creates a new graph network using given nodes, edges, weights, and
-     * restrictions. See <a
+     * restrictions.
+
+     * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../graph_solver/network_graph_solver.html"
-     * target="_top">Network Graph Solvers</a> for more information.
+     * target="_top">Network Graphs & Solvers</a> concepts documentation, the
+     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * target="_top">Graph REST Tutorial</a>, and/or some <a
+     * href="../../../../graph_solver/examples.html" target="_top">graph
+     * examples</a> before using this endpoint.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -4246,14 +4292,23 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Creates a new graph network using given nodes, edges, weights, and
-     * restrictions. See <a
+     * restrictions.
+
+     * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../graph_solver/network_graph_solver.html"
-     * target="_top">Network Graph Solvers</a> for more information.
+     * target="_top">Network Graphs & Solvers</a> concepts documentation, the
+     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * target="_top">Graph REST Tutorial</a>, and/or some <a
+     * href="../../../../graph_solver/examples.html" target="_top">graph
+     * examples</a> before using this endpoint.
      * 
      * @param graphName  Name of the graph resource to generate.
-     * @param directedGraph  If set to {@code true}, the graph will be directed
-     *                       (0 to 1, 1 to 2, etc.). If set to {@code false},
-     *                       the graph will not be directed.
+     * @param directedGraph  If set to {@code true}, the graph will be
+     *                       directed. If set to {@code false}, the graph will
+     *                       not be directed. Consult <a
+     *                       href="../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     *                       target="_top">Directed Graphs</a> for more
+     *                       details.
      *                       Supported values:
      *                       <ul>
      *                               <li> {@link
@@ -4361,6 +4416,22 @@ public class GPUdb extends GPUdbBase {
      *                 RECREATE}: If set to {@code true} and the graph (using
      *                 {@code graphName}) already exists, the graph is deleted
      *                 and recreated.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#MODIFY
+     *                 MODIFY}: If set to {@code true} and {@code true} and if
+     *                 the graph (using {@code graphName}) already exists, the
+     *                 graph is updated with these components.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -4679,8 +4750,9 @@ public class GPUdb extends GPUdbBase {
      *                 is 'false'.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Maximum size of a joined-chunk for this
-     *                 table. Defaults to the gpudb.conf file chunk size
+     *                 CHUNK_SIZE}: Maximum number of records per joined-chunk
+     *                 for this table. Defaults to the gpudb.conf file chunk
+     *                 size
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -4966,6 +5038,15 @@ public class GPUdb extends GPUdbBase {
      * projection will be sharded according to the specified columns,
      * regardless of how the source table is sharded.  The source table can
      * even be unsharded or replicated.
+     * <p>
+     * If {@code tableName} is empty, selection is performed against a
+     * single-row virtual table.  This can be useful in executing temporal (<a
+     * href="../../../../concepts/expressions.html#date-time-functions"
+     * target="_top">NOW()</a>), identity (<a
+     * href="../../../../concepts/expressions.html#user-security-functions"
+     * target="_top">USER()</a>), or constant-based functions (<a
+     * href="../../../../concepts/expressions.html#scalar-functions"
+     * target="_top">GEODIST(-77.11, 38.88, -71.06, 42.36)</a>).
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -5008,9 +5089,21 @@ public class GPUdb extends GPUdbBase {
      * projection will be sharded according to the specified columns,
      * regardless of how the source table is sharded.  The source table can
      * even be unsharded or replicated.
+     * <p>
+     * If {@code tableName} is empty, selection is performed against a
+     * single-row virtual table.  This can be useful in executing temporal (<a
+     * href="../../../../concepts/expressions.html#date-time-functions"
+     * target="_top">NOW()</a>), identity (<a
+     * href="../../../../concepts/expressions.html#user-security-functions"
+     * target="_top">USER()</a>), or constant-based functions (<a
+     * href="../../../../concepts/expressions.html#scalar-functions"
+     * target="_top">GEODIST(-77.11, 38.88, -71.06, 42.36)</a>).
      * 
      * @param tableName  Name of the existing table on which the projection is
-     *                   to be applied.
+     *                   to be applied.  An empty table name creates a
+     *                   projection from a single-row virtual table, where
+     *                   columns specified should be constants or constant
+     *                   expressions.
      * @param projectionName  Name of the projection to be created. Has the
      *                        same naming restrictions as <a
      *                        href="../../../../concepts/tables.html"
@@ -5082,16 +5175,15 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
-     *                 this table.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for this projection.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#CREATE_INDEXES
      *                 CREATE_INDEXES}: Comma-separated list of columns on
-     *                 which to create indexes on the output table.  The
-     *                 columns specified must be present in {@code
-     *                 columnNames}.  If any alias is given for any column
-     *                 name, the alias must be used, rather than the original
-     *                 column name.
+     *                 which to create indexes on the projection.  The columns
+     *                 specified must be present in {@code columnNames}.  If
+     *                 any alias is given for any column name, the alias must
+     *                 be used, rather than the original column name.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#TTL
      *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
@@ -5129,7 +5221,7 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#PRESERVE_DICT_ENCODING
      *                 PRESERVE_DICT_ENCODING}: If {@code true}, then columns
      *                 that were dict encoded in the source table will be dict
-     *                 encoded in the projection table.
+     *                 encoded in the projection.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -5143,9 +5235,26 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
      *                 TRUE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#RETAIN_PARTITIONS
+     *                 RETAIN_PARTITIONS}: Determines whether the created
+     *                 projection will retain the partitioning scheme from the
+     *                 source table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this projection is part of.  The default
-     *                 value is ''.
+     *                 VIEW_ID}: ID of view of which this projection is a
+     *                 member.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -5517,6 +5626,11 @@ public class GPUdb extends GPUdbBase {
      *                 LIST}: Use <a
      *                 href="../../../../concepts/tables.html#partitioning-by-list"
      *                 target="_top">list partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#HASH
+     *                 HASH}: Use <a
+     *                 href="../../../../concepts/tables.html#partitioning-by-hash"
+     *                 target="_top">hash partitioning</a>.
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -5532,9 +5646,11 @@ public class GPUdb extends GPUdbBase {
      *                 href="../../../../concepts/tables.html#partitioning-by-range"
      *                 target="_top">range partitioning</a>, <a
      *                 href="../../../../concepts/tables.html#partitioning-by-interval"
-     *                 target="_top">interval partitioning</a>, or <a
+     *                 target="_top">interval partitioning</a>, <a
      *                 href="../../../../concepts/tables.html#partitioning-by-list"
-     *                 target="_top">list partitioning</a> for example formats.
+     *                 target="_top">list partitioning</a>, or <a
+     *                 href="../../../../concepts/tables.html#partitioning-by-hash"
+     *                 target="_top">hash partitioning</a> for example formats.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
      *                 IS_AUTOMATIC_PARTITION}: If true, a new partition will
@@ -5561,8 +5677,8 @@ public class GPUdb extends GPUdbBase {
      *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
-     *                 this table.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for this table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
      *                 IS_RESULT_TABLE}: For a table, indicates whether the
@@ -6383,8 +6499,8 @@ public class GPUdb extends GPUdbBase {
      *                 UNION_ALL}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
-     *                 this table.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for this output table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#CREATE_INDEXES
      *                 CREATE_INDEXES}: Comma-separated list of columns on
@@ -6394,15 +6510,16 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}:
      *                 Sets the <a href="../../../../concepts/ttl.html"
-     *                 target="_top">TTL</a> of the table specified in {@code
-     *                 tableName}.
+     *                 target="_top">TTL</a> of the output table specified in
+     *                 {@code tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#PERSIST
-     *                 PERSIST}: If {@code true}, then the table specified in
-     *                 {@code tableName} will be persisted and will not expire
-     *                 unless a {@code ttl} is specified.   If {@code false},
-     *                 then the table will be an in-memory table and will
-     *                 expire unless a {@code ttl} is specified otherwise.
+     *                 PERSIST}: If {@code true}, then the output table
+     *                 specified in {@code tableName} will be persisted and
+     *                 will not expire unless a {@code ttl} is specified.   If
+     *                 {@code false}, then the output table will be an
+     *                 in-memory table and will expire unless a {@code ttl} is
+     *                 specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -6416,13 +6533,13 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view the output table will be a part of.  The
-     *                 default value is ''.
+     *                 VIEW_ID}: ID of view of which this output table is a
+     *                 member.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#FORCE_REPLICATED
-     *                 FORCE_REPLICATED}: If {@code true}, then the table
-     *                 specified in {@code tableName} will be replicated even
-     *                 if the source tables are not.
+     *                 FORCE_REPLICATED}: If {@code true}, then the output
+     *                 table specified in {@code tableName} will be replicated
+     *                 even if the source tables are not.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -7088,13 +7205,19 @@ public class GPUdb extends GPUdbBase {
      * @param statement  SQL statement (query, DML, or DDL) to be executed
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned (if not provided the default is
-     *               10000), or END_OF_SET (-9999) to indicate that the maximum
-     *               number of results allowed by the server should be
-     *               returned.
+     *               results to be returned, or END_OF_SET (-9999) to indicate
+     *               that the maximum number of results allowed by the server
+     *               should be returned.  The number of records returned will
+     *               never exceed the server's own limit, defined by the <a
+     *               href="../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * @param requestSchemaStr  Avro schema of {@code data}.  The default value
      *                          is ''.
      * @param data  An array of binary-encoded data for the records to be
@@ -8880,7 +9003,14 @@ public class GPUdb extends GPUdbBase {
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.  The
-     *               default value is 10000.
+     *               number of records returned will never exceed the server's
+     *               own limit, defined by the <a
+     *               href="../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * @param options
      *                 <ul>
      *                         <li> {@link
@@ -9026,7 +9156,14 @@ public class GPUdb extends GPUdbBase {
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned. Or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.  The
-     *               default value is 10000.
+     *               number of records returned will never exceed the server's
+     *               own limit, defined by the <a
+     *               href="../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * @param options
      *                 <ul>
      *                         <li> {@link
@@ -9116,6 +9253,15 @@ public class GPUdb extends GPUdbBase {
      * differ between calls based on the type of the update, e.g., the
      * contiguity across pages cannot be relied upon.
      * <p>
+     * If {@code tableName} is empty, selection is performed against a
+     * single-row virtual table.  This can be useful in executing temporal (<a
+     * href="../../../../concepts/expressions.html#date-time-functions"
+     * target="_top">NOW()</a>), identity (<a
+     * href="../../../../concepts/expressions.html#user-security-functions"
+     * target="_top">USER()</a>), or constant-based functions (<a
+     * href="../../../../concepts/expressions.html#scalar-functions"
+     * target="_top">GEODIST(-77.11, 38.88, -71.06, 42.36)</a>).
+     * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
      * schemas documentation</a>.
@@ -9154,6 +9300,15 @@ public class GPUdb extends GPUdbBase {
      * during a call to the endpoint, the records or values retrieved may
      * differ between calls based on the type of the update, e.g., the
      * contiguity across pages cannot be relied upon.
+     * <p>
+     * If {@code tableName} is empty, selection is performed against a
+     * single-row virtual table.  This can be useful in executing temporal (<a
+     * href="../../../../concepts/expressions.html#date-time-functions"
+     * target="_top">NOW()</a>), identity (<a
+     * href="../../../../concepts/expressions.html#user-security-functions"
+     * target="_top">USER()</a>), or constant-based functions (<a
+     * href="../../../../concepts/expressions.html#scalar-functions"
+     * target="_top">GEODIST(-77.11, 38.88, -71.06, 42.36)</a>).
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
@@ -9204,22 +9359,40 @@ public class GPUdb extends GPUdbBase {
      * differ between calls based on the type of the update, e.g., the
      * contiguity across pages cannot be relied upon.
      * <p>
+     * If {@code tableName} is empty, selection is performed against a
+     * single-row virtual table.  This can be useful in executing temporal (<a
+     * href="../../../../concepts/expressions.html#date-time-functions"
+     * target="_top">NOW()</a>), identity (<a
+     * href="../../../../concepts/expressions.html#user-security-functions"
+     * target="_top">USER()</a>), or constant-based functions (<a
+     * href="../../../../concepts/expressions.html#scalar-functions"
+     * target="_top">GEODIST(-77.11, 38.88, -71.06, 42.36)</a>).
+     * <p>
      * The response is returned as a dynamic schema. For details see: <a
      * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
      * schemas documentation</a>.
      * 
      * @param tableName  Name of the table on which this operation will be
-     *                   performed. The table cannot be a parent set.
+     *                   performed.  An empty table name retrieves one record
+     *                   from a single-row virtual table, where columns
+     *                   specified should be constants or constant expressions.
+     *                   The table cannot be a parent set.
      * @param columnNames  The list of column values to retrieve.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned (if not provided the default is
-     *               10000), or END_OF_SET (-9999) to indicate that the maximum
-     *               number of results allowed by the server should be
-     *               returned.
+     *               results to be returned, or END_OF_SET (-9999) to indicate
+     *               that the maximum number of results allowed by the server
+     *               should be returned.  The number of records returned will
+     *               never exceed the server's own limit, defined by the <a
+     *               href="../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * @param options
      *                 <ul>
      *                         <li> {@link
@@ -9643,7 +9816,13 @@ public class GPUdb extends GPUdbBase {
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned, or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.  The
-     *               default value is 10000.
+     *               number of records returned will never exceed the server's
+     *               own limit, defined by the <a
+     *               href="../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code offset} & {@code limit}
+     *               to request subsequent pages of results.  The default value
+     *               is -9999.
      * @param options
      *                 <ul>
      *                         <li> {@link
@@ -9755,7 +9934,13 @@ public class GPUdb extends GPUdbBase {
      * @param limit  A positive integer indicating the maximum number of
      *               results to be returned, or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.  The
-     *               default value is 10000.
+     *               number of records returned will never exceed the server's
+     *               own limit, defined by the <a
+     *               href="../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code offset} & {@code limit}
+     *               to request subsequent pages of results.  The default value
+     *               is -9999.
      * @param options
      *                 <ul>
      *                         <li> {@link
@@ -10390,6 +10575,61 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#RETURN_INDIVIDUAL_ERRORS
+     *                 RETURN_INDIVIDUAL_ERRORS}: If set to {@code true},
+     *                 success will always be returned, and any errors found
+     *                 will be included in the info map.  The
+     *                 "bad_record_indices" entry is a comma-separated list of
+     *                 bad records (0-based).  And if so, there will also be an
+     *                 "error_N" entry for each record with an error, where N
+     *                 is the index (0-based).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#ALLOW_PARTIAL_BATCH
+     *                 ALLOW_PARTIAL_BATCH}: If set to {@code true}, all
+     *                 correct records will be inserted and incorrect records
+     *                 will be rejected and reported.  Otherwise, the entire
+     *                 batch will be rejected if any records are incorrect.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#DRY_RUN
+     *                 DRY_RUN}: If set to {@code true}, no data will be saved
+     *                 and any errors will be returned.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -10483,6 +10723,61 @@ public class GPUdb extends GPUdbBase {
      *                 TRUNCATE_STRINGS}: If set to {@code true}, any strings
      *                 which are too long for their target charN string columns
      *                 will be truncated to fit.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#RETURN_INDIVIDUAL_ERRORS
+     *                 RETURN_INDIVIDUAL_ERRORS}: If set to {@code true},
+     *                 success will always be returned, and any errors found
+     *                 will be included in the info map.  The
+     *                 "bad_record_indices" entry is a comma-separated list of
+     *                 bad records (0-based).  And if so, there will also be an
+     *                 "error_N" entry for each record with an error, where N
+     *                 is the index (0-based).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#ALLOW_PARTIAL_BATCH
+     *                 ALLOW_PARTIAL_BATCH}: If set to {@code true}, all
+     *                 correct records will be inserted and incorrect records
+     *                 will be rejected and reported.  Otherwise, the entire
+     *                 batch will be rejected if any records are incorrect.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#DRY_RUN
+     *                 DRY_RUN}: If set to {@code true}, no data will be saved
+     *                 and any errors will be returned.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -11069,9 +11364,15 @@ public class GPUdb extends GPUdbBase {
     /**
      * Matches a directed route implied by a given set of latitude/longitude
      * points to an existing underlying road network graph using a given
-     * solution type. See <a
+     * solution type.
+
+     * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../graph_solver/network_graph_solver.html"
-     * target="_top">Network Graph Solvers</a> for more information.
+     * target="_top">Network Graphs & Solvers</a> concepts documentation, the
+     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * target="_top">Graph REST Tutorial</a>, and/or some <a
+     * href="../../../../graph_solver/examples.html#match-graph"
+     * target="_top">/match/graph examples</a> before using this endpoint.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -11094,9 +11395,15 @@ public class GPUdb extends GPUdbBase {
     /**
      * Matches a directed route implied by a given set of latitude/longitude
      * points to an existing underlying road network graph using a given
-     * solution type. See <a
+     * solution type.
+
+     * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../graph_solver/network_graph_solver.html"
-     * target="_top">Network Graph Solvers</a> for more information.
+     * target="_top">Network Graphs & Solvers</a> concepts documentation, the
+     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * target="_top">Graph REST Tutorial</a>, and/or some <a
+     * href="../../../../graph_solver/examples.html#match-graph"
+     * target="_top">/match/graph examples</a> before using this endpoint.
      * 
      * @param graphName  Name of the underlying geospatial graph resource to
      *                   match to using {@code samplePoints}.
@@ -11146,6 +11453,11 @@ public class GPUdb extends GPUdbBase {
      *                     to optimize scheduling multiple supplies (trucks)
      *                     with varying sizes to varying demand sites with
      *                     varying capacities per depot
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_BATCH_SOLVES
+     *                     MATCH_BATCH_SOLVES}: Matches {@code samplePoints}
+     *                     source and destination pairs for the shortest path
+     *                     solves in batch mode
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -11254,6 +11566,13 @@ public class GPUdb extends GPUdbBase {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_COMBINATIONS
+     *                 MAX_COMBINATIONS}: For the {@code match_supply_demand}
+     *                 solver only. This is the cutoff for the number of
+     *                 generated combinations for sequencing the demand
+     *                 locations - can increase this upto 2M.  The default
+     *                 value is '10000'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -11402,8 +11721,9 @@ public class GPUdb extends GPUdbBase {
      *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
-     *                 merged table specified in {@code tableName}.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for the merged table specified in {@code
+     *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this result table is part of.  The
@@ -11448,8 +11768,13 @@ public class GPUdb extends GPUdbBase {
      * list both in a table and the response, provide a value to {@code
      * adjacencyTable} and set {@code export_query_results} to {@code true}.
      * <p>
-     * See <a href="../../../../graph_solver/network_graph_solver.html"
-     * target="_top">Network Graph Solver</a> for more information.
+     * IMPORTANT: It's highly recommended that you review the <a
+     * href="../../../../graph_solver/network_graph_solver.html"
+     * target="_top">Network Graphs & Solvers</a> concepts documentation, the
+     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * target="_top">Graph REST Tutorial</a>, and/or some <a
+     * href="../../../../graph_solver/examples.html#query-graph"
+     * target="_top">/query/graph examples</a> before using this endpoint.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -11490,8 +11815,13 @@ public class GPUdb extends GPUdbBase {
      * list both in a table and the response, provide a value to {@code
      * adjacencyTable} and set {@code export_query_results} to {@code true}.
      * <p>
-     * See <a href="../../../../graph_solver/network_graph_solver.html"
-     * target="_top">Network Graph Solver</a> for more information.
+     * IMPORTANT: It's highly recommended that you review the <a
+     * href="../../../../graph_solver/network_graph_solver.html"
+     * target="_top">Network Graphs & Solvers</a> concepts documentation, the
+     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * target="_top">Graph REST Tutorial</a>, and/or some <a
+     * href="../../../../graph_solver/examples.html#query-graph"
+     * target="_top">/query/graph examples</a> before using this endpoint.
      * 
      * @param graphName  Name of the graph resource to query.
      * @param queries  Nodes or edges to be queried specified using <a
@@ -11555,7 +11885,9 @@ public class GPUdb extends GPUdbBase {
      *                 returned. If set to {@code false}, only outbound edges
      *                 relative to the node will be returned. This parameter is
      *                 only applicable if the queried graph {@code graphName}
-     *                 is directed and when querying nodes.
+     *                 is directed and when querying nodes. Consult <a
+     *                 href="../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     *                 target="_top">Directed Graphs</a> for more details.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -12308,6 +12640,70 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Procedures
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowSqlProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowSqlProcResponse showSqlProc(ShowSqlProcRequest request) throws GPUdbException {
+        ShowSqlProcResponse actualResponse_ = new ShowSqlProcResponse();
+        submitRequest("/show/sql/proc", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Procedures
+     * 
+     * @param procedureName  Name of the procedure for which to retrieve the
+     *                       information. If blank, then information about all
+     *                       procedures is returned.  The default value is ''.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowSqlProcRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an
+     *                 error if the provided  does not exist. If {@code true}
+     *                 then it will return an empty result.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowSqlProcRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowSqlProcRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowSqlProcRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowSqlProcResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowSqlProcResponse showSqlProc(String procedureName, Map<String, String> options) throws GPUdbException {
+        ShowSqlProcRequest actualRequest_ = new ShowSqlProcRequest(procedureName, options);
+        ShowSqlProcResponse actualResponse_ = new ShowSqlProcResponse();
+        submitRequest("/show/sql/proc", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Retrieves the collected column statistics for the specified table.
      * 
      * @param request  Request object containing the parameters for the
@@ -12900,9 +13296,15 @@ public class GPUdb extends GPUdbBase {
     /**
      * Solves an existing graph for a type of problem (e.g., shortest path,
      * page rank, travelling salesman, etc.) using source nodes, destination
-     * nodes, and additional, optional weights and restrictions. See <a
+     * nodes, and additional, optional weights and restrictions.
+     * <p>
+     * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../graph_solver/network_graph_solver.html"
-     * target="_top">Network Graph Solvers</a> for more information.
+     * target="_top">Network Graphs & Solvers</a> concepts documentation, the
+     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * target="_top">Graph REST Tutorial</a>, and/or some <a
+     * href="../../../../graph_solver/examples.html#solve-graph"
+     * target="_top">/solve/graph examples</a> before using this endpoint.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -12925,9 +13327,15 @@ public class GPUdb extends GPUdbBase {
     /**
      * Solves an existing graph for a type of problem (e.g., shortest path,
      * page rank, travelling salesman, etc.) using source nodes, destination
-     * nodes, and additional, optional weights and restrictions. See <a
+     * nodes, and additional, optional weights and restrictions.
+     * <p>
+     * IMPORTANT: It's highly recommended that you review the <a
      * href="../../../../graph_solver/network_graph_solver.html"
-     * target="_top">Network Graph Solvers</a> for more information.
+     * target="_top">Network Graphs & Solvers</a> concepts documentation, the
+     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * target="_top">Graph REST Tutorial</a>, and/or some <a
+     * href="../../../../graph_solver/examples.html#solve-graph"
+     * target="_top">/solve/graph examples</a> before using this endpoint.
      * 
      * @param graphName  Name of the graph resource to solve.
      * @param weightsOnEdges  Additional weights to apply to the edges of an
@@ -13018,64 +13426,26 @@ public class GPUdb extends GPUdbBase {
      *                    com.gpudb.protocol.SolveGraphRequest.SolverType#BACKHAUL_ROUTING
      *                    BACKHAUL_ROUTING}: Solves for optimal routes that
      *                    connect remote asset nodes to the fixed (backbone)
-     *                    asset nodes. When {@code BACKHAUL_ROUTING} is
-     *                    invoked, the {@code destinationNodes} or {@code
-     *                    destinationNodeIds} array is used for both fixed and
-     *                    remote asset nodes and the {@code sourceNodeId}
-     *                    represents the number of fixed asset nodes contained
-     *                    in {@code destinationNodes} / {@code
-     *                    destinationNodeIds}.
+     *                    asset nodes.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.SolveGraphRequest.SolverType#ALLPATHS
+     *                    ALLPATHS}: Solves for paths that would give costs
+     *                    between max and min solution radia - Make sure to
+     *                    limit by the 'max_solution_targets' option. Min cost
+     *                    shoudl be >= shortest_path cost.
      *                    </ul>
      *                    The default value is {@link
      *                    com.gpudb.protocol.SolveGraphRequest.SolverType#SHORTEST_PATH
      *                    SHORTEST_PATH}.
-     * @param sourceNodeId  If {@code nodeType} is {@code NODE_ID}, the node ID
-     *                      (integer) of the source (starting point) for the
-     *                      graph solution. If the {@code solverType} is set to
-     *                      {@code BACKHAUL_ROUTING}, this number represents
-     *                      the number of fixed asset nodes contained in {@code
-     *                      destinationNodes}, e.g., if {@code sourceNodeId} is
-     *                      set to 24, the first 24 nodes listed in {@code
-     *                      destinationNodes} / {@code destinationNodeIds} are
-     *                      the fixed asset nodes and the rest of the nodes in
-     *                      the array are remote assets.
-     * @param destinationNodeIds  List of destination node indices, or indices
-     *                            for pageranks. If the {@code solverType} is
-     *                            set to {@code BACKHAUL_ROUTING}, it is the
-     *                            list of all fixed and remote asset nodes.
-     *                            The default value is an empty {@link List}.
-     * @param nodeType  Source and destination node identifier type.
-     *                  Supported values:
-     *                  <ul>
-     *                          <li> {@link
-     *                  com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_ID
-     *                  NODE_ID}: The graph's nodes were identified as
-     *                  integers, e.g., 1234.
-     *                          <li> {@link
-     *                  com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_WKTPOINT
-     *                  NODE_WKTPOINT}: The graph's nodes were identified as
-     *                  geospatial coordinates, e.g., 'POINT(1.0 2.0)'.
-     *                          <li> {@link
-     *                  com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_NAME
-     *                  NODE_NAME}: The graph's nodes were identified as
-     *                  strings, e.g., 'Arlington'.
-     *                  </ul>
-     *                  The default value is {@link
-     *                  com.gpudb.protocol.SolveGraphRequest.NodeType#NODE_ID
-     *                  NODE_ID}.
-     * @param sourceNode  If {@code nodeType} is {@code NODE_WKTPOINT} or
-     *                    {@code NODE_NAME}, the node (string) of the source
-     *                    (starting point) for the graph solution.  The default
-     *                    value is ''.
-     * @param destinationNodes  If {@code nodeType} is {@code NODE_WKTPOINT} or
-     *                          {@code NODE_NAME}, the list of destination node
-     *                          or page rank indices (strings) for the graph
-     *                          solution. If the {@code solverType} is set to
-     *                          {@code BACKHAUL_ROUTING}, it is the list of all
-     *                          fixed and remote asset nodes. The string type
-     *                          should be consistent with the {@code nodeType}
-     *                          parameter.  The default value is an empty
-     *                          {@link List}.
+     * @param sourceNodes  It can be one of the nodal identifiers - e.g:
+     *                     'NODE_WKTPOINT' for source nodes. For {@code
+     *                     BACKHAUL_ROUTING}, this list depicts the fixed
+     *                     assets.  The default value is an empty {@link List}.
+     * @param destinationNodes  It can be one of the nodal identifiers - e.g:
+     *                          'NODE_WKTPOINT' for destination (target) nodes.
+     *                          For {@code BACKHAUL_ROUTING}, this list depicts
+     *                          the remote assets.  The default value is an
+     *                          empty {@link List}.
      * @param solutionTable  Name of the table to store the solution.  The
      *                       default value is 'graph_solutions'.
      * @param options  Additional parameters
@@ -13085,7 +13455,7 @@ public class GPUdb extends GPUdbBase {
      *                 MAX_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and
      *                 {@code INVERSE_SHORTEST_PATH} solvers only. Sets the
      *                 maximum solution cost radius, which ignores the {@code
-     *                 destinationNodeIds} list and instead outputs the nodes
+     *                 destinationNodes} list and instead outputs the nodes
      *                 within the radius sorted by ascending cost. If set to
      *                 '0.0', the setting is ignored.  The default value is
      *                 '0.0'.
@@ -13095,7 +13465,7 @@ public class GPUdb extends GPUdbBase {
      *                 {@code INVERSE_SHORTEST_PATH} solvers only. Applicable
      *                 only when {@code max_solution_radius} is set. Sets the
      *                 minimum solution cost radius, which ignores the {@code
-     *                 destinationNodeIds} list and instead outputs the nodes
+     *                 destinationNodes} list and instead outputs the nodes
      *                 within the radius sorted by ascending cost. If set to
      *                 '0.0', the setting is ignored.  The default value is
      *                 '0.0'.
@@ -13104,7 +13474,7 @@ public class GPUdb extends GPUdbBase {
      *                 MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and
      *                 {@code INVERSE_SHORTEST_PATH} solvers only. Sets the
      *                 maximum number of solution targets, which ignores the
-     *                 {@code destinationNodeIds} list and instead outputs no
+     *                 {@code destinationNodes} list and instead outputs no
      *                 more than n number of nodes sorted by ascending cost
      *                 where n is equal to the setting value. If set to 0, the
      *                 setting is ignored.  The default value is '0'.
@@ -13164,8 +13534,8 @@ public class GPUdb extends GPUdbBase {
      * @throws GPUdbException  if an error occurs during the operation.
      * 
      */
-    public SolveGraphResponse solveGraph(String graphName, List<String> weightsOnEdges, List<String> restrictions, String solverType, long sourceNodeId, List<Long> destinationNodeIds, String nodeType, String sourceNode, List<String> destinationNodes, String solutionTable, Map<String, String> options) throws GPUdbException {
-        SolveGraphRequest actualRequest_ = new SolveGraphRequest(graphName, weightsOnEdges, restrictions, solverType, sourceNodeId, destinationNodeIds, nodeType, sourceNode, destinationNodes, solutionTable, options);
+    public SolveGraphResponse solveGraph(String graphName, List<String> weightsOnEdges, List<String> restrictions, String solverType, List<String> sourceNodes, List<String> destinationNodes, String solutionTable, Map<String, String> options) throws GPUdbException {
+        SolveGraphRequest actualRequest_ = new SolveGraphRequest(graphName, weightsOnEdges, restrictions, solverType, sourceNodes, destinationNodes, solutionTable, options);
         SolveGraphResponse actualResponse_ = new SolveGraphResponse();
         submitRequest("/solve/graph", actualRequest_, actualResponse_, false);
         return actualResponse_;
@@ -13410,9 +13780,9 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUNCATE_STRINGS
-     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
-     *                 are too long for their charN string fields will be
-     *                 truncated to fit.  The default value is false.
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, any strings
+     *                 which are too long for their charN string fields will be
+     *                 truncated to fit.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -13579,9 +13949,9 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUNCATE_STRINGS
-     *                 TRUNCATE_STRINGS}: If set to {true}@{, any strings which
-     *                 are too long for their charN string fields will be
-     *                 truncated to fit.  The default value is false.
+     *                 TRUNCATE_STRINGS}: If set to {@code true}, any strings
+     *                 which are too long for their charN string fields will be
+     *                 truncated to fit.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -14012,7 +14382,8 @@ public class GPUdb extends GPUdbBase {
      * typically referring to the time or distance assigned as the weights of
      * the underlying graph. See <a
      * href="../../../../graph_solver/network_graph_solver.html"
-     * target="_top">Network Graph Solvers</a> for more information on graphs.
+     * target="_top">Network Graphs & Solvers</a> for more information on
+     * graphs.
      * .
      * 
      * @param request  Request object containing the parameters for the
@@ -14039,7 +14410,8 @@ public class GPUdb extends GPUdbBase {
      * typically referring to the time or distance assigned as the weights of
      * the underlying graph. See <a
      * href="../../../../graph_solver/network_graph_solver.html"
-     * target="_top">Network Graph Solvers</a> for more information on graphs.
+     * target="_top">Network Graphs & Solvers</a> for more information on
+     * graphs.
      * .
      * 
      * @param graphName  Name of the graph on which the isochrone is to be

@@ -21,8 +21,14 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * Matches a directed route implied by a given set of latitude/longitude points
  * to an existing underlying road network graph using a given solution type.
- * See <a href="../../../../../graph_solver/network_graph_solver.html"
- * target="_top">Network Graph Solvers</a> for more information.
+
+ * IMPORTANT: It's highly recommended that you review the <a
+ * href="../../../../../graph_solver/network_graph_solver.html"
+ * target="_top">Network Graphs & Solvers</a> concepts documentation, the <a
+ * href="../../../../../graph_solver/examples/graph_rest_guide.html"
+ * target="_top">Graph REST Tutorial</a>, and/or some <a
+ * href="../../../../../graph_solver/examples.html#match-graph"
+ * target="_top">/match/graph examples</a> before using this endpoint.
  */
 public class MatchGraphRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -77,6 +83,10 @@ public class MatchGraphRequest implements IndexedRecord {
      * MATCH_SUPPLY_DEMAND}: Matches {@code samplePoints} to optimize
      * scheduling multiple supplies (trucks) with varying sizes to varying
      * demand sites with varying capacities per depot
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_BATCH_SOLVES
+     * MATCH_BATCH_SOLVES}: Matches {@code samplePoints} source and destination
+     * pairs for the shortest path solves in batch mode
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -116,6 +126,12 @@ public class MatchGraphRequest implements IndexedRecord {
          * varying capacities per depot
          */
         public static final String MATCH_SUPPLY_DEMAND = "match_supply_demand";
+
+        /**
+         * Matches {@code samplePoints} source and destination pairs for the
+         * shortest path solves in batch mode
+         */
+        public static final String MATCH_BATCH_SOLVES = "match_batch_solves";
 
         private SolveMethod() {  }
     }
@@ -198,6 +214,12 @@ public class MatchGraphRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#MAX_COMBINATIONS
+     * MAX_COMBINATIONS}: For the {@code match_supply_demand} solver only. This
+     * is the cutoff for the number of generated combinations for sequencing
+     * the demand locations - can increase this upto 2M.  The default value is
+     * '10000'.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -313,6 +335,14 @@ public class MatchGraphRequest implements IndexedRecord {
          */
         public static final String PARTIAL_LOADING = "partial_loading";
 
+        /**
+         * For the {@code match_supply_demand} solver only. This is the cutoff
+         * for the number of generated combinations for sequencing the demand
+         * locations - can increase this upto 2M.  The default value is
+         * '10000'.
+         */
+        public static final String MAX_COMBINATIONS = "max_combinations";
+
         private Options() {  }
     }
 
@@ -385,6 +415,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     to optimize scheduling multiple supplies (trucks)
      *                     with varying sizes to varying demand sites with
      *                     varying capacities per depot
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_BATCH_SOLVES
+     *                     MATCH_BATCH_SOLVES}: Matches {@code samplePoints}
+     *                     source and destination pairs for the shortest path
+     *                     solves in batch mode
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -493,6 +528,13 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_COMBINATIONS
+     *                 MAX_COMBINATIONS}: For the {@code match_supply_demand}
+     *                 solver only. This is the cutoff for the number of
+     *                 generated combinations for sequencing the demand
+     *                 locations - can increase this upto 2M.  The default
+     *                 value is '10000'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -601,6 +643,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *         MATCH_SUPPLY_DEMAND}: Matches {@code samplePoints} to optimize
      *         scheduling multiple supplies (trucks) with varying sizes to
      *         varying demand sites with varying capacities per depot
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_BATCH_SOLVES
+     *         MATCH_BATCH_SOLVES}: Matches {@code samplePoints} source and
+     *         destination pairs for the shortest path solves in batch mode
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -646,6 +692,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     to optimize scheduling multiple supplies (trucks)
      *                     with varying sizes to varying demand sites with
      *                     varying capacities per depot
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_BATCH_SOLVES
+     *                     MATCH_BATCH_SOLVES}: Matches {@code samplePoints}
+     *                     source and destination pairs for the shortest path
+     *                     solves in batch mode
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -792,6 +843,12 @@ public class MatchGraphRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#MAX_COMBINATIONS
+     *         MAX_COMBINATIONS}: For the {@code match_supply_demand} solver
+     *         only. This is the cutoff for the number of generated
+     *         combinations for sequencing the demand locations - can increase
+     *         this upto 2M.  The default value is '10000'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -892,6 +949,13 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_COMBINATIONS
+     *                 MAX_COMBINATIONS}: For the {@code match_supply_demand}
+     *                 solver only. This is the cutoff for the number of
+     *                 generated combinations for sequencing the demand
+     *                 locations - can increase this upto 2M.  The default
+     *                 value is '10000'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

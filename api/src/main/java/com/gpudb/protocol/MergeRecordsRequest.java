@@ -108,8 +108,8 @@ public class MergeRecordsRequest implements IndexedRecord {
      * com.gpudb.protocol.MergeRecordsRequest.Options#TRUE TRUE}.
      *         <li> {@link
      * com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE CHUNK_SIZE}:
-     * Indicates the chunk size to be used for the merged table specified in
-     * {@code tableName}.
+     * Indicates the number of records per chunk to be used for the merged
+     * table specified in {@code tableName}.
      *         <li> {@link
      * com.gpudb.protocol.MergeRecordsRequest.Options#VIEW_ID VIEW_ID}: view
      * this result table is part of.  The default value is ''.
@@ -176,8 +176,8 @@ public class MergeRecordsRequest implements IndexedRecord {
         public static final String PERSIST = "persist";
 
         /**
-         * Indicates the chunk size to be used for the merged table specified
-         * in {@code tableName}.
+         * Indicates the number of records per chunk to be used for the merged
+         * table specified in {@code tableName}.
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
@@ -283,8 +283,9 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
-     *                 merged table specified in {@code tableName}.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for the merged table specified in {@code
+     *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this result table is part of.  The
@@ -439,8 +440,8 @@ public class MergeRecordsRequest implements IndexedRecord {
      *         com.gpudb.protocol.MergeRecordsRequest.Options#TRUE TRUE}.
      *                 <li> {@link
      *         com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE
-     *         CHUNK_SIZE}: Indicates the chunk size to be used for the merged
-     *         table specified in {@code tableName}.
+     *         CHUNK_SIZE}: Indicates the number of records per chunk to be
+     *         used for the merged table specified in {@code tableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.MergeRecordsRequest.Options#VIEW_ID VIEW_ID}:
      *         view this result table is part of.  The default value is ''.
@@ -514,8 +515,9 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
-     *                 merged table specified in {@code tableName}.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for the merged table specified in {@code
+     *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this result table is part of.  The

@@ -88,6 +88,50 @@ public class InsertRecordsRequest<T> {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#RETURN_INDIVIDUAL_ERRORS
+     * RETURN_INDIVIDUAL_ERRORS}: If set to {@code true}, success will always
+     * be returned, and any errors found will be included in the info map.  The
+     * "bad_record_indices" entry is a comma-separated list of bad records
+     * (0-based).  And if so, there will also be an "error_N" entry for each
+     * record with an error, where N is the index (0-based).
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#ALLOW_PARTIAL_BATCH
+     * ALLOW_PARTIAL_BATCH}: If set to {@code true}, all correct records will
+     * be inserted and incorrect records will be rejected and reported.
+     * Otherwise, the entire batch will be rejected if any records are
+     * incorrect.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#DRY_RUN DRY_RUN}: If
+     * set to {@code true}, no data will be saved and any errors will be
+     * returned.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -147,6 +191,55 @@ public class InsertRecordsRequest<T> {
          * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
          */
         public static final String TRUNCATE_STRINGS = "truncate_strings";
+
+        /**
+         * If set to {@code true}, success will always be returned, and any
+         * errors found will be included in the info map.  The
+         * "bad_record_indices" entry is a comma-separated list of bad records
+         * (0-based).  And if so, there will also be an "error_N" entry for
+         * each record with an error, where N is the index (0-based).
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
+         */
+        public static final String RETURN_INDIVIDUAL_ERRORS = "return_individual_errors";
+
+        /**
+         * If set to {@code true}, all correct records will be inserted and
+         * incorrect records will be rejected and reported.  Otherwise, the
+         * entire batch will be rejected if any records are incorrect.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
+         */
+        public static final String ALLOW_PARTIAL_BATCH = "allow_partial_batch";
+
+        /**
+         * If set to {@code true}, no data will be saved and any errors will be
+         * returned.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
+         */
+        public static final String DRY_RUN = "dry_run";
 
         private Options() {  }
     }
@@ -222,6 +315,61 @@ public class InsertRecordsRequest<T> {
      *                 TRUNCATE_STRINGS}: If set to {@code true}, any strings
      *                 which are too long for their target charN string columns
      *                 will be truncated to fit.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#RETURN_INDIVIDUAL_ERRORS
+     *                 RETURN_INDIVIDUAL_ERRORS}: If set to {@code true},
+     *                 success will always be returned, and any errors found
+     *                 will be included in the info map.  The
+     *                 "bad_record_indices" entry is a comma-separated list of
+     *                 bad records (0-based).  And if so, there will also be an
+     *                 "error_N" entry for each record with an error, where N
+     *                 is the index (0-based).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#ALLOW_PARTIAL_BATCH
+     *                 ALLOW_PARTIAL_BATCH}: If set to {@code true}, all
+     *                 correct records will be inserted and incorrect records
+     *                 will be rejected and reported.  Otherwise, the entire
+     *                 batch will be rejected if any records are incorrect.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#DRY_RUN
+     *                 DRY_RUN}: If set to {@code true}, no data will be saved
+     *                 and any errors will be returned.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -344,6 +492,51 @@ public class InsertRecordsRequest<T> {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#RETURN_INDIVIDUAL_ERRORS
+     *         RETURN_INDIVIDUAL_ERRORS}: If set to {@code true}, success will
+     *         always be returned, and any errors found will be included in the
+     *         info map.  The "bad_record_indices" entry is a comma-separated
+     *         list of bad records (0-based).  And if so, there will also be an
+     *         "error_N" entry for each record with an error, where N is the
+     *         index (0-based).
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#ALLOW_PARTIAL_BATCH
+     *         ALLOW_PARTIAL_BATCH}: If set to {@code true}, all correct
+     *         records will be inserted and incorrect records will be rejected
+     *         and reported.  Otherwise, the entire batch will be rejected if
+     *         any records are incorrect.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#DRY_RUN
+     *         DRY_RUN}: If set to {@code true}, no data will be saved and any
+     *         errors will be returned.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -403,6 +596,61 @@ public class InsertRecordsRequest<T> {
      *                 TRUNCATE_STRINGS}: If set to {@code true}, any strings
      *                 which are too long for their target charN string columns
      *                 will be truncated to fit.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#RETURN_INDIVIDUAL_ERRORS
+     *                 RETURN_INDIVIDUAL_ERRORS}: If set to {@code true},
+     *                 success will always be returned, and any errors found
+     *                 will be included in the info map.  The
+     *                 "bad_record_indices" entry is a comma-separated list of
+     *                 bad records (0-based).  And if so, there will also be an
+     *                 "error_N" entry for each record with an error, where N
+     *                 is the index (0-based).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#ALLOW_PARTIAL_BATCH
+     *                 ALLOW_PARTIAL_BATCH}: If set to {@code true}, all
+     *                 correct records will be inserted and incorrect records
+     *                 will be rejected and reported.  Otherwise, the entire
+     *                 batch will be rejected if any records are incorrect.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#DRY_RUN
+     *                 DRY_RUN}: If set to {@code true}, no data will be saved
+     *                 and any errors will be returned.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

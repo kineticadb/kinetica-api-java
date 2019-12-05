@@ -95,7 +95,7 @@ public class ShowTableResponse implements IndexedRecord {
     public static final class AdditionalInfo {
 
         /**
-         * method by which this table was created.
+         * Method by which this table was created.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -115,7 +115,7 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String CREATE_UNION = "create_union";
 
         /**
-         * The json representation of request creating this table.  The default
+         * The JSON representation of request creating this table.  The default
          * value is ''.
          */
         public static final String REQUEST_AVRO_JSON = "request_avro_json";
@@ -173,9 +173,9 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String FOREIGN_KEYS = "foreign_keys";
 
         /**
-         * Foreign shard key description of the format: <fk_foreign_key>
-         * references <pk_column_name> from <pk_table_name>(<pk_primary_key>).
-         * Not present for collections.  The default value is ''.
+         * Foreign shard key description of the format: 'fk_foreign_key
+         * references pk_column_name from pk_table_name(pk_primary_key)'. Not
+         * present for collections.  The default value is ''.
          */
         public static final String FOREIGN_SHARD_KEY = "foreign_shard_key";
 
@@ -249,7 +249,7 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String PARTITION_DEFINITIONS = "partition_definitions";
 
         /**
-         * true if partitions will be created for LIST VALUES which don't fall
+         * True if partitions will be created for LIST VALUES which don't fall
          * into existing partitions.  The default value is ''.
          */
         public static final String IS_AUTOMATIC_PARTITION = "is_automatic_partition";
@@ -320,61 +320,61 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String READ_WRITE = "read_write";
 
         /**
-         * for materialized view the name of the view this member table is part
+         * For materialized view the name of the view this member table is part
          * of - if same as the table_name then this is the root of the view.
          * The default value is ''.
          */
         public static final String VIEW_TABLE_NAME = "view_table_name";
 
         /**
-         * true if the view named view_table_name is persisted - reported for
+         * True if the view named view_table_name is persisted - reported for
          * each view member.  Means method of recreating this member is saved -
          * not the members data.  The default value is ''.
          */
         public static final String IS_VIEW_PERSISTED = "is_view_persisted";
 
         /**
-         * true if some input table of the materialized view that affects this
+         * True if some input table of the materialized view that affects this
          * member table has been modified since the last refresh.  The default
          * value is ''.
          */
         public static final String IS_DIRTY = "is_dirty";
 
         /**
-         * for materialized view current refresh_method - one of manual,
+         * For materialized view current refresh_method - one of manual,
          * periodic, on_change.  The default value is ''.
          */
         public static final String REFRESH_METHOD = "refresh_method";
 
         /**
-         * for materialized view with periodic refresh_method the current
+         * For materialized view with periodic refresh_method the current
          * intial datetime string that periodic refreshes began.  The default
          * value is ''.
          */
         public static final String REFRESH_START_TIME = "refresh_start_time";
 
         /**
-         * for materialized view with periodic refresh_method the current
+         * For materialized view with periodic refresh_method the current
          * refresh period in seconds.  The default value is ''.
          */
         public static final String REFRESH_PERIOD = "refresh_period";
 
         /**
-         * for materialized view the a datatime string indicating the last time
+         * For materialized view the a datatime string indicating the last time
          * the view was refreshed.  The default value is ''.
          */
         public static final String LAST_REFRESH_TIME = "last_refresh_time";
 
         /**
-         * for materialized view with periodic refresh_method a datetime string
+         * For materialized view with periodic refresh_method a datetime string
          * indicating the next time the view is to be refreshed.  The default
          * value is ''.
          */
         public static final String NEXT_REFRESH_TIME = "next_refresh_time";
 
         /**
-         * user-specified chunk size, if provided at table creation time.  The
-         * default value is ''.
+         * User-specified number of records per chunk, if provided at table
+         * creation time.  The default value is ''.
          */
         public static final String USER_CHUNK_SIZE = "user_chunk_size";
 

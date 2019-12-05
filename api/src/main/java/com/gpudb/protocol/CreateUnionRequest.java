@@ -141,7 +141,8 @@ public class CreateUnionRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateUnionRequest.Options#UNION_ALL UNION_ALL}.
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE CHUNK_SIZE}:
-     * Indicates the chunk size to be used for this table.
+     * Indicates the number of records per chunk to be used for this output
+     * table.
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#CREATE_INDEXES
      * CREATE_INDEXES}: Comma-separated list of columns on which to create
@@ -149,13 +150,14 @@ public class CreateUnionRequest implements IndexedRecord {
      * {@code outputColumnNames}.
      *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#TTL
      * TTL}: Sets the <a href="../../../../../concepts/ttl.html"
-     * target="_top">TTL</a> of the table specified in {@code tableName}.
+     * target="_top">TTL</a> of the output table specified in {@code
+     * tableName}.
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#PERSIST PERSIST}: If
-     * {@code true}, then the table specified in {@code tableName} will be
-     * persisted and will not expire unless a {@code ttl} is specified.   If
-     * {@code false}, then the table will be an in-memory table and will expire
-     * unless a {@code ttl} is specified otherwise.
+     * {@code true}, then the output table specified in {@code tableName} will
+     * be persisted and will not expire unless a {@code ttl} is specified.   If
+     * {@code false}, then the output table will be an in-memory table and will
+     * expire unless a {@code ttl} is specified otherwise.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#TRUE
@@ -166,12 +168,12 @@ public class CreateUnionRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
      *         <li> {@link
-     * com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID VIEW_ID}: view the
-     * output table will be a part of.  The default value is ''.
+     * com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID VIEW_ID}: ID of
+     * view of which this output table is a member.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#FORCE_REPLICATED
-     * FORCE_REPLICATED}: If {@code true}, then the table specified in {@code
-     * tableName} will be replicated even if the source tables are not.
+     * FORCE_REPLICATED}: If {@code true}, then the output table specified in
+     * {@code tableName} will be replicated even if the source tables are not.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#TRUE
@@ -314,7 +316,8 @@ public class CreateUnionRequest implements IndexedRecord {
         public static final String MERGE_VIEWS = "merge_views";
 
         /**
-         * Indicates the chunk size to be used for this table.
+         * Indicates the number of records per chunk to be used for this output
+         * table.
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
@@ -327,15 +330,17 @@ public class CreateUnionRequest implements IndexedRecord {
 
         /**
          * Sets the <a href="../../../../../concepts/ttl.html"
-         * target="_top">TTL</a> of the table specified in {@code tableName}.
+         * target="_top">TTL</a> of the output table specified in {@code
+         * tableName}.
          */
         public static final String TTL = "ttl";
 
         /**
-         * If {@code true}, then the table specified in {@code tableName} will
-         * be persisted and will not expire unless a {@code ttl} is specified.
-         * If {@code false}, then the table will be an in-memory table and will
-         * expire unless a {@code ttl} is specified otherwise.
+         * If {@code true}, then the output table specified in {@code
+         * tableName} will be persisted and will not expire unless a {@code
+         * ttl} is specified.   If {@code false}, then the output table will be
+         * an in-memory table and will expire unless a {@code ttl} is specified
+         * otherwise.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -349,13 +354,14 @@ public class CreateUnionRequest implements IndexedRecord {
         public static final String PERSIST = "persist";
 
         /**
-         * view the output table will be a part of.  The default value is ''.
+         * ID of view of which this output table is a member.  The default
+         * value is ''.
          */
         public static final String VIEW_ID = "view_id";
 
         /**
-         * If {@code true}, then the table specified in {@code tableName} will
-         * be replicated even if the source tables are not.
+         * If {@code true}, then the output table specified in {@code
+         * tableName} will be replicated even if the source tables are not.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -480,8 +486,8 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 UNION_ALL}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
-     *                 this table.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for this output table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#CREATE_INDEXES
      *                 CREATE_INDEXES}: Comma-separated list of columns on
@@ -491,15 +497,16 @@ public class CreateUnionRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}:
      *                 Sets the <a href="../../../../../concepts/ttl.html"
-     *                 target="_top">TTL</a> of the table specified in {@code
-     *                 tableName}.
+     *                 target="_top">TTL</a> of the output table specified in
+     *                 {@code tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#PERSIST
-     *                 PERSIST}: If {@code true}, then the table specified in
-     *                 {@code tableName} will be persisted and will not expire
-     *                 unless a {@code ttl} is specified.   If {@code false},
-     *                 then the table will be an in-memory table and will
-     *                 expire unless a {@code ttl} is specified otherwise.
+     *                 PERSIST}: If {@code true}, then the output table
+     *                 specified in {@code tableName} will be persisted and
+     *                 will not expire unless a {@code ttl} is specified.   If
+     *                 {@code false}, then the output table will be an
+     *                 in-memory table and will expire unless a {@code ttl} is
+     *                 specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -513,13 +520,13 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view the output table will be a part of.  The
-     *                 default value is ''.
+     *                 VIEW_ID}: ID of view of which this output table is a
+     *                 member.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#FORCE_REPLICATED
-     *                 FORCE_REPLICATED}: If {@code true}, then the table
-     *                 specified in {@code tableName} will be replicated even
-     *                 if the source tables are not.
+     *                 FORCE_REPLICATED}: If {@code true}, then the output
+     *                 table specified in {@code tableName} will be replicated
+     *                 even if the source tables are not.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -711,7 +718,8 @@ public class CreateUnionRequest implements IndexedRecord {
      *         UNION_ALL}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE
-     *         CHUNK_SIZE}: Indicates the chunk size to be used for this table.
+     *         CHUNK_SIZE}: Indicates the number of records per chunk to be
+     *         used for this output table.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#CREATE_INDEXES
      *         CREATE_INDEXES}: Comma-separated list of columns on which to
@@ -720,14 +728,14 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}: Sets the
      *         <a href="../../../../../concepts/ttl.html" target="_top">TTL</a>
-     *         of the table specified in {@code tableName}.
+     *         of the output table specified in {@code tableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#PERSIST PERSIST}:
-     *         If {@code true}, then the table specified in {@code tableName}
-     *         will be persisted and will not expire unless a {@code ttl} is
-     *         specified.   If {@code false}, then the table will be an
-     *         in-memory table and will expire unless a {@code ttl} is
-     *         specified otherwise.
+     *         If {@code true}, then the output table specified in {@code
+     *         tableName} will be persisted and will not expire unless a {@code
+     *         ttl} is specified.   If {@code false}, then the output table
+     *         will be an in-memory table and will expire unless a {@code ttl}
+     *         is specified otherwise.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -739,13 +747,13 @@ public class CreateUnionRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID VIEW_ID}:
-     *         view the output table will be a part of.  The default value is
-     *         ''.
+     *         ID of view of which this output table is a member.  The default
+     *         value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#FORCE_REPLICATED
-     *         FORCE_REPLICATED}: If {@code true}, then the table specified in
-     *         {@code tableName} will be replicated even if the source tables
-     *         are not.
+     *         FORCE_REPLICATED}: If {@code true}, then the output table
+     *         specified in {@code tableName} will be replicated even if the
+     *         source tables are not.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -843,8 +851,8 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 UNION_ALL}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for
-     *                 this table.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for this output table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#CREATE_INDEXES
      *                 CREATE_INDEXES}: Comma-separated list of columns on
@@ -854,15 +862,16 @@ public class CreateUnionRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}:
      *                 Sets the <a href="../../../../../concepts/ttl.html"
-     *                 target="_top">TTL</a> of the table specified in {@code
-     *                 tableName}.
+     *                 target="_top">TTL</a> of the output table specified in
+     *                 {@code tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#PERSIST
-     *                 PERSIST}: If {@code true}, then the table specified in
-     *                 {@code tableName} will be persisted and will not expire
-     *                 unless a {@code ttl} is specified.   If {@code false},
-     *                 then the table will be an in-memory table and will
-     *                 expire unless a {@code ttl} is specified otherwise.
+     *                 PERSIST}: If {@code true}, then the output table
+     *                 specified in {@code tableName} will be persisted and
+     *                 will not expire unless a {@code ttl} is specified.   If
+     *                 {@code false}, then the output table will be an
+     *                 in-memory table and will expire unless a {@code ttl} is
+     *                 specified otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -876,13 +885,13 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view the output table will be a part of.  The
-     *                 default value is ''.
+     *                 VIEW_ID}: ID of view of which this output table is a
+     *                 member.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#FORCE_REPLICATED
-     *                 FORCE_REPLICATED}: If {@code true}, then the table
-     *                 specified in {@code tableName} will be replicated even
-     *                 if the source tables are not.
+     *                 FORCE_REPLICATED}: If {@code true}, then the output
+     *                 table specified in {@code tableName} will be replicated
+     *                 even if the source tables are not.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

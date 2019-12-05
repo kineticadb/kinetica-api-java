@@ -20,8 +20,8 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#aggregateGroupByRaw(AggregateGroupByRequest)}.
  * <p>
  * Calculates unique combinations (groups) of values for the given columns in a
- * given table/view/collection and computes aggregates on each unique
- * combination. This is somewhat analogous to an SQL-style SELECT...GROUP BY.
+ * given table or view and computes aggregates on each unique combination. This
+ * is somewhat analogous to an SQL-style SELECT...GROUP BY.
  * <p>
  * For aggregation details and examples, see <a
  * href="../../../../../concepts/aggregation.html"
@@ -152,8 +152,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * COLLECTION_NAME}: Name of a collection which is to contain the table
      * specified in {@code result_table}. If the collection provided is
      * non-existent, the collection will be automatically created. If empty,
-     * then the table will be a top-level table.  Additionally this option is
-     * invalid if {@code tableName} is a collection.
+     * then the table will be a top-level table.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
      * EXPRESSION}: Filter expression to apply to the table prior to computing
@@ -239,9 +238,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_GENERATE_PK
-     * RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary key for the
-     * result table. Must be used in combination with the {@code result_table}
-     * option.
+     * RESULT_TABLE_GENERATE_PK}: If {@code true} then set a primary key for
+     * the result table. Must be used in combination with the {@code
+     * result_table} option.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -257,16 +256,18 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * table specified in {@code result_table}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
-     * CHUNK_SIZE}: Indicates the chunk size to be used for the result table.
-     * Must be used in combination with the {@code result_table} option.
+     * CHUNK_SIZE}: Indicates the number of records per chunk to be used for
+     * the result table. Must be used in combination with the {@code
+     * result_table} option.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#CREATE_INDEXES
      * CREATE_INDEXES}: Comma-separated list of columns on which to create
      * indexes on the result table. Must be used in combination with the {@code
      * result_table} option.
      *         <li> {@link
-     * com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID VIEW_ID}:
-     * view this result table is part of.  The default value is ''.
+     * com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID VIEW_ID}: ID
+     * of view of which the result table will be a member.  The default value
+     * is ''.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      * MATERIALIZE_ON_GPU}: If {@code true} then the columns of the groupby
@@ -311,8 +312,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
          * Name of a collection which is to contain the table specified in
          * {@code result_table}. If the collection provided is non-existent,
          * the collection will be automatically created. If empty, then the
-         * table will be a top-level table.  Additionally this option is
-         * invalid if {@code tableName} is a collection.
+         * table will be a top-level table.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -444,8 +444,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String RESULT_TABLE_FORCE_REPLICATED = "result_table_force_replicated";
 
         /**
-         * If 'true' then set a primary key for the result table. Must be used
-         * in combination with the {@code result_table} option.
+         * If {@code true} then set a primary key for the result table. Must be
+         * used in combination with the {@code result_table} option.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -466,8 +466,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String TTL = "ttl";
 
         /**
-         * Indicates the chunk size to be used for the result table. Must be
-         * used in combination with the {@code result_table} option.
+         * Indicates the number of records per chunk to be used for the result
+         * table. Must be used in combination with the {@code result_table}
+         * option.
          */
         public static final String CHUNK_SIZE = "chunk_size";
 
@@ -479,7 +480,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String CREATE_INDEXES = "create_indexes";
 
         /**
-         * view this result table is part of.  The default value is ''.
+         * ID of view of which the result table will be a member.  The default
+         * value is ''.
          */
         public static final String VIEW_ID = "view_id";
 
@@ -554,18 +556,25 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * Constructs an AggregateGroupByRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table/view/collection.
+     * @param tableName  Name of an existing table or view on which the
+     *                   operation will be performed.
      * @param columnNames  List of one or more column names, expressions, and
      *                     aggregate expressions.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned Or END_OF_SET (-9999) to indicate
+     *               results to be returned, or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.  The
-     *               default value is 1000.
+     *               number of records returned will never exceed the server's
+     *               own limit, defined by the <a
+     *               href="../../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -574,8 +583,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 contain the table specified in {@code result_table}. If
      *                 the collection provided is non-existent, the collection
      *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.  Additionally this option is
-     *                 invalid if {@code tableName} is a collection.
+     *                 will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
      *                 EXPRESSION}: Filter expression to apply to the table
@@ -676,9 +684,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_GENERATE_PK
-     *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
-     *                 key for the result table. Must be used in combination
-     *                 with the {@code result_table} option.
+     *                 RESULT_TABLE_GENERATE_PK}: If {@code true} then set a
+     *                 primary key for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -699,9 +707,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
-     *                 result table. Must be used in combination with the
-     *                 {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CREATE_INDEXES
      *                 CREATE_INDEXES}: Comma-separated list of columns on
@@ -710,8 +718,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of.  The
-     *                 default value is ''.
+     *                 VIEW_ID}: ID of view of which the result table will be a
+     *                 member.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
@@ -771,18 +779,25 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * Constructs an AggregateGroupByRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table/view/collection.
+     * @param tableName  Name of an existing table or view on which the
+     *                   operation will be performed.
      * @param columnNames  List of one or more column names, expressions, and
      *                     aggregate expressions.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned Or END_OF_SET (-9999) to indicate
+     *               results to be returned, or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.  The
-     *               default value is 1000.
+     *               number of records returned will never exceed the server's
+     *               own limit, defined by the <a
+     *               href="../../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * @param encoding  Specifies the encoding for returned records.
      *                  Supported values:
      *                  <ul>
@@ -806,8 +821,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 contain the table specified in {@code result_table}. If
      *                 the collection provided is non-existent, the collection
      *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.  Additionally this option is
-     *                 invalid if {@code tableName} is a collection.
+     *                 will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
      *                 EXPRESSION}: Filter expression to apply to the table
@@ -908,9 +922,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_GENERATE_PK
-     *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
-     *                 key for the result table. Must be used in combination
-     *                 with the {@code result_table} option.
+     *                 RESULT_TABLE_GENERATE_PK}: If {@code true} then set a
+     *                 primary key for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -931,9 +945,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
-     *                 result table. Must be used in combination with the
-     *                 {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CREATE_INDEXES
      *                 CREATE_INDEXES}: Comma-separated list of columns on
@@ -942,8 +956,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of.  The
-     *                 default value is ''.
+     *                 VIEW_ID}: ID of view of which the result table will be a
+     *                 member.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
@@ -1001,8 +1015,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which the operation will be performed. Must
-     *         be an existing table/view/collection.
+     * @return Name of an existing table or view on which the operation will be
+     *         performed.
      * 
      */
     public String getTableName() {
@@ -1011,8 +1025,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table/view/collection.
+     * @param tableName  Name of an existing table or view on which the
+     *                   operation will be performed.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -1049,8 +1063,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * 
      * @return A positive integer indicating the number of initial results to
      *         skip (this can be useful for paging through the results).  The
-     *         minimum allowed value is 0. The maximum allowed value is
-     *         MAX_INT.
+     *         default value is 0.The minimum allowed value is 0. The maximum
+     *         allowed value is MAX_INT.
      * 
      */
     public long getOffset() {
@@ -1061,8 +1075,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * 
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
-     *                the results).  The minimum allowed value is 0. The
-     *                maximum allowed value is MAX_INT.
+     *                the results).  The default value is 0.The minimum allowed
+     *                value is 0. The maximum allowed value is MAX_INT.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -1075,9 +1089,15 @@ public class AggregateGroupByRequest implements IndexedRecord {
     /**
      * 
      * @return A positive integer indicating the maximum number of results to
-     *         be returned Or END_OF_SET (-9999) to indicate that the max
-     *         number of results should be returned.  The default value is
-     *         1000.
+     *         be returned, or END_OF_SET (-9999) to indicate that the max
+     *         number of results should be returned.  The number of records
+     *         returned will never exceed the server's own limit, defined by
+     *         the <a href="../../../../../config/index.html#general"
+     *         target="_top">max_get_records_size</a> parameter in the server
+     *         configuration.  Use {@code hasMoreRecords} to see if more
+     *         records exist in the result to be fetched, and {@code offset} &
+     *         {@code limit} to request subsequent pages of results.  The
+     *         default value is -9999.
      * 
      */
     public long getLimit() {
@@ -1087,9 +1107,16 @@ public class AggregateGroupByRequest implements IndexedRecord {
     /**
      * 
      * @param limit  A positive integer indicating the maximum number of
-     *               results to be returned Or END_OF_SET (-9999) to indicate
+     *               results to be returned, or END_OF_SET (-9999) to indicate
      *               that the max number of results should be returned.  The
-     *               default value is 1000.
+     *               number of records returned will never exceed the server's
+     *               own limit, defined by the <a
+     *               href="../../../../../config/index.html#general"
+     *               target="_top">max_get_records_size</a> parameter in the
+     *               server configuration.  Use {@code hasMoreRecords} to see
+     *               if more records exist in the result to be fetched, and
+     *               {@code offset} & {@code limit} to request subsequent pages
+     *               of results.  The default value is -9999.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -1157,8 +1184,6 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         table specified in {@code result_table}. If the collection
      *         provided is non-existent, the collection will be automatically
      *         created. If empty, then the table will be a top-level table.
-     *         Additionally this option is invalid if {@code tableName} is a
-     *         collection.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
      *         EXPRESSION}: Filter expression to apply to the table prior to
@@ -1247,9 +1272,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_GENERATE_PK
-     *         RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary key for
-     *         the result table. Must be used in combination with the {@code
-     *         result_table} option.
+     *         RESULT_TABLE_GENERATE_PK}: If {@code true} then set a primary
+     *         key for the result table. Must be used in combination with the
+     *         {@code result_table} option.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -1266,9 +1291,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         result_table}.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
-     *         CHUNK_SIZE}: Indicates the chunk size to be used for the result
-     *         table. Must be used in combination with the {@code result_table}
-     *         option.
+     *         CHUNK_SIZE}: Indicates the number of records per chunk to be
+     *         used for the result table. Must be used in combination with the
+     *         {@code result_table} option.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#CREATE_INDEXES
      *         CREATE_INDEXES}: Comma-separated list of columns on which to
@@ -1276,8 +1301,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         with the {@code result_table} option.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
-     *         VIEW_ID}: view this result table is part of.  The default value
-     *         is ''.
+     *         VIEW_ID}: ID of view of which the result table will be a member.
+     *         The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *         MATERIALIZE_ON_GPU}: If {@code true} then the columns of the
@@ -1332,8 +1357,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 contain the table specified in {@code result_table}. If
      *                 the collection provided is non-existent, the collection
      *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.  Additionally this option is
-     *                 invalid if {@code tableName} is a collection.
+     *                 will be a top-level table.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
      *                 EXPRESSION}: Filter expression to apply to the table
@@ -1434,9 +1458,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_GENERATE_PK
-     *                 RESULT_TABLE_GENERATE_PK}: If 'true' then set a primary
-     *                 key for the result table. Must be used in combination
-     *                 with the {@code result_table} option.
+     *                 RESULT_TABLE_GENERATE_PK}: If {@code true} then set a
+     *                 primary key for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1457,9 +1481,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 result_table}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
-     *                 CHUNK_SIZE}: Indicates the chunk size to be used for the
-     *                 result table. Must be used in combination with the
-     *                 {@code result_table} option.
+     *                 CHUNK_SIZE}: Indicates the number of records per chunk
+     *                 to be used for the result table. Must be used in
+     *                 combination with the {@code result_table} option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#CREATE_INDEXES
      *                 CREATE_INDEXES}: Comma-separated list of columns on
@@ -1468,8 +1492,8 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 option.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
-     *                 VIEW_ID}: view this result table is part of.  The
-     *                 default value is ''.
+     *                 VIEW_ID}: ID of view of which the result table will be a
+     *                 member.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
