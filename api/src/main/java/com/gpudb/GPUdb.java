@@ -489,6 +489,17 @@ public class GPUdb extends GPUdbBase {
      *                 interleaving between the rebalance and other queries.
      *                 Allowed values are 1 through 10.  The default value is
      *                 '1'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
+     *                 COMPACT_AFTER_REBALANCE}: Perform compaction of deleted
+     *                 records once the rebalance completes, to reclaim memory
+     *                 and disk space. Default is true.  The default value is
+     *                 'true'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_ONLY
+     *                 COMPACT_ONLY}: Only perform compaction, do not
+     *                 rebalance. Default is false.  The default value is
+     *                 'false'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1483,10 +1494,16 @@ public class GPUdb extends GPUdbBase {
      *                 member.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
-     *                 the groupby result table will be cached on the GPU. Must
-     *                 be used in combination with the {@code result_table}
-     *                 option.
+     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
+     *                 href="../../../../rm/concepts.html"
+     *                 target="_top">Resource Management Concepts</a> for
+     *                 information about how resources are managed, <a
+     *                 href="../../../../rm/concepts.html" target="_top">Tier
+     *                 Strategy Concepts</a> for how resources are targeted for
+     *                 VRAM, and <a
+     *                 href="../../../../rm/usage.html#tier-strategies"
+     *                 target="_top">Tier Strategy Usage</a> for how to specify
+     *                 a table's priority in VRAM.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -2634,8 +2651,16 @@ public class GPUdb extends GPUdbBase {
      *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: If {@code true} then the output
-     *                 columns will be cached on the GPU.
+     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
+     *                 href="../../../../rm/concepts.html"
+     *                 target="_top">Resource Management Concepts</a> for
+     *                 information about how resources are managed, <a
+     *                 href="../../../../rm/concepts.html" target="_top">Tier
+     *                 Strategy Concepts</a> for how resources are targeted for
+     *                 VRAM, and <a
+     *                 href="../../../../rm/usage.html#tier-strategies"
+     *                 target="_top">Tier Strategy Usage</a> for how to specify
+     *                 a table's priority in VRAM.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -2975,6 +3000,12 @@ public class GPUdb extends GPUdbBase {
      *                            default (engine decides) or an integer value
      *                            that indicates max chunk size to exec on host
      *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EXTERNAL_FILES_DIRECTORY
+     *                            EXTERNAL_FILES_DIRECTORY}: Sets the root
+     *                            directory path where external table data
+     *                            files are accessed from.  Path must exist on
+     *                            the head node
+     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FLUSH_TO_DISK
      *                            FLUSH_TO_DISK}: Flushes any changes to any
      *                            tables to the persistent store.  These
@@ -3081,6 +3112,16 @@ public class GPUdb extends GPUdbBase {
      *                            set_compression (instead of waiting for
      *                            background thread).  The default value is
      *                            'false'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
+     *                            ENABLE_OVERLAPPED_EQUI_JOIN}: Enable
+     *                            overlapped-equi-join filter.  The default
+     *                            value is 'true'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_COMPOUND_EQUI_JOIN
+     *                            ENABLE_COMPOUND_EQUI_JOIN}: Enable
+     *                            compound-equi-join filter plan type.  The
+     *                            default value is 'false'.
      *                            </ul>
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
@@ -3250,18 +3291,24 @@ public class GPUdb extends GPUdbBase {
      *                will be ignored.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
-     *                CREATE_INDEX}: Creates an <a
+     *                CREATE_INDEX}: Creates either a <a
      *                href="../../../../concepts/indexes.html#column-index"
-     *                target="_top">index</a> on the column name specified in
-     *                {@code value}. If this column is already indexed, an
-     *                error will be returned.
+     *                target="_top">column (attribute) index</a> or <a
+     *                href="../../../../concepts/indexes.html#chunk-skip-index"
+     *                target="_top">chunk skip index</a>, depending on the
+     *                specified {@code index_type}, on the column name
+     *                specified in {@code value}. If this column already has
+     *                the specified index, an error will be returned.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
-     *                DELETE_INDEX}: Deletes an existing <a
+     *                DELETE_INDEX}: Deletes either a <a
      *                href="../../../../concepts/indexes.html#column-index"
-     *                target="_top">index</a> on the column name specified in
-     *                {@code value}. If this column does not have indexing
-     *                turned on, an error will be returned.
+     *                target="_top">column (attribute) index</a> or <a
+     *                href="../../../../concepts/indexes.html#chunk-skip-index"
+     *                target="_top">chunk skip index</a>, depending on the
+     *                specified {@code index_type}, on the column name
+     *                specified in {@code value}. If this column does not have
+     *                the specified index, an error will be returned.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
      *                MOVE_TO_COLLECTION}: Moves a table or view into a
@@ -3538,15 +3585,21 @@ public class GPUdb extends GPUdbBase {
      *                 specified.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE
-     *                 INDEX_TYPE}: Type of index to create.
+     *                 INDEX_TYPE}: Type of index to create, when {@code
+     *                 action} is {@code create_index}, or to delete, when
+     *                 {@code action} is {@code delete_index}.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN
-     *                 COLUMN}: Standard column index.
+     *                 COLUMN}: Create or delete a <a
+     *                 href="../../../../concepts/indexes.html#column-index"
+     *                 target="_top">column (attribute) index</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP
-     *                 CHUNK_SKIP}: Chunk skip index.
+     *                 CHUNK_SKIP}: Create or delete a <a
+     *                 href="../../../../concepts/indexes.html#chunk-skip-index"
+     *                 target="_top">chunk skip index</a>.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN
@@ -4260,6 +4313,23 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    public CreateExternalTableResponse createExternalTable(CreateExternalTableRequest request) throws GPUdbException {
+        CreateExternalTableResponse actualResponse_ = new CreateExternalTableResponse();
+        submitRequest("/create/externaltable", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public CreateExternalTableResponse createExternalTable(String tableName, List<String> filepaths, Map<String, String> createTableOptions, Map<String, String> options) throws GPUdbException {
+        CreateExternalTableRequest actualRequest_ = new CreateExternalTableRequest(tableName, filepaths, createTableOptions, options);
+        CreateExternalTableResponse actualResponse_ = new CreateExternalTableResponse();
+        submitRequest("/create/externaltable", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
     /**
      * Creates a new graph network using given nodes, edges, weights, and
      * restrictions.
@@ -4429,9 +4499,10 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#MODIFY
-     *                 MODIFY}: If set to {@code true} and {@code true} and if
-     *                 the graph (using {@code graphName}) already exists, the
-     *                 graph is updated with these components.
+     *                 MODIFY}: If set to {@code true}, {@code recreate} is set
+     *                 to {@code true}, and the graph (specified using {@code
+     *                 graphName}) already exists, the graph is updated with
+     *                 the given components.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -4541,11 +4612,29 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#GRAPH_TABLE
-     *                 GRAPH_TABLE}: If the {@code graph_table} name is NOT
-     *                 left blank, the created graph is also created as a table
-     *                 with the given name and following identifier columns:
-     *                 'EDGE_ID', 'EDGE_NODE1_ID', 'EDGE_NODE2_ID'. If left
-     *                 blank, no table is created.  The default value is ''.
+     *                 GRAPH_TABLE}: If specified, the created graph is also
+     *                 created as a table with the given name and following
+     *                 identifier columns: 'EDGE_ID', 'EDGE_NODE1_ID',
+     *                 'EDGE_NODE2_ID'. If left blank, no table is created.
+     *                 The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#REMOVE_LABEL_ONLY
+     *                 REMOVE_LABEL_ONLY}: When RESTRICTIONS on labeled
+     *                 entities requested, if set to true this will NOT delete
+     *                 the entity but only the label associated with the
+     *                 entity. Otherwise (default), it'll delete the label AND
+     *                 the entity.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -5159,8 +5248,16 @@ public class GPUdb extends GPUdbBase {
      *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
-     *                 the projection will be cached on the GPU.
+     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
+     *                 href="../../../../rm/concepts.html"
+     *                 target="_top">Resource Management Concepts</a> for
+     *                 information about how resources are managed, <a
+     *                 href="../../../../rm/concepts.html" target="_top">Tier
+     *                 Strategy Concepts</a> for how resources are targeted for
+     *                 VRAM, and <a
+     *                 href="../../../../rm/usage.html#tier-strategies"
+     *                 target="_top">Tier Strategy Usage</a> for how to specify
+     *                 a table's priority in VRAM.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -6432,8 +6529,16 @@ public class GPUdb extends GPUdbBase {
      *                 table.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: If {@code true}, then the columns
-     *                 of the output table will be cached on the GPU.
+     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
+     *                 href="../../../../rm/concepts.html"
+     *                 target="_top">Resource Management Concepts</a> for
+     *                 information about how resources are managed, <a
+     *                 href="../../../../rm/concepts.html" target="_top">Tier
+     *                 Strategy Concepts</a> for how resources are targeted for
+     *                 VRAM, and <a
+     *                 href="../../../../rm/usage.html#tier-strategies"
+     *                 target="_top">Tier Strategy Usage</a> for how to specify
+     *                 a table's priority in VRAM.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -10172,8 +10277,14 @@ public class GPUdb extends GPUdbBase {
      *                   tables and views in the collection.
      * @param filterExpression  Reserved for future use.  The default value is
      *                          ''.
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GrantPermissionTableRequest.Options#COLUMNS
+     *                 COLUMNS}: Apply security to these columns,
+     *                 comma-separated.  The default value is ''.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -10810,6 +10921,441 @@ public class GPUdb extends GPUdbBase {
         RawInsertRecordsRequest actualRequest_ = new RawInsertRecordsRequest(tableName, this.encode( typeObjectMap, data ), null, null, options);
         InsertRecordsResponse actualResponse_ = new InsertRecordsResponse();
         submitRequest("/insert/records", actualRequest_, actualResponse_, true);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  InsertRecordsFromFilesResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public InsertRecordsFromFilesResponse insertRecordsFromFiles(InsertRecordsFromFilesRequest request) throws GPUdbException {
+        InsertRecordsFromFilesResponse actualResponse_ = new InsertRecordsFromFilesResponse();
+        submitRequest("/insert/records/fromfiles", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * 
+     * @param tableName
+     * @param filepaths  (can have wildcards) -- array of strings (can be
+     *                   relative paths)
+     * @param createTableOptions  see options in create_table_request
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TYPE_ID
+     *                            TYPE_ID}: Optional: ID of a currently
+     *                            registered type.  The default value is ''.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#NO_ERROR_IF_EXISTS
+     *                            NO_ERROR_IF_EXISTS}: If {@code true},
+     *                            prevents an error from occurring if the table
+     *                            already exists and is of the given type.  If
+     *                            a table with the same ID but a different type
+     *                            exists, it is still an error.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FALSE
+     *                            FALSE}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#COLLECTION_NAME
+     *                            COLLECTION_NAME}: Name of a collection which
+     *                            is to contain the newly created table. If the
+     *                            collection provided is non-existent, the
+     *                            collection will be automatically created. If
+     *                            empty, then the newly created table will be a
+     *                            top-level table.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_COLLECTION
+     *                            IS_COLLECTION}: Indicates whether the new
+     *                            table to be created will be a collection.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FALSE
+     *                            FALSE}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#DISALLOW_HOMOGENEOUS_TABLES
+     *                            DISALLOW_HOMOGENEOUS_TABLES}: No longer
+     *                            supported; value will be ignored.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FALSE
+     *                            FALSE}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_REPLICATED
+     *                            IS_REPLICATED}: For a table, affects the <a
+     *                            href="../../../../concepts/tables.html#distribution"
+     *                            target="_top">distribution scheme</a> for the
+     *                            table's data.  If true and the given type has
+     *                            no explicit <a
+     *                            href="../../../../concepts/tables.html#shard-key"
+     *                            target="_top">shard key</a> defined, the
+     *                            table will be <a
+     *                            href="../../../../concepts/tables.html#replication"
+     *                            target="_top">replicated</a>.  If false, the
+     *                            table will be <a
+     *                            href="../../../../concepts/tables.html#sharding"
+     *                            target="_top">sharded</a> according to the
+     *                            shard key specified in the given
+     *                            @{create_table_options.type_id}, or <a
+     *                            href="../../../../concepts/tables.html#random-sharding"
+     *                            target="_top">randomly sharded</a>, if no
+     *                            shard key is specified.  Note that a type
+     *                            containing a shard key cannot be used to
+     *                            create a replicated table.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FALSE
+     *                            FALSE}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FOREIGN_KEYS
+     *                            FOREIGN_KEYS}: Semicolon-separated list of <a
+     *                            href="../../../../concepts/tables.html#foreign-keys"
+     *                            target="_top">foreign keys</a>, of the format
+     *                            '(source_column_name [, ...]) references
+     *                            target_table_name(primary_key_column_name [,
+     *                            ...]) [as foreign_key_name]'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FOREIGN_SHARD_KEY
+     *                            FOREIGN_SHARD_KEY}: Foreign shard key of the
+     *                            format 'source_column references
+     *                            shard_by_column from
+     *                            target_table(primary_key_column)'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#PARTITION_TYPE
+     *                            PARTITION_TYPE}: <a
+     *                            href="../../../../concepts/tables.html#partitioning"
+     *                            target="_top">Partitioning</a> scheme to use.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#RANGE
+     *                            RANGE}: Use <a
+     *                            href="../../../../concepts/tables.html#partitioning-by-range"
+     *                            target="_top">range partitioning</a>.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#INTERVAL
+     *                            INTERVAL}: Use <a
+     *                            href="../../../../concepts/tables.html#partitioning-by-interval"
+     *                            target="_top">interval partitioning</a>.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#LIST
+     *                            LIST}: Use <a
+     *                            href="../../../../concepts/tables.html#partitioning-by-list"
+     *                            target="_top">list partitioning</a>.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#HASH
+     *                            HASH}: Use <a
+     *                            href="../../../../concepts/tables.html#partitioning-by-hash"
+     *                            target="_top">hash partitioning</a>.
+     *                            </ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#PARTITION_KEYS
+     *                            PARTITION_KEYS}: Comma-separated list of
+     *                            partition keys, which are the columns or
+     *                            column expressions by which records will be
+     *                            assigned to partitions defined by {@code
+     *                            partition_definitions}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#PARTITION_DEFINITIONS
+     *                            PARTITION_DEFINITIONS}: Comma-separated list
+     *                            of partition definitions, whose format
+     *                            depends on the choice of {@code
+     *                            partition_type}.  See <a
+     *                            href="../../../../concepts/tables.html#partitioning-by-range"
+     *                            target="_top">range partitioning</a>, <a
+     *                            href="../../../../concepts/tables.html#partitioning-by-interval"
+     *                            target="_top">interval partitioning</a>, <a
+     *                            href="../../../../concepts/tables.html#partitioning-by-list"
+     *                            target="_top">list partitioning</a>, or <a
+     *                            href="../../../../concepts/tables.html#partitioning-by-hash"
+     *                            target="_top">hash partitioning</a> for
+     *                            example formats.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
+     *                            IS_AUTOMATIC_PARTITION}: If true, a new
+     *                            partition will be created for values which
+     *                            don't fall into an existing partition.
+     *                            Currently only supported for <a
+     *                            href="../../../../concepts/tables.html#partitioning-by-list"
+     *                            target="_top">list partitions</a>.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FALSE
+     *                            FALSE}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TTL
+     *                            TTL}: For a table, sets the <a
+     *                            href="../../../../concepts/ttl.html"
+     *                            target="_top">TTL</a> of the table specified
+     *                            in {@code tableName}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#CHUNK_SIZE
+     *                            CHUNK_SIZE}: Indicates the number of records
+     *                            per chunk to be used for this table.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_RESULT_TABLE
+     *                            IS_RESULT_TABLE}: For a table, indicates
+     *                            whether the table is an in-memory table. A
+     *                            result table cannot contain store_only,
+     *                            text_search, or string columns (charN columns
+     *                            are acceptable), and it will not be retained
+     *                            if the server is restarted.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FALSE
+     *                            FALSE}.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#STRATEGY_DEFINITION
+     *                            STRATEGY_DEFINITION}: The <a
+     *                            href="../../../../rm/concepts.html#tier-strategies"
+     *                            target="_top">tier strategy</a> for the table
+     *                            and its columns. See <a
+     *                            href="../../../../rm/concepts.html#tier-strategies"
+     *                            target="_top">tier strategy usage</a> for
+     *                            format and <a
+     *                            href="../../../../rm/usage.html#tier-strategies"
+     *                            target="_top">tier strategy examples</a> for
+     *                            examples.
+     *                            </ul>
+     *                            The default value is an empty {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FILE_TYPE
+     *                 FILE_TYPE}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
+     *                 DELIMITED_TEXT}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
+     *                 PARQUET}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
+     *                 DELIMITED_TEXT}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
+     *                 LOADING_MODE}: specifies how to divide up data loading
+     *                 among nodes
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#HEAD
+     *                 HEAD}: head node loads all data
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DISTRIBUTED_SHARED
+     *                 DISTRIBUTED_SHARED}: worker nodes load all data, all
+     *                 nodes can see all files and loading is divided up
+     *                 internally
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DISTRIBUTED_LOCAL
+     *                 DISTRIBUTED_LOCAL}: each worker node loads the files
+     *                 that it sees
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#HEAD
+     *                 HEAD}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ERROR_HANDLING
+     *                 ERROR_HANDLING}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PERMISSIVE
+     *                 PERMISSIVE}: tries to parse all lines: nulls are
+     *                 inserted for missing tokens and extra tokens are
+     *                 ignored.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#IGNORE_BAD_RECORDS
+     *                 IGNORE_BAD_RECORDS}: Drops malformed lines/rows
+     *                 entirely.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ABORT
+     *                 ABORT}: Aborts ingest when it encounters an error.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PERMISSIVE
+     *                 PERMISSIVE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUNCATE_TABLE
+     *                 TRUNCATE_TABLE}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BATCH_SIZE
+     *                 BATCH_SIZE}: number of records per batch when loading
+     *                 from file
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COLUMN_FORMATS
+     *                 COLUMN_FORMATS}: json map of colname to map of format to
+     *                 value
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DEFAULT_COLUMN_FORMATS
+     *                 DEFAULT_COLUMN_FORMATS}: json map of format to value
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DRY_RUN
+     *                 DRY_RUN}: Walk through the files and determine number of
+     *                 valid records.  Does not load data. Applies the error
+     *                 handling mode to determine valid behavior
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}: no dry run
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *                 TRUE}: do a dry run
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_HAS_HEADER
+     *                 TEXT_HAS_HEADER}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_DELIMITER
+     *                 TEXT_DELIMITER}: Delimiter for csv fields and header
+     *                 row. Must be a single character.  The default value is
+     *                 ','.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_HEADER_PROPERTY_DELIMITER
+     *                 TEXT_HEADER_PROPERTY_DELIMITER}: Delimiter for column
+     *                 properties in csv header row.  The default value is '|'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COLUMNS_TO_LOAD
+     *                 COLUMNS_TO_LOAD}: Optionally used to specify a subset of
+     *                 columns to load, instead of loading all columns in the
+     *                 file.
+     *                 The columns to use are delimited by a comma. Column
+     *                 numbers can be specified discretely or as a range e.g.
+     *                 '1 .. 4' refers to the first through fourth columns.
+     *                 For example, a value of '5,3,1..2' will create a table
+     *                 with the first column in the table being the fifth
+     *                 column in the file, followed by third column in the
+     *                 file, then the first column, and lastly the second
+     *                 column.
+     *                 Additionally, if the file(s) have a header, names
+     *                 matching the file header names may be provided instead
+     *                 of numbers. Ranges are not supported.
+     *                 For example, a value of 'C, B, A' will create a three
+     *                 column table with column C, followed by column B,
+     *                 followed by column A.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_COMMENT_STRING
+     *                 TEXT_COMMENT_STRING}: ignore all lines starting with the
+     *                 comment value.  The default value is '#'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_NULL_STRING
+     *                 TEXT_NULL_STRING}: value to treat as null.  The default
+     *                 value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_QUOTE_CHARACTER
+     *                 TEXT_QUOTE_CHARACTER}: quote character, defaults to a
+     *                 double-quote i.e. ".Set an empty string to not have a
+     *                 quote character. Must be a single character.  The
+     *                 default value is '"'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_ESCAPE_CHARACTER
+     *                 TEXT_ESCAPE_CHARACTER}: escape character, defaults to no
+     *                 escaping. Must be a single character
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  InsertRecordsFromFilesResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public InsertRecordsFromFilesResponse insertRecordsFromFiles(String tableName, List<String> filepaths, Map<String, String> createTableOptions, Map<String, String> options) throws GPUdbException {
+        InsertRecordsFromFilesRequest actualRequest_ = new InsertRecordsFromFilesRequest(tableName, filepaths, createTableOptions, options);
+        InsertRecordsFromFilesResponse actualResponse_ = new InsertRecordsFromFilesResponse();
+        submitRequest("/insert/records/fromfiles", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -11748,6 +12294,262 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Update an existing graph network using given nodes, edges, weights,
+     * restrictions, and options.
+
+     * IMPORTANT: It's highly recommended that you review the <a
+     * href="../../../../graph_solver/network_graph_solver.html"
+     * target="_top">Network Graphs & Solvers</a> concepts documentation, the
+     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * target="_top">Graph REST Tutorial</a>, and/or some <a
+     * href="../../../../graph_solver/examples.html" target="_top">graph
+     * examples</a> before using this endpoint.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ModifyGraphResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ModifyGraphResponse modifyGraph(ModifyGraphRequest request) throws GPUdbException {
+        ModifyGraphResponse actualResponse_ = new ModifyGraphResponse();
+        submitRequest("/modify/graph", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Update an existing graph network using given nodes, edges, weights,
+     * restrictions, and options.
+
+     * IMPORTANT: It's highly recommended that you review the <a
+     * href="../../../../graph_solver/network_graph_solver.html"
+     * target="_top">Network Graphs & Solvers</a> concepts documentation, the
+     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * target="_top">Graph REST Tutorial</a>, and/or some <a
+     * href="../../../../graph_solver/examples.html" target="_top">graph
+     * examples</a> before using this endpoint.
+     * 
+     * @param graphName  Name of the graph resource to modify.
+     * @param nodes  Nodes with which to update existing {@code nodes} in graph
+     *               specified by {@code graphName}. Review <a
+     *               href="../../../../graph_solver/network_graph_solver.html#nodes"
+     *               target="_top">Nodes</a> for more information. Nodes must
+     *               be specified using <a
+     *               href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *               target="_top">identifiers</a>; identifiers are grouped as
+     *               <a
+     *               href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *               target="_top">combinations</a>. Identifiers can be used
+     *               with existing column names, e.g., 'table.column AS
+     *               NODE_ID', expressions, e.g., 'ST_MAKEPOINT(column1,
+     *               column2) AS NODE_WKTPOINT', or raw values, e.g., '{9, 10,
+     *               11} AS NODE_ID'. If using raw values in an identifier
+     *               combination, the number of values specified must match
+     *               across the combination. Identifier combination(s) do not
+     *               have to match the method used to create the graph, e.g.,
+     *               if column names were specified to create the graph,
+     *               expressions or raw values could also be used to modify the
+     *               graph.
+     * @param edges  Edges with which to update existing {@code edges} in graph
+     *               specified by {@code graphName}. Review <a
+     *               href="../../../../graph_solver/network_graph_solver.html#edges"
+     *               target="_top">Edges</a> for more information. Edges must
+     *               be specified using <a
+     *               href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *               target="_top">identifiers</a>; identifiers are grouped as
+     *               <a
+     *               href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *               target="_top">combinations</a>. Identifiers can be used
+     *               with existing column names, e.g., 'table.column AS
+     *               EDGE_ID', expressions, e.g., 'SUBSTR(column, 1, 6) AS
+     *               EDGE_NODE1_NAME', or raw values, e.g., "{'family',
+     *               'coworker'} AS EDGE_LABEL". If using raw values in an
+     *               identifier combination, the number of values specified
+     *               must match across the combination. Identifier
+     *               combination(s) do not have to match the method used to
+     *               create the graph, e.g., if column names were specified to
+     *               create the graph, expressions or raw values could also be
+     *               used to modify the graph.
+     * @param weights  Weights with which to update existing {@code weights} in
+     *                 graph specified by {@code graphName}. Review <a
+     *                 href="../../../../graph_solver/network_graph_solver.html#graph-weights"
+     *                 target="_top">Weights</a> for more information. Weights
+     *                 must be specified using <a
+     *                 href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                 target="_top">identifiers</a>; identifiers are grouped
+     *                 as <a
+     *                 href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                 target="_top">combinations</a>. Identifiers can be used
+     *                 with existing column names, e.g., 'table.column AS
+     *                 WEIGHTS_EDGE_ID', expressions, e.g., 'ST_LENGTH(wkt) AS
+     *                 WEIGHTS_VALUESPECIFIED', or raw values, e.g., '{4, 15}
+     *                 AS WEIGHTS_VALUESPECIFIED'. If using raw values in an
+     *                 identifier combination, the number of values specified
+     *                 must match across the combination. Identifier
+     *                 combination(s) do not have to match the method used to
+     *                 create the graph, e.g., if column names were specified
+     *                 to create the graph, expressions or raw values could
+     *                 also be used to modify the graph.
+     * @param restrictions  Restrictions with which to update existing {@code
+     *                      restrictions} in graph specified by {@code
+     *                      graphName}. Review <a
+     *                      href="../../../../graph_solver/network_graph_solver.html#graph-restrictions"
+     *                      target="_top">Restrictions</a> for more
+     *                      information. Restrictions must be specified using
+     *                      <a
+     *                      href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      target="_top">identifiers</a>; identifiers are
+     *                      grouped as <a
+     *                      href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      target="_top">combinations</a>. Identifiers can be
+     *                      used with existing column names, e.g.,
+     *                      'table.column AS RESTRICTIONS_EDGE_ID',
+     *                      expressions, e.g., 'column/2 AS
+     *                      RESTRICTIONS_VALUECOMPARED', or raw values, e.g.,
+     *                      '{0, 0, 0, 1} AS RESTRICTIONS_ONOFFCOMPARED'. If
+     *                      using raw values in an identifier combination, the
+     *                      number of values specified must match across the
+     *                      combination. Identifier combination(s) do not have
+     *                      to match the method used to create the graph, e.g.,
+     *                      if column names were specified to create the graph,
+     *                      expressions or raw values could also be used to
+     *                      modify the graph.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
+     *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
+     *                 comparison. Any node or edge with a
+     *                 RESTRICTIONS_VALUECOMPARED value greater than the {@code
+     *                 restriction_threshold_value} will not be included in the
+     *                 graph.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#EXPORT_CREATE_RESULTS
+     *                 EXPORT_CREATE_RESULTS}: If set to {@code true}, returns
+     *                 the graph topology in the response as arrays.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#ENABLE_GRAPH_DRAW
+     *                 ENABLE_GRAPH_DRAW}: If set to {@code true}, adds a
+     *                 'EDGE_WKTLINE' column identifier to the specified {@code
+     *                 graph_table} so the graph can be viewed via WMS; for
+     *                 social and non-geospatial graphs, the 'EDGE_WKTLINE'
+     *                 column identifier will be populated with spatial
+     *                 coordinates derived from a flattening layout algorithm
+     *                 so the graph can still be viewed.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#SAVE_PERSIST
+     *                 SAVE_PERSIST}: If set to {@code true}, the graph will be
+     *                 saved in the persist directory (see the <a
+     *                 href="../../../../config/index.html"
+     *                 target="_top">config reference</a> for more
+     *                 information). If set to {@code false}, the graph will be
+     *                 removed when the graph server is shutdown.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#ADD_TABLE_MONITOR
+     *                 ADD_TABLE_MONITOR}: Adds a table monitor to every table
+     *                 used in the creation of the graph; this table monitor
+     *                 will trigger the graph to update dynamically upon
+     *                 inserts to the source table(s). Note that upon database
+     *                 restart, if {@code save_persist} is also set to {@code
+     *                 true}, the graph will be fully reconstructed and the
+     *                 table monitors will be reattached. For more details on
+     *                 table monitors, see {@link
+     *                 GPUdb#createTableMonitor(String, Map)}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#GRAPH_TABLE
+     *                 GRAPH_TABLE}: If specified, the created graph is also
+     *                 created as a table with the given name and following
+     *                 identifier columns: 'EDGE_ID', 'EDGE_NODE1_ID',
+     *                 'EDGE_NODE2_ID'. If left blank, no table is created.
+     *                 The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#REMOVE_LABEL_ONLY
+     *                 REMOVE_LABEL_ONLY}: When RESTRICTIONS on labeled
+     *                 entities requested, if set to true this will NOT delete
+     *                 the entity but only the label associated with the
+     *                 entity. Otherwise (default), it'll delete the label AND
+     *                 the entity.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ModifyGraphResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ModifyGraphResponse modifyGraph(String graphName, List<String> nodes, List<String> edges, List<String> weights, List<String> restrictions, Map<String, String> options) throws GPUdbException {
+        ModifyGraphRequest actualRequest_ = new ModifyGraphRequest(graphName, nodes, edges, weights, restrictions, options);
+        ModifyGraphResponse actualResponse_ = new ModifyGraphResponse();
+        submitRequest("/modify/graph", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Employs a topological query on a network graph generated a-priori by
      * {@link GPUdb#createGraph(CreateGraphRequest)} and returns a list of
      * adjacent edge(s) or node(s), also known as an adjacency list, depending
@@ -12166,8 +12968,14 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table to which the permission grants
      *                   access. Must be an existing table, collection, or
      *                   view.
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RevokePermissionTableRequest.Options#COLUMNS
+     *                 COLUMNS}: Apply security to these columns,
+     *                 comma-separated.  The default value is ''.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -12640,7 +13448,8 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Procedures
+     * Shows information about SQL procedures, including the full definition of
+     * each requested procedure.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -12661,7 +13470,8 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Procedures
+     * Shows information about SQL procedures, including the full definition of
+     * each requested procedure.
      * 
      * @param procedureName  Name of the procedure for which to retrieve the
      *                       information. If blank, then information about all
@@ -12670,9 +13480,10 @@ public class GPUdb extends GPUdbBase {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowSqlProcRequest.Options#NO_ERROR_IF_NOT_EXISTS
-     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an
-     *                 error if the provided  does not exist. If {@code true}
-     *                 then it will return an empty result.
+     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code true}, no error will
+     *                 be returned if the requested procedure does not exist.
+     *                 If {@code false}, an error will be returned if the
+     *                 requested procedure does not exist.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -12931,7 +13742,11 @@ public class GPUdb extends GPUdbBase {
         ShowTableResponse actualResponse_ = new ShowTableResponse();
         submitRequest("/show/table", request, actualResponse_, false);
 
-        for (int i_ = 0; i_ < actualResponse_.getTypeIds().size(); i_++) {
+        for (int i_ = 0; i_ < actualResponse_.getTypeIds().size(); ++i_) {
+            if( actualResponse_.getTypeSchemas().get(i_).isEmpty() ) {
+                // Skip generating a type if no schema is available
+                continue;
+            }
             setTypeDescriptorIfMissing(actualResponse_.getTypeIds().get(i_), actualResponse_.getTypeLabels().get(i_), actualResponse_.getTypeSchemas().get(i_), actualResponse_.getProperties().get(i_));
         }
 
@@ -13057,7 +13872,11 @@ public class GPUdb extends GPUdbBase {
         ShowTableResponse actualResponse_ = new ShowTableResponse();
         submitRequest("/show/table", actualRequest_, actualResponse_, false);
 
-        for (int i_ = 0; i_ < actualResponse_.getTypeIds().size(); i_++) {
+        for (int i_ = 0; i_ < actualResponse_.getTypeIds().size(); ++i_) {
+            if( actualResponse_.getTypeSchemas().get(i_).isEmpty() ) {
+                // Skip generating a type if no schema is available
+                continue;
+            }
             setTypeDescriptorIfMissing(actualResponse_.getTypeIds().get(i_), actualResponse_.getTypeLabels().get(i_), actualResponse_.getTypeSchemas().get(i_), actualResponse_.getProperties().get(i_));
         }
 
@@ -13234,7 +14053,11 @@ public class GPUdb extends GPUdbBase {
         ShowTypesResponse actualResponse_ = new ShowTypesResponse();
         submitRequest("/show/types", request, actualResponse_, false);
 
-        for (int i_ = 0; i_ < actualResponse_.getTypeIds().size(); i_++) {
+        for (int i_ = 0; i_ < actualResponse_.getTypeIds().size(); ++i_) {
+            if( actualResponse_.getTypeSchemas().get(i_).isEmpty() ) {
+                // Skip generating a type if no schema is available
+                continue;
+            }
             setTypeDescriptorIfMissing(actualResponse_.getTypeIds().get(i_), actualResponse_.getLabels().get(i_), actualResponse_.getTypeSchemas().get(i_), actualResponse_.getProperties().get(i_));
         }
 
@@ -13284,7 +14107,11 @@ public class GPUdb extends GPUdbBase {
         ShowTypesResponse actualResponse_ = new ShowTypesResponse();
         submitRequest("/show/types", actualRequest_, actualResponse_, false);
 
-        for (int i_ = 0; i_ < actualResponse_.getTypeIds().size(); i_++) {
+        for (int i_ = 0; i_ < actualResponse_.getTypeIds().size(); ++i_) {
+            if( actualResponse_.getTypeSchemas().get(i_).isEmpty() ) {
+                // Skip generating a type if no schema is available
+                continue;
+            }
             setTypeDescriptorIfMissing(actualResponse_.getTypeIds().get(i_), actualResponse_.getLabels().get(i_), actualResponse_.getTypeSchemas().get(i_), actualResponse_.getProperties().get(i_));
         }
 

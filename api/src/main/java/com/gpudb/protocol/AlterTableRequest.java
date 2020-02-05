@@ -105,16 +105,22 @@ public class AlterTableRequest implements IndexedRecord {
      * ALLOW_HOMOGENEOUS_TABLES}: No longer supported; action will be ignored.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX CREATE_INDEX}:
-     * Creates an <a href="../../../../../concepts/indexes.html#column-index"
-     * target="_top">index</a> on the column name specified in {@code value}.
-     * If this column is already indexed, an error will be returned.
+     * Creates either a <a
+     * href="../../../../../concepts/indexes.html#column-index"
+     * target="_top">column (attribute) index</a> or <a
+     * href="../../../../../concepts/indexes.html#chunk-skip-index"
+     * target="_top">chunk skip index</a>, depending on the specified {@code
+     * index_type}, on the column name specified in {@code value}. If this
+     * column already has the specified index, an error will be returned.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX DELETE_INDEX}:
-     * Deletes an existing <a
+     * Deletes either a <a
      * href="../../../../../concepts/indexes.html#column-index"
-     * target="_top">index</a> on the column name specified in {@code value}.
-     * If this column does not have indexing turned on, an error will be
-     * returned.
+     * target="_top">column (attribute) index</a> or <a
+     * href="../../../../../concepts/indexes.html#chunk-skip-index"
+     * target="_top">chunk skip index</a>, depending on the specified {@code
+     * index_type}, on the column name specified in {@code value}. If this
+     * column does not have the specified index, an error will be returned.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
      * MOVE_TO_COLLECTION}: Moves a table or view into a collection named
@@ -253,20 +259,26 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String ALLOW_HOMOGENEOUS_TABLES = "allow_homogeneous_tables";
 
         /**
-         * Creates an <a
+         * Creates either a <a
          * href="../../../../../concepts/indexes.html#column-index"
-         * target="_top">index</a> on the column name specified in {@code
-         * value}. If this column is already indexed, an error will be
+         * target="_top">column (attribute) index</a> or <a
+         * href="../../../../../concepts/indexes.html#chunk-skip-index"
+         * target="_top">chunk skip index</a>, depending on the specified
+         * {@code index_type}, on the column name specified in {@code value}.
+         * If this column already has the specified index, an error will be
          * returned.
          */
         public static final String CREATE_INDEX = "create_index";
 
         /**
-         * Deletes an existing <a
+         * Deletes either a <a
          * href="../../../../../concepts/indexes.html#column-index"
-         * target="_top">index</a> on the column name specified in {@code
-         * value}. If this column does not have indexing turned on, an error
-         * will be returned.
+         * target="_top">column (attribute) index</a> or <a
+         * href="../../../../../concepts/indexes.html#chunk-skip-index"
+         * target="_top">chunk skip index</a>, depending on the specified
+         * {@code index_type}, on the column name specified in {@code value}.
+         * If this column does not have the specified index, an error will be
+         * returned.
          */
         public static final String DELETE_INDEX = "delete_index";
 
@@ -544,14 +556,19 @@ public class AlterTableRequest implements IndexedRecord {
      * {@code value} is also specified.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE INDEX_TYPE}:
-     * Type of index to create.
+     * Type of index to create, when {@code action} is {@code create_index}, or
+     * to delete, when {@code action} is {@code delete_index}.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#COLUMN
-     * COLUMN}: Standard column index.
+     * COLUMN}: Create or delete a <a
+     * href="../../../../../concepts/indexes.html#column-index"
+     * target="_top">column (attribute) index</a>.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP CHUNK_SKIP}:
-     * Chunk skip index.
+     * Create or delete a <a
+     * href="../../../../../concepts/indexes.html#chunk-skip-index"
+     * target="_top">chunk skip index</a>.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.AlterTableRequest.Options#COLUMN COLUMN}.
@@ -687,15 +704,21 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String STRATEGY_DEFINITION = "strategy_definition";
 
         /**
-         * Type of index to create.
+         * Type of index to create, when {@code action} is {@code
+         * create_index}, or to delete, when {@code action} is {@code
+         * delete_index}.
          * Supported values:
          * <ul>
          *         <li> {@link
-         * com.gpudb.protocol.AlterTableRequest.Options#COLUMN COLUMN}:
-         * Standard column index.
+         * com.gpudb.protocol.AlterTableRequest.Options#COLUMN COLUMN}: Create
+         * or delete a <a
+         * href="../../../../../concepts/indexes.html#column-index"
+         * target="_top">column (attribute) index</a>.
          *         <li> {@link
          * com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP CHUNK_SKIP}:
-         * Chunk skip index.
+         * Create or delete a <a
+         * href="../../../../../concepts/indexes.html#chunk-skip-index"
+         * target="_top">chunk skip index</a>.
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.AlterTableRequest.Options#COLUMN COLUMN}.
@@ -703,12 +726,16 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String INDEX_TYPE = "index_type";
 
         /**
-         * Standard column index.
+         * Create or delete a <a
+         * href="../../../../../concepts/indexes.html#column-index"
+         * target="_top">column (attribute) index</a>.
          */
         public static final String COLUMN = "column";
 
         /**
-         * Chunk skip index.
+         * Create or delete a <a
+         * href="../../../../../concepts/indexes.html#chunk-skip-index"
+         * target="_top">chunk skip index</a>.
          */
         public static final String CHUNK_SKIP = "chunk_skip";
 
@@ -745,18 +772,24 @@ public class AlterTableRequest implements IndexedRecord {
      *                will be ignored.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
-     *                CREATE_INDEX}: Creates an <a
+     *                CREATE_INDEX}: Creates either a <a
      *                href="../../../../../concepts/indexes.html#column-index"
-     *                target="_top">index</a> on the column name specified in
-     *                {@code value}. If this column is already indexed, an
-     *                error will be returned.
+     *                target="_top">column (attribute) index</a> or <a
+     *                href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *                target="_top">chunk skip index</a>, depending on the
+     *                specified {@code index_type}, on the column name
+     *                specified in {@code value}. If this column already has
+     *                the specified index, an error will be returned.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
-     *                DELETE_INDEX}: Deletes an existing <a
+     *                DELETE_INDEX}: Deletes either a <a
      *                href="../../../../../concepts/indexes.html#column-index"
-     *                target="_top">index</a> on the column name specified in
-     *                {@code value}. If this column does not have indexing
-     *                turned on, an error will be returned.
+     *                target="_top">column (attribute) index</a> or <a
+     *                href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *                target="_top">chunk skip index</a>, depending on the
+     *                specified {@code index_type}, on the column name
+     *                specified in {@code value}. If this column does not have
+     *                the specified index, an error will be returned.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
      *                MOVE_TO_COLLECTION}: Moves a table or view into a
@@ -1034,15 +1067,21 @@ public class AlterTableRequest implements IndexedRecord {
      *                 specified.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE
-     *                 INDEX_TYPE}: Type of index to create.
+     *                 INDEX_TYPE}: Type of index to create, when {@code
+     *                 action} is {@code create_index}, or to delete, when
+     *                 {@code action} is {@code delete_index}.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN
-     *                 COLUMN}: Standard column index.
+     *                 COLUMN}: Create or delete a <a
+     *                 href="../../../../../concepts/indexes.html#column-index"
+     *                 target="_top">column (attribute) index</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP
-     *                 CHUNK_SKIP}: Chunk skip index.
+     *                 CHUNK_SKIP}: Create or delete a <a
+     *                 href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *                 target="_top">chunk skip index</a>.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN
@@ -1092,17 +1131,23 @@ public class AlterTableRequest implements IndexedRecord {
      *         ignored.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
-     *         CREATE_INDEX}: Creates an <a
+     *         CREATE_INDEX}: Creates either a <a
      *         href="../../../../../concepts/indexes.html#column-index"
-     *         target="_top">index</a> on the column name specified in {@code
-     *         value}. If this column is already indexed, an error will be
-     *         returned.
+     *         target="_top">column (attribute) index</a> or <a
+     *         href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *         target="_top">chunk skip index</a>, depending on the specified
+     *         {@code index_type}, on the column name specified in {@code
+     *         value}. If this column already has the specified index, an error
+     *         will be returned.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
-     *         DELETE_INDEX}: Deletes an existing <a
+     *         DELETE_INDEX}: Deletes either a <a
      *         href="../../../../../concepts/indexes.html#column-index"
-     *         target="_top">index</a> on the column name specified in {@code
-     *         value}. If this column does not have indexing turned on, an
+     *         target="_top">column (attribute) index</a> or <a
+     *         href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *         target="_top">chunk skip index</a>, depending on the specified
+     *         {@code index_type}, on the column name specified in {@code
+     *         value}. If this column does not have the specified index, an
      *         error will be returned.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
@@ -1264,18 +1309,24 @@ public class AlterTableRequest implements IndexedRecord {
      *                will be ignored.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
-     *                CREATE_INDEX}: Creates an <a
+     *                CREATE_INDEX}: Creates either a <a
      *                href="../../../../../concepts/indexes.html#column-index"
-     *                target="_top">index</a> on the column name specified in
-     *                {@code value}. If this column is already indexed, an
-     *                error will be returned.
+     *                target="_top">column (attribute) index</a> or <a
+     *                href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *                target="_top">chunk skip index</a>, depending on the
+     *                specified {@code index_type}, on the column name
+     *                specified in {@code value}. If this column already has
+     *                the specified index, an error will be returned.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
-     *                DELETE_INDEX}: Deletes an existing <a
+     *                DELETE_INDEX}: Deletes either a <a
      *                href="../../../../../concepts/indexes.html#column-index"
-     *                target="_top">index</a> on the column name specified in
-     *                {@code value}. If this column does not have indexing
-     *                turned on, an error will be returned.
+     *                target="_top">column (attribute) index</a> or <a
+     *                href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *                target="_top">chunk skip index</a>, depending on the
+     *                specified {@code index_type}, on the column name
+     *                specified in {@code value}. If this column does not have
+     *                the specified index, an error will be returned.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
      *                MOVE_TO_COLLECTION}: Moves a table or view into a
@@ -1576,15 +1627,21 @@ public class AlterTableRequest implements IndexedRecord {
      *         option will be ignored if {@code value} is also specified.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE
-     *         INDEX_TYPE}: Type of index to create.
+     *         INDEX_TYPE}: Type of index to create, when {@code action} is
+     *         {@code create_index}, or to delete, when {@code action} is
+     *         {@code delete_index}.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#COLUMN COLUMN}:
-     *         Standard column index.
+     *         Create or delete a <a
+     *         href="../../../../../concepts/indexes.html#column-index"
+     *         target="_top">column (attribute) index</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP
-     *         CHUNK_SKIP}: Chunk skip index.
+     *         CHUNK_SKIP}: Create or delete a <a
+     *         href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *         target="_top">chunk skip index</a>.
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#COLUMN COLUMN}.
@@ -1718,15 +1775,21 @@ public class AlterTableRequest implements IndexedRecord {
      *                 specified.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE
-     *                 INDEX_TYPE}: Type of index to create.
+     *                 INDEX_TYPE}: Type of index to create, when {@code
+     *                 action} is {@code create_index}, or to delete, when
+     *                 {@code action} is {@code delete_index}.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN
-     *                 COLUMN}: Standard column index.
+     *                 COLUMN}: Create or delete a <a
+     *                 href="../../../../../concepts/indexes.html#column-index"
+     *                 target="_top">column (attribute) index</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP
-     *                 CHUNK_SKIP}: Chunk skip index.
+     *                 CHUNK_SKIP}: Create or delete a <a
+     *                 href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *                 target="_top">chunk skip index</a>.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN

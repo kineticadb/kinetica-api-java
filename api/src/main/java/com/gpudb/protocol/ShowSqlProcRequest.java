@@ -17,7 +17,8 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#showSqlProc(ShowSqlProcRequest)}.
  * <p>
- * Procedures
+ * Shows information about SQL procedures, including the full definition of
+ * each requested procedure.
  */
 public class ShowSqlProcRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -46,9 +47,9 @@ public class ShowSqlProcRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.ShowSqlProcRequest.Options#NO_ERROR_IF_NOT_EXISTS
-     * NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an error if the
-     * provided  does not exist. If {@code true} then it will return an empty
-     * result.
+     * NO_ERROR_IF_NOT_EXISTS}: If {@code true}, no error will be returned if
+     * the requested procedure does not exist.  If {@code false}, an error will
+     * be returned if the requested procedure does not exist.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.ShowSqlProcRequest.Options#TRUE
@@ -65,8 +66,9 @@ public class ShowSqlProcRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * If {@code false} will return an error if the provided  does not
-         * exist. If {@code true} then it will return an empty result.
+         * If {@code true}, no error will be returned if the requested
+         * procedure does not exist.  If {@code false}, an error will be
+         * returned if the requested procedure does not exist.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -106,9 +108,10 @@ public class ShowSqlProcRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowSqlProcRequest.Options#NO_ERROR_IF_NOT_EXISTS
-     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an
-     *                 error if the provided  does not exist. If {@code true}
-     *                 then it will return an empty result.
+     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code true}, no error will
+     *                 be returned if the requested procedure does not exist.
+     *                 If {@code false}, an error will be returned if the
+     *                 requested procedure does not exist.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -160,9 +163,10 @@ public class ShowSqlProcRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.ShowSqlProcRequest.Options#NO_ERROR_IF_NOT_EXISTS
-     *         NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an error
-     *         if the provided  does not exist. If {@code true} then it will
-     *         return an empty result.
+     *         NO_ERROR_IF_NOT_EXISTS}: If {@code true}, no error will be
+     *         returned if the requested procedure does not exist.  If {@code
+     *         false}, an error will be returned if the requested procedure
+     *         does not exist.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -186,9 +190,10 @@ public class ShowSqlProcRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowSqlProcRequest.Options#NO_ERROR_IF_NOT_EXISTS
-     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an
-     *                 error if the provided  does not exist. If {@code true}
-     *                 then it will return an empty result.
+     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code true}, no error will
+     *                 be returned if the requested procedure does not exist.
+     *                 If {@code false}, an error will be returned if the
+     *                 requested procedure does not exist.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

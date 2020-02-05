@@ -96,6 +96,29 @@ public class GrantPermissionTableRequest implements IndexedRecord {
         private Permission() {  }
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.GrantPermissionTableRequest.Options#COLUMNS COLUMNS}:
+     * Apply security to these columns, comma-separated.  The default value is
+     * ''.
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * Apply security to these columns, comma-separated.  The default value
+         * is ''.
+         */
+        public static final String COLUMNS = "columns";
+
+        private Options() {  }
+    }
+
     private String name;
     private String permission;
     private String tableName;
@@ -146,8 +169,14 @@ public class GrantPermissionTableRequest implements IndexedRecord {
      *                   tables and views in the collection.
      * @param filterExpression  Reserved for future use.  The default value is
      *                          ''.
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GrantPermissionTableRequest.Options#COLUMNS
+     *                 COLUMNS}: Apply security to these columns,
+     *                 comma-separated.  The default value is ''.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public GrantPermissionTableRequest(String name, String permission, String tableName, String filterExpression, Map<String, String> options) {
@@ -290,7 +319,14 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.  The default value is an empty {@link Map}.
+     * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.GrantPermissionTableRequest.Options#COLUMNS
+     *         COLUMNS}: Apply security to these columns, comma-separated.  The
+     *         default value is ''.
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -299,8 +335,14 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GrantPermissionTableRequest.Options#COLUMNS
+     *                 COLUMNS}: Apply security to these columns,
+     *                 comma-separated.  The default value is ''.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

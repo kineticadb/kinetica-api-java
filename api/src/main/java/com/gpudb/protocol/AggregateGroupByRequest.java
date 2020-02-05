@@ -270,9 +270,13 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * is ''.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
-     * MATERIALIZE_ON_GPU}: If {@code true} then the columns of the groupby
-     * result table will be cached on the GPU. Must be used in combination with
-     * the {@code result_table} option.
+     * MATERIALIZE_ON_GPU}: No longer used.  See <a
+     * href="../../../../../rm/concepts.html" target="_top">Resource Management
+     * Concepts</a> for information about how resources are managed, <a
+     * href="../../../../../rm/concepts.html" target="_top">Tier Strategy
+     * Concepts</a> for how resources are targeted for VRAM, and <a
+     * href="../../../../../rm/usage.html#tier-strategies" target="_top">Tier
+     * Strategy Usage</a> for how to specify a table's priority in VRAM.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -486,9 +490,14 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String VIEW_ID = "view_id";
 
         /**
-         * If {@code true} then the columns of the groupby result table will be
-         * cached on the GPU. Must be used in combination with the {@code
-         * result_table} option.
+         * No longer used.  See <a href="../../../../../rm/concepts.html"
+         * target="_top">Resource Management Concepts</a> for information about
+         * how resources are managed, <a href="../../../../../rm/concepts.html"
+         * target="_top">Tier Strategy Concepts</a> for how resources are
+         * targeted for VRAM, and <a
+         * href="../../../../../rm/usage.html#tier-strategies"
+         * target="_top">Tier Strategy Usage</a> for how to specify a table's
+         * priority in VRAM.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -722,10 +731,16 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 member.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
-     *                 the groupby result table will be cached on the GPU. Must
-     *                 be used in combination with the {@code result_table}
-     *                 option.
+     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
+     *                 href="../../../../../rm/concepts.html"
+     *                 target="_top">Resource Management Concepts</a> for
+     *                 information about how resources are managed, <a
+     *                 href="../../../../../rm/concepts.html"
+     *                 target="_top">Tier Strategy Concepts</a> for how
+     *                 resources are targeted for VRAM, and <a
+     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 target="_top">Tier Strategy Usage</a> for how to specify
+     *                 a table's priority in VRAM.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -960,10 +975,16 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 member.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
-     *                 the groupby result table will be cached on the GPU. Must
-     *                 be used in combination with the {@code result_table}
-     *                 option.
+     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
+     *                 href="../../../../../rm/concepts.html"
+     *                 target="_top">Resource Management Concepts</a> for
+     *                 information about how resources are managed, <a
+     *                 href="../../../../../rm/concepts.html"
+     *                 target="_top">Tier Strategy Concepts</a> for how
+     *                 resources are targeted for VRAM, and <a
+     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 target="_top">Tier Strategy Usage</a> for how to specify
+     *                 a table's priority in VRAM.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1305,9 +1326,15 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
-     *         MATERIALIZE_ON_GPU}: If {@code true} then the columns of the
-     *         groupby result table will be cached on the GPU. Must be used in
-     *         combination with the {@code result_table} option.
+     *         MATERIALIZE_ON_GPU}: No longer used.  See <a
+     *         href="../../../../../rm/concepts.html" target="_top">Resource
+     *         Management Concepts</a> for information about how resources are
+     *         managed, <a href="../../../../../rm/concepts.html"
+     *         target="_top">Tier Strategy Concepts</a> for how resources are
+     *         targeted for VRAM, and <a
+     *         href="../../../../../rm/usage.html#tier-strategies"
+     *         target="_top">Tier Strategy Usage</a> for how to specify a
+     *         table's priority in VRAM.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -1496,10 +1523,16 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 member.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
-     *                 the groupby result table will be cached on the GPU. Must
-     *                 be used in combination with the {@code result_table}
-     *                 option.
+     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
+     *                 href="../../../../../rm/concepts.html"
+     *                 target="_top">Resource Management Concepts</a> for
+     *                 information about how resources are managed, <a
+     *                 href="../../../../../rm/concepts.html"
+     *                 target="_top">Tier Strategy Concepts</a> for how
+     *                 resources are targeted for VRAM, and <a
+     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 target="_top">Tier Strategy Usage</a> for how to specify
+     *                 a table's priority in VRAM.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

@@ -115,8 +115,13 @@ public class CreateProjectionRequest implements IndexedRecord {
      * be used, rather than the original column name.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
-     * MATERIALIZE_ON_GPU}: If {@code true} then the columns of the projection
-     * will be cached on the GPU.
+     * MATERIALIZE_ON_GPU}: No longer used.  See <a
+     * href="../../../../../rm/concepts.html" target="_top">Resource Management
+     * Concepts</a> for information about how resources are managed, <a
+     * href="../../../../../rm/concepts.html" target="_top">Tier Strategy
+     * Concepts</a> for how resources are targeted for VRAM, and <a
+     * href="../../../../../rm/usage.html#tier-strategies" target="_top">Tier
+     * Strategy Usage</a> for how to specify a table's priority in VRAM.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -245,8 +250,14 @@ public class CreateProjectionRequest implements IndexedRecord {
         public static final String ORDER_BY = "order_by";
 
         /**
-         * If {@code true} then the columns of the projection will be cached on
-         * the GPU.
+         * No longer used.  See <a href="../../../../../rm/concepts.html"
+         * target="_top">Resource Management Concepts</a> for information about
+         * how resources are managed, <a href="../../../../../rm/concepts.html"
+         * target="_top">Tier Strategy Concepts</a> for how resources are
+         * targeted for VRAM, and <a
+         * href="../../../../../rm/usage.html#tier-strategies"
+         * target="_top">Tier Strategy Usage</a> for how to specify a table's
+         * priority in VRAM.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -426,8 +437,16 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
-     *                 the projection will be cached on the GPU.
+     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
+     *                 href="../../../../../rm/concepts.html"
+     *                 target="_top">Resource Management Concepts</a> for
+     *                 information about how resources are managed, <a
+     *                 href="../../../../../rm/concepts.html"
+     *                 target="_top">Tier Strategy Concepts</a> for how
+     *                 resources are targeted for VRAM, and <a
+     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 target="_top">Tier Strategy Usage</a> for how to specify
+     *                 a table's priority in VRAM.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -657,8 +676,15 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         column name.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
-     *         MATERIALIZE_ON_GPU}: If {@code true} then the columns of the
-     *         projection will be cached on the GPU.
+     *         MATERIALIZE_ON_GPU}: No longer used.  See <a
+     *         href="../../../../../rm/concepts.html" target="_top">Resource
+     *         Management Concepts</a> for information about how resources are
+     *         managed, <a href="../../../../../rm/concepts.html"
+     *         target="_top">Tier Strategy Concepts</a> for how resources are
+     *         targeted for VRAM, and <a
+     *         href="../../../../../rm/usage.html#tier-strategies"
+     *         target="_top">Tier Strategy Usage</a> for how to specify a
+     *         table's priority in VRAM.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -795,8 +821,16 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: If {@code true} then the columns of
-     *                 the projection will be cached on the GPU.
+     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
+     *                 href="../../../../../rm/concepts.html"
+     *                 target="_top">Resource Management Concepts</a> for
+     *                 information about how resources are managed, <a
+     *                 href="../../../../../rm/concepts.html"
+     *                 target="_top">Tier Strategy Concepts</a> for how
+     *                 resources are targeted for VRAM, and <a
+     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 target="_top">Tier Strategy Usage</a> for how to specify
+     *                 a table's priority in VRAM.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

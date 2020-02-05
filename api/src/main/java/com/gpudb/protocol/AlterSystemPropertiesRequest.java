@@ -97,6 +97,10 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * (engine decides) or an integer value that indicates max chunk size to
      * exec on host
      *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EXTERNAL_FILES_DIRECTORY
+     * EXTERNAL_FILES_DIRECTORY}: Sets the root directory path where external
+     * table data files are accessed from.  Path must exist on the head node
+     *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FLUSH_TO_DISK
      * FLUSH_TO_DISK}: Flushes any changes to any tables to the persistent
      * store.  These changes include updates to the vector store, object store,
@@ -176,6 +180,14 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
      * SYNCHRONOUS_COMPRESSION}: compress vector on set_compression (instead of
      * waiting for background thread).  The default value is 'false'.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
+     * ENABLE_OVERLAPPED_EQUI_JOIN}: Enable overlapped-equi-join filter.  The
+     * default value is 'true'.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_COMPOUND_EQUI_JOIN
+     * ENABLE_COMPOUND_EQUI_JOIN}: Enable compound-equi-join filter plan type.
+     * The default value is 'false'.
      * </ul>
      * A set of string constants for the parameter {@code propertyUpdatesMap}.
      */
@@ -239,6 +251,12 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * on host
          */
         public static final String EXECUTION_MODE = "execution_mode";
+
+        /**
+         * Sets the root directory path where external table data files are
+         * accessed from.  Path must exist on the head node
+         */
+        public static final String EXTERNAL_FILES_DIRECTORY = "external_files_directory";
 
         /**
          * Flushes any changes to any tables to the persistent store.  These
@@ -351,6 +369,17 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          */
         public static final String SYNCHRONOUS_COMPRESSION = "synchronous_compression";
 
+        /**
+         * Enable overlapped-equi-join filter.  The default value is 'true'.
+         */
+        public static final String ENABLE_OVERLAPPED_EQUI_JOIN = "enable_overlapped_equi_join";
+
+        /**
+         * Enable compound-equi-join filter plan type.  The default value is
+         * 'false'.
+         */
+        public static final String ENABLE_COMPOUND_EQUI_JOIN = "enable_compound_equi_join";
+
         private PropertyUpdatesMap() {  }
     }
 
@@ -428,6 +457,12 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            value. Possible values are host, device,
      *                            default (engine decides) or an integer value
      *                            that indicates max chunk size to exec on host
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EXTERNAL_FILES_DIRECTORY
+     *                            EXTERNAL_FILES_DIRECTORY}: Sets the root
+     *                            directory path where external table data
+     *                            files are accessed from.  Path must exist on
+     *                            the head node
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FLUSH_TO_DISK
      *                            FLUSH_TO_DISK}: Flushes any changes to any
@@ -535,6 +570,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            set_compression (instead of waiting for
      *                            background thread).  The default value is
      *                            'false'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
+     *                            ENABLE_OVERLAPPED_EQUI_JOIN}: Enable
+     *                            overlapped-equi-join filter.  The default
+     *                            value is 'true'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_COMPOUND_EQUI_JOIN
+     *                            ENABLE_COMPOUND_EQUI_JOIN}: Enable
+     *                            compound-equi-join filter plan type.  The
+     *                            default value is 'false'.
      *                            </ul>
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
@@ -597,6 +642,11 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         to the specified string value. Possible values are host, device,
      *         default (engine decides) or an integer value that indicates max
      *         chunk size to exec on host
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EXTERNAL_FILES_DIRECTORY
+     *         EXTERNAL_FILES_DIRECTORY}: Sets the root directory path where
+     *         external table data files are accessed from.  Path must exist on
+     *         the head node
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FLUSH_TO_DISK
      *         FLUSH_TO_DISK}: Flushes any changes to any tables to the
@@ -684,6 +734,14 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         SYNCHRONOUS_COMPRESSION}: compress vector on set_compression
      *         (instead of waiting for background thread).  The default value
      *         is 'false'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
+     *         ENABLE_OVERLAPPED_EQUI_JOIN}: Enable overlapped-equi-join
+     *         filter.  The default value is 'true'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_COMPOUND_EQUI_JOIN
+     *         ENABLE_COMPOUND_EQUI_JOIN}: Enable compound-equi-join filter
+     *         plan type.  The default value is 'false'.
      *         </ul>
      * 
      */
@@ -750,6 +808,12 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            value. Possible values are host, device,
      *                            default (engine decides) or an integer value
      *                            that indicates max chunk size to exec on host
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#EXTERNAL_FILES_DIRECTORY
+     *                            EXTERNAL_FILES_DIRECTORY}: Sets the root
+     *                            directory path where external table data
+     *                            files are accessed from.  Path must exist on
+     *                            the head node
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FLUSH_TO_DISK
      *                            FLUSH_TO_DISK}: Flushes any changes to any
@@ -857,6 +921,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            set_compression (instead of waiting for
      *                            background thread).  The default value is
      *                            'false'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
+     *                            ENABLE_OVERLAPPED_EQUI_JOIN}: Enable
+     *                            overlapped-equi-join filter.  The default
+     *                            value is 'true'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_COMPOUND_EQUI_JOIN
+     *                            ENABLE_COMPOUND_EQUI_JOIN}: Enable
+     *                            compound-equi-join filter plan type.  The
+     *                            default value is 'false'.
      *                            </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

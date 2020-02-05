@@ -99,6 +99,15 @@ public class AdminRebalanceRequest implements IndexedRecord {
      * lower aggressiveness setting will take longer, but allow for better
      * interleaving between the rebalance and other queries. Allowed values are
      * 1 through 10.  The default value is '1'.
+     *         <li> {@link
+     * com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
+     * COMPACT_AFTER_REBALANCE}: Perform compaction of deleted records once the
+     * rebalance completes, to reclaim memory and disk space. Default is true.
+     * The default value is 'true'.
+     *         <li> {@link
+     * com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_ONLY
+     * COMPACT_ONLY}: Only perform compaction, do not rebalance. Default is
+     * false.  The default value is 'false'.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -165,6 +174,19 @@ public class AdminRebalanceRequest implements IndexedRecord {
          * are 1 through 10.  The default value is '1'.
          */
         public static final String AGGRESSIVENESS = "aggressiveness";
+
+        /**
+         * Perform compaction of deleted records once the rebalance completes,
+         * to reclaim memory and disk space. Default is true.  The default
+         * value is 'true'.
+         */
+        public static final String COMPACT_AFTER_REBALANCE = "compact_after_rebalance";
+
+        /**
+         * Only perform compaction, do not rebalance. Default is false.  The
+         * default value is 'false'.
+         */
+        public static final String COMPACT_ONLY = "compact_only";
 
         private Options() {  }
     }
@@ -247,6 +269,17 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 interleaving between the rebalance and other queries.
      *                 Allowed values are 1 through 10.  The default value is
      *                 '1'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
+     *                 COMPACT_AFTER_REBALANCE}: Perform compaction of deleted
+     *                 records once the rebalance completes, to reclaim memory
+     *                 and disk space. Default is true.  The default value is
+     *                 'true'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_ONLY
+     *                 COMPACT_ONLY}: Only perform compaction, do not
+     *                 rebalance. Default is false.  The default value is
+     *                 'false'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -311,6 +344,15 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *         longer, but allow for better interleaving between the rebalance
      *         and other queries. Allowed values are 1 through 10.  The default
      *         value is '1'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
+     *         COMPACT_AFTER_REBALANCE}: Perform compaction of deleted records
+     *         once the rebalance completes, to reclaim memory and disk space.
+     *         Default is true.  The default value is 'true'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_ONLY
+     *         COMPACT_ONLY}: Only perform compaction, do not rebalance.
+     *         Default is false.  The default value is 'false'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -385,6 +427,17 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 interleaving between the rebalance and other queries.
      *                 Allowed values are 1 through 10.  The default value is
      *                 '1'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
+     *                 COMPACT_AFTER_REBALANCE}: Perform compaction of deleted
+     *                 records once the rebalance completes, to reclaim memory
+     *                 and disk space. Default is true.  The default value is
+     *                 'true'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_ONLY
+     *                 COMPACT_ONLY}: Only perform compaction, do not
+     *                 rebalance. Default is false.  The default value is
+     *                 'false'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

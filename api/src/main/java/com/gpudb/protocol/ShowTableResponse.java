@@ -70,6 +70,9 @@ public class ShowTableResponse implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.ShowTableResponse.TableDescriptions#RESULT_TABLE
      * RESULT_TABLE}
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTableResponse.TableDescriptions#MATERIALIZED_VIEW_UNDER_CONSTRUCTION
+     * MATERIALIZED_VIEW_UNDER_CONSTRUCTION}
      * </ul>
      * A set of string constants for the parameter {@code tableDescriptions}.
      */
@@ -79,6 +82,7 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String REPLICATED = "REPLICATED";
         public static final String JOIN = "JOIN";
         public static final String RESULT_TABLE = "RESULT_TABLE";
+        public static final String MATERIALIZED_VIEW_UNDER_CONSTRUCTION = "MATERIALIZED_VIEW_UNDER_CONSTRUCTION";
 
         private TableDescriptions() {  }
     }
@@ -490,6 +494,9 @@ public class ShowTableResponse implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#RESULT_TABLE
      *         RESULT_TABLE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#MATERIALIZED_VIEW_UNDER_CONSTRUCTION
+     *         MATERIALIZED_VIEW_UNDER_CONSTRUCTION}
      *         </ul>
      * 
      */
@@ -518,6 +525,9 @@ public class ShowTableResponse implements IndexedRecord {
      *                                   <li> {@link
      *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#RESULT_TABLE
      *                           RESULT_TABLE}
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#MATERIALIZED_VIEW_UNDER_CONSTRUCTION
+     *                           MATERIALIZED_VIEW_UNDER_CONSTRUCTION}
      *                           </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

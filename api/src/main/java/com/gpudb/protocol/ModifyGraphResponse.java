@@ -17,16 +17,16 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of results returned by {@link
- * com.gpudb.GPUdb#showSqlProc(ShowSqlProcRequest)}.
+ * com.gpudb.GPUdb#modifyGraph(ModifyGraphRequest)}.
  */
-public class ShowSqlProcResponse implements IndexedRecord {
+public class ModifyGraphResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("ShowSqlProcResponse")
+            .record("ModifyGraphResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("procedureNames").type().array().items().stringType().noDefault()
-                .name("procedureDefinitions").type().array().items().stringType().noDefault()
-                .name("additionalInfo").type().array().items().map().values().stringType().noDefault()
+                .name("numNodes").type().longType().noDefault()
+                .name("numEdges").type().longType().noDefault()
+                .name("edgesIds").type().array().items().longType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -42,113 +42,80 @@ public class ShowSqlProcResponse implements IndexedRecord {
         return schema$;
     }
 
-
-    /**
-     * Additional information about the respective tables in the requested
-     * procedures.
-     * Supported values:
-     * <ul>
-     * </ul>
-     * A set of string constants for the parameter {@code additionalInfo}.
-     */
-    public static final class AdditionalInfo {
-
-        /**
-         * The initial date/time that periodic execution began.  The default
-         * value is ''.
-         */
-        public static final String EXECUTE_START_TIME = "execute_start_time";
-
-        /**
-         * The periodic execution interval in seconds.  The default value is
-         * ''.
-         */
-        public static final String EXECUTE_INTERVAL = "execute_interval";
-
-        private AdditionalInfo() {  }
-    }
-
-    private List<String> procedureNames;
-    private List<String> procedureDefinitions;
-    private List<Map<String, String>> additionalInfo;
+    private long numNodes;
+    private long numEdges;
+    private List<Long> edgesIds;
     private Map<String, String> info;
 
 
     /**
-     * Constructs a ShowSqlProcResponse object with default parameters.
+     * Constructs a ModifyGraphResponse object with default parameters.
      */
-    public ShowSqlProcResponse() {
+    public ModifyGraphResponse() {
     }
 
     /**
      * 
-     * @return A list of the names of the requested procedures.
+     * @return Total number of nodes in the graph.
      * 
      */
-    public List<String> getProcedureNames() {
-        return procedureNames;
+    public long getNumNodes() {
+        return numNodes;
     }
 
     /**
      * 
-     * @param procedureNames  A list of the names of the requested procedures.
+     * @param numNodes  Total number of nodes in the graph.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowSqlProcResponse setProcedureNames(List<String> procedureNames) {
-        this.procedureNames = (procedureNames == null) ? new ArrayList<String>() : procedureNames;
+    public ModifyGraphResponse setNumNodes(long numNodes) {
+        this.numNodes = numNodes;
         return this;
     }
 
     /**
      * 
-     * @return A list of the definitions for the requested procedures.
+     * @return Total number of edges in the graph.
      * 
      */
-    public List<String> getProcedureDefinitions() {
-        return procedureDefinitions;
+    public long getNumEdges() {
+        return numEdges;
     }
 
     /**
      * 
-     * @param procedureDefinitions  A list of the definitions for the requested
-     *                              procedures.
+     * @param numEdges  Total number of edges in the graph.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowSqlProcResponse setProcedureDefinitions(List<String> procedureDefinitions) {
-        this.procedureDefinitions = (procedureDefinitions == null) ? new ArrayList<String>() : procedureDefinitions;
+    public ModifyGraphResponse setNumEdges(long numEdges) {
+        this.numEdges = numEdges;
         return this;
     }
 
     /**
      * 
-     * @return Additional information about the respective tables in the
-     *         requested procedures.
-     *         Supported values:
-     *         <ul>
-     *         </ul>
+     * @return Edges given as pairs of node indices. Only populated if {@code
+     *         export_create_results} is set to {@code true}.
      * 
      */
-    public List<Map<String, String>> getAdditionalInfo() {
-        return additionalInfo;
+    public List<Long> getEdgesIds() {
+        return edgesIds;
     }
 
     /**
      * 
-     * @param additionalInfo  Additional information about the respective
-     *                        tables in the requested procedures.
-     *                        Supported values:
-     *                        <ul>
-     *                        </ul>
+     * @param edgesIds  Edges given as pairs of node indices. Only populated if
+     *                  {@code export_create_results} is set to {@code true}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowSqlProcResponse setAdditionalInfo(List<Map<String, String>> additionalInfo) {
-        this.additionalInfo = (additionalInfo == null) ? new ArrayList<Map<String, String>>() : additionalInfo;
+    public ModifyGraphResponse setEdgesIds(List<Long> edgesIds) {
+        this.edgesIds = (edgesIds == null) ? new ArrayList<Long>() : edgesIds;
         return this;
     }
 
@@ -168,7 +135,7 @@ public class ShowSqlProcResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowSqlProcResponse setInfo(Map<String, String> info) {
+    public ModifyGraphResponse setInfo(Map<String, String> info) {
         this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
@@ -200,13 +167,13 @@ public class ShowSqlProcResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.procedureNames;
+                return this.numNodes;
 
             case 1:
-                return this.procedureDefinitions;
+                return this.numEdges;
 
             case 2:
-                return this.additionalInfo;
+                return this.edgesIds;
 
             case 3:
                 return this.info;
@@ -231,15 +198,15 @@ public class ShowSqlProcResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.procedureNames = (List<String>)value;
+                this.numNodes = (Long)value;
                 break;
 
             case 1:
-                this.procedureDefinitions = (List<String>)value;
+                this.numEdges = (Long)value;
                 break;
 
             case 2:
-                this.additionalInfo = (List<Map<String, String>>)value;
+                this.edgesIds = (List<Long>)value;
                 break;
 
             case 3:
@@ -261,11 +228,11 @@ public class ShowSqlProcResponse implements IndexedRecord {
             return false;
         }
 
-        ShowSqlProcResponse that = (ShowSqlProcResponse)obj;
+        ModifyGraphResponse that = (ModifyGraphResponse)obj;
 
-        return ( this.procedureNames.equals( that.procedureNames )
-                 && this.procedureDefinitions.equals( that.procedureDefinitions )
-                 && this.additionalInfo.equals( that.additionalInfo )
+        return ( ( this.numNodes == that.numNodes )
+                 && ( this.numEdges == that.numEdges )
+                 && this.edgesIds.equals( that.edgesIds )
                  && this.info.equals( that.info ) );
     }
 
@@ -274,17 +241,17 @@ public class ShowSqlProcResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "procedureNames" ) );
+        builder.append( gd.toString( "numNodes" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.procedureNames ) );
+        builder.append( gd.toString( this.numNodes ) );
         builder.append( ", " );
-        builder.append( gd.toString( "procedureDefinitions" ) );
+        builder.append( gd.toString( "numEdges" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.procedureDefinitions ) );
+        builder.append( gd.toString( this.numEdges ) );
         builder.append( ", " );
-        builder.append( gd.toString( "additionalInfo" ) );
+        builder.append( gd.toString( "edgesIds" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.additionalInfo ) );
+        builder.append( gd.toString( this.edgesIds ) );
         builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
@@ -297,9 +264,9 @@ public class ShowSqlProcResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.procedureNames.hashCode();
-        hashCode = (31 * hashCode) + this.procedureDefinitions.hashCode();
-        hashCode = (31 * hashCode) + this.additionalInfo.hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.numNodes).hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.numEdges).hashCode();
+        hashCode = (31 * hashCode) + this.edgesIds.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

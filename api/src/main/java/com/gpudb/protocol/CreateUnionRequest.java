@@ -86,8 +86,13 @@ public class CreateUnionRequest implements IndexedRecord {
      * table.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
-     * MATERIALIZE_ON_GPU}: If {@code true}, then the columns of the output
-     * table will be cached on the GPU.
+     * MATERIALIZE_ON_GPU}: No longer used.  See <a
+     * href="../../../../../rm/concepts.html" target="_top">Resource Management
+     * Concepts</a> for information about how resources are managed, <a
+     * href="../../../../../rm/concepts.html" target="_top">Tier Strategy
+     * Concepts</a> for how resources are targeted for VRAM, and <a
+     * href="../../../../../rm/usage.html#tier-strategies" target="_top">Tier
+     * Strategy Usage</a> for how to specify a table's priority in VRAM.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#TRUE
@@ -198,8 +203,14 @@ public class CreateUnionRequest implements IndexedRecord {
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * If {@code true}, then the columns of the output table will be cached
-         * on the GPU.
+         * No longer used.  See <a href="../../../../../rm/concepts.html"
+         * target="_top">Resource Management Concepts</a> for information about
+         * how resources are managed, <a href="../../../../../rm/concepts.html"
+         * target="_top">Tier Strategy Concepts</a> for how resources are
+         * targeted for VRAM, and <a
+         * href="../../../../../rm/usage.html#tier-strategies"
+         * target="_top">Tier Strategy Usage</a> for how to specify a table's
+         * priority in VRAM.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -419,8 +430,16 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 table.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: If {@code true}, then the columns
-     *                 of the output table will be cached on the GPU.
+     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
+     *                 href="../../../../../rm/concepts.html"
+     *                 target="_top">Resource Management Concepts</a> for
+     *                 information about how resources are managed, <a
+     *                 href="../../../../../rm/concepts.html"
+     *                 target="_top">Tier Strategy Concepts</a> for how
+     *                 resources are targeted for VRAM, and <a
+     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 target="_top">Tier Strategy Usage</a> for how to specify
+     *                 a table's priority in VRAM.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -656,8 +675,15 @@ public class CreateUnionRequest implements IndexedRecord {
      *         table will be a top-level table.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
-     *         MATERIALIZE_ON_GPU}: If {@code true}, then the columns of the
-     *         output table will be cached on the GPU.
+     *         MATERIALIZE_ON_GPU}: No longer used.  See <a
+     *         href="../../../../../rm/concepts.html" target="_top">Resource
+     *         Management Concepts</a> for information about how resources are
+     *         managed, <a href="../../../../../rm/concepts.html"
+     *         target="_top">Tier Strategy Concepts</a> for how resources are
+     *         targeted for VRAM, and <a
+     *         href="../../../../../rm/usage.html#tier-strategies"
+     *         target="_top">Tier Strategy Usage</a> for how to specify a
+     *         table's priority in VRAM.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -784,8 +810,16 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 table.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: If {@code true}, then the columns
-     *                 of the output table will be cached on the GPU.
+     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
+     *                 href="../../../../../rm/concepts.html"
+     *                 target="_top">Resource Management Concepts</a> for
+     *                 information about how resources are managed, <a
+     *                 href="../../../../../rm/concepts.html"
+     *                 target="_top">Tier Strategy Concepts</a> for how
+     *                 resources are targeted for VRAM, and <a
+     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 target="_top">Tier Strategy Usage</a> for how to specify
+     *                 a table's priority in VRAM.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
