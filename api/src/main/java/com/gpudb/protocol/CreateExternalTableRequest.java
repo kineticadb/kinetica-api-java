@@ -110,6 +110,12 @@ public class CreateExternalTableRequest implements IndexedRecord {
 
         public static final String TEXT_ESCAPE_CHARACTER = "text_escape_character";
 
+        public static final String EXTERNAL_STORAGE_LOCATION = "external_storage_location";
+
+        public static final String S3_BUCKET_NAME = "s3_bucket_name";
+
+        public static final String S3_REGION = "s3_region";
+
 
         private Options() {  }
     }

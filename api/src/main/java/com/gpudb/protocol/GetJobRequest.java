@@ -15,6 +15,11 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#getJob(GetJobRequest)}.
+ * <p>
+ * Get the status and result of asynchronously running job.  See the {@link
+ * com.gpudb.GPUdb#createJob(CreateJobRequest)} for starting an asynchronous
+ * job.  Some fields of the response are filled only after the submitted job
+ * has finished execution.
  */
 public class GetJobRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

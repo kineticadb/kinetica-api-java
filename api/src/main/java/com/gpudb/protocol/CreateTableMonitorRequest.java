@@ -17,17 +17,24 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
  * <p>
- * Creates a monitor that watches for table modification events such as insert,
- * update or delete on a particular table (identified by {@code tableName}) and
- * forwards event notifications to subscribers via ZMQ. After this call
- * completes, subscribe to the returned {@code topicId} on the ZMQ table
- * monitor port (default 9002). Each time a modification operation on the table
- * completes, a multipart message is published for that topic; the first part
+ * Creates a monitor that watches for table modification events such as
+ * insert, update or delete on a particular table (identified by
+ * {@code tableName}) and forwards event notifications to subscribers via ZMQ.
+ * After this call completes, subscribe to the returned {@code topicId} on the
+ * ZMQ table monitor port (default 9002). Each time a modification operation on
+ * the
+ * table completes, a multipart message is published for that topic; the first
+ * part
  * contains only the topic ID, and each subsequent part contains one
- * binary-encoded Avro object that corresponds to the event and can be decoded
- * using {@code typeSchema}. The monitor will continue to run (regardless of
- * whether or not there are any subscribers) until deactivated with {@link
- * com.gpudb.GPUdb#clearTableMonitor(ClearTableMonitorRequest)}.
+ * binary-encoded
+ * Avro object that corresponds to the event and can be decoded using
+ * {@code typeSchema}. The monitor will continue to run (regardless of whether
+ * or not there are any subscribers) until deactivated with
+ * {@link com.gpudb.GPUdb#clearTableMonitor(ClearTableMonitorRequest)}.
+ * <p>
+ * For more information on table monitors, see
+ * <a href="../../../../../concepts/table_monitors.html" target="_top">Table
+ * Monitors</a>.
  */
 public class CreateTableMonitorRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

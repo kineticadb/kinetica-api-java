@@ -68,25 +68,29 @@ public class MatchGraphRequest implements IndexedRecord {
      * route. The route is secured one point at a time while looking ahead
      * {@code chain_width} number of points, so the prediction is corrected
      * after each point. This solution type is the most accurate but also the
-     * most computationally intensive.
+     * most computationally intensive. Related options: {@code num_segments}
+     * and {@code chain_width}.
      *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#INCREMENTAL_WEIGHTED
      * INCREMENTAL_WEIGHTED}: Matches {@code samplePoints} to the graph using
      * time and/or distance between points to influence one or more shortest
-     * paths across the sample points.
+     * paths across the sample points. Related options: {@code num_segments},
+     * {@code max_solve_length}, {@code time_window_width}, and {@code
+     * detect_loops}.
      *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_OD_PAIRS
      * MATCH_OD_PAIRS}: Matches {@code samplePoints} to find the most probable
-     * path between origin and destination pairs with cost constraints
+     * path between origin and destination pairs with cost constraints.
      *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SUPPLY_DEMAND
      * MATCH_SUPPLY_DEMAND}: Matches {@code samplePoints} to optimize
      * scheduling multiple supplies (trucks) with varying sizes to varying
-     * demand sites with varying capacities per depot
+     * demand sites with varying capacities per depot. Related options: {@code
+     * partial_loading} and {@code max_combinations}.
      *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_BATCH_SOLVES
      * MATCH_BATCH_SOLVES}: Matches {@code samplePoints} source and destination
-     * pairs for the shortest path solves in batch mode
+     * pairs for the shortest path solves in batch mode.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -103,33 +107,37 @@ public class MatchGraphRequest implements IndexedRecord {
          * route. The route is secured one point at a time while looking ahead
          * {@code chain_width} number of points, so the prediction is corrected
          * after each point. This solution type is the most accurate but also
-         * the most computationally intensive.
+         * the most computationally intensive. Related options: {@code
+         * num_segments} and {@code chain_width}.
          */
         public static final String MARKOV_CHAIN = "markov_chain";
 
         /**
          * Matches {@code samplePoints} to the graph using time and/or distance
          * between points to influence one or more shortest paths across the
-         * sample points.
+         * sample points. Related options: {@code num_segments}, {@code
+         * max_solve_length}, {@code time_window_width}, and {@code
+         * detect_loops}.
          */
         public static final String INCREMENTAL_WEIGHTED = "incremental_weighted";
 
         /**
          * Matches {@code samplePoints} to find the most probable path between
-         * origin and destination pairs with cost constraints
+         * origin and destination pairs with cost constraints.
          */
         public static final String MATCH_OD_PAIRS = "match_od_pairs";
 
         /**
          * Matches {@code samplePoints} to optimize scheduling multiple
          * supplies (trucks) with varying sizes to varying demand sites with
-         * varying capacities per depot
+         * varying capacities per depot. Related options: {@code
+         * partial_loading} and {@code max_combinations}.
          */
         public static final String MATCH_SUPPLY_DEMAND = "match_supply_demand";
 
         /**
          * Matches {@code samplePoints} source and destination pairs for the
-         * shortest path solves in batch mode
+         * shortest path solves in batch mode.
          */
         public static final String MATCH_BATCH_SOLVES = "match_batch_solves";
 
@@ -207,9 +215,9 @@ public class MatchGraphRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#TRUE
-     * TRUE}: Partial off loading at multiple store (demand) locations
+     * TRUE}: Partial off-loading at multiple store (demand) locations
      *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#FALSE
-     * FALSE}: No partial off loading allowed if supply is less than the
+     * FALSE}: No partial off-loading allowed if supply is less than the
      * store's demand.
      * </ul>
      * The default value is {@link
@@ -218,7 +226,7 @@ public class MatchGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.MatchGraphRequest.Options#MAX_COMBINATIONS
      * MAX_COMBINATIONS}: For the {@code match_supply_demand} solver only. This
      * is the cutoff for the number of generated combinations for sequencing
-     * the demand locations - can increase this upto 2M.  The default value is
+     * the demand locations - can increase this up to 2M.  The default value is
      * '10000'.
      * </ul>
      * The default value is an empty {@link Map}.
@@ -292,12 +300,12 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String DETECT_LOOPS = "detect_loops";
 
         /**
-         * Partial off loading at multiple store (demand) locations
+         * Partial off-loading at multiple store (demand) locations
          */
         public static final String TRUE = "true";
 
         /**
-         * No partial off loading allowed if supply is less than the store's
+         * No partial off-loading allowed if supply is less than the store's
          * demand.
          */
         public static final String FALSE = "false";
@@ -323,11 +331,11 @@ public class MatchGraphRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *         <li> {@link
-         * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}: Partial off
-         * loading at multiple store (demand) locations
+         * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}: Partial
+         * off-loading at multiple store (demand) locations
          *         <li> {@link
          * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}: No
-         * partial off loading allowed if supply is less than the store's
+         * partial off-loading allowed if supply is less than the store's
          * demand.
          * </ul>
          * The default value is {@link
@@ -338,7 +346,7 @@ public class MatchGraphRequest implements IndexedRecord {
         /**
          * For the {@code match_supply_demand} solver only. This is the cutoff
          * for the number of generated combinations for sequencing the demand
-         * locations - can increase this upto 2M.  The default value is
+         * locations - can increase this up to 2M.  The default value is
          * '10000'.
          */
         public static final String MAX_COMBINATIONS = "max_combinations";
@@ -397,29 +405,34 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     chain_width} number of points, so the prediction is
      *                     corrected after each point. This solution type is
      *                     the most accurate but also the most computationally
-     *                     intensive.
+     *                     intensive. Related options: {@code num_segments} and
+     *                     {@code chain_width}.
      *                             <li> {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#INCREMENTAL_WEIGHTED
      *                     INCREMENTAL_WEIGHTED}: Matches {@code samplePoints}
      *                     to the graph using time and/or distance between
      *                     points to influence one or more shortest paths
-     *                     across the sample points.
+     *                     across the sample points. Related options: {@code
+     *                     num_segments}, {@code max_solve_length}, {@code
+     *                     time_window_width}, and {@code detect_loops}.
      *                             <li> {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_OD_PAIRS
      *                     MATCH_OD_PAIRS}: Matches {@code samplePoints} to
      *                     find the most probable path between origin and
-     *                     destination pairs with cost constraints
+     *                     destination pairs with cost constraints.
      *                             <li> {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SUPPLY_DEMAND
      *                     MATCH_SUPPLY_DEMAND}: Matches {@code samplePoints}
      *                     to optimize scheduling multiple supplies (trucks)
      *                     with varying sizes to varying demand sites with
-     *                     varying capacities per depot
+     *                     varying capacities per depot. Related options:
+     *                     {@code partial_loading} and {@code
+     *                     max_combinations}.
      *                             <li> {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_BATCH_SOLVES
      *                     MATCH_BATCH_SOLVES}: Matches {@code samplePoints}
      *                     source and destination pairs for the shortest path
-     *                     solves in batch mode
+     *                     solves in batch mode.
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -520,10 +533,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
-     *                 Partial off loading at multiple store (demand) locations
+     *                 Partial off-loading at multiple store (demand) locations
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
-     *                 FALSE}: No partial off loading allowed if supply is less
+     *                 FALSE}: No partial off-loading allowed if supply is less
      *                 than the store's demand.
      *                 </ul>
      *                 The default value is {@link
@@ -533,7 +546,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 MAX_COMBINATIONS}: For the {@code match_supply_demand}
      *                 solver only. This is the cutoff for the number of
      *                 generated combinations for sequencing the demand
-     *                 locations - can increase this upto 2M.  The default
+     *                 locations - can increase this up to 2M.  The default
      *                 value is '10000'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
@@ -627,26 +640,30 @@ public class MatchGraphRequest implements IndexedRecord {
      *         at a time while looking ahead {@code chain_width} number of
      *         points, so the prediction is corrected after each point. This
      *         solution type is the most accurate but also the most
-     *         computationally intensive.
+     *         computationally intensive. Related options: {@code num_segments}
+     *         and {@code chain_width}.
      *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#INCREMENTAL_WEIGHTED
      *         INCREMENTAL_WEIGHTED}: Matches {@code samplePoints} to the graph
      *         using time and/or distance between points to influence one or
-     *         more shortest paths across the sample points.
+     *         more shortest paths across the sample points. Related options:
+     *         {@code num_segments}, {@code max_solve_length}, {@code
+     *         time_window_width}, and {@code detect_loops}.
      *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_OD_PAIRS
      *         MATCH_OD_PAIRS}: Matches {@code samplePoints} to find the most
      *         probable path between origin and destination pairs with cost
-     *         constraints
+     *         constraints.
      *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SUPPLY_DEMAND
      *         MATCH_SUPPLY_DEMAND}: Matches {@code samplePoints} to optimize
      *         scheduling multiple supplies (trucks) with varying sizes to
-     *         varying demand sites with varying capacities per depot
+     *         varying demand sites with varying capacities per depot. Related
+     *         options: {@code partial_loading} and {@code max_combinations}.
      *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_BATCH_SOLVES
      *         MATCH_BATCH_SOLVES}: Matches {@code samplePoints} source and
-     *         destination pairs for the shortest path solves in batch mode
+     *         destination pairs for the shortest path solves in batch mode.
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -674,29 +691,34 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     chain_width} number of points, so the prediction is
      *                     corrected after each point. This solution type is
      *                     the most accurate but also the most computationally
-     *                     intensive.
+     *                     intensive. Related options: {@code num_segments} and
+     *                     {@code chain_width}.
      *                             <li> {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#INCREMENTAL_WEIGHTED
      *                     INCREMENTAL_WEIGHTED}: Matches {@code samplePoints}
      *                     to the graph using time and/or distance between
      *                     points to influence one or more shortest paths
-     *                     across the sample points.
+     *                     across the sample points. Related options: {@code
+     *                     num_segments}, {@code max_solve_length}, {@code
+     *                     time_window_width}, and {@code detect_loops}.
      *                             <li> {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_OD_PAIRS
      *                     MATCH_OD_PAIRS}: Matches {@code samplePoints} to
      *                     find the most probable path between origin and
-     *                     destination pairs with cost constraints
+     *                     destination pairs with cost constraints.
      *                             <li> {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_SUPPLY_DEMAND
      *                     MATCH_SUPPLY_DEMAND}: Matches {@code samplePoints}
      *                     to optimize scheduling multiple supplies (trucks)
      *                     with varying sizes to varying demand sites with
-     *                     varying capacities per depot
+     *                     varying capacities per depot. Related options:
+     *                     {@code partial_loading} and {@code
+     *                     max_combinations}.
      *                             <li> {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_BATCH_SOLVES
      *                     MATCH_BATCH_SOLVES}: Matches {@code samplePoints}
      *                     source and destination pairs for the shortest path
-     *                     solves in batch mode
+     *                     solves in batch mode.
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -835,10 +857,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}: Partial
-     *         off loading at multiple store (demand) locations
+     *         off-loading at multiple store (demand) locations
      *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}: No
-     *         partial off loading allowed if supply is less than the store's
+     *         partial off-loading allowed if supply is less than the store's
      *         demand.
      *         </ul>
      *         The default value is {@link
@@ -848,7 +870,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *         MAX_COMBINATIONS}: For the {@code match_supply_demand} solver
      *         only. This is the cutoff for the number of generated
      *         combinations for sequencing the demand locations - can increase
-     *         this upto 2M.  The default value is '10000'.
+     *         this up to 2M.  The default value is '10000'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -941,10 +963,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
-     *                 Partial off loading at multiple store (demand) locations
+     *                 Partial off-loading at multiple store (demand) locations
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
-     *                 FALSE}: No partial off loading allowed if supply is less
+     *                 FALSE}: No partial off-loading allowed if supply is less
      *                 than the store's demand.
      *                 </ul>
      *                 The default value is {@link
@@ -954,7 +976,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 MAX_COMBINATIONS}: For the {@code match_supply_demand}
      *                 solver only. This is the cutoff for the number of
      *                 generated combinations for sequencing the demand
-     *                 locations - can increase this upto 2M.  The default
+     *                 locations - can increase this up to 2M.  The default
      *                 value is '10000'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.

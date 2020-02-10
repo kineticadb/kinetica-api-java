@@ -38,6 +38,26 @@ public class CreateUnionResponse implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Additional information.
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateUnionResponse.Info#COUNT
+     * COUNT}: Number of records in the final table
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code info}.
+     */
+    public static final class Info {
+
+        /**
+         * Number of records in the final table
+         */
+        public static final String COUNT = "count";
+
+        private Info() {  }
+    }
+
     private String tableName;
     private Map<String, String> info;
 
@@ -72,6 +92,12 @@ public class CreateUnionResponse implements IndexedRecord {
     /**
      * 
      * @return Additional information.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionResponse.Info#COUNT COUNT}: Number
+     *         of records in the final table
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getInfo() {
@@ -81,6 +107,12 @@ public class CreateUnionResponse implements IndexedRecord {
     /**
      * 
      * @param info  Additional information.
+     *              <ul>
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateUnionResponse.Info#COUNT COUNT}:
+     *              Number of records in the final table
+     *              </ul>
+     *              The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

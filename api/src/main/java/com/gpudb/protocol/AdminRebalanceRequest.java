@@ -102,12 +102,49 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
      * COMPACT_AFTER_REBALANCE}: Perform compaction of deleted records once the
-     * rebalance completes, to reclaim memory and disk space. Default is true.
-     * The default value is 'true'.
+     * rebalance completes, to reclaim memory and disk space. Default is true,
+     * unless {add_labels}@{key of options repair_incorrectly_sharded_data} is
+     * set to {@code true}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}.
      *         <li> {@link
      * com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_ONLY
      * COMPACT_ONLY}: Only perform compaction, do not rebalance. Default is
-     * false.  The default value is 'false'.
+     * false.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AdminRebalanceRequest.Options#REPAIR_INCORRECTLY_SHARDED_DATA
+     * REPAIR_INCORRECTLY_SHARDED_DATA}: Scans for any data sharded incorrectly
+     * and re-routes the correct location. This can be done as part of a
+     * typical rebalance after expanding the cluster, or in a standalone
+     * fashion when it is believed that data is sharded incorrectly somewhere
+     * in the cluster. Compaction will not be performed by default when this is
+     * enabled. This option may also lengthen rebalance time, and increase the
+     * memory used by the rebalance.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -177,16 +214,54 @@ public class AdminRebalanceRequest implements IndexedRecord {
 
         /**
          * Perform compaction of deleted records once the rebalance completes,
-         * to reclaim memory and disk space. Default is true.  The default
-         * value is 'true'.
+         * to reclaim memory and disk space. Default is true, unless
+         * {add_labels}@{key of options repair_incorrectly_sharded_data} is set
+         * to {@code true}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}.
          */
         public static final String COMPACT_AFTER_REBALANCE = "compact_after_rebalance";
 
         /**
-         * Only perform compaction, do not rebalance. Default is false.  The
-         * default value is 'false'.
+         * Only perform compaction, do not rebalance. Default is false.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE FALSE}.
          */
         public static final String COMPACT_ONLY = "compact_only";
+
+        /**
+         * Scans for any data sharded incorrectly and re-routes the correct
+         * location. This can be done as part of a typical rebalance after
+         * expanding the cluster, or in a standalone fashion when it is
+         * believed that data is sharded incorrectly somewhere in the cluster.
+         * Compaction will not be performed by default when this is enabled.
+         * This option may also lengthen rebalance time, and increase the
+         * memory used by the rebalance.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE FALSE}.
+         */
+        public static final String REPAIR_INCORRECTLY_SHARDED_DATA = "repair_incorrectly_sharded_data";
 
         private Options() {  }
     }
@@ -273,13 +348,60 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
      *                 COMPACT_AFTER_REBALANCE}: Perform compaction of deleted
      *                 records once the rebalance completes, to reclaim memory
-     *                 and disk space. Default is true.  The default value is
-     *                 'true'.
+     *                 and disk space. Default is true, unless
+     *                 {add_labels}@{key of options
+     *                 repair_incorrectly_sharded_data} is set to {@code true}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
+     *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_ONLY
      *                 COMPACT_ONLY}: Only perform compaction, do not
-     *                 rebalance. Default is false.  The default value is
-     *                 'false'.
+     *                 rebalance. Default is false.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REPAIR_INCORRECTLY_SHARDED_DATA
+     *                 REPAIR_INCORRECTLY_SHARDED_DATA}: Scans for any data
+     *                 sharded incorrectly and re-routes the correct location.
+     *                 This can be done as part of a typical rebalance after
+     *                 expanding the cluster, or in a standalone fashion when
+     *                 it is believed that data is sharded incorrectly
+     *                 somewhere in the cluster. Compaction will not be
+     *                 performed by default when this is enabled. This option
+     *                 may also lengthen rebalance time, and increase the
+     *                 memory used by the rebalance.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -348,11 +470,49 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *         com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
      *         COMPACT_AFTER_REBALANCE}: Perform compaction of deleted records
      *         once the rebalance completes, to reclaim memory and disk space.
-     *         Default is true.  The default value is 'true'.
+     *         Default is true, unless {add_labels}@{key of options
+     *         repair_incorrectly_sharded_data} is set to {@code true}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}.
      *                 <li> {@link
      *         com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_ONLY
      *         COMPACT_ONLY}: Only perform compaction, do not rebalance.
-     *         Default is false.  The default value is 'false'.
+     *         Default is false.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminRebalanceRequest.Options#REPAIR_INCORRECTLY_SHARDED_DATA
+     *         REPAIR_INCORRECTLY_SHARDED_DATA}: Scans for any data sharded
+     *         incorrectly and re-routes the correct location. This can be done
+     *         as part of a typical rebalance after expanding the cluster, or
+     *         in a standalone fashion when it is believed that data is sharded
+     *         incorrectly somewhere in the cluster. Compaction will not be
+     *         performed by default when this is enabled. This option may also
+     *         lengthen rebalance time, and increase the memory used by the
+     *         rebalance.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -431,13 +591,60 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
      *                 COMPACT_AFTER_REBALANCE}: Perform compaction of deleted
      *                 records once the rebalance completes, to reclaim memory
-     *                 and disk space. Default is true.  The default value is
-     *                 'true'.
+     *                 and disk space. Default is true, unless
+     *                 {add_labels}@{key of options
+     *                 repair_incorrectly_sharded_data} is set to {@code true}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
+     *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_ONLY
      *                 COMPACT_ONLY}: Only perform compaction, do not
-     *                 rebalance. Default is false.  The default value is
-     *                 'false'.
+     *                 rebalance. Default is false.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REPAIR_INCORRECTLY_SHARDED_DATA
+     *                 REPAIR_INCORRECTLY_SHARDED_DATA}: Scans for any data
+     *                 sharded incorrectly and re-routes the correct location.
+     *                 This can be done as part of a typical rebalance after
+     *                 expanding the cluster, or in a standalone fashion when
+     *                 it is believed that data is sharded incorrectly
+     *                 somewhere in the cluster. Compaction will not be
+     *                 performed by default when this is enabled. This option
+     *                 may also lengthen rebalance time, and increase the
+     *                 memory used by the rebalance.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

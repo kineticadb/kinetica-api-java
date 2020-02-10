@@ -77,13 +77,19 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
         this.tableName = (tableName == null) ? "" : tableName;
         return this;
     }
+
+    /**
+     * 
+     * @return Type ID for the table.
+     * 
+     */
     public String getTypeId() {
         return typeId;
     }
 
     /**
      * 
-     * @param typeId
+     * @param typeId  Type ID for the table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -95,7 +101,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @return number of records inserted
+     * @return Number of records inserted.
      * 
      */
     public long getCountInserted() {
@@ -104,7 +110,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param countInserted  number of records inserted
+     * @param countInserted  Number of records inserted.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -116,8 +122,8 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @return number of records skipped, when running in a non-abort error
-     *         handling mode
+     * @return Number of records skipped when not running in {@code abort}
+     *         error handling mode.
      * 
      */
     public long getCountSkipped() {
@@ -126,8 +132,8 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param countSkipped  number of records skipped, when running in a
-     *                      non-abort error handling mode
+     * @param countSkipped  Number of records skipped when not running in
+     *                      {@code abort} error handling mode.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -139,7 +145,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @return number of records updated.  The default value is -1.
+     * @return Number of records updated.  The default value is -1.
      * 
      */
     public long getCountUpdated() {
@@ -148,7 +154,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param countUpdated  number of records updated.  The default value is
+     * @param countUpdated  Number of records updated.  The default value is
      *                      -1.
      * 
      * @return {@code this} to mimic the builder pattern.

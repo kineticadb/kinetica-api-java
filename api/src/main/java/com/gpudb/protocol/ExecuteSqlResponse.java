@@ -38,6 +38,26 @@ public class ExecuteSqlResponse {
         private HasMoreRecords() {  }
     }
 
+
+    /**
+     * Additional information.
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.RawExecuteSqlResponse.Info#COUNT
+     * COUNT}: Number of records in the final table
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code info}.
+     */
+    public static final class Info {
+
+        /**
+         * Number of records in the final table
+         */
+        public static final String COUNT = "count";
+
+        private Info() {  }
+    }
+
     private long countAffected;
     private List<Record> data;
     private long totalNumberOfRecords;
@@ -183,6 +203,12 @@ public class ExecuteSqlResponse {
     /**
      * 
      * @return Additional information.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawExecuteSqlResponse.Info#COUNT COUNT}:
+     *         Number of records in the final table
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getInfo() {
@@ -192,6 +218,12 @@ public class ExecuteSqlResponse {
     /**
      * 
      * @param info  Additional information.
+     *              <ul>
+     *                      <li> {@link
+     *              com.gpudb.protocol.RawExecuteSqlResponse.Info#COUNT COUNT}:
+     *              Number of records in the final table
+     *              </ul>
+     *              The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

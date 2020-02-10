@@ -266,6 +266,11 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
+     *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#VIEW_ID
+     * VIEW_ID}: <DEVELOPER>  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteSqlRequest.Options#NO_COUNT NO_COUNT}:
+     * <DEVELOPER>  The default value is 'false'.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -496,6 +501,16 @@ public class ExecuteSqlRequest implements IndexedRecord {
          * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
          */
         public static final String PREPARE_MODE = "prepare_mode";
+
+        /**
+         * <DEVELOPER>  The default value is ''.
+         */
+        public static final String VIEW_ID = "view_id";
+
+        /**
+         * <DEVELOPER>  The default value is 'false'.
+         */
+        public static final String NO_COUNT = "no_count";
 
         private Options() {  }
     }
@@ -771,6 +786,12 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#VIEW_ID
+     *                 VIEW_ID}: <DEVELOPER>  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#NO_COUNT
+     *                 NO_COUNT}: <DEVELOPER>  The default value is 'false'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1050,6 +1071,12 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#VIEW_ID
+     *                 VIEW_ID}: <DEVELOPER>  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#NO_COUNT
+     *                 NO_COUNT}: <DEVELOPER>  The default value is 'false'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1445,6 +1472,12 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#VIEW_ID VIEW_ID}:
+     *         <DEVELOPER>  The default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteSqlRequest.Options#NO_COUNT NO_COUNT}:
+     *         <DEVELOPER>  The default value is 'false'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1682,6 +1715,12 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#VIEW_ID
+     *                 VIEW_ID}: <DEVELOPER>  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteSqlRequest.Options#NO_COUNT
+     *                 NO_COUNT}: <DEVELOPER>  The default value is 'false'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
