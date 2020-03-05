@@ -2,6 +2,18 @@
 
 ## Version 7.0
 
+### Version 7.0.12.1 - 2020-03-04
+
+#### Added
+-   Options for configuring the maximum allowed number of connections:
+    -   GPUdb.Options.maxTotalConnections (across all hosts; default 40)
+    -   GPUdb.Options.maxConnectionsPerHost (for any given host; default 40)
+
+
+#### Bugfix
+-   Improved connection throughput over SSL.
+
+
 ### Version 7.0.12.0 - 2020-01-17
 
 #### Note

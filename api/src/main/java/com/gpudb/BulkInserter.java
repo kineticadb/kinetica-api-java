@@ -1050,8 +1050,10 @@ public class BulkInserter<T> {
             } catch (InsertException ex) {
                 List<T> queue = (List<T>)ex.getRecords();
 
-                for (int j = i + 1; j < records.size(); j++) {
-                    queue.add(records.get(j));
+                synchronized ( queue ) {
+                    for (int j = i + 1; j < records.size(); j++) {
+                        queue.add(records.get(j));
+                    }
                 }
 
                 throw ex;

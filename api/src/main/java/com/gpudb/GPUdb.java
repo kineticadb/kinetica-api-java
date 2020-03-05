@@ -493,8 +493,7 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
      *                 COMPACT_AFTER_REBALANCE}: Perform compaction of deleted
      *                 records once the rebalance completes, to reclaim memory
-     *                 and disk space. Default is true, unless
-     *                 {add_labels}@{key of options
+     *                 and disk space. Default is true, unless {@code
      *                 repair_incorrectly_sharded_data} is set to {@code true}.
      *                 Supported values:
      *                 <ul>

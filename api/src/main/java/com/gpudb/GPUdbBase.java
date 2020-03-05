@@ -12,10 +12,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.NumberFormatException;
 import java.net.HttpURLConnection;
+import javax.net.ssl.HostnameVerifier;
 import java.net.MalformedURLException;
 import java.net.URL;
+import javax.net.ssl.SSLContext;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,8 +36,25 @@ import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.HttpEntity;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.util.EntityUtils;
 import org.xerial.snappy.Snappy;
-
 
 
 /**
@@ -41,6 +63,10 @@ import org.xerial.snappy.Snappy;
  * its functionality is accessed via instances of the {@link GPUdb} class.
  */
 public abstract class GPUdbBase {
+
+    // The maxium number of connections across all or an individual host
+    private static final int DEFAULT_MAX_TOTAL_CONNECTIONS    = 40;
+    private static final int DEFAULT_MAX_CONNECTIONS_PER_HOST = 40;
 
     /**
      * A set of configurable options for the GPUdb API. May be passed into the
@@ -58,6 +84,8 @@ public abstract class GPUdbBase {
         private Map<String, String> httpHeaders = new HashMap<>();
         private int hmPort = 9300;  // Default host manager port
         private int timeout;
+        private int maxTotalConnections   = DEFAULT_MAX_TOTAL_CONNECTIONS;
+        private int maxConnectionsPerHost = DEFAULT_MAX_CONNECTIONS_PER_HOST;
 
         /**
          * Gets the URL of the primary cluster of the HA environment.
@@ -184,6 +212,31 @@ public abstract class GPUdbBase {
         public int getTimeout() {
             return timeout;
         }
+
+        /**
+         * Gets the maximum number of connections, across all hosts, allowed at
+         * any given time.
+         *
+         * @return  the maxTotalConnections value
+         *
+         * @see #setMaxTotalConnections(int)
+         */
+        public int getMaxTotalConnections() {
+            return maxTotalConnections;
+        }
+
+        /**
+         * Gets the maximum number of connections, per host, allowed at
+         * any given time.
+         *
+         * @return  the maxConnectionsPerHost value
+         *
+         * @see #setMaxConnectionsPerHost(int)
+         */
+        public int getMaxConnectionsPerHost() {
+            return maxConnectionsPerHost;
+        }
+
 
         /**
          * Sets the URL of the primary cluster to use amongst the HA clusters.
@@ -404,6 +457,43 @@ public abstract class GPUdbBase {
             }
 
             timeout = value;
+            return this;
+        }
+
+        /**
+         * Sets the maximum number of connections, across all hosts, allowed at
+         * any given time.  Must be 1 at a minimum.  The default value is 40.
+         *
+         * @param value  the maxTotalConnections value
+         * @return       the current {@link Options} instance
+         *
+         * @see #getMaxTotalConnections()
+         */
+        public Options setMaxTotalConnections(int value) {
+            if (value < 1) {
+                throw new IllegalArgumentException("maxTotalConnections must be greater than zero.");
+            }
+
+            maxTotalConnections = value;
+            return this;
+        }
+
+
+        /**
+         * Sets the maximum number of connections, per host, allowed at
+         * any given time.  Must be 1 at a minimum.  The default value is 40.
+         *
+         * @param value  the maxConnectionsPerHost value
+         * @return       the current {@link Options} instance
+         *
+         * @see #getMaxConnectionsPerHost()
+         */
+        public Options setMaxConnectionsPerHost(int value) {
+            if (value < 1) {
+                throw new IllegalArgumentException("maxConnectionsPerHost must be greater than zero.");
+            }
+
+            maxConnectionsPerHost = value;
             return this;
         }
     }  // end class Options
@@ -710,6 +800,7 @@ public abstract class GPUdbBase {
     private String username;
     private String password;
     private String authorization;
+    private boolean useHttpd;
     private boolean useSnappy;
     private boolean bypassSslCertCheck;
     private int threadCount;
@@ -717,6 +808,7 @@ public abstract class GPUdbBase {
     private Map<String, String> httpHeaders;
     private int timeout;
     private HASynchronicityMode haSyncMode;
+    private CloseableHttpClient httpClient;
     private ConcurrentHashMap<Class<?>, TypeObjectMap<?>> knownTypeObjectMaps;
     private ConcurrentHashMap<String, Object> knownTypes;
 
@@ -839,6 +931,55 @@ public abstract class GPUdbBase {
         // We haven't switched to any cluster yet
         this.numClusterSwitches = 0;
         
+        // Initiate the HttpClient object
+        // ------------------------------
+        // Create a socket factory in order to use an http connection manager
+        SSLConnectionSocketFactory secureSocketFactory = SSLConnectionSocketFactory.getSocketFactory();
+        if ( this.bypassSslCertCheck ) {
+            // Allow self-signed certs
+            SSLContext sslContext = null;
+            try {
+                sslContext = SSLContextBuilder
+                    .create()
+                    .loadTrustMaterial( new TrustSelfSignedStrategy() )
+                    .build();
+            } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException ex) {
+            }
+
+            // Disable hostname verification
+            HostnameVerifier allowAllHosts = new NoopHostnameVerifier();
+        
+            // Create the appropriate SSL socket factory
+            if ( sslContext != null ) {
+                secureSocketFactory = new SSLConnectionSocketFactory( sslContext, allowAllHosts );
+            }
+        }
+
+        // And a plain http socket factory
+        PlainConnectionSocketFactory plainSocketFactory = PlainConnectionSocketFactory.getSocketFactory();
+        Registry<ConnectionSocketFactory> connSocketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+            .register("https", secureSocketFactory)
+            .register("http", plainSocketFactory)
+            .build();
+
+        // Create a connection pool manager
+        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager( connSocketFactoryRegistry );
+        connectionManager.setMaxTotal( options.getMaxTotalConnections() );
+        connectionManager.setDefaultMaxPerRoute( options.getMaxConnectionsPerHost() );
+
+        // Set the timeout defaults
+        RequestConfig requestConfig = RequestConfig.custom()
+            .setSocketTimeout( this.timeout )
+            .setConnectTimeout( this.timeout )
+            .setConnectionRequestTimeout( this.timeout )
+            .build();
+
+        // Build the http client.
+        this.httpClient = HttpClients.custom()
+            .setConnectionManager( connectionManager )
+            .setDefaultRequestConfig( requestConfig )
+            .build();
+
         // Handle the primary host URL, if any is given
         handlePrimaryURL();
 
@@ -850,8 +991,18 @@ public abstract class GPUdbBase {
 
         // Randomize the URL indices (take care of the primary host though)
         randomizeURLs();
+
     }   // end init
 
+
+    /**
+     *  Clean up resources--namely, the HTTPClient object(s).
+     */
+    protected void finalize() throws Throwable {
+        // Release the resources-- the HTTP client and connection manager
+        this.httpClient.getConnectionManager().shutdown();
+        httpClient.close();
+    }
 
 
     // Properties
@@ -1146,9 +1297,21 @@ public abstract class GPUdbBase {
             try {
                 URL oldUrl = this.hmUrls.get( i );
                 // Change only the port to be the host manager port
-                URL newUrl = new URL( oldUrl.getProtocol(), oldUrl.getHost(),
-                                      value,
-                                      oldUrl.getFile() );
+                URL newUrl;
+                if ( ( this.useHttpd == true )
+                     && !oldUrl.getPath().isEmpty() ) {
+                    // If we're using HTTPD, then use the appropriate URL
+                    // (likely, http[s]://hostname_or_IP:port/gpudb-host-manager)
+                    newUrl = new URL( oldUrl.getProtocol(), oldUrl.getHost(),
+                                      oldUrl.getPort(),
+                                      "/gpudb-host-manager" );
+                } else {
+                    // The host manager URL shouldn't use any path and
+                    // use the host manager port
+                    newUrl = new URL( oldUrl.getProtocol(), oldUrl.getHost(),
+                                      options.getHostManagerPort(),
+                                      "" );
+                }
                 this.hmUrls.set( i, newUrl );
             } catch ( MalformedURLException ex ) {
                 throw new GPUdbException( ex.getMessage(), ex );
@@ -1222,10 +1385,21 @@ public abstract class GPUdbBase {
             // Generate the host manager URLs from the head node URLs
             for ( URL url : this.urls ) {
                 try {
-                    // Change only the port to be the host manager port
-                    URL hmUrl = new URL( url.getProtocol(), url.getHost(),
+                    URL hmUrl;
+                    if ( ( this.useHttpd == true )
+                         && !url.getPath().isEmpty() ) {
+                        // If we're using HTTPD, then use the appropriate URL
+                        // (likely, http[s]://hostname_or_IP:port/gpudb-host-manager)
+                        hmUrl = new URL( url.getProtocol(), url.getHost(),
+                                         url.getPort(),
+                                         "/gpudb-host-manager" );
+                    } else {
+                        // The host manager URL shouldn't use any path and
+                        // use the host manager port
+                        hmUrl = new URL( url.getProtocol(), url.getHost(),
                                          options.getHostManagerPort(),
-                                         url.getFile() );
+                                         "" );
+                    }
                     this.hmUrls.add( hmUrl );
                 } catch ( MalformedURLException ex ) {
                     throw new GPUdbException( ex.getMessage(), ex );
@@ -1308,7 +1482,7 @@ public abstract class GPUdbBase {
             if ( this.hmUrls.size() == 1 ) {
                 throw new GPUdbHAUnavailableException(" (host manager at "
                                                       + this.hmUrls.get(0).toString()
-                                                      + "returned error; no HA clusters "
+                                                      + " returned error; no HA clusters "
                                                       + "available to fall back on).");
             }
 
@@ -1354,6 +1528,33 @@ public abstract class GPUdbBase {
             return getHmURL();
         }
     }   // end switchHmUrl
+
+
+    /**
+     * Create and initialize an HTTP connection object with the request headers
+     *  (including authorization header), connection type, time out etc.
+     *
+     * @param url  the URL to which the connection needs to be made
+     * @return     the initialized HttpPost connection object
+     */
+    protected HttpPost initializeHttpPostRequest( URL url ) throws Exception {
+        HttpPost connection = new HttpPost( url.toURI() );
+
+        // Set the user defined headers
+        for (Map.Entry<String, String> entry : this.httpHeaders.entrySet()) {
+            connection.addHeader( entry.getKey(), entry.getValue() );
+        }
+
+        // Set the sync mode header
+        connection.addHeader( HEADER_HA_SYNC_MODE, this.haSyncMode.getMode() );
+
+        // Set the authorization header
+        if (authorization != null) {
+            connection.addHeader( HEADER_AUTHORIZATION, authorization );
+        }
+
+        return connection;
+    }   // end initializeHttpPostRequest
 
 
     /**
@@ -1530,6 +1731,18 @@ public abstract class GPUdbBase {
         // Do the rest only if we were able to get the system properties
         if ( response != null ) {
             Map<String, String> systemProperties = response.getPropertyMap();
+
+            // Is HTTPD being used (helps in figuring out the host manager URL
+            String is_httpd_enabled_str = systemProperties.get( "conf.enable_httpd_proxy" );
+
+            // Only attempt to parse the HA ring node addresses if HA is enabled
+            this.useHttpd = false;
+            if ( (is_httpd_enabled_str != null)
+                 && (is_httpd_enabled_str.compareToIgnoreCase( "true" ) == 0 ) ) {
+                this.useHttpd = true;
+            }
+
+            // Is HA enabled?
             String is_ha_enabled_str = systemProperties.get( ShowSystemPropertiesResponse.PropertyMap.CONF_ENABLE_HA );
 
             // Only attempt to parse the HA ring node addresses if HA is enabled
@@ -2185,94 +2398,85 @@ public abstract class GPUdbBase {
      * @throws SubmitException if an error occurs while submitting the request
      */
     public <T extends IndexedRecord> T submitRequestRaw(URL url, IndexedRecord request, T response, boolean enableCompression) throws SubmitException, GPUdbExitException, GPUdbException {
-        int requestSize = -1;
-        HttpURLConnection connection = null;
+        int                   requestSize    = -1;
+        HttpPost              postRequest    = null;
+        HttpEntity            responseEntity = null;
+        CloseableHttpResponse postResponse   = null;
 
         try {
-            connection = initializeHttpConnection( url );
+            postRequest = initializeHttpPostRequest( url );
 
+            HttpEntity requestPacket;
             if (enableCompression && useSnappy) {
+                // Use snappy to compress the original request body
                 byte[] encodedRequest = Snappy.compress(Avro.encode(request).array());
                 requestSize = encodedRequest.length;
-                connection.setRequestProperty( HEADER_CONTENT_TYPE, "application/x-snappy" );
-                connection.setFixedLengthStreamingMode(requestSize);
+                postRequest.addHeader( HEADER_CONTENT_TYPE, "application/x-snappy" );
 
-                try {
-                    try (OutputStream outputStream = connection.getOutputStream()) {
-                        outputStream.write(encodedRequest);
-                    }
-                } catch (IOException ex) {
-                    // Trigger an HA failover at the caller level
-                    throw new GPUdbExitException( ex.toString() );
-                }
+                // Create the entity for the compressed request
+                requestPacket = new ByteArrayEntity( encodedRequest );
             } else {
                 byte[] encodedRequest = Avro.encode(request).array();
                 requestSize = encodedRequest.length;
-                connection.setRequestProperty( HEADER_CONTENT_TYPE, "application/octet-stream" );
-                connection.setFixedLengthStreamingMode(requestSize);
+                postRequest.addHeader( HEADER_CONTENT_TYPE, "application/octet-stream" );
+                // connection.setFixedLengthStreamingMode(requestSize);
 
-                try {
-                    // Trying with the OutputStream resource so that it can be
-                    // automatically closed (without a finally clause) if something
-                    // breaks
-                    try (OutputStream outputStream = connection.getOutputStream()) {
-                        outputStream.write(encodedRequest);
-                    }
-                } catch (IOException ex) {
-                    // Trigger an HA failover at the caller level
-                    throw new GPUdbExitException( ex.toString() );
-                }
-
-                /*
-                connection.setRequestProperty(HEADER_CONTENT_TYPE, "application/octet-stream");
-                connection.setChunkedStreamingMode(1024);
-
-                try (OutputStream outputStream = connection.getOutputStream()) {
-                    // Manually encode the request directly into the stream to
-                    // avoid allocation of intermediate buffers
-
-                    CountingOutputStream countingOutputStream = new CountingOutputStream(outputStream);
-                    BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(countingOutputStream, null);
-                    new GenericDatumWriter<>(request.getSchema()).write(request, encoder);
-                    encoder.flush();
-                    requestSize = countingOutputStream.getByteCount();
-                }
-                */
+                // Create the entity for the request
+                requestPacket = new ByteArrayEntity( encodedRequest );
             }
 
-            int response_code = connection.getResponseCode();
+            // Save the request into the http post object as a payload
+            postRequest.setEntity( requestPacket );
+
+            // Execute the request
+            try {
+                postResponse = this.httpClient.execute( postRequest );
+            } catch (Exception ex) {
+                // Trigger an HA failover at the caller level
+                throw new GPUdbExitException( "Error submitting endpoint request: "
+                                              + ex.getMessage() );
+            }
+            
+            // Get the status code and the messages of the response
+            int statusCode = postResponse.getStatusLine().getStatusCode();
+            String responseMessage = postResponse.getStatusLine().getReasonPhrase();
+
+            // Get the entity and the content of the response
+            responseEntity = postResponse.getEntity();
 
             // Ensure that we're not getting any html snippet (may be
             // returned by the HTTPD server)
-            if ( connection.getContentType().startsWith( "text" ) ) {
-                String responseMsg = connection.getResponseMessage();
-                
+            if ( (responseEntity.getContentType() != null)
+                 && (responseEntity.getContentType().getElements().length > 0)
+                 && (responseEntity.getContentType().getElements()[0].getName()
+                     .startsWith( "text" )) ) {
                 String errorMsg;
-                if (response_code == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                // Handle unauthorized connection specially--better error messaging
+                if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                     errorMsg = ("Unauthorized access: '"
-                                + responseMsg + "'");
+                                + responseMessage + "'");
                 } else {
+                    // All other issues are simply propagated to the user
                     errorMsg = ("Cannot parse response from server: '"
-                                + responseMsg + "'");
+                                + responseMessage + "'");
                 }
                 throw new SubmitException( url, request, requestSize, errorMsg );
             }
 
             // Parse response based on error code
-            InputStream inputStream;
-            if (response_code == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 // Got sttaus 401 -- unauthorized
                 throw new SubmitException( url, request, requestSize,
-                                           connection.getResponseMessage());
-            } else if (response_code < 400) {
-                inputStream = connection.getInputStream();
-            } else {
-                inputStream = connection.getErrorStream();
+                                           responseMessage );
             }
 
+            InputStream inputStream   = responseEntity.getContent();
             if (inputStream == null) {
                 // Trigger an HA failover at the caller level
-                throw new GPUdbExitException("Server returned HTTP " + connection.getResponseCode() + " (" + connection.getResponseMessage() + "). returning EXIT exception");
+                throw new GPUdbExitException( "Server returned HTTP "
+                                              + statusCode + " ("
+                                              + responseMessage + ")."
+                                              + " returning EXIT exception");
             }
 
             try {
@@ -2285,9 +2489,9 @@ public abstract class GPUdbBase {
 
                 if (status.equals("ERROR")) {
                     // Check if Kinetica is shutting down
-                    if ( (response_code == HttpURLConnection.HTTP_UNAVAILABLE)
-                         || (response_code == HttpURLConnection.HTTP_INTERNAL_ERROR)
-                         || (response_code == HttpURLConnection.HTTP_GATEWAY_TIMEOUT)
+                    if ( (statusCode == HttpURLConnection.HTTP_UNAVAILABLE)
+                         || (statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
+                         || (statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT)
                          || message.contains( DB_EXITING_ERROR_MESSAGE )
                          || message.contains( DB_CONNECTION_REFUSED_ERROR_MESSAGE )
                          || message.contains( DB_CONNECTION_RESET_ERROR_MESSAGE )
@@ -2334,10 +2538,16 @@ public abstract class GPUdbBase {
             // Some sort of submission error
             throw new SubmitException(url, request, requestSize, ex.getMessage(), ex);
         } finally {
-            if (connection != null) {
+            // Release all resources held by the responseEntity
+            if ( responseEntity != null ) {
+                EntityUtils.consumeQuietly( responseEntity );
+            }
+
+            // Close the stream
+            if ( postResponse != null ) {
                 try {
-                    connection.disconnect();
-                } catch (Exception ex) {
+                    postResponse.close();
+                } catch (IOException ex) {
                 }
             }
         }
