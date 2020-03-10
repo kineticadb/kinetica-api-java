@@ -228,6 +228,39 @@ public class MatchGraphRequest implements IndexedRecord {
      * is the cutoff for the number of generated combinations for sequencing
      * the demand locations - can increase this up to 2M.  The default value is
      * '10000'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#LEFT_TURN_PENALTY
+     * LEFT_TURN_PENALTY}: This will add an additonal weight over the edges
+     * labelled as 'left turn' if the 'add_turn' option parameter of the {@link
+     * com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at graph
+     * creation.  The default value is '0.0'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#RIGHT_TURN_PENALTY
+     * RIGHT_TURN_PENALTY}: This will add an additonal weight over the edges
+     * labelled as' right turn' if the 'add_turn' option parameter of the
+     * {@link com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+     * graph creation.  The default value is '0.0'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#INTERSECTION_PENALTY
+     * INTERSECTION_PENALTY}: This will add an additonal weight over the edges
+     * labelled as 'intersection' if the 'add_turn' option parameter of the
+     * {@link com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+     * graph creation.  The default value is '0.0'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#SHARP_TURN_PENALTY
+     * SHARP_TURN_PENALTY}: This will add an additonal weight over the edges
+     * labelled as 'sharp turn' or 'u-turn' if the 'add_turn' option parameter
+     * of the {@link com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     * invoked at graph creation.  The default value is '0.0'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#AGGREGATED_OUTPUT
+     * AGGREGATED_OUTPUT}: For the {@code match_supply_demand} solver only.
+     * When it is true (default), each record in the output table shows a
+     * particular truck's scheduled cumulative round trip path
+     * (MULTILINESTRING) and the corresponding aggregated cost. Otherwise, each
+     * record shows a single scheduled truck route (LINESTRING) towards a
+     * particular demand location (store id) with its corresponding cost.  The
+     * default value is 'true'.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -350,6 +383,49 @@ public class MatchGraphRequest implements IndexedRecord {
          * '10000'.
          */
         public static final String MAX_COMBINATIONS = "max_combinations";
+
+        /**
+         * This will add an additonal weight over the edges labelled as 'left
+         * turn' if the 'add_turn' option parameter of the {@link
+         * com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+         * graph creation.  The default value is '0.0'.
+         */
+        public static final String LEFT_TURN_PENALTY = "left_turn_penalty";
+
+        /**
+         * This will add an additonal weight over the edges labelled as' right
+         * turn' if the 'add_turn' option parameter of the {@link
+         * com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+         * graph creation.  The default value is '0.0'.
+         */
+        public static final String RIGHT_TURN_PENALTY = "right_turn_penalty";
+
+        /**
+         * This will add an additonal weight over the edges labelled as
+         * 'intersection' if the 'add_turn' option parameter of the {@link
+         * com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+         * graph creation.  The default value is '0.0'.
+         */
+        public static final String INTERSECTION_PENALTY = "intersection_penalty";
+
+        /**
+         * This will add an additonal weight over the edges labelled as 'sharp
+         * turn' or 'u-turn' if the 'add_turn' option parameter of the {@link
+         * com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+         * graph creation.  The default value is '0.0'.
+         */
+        public static final String SHARP_TURN_PENALTY = "sharp_turn_penalty";
+
+        /**
+         * For the {@code match_supply_demand} solver only. When it is true
+         * (default), each record in the output table shows a particular
+         * truck's scheduled cumulative round trip path (MULTILINESTRING) and
+         * the corresponding aggregated cost. Otherwise, each record shows a
+         * single scheduled truck route (LINESTRING) towards a particular
+         * demand location (store id) with its corresponding cost.  The default
+         * value is 'true'.
+         */
+        public static final String AGGREGATED_OUTPUT = "aggregated_output";
 
         private Options() {  }
     }
@@ -548,6 +624,44 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 generated combinations for sequencing the demand
      *                 locations - can increase this up to 2M.  The default
      *                 value is '10000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#LEFT_TURN_PENALTY
+     *                 LEFT_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'left turn' if the 'add_turn'
+     *                 option parameter of the {@link
+     *                 com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     *                 invoked at graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#RIGHT_TURN_PENALTY
+     *                 RIGHT_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as' right turn' if the
+     *                 'add_turn' option parameter of the {@link
+     *                 com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     *                 invoked at graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#INTERSECTION_PENALTY
+     *                 INTERSECTION_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'intersection' if the
+     *                 'add_turn' option parameter of the {@link
+     *                 com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     *                 invoked at graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#SHARP_TURN_PENALTY
+     *                 SHARP_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'sharp turn' or 'u-turn' if
+     *                 the 'add_turn' option parameter of the {@link
+     *                 com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     *                 invoked at graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#AGGREGATED_OUTPUT
+     *                 AGGREGATED_OUTPUT}: For the {@code match_supply_demand}
+     *                 solver only. When it is true (default), each record in
+     *                 the output table shows a particular truck's scheduled
+     *                 cumulative round trip path (MULTILINESTRING) and the
+     *                 corresponding aggregated cost. Otherwise, each record
+     *                 shows a single scheduled truck route (LINESTRING)
+     *                 towards a particular demand location (store id) with its
+     *                 corresponding cost.  The default value is 'true'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -871,6 +985,42 @@ public class MatchGraphRequest implements IndexedRecord {
      *         only. This is the cutoff for the number of generated
      *         combinations for sequencing the demand locations - can increase
      *         this up to 2M.  The default value is '10000'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#LEFT_TURN_PENALTY
+     *         LEFT_TURN_PENALTY}: This will add an additonal weight over the
+     *         edges labelled as 'left turn' if the 'add_turn' option parameter
+     *         of the {@link com.gpudb.GPUdb#createGraph(CreateGraphRequest)}
+     *         was invoked at graph creation.  The default value is '0.0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#RIGHT_TURN_PENALTY
+     *         RIGHT_TURN_PENALTY}: This will add an additonal weight over the
+     *         edges labelled as' right turn' if the 'add_turn' option
+     *         parameter of the {@link
+     *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+     *         graph creation.  The default value is '0.0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#INTERSECTION_PENALTY
+     *         INTERSECTION_PENALTY}: This will add an additonal weight over
+     *         the edges labelled as 'intersection' if the 'add_turn' option
+     *         parameter of the {@link
+     *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+     *         graph creation.  The default value is '0.0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#SHARP_TURN_PENALTY
+     *         SHARP_TURN_PENALTY}: This will add an additonal weight over the
+     *         edges labelled as 'sharp turn' or 'u-turn' if the 'add_turn'
+     *         option parameter of the {@link
+     *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+     *         graph creation.  The default value is '0.0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#AGGREGATED_OUTPUT
+     *         AGGREGATED_OUTPUT}: For the {@code match_supply_demand} solver
+     *         only. When it is true (default), each record in the output table
+     *         shows a particular truck's scheduled cumulative round trip path
+     *         (MULTILINESTRING) and the corresponding aggregated cost.
+     *         Otherwise, each record shows a single scheduled truck route
+     *         (LINESTRING) towards a particular demand location (store id)
+     *         with its corresponding cost.  The default value is 'true'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -978,6 +1128,44 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 generated combinations for sequencing the demand
      *                 locations - can increase this up to 2M.  The default
      *                 value is '10000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#LEFT_TURN_PENALTY
+     *                 LEFT_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'left turn' if the 'add_turn'
+     *                 option parameter of the {@link
+     *                 com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     *                 invoked at graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#RIGHT_TURN_PENALTY
+     *                 RIGHT_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as' right turn' if the
+     *                 'add_turn' option parameter of the {@link
+     *                 com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     *                 invoked at graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#INTERSECTION_PENALTY
+     *                 INTERSECTION_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'intersection' if the
+     *                 'add_turn' option parameter of the {@link
+     *                 com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     *                 invoked at graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#SHARP_TURN_PENALTY
+     *                 SHARP_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'sharp turn' or 'u-turn' if
+     *                 the 'add_turn' option parameter of the {@link
+     *                 com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     *                 invoked at graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#AGGREGATED_OUTPUT
+     *                 AGGREGATED_OUTPUT}: For the {@code match_supply_demand}
+     *                 solver only. When it is true (default), each record in
+     *                 the output table shows a particular truck's scheduled
+     *                 cumulative round trip path (MULTILINESTRING) and the
+     *                 corresponding aggregated cost. Otherwise, each record
+     *                 shows a single scheduled truck route (LINESTRING)
+     *                 towards a particular demand location (store id) with its
+     *                 corresponding cost.  The default value is 'true'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

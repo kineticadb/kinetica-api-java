@@ -148,6 +148,28 @@ public class ModifyGraphRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.ModifyGraphRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ModifyGraphRequest.Options#ADD_TURNS ADD_TURNS}: Adds
+     * dummy 'pillowed' edges around intersection nodes where there are more
+     * than three edges so that additional weight penalties can be imposed by
+     * the solve endpoints. (increases the total number of edges).
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.ModifyGraphRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ModifyGraphRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ModifyGraphRequest.Options#TURN_ANGLE TURN_ANGLE}:
+     * Value in degrees modifies the thresholds for attributing right, left,
+     * sharp turns, and intersections. It is the vertical deviation angle from
+     * the incoming edge to the intersection node. The larger the value, the
+     * larger the threshold for sharp turns and intersections; the smaller the
+     * value, the larger the threshold for right and left turns; 0 < turn_angle
+     * < 90.  The default value is '60'.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -257,6 +279,34 @@ public class ModifyGraphRequest implements IndexedRecord {
          * com.gpudb.protocol.ModifyGraphRequest.Options#FALSE FALSE}.
          */
         public static final String REMOVE_LABEL_ONLY = "remove_label_only";
+
+        /**
+         * Adds dummy 'pillowed' edges around intersection nodes where there
+         * are more than three edges so that additional weight penalties can be
+         * imposed by the solve endpoints. (increases the total number of
+         * edges).
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ModifyGraphRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ModifyGraphRequest.Options#FALSE FALSE}.
+         */
+        public static final String ADD_TURNS = "add_turns";
+
+        /**
+         * Value in degrees modifies the thresholds for attributing right,
+         * left, sharp turns, and intersections. It is the vertical deviation
+         * angle from the incoming edge to the intersection node. The larger
+         * the value, the larger the threshold for sharp turns and
+         * intersections; the smaller the value, the larger the threshold for
+         * right and left turns; 0 < turn_angle < 90.  The default value is
+         * '60'.
+         */
+        public static final String TURN_ANGLE = "turn_angle";
 
         private Options() {  }
     }
@@ -479,6 +529,34 @@ public class ModifyGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#ADD_TURNS
+     *                 ADD_TURNS}: Adds dummy 'pillowed' edges around
+     *                 intersection nodes where there are more than three edges
+     *                 so that additional weight penalties can be imposed by
+     *                 the solve endpoints. (increases the total number of
+     *                 edges).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TURN_ANGLE
+     *                 TURN_ANGLE}: Value in degrees modifies the thresholds
+     *                 for attributing right, left, sharp turns, and
+     *                 intersections. It is the vertical deviation angle from
+     *                 the incoming edge to the intersection node. The larger
+     *                 the value, the larger the threshold for sharp turns and
+     *                 intersections; the smaller the value, the larger the
+     *                 threshold for right and left turns; 0 < turn_angle < 90.
+     *                 The default value is '60'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -841,6 +919,30 @@ public class ModifyGraphRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.ModifyGraphRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ModifyGraphRequest.Options#ADD_TURNS
+     *         ADD_TURNS}: Adds dummy 'pillowed' edges around intersection
+     *         nodes where there are more than three edges so that additional
+     *         weight penalties can be imposed by the solve endpoints.
+     *         (increases the total number of edges).
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ModifyGraphRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ModifyGraphRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ModifyGraphRequest.Options#TURN_ANGLE
+     *         TURN_ANGLE}: Value in degrees modifies the thresholds for
+     *         attributing right, left, sharp turns, and intersections. It is
+     *         the vertical deviation angle from the incoming edge to the
+     *         intersection node. The larger the value, the larger the
+     *         threshold for sharp turns and intersections; the smaller the
+     *         value, the larger the threshold for right and left turns; 0 <
+     *         turn_angle < 90.  The default value is '60'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -961,6 +1063,34 @@ public class ModifyGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#ADD_TURNS
+     *                 ADD_TURNS}: Adds dummy 'pillowed' edges around
+     *                 intersection nodes where there are more than three edges
+     *                 so that additional weight penalties can be imposed by
+     *                 the solve endpoints. (increases the total number of
+     *                 edges).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TURN_ANGLE
+     *                 TURN_ANGLE}: Value in degrees modifies the thresholds
+     *                 for attributing right, left, sharp turns, and
+     *                 intersections. It is the vertical deviation angle from
+     *                 the incoming edge to the intersection node. The larger
+     *                 the value, the larger the threshold for sharp turns and
+     *                 intersections; the smaller the value, the larger the
+     *                 threshold for right and left turns; 0 < turn_angle < 90.
+     *                 The default value is '60'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

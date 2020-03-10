@@ -234,6 +234,63 @@ public class SolveGraphRequest implements IndexedRecord {
      * UNIFORM_WEIGHTS}: When specified, assigns the given value to all the
      * edges in the graph. Note that weights provided in {@code weightsOnEdges}
      * will override this value.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#LEFT_TURN_PENALTY
+     * LEFT_TURN_PENALTY}: This will add an additonal weight over the edges
+     * labelled as 'left turn' if the 'add_turn' option parameter of the {@link
+     * com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at graph
+     * creation.  The default value is '0.0'.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#RIGHT_TURN_PENALTY
+     * RIGHT_TURN_PENALTY}: This will add an additonal weight over the edges
+     * labelled as' right turn' if the 'add_turn' option parameter of the
+     * {@link com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+     * graph creation.  The default value is '0.0'.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#INTERSECTION_PENALTY
+     * INTERSECTION_PENALTY}: This will add an additonal weight over the edges
+     * labelled as 'intersection' if the 'add_turn' option parameter of the
+     * {@link com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+     * graph creation.  The default value is '0.0'.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#SHARP_TURN_PENALTY
+     * SHARP_TURN_PENALTY}: This will add an additonal weight over the edges
+     * labelled as 'sharp turn' or 'u-turn' if the 'add_turn' option parameter
+     * of the {@link com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     * invoked at graph creation.  The default value is '0.0'.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#NUM_BEST_PATHS
+     * NUM_BEST_PATHS}: For {@code MULTIPLE_ROUTING} solvers only; sets the
+     * number of shortest paths computed from each node. This is the heuristic
+     * criterion. Default value of zero allows the number to be computed
+     * automatically by the solver. The user may want to override this
+     * parameter to speed-up the solver.  The default value is '0'.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#MAX_NUM_COMBINATIONS
+     * MAX_NUM_COMBINATIONS}: For {@code MULTIPLE_ROUTING} solvers only; sets
+     * the cap on the combinatorial sequences generated. If the default value
+     * of two millions is overridden to a lesser value, it can potentially
+     * speed up the solver.  The default value is '2000000'.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#ACCURATE_SNAPS
+     * ACCURATE_SNAPS}: Valid for single source destination pair solves if
+     * points are described in NODE_WKTPOINT identifier types: When true
+     * (default), it snaps to the nearest node of the graph; otherwise, it
+     * searches for the closest entity that could be an edge. For the latter
+     * case (false), the solver modifies the resulting cost with the weights
+     * proportional to the ratio of the snap location within the edge. This may
+     * be an over-kill when the performance is considered and the difference is
+     * well less than 1 percent. In batch runs, since the performance is of
+     * utmost importance, the option is always considered 'false'.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.SolveGraphRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -315,6 +372,78 @@ public class SolveGraphRequest implements IndexedRecord {
          * override this value.
          */
         public static final String UNIFORM_WEIGHTS = "uniform_weights";
+
+        /**
+         * This will add an additonal weight over the edges labelled as 'left
+         * turn' if the 'add_turn' option parameter of the {@link
+         * com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+         * graph creation.  The default value is '0.0'.
+         */
+        public static final String LEFT_TURN_PENALTY = "left_turn_penalty";
+
+        /**
+         * This will add an additonal weight over the edges labelled as' right
+         * turn' if the 'add_turn' option parameter of the {@link
+         * com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+         * graph creation.  The default value is '0.0'.
+         */
+        public static final String RIGHT_TURN_PENALTY = "right_turn_penalty";
+
+        /**
+         * This will add an additonal weight over the edges labelled as
+         * 'intersection' if the 'add_turn' option parameter of the {@link
+         * com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+         * graph creation.  The default value is '0.0'.
+         */
+        public static final String INTERSECTION_PENALTY = "intersection_penalty";
+
+        /**
+         * This will add an additonal weight over the edges labelled as 'sharp
+         * turn' or 'u-turn' if the 'add_turn' option parameter of the {@link
+         * com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+         * graph creation.  The default value is '0.0'.
+         */
+        public static final String SHARP_TURN_PENALTY = "sharp_turn_penalty";
+
+        /**
+         * For {@code MULTIPLE_ROUTING} solvers only; sets the number of
+         * shortest paths computed from each node. This is the heuristic
+         * criterion. Default value of zero allows the number to be computed
+         * automatically by the solver. The user may want to override this
+         * parameter to speed-up the solver.  The default value is '0'.
+         */
+        public static final String NUM_BEST_PATHS = "num_best_paths";
+
+        /**
+         * For {@code MULTIPLE_ROUTING} solvers only; sets the cap on the
+         * combinatorial sequences generated. If the default value of two
+         * millions is overridden to a lesser value, it can potentially speed
+         * up the solver.  The default value is '2000000'.
+         */
+        public static final String MAX_NUM_COMBINATIONS = "max_num_combinations";
+
+        /**
+         * Valid for single source destination pair solves if points are
+         * described in NODE_WKTPOINT identifier types: When true (default), it
+         * snaps to the nearest node of the graph; otherwise, it searches for
+         * the closest entity that could be an edge. For the latter case
+         * (false), the solver modifies the resulting cost with the weights
+         * proportional to the ratio of the snap location within the edge. This
+         * may be an over-kill when the performance is considered and the
+         * difference is well less than 1 percent. In batch runs, since the
+         * performance is of utmost importance, the option is always considered
+         * 'false'.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
+         */
+        public static final String ACCURATE_SNAPS = "accurate_snaps";
 
         private Options() {  }
     }
@@ -533,6 +662,75 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 value to all the edges in the graph. Note that weights
      *                 provided in {@code weightsOnEdges} will override this
      *                 value.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#LEFT_TURN_PENALTY
+     *                 LEFT_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'left turn' if the 'add_turn'
+     *                 option parameter of the {@link
+     *                 com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     *                 invoked at graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#RIGHT_TURN_PENALTY
+     *                 RIGHT_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as' right turn' if the
+     *                 'add_turn' option parameter of the {@link
+     *                 com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     *                 invoked at graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#INTERSECTION_PENALTY
+     *                 INTERSECTION_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'intersection' if the
+     *                 'add_turn' option parameter of the {@link
+     *                 com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     *                 invoked at graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#SHARP_TURN_PENALTY
+     *                 SHARP_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'sharp turn' or 'u-turn' if
+     *                 the 'add_turn' option parameter of the {@link
+     *                 com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     *                 invoked at graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#NUM_BEST_PATHS
+     *                 NUM_BEST_PATHS}: For {@code MULTIPLE_ROUTING} solvers
+     *                 only; sets the number of shortest paths computed from
+     *                 each node. This is the heuristic criterion. Default
+     *                 value of zero allows the number to be computed
+     *                 automatically by the solver. The user may want to
+     *                 override this parameter to speed-up the solver.  The
+     *                 default value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_NUM_COMBINATIONS
+     *                 MAX_NUM_COMBINATIONS}: For {@code MULTIPLE_ROUTING}
+     *                 solvers only; sets the cap on the combinatorial
+     *                 sequences generated. If the default value of two
+     *                 millions is overridden to a lesser value, it can
+     *                 potentially speed up the solver.  The default value is
+     *                 '2000000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#ACCURATE_SNAPS
+     *                 ACCURATE_SNAPS}: Valid for single source destination
+     *                 pair solves if points are described in NODE_WKTPOINT
+     *                 identifier types: When true (default), it snaps to the
+     *                 nearest node of the graph; otherwise, it searches for
+     *                 the closest entity that could be an edge. For the latter
+     *                 case (false), the solver modifies the resulting cost
+     *                 with the weights proportional to the ratio of the snap
+     *                 location within the edge. This may be an over-kill when
+     *                 the performance is considered and the difference is well
+     *                 less than 1 percent. In batch runs, since the
+     *                 performance is of utmost importance, the option is
+     *                 always considered 'false'.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -954,6 +1152,69 @@ public class SolveGraphRequest implements IndexedRecord {
      *         UNIFORM_WEIGHTS}: When specified, assigns the given value to all
      *         the edges in the graph. Note that weights provided in {@code
      *         weightsOnEdges} will override this value.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#LEFT_TURN_PENALTY
+     *         LEFT_TURN_PENALTY}: This will add an additonal weight over the
+     *         edges labelled as 'left turn' if the 'add_turn' option parameter
+     *         of the {@link com.gpudb.GPUdb#createGraph(CreateGraphRequest)}
+     *         was invoked at graph creation.  The default value is '0.0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#RIGHT_TURN_PENALTY
+     *         RIGHT_TURN_PENALTY}: This will add an additonal weight over the
+     *         edges labelled as' right turn' if the 'add_turn' option
+     *         parameter of the {@link
+     *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+     *         graph creation.  The default value is '0.0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#INTERSECTION_PENALTY
+     *         INTERSECTION_PENALTY}: This will add an additonal weight over
+     *         the edges labelled as 'intersection' if the 'add_turn' option
+     *         parameter of the {@link
+     *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+     *         graph creation.  The default value is '0.0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#SHARP_TURN_PENALTY
+     *         SHARP_TURN_PENALTY}: This will add an additonal weight over the
+     *         edges labelled as 'sharp turn' or 'u-turn' if the 'add_turn'
+     *         option parameter of the {@link
+     *         com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was invoked at
+     *         graph creation.  The default value is '0.0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#NUM_BEST_PATHS
+     *         NUM_BEST_PATHS}: For {@code MULTIPLE_ROUTING} solvers only; sets
+     *         the number of shortest paths computed from each node. This is
+     *         the heuristic criterion. Default value of zero allows the number
+     *         to be computed automatically by the solver. The user may want to
+     *         override this parameter to speed-up the solver.  The default
+     *         value is '0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#MAX_NUM_COMBINATIONS
+     *         MAX_NUM_COMBINATIONS}: For {@code MULTIPLE_ROUTING} solvers
+     *         only; sets the cap on the combinatorial sequences generated. If
+     *         the default value of two millions is overridden to a lesser
+     *         value, it can potentially speed up the solver.  The default
+     *         value is '2000000'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#ACCURATE_SNAPS
+     *         ACCURATE_SNAPS}: Valid for single source destination pair solves
+     *         if points are described in NODE_WKTPOINT identifier types: When
+     *         true (default), it snaps to the nearest node of the graph;
+     *         otherwise, it searches for the closest entity that could be an
+     *         edge. For the latter case (false), the solver modifies the
+     *         resulting cost with the weights proportional to the ratio of the
+     *         snap location within the edge. This may be an over-kill when the
+     *         performance is considered and the difference is well less than 1
+     *         percent. In batch runs, since the performance is of utmost
+     *         importance, the option is always considered 'false'.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1040,6 +1301,75 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 value to all the edges in the graph. Note that weights
      *                 provided in {@code weightsOnEdges} will override this
      *                 value.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#LEFT_TURN_PENALTY
+     *                 LEFT_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'left turn' if the 'add_turn'
+     *                 option parameter of the {@link
+     *                 com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     *                 invoked at graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#RIGHT_TURN_PENALTY
+     *                 RIGHT_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as' right turn' if the
+     *                 'add_turn' option parameter of the {@link
+     *                 com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     *                 invoked at graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#INTERSECTION_PENALTY
+     *                 INTERSECTION_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'intersection' if the
+     *                 'add_turn' option parameter of the {@link
+     *                 com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     *                 invoked at graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#SHARP_TURN_PENALTY
+     *                 SHARP_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'sharp turn' or 'u-turn' if
+     *                 the 'add_turn' option parameter of the {@link
+     *                 com.gpudb.GPUdb#createGraph(CreateGraphRequest)} was
+     *                 invoked at graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#NUM_BEST_PATHS
+     *                 NUM_BEST_PATHS}: For {@code MULTIPLE_ROUTING} solvers
+     *                 only; sets the number of shortest paths computed from
+     *                 each node. This is the heuristic criterion. Default
+     *                 value of zero allows the number to be computed
+     *                 automatically by the solver. The user may want to
+     *                 override this parameter to speed-up the solver.  The
+     *                 default value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_NUM_COMBINATIONS
+     *                 MAX_NUM_COMBINATIONS}: For {@code MULTIPLE_ROUTING}
+     *                 solvers only; sets the cap on the combinatorial
+     *                 sequences generated. If the default value of two
+     *                 millions is overridden to a lesser value, it can
+     *                 potentially speed up the solver.  The default value is
+     *                 '2000000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#ACCURATE_SNAPS
+     *                 ACCURATE_SNAPS}: Valid for single source destination
+     *                 pair solves if points are described in NODE_WKTPOINT
+     *                 identifier types: When true (default), it snaps to the
+     *                 nearest node of the graph; otherwise, it searches for
+     *                 the closest entity that could be an edge. For the latter
+     *                 case (false), the solver modifies the resulting cost
+     *                 with the weights proportional to the ratio of the snap
+     *                 location within the edge. This may be an over-kill when
+     *                 the performance is considered and the difference is well
+     *                 less than 1 percent. In batch runs, since the
+     *                 performance is of utmost importance, the option is
+     *                 always considered 'false'.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

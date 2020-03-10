@@ -4681,6 +4681,34 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#ADD_TURNS
+     *                 ADD_TURNS}: Adds dummy 'pillowed' edges around
+     *                 intersection nodes where there are more than three edges
+     *                 so that additional weight penalties can be imposed by
+     *                 the solve endpoints. (increases the total number of
+     *                 edges).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#TURN_ANGLE
+     *                 TURN_ANGLE}: Value in degrees modifies the thresholds
+     *                 for attributing right, left, sharp turns, and
+     *                 intersections. It is the vertical deviation angle from
+     *                 the incoming edge to the intersection node. The larger
+     *                 the value, the larger the threshold for sharp turns and
+     *                 intersections; the smaller the value, the larger the
+     *                 threshold for right and left turns; 0 < turn_angle < 90.
+     *                 The default value is '60'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -12269,6 +12297,47 @@ public class GPUdb extends GPUdbBase {
      *                 generated combinations for sequencing the demand
      *                 locations - can increase this up to 2M.  The default
      *                 value is '10000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#LEFT_TURN_PENALTY
+     *                 LEFT_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'left turn' if the 'add_turn'
+     *                 option parameter of the {@link GPUdb#createGraph(String,
+     *                 boolean, List, List, List, List, Map)} was invoked at
+     *                 graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#RIGHT_TURN_PENALTY
+     *                 RIGHT_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as' right turn' if the
+     *                 'add_turn' option parameter of the {@link
+     *                 GPUdb#createGraph(String, boolean, List, List, List,
+     *                 List, Map)} was invoked at graph creation.  The default
+     *                 value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#INTERSECTION_PENALTY
+     *                 INTERSECTION_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'intersection' if the
+     *                 'add_turn' option parameter of the {@link
+     *                 GPUdb#createGraph(String, boolean, List, List, List,
+     *                 List, Map)} was invoked at graph creation.  The default
+     *                 value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#SHARP_TURN_PENALTY
+     *                 SHARP_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'sharp turn' or 'u-turn' if
+     *                 the 'add_turn' option parameter of the {@link
+     *                 GPUdb#createGraph(String, boolean, List, List, List,
+     *                 List, Map)} was invoked at graph creation.  The default
+     *                 value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#AGGREGATED_OUTPUT
+     *                 AGGREGATED_OUTPUT}: For the {@code match_supply_demand}
+     *                 solver only. When it is true (default), each record in
+     *                 the output table shows a particular truck's scheduled
+     *                 cumulative round trip path (MULTILINESTRING) and the
+     *                 corresponding aggregated cost. Otherwise, each record
+     *                 shows a single scheduled truck route (LINESTRING)
+     *                 towards a particular demand location (store id) with its
+     *                 corresponding cost.  The default value is 'true'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -12680,6 +12749,34 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#ADD_TURNS
+     *                 ADD_TURNS}: Adds dummy 'pillowed' edges around
+     *                 intersection nodes where there are more than three edges
+     *                 so that additional weight penalties can be imposed by
+     *                 the solve endpoints. (increases the total number of
+     *                 edges).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ModifyGraphRequest.Options#TURN_ANGLE
+     *                 TURN_ANGLE}: Value in degrees modifies the thresholds
+     *                 for attributing right, left, sharp turns, and
+     *                 intersections. It is the vertical deviation angle from
+     *                 the incoming edge to the intersection node. The larger
+     *                 the value, the larger the threshold for sharp turns and
+     *                 intersections; the smaller the value, the larger the
+     *                 threshold for right and left turns; 0 < turn_angle < 90.
+     *                 The default value is '60'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -14501,6 +14598,78 @@ public class GPUdb extends GPUdbBase {
      *                 value to all the edges in the graph. Note that weights
      *                 provided in {@code weightsOnEdges} will override this
      *                 value.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#LEFT_TURN_PENALTY
+     *                 LEFT_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'left turn' if the 'add_turn'
+     *                 option parameter of the {@link GPUdb#createGraph(String,
+     *                 boolean, List, List, List, List, Map)} was invoked at
+     *                 graph creation.  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#RIGHT_TURN_PENALTY
+     *                 RIGHT_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as' right turn' if the
+     *                 'add_turn' option parameter of the {@link
+     *                 GPUdb#createGraph(String, boolean, List, List, List,
+     *                 List, Map)} was invoked at graph creation.  The default
+     *                 value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#INTERSECTION_PENALTY
+     *                 INTERSECTION_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'intersection' if the
+     *                 'add_turn' option parameter of the {@link
+     *                 GPUdb#createGraph(String, boolean, List, List, List,
+     *                 List, Map)} was invoked at graph creation.  The default
+     *                 value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#SHARP_TURN_PENALTY
+     *                 SHARP_TURN_PENALTY}: This will add an additonal weight
+     *                 over the edges labelled as 'sharp turn' or 'u-turn' if
+     *                 the 'add_turn' option parameter of the {@link
+     *                 GPUdb#createGraph(String, boolean, List, List, List,
+     *                 List, Map)} was invoked at graph creation.  The default
+     *                 value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#NUM_BEST_PATHS
+     *                 NUM_BEST_PATHS}: For {@code MULTIPLE_ROUTING} solvers
+     *                 only; sets the number of shortest paths computed from
+     *                 each node. This is the heuristic criterion. Default
+     *                 value of zero allows the number to be computed
+     *                 automatically by the solver. The user may want to
+     *                 override this parameter to speed-up the solver.  The
+     *                 default value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_NUM_COMBINATIONS
+     *                 MAX_NUM_COMBINATIONS}: For {@code MULTIPLE_ROUTING}
+     *                 solvers only; sets the cap on the combinatorial
+     *                 sequences generated. If the default value of two
+     *                 millions is overridden to a lesser value, it can
+     *                 potentially speed up the solver.  The default value is
+     *                 '2000000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#ACCURATE_SNAPS
+     *                 ACCURATE_SNAPS}: Valid for single source destination
+     *                 pair solves if points are described in NODE_WKTPOINT
+     *                 identifier types: When true (default), it snaps to the
+     *                 nearest node of the graph; otherwise, it searches for
+     *                 the closest entity that could be an edge. For the latter
+     *                 case (false), the solver modifies the resulting cost
+     *                 with the weights proportional to the ratio of the snap
+     *                 location within the edge. This may be an over-kill when
+     *                 the performance is considered and the difference is well
+     *                 less than 1 percent. In batch runs, since the
+     *                 performance is of utmost importance, the option is
+     *                 always considered 'false'.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
