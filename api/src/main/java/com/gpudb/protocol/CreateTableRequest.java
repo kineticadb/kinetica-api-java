@@ -18,8 +18,7 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#createTable(CreateTableRequest)}.
  * <p>
  * Creates a new table or collection. If a new table is being created,
- * the type of the table is given by {@code typeId}, which must the be the ID
- * of
+ * the type of the table is given by {@code typeId}, which must be the ID of
  * a currently registered type (i.e. one created via {@link
  * com.gpudb.GPUdb#createType(CreateTypeRequest)}). The
  * table will be created inside a collection if the option
@@ -492,7 +491,7 @@ public class CreateTableRequest implements IndexedRecord {
      * Constructs a CreateTableRequest object with the specified parameters.
      * 
      * @param tableName  Name of the table to be created. Error for requests
-     *                   with existing table of the same name and type id may
+     *                   with existing table of the same name and type ID may
      *                   be suppressed by using the {@code no_error_if_exists}
      *                   option.  See <a
      *                   href="../../../../../concepts/tables.html"
@@ -715,7 +714,7 @@ public class CreateTableRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table to be created. Error for requests with
-     *         existing table of the same name and type id may be suppressed by
+     *         existing table of the same name and type ID may be suppressed by
      *         using the {@code no_error_if_exists} option.  See <a
      *         href="../../../../../concepts/tables.html"
      *         target="_top">Tables</a> for naming restrictions.
@@ -728,7 +727,7 @@ public class CreateTableRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table to be created. Error for requests
-     *                   with existing table of the same name and type id may
+     *                   with existing table of the same name and type ID may
      *                   be suppressed by using the {@code no_error_if_exists}
      *                   option.  See <a
      *                   href="../../../../../concepts/tables.html"
