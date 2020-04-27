@@ -5898,22 +5898,23 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a monitor that watches for table modification events such as
-     * insert, update or delete on a particular table (identified by
+     * Creates a monitor that watches for a single table modification event
+     * type (insert, update, or delete) on a particular table (identified by
      * {@code tableName}) and forwards event notifications to subscribers via
      * ZMQ.
      * After this call completes, subscribe to the returned {@code topicId} on
      * the
-     * ZMQ table monitor port (default 9002). Each time a modification
-     * operation on the
-     * table completes, a multipart message is published for that topic; the
-     * first part
-     * contains only the topic ID, and each subsequent part contains one
-     * binary-encoded
-     * Avro object that corresponds to the event and can be decoded using
-     * {@code typeSchema}. The monitor will continue to run (regardless of
-     * whether
-     * or not there are any subscribers) until deactivated with
+     * ZMQ table monitor port (default 9002). Each time an operation of the
+     * given type
+     * on the table completes, a multipart message is published for that topic;
+     * the
+     * first part contains only the topic ID, and each subsequent part contains
+     * one
+     * binary-encoded Avro object that corresponds to the event and can be
+     * decoded
+     * using {@code typeSchema}. The monitor will continue to run (regardless
+     * of
+     * whether or not there are any subscribers) until deactivated with
      * {@link GPUdb#clearTableMonitor(ClearTableMonitorRequest)}.
      * <p>
      * For more information on table monitors, see
@@ -5939,22 +5940,23 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a monitor that watches for table modification events such as
-     * insert, update or delete on a particular table (identified by
+     * Creates a monitor that watches for a single table modification event
+     * type (insert, update, or delete) on a particular table (identified by
      * {@code tableName}) and forwards event notifications to subscribers via
      * ZMQ.
      * After this call completes, subscribe to the returned {@code topicId} on
      * the
-     * ZMQ table monitor port (default 9002). Each time a modification
-     * operation on the
-     * table completes, a multipart message is published for that topic; the
-     * first part
-     * contains only the topic ID, and each subsequent part contains one
-     * binary-encoded
-     * Avro object that corresponds to the event and can be decoded using
-     * {@code typeSchema}. The monitor will continue to run (regardless of
-     * whether
-     * or not there are any subscribers) until deactivated with
+     * ZMQ table monitor port (default 9002). Each time an operation of the
+     * given type
+     * on the table completes, a multipart message is published for that topic;
+     * the
+     * first part contains only the topic ID, and each subsequent part contains
+     * one
+     * binary-encoded Avro object that corresponds to the event and can be
+     * decoded
+     * using {@code typeSchema}. The monitor will continue to run (regardless
+     * of
+     * whether or not there are any subscribers) until deactivated with
      * {@link GPUdb#clearTableMonitor(String, Map)}.
      * <p>
      * For more information on table monitors, see
@@ -5967,7 +5969,8 @@ public class GPUdb extends GPUdbBase {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#EVENT
-     *                 EVENT}:
+     *                 EVENT}: Type of modification event on the target table
+     *                 to be monitored by this table monitor.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -11949,20 +11952,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Lists basic information about one or all graphs that exist on the graph
-     * server.
-     * 
-     * @param request  Request object containing the parameters for the
-     *                 operation.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  ListGraphResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public ListGraphResponse listGraph(ListGraphRequest request) throws GPUdbException {
         ListGraphResponse actualResponse_ = new ListGraphResponse();
         submitRequest("/list/graph", request, actualResponse_, false);
@@ -11971,23 +11960,6 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    /**
-     * Lists basic information about one or all graphs that exist on the graph
-     * server.
-     * 
-     * @param graphName  Name of the graph on which to retrieve information. If
-     *                   empty, information about all graphs is returned.  The
-     *                   default value is ''.
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
-     * 
-     * @return Response object containing the results of the operation.
-     * 
-     * @see  ListGraphResponse
-     * 
-     * @throws GPUdbException  if an error occurs during the operation.
-     * 
-     */
     public ListGraphResponse listGraph(String graphName, Map<String, String> options) throws GPUdbException {
         ListGraphRequest actualRequest_ = new ListGraphRequest(graphName, options);
         ListGraphResponse actualResponse_ = new ListGraphResponse();
@@ -12338,6 +12310,35 @@ public class GPUdb extends GPUdbBase {
      *                 shows a single scheduled truck route (LINESTRING)
      *                 towards a particular demand location (store id) with its
      *                 corresponding cost.  The default value is 'true'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRIP_COST
+     *                 MAX_TRIP_COST}: For the {@code match_supply_demand}
+     *                 solver only. If this constraint is greater than zero
+     *                 (default) then the trucks will skip travelling from one
+     *                 demand location to another if the cost between them is
+     *                 greater than this number (distance or time). Zero
+     *                 (default) value means no check is performed.  The
+     *                 default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FILTER_FOLDING_PATHS
+     *                 FILTER_FOLDING_PATHS}: For the {@code markov_chain}
+     *                 solver only. When true (non-default), the paths per
+     *                 sequence combination is checked for folding over
+     *                 patterns and can significantly increase the execution
+     *                 time depending on the chain width and the number of gps
+     *                 samples.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 Filter out the folded paths.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: Do not filter out the folded paths
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -15435,8 +15436,28 @@ public class GPUdb extends GPUdbBase {
      *                      min_x, max_x, min_y and max_y parameters.  The
      *                      default value is 'false'.
      *                      </ul>
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.VisualizeImageChartRequest.Options#IMAGE_ENCODING
+     *                 IMAGE_ENCODING}: Encoding to be applied to the output
+     *                 image. When using JSON serialization it is recommended
+     *                 to specify this as {@code base64}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.VisualizeImageChartRequest.Options#BASE64
+     *                 BASE64}: Apply base64 encoding to the output image.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.VisualizeImageChartRequest.Options#NONE
+     *                 NONE}: Do not apply any additional encoding to the
+     *                 output image.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.VisualizeImageChartRequest.Options#NONE
+     *                 NONE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return Response object containing the results of the operation.
      * 

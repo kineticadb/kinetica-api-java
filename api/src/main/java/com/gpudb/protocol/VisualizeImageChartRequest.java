@@ -368,6 +368,61 @@ public class VisualizeImageChartRequest implements IndexedRecord {
         private StyleOptions() {  }
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.VisualizeImageChartRequest.Options#IMAGE_ENCODING
+     * IMAGE_ENCODING}: Encoding to be applied to the output image. When using
+     * JSON serialization it is recommended to specify this as {@code base64}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.VisualizeImageChartRequest.Options#BASE64 BASE64}:
+     * Apply base64 encoding to the output image.
+     *         <li> {@link
+     * com.gpudb.protocol.VisualizeImageChartRequest.Options#NONE NONE}: Do not
+     * apply any additional encoding to the output image.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.VisualizeImageChartRequest.Options#NONE NONE}.
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * Encoding to be applied to the output image. When using JSON
+         * serialization it is recommended to specify this as {@code base64}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.VisualizeImageChartRequest.Options#BASE64
+         * BASE64}: Apply base64 encoding to the output image.
+         *         <li> {@link
+         * com.gpudb.protocol.VisualizeImageChartRequest.Options#NONE NONE}: Do
+         * not apply any additional encoding to the output image.
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.VisualizeImageChartRequest.Options#NONE NONE}.
+         */
+        public static final String IMAGE_ENCODING = "image_encoding";
+
+        /**
+         * Apply base64 encoding to the output image.
+         */
+        public static final String BASE64 = "base64";
+
+        /**
+         * Do not apply any additional encoding to the output image.
+         */
+        public static final String NONE = "none";
+
+        private Options() {  }
+    }
+
     private String tableName;
     private List<String> xColumnNames;
     private List<String> yColumnNames;
@@ -567,8 +622,28 @@ public class VisualizeImageChartRequest implements IndexedRecord {
      *                      min_x, max_x, min_y and max_y parameters.  The
      *                      default value is 'false'.
      *                      </ul>
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.VisualizeImageChartRequest.Options#IMAGE_ENCODING
+     *                 IMAGE_ENCODING}: Encoding to be applied to the output
+     *                 image. When using JSON serialization it is recommended
+     *                 to specify this as {@code base64}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.VisualizeImageChartRequest.Options#BASE64
+     *                 BASE64}: Apply base64 encoding to the output image.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.VisualizeImageChartRequest.Options#NONE
+     *                 NONE}: Do not apply any additional encoding to the
+     *                 output image.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.VisualizeImageChartRequest.Options#NONE
+     *                 NONE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public VisualizeImageChartRequest(String tableName, List<String> xColumnNames, List<String> yColumnNames, double minX, double maxX, double minY, double maxY, int width, int height, String bgColor, Map<String, List<String>> styleOptions, Map<String, String> options) {
@@ -1122,7 +1197,27 @@ public class VisualizeImageChartRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.  The default value is an empty {@link Map}.
+     * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.VisualizeImageChartRequest.Options#IMAGE_ENCODING
+     *         IMAGE_ENCODING}: Encoding to be applied to the output image.
+     *         When using JSON serialization it is recommended to specify this
+     *         as {@code base64}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.VisualizeImageChartRequest.Options#BASE64
+     *         BASE64}: Apply base64 encoding to the output image.
+     *                 <li> {@link
+     *         com.gpudb.protocol.VisualizeImageChartRequest.Options#NONE
+     *         NONE}: Do not apply any additional encoding to the output image.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.VisualizeImageChartRequest.Options#NONE
+     *         NONE}.
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -1131,8 +1226,28 @@ public class VisualizeImageChartRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.VisualizeImageChartRequest.Options#IMAGE_ENCODING
+     *                 IMAGE_ENCODING}: Encoding to be applied to the output
+     *                 image. When using JSON serialization it is recommended
+     *                 to specify this as {@code base64}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.VisualizeImageChartRequest.Options#BASE64
+     *                 BASE64}: Apply base64 encoding to the output image.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.VisualizeImageChartRequest.Options#NONE
+     *                 NONE}: Do not apply any additional encoding to the
+     *                 output image.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.VisualizeImageChartRequest.Options#NONE
+     *                 NONE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

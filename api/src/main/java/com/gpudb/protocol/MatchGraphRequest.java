@@ -261,6 +261,28 @@ public class MatchGraphRequest implements IndexedRecord {
      * record shows a single scheduled truck route (LINESTRING) towards a
      * particular demand location (store id) with its corresponding cost.  The
      * default value is 'true'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRIP_COST
+     * MAX_TRIP_COST}: For the {@code match_supply_demand} solver only. If this
+     * constraint is greater than zero (default) then the trucks will skip
+     * travelling from one demand location to another if the cost between them
+     * is greater than this number (distance or time). Zero (default) value
+     * means no check is performed.  The default value is '0.0'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#FILTER_FOLDING_PATHS
+     * FILTER_FOLDING_PATHS}: For the {@code markov_chain} solver only. When
+     * true (non-default), the paths per sequence combination is checked for
+     * folding over patterns and can significantly increase the execution time
+     * depending on the chain width and the number of gps samples.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#TRUE
+     * TRUE}: Filter out the folded paths.
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     * FALSE}: Do not filter out the folded paths
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -333,13 +355,12 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String DETECT_LOOPS = "detect_loops";
 
         /**
-         * Partial off-loading at multiple store (demand) locations
+         * Filter out the folded paths.
          */
         public static final String TRUE = "true";
 
         /**
-         * No partial off-loading allowed if supply is less than the store's
-         * demand.
+         * Do not filter out the folded paths
          */
         public static final String FALSE = "false";
 
@@ -426,6 +447,34 @@ public class MatchGraphRequest implements IndexedRecord {
          * value is 'true'.
          */
         public static final String AGGREGATED_OUTPUT = "aggregated_output";
+
+        /**
+         * For the {@code match_supply_demand} solver only. If this constraint
+         * is greater than zero (default) then the trucks will skip travelling
+         * from one demand location to another if the cost between them is
+         * greater than this number (distance or time). Zero (default) value
+         * means no check is performed.  The default value is '0.0'.
+         */
+        public static final String MAX_TRIP_COST = "max_trip_cost";
+
+        /**
+         * For the {@code markov_chain} solver only. When true (non-default),
+         * the paths per sequence combination is checked for folding over
+         * patterns and can significantly increase the execution time depending
+         * on the chain width and the number of gps samples.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}: Filter out
+         * the folded paths.
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}: Do not
+         * filter out the folded paths
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
+         */
+        public static final String FILTER_FOLDING_PATHS = "filter_folding_paths";
 
         private Options() {  }
     }
@@ -662,6 +711,35 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 shows a single scheduled truck route (LINESTRING)
      *                 towards a particular demand location (store id) with its
      *                 corresponding cost.  The default value is 'true'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRIP_COST
+     *                 MAX_TRIP_COST}: For the {@code match_supply_demand}
+     *                 solver only. If this constraint is greater than zero
+     *                 (default) then the trucks will skip travelling from one
+     *                 demand location to another if the cost between them is
+     *                 greater than this number (distance or time). Zero
+     *                 (default) value means no check is performed.  The
+     *                 default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FILTER_FOLDING_PATHS
+     *                 FILTER_FOLDING_PATHS}: For the {@code markov_chain}
+     *                 solver only. When true (non-default), the paths per
+     *                 sequence combination is checked for folding over
+     *                 patterns and can significantly increase the execution
+     *                 time depending on the chain width and the number of gps
+     *                 samples.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 Filter out the folded paths.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: Do not filter out the folded paths
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1021,6 +1099,32 @@ public class MatchGraphRequest implements IndexedRecord {
      *         Otherwise, each record shows a single scheduled truck route
      *         (LINESTRING) towards a particular demand location (store id)
      *         with its corresponding cost.  The default value is 'true'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRIP_COST
+     *         MAX_TRIP_COST}: For the {@code match_supply_demand} solver only.
+     *         If this constraint is greater than zero (default) then the
+     *         trucks will skip travelling from one demand location to another
+     *         if the cost between them is greater than this number (distance
+     *         or time). Zero (default) value means no check is performed.  The
+     *         default value is '0.0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#FILTER_FOLDING_PATHS
+     *         FILTER_FOLDING_PATHS}: For the {@code markov_chain} solver only.
+     *         When true (non-default), the paths per sequence combination is
+     *         checked for folding over patterns and can significantly increase
+     *         the execution time depending on the chain width and the number
+     *         of gps samples.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}: Filter
+     *         out the folded paths.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}: Do
+     *         not filter out the folded paths
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1166,6 +1270,35 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 shows a single scheduled truck route (LINESTRING)
      *                 towards a particular demand location (store id) with its
      *                 corresponding cost.  The default value is 'true'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRIP_COST
+     *                 MAX_TRIP_COST}: For the {@code match_supply_demand}
+     *                 solver only. If this constraint is greater than zero
+     *                 (default) then the trucks will skip travelling from one
+     *                 demand location to another if the cost between them is
+     *                 greater than this number (distance or time). Zero
+     *                 (default) value means no check is performed.  The
+     *                 default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FILTER_FOLDING_PATHS
+     *                 FILTER_FOLDING_PATHS}: For the {@code markov_chain}
+     *                 solver only. When true (non-default), the paths per
+     *                 sequence combination is checked for folding over
+     *                 patterns and can significantly increase the execution
+     *                 time depending on the chain width and the number of gps
+     *                 samples.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 Filter out the folded paths.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: Do not filter out the folded paths
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

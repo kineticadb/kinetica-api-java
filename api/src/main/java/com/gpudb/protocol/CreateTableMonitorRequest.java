@@ -17,19 +17,17 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
  * <p>
- * Creates a monitor that watches for table modification events such as
- * insert, update or delete on a particular table (identified by
+ * Creates a monitor that watches for a single table modification event
+ * type (insert, update, or delete) on a particular table (identified by
  * {@code tableName}) and forwards event notifications to subscribers via ZMQ.
  * After this call completes, subscribe to the returned {@code topicId} on the
- * ZMQ table monitor port (default 9002). Each time a modification operation on
- * the
- * table completes, a multipart message is published for that topic; the first
- * part
- * contains only the topic ID, and each subsequent part contains one
- * binary-encoded
- * Avro object that corresponds to the event and can be decoded using
- * {@code typeSchema}. The monitor will continue to run (regardless of whether
- * or not there are any subscribers) until deactivated with
+ * ZMQ table monitor port (default 9002). Each time an operation of the given
+ * type
+ * on the table completes, a multipart message is published for that topic; the
+ * first part contains only the topic ID, and each subsequent part contains one
+ * binary-encoded Avro object that corresponds to the event and can be decoded
+ * using {@code typeSchema}. The monitor will continue to run (regardless of
+ * whether or not there are any subscribers) until deactivated with
  * {@link com.gpudb.GPUdb#clearTableMonitor(ClearTableMonitorRequest)}.
  * <p>
  * For more information on table monitors, see
@@ -62,7 +60,9 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
-     * com.gpudb.protocol.CreateTableMonitorRequest.Options#EVENT EVENT}:
+     * com.gpudb.protocol.CreateTableMonitorRequest.Options#EVENT EVENT}: Type
+     * of modification event on the target table to be monitored by this table
+     * monitor.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -87,6 +87,8 @@ public class CreateTableMonitorRequest implements IndexedRecord {
     public static final class Options {
 
         /**
+         * Type of modification event on the target table to be monitored by
+         * this table monitor.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -150,7 +152,8 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#EVENT
-     *                 EVENT}:
+     *                 EVENT}: Type of modification event on the target table
+     *                 to be monitored by this table monitor.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -208,7 +211,8 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableMonitorRequest.Options#EVENT
-     *         EVENT}:
+     *         EVENT}: Type of modification event on the target table to be
+     *         monitored by this table monitor.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -241,7 +245,8 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#EVENT
-     *                 EVENT}:
+     *                 EVENT}: Type of modification event on the target table
+     *                 to be monitored by this table monitor.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
