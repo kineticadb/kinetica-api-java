@@ -2,6 +2,17 @@
 
 ## Version 7.0
 
+### Version 7.0.15.1 - 2020-05-02
+
+#### Fixed
+-   Socket connection timeout--now check IP/hostname availability
+    for 1 second (instead of applying the user given timeout--default
+    infinite--which resulted in a few minutes of hanging for bad addresses).
+-   Set host manager endpoint retry count to 3 (not configurable) so that
+    the API does not go into an infinite loop for a bad user given host
+    manager port.
+
+
 ### Version 7.0.15.0 - 2020-04-27
 
 #### Note

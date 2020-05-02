@@ -64,6 +64,15 @@ import org.xerial.snappy.Snappy;
  */
 public abstract class GPUdbBase {
 
+    // The amount of time for checking if a given IP/hostname is good (1 second)
+    private static final int CONNECTION_TIMEOUT = 1000;
+
+    // The number of times that the API will attempt to submit a host
+    // manager endpoint request.  We need this in case the user chose
+    // a bad host manager port.  We don't want to go into an infinite
+    // loop
+    private static final int HOST_MANAGER_SUBMIT_REQUEST_RETRY_COUNT = 3;
+    
     // The maxium number of connections across all or an individual host
     private static final int DEFAULT_MAX_TOTAL_CONNECTIONS    = 40;
     private static final int DEFAULT_MAX_CONNECTIONS_PER_HOST = 40;
@@ -970,7 +979,7 @@ public abstract class GPUdbBase {
         // Set the timeout defaults
         RequestConfig requestConfig = RequestConfig.custom()
             .setSocketTimeout( this.timeout )
-            .setConnectTimeout( this.timeout )
+            .setConnectTimeout( CONNECTION_TIMEOUT ) // 1 second
             .setConnectionRequestTimeout( this.timeout )
             .build();
 
@@ -1309,7 +1318,7 @@ public abstract class GPUdbBase {
                     // The host manager URL shouldn't use any path and
                     // use the host manager port
                     newUrl = new URL( oldUrl.getProtocol(), oldUrl.getHost(),
-                                      options.getHostManagerPort(),
+                                      value,
                                       "" );
                 }
                 this.hmUrls.set( i, newUrl );
@@ -2243,7 +2252,9 @@ public abstract class GPUdbBase {
         URL hmUrl = getHmURL();
         URL originalURL = hmUrl;
 
-        while (true) {
+        GPUdbException original_exception = null;
+
+        for (int i = 0; i < HOST_MANAGER_SUBMIT_REQUEST_RETRY_COUNT; ++i) {
             // We need a snapshot of the current state re: HA failover.  When
             // multiple threads work on this object, we'll need to know how
             // many times we've switched clusters *before* attempting another
@@ -2256,6 +2267,11 @@ public abstract class GPUdbBase {
                 // There's an error in creating the URL
                 throw new GPUdbRuntimeException(ex.getMessage(), ex);
             } catch (GPUdbExitException ex) {
+                // Save the original exception for later use
+                if (original_exception == null) {
+                    original_exception = new GPUdbException( ex.getMessage() );
+                }
+
                 try {
                     if ( this.updateHostManagerPort() ) {
                         // Get the updated URL
@@ -2285,6 +2301,11 @@ public abstract class GPUdbBase {
                     }
                 }
             } catch (SubmitException ex) {
+                // Save the original exception for later use
+                if (original_exception == null) {
+                    original_exception = ex;
+                }
+
                 // Some error occurred during the HTTP request;
                 // first check if the host manager port is wrong
                 try {
@@ -2320,6 +2341,11 @@ public abstract class GPUdbBase {
                     }
                 }
             } catch (GPUdbException ex) {
+                // Save the original exception for later use
+                if (original_exception == null) {
+                    original_exception = ex;
+                }
+
                 // the host manager can still be going even if the database is down
                 if ( ex.getMessage().contains( DB_HM_OFFLINE_ERROR_MESSAGE ) ) {
                     try {
@@ -2337,6 +2363,11 @@ public abstract class GPUdbBase {
                     throw ex;
                 }
             } catch (Exception ex) {
+                // Save the original exception for later use
+                if (original_exception == null) {
+                    original_exception = new GPUdbException( ex.getMessage() );
+                }
+
                 // And other random exceptions probably are also connection errors
                 try {
                     hmUrl = switchHmURL( originalURL, currentClusterSwitchCount );
@@ -2348,7 +2379,10 @@ public abstract class GPUdbBase {
                                               + ha_ex.getMessage(), true );
                 }
             }
-        } // end while
+        } // end for
+
+        // If we reach here, then something went wrong
+        throw original_exception;
     } // end submitRequestToHM
 
 
