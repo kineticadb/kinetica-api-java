@@ -12339,6 +12339,15 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#UNIT_UNLOADING_COST
+     *                 UNIT_UNLOADING_COST}: For the {@code
+     *                 match_supply_demand} solver only. The unit cost per load
+     *                 amount to be delivered. If this value is greater than
+     *                 zero (default) then the additional cost of this unit
+     *                 load multiplied by the total dropped load will be added
+     *                 over to the trip cost to the demand location.  The
+     *                 default value is '0.0'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

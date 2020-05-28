@@ -45,6 +45,53 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Additional information.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RawGetRecordsFromCollectionResponse.Info#TOTAL_NUMBER_OF_RECORDS
+     * TOTAL_NUMBER_OF_RECORDS}: Total number of records.
+     *         <li> {@link
+     * com.gpudb.protocol.RawGetRecordsFromCollectionResponse.Info#HAS_MORE_RECORDS
+     * HAS_MORE_RECORDS}: Too many records. Returned a partial set.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RawGetRecordsFromCollectionResponse.Info#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.RawGetRecordsFromCollectionResponse.Info#FALSE FALSE}
+     * </ul>
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code info}.
+     */
+    public static final class Info {
+
+        /**
+         * Total number of records.
+         */
+        public static final String TOTAL_NUMBER_OF_RECORDS = "total_number_of_records";
+
+        /**
+         * Too many records. Returned a partial set.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.RawGetRecordsFromCollectionResponse.Info#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.RawGetRecordsFromCollectionResponse.Info#FALSE
+         * FALSE}
+         * </ul>
+         */
+        public static final String HAS_MORE_RECORDS = "has_more_records";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private Info() {  }
+    }
+
     private String tableName;
     private List<String> typeNames;
     private List<ByteBuffer> recordsBinary;
@@ -188,6 +235,24 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
     /**
      * 
      * @return Additional information.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawGetRecordsFromCollectionResponse.Info#TOTAL_NUMBER_OF_RECORDS
+     *         TOTAL_NUMBER_OF_RECORDS}: Total number of records.
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawGetRecordsFromCollectionResponse.Info#HAS_MORE_RECORDS
+     *         HAS_MORE_RECORDS}: Too many records. Returned a partial set.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawGetRecordsFromCollectionResponse.Info#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawGetRecordsFromCollectionResponse.Info#FALSE
+     *         FALSE}
+     *         </ul>
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getInfo() {
@@ -197,6 +262,25 @@ public class RawGetRecordsFromCollectionResponse implements IndexedRecord {
     /**
      * 
      * @param info  Additional information.
+     *              <ul>
+     *                      <li> {@link
+     *              com.gpudb.protocol.RawGetRecordsFromCollectionResponse.Info#TOTAL_NUMBER_OF_RECORDS
+     *              TOTAL_NUMBER_OF_RECORDS}: Total number of records.
+     *                      <li> {@link
+     *              com.gpudb.protocol.RawGetRecordsFromCollectionResponse.Info#HAS_MORE_RECORDS
+     *              HAS_MORE_RECORDS}: Too many records. Returned a partial
+     *              set.
+     *              Supported values:
+     *              <ul>
+     *                      <li> {@link
+     *              com.gpudb.protocol.RawGetRecordsFromCollectionResponse.Info#TRUE
+     *              TRUE}
+     *                      <li> {@link
+     *              com.gpudb.protocol.RawGetRecordsFromCollectionResponse.Info#FALSE
+     *              FALSE}
+     *              </ul>
+     *              </ul>
+     *              The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

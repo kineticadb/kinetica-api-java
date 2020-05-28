@@ -283,6 +283,13 @@ public class MatchGraphRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#UNIT_UNLOADING_COST
+     * UNIT_UNLOADING_COST}: For the {@code match_supply_demand} solver only.
+     * The unit cost per load amount to be delivered. If this value is greater
+     * than zero (default) then the additional cost of this unit load
+     * multiplied by the total dropped load will be added over to the trip cost
+     * to the demand location.  The default value is '0.0'.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -475,6 +482,15 @@ public class MatchGraphRequest implements IndexedRecord {
          * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
          */
         public static final String FILTER_FOLDING_PATHS = "filter_folding_paths";
+
+        /**
+         * For the {@code match_supply_demand} solver only. The unit cost per
+         * load amount to be delivered. If this value is greater than zero
+         * (default) then the additional cost of this unit load multiplied by
+         * the total dropped load will be added over to the trip cost to the
+         * demand location.  The default value is '0.0'.
+         */
+        public static final String UNIT_UNLOADING_COST = "unit_unloading_cost";
 
         private Options() {  }
     }
@@ -740,6 +756,15 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#UNIT_UNLOADING_COST
+     *                 UNIT_UNLOADING_COST}: For the {@code
+     *                 match_supply_demand} solver only. The unit cost per load
+     *                 amount to be delivered. If this value is greater than
+     *                 zero (default) then the additional cost of this unit
+     *                 load multiplied by the total dropped load will be added
+     *                 over to the trip cost to the demand location.  The
+     *                 default value is '0.0'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1125,6 +1150,14 @@ public class MatchGraphRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#UNIT_UNLOADING_COST
+     *         UNIT_UNLOADING_COST}: For the {@code match_supply_demand} solver
+     *         only. The unit cost per load amount to be delivered. If this
+     *         value is greater than zero (default) then the additional cost of
+     *         this unit load multiplied by the total dropped load will be
+     *         added over to the trip cost to the demand location.  The default
+     *         value is '0.0'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1299,6 +1332,15 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#UNIT_UNLOADING_COST
+     *                 UNIT_UNLOADING_COST}: For the {@code
+     *                 match_supply_demand} solver only. The unit cost per load
+     *                 amount to be delivered. If this value is greater than
+     *                 zero (default) then the additional cost of this unit
+     *                 load multiplied by the total dropped load will be added
+     *                 over to the trip cost to the demand location.  The
+     *                 default value is '0.0'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
