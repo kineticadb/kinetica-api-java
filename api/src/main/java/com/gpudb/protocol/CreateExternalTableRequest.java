@@ -116,6 +116,8 @@ public class CreateExternalTableRequest implements IndexedRecord {
 
         public static final String S3_REGION = "s3_region";
 
+        public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
+
 
         private Options() {  }
     }

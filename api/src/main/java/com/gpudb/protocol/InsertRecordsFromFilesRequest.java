@@ -644,6 +644,10 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
+     * NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file per
+     * rank. Default will be external_file_reader_num_tasks
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -915,6 +919,12 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * FALSE}.
          */
         public static final String TRUNCATE_TABLE = "truncate_table";
+
+        /**
+         * Optional: number of tasks for reading file per rank. Default will be
+         * external_file_reader_num_tasks
+         */
+        public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
 
         private Options() {  }
     }
@@ -1371,6 +1381,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
+     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
+     *                 reading file per rank. Default will be
+     *                 external_file_reader_num_tasks
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -2045,6 +2060,10 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
      *         FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
+     *         NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file
+     *         per rank. Default will be external_file_reader_num_tasks
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -2275,6 +2294,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
+     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
+     *                 reading file per rank. Default will be
+     *                 external_file_reader_num_tasks
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

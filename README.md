@@ -1,11 +1,11 @@
-Kinetica Java API 
-=================
+# Kinetica Java API
+
 
 There are two projects in this repository: the Kinetica Java API and an example
 project.
 
-api
----
+## API
+
 
 In the api directory, run the following command in the api direcotry to create
 the API JAR:
@@ -30,9 +30,35 @@ For changes to the client-side API, please see CHANGELOG.md.  For changes
 to GPUdb functions, please see CHANGELOG-FUNCTIONS.md.
 
 
+### SSL Configuration
 
-example
--------
+When the Kinetica server is configured to use SSL, the root certificate needs
+to be installed in the client machine for the API to successfullly make secured
+connections with the server.  Please ensure that the root certificate is either
+installed in the default java key store (JKS), or supply the separate certificate
+JKS and its password to the API via the the following two system environment
+variables:
+
+*   javax.net.ssl.trustStore
+*   javax.net.ssl.trustStorePassword
+
+This can be done by setting the Java Runtime Environment (JRE) variables at the
+command line by using the following arguments:
+
+*   -Djavax.net.ssl.trustStore
+*   -Djavax.net.ssl.trustStorePassword
+
+The environment variables can also be programmatically set from applications
+that use the Java API:
+
+```
+    System.setProperty( "javax.net.ssl.trustStore", trustStorePath );
+    System.setProperty( "javax.net.ssl.trustStorePassword", trustStorePassword );
+```
+
+
+## Example
+
 
 To build the jar, run the following command in the example directory:
 

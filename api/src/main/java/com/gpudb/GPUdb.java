@@ -3061,8 +3061,10 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CLEAR_CACHE
      *                            CLEAR_CACHE}: Clears cached results.  Useful
-     *                            to allow repeated timing of endpoints. Value
-     *                            string is ignored
+     *                            to allow repeated timing of endpoints.  Value
+     *                            string is the name of the table for which to
+     *                            clear the cached results, or an empty string
+     *                            to clear the cached results for all tables.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#COMMUNICATOR_TEST
      *                            COMMUNICATOR_TEST}: Invoke the communicator
@@ -3092,11 +3094,6 @@ public class GPUdb extends GPUdbBase {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
      *                            FALSE}
      *                            </ul>
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#BULK_ADD_TEST
-     *                            BULK_ADD_TEST}: Invoke the bulk add test and
-     *                            report timing results. Value string is
-     *                            ignored.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
      *                            NETWORK_SPEED}: Invoke the network speed test
@@ -10384,8 +10381,9 @@ public class GPUdb extends GPUdbBase {
      *                   access. Must be an existing table, collection, or
      *                   view. If a collection, the permission also applies to
      *                   tables and views in the collection.
-     * @param filterExpression  Reserved for future use.  The default value is
-     *                          ''.
+     * @param filterExpression  Optional filter expression to apply to this
+     *                          grant.  Only rows that match the filter will be
+     *                          affected.  The default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -11518,6 +11516,11 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
+     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
+     *                 reading file per rank. Default will be
+     *                 external_file_reader_num_tasks
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -12129,14 +12132,6 @@ public class GPUdb extends GPUdbBase {
      *                     intensive. Related options: {@code num_segments} and
      *                     {@code chain_width}.
      *                             <li> {@link
-     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#INCREMENTAL_WEIGHTED
-     *                     INCREMENTAL_WEIGHTED}: Matches {@code samplePoints}
-     *                     to the graph using time and/or distance between
-     *                     points to influence one or more shortest paths
-     *                     across the sample points. Related options: {@code
-     *                     num_segments}, {@code max_solve_length}, {@code
-     *                     time_window_width}, and {@code detect_loops}.
-     *                             <li> {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_OD_PAIRS
      *                     MATCH_OD_PAIRS}: Matches {@code samplePoints} to
      *                     find the most probable path between origin and
@@ -12184,9 +12179,8 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.MatchGraphRequest.Options#NUM_SEGMENTS
      *                 NUM_SEGMENTS}: Maximum number of potentially matching
      *                 road segments for each sample point. For the {@code
-     *                 markov_chain} solver, the default is 3; for the {@code
-     *                 incremental_weighted}, the default is 5.  The default
-     *                 value is ''.
+     *                 markov_chain} solver, the default is 3.  The default
+     *                 value is '3'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SEARCH_RADIUS
      *                 SEARCH_RADIUS}: Maximum search radius used when snapping
@@ -12199,39 +12193,6 @@ public class GPUdb extends GPUdbBase {
      *                 Length of the sample points lookahead window within the
      *                 Markov kernel; the larger the number, the more accurate
      *                 the solution.  The default value is '9'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_SOLVE_LENGTH
-     *                 MAX_SOLVE_LENGTH}: For the {@code incremental_weighted}
-     *                 solver only. Maximum number of samples along the path on
-     *                 which to solve.  The default value is '200'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#TIME_WINDOW_WIDTH
-     *                 TIME_WINDOW_WIDTH}: For the {@code incremental_weighted}
-     *                 solver only. Time window, also known as sampling period,
-     *                 in which points are favored. To determine the raw window
-     *                 value, the {@code time_window_width} value is multiplied
-     *                 by the mean sample time (in seconds) across all points,
-     *                 e.g., if {@code time_window_width} is 30 and the mean
-     *                 sample time is 2 seconds, points that are sampled
-     *                 greater than 60 seconds after the previous point are no
-     *                 longer favored in the solution.  The default value is
-     *                 '30'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#DETECT_LOOPS
-     *                 DETECT_LOOPS}: For the {@code incremental_weighted}
-     *                 solver only. If {@code true}, a loop will be detected
-     *                 and traversed even if it would make a shorter path to
-     *                 ignore the loop.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SOURCE
      *                 SOURCE}: Optional WKT starting point from {@code
@@ -12348,6 +12309,41 @@ public class GPUdb extends GPUdbBase {
      *                 load multiplied by the total dropped load will be added
      *                 over to the trip cost to the demand location.  The
      *                 default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_NUM_THREADS
+     *                 MAX_NUM_THREADS}: For the {@code markov_chain} solver
+     *                 only. If specified (greater than zero), the maximum
+     *                 number of threads will not be greater than the specified
+     *                 value. It can be lower due to the memory and the number
+     *                 cores available. Default value of zero allows the
+     *                 algorithm to set the maximal number of threads within
+     *                 these constraints.  The default value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_LIMIT
+     *                 TRUCK_SERVICE_LIMIT}: For the {@code
+     *                 match_supply_demand} solver only. If specified (greather
+     *                 than zero), any truck's total service cost (distance or
+     *                 time) will be limited by the specified value including
+     *                 multiple rounds (if set).  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#ENABLE_TRUCK_REUSE
+     *                 ENABLE_TRUCK_REUSE}: For the {@code match_supply_demand}
+     *                 solver only. If specified (true), all trucks can be
+     *                 scheduled for second rounds from their originating
+     *                 depots.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 Allows reusing trucks for scheduling again.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: Trucks are scheduled only once from their
+     *                 depots.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -13972,10 +13968,11 @@ public class GPUdb extends GPUdbBase {
      * empty, information about all collections and top-level tables and views
      * can be returned.
      * <p>
-     * If the option {@code get_sizes} is set to {@code true}, then the sizes
-     * (objects and elements) of each table are returned (in {@code sizes} and
-     * {@code fullSizes}), along with the total number of objects in the
-     * requested table (in {@code totalSize} and {@code totalFullSize}).
+     * If the option {@code get_sizes} is set to
+     * {@code true}, then the number of records
+     * in each table is returned (in {@code sizes} and
+     * {@code fullSizes}), along with the total number of objects across all
+     * requested tables (in {@code totalSize} and {@code totalFullSize}).
      * <p>
      * For a collection, setting the {@code show_children} option to {@code
      * false} returns only information about the collection itself; setting
@@ -14020,10 +14017,11 @@ public class GPUdb extends GPUdbBase {
      * empty, information about all collections and top-level tables and views
      * can be returned.
      * <p>
-     * If the option {@code get_sizes} is set to {@code true}, then the sizes
-     * (objects and elements) of each table are returned (in {@code sizes} and
-     * {@code fullSizes}), along with the total number of objects in the
-     * requested table (in {@code totalSize} and {@code totalFullSize}).
+     * If the option {@code get_sizes} is set to
+     * {@code true}, then the number of records
+     * in each table is returned (in {@code sizes} and
+     * {@code fullSizes}), along with the total number of objects across all
+     * requested tables (in {@code totalSize} and {@code totalFullSize}).
      * <p>
      * For a collection, setting the {@code show_children} option to {@code
      * false} returns only information about the collection itself; setting
@@ -14054,7 +14052,8 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowTableRequest.Options#GET_SIZES
-     *                 GET_SIZES}: If {@code true} then the table sizes will be
+     *                 GET_SIZES}: If {@code true} then the number of records
+     *                 in each table, along with a cumulative count, will be
      *                 returned; blank, otherwise.
      *                 Supported values:
      *                 <ul>

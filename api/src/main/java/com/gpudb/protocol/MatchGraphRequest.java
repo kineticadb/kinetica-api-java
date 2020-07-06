@@ -71,13 +71,6 @@ public class MatchGraphRequest implements IndexedRecord {
      * most computationally intensive. Related options: {@code num_segments}
      * and {@code chain_width}.
      *         <li> {@link
-     * com.gpudb.protocol.MatchGraphRequest.SolveMethod#INCREMENTAL_WEIGHTED
-     * INCREMENTAL_WEIGHTED}: Matches {@code samplePoints} to the graph using
-     * time and/or distance between points to influence one or more shortest
-     * paths across the sample points. Related options: {@code num_segments},
-     * {@code max_solve_length}, {@code time_window_width}, and {@code
-     * detect_loops}.
-     *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_OD_PAIRS
      * MATCH_OD_PAIRS}: Matches {@code samplePoints} to find the most probable
      * path between origin and destination pairs with cost constraints.
@@ -111,15 +104,6 @@ public class MatchGraphRequest implements IndexedRecord {
          * num_segments} and {@code chain_width}.
          */
         public static final String MARKOV_CHAIN = "markov_chain";
-
-        /**
-         * Matches {@code samplePoints} to the graph using time and/or distance
-         * between points to influence one or more shortest paths across the
-         * sample points. Related options: {@code num_segments}, {@code
-         * max_solve_length}, {@code time_window_width}, and {@code
-         * detect_loops}.
-         */
-        public static final String INCREMENTAL_WEIGHTED = "incremental_weighted";
 
         /**
          * Matches {@code samplePoints} to find the most probable path between
@@ -156,9 +140,8 @@ public class MatchGraphRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#NUM_SEGMENTS NUM_SEGMENTS}:
      * Maximum number of potentially matching road segments for each sample
-     * point. For the {@code markov_chain} solver, the default is 3; for the
-     * {@code incremental_weighted}, the default is 5.  The default value is
-     * ''.
+     * point. For the {@code markov_chain} solver, the default is 3.  The
+     * default value is '3'.
      *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#SEARCH_RADIUS
      * SEARCH_RADIUS}: Maximum search radius used when snapping sample points
@@ -169,35 +152,6 @@ public class MatchGraphRequest implements IndexedRecord {
      * For the {@code markov_chain} solver only. Length of the sample points
      * lookahead window within the Markov kernel; the larger the number, the
      * more accurate the solution.  The default value is '9'.
-     *         <li> {@link
-     * com.gpudb.protocol.MatchGraphRequest.Options#MAX_SOLVE_LENGTH
-     * MAX_SOLVE_LENGTH}: For the {@code incremental_weighted} solver only.
-     * Maximum number of samples along the path on which to solve.  The default
-     * value is '200'.
-     *         <li> {@link
-     * com.gpudb.protocol.MatchGraphRequest.Options#TIME_WINDOW_WIDTH
-     * TIME_WINDOW_WIDTH}: For the {@code incremental_weighted} solver only.
-     * Time window, also known as sampling period, in which points are favored.
-     * To determine the raw window value, the {@code time_window_width} value
-     * is multiplied by the mean sample time (in seconds) across all points,
-     * e.g., if {@code time_window_width} is 30 and the mean sample time is 2
-     * seconds, points that are sampled greater than 60 seconds after the
-     * previous point are no longer favored in the solution.  The default value
-     * is '30'.
-     *         <li> {@link
-     * com.gpudb.protocol.MatchGraphRequest.Options#DETECT_LOOPS DETECT_LOOPS}:
-     * For the {@code incremental_weighted} solver only. If {@code true}, a
-     * loop will be detected and traversed even if it would make a shorter path
-     * to ignore the loop.
-     * Supported values:
-     * <ul>
-     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#TRUE
-     * TRUE}
-     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#FALSE
-     * FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#SOURCE
      * SOURCE}: Optional WKT starting point from {@code samplePoints} for the
      * solver. The default behavior for the endpoint is to use time to
@@ -290,6 +244,34 @@ public class MatchGraphRequest implements IndexedRecord {
      * than zero (default) then the additional cost of this unit load
      * multiplied by the total dropped load will be added over to the trip cost
      * to the demand location.  The default value is '0.0'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#MAX_NUM_THREADS
+     * MAX_NUM_THREADS}: For the {@code markov_chain} solver only. If specified
+     * (greater than zero), the maximum number of threads will not be greater
+     * than the specified value. It can be lower due to the memory and the
+     * number cores available. Default value of zero allows the algorithm to
+     * set the maximal number of threads within these constraints.  The default
+     * value is '0'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_LIMIT
+     * TRUCK_SERVICE_LIMIT}: For the {@code match_supply_demand} solver only.
+     * If specified (greather than zero), any truck's total service cost
+     * (distance or time) will be limited by the specified value including
+     * multiple rounds (if set).  The default value is '0.0'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#ENABLE_TRUCK_REUSE
+     * ENABLE_TRUCK_REUSE}: For the {@code match_supply_demand} solver only. If
+     * specified (true), all trucks can be scheduled for second rounds from
+     * their originating depots.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#TRUE
+     * TRUE}: Allows reusing trucks for scheduling again.
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     * FALSE}: Trucks are scheduled only once from their depots.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -305,9 +287,8 @@ public class MatchGraphRequest implements IndexedRecord {
 
         /**
          * Maximum number of potentially matching road segments for each sample
-         * point. For the {@code markov_chain} solver, the default is 3; for
-         * the {@code incremental_weighted}, the default is 5.  The default
-         * value is ''.
+         * point. For the {@code markov_chain} solver, the default is 3.  The
+         * default value is '3'.
          */
         public static final String NUM_SEGMENTS = "num_segments";
 
@@ -325,51 +306,6 @@ public class MatchGraphRequest implements IndexedRecord {
          * number, the more accurate the solution.  The default value is '9'.
          */
         public static final String CHAIN_WIDTH = "chain_width";
-
-        /**
-         * For the {@code incremental_weighted} solver only. Maximum number of
-         * samples along the path on which to solve.  The default value is
-         * '200'.
-         */
-        public static final String MAX_SOLVE_LENGTH = "max_solve_length";
-
-        /**
-         * For the {@code incremental_weighted} solver only. Time window, also
-         * known as sampling period, in which points are favored. To determine
-         * the raw window value, the {@code time_window_width} value is
-         * multiplied by the mean sample time (in seconds) across all points,
-         * e.g., if {@code time_window_width} is 30 and the mean sample time is
-         * 2 seconds, points that are sampled greater than 60 seconds after the
-         * previous point are no longer favored in the solution.  The default
-         * value is '30'.
-         */
-        public static final String TIME_WINDOW_WIDTH = "time_window_width";
-
-        /**
-         * For the {@code incremental_weighted} solver only. If {@code true}, a
-         * loop will be detected and traversed even if it would make a shorter
-         * path to ignore the loop.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
-         */
-        public static final String DETECT_LOOPS = "detect_loops";
-
-        /**
-         * Filter out the folded paths.
-         */
-        public static final String TRUE = "true";
-
-        /**
-         * Do not filter out the folded paths
-         */
-        public static final String FALSE = "false";
 
         /**
          * Optional WKT starting point from {@code samplePoints} for the
@@ -403,6 +339,16 @@ public class MatchGraphRequest implements IndexedRecord {
          * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
          */
         public static final String PARTIAL_LOADING = "partial_loading";
+
+        /**
+         * Allows reusing trucks for scheduling again.
+         */
+        public static final String TRUE = "true";
+
+        /**
+         * Trucks are scheduled only once from their depots.
+         */
+        public static final String FALSE = "false";
 
         /**
          * For the {@code match_supply_demand} solver only. This is the cutoff
@@ -492,6 +438,42 @@ public class MatchGraphRequest implements IndexedRecord {
          */
         public static final String UNIT_UNLOADING_COST = "unit_unloading_cost";
 
+        /**
+         * For the {@code markov_chain} solver only. If specified (greater than
+         * zero), the maximum number of threads will not be greater than the
+         * specified value. It can be lower due to the memory and the number
+         * cores available. Default value of zero allows the algorithm to set
+         * the maximal number of threads within these constraints.  The default
+         * value is '0'.
+         */
+        public static final String MAX_NUM_THREADS = "max_num_threads";
+
+        /**
+         * For the {@code match_supply_demand} solver only. If specified
+         * (greather than zero), any truck's total service cost (distance or
+         * time) will be limited by the specified value including multiple
+         * rounds (if set).  The default value is '0.0'.
+         */
+        public static final String TRUCK_SERVICE_LIMIT = "truck_service_limit";
+
+        /**
+         * For the {@code match_supply_demand} solver only. If specified
+         * (true), all trucks can be scheduled for second rounds from their
+         * originating depots.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}: Allows
+         * reusing trucks for scheduling again.
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}: Trucks
+         * are scheduled only once from their depots.
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
+         */
+        public static final String ENABLE_TRUCK_REUSE = "enable_truck_reuse";
+
         private Options() {  }
     }
 
@@ -549,14 +531,6 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     intensive. Related options: {@code num_segments} and
      *                     {@code chain_width}.
      *                             <li> {@link
-     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#INCREMENTAL_WEIGHTED
-     *                     INCREMENTAL_WEIGHTED}: Matches {@code samplePoints}
-     *                     to the graph using time and/or distance between
-     *                     points to influence one or more shortest paths
-     *                     across the sample points. Related options: {@code
-     *                     num_segments}, {@code max_solve_length}, {@code
-     *                     time_window_width}, and {@code detect_loops}.
-     *                             <li> {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_OD_PAIRS
      *                     MATCH_OD_PAIRS}: Matches {@code samplePoints} to
      *                     find the most probable path between origin and
@@ -604,9 +578,8 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 com.gpudb.protocol.MatchGraphRequest.Options#NUM_SEGMENTS
      *                 NUM_SEGMENTS}: Maximum number of potentially matching
      *                 road segments for each sample point. For the {@code
-     *                 markov_chain} solver, the default is 3; for the {@code
-     *                 incremental_weighted}, the default is 5.  The default
-     *                 value is ''.
+     *                 markov_chain} solver, the default is 3.  The default
+     *                 value is '3'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SEARCH_RADIUS
      *                 SEARCH_RADIUS}: Maximum search radius used when snapping
@@ -619,39 +592,6 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 Length of the sample points lookahead window within the
      *                 Markov kernel; the larger the number, the more accurate
      *                 the solution.  The default value is '9'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_SOLVE_LENGTH
-     *                 MAX_SOLVE_LENGTH}: For the {@code incremental_weighted}
-     *                 solver only. Maximum number of samples along the path on
-     *                 which to solve.  The default value is '200'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#TIME_WINDOW_WIDTH
-     *                 TIME_WINDOW_WIDTH}: For the {@code incremental_weighted}
-     *                 solver only. Time window, also known as sampling period,
-     *                 in which points are favored. To determine the raw window
-     *                 value, the {@code time_window_width} value is multiplied
-     *                 by the mean sample time (in seconds) across all points,
-     *                 e.g., if {@code time_window_width} is 30 and the mean
-     *                 sample time is 2 seconds, points that are sampled
-     *                 greater than 60 seconds after the previous point are no
-     *                 longer favored in the solution.  The default value is
-     *                 '30'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#DETECT_LOOPS
-     *                 DETECT_LOOPS}: For the {@code incremental_weighted}
-     *                 solver only. If {@code true}, a loop will be detected
-     *                 and traversed even if it would make a shorter path to
-     *                 ignore the loop.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SOURCE
      *                 SOURCE}: Optional WKT starting point from {@code
@@ -765,6 +705,41 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 load multiplied by the total dropped load will be added
      *                 over to the trip cost to the demand location.  The
      *                 default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_NUM_THREADS
+     *                 MAX_NUM_THREADS}: For the {@code markov_chain} solver
+     *                 only. If specified (greater than zero), the maximum
+     *                 number of threads will not be greater than the specified
+     *                 value. It can be lower due to the memory and the number
+     *                 cores available. Default value of zero allows the
+     *                 algorithm to set the maximal number of threads within
+     *                 these constraints.  The default value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_LIMIT
+     *                 TRUCK_SERVICE_LIMIT}: For the {@code
+     *                 match_supply_demand} solver only. If specified (greather
+     *                 than zero), any truck's total service cost (distance or
+     *                 time) will be limited by the specified value including
+     *                 multiple rounds (if set).  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#ENABLE_TRUCK_REUSE
+     *                 ENABLE_TRUCK_REUSE}: For the {@code match_supply_demand}
+     *                 solver only. If specified (true), all trucks can be
+     *                 scheduled for second rounds from their originating
+     *                 depots.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 Allows reusing trucks for scheduling again.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: Trucks are scheduled only once from their
+     *                 depots.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -860,13 +835,6 @@ public class MatchGraphRequest implements IndexedRecord {
      *         computationally intensive. Related options: {@code num_segments}
      *         and {@code chain_width}.
      *                 <li> {@link
-     *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#INCREMENTAL_WEIGHTED
-     *         INCREMENTAL_WEIGHTED}: Matches {@code samplePoints} to the graph
-     *         using time and/or distance between points to influence one or
-     *         more shortest paths across the sample points. Related options:
-     *         {@code num_segments}, {@code max_solve_length}, {@code
-     *         time_window_width}, and {@code detect_loops}.
-     *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_OD_PAIRS
      *         MATCH_OD_PAIRS}: Matches {@code samplePoints} to find the most
      *         probable path between origin and destination pairs with cost
@@ -910,14 +878,6 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     the most accurate but also the most computationally
      *                     intensive. Related options: {@code num_segments} and
      *                     {@code chain_width}.
-     *                             <li> {@link
-     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#INCREMENTAL_WEIGHTED
-     *                     INCREMENTAL_WEIGHTED}: Matches {@code samplePoints}
-     *                     to the graph using time and/or distance between
-     *                     points to influence one or more shortest paths
-     *                     across the sample points. Related options: {@code
-     *                     num_segments}, {@code max_solve_length}, {@code
-     *                     time_window_width}, and {@code detect_loops}.
      *                             <li> {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_OD_PAIRS
      *                     MATCH_OD_PAIRS}: Matches {@code samplePoints} to
@@ -1008,8 +968,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.MatchGraphRequest.Options#NUM_SEGMENTS
      *         NUM_SEGMENTS}: Maximum number of potentially matching road
      *         segments for each sample point. For the {@code markov_chain}
-     *         solver, the default is 3; for the {@code incremental_weighted},
-     *         the default is 5.  The default value is ''.
+     *         solver, the default is 3.  The default value is '3'.
      *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#SEARCH_RADIUS
      *         SEARCH_RADIUS}: Maximum search radius used when snapping sample
@@ -1022,36 +981,6 @@ public class MatchGraphRequest implements IndexedRecord {
      *         of the sample points lookahead window within the Markov kernel;
      *         the larger the number, the more accurate the solution.  The
      *         default value is '9'.
-     *                 <li> {@link
-     *         com.gpudb.protocol.MatchGraphRequest.Options#MAX_SOLVE_LENGTH
-     *         MAX_SOLVE_LENGTH}: For the {@code incremental_weighted} solver
-     *         only. Maximum number of samples along the path on which to
-     *         solve.  The default value is '200'.
-     *                 <li> {@link
-     *         com.gpudb.protocol.MatchGraphRequest.Options#TIME_WINDOW_WIDTH
-     *         TIME_WINDOW_WIDTH}: For the {@code incremental_weighted} solver
-     *         only. Time window, also known as sampling period, in which
-     *         points are favored. To determine the raw window value, the
-     *         {@code time_window_width} value is multiplied by the mean sample
-     *         time (in seconds) across all points, e.g., if {@code
-     *         time_window_width} is 30 and the mean sample time is 2 seconds,
-     *         points that are sampled greater than 60 seconds after the
-     *         previous point are no longer favored in the solution.  The
-     *         default value is '30'.
-     *                 <li> {@link
-     *         com.gpudb.protocol.MatchGraphRequest.Options#DETECT_LOOPS
-     *         DETECT_LOOPS}: For the {@code incremental_weighted} solver only.
-     *         If {@code true}, a loop will be detected and traversed even if
-     *         it would make a shorter path to ignore the loop.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#SOURCE SOURCE}:
      *         Optional WKT starting point from {@code samplePoints} for the
@@ -1158,6 +1087,37 @@ public class MatchGraphRequest implements IndexedRecord {
      *         this unit load multiplied by the total dropped load will be
      *         added over to the trip cost to the demand location.  The default
      *         value is '0.0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#MAX_NUM_THREADS
+     *         MAX_NUM_THREADS}: For the {@code markov_chain} solver only. If
+     *         specified (greater than zero), the maximum number of threads
+     *         will not be greater than the specified value. It can be lower
+     *         due to the memory and the number cores available. Default value
+     *         of zero allows the algorithm to set the maximal number of
+     *         threads within these constraints.  The default value is '0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_LIMIT
+     *         TRUCK_SERVICE_LIMIT}: For the {@code match_supply_demand} solver
+     *         only. If specified (greather than zero), any truck's total
+     *         service cost (distance or time) will be limited by the specified
+     *         value including multiple rounds (if set).  The default value is
+     *         '0.0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#ENABLE_TRUCK_REUSE
+     *         ENABLE_TRUCK_REUSE}: For the {@code match_supply_demand} solver
+     *         only. If specified (true), all trucks can be scheduled for
+     *         second rounds from their originating depots.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}: Allows
+     *         reusing trucks for scheduling again.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}:
+     *         Trucks are scheduled only once from their depots.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1180,9 +1140,8 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 com.gpudb.protocol.MatchGraphRequest.Options#NUM_SEGMENTS
      *                 NUM_SEGMENTS}: Maximum number of potentially matching
      *                 road segments for each sample point. For the {@code
-     *                 markov_chain} solver, the default is 3; for the {@code
-     *                 incremental_weighted}, the default is 5.  The default
-     *                 value is ''.
+     *                 markov_chain} solver, the default is 3.  The default
+     *                 value is '3'.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SEARCH_RADIUS
      *                 SEARCH_RADIUS}: Maximum search radius used when snapping
@@ -1195,39 +1154,6 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 Length of the sample points lookahead window within the
      *                 Markov kernel; the larger the number, the more accurate
      *                 the solution.  The default value is '9'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_SOLVE_LENGTH
-     *                 MAX_SOLVE_LENGTH}: For the {@code incremental_weighted}
-     *                 solver only. Maximum number of samples along the path on
-     *                 which to solve.  The default value is '200'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#TIME_WINDOW_WIDTH
-     *                 TIME_WINDOW_WIDTH}: For the {@code incremental_weighted}
-     *                 solver only. Time window, also known as sampling period,
-     *                 in which points are favored. To determine the raw window
-     *                 value, the {@code time_window_width} value is multiplied
-     *                 by the mean sample time (in seconds) across all points,
-     *                 e.g., if {@code time_window_width} is 30 and the mean
-     *                 sample time is 2 seconds, points that are sampled
-     *                 greater than 60 seconds after the previous point are no
-     *                 longer favored in the solution.  The default value is
-     *                 '30'.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#DETECT_LOOPS
-     *                 DETECT_LOOPS}: For the {@code incremental_weighted}
-     *                 solver only. If {@code true}, a loop will be detected
-     *                 and traversed even if it would make a shorter path to
-     *                 ignore the loop.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SOURCE
      *                 SOURCE}: Optional WKT starting point from {@code
@@ -1341,6 +1267,41 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 load multiplied by the total dropped load will be added
      *                 over to the trip cost to the demand location.  The
      *                 default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_NUM_THREADS
+     *                 MAX_NUM_THREADS}: For the {@code markov_chain} solver
+     *                 only. If specified (greater than zero), the maximum
+     *                 number of threads will not be greater than the specified
+     *                 value. It can be lower due to the memory and the number
+     *                 cores available. Default value of zero allows the
+     *                 algorithm to set the maximal number of threads within
+     *                 these constraints.  The default value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_LIMIT
+     *                 TRUCK_SERVICE_LIMIT}: For the {@code
+     *                 match_supply_demand} solver only. If specified (greather
+     *                 than zero), any truck's total service cost (distance or
+     *                 time) will be limited by the specified value including
+     *                 multiple rounds (if set).  The default value is '0.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#ENABLE_TRUCK_REUSE
+     *                 ENABLE_TRUCK_REUSE}: For the {@code match_supply_demand}
+     *                 solver only. If specified (true), all trucks can be
+     *                 scheduled for second rounds from their originating
+     *                 depots.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 Allows reusing trucks for scheduling again.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: Trucks are scheduled only once from their
+     *                 depots.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

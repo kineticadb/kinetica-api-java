@@ -167,8 +167,9 @@ public class GrantPermissionTableRequest implements IndexedRecord {
      *                   access. Must be an existing table, collection, or
      *                   view. If a collection, the permission also applies to
      *                   tables and views in the collection.
-     * @param filterExpression  Reserved for future use.  The default value is
-     *                          ''.
+     * @param filterExpression  Optional filter expression to apply to this
+     *                          grant.  Only rows that match the filter will be
+     *                          affected.  The default value is ''.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -297,7 +298,9 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Reserved for future use.  The default value is ''.
+     * @return Optional filter expression to apply to this grant.  Only rows
+     *         that match the filter will be affected.  The default value is
+     *         ''.
      * 
      */
     public String getFilterExpression() {
@@ -306,8 +309,9 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param filterExpression  Reserved for future use.  The default value is
-     *                          ''.
+     * @param filterExpression  Optional filter expression to apply to this
+     *                          grant.  Only rows that match the filter will be
+     *                          affected.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -676,13 +676,9 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Empty array if the {@code get_sizes} option is {@code false}.
-     *         Otherwise, sizes of the respective tables represented in {@code
-     *         tableNames}. For all but track data types, this is simply the
-     *         number of total objects in a table. For track types, since each
-     *         track semantically contains many individual objects, the {@code
-     *         sizes} are the counts of conceptual tracks (each of which may be
-     *         associated with multiple objects).
+     * @return If {@code get_sizes} is {@code true}, an array containing the
+     *         number of records of each corresponding table in {@code
+     *         tableNames}.  Otherwise, an empty array.
      * 
      */
     public List<Long> getSizes() {
@@ -691,14 +687,9 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param sizes  Empty array if the {@code get_sizes} option is {@code
-     *               false}. Otherwise, sizes of the respective tables
-     *               represented in {@code tableNames}. For all but track data
-     *               types, this is simply the number of total objects in a
-     *               table. For track types, since each track semantically
-     *               contains many individual objects, the {@code sizes} are
-     *               the counts of conceptual tracks (each of which may be
-     *               associated with multiple objects).
+     * @param sizes  If {@code get_sizes} is {@code true}, an array containing
+     *               the number of records of each corresponding table in
+     *               {@code tableNames}.  Otherwise, an empty array.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -710,12 +701,10 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Empty array if the {@code get_sizes} option is {@code false}.
-     *         Otherwise, number of total objects in the respective tables
-     *         represented in {@code tableNames}. For all but track data types,
-     *         this is the same as {@code sizes}. For track types, since each
-     *         track semantically contains many individual objects, {@code
-     *         fullSizes} is the count of total objects.
+     * @return If {@code get_sizes} is {@code true}, an array containing the
+     *         number of records of each corresponding table in {@code
+     *         tableNames} (same values as {@code sizes}).  Otherwise, an empty
+     *         array.
      * 
      */
     public List<Long> getFullSizes() {
@@ -724,13 +713,10 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param fullSizes  Empty array if the {@code get_sizes} option is {@code
-     *                   false}. Otherwise, number of total objects in the
-     *                   respective tables represented in {@code tableNames}.
-     *                   For all but track data types, this is the same as
-     *                   {@code sizes}. For track types, since each track
-     *                   semantically contains many individual objects, {@code
-     *                   fullSizes} is the count of total objects.
+     * @param fullSizes  If {@code get_sizes} is {@code true}, an array
+     *                   containing the number of records of each corresponding
+     *                   table in {@code tableNames} (same values as {@code
+     *                   sizes}).  Otherwise, an empty array.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -742,13 +728,14 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Empty array if the {@code get_sizes} option is {@code false}.
-     *         Otherwise, number of unfiltered objects in the cross product of
-     *         the sub-tables in the joined-tables represented in {@code
+     * @return If {@code get_sizes} is {@code true}, an array containing the
+     *         number of unfiltered records in the cross product of the
+     *         sub-tables of each corresponding join-table in {@code
      *         tableNames}. For simple tables, this number will be the same as
-     *         {@code sizes}.  For join-tables this value gives the number of
+     *         {@code sizes}.  For join-tables, this value gives the number of
      *         joined-table rows that must be processed by any aggregate
-     *         functions operating on the table.
+     *         functions operating on the table.  Otherwise, (if {@code
+     *         get_sizes} is {@code false}), an empty array.
      * 
      */
     public List<Double> getJoinSizes() {
@@ -757,14 +744,16 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param joinSizes  Empty array if the {@code get_sizes} option is {@code
-     *                   false}. Otherwise, number of unfiltered objects in the
-     *                   cross product of the sub-tables in the joined-tables
-     *                   represented in {@code tableNames}. For simple tables,
+     * @param joinSizes  If {@code get_sizes} is {@code true}, an array
+     *                   containing the number of unfiltered records in the
+     *                   cross product of the sub-tables of each corresponding
+     *                   join-table in {@code tableNames}. For simple tables,
      *                   this number will be the same as {@code sizes}.  For
-     *                   join-tables this value gives the number of
+     *                   join-tables, this value gives the number of
      *                   joined-table rows that must be processed by any
      *                   aggregate functions operating on the table.
+     *                   Otherwise, (if {@code get_sizes} is {@code false}), an
+     *                   empty array.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -776,8 +765,8 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return -1 if the {@code get_sizes} option is {@code false}. Otherwise,
-     *         the sum of the elements of {@code sizes}.
+     * @return If {@code get_sizes} is {@code true}, the sum of the elements of
+     *         {@code sizes}.  Otherwise, -1.
      * 
      */
     public long getTotalSize() {
@@ -786,8 +775,8 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param totalSize  -1 if the {@code get_sizes} option is {@code false}.
-     *                   Otherwise, the sum of the elements of {@code sizes}.
+     * @param totalSize  If {@code get_sizes} is {@code true}, the sum of the
+     *                   elements of {@code sizes}.  Otherwise, -1.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -799,8 +788,9 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return -1 if the {@code get_sizes} option is {@code false}. The sum of
-     *         the elements of {@code fullSizes}.
+     * @return If {@code get_sizes} is {@code true}, the sum of the elements of
+     *         {@code fullSizes} (same value as {@code totalSize}).  Otherwise,
+     *         -1.
      * 
      */
     public long getTotalFullSize() {
@@ -809,9 +799,9 @@ public class ShowTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param totalFullSize  -1 if the {@code get_sizes} option is {@code
-     *                       false}. The sum of the elements of {@code
-     *                       fullSizes}.
+     * @param totalFullSize  If {@code get_sizes} is {@code true}, the sum of
+     *                       the elements of {@code fullSizes} (same value as
+     *                       {@code totalSize}).  Otherwise, -1.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -22,10 +22,11 @@ import org.apache.avro.generic.IndexedRecord;
  * and views it contains. If {@code tableName} is empty, information about all
  * collections and top-level tables and views can be returned.
  * <p>
- * If the option {@code get_sizes} is set to {@code true}, then the sizes
- * (objects and elements) of each table are returned (in {@code sizes} and
- * {@code fullSizes}), along with the total number of objects in the requested
- * table (in {@code totalSize} and {@code totalFullSize}).
+ * If the option {@code get_sizes} is set to
+ * {@code true}, then the number of records
+ * in each table is returned (in {@code sizes} and
+ * {@code fullSizes}), along with the total number of objects across all
+ * requested tables (in {@code totalSize} and {@code totalFullSize}).
  * <p>
  * For a collection, setting the {@code show_children} option to {@code false}
  * returns only information about the collection itself; setting {@code
@@ -75,7 +76,8 @@ public class ShowTableRequest implements IndexedRecord {
      * com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}.
      *         <li> {@link
      * com.gpudb.protocol.ShowTableRequest.Options#GET_SIZES GET_SIZES}: If
-     * {@code true} then the table sizes will be returned; blank, otherwise.
+     * {@code true} then the number of records in each table, along with a
+     * cumulative count, will be returned; blank, otherwise.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#TRUE
@@ -153,8 +155,8 @@ public class ShowTableRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * If {@code true} then the table sizes will be returned; blank,
-         * otherwise.
+         * If {@code true} then the number of records in each table, along with
+         * a cumulative count, will be returned; blank, otherwise.
          * Supported values:
          * <ul>
          *         <li> {@link com.gpudb.protocol.ShowTableRequest.Options#TRUE
@@ -256,7 +258,8 @@ public class ShowTableRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowTableRequest.Options#GET_SIZES
-     *                 GET_SIZES}: If {@code true} then the table sizes will be
+     *                 GET_SIZES}: If {@code true} then the number of records
+     *                 in each table, along with a cumulative count, will be
      *                 returned; blank, otherwise.
      *                 Supported values:
      *                 <ul>
@@ -370,8 +373,9 @@ public class ShowTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}.
      *                 <li> {@link
      *         com.gpudb.protocol.ShowTableRequest.Options#GET_SIZES
-     *         GET_SIZES}: If {@code true} then the table sizes will be
-     *         returned; blank, otherwise.
+     *         GET_SIZES}: If {@code true} then the number of records in each
+     *         table, along with a cumulative count, will be returned; blank,
+     *         otherwise.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -453,7 +457,8 @@ public class ShowTableRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ShowTableRequest.Options#TRUE TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowTableRequest.Options#GET_SIZES
-     *                 GET_SIZES}: If {@code true} then the table sizes will be
+     *                 GET_SIZES}: If {@code true} then the number of records
+     *                 in each table, along with a cumulative count, will be
      *                 returned; blank, otherwise.
      *                 Supported values:
      *                 <ul>

@@ -108,7 +108,9 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CLEAR_CACHE
      * CLEAR_CACHE}: Clears cached results.  Useful to allow repeated timing of
-     * endpoints. Value string is ignored
+     * endpoints.  Value string is the name of the table for which to clear the
+     * cached results, or an empty string to clear the cached results for all
+     * tables.
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#COMMUNICATOR_TEST
      * COMMUNICATOR_TEST}: Invoke the communicator test and report timing
@@ -132,10 +134,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
      * FALSE}
      * </ul>
-     *         <li> {@link
-     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#BULK_ADD_TEST
-     * BULK_ADD_TEST}: Invoke the bulk add test and report timing results.
-     * Value string is ignored.
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
      * NETWORK_SPEED}: Invoke the network speed test and report timing results.
@@ -267,7 +265,9 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
         /**
          * Clears cached results.  Useful to allow repeated timing of
-         * endpoints. Value string is ignored
+         * endpoints.  Value string is the name of the table for which to clear
+         * the cached results, or an empty string to clear the cached results
+         * for all tables.
          */
         public static final String CLEAR_CACHE = "clear_cache";
 
@@ -297,12 +297,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * </ul>
          */
         public static final String SET_MESSAGE_TIMERS_ENABLED = "set_message_timers_enabled";
-
-        /**
-         * Invoke the bulk add test and report timing results. Value string is
-         * ignored.
-         */
-        public static final String BULK_ADD_TEST = "bulk_add_test";
 
         /**
          * Invoke the network speed test and report timing results. Value
@@ -473,8 +467,10 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CLEAR_CACHE
      *                            CLEAR_CACHE}: Clears cached results.  Useful
-     *                            to allow repeated timing of endpoints. Value
-     *                            string is ignored
+     *                            to allow repeated timing of endpoints.  Value
+     *                            string is the name of the table for which to
+     *                            clear the cached results, or an empty string
+     *                            to clear the cached results for all tables.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#COMMUNICATOR_TEST
      *                            COMMUNICATOR_TEST}: Invoke the communicator
@@ -504,11 +500,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
      *                            FALSE}
      *                            </ul>
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#BULK_ADD_TEST
-     *                            BULK_ADD_TEST}: Invoke the bulk add test and
-     *                            report timing results. Value string is
-     *                            ignored.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
      *                            NETWORK_SPEED}: Invoke the network speed test
@@ -656,7 +647,9 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CLEAR_CACHE
      *         CLEAR_CACHE}: Clears cached results.  Useful to allow repeated
-     *         timing of endpoints. Value string is ignored
+     *         timing of endpoints.  Value string is the name of the table for
+     *         which to clear the cached results, or an empty string to clear
+     *         the cached results for all tables.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#COMMUNICATOR_TEST
      *         COMMUNICATOR_TEST}: Invoke the communicator test and report
@@ -682,10 +675,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
      *         FALSE}
      *         </ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#BULK_ADD_TEST
-     *         BULK_ADD_TEST}: Invoke the bulk add test and report timing
-     *         results. Value string is ignored.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
      *         NETWORK_SPEED}: Invoke the network speed test and report timing
@@ -824,8 +813,10 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#CLEAR_CACHE
      *                            CLEAR_CACHE}: Clears cached results.  Useful
-     *                            to allow repeated timing of endpoints. Value
-     *                            string is ignored
+     *                            to allow repeated timing of endpoints.  Value
+     *                            string is the name of the table for which to
+     *                            clear the cached results, or an empty string
+     *                            to clear the cached results for all tables.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#COMMUNICATOR_TEST
      *                            COMMUNICATOR_TEST}: Invoke the communicator
@@ -855,11 +846,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#FALSE
      *                            FALSE}
      *                            </ul>
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#BULK_ADD_TEST
-     *                            BULK_ADD_TEST}: Invoke the bulk add test and
-     *                            report timing results. Value string is
-     *                            ignored.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#NETWORK_SPEED
      *                            NETWORK_SPEED}: Invoke the network speed test
