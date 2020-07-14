@@ -2,7 +2,16 @@
 
 ## Version 7.0
 
-### Version 7.0.17.0 - 2020-07-06
+### Version 7.0.17.1 - 2020-07-14
+
+#### Added
+-   GPUdb.Options member serverConnectionTimeout which controls the
+    server connection timeout (not the request timeout).  The
+    value is given in milliseconds.  The default value is 3 seconds
+    (3000).
+
+
+### Version 7.0.17.0 - 2020-07-01
 
 #### Note
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.

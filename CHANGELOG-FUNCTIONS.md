@@ -2,8 +2,6 @@
 
 ## Version 7.0
 
-### Version 7.0.17.0 - 2020-07-06
-
 #### Changed Endpoints
 
 ##### Non-breaking Changes

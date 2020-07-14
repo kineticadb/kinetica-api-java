@@ -64,15 +64,15 @@ import org.xerial.snappy.Snappy;
  */
 public abstract class GPUdbBase {
 
-    // The amount of time for checking if a given IP/hostname is good (1 second)
-    private static final int CONNECTION_TIMEOUT = 1000;
+    // The amount of time for checking if a given IP/hostname is good (3 seconds)
+    private static final int DEFAULT_SERVER_CONNECTION_TIMEOUT = 3000;
 
     // The number of times that the API will attempt to submit a host
     // manager endpoint request.  We need this in case the user chose
     // a bad host manager port.  We don't want to go into an infinite
     // loop
     private static final int HOST_MANAGER_SUBMIT_REQUEST_RETRY_COUNT = 3;
-    
+
     // The maxium number of connections across all or an individual host
     private static final int DEFAULT_MAX_TOTAL_CONNECTIONS    = 40;
     private static final int DEFAULT_MAX_CONNECTIONS_PER_HOST = 40;
@@ -93,8 +93,9 @@ public abstract class GPUdbBase {
         private Map<String, String> httpHeaders = new HashMap<>();
         private int hmPort = 9300;  // Default host manager port
         private int timeout;
-        private int maxTotalConnections   = DEFAULT_MAX_TOTAL_CONNECTIONS;
-        private int maxConnectionsPerHost = DEFAULT_MAX_CONNECTIONS_PER_HOST;
+        private int serverConnectionTimeout = DEFAULT_SERVER_CONNECTION_TIMEOUT;
+        private int maxTotalConnections     = DEFAULT_MAX_TOTAL_CONNECTIONS;
+        private int maxConnectionsPerHost   = DEFAULT_MAX_CONNECTIONS_PER_HOST;
 
         /**
          * Gets the URL of the primary cluster of the HA environment.
@@ -217,9 +218,26 @@ public abstract class GPUdbBase {
          * @return  the timeout value
          *
          * @see #setTimeout(int)
+         * @see #getServerConnectionTimeout()
          */
         public int getTimeout() {
             return timeout;
+        }
+
+        /**
+         * Gets the server connection timeout value, in milliseconds, after
+         * which an inability to establish a connection with the GPUdb server
+         * will result in requests being aborted.  A timeout of zero is interpreted
+         * as an infinite timeout. Note that this is different from the request
+         * timeout.
+         *
+         * @return  the connection timeout value
+         *
+         * @see #getTimeout()
+         * @see #setServerConnectionTimeout(int)
+         */
+        public int getServerConnectionTimeout() {
+            return serverConnectionTimeout;
         }
 
         /**
@@ -470,6 +488,29 @@ public abstract class GPUdbBase {
         }
 
         /**
+         * Sets the server connection timeout value, in milliseconds, after
+         * which an inability to establish a connection with the GPUdb server
+         * will result in requests being aborted.  A timeout of zero is interpreted
+         * as an infinite timeout. Note that this is different from the request
+         *
+         * The default is 3000, which is equivalent to 3 seconds.
+         *
+         * @param value  the server connection timeout value
+         * @return       the current {@link Options} instance
+         *
+         * @see #getServerConnectionTimeout()
+         */
+        public Options setServerConnectionTimeout(int value) {
+            if (value < 0) {
+                throw new IllegalArgumentException("Server connection timeout "
+                                                   + "must be greater than or equal to zero.");
+            }
+
+            serverConnectionTimeout = value;
+            return this;
+        }
+
+        /**
          * Sets the maximum number of connections, across all hosts, allowed at
          * any given time.  Must be 1 at a minimum.  The default value is 40.
          *
@@ -648,7 +689,7 @@ public abstract class GPUdbBase {
         }
     }
 
-    
+
     /**
      * Pass-through OutputStream that counts the number of bytes written to it
      * (for diagnostic purposes).
@@ -795,7 +836,7 @@ public abstract class GPUdbBase {
                                                                       HEADER_AUTHORIZATION,
                                                                       HEADER_CONTENT_TYPE
     };
-    
+
     // Fields
 
     private Options   options;
@@ -864,7 +905,7 @@ public abstract class GPUdbBase {
         if ( urls.isEmpty() ) {
             throw new GPUdbException( "Must provide at least one URL; gave none!" );
         }
-        
+
         // Not using an unmodifiable list because we'll have to update it
         // with the HA ring head node addresses
         if ( urls.size() > 1 ) {
@@ -872,7 +913,7 @@ public abstract class GPUdbBase {
         } else {
             this.urls = urls;
         }
-        
+
         init(options);
     }
 
@@ -914,7 +955,7 @@ public abstract class GPUdbBase {
                 // to reduce distractions anyway
             }
         }
-            
+
         // The headers must be set before any call can be made
         httpHeaders = new HashMap<>();
 
@@ -933,13 +974,13 @@ public abstract class GPUdbBase {
 
         // Instantiate the list of HA URL indices around for easy URL picking
         this.haUrlIndices = new ArrayList<>();
-        
+
         // Create URLs for the host manager
         this.hmUrls = new ArrayList<>();
 
         // We haven't switched to any cluster yet
         this.numClusterSwitches = 0;
-        
+
         // Initiate the HttpClient object
         // ------------------------------
         // Create a socket factory in order to use an http connection manager
@@ -957,7 +998,7 @@ public abstract class GPUdbBase {
 
             // Disable hostname verification
             HostnameVerifier allowAllHosts = new NoopHostnameVerifier();
-        
+
             // Create the appropriate SSL socket factory
             if ( sslContext != null ) {
                 secureSocketFactory = new SSLConnectionSocketFactory( sslContext, allowAllHosts );
@@ -979,7 +1020,7 @@ public abstract class GPUdbBase {
         // Set the timeout defaults
         RequestConfig requestConfig = RequestConfig.custom()
             .setSocketTimeout( this.timeout )
-            .setConnectTimeout( CONNECTION_TIMEOUT ) // 1 second
+            .setConnectTimeout( options.getServerConnectionTimeout() )
             .setConnectionRequestTimeout( this.timeout )
             .build();
 
@@ -1093,7 +1134,7 @@ public abstract class GPUdbBase {
     public HASynchronicityMode getHASyncMode() {
         return this.haSyncMode;
     }
-    
+
     /**
      * Gets the username used for authentication to GPUdb. Will be an empty
      * string if none was provided to the {@link GPUdb#GPUdb(String,
@@ -1218,7 +1259,7 @@ public abstract class GPUdbBase {
         if ( (header == null) || (value == null) ) {
             throw new GPUdbException( "'null' not allowed for either header or value!" );
         }
-        
+
         // Ensure that the given header is not a protecte header
         for ( int i = 0; i < PROTECTED_HEADERS.length; ++i ) {
             if ( header == PROTECTED_HEADERS[ i ] ) {
@@ -1226,7 +1267,7 @@ public abstract class GPUdbBase {
                                           + header );
             }
         }
-        
+
         this.httpHeaders.put(header, value);
         return;
     }
@@ -1252,7 +1293,7 @@ public abstract class GPUdbBase {
         if ( header == null) {
             throw new GPUdbException( "Need a non-null value for the header; null given!" );
         }
-        
+
         // Ensure that the given header is not a protecte header
         for ( int i = 0; i < PROTECTED_HEADERS.length; ++i ) {
             if ( header == PROTECTED_HEADERS[ i ] ) {
@@ -1260,13 +1301,13 @@ public abstract class GPUdbBase {
                                           + header );
             }
         }
-        
+
         this.httpHeaders.remove( header );
         return;
     }
 
 
-    
+
     /**
      * Sets the current high availability synchronicity override mode.
      * Until it is changed, all subsequent endpoint calls made to the
@@ -1282,7 +1323,7 @@ public abstract class GPUdbBase {
         this.haSyncMode = syncMode;
     }
 
-    
+
     /**
      * Re-sets the host manager port number for the host manager URLs. Some
      * endpoints are supported only at the host manager, rather than the
@@ -1329,7 +1370,7 @@ public abstract class GPUdbBase {
         return this;
     }
 
-    
+
 
 
     // Helper Functions
@@ -1382,7 +1423,7 @@ public abstract class GPUdbBase {
         }
     }
 
-    
+
     /**
      * Creates/updates the host manager URLs from the regular URLs.
      */
@@ -1481,7 +1522,7 @@ public abstract class GPUdbBase {
 
     /**
      * Switches the host manager  URL of the HA ring cluster.  Check if we've
-     * circled back to the old URL.  If we've circled back to it, then 
+     * circled back to the old URL.  If we've circled back to it, then
      * re-shuffle the list of indices so that the next time, we pick up HA
      * clusters in a different random manner and throw an exception.
      */
@@ -1599,7 +1640,7 @@ public abstract class GPUdbBase {
 
         return connection;
     }
-    
+
 
     /**
      * Automatically resets the host manager port number for the host manager
@@ -1637,7 +1678,7 @@ public abstract class GPUdbBase {
             // update the port
             return false;
         }
-        
+
         // Update the host manager URLs with the correct port number
         try {
             this.setHostManagerPort( hmPort );
@@ -1830,8 +1871,8 @@ public abstract class GPUdbBase {
         // randomly shuffled indices)
         setCurrentUrlIndex( 0 );
     }
-    
-    
+
+
     // Type Management
     // ---------------
 
@@ -1978,7 +2019,7 @@ public abstract class GPUdbBase {
 
     // Helper functions
     // ----------------
-    
+
     protected <T> List<T> decode(Object typeDescriptor, List<ByteBuffer> data) throws GPUdbException {
         return Avro.decode(typeDescriptor, data, threadCount, executor);
     }
@@ -2094,7 +2135,7 @@ public abstract class GPUdbBase {
     }
 
 
-    
+
     // Requests
 
 
@@ -2470,7 +2511,7 @@ public abstract class GPUdbBase {
                 throw new GPUdbExitException( "Error submitting endpoint request: "
                                               + ex.getMessage() );
             }
-            
+
             // Get the status code and the messages of the response
             int statusCode = postResponse.getStatusLine().getStatusCode();
             String responseMessage = postResponse.getStatusLine().getReasonPhrase();
