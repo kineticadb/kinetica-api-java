@@ -33,6 +33,8 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
                 .name("cbVals").type().array().items().stringType().noDefault()
                 .name("cbPointcolorAttr").type().stringType().noDefault()
                 .name("cbPointcolorVals").type().array().items().stringType().noDefault()
+                .name("cbPointalphaAttr").type().stringType().noDefault()
+                .name("cbPointalphaVals").type().array().items().stringType().noDefault()
                 .name("cbPointsizeAttr").type().stringType().noDefault()
                 .name("cbPointsizeVals").type().array().items().stringType().noDefault()
                 .name("cbPointshapeAttr").type().stringType().noDefault()
@@ -96,6 +98,8 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         public static final String DO_SYMBOLOGY = "do_symbology";
 
         public static final String POINTCOLORS = "pointcolors";
+
+        public static final String CB_POINTALPHAS = "cb_pointalphas";
 
         public static final String POINTSIZES = "pointsizes";
 
@@ -172,6 +176,8 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
     private List<String> cbVals;
     private String cbPointcolorAttr;
     private List<String> cbPointcolorVals;
+    private String cbPointalphaAttr;
+    private List<String> cbPointalphaVals;
     private String cbPointsizeAttr;
     private List<String> cbPointsizeVals;
     private String cbPointshapeAttr;
@@ -200,6 +206,8 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         cbVals = new ArrayList<>();
         cbPointcolorAttr = "";
         cbPointcolorVals = new ArrayList<>();
+        cbPointalphaAttr = "";
+        cbPointalphaVals = new ArrayList<>();
         cbPointsizeAttr = "";
         cbPointsizeVals = new ArrayList<>();
         cbPointshapeAttr = "";
@@ -210,7 +218,7 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         cbTransparencyVec = new ArrayList<>();
     }
 
-    public VisualizeImageClassbreakRequest(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbAttr, List<String> cbVals, String cbPointcolorAttr, List<String> cbPointcolorVals, String cbPointsizeAttr, List<String> cbPointsizeVals, String cbPointshapeAttr, List<String> cbPointshapeVals, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options, List<Integer> cbTransparencyVec) {
+    public VisualizeImageClassbreakRequest(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbAttr, List<String> cbVals, String cbPointcolorAttr, List<String> cbPointcolorVals, String cbPointalphaAttr, List<String> cbPointalphaVals, String cbPointsizeAttr, List<String> cbPointsizeVals, String cbPointshapeAttr, List<String> cbPointshapeVals, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options, List<Integer> cbTransparencyVec) {
         this.tableNames = (tableNames == null) ? new ArrayList<String>() : tableNames;
         this.worldTableNames = (worldTableNames == null) ? new ArrayList<String>() : worldTableNames;
         this.xColumnName = (xColumnName == null) ? "" : xColumnName;
@@ -221,6 +229,8 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         this.cbVals = (cbVals == null) ? new ArrayList<String>() : cbVals;
         this.cbPointcolorAttr = (cbPointcolorAttr == null) ? "" : cbPointcolorAttr;
         this.cbPointcolorVals = (cbPointcolorVals == null) ? new ArrayList<String>() : cbPointcolorVals;
+        this.cbPointalphaAttr = (cbPointalphaAttr == null) ? "" : cbPointalphaAttr;
+        this.cbPointalphaVals = (cbPointalphaVals == null) ? new ArrayList<String>() : cbPointalphaVals;
         this.cbPointsizeAttr = (cbPointsizeAttr == null) ? "" : cbPointsizeAttr;
         this.cbPointsizeVals = (cbPointsizeVals == null) ? new ArrayList<String>() : cbPointsizeVals;
         this.cbPointshapeAttr = (cbPointshapeAttr == null) ? "" : cbPointshapeAttr;
@@ -325,6 +335,24 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
 
     public VisualizeImageClassbreakRequest setCbPointcolorVals(List<String> cbPointcolorVals) {
         this.cbPointcolorVals = (cbPointcolorVals == null) ? new ArrayList<String>() : cbPointcolorVals;
+        return this;
+    }
+
+    public String getCbPointalphaAttr() {
+        return cbPointalphaAttr;
+    }
+
+    public VisualizeImageClassbreakRequest setCbPointalphaAttr(String cbPointalphaAttr) {
+        this.cbPointalphaAttr = (cbPointalphaAttr == null) ? "" : cbPointalphaAttr;
+        return this;
+    }
+
+    public List<String> getCbPointalphaVals() {
+        return cbPointalphaVals;
+    }
+
+    public VisualizeImageClassbreakRequest setCbPointalphaVals(List<String> cbPointalphaVals) {
+        this.cbPointalphaVals = (cbPointalphaVals == null) ? new ArrayList<String>() : cbPointalphaVals;
         return this;
     }
 
@@ -502,48 +530,54 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
                 return this.cbPointcolorVals;
 
             case 10:
-                return this.cbPointsizeAttr;
+                return this.cbPointalphaAttr;
 
             case 11:
-                return this.cbPointsizeVals;
+                return this.cbPointalphaVals;
 
             case 12:
-                return this.cbPointshapeAttr;
+                return this.cbPointsizeAttr;
 
             case 13:
-                return this.cbPointshapeVals;
+                return this.cbPointsizeVals;
 
             case 14:
-                return this.minX;
+                return this.cbPointshapeAttr;
 
             case 15:
-                return this.maxX;
+                return this.cbPointshapeVals;
 
             case 16:
-                return this.minY;
+                return this.minX;
 
             case 17:
-                return this.maxY;
+                return this.maxX;
 
             case 18:
-                return this.width;
+                return this.minY;
 
             case 19:
-                return this.height;
+                return this.maxY;
 
             case 20:
-                return this.projection;
+                return this.width;
 
             case 21:
-                return this.bgColor;
+                return this.height;
 
             case 22:
-                return this.styleOptions;
+                return this.projection;
 
             case 23:
-                return this.options;
+                return this.bgColor;
 
             case 24:
+                return this.styleOptions;
+
+            case 25:
+                return this.options;
+
+            case 26:
                 return this.cbTransparencyVec;
 
             default:
@@ -596,62 +630,70 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
                 break;
 
             case 10:
-                this.cbPointsizeAttr = (String)value;
+                this.cbPointalphaAttr = (String)value;
                 break;
 
             case 11:
-                this.cbPointsizeVals = (List<String>)value;
+                this.cbPointalphaVals = (List<String>)value;
                 break;
 
             case 12:
-                this.cbPointshapeAttr = (String)value;
+                this.cbPointsizeAttr = (String)value;
                 break;
 
             case 13:
-                this.cbPointshapeVals = (List<String>)value;
+                this.cbPointsizeVals = (List<String>)value;
                 break;
 
             case 14:
-                this.minX = (Double)value;
+                this.cbPointshapeAttr = (String)value;
                 break;
 
             case 15:
-                this.maxX = (Double)value;
+                this.cbPointshapeVals = (List<String>)value;
                 break;
 
             case 16:
-                this.minY = (Double)value;
+                this.minX = (Double)value;
                 break;
 
             case 17:
-                this.maxY = (Double)value;
+                this.maxX = (Double)value;
                 break;
 
             case 18:
-                this.width = (Integer)value;
+                this.minY = (Double)value;
                 break;
 
             case 19:
-                this.height = (Integer)value;
+                this.maxY = (Double)value;
                 break;
 
             case 20:
-                this.projection = (String)value;
+                this.width = (Integer)value;
                 break;
 
             case 21:
-                this.bgColor = (Long)value;
+                this.height = (Integer)value;
                 break;
 
             case 22:
-                this.styleOptions = (Map<String, List<String>>)value;
+                this.projection = (String)value;
                 break;
 
             case 23:
-                this.options = (Map<String, String>)value;
+                this.bgColor = (Long)value;
                 break;
 
             case 24:
+                this.styleOptions = (Map<String, List<String>>)value;
+                break;
+
+            case 25:
+                this.options = (Map<String, String>)value;
+                break;
+
+            case 26:
                 this.cbTransparencyVec = (List<Integer>)value;
                 break;
 
@@ -683,6 +725,8 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
                  && this.cbVals.equals( that.cbVals )
                  && this.cbPointcolorAttr.equals( that.cbPointcolorAttr )
                  && this.cbPointcolorVals.equals( that.cbPointcolorVals )
+                 && this.cbPointalphaAttr.equals( that.cbPointalphaAttr )
+                 && this.cbPointalphaVals.equals( that.cbPointalphaVals )
                  && this.cbPointsizeAttr.equals( that.cbPointsizeAttr )
                  && this.cbPointsizeVals.equals( that.cbPointsizeVals )
                  && this.cbPointshapeAttr.equals( that.cbPointshapeAttr )
@@ -745,6 +789,14 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         builder.append( gd.toString( "cbPointcolorVals" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.cbPointcolorVals ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "cbPointalphaAttr" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.cbPointalphaAttr ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "cbPointalphaVals" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.cbPointalphaVals ) );
         builder.append( ", " );
         builder.append( gd.toString( "cbPointsizeAttr" ) );
         builder.append( ": " );
@@ -824,6 +876,8 @@ public class VisualizeImageClassbreakRequest implements IndexedRecord {
         hashCode = (31 * hashCode) + this.cbVals.hashCode();
         hashCode = (31 * hashCode) + this.cbPointcolorAttr.hashCode();
         hashCode = (31 * hashCode) + this.cbPointcolorVals.hashCode();
+        hashCode = (31 * hashCode) + this.cbPointalphaAttr.hashCode();
+        hashCode = (31 * hashCode) + this.cbPointalphaVals.hashCode();
         hashCode = (31 * hashCode) + this.cbPointsizeAttr.hashCode();
         hashCode = (31 * hashCode) + this.cbPointsizeVals.hashCode();
         hashCode = (31 * hashCode) + this.cbPointshapeAttr.hashCode();

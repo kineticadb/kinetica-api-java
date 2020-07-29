@@ -14718,7 +14718,15 @@ public class GPUdb extends GPUdbBase {
      * key columns must appear in an equality predicate in the expressions.
      * Furthermore each 'pure primary key' predicate must be unique within a
      * given request.  These restrictions can be removed by utilizing some
-     * available options through {@code options}.
+     * available options through {@code options}.Note that this operation can
+     * only be run on an original table and not on a collection or a result
+     * view.
+     * <p>
+     * The {@code update_on_existing_pk} option specifies the record collision
+     * policy for tables with a <a
+     * href="../../../../concepts/tables.html#primary-keys"
+     * target="_top">primary key</a>, and is ignored on tables with no primary
+     * key.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -14758,7 +14766,15 @@ public class GPUdb extends GPUdbBase {
      * key columns must appear in an equality predicate in the expressions.
      * Furthermore each 'pure primary key' predicate must be unique within a
      * given request.  These restrictions can be removed by utilizing some
-     * available options through {@code options}.
+     * available options through {@code options}.Note that this operation can
+     * only be run on an original table and not on a collection or a result
+     * view.
+     * <p>
+     * The {@code update_on_existing_pk} option specifies the record collision
+     * policy for tables with a <a
+     * href="../../../../concepts/tables.html#primary-keys"
+     * target="_top">primary key</a>, and is ignored on tables with no primary
+     * key.
      * 
      * @param <TRequest>  The type of object being added.
      * @param request  Request object containing the parameters for the
@@ -14800,7 +14816,15 @@ public class GPUdb extends GPUdbBase {
      * key columns must appear in an equality predicate in the expressions.
      * Furthermore each 'pure primary key' predicate must be unique within a
      * given request.  These restrictions can be removed by utilizing some
-     * available options through {@code options}.
+     * available options through {@code options}.Note that this operation can
+     * only be run on an original table and not on a collection or a result
+     * view.
+     * <p>
+     * The {@code update_on_existing_pk} option specifies the record collision
+     * policy for tables with a <a
+     * href="../../../../concepts/tables.html#primary-keys"
+     * target="_top">primary key</a>, and is ignored on tables with no primary
+     * key.
      * 
      * @param <TRequest>  The type of object being added.
      * @param typeObjectMap  Type object map used for encoding input objects.
@@ -14849,7 +14873,15 @@ public class GPUdb extends GPUdbBase {
      * key columns must appear in an equality predicate in the expressions.
      * Furthermore each 'pure primary key' predicate must be unique within a
      * given request.  These restrictions can be removed by utilizing some
-     * available options through {@code options}.
+     * available options through {@code options}.Note that this operation can
+     * only be run on an original table and not on a collection or a result
+     * view.
+     * <p>
+     * The {@code update_on_existing_pk} option specifies the record collision
+     * policy for tables with a <a
+     * href="../../../../concepts/tables.html#primary-keys"
+     * target="_top">primary key</a>, and is ignored on tables with no primary
+     * key.
      * 
      * @param <TRequest>  The type of object being added.
      * @param tableName  Table to be updated. Must be a currently existing
@@ -14900,18 +14932,32 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
-     *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
-     *                 behavior when the updated primary key value already
-     *                 exists as described in {@link
-     *                 GPUdb#insertRecords(String, List, Map)}.
+     *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
+     *                 policy for tables with a <a
+     *                 href="../../../../concepts/tables.html#primary-keys"
+     *                 target="_top">primary key</a> when updating columns of
+     *                 the <a
+     *                 href="../../../../concepts/tables.html#primary-keys"
+     *                 target="_top">primary key</a> or inserting new records.
+     *                 If {@code true}, existing records with primary key
+     *                 values that match those of a record being updated or
+     *                 inserted will be replaced by the updated and new
+     *                 records.  If {@code false}, existing records with
+     *                 matching primary key values will remain unchanged, and
+     *                 the updated or new records with primary key values that
+     *                 match those of existing records will be discarded.  If
+     *                 the specified table does not have a primary key, then
+     *                 this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
-     *                 TRUE}
+     *                 TRUE}: Overwrite existing records when updated and
+     *                 inserted records have the same primary keys
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Discard updated and inserted records when the
+     *                 same primary keys already exist
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
@@ -15017,7 +15063,15 @@ public class GPUdb extends GPUdbBase {
      * key columns must appear in an equality predicate in the expressions.
      * Furthermore each 'pure primary key' predicate must be unique within a
      * given request.  These restrictions can be removed by utilizing some
-     * available options through {@code options}.
+     * available options through {@code options}.Note that this operation can
+     * only be run on an original table and not on a collection or a result
+     * view.
+     * <p>
+     * The {@code update_on_existing_pk} option specifies the record collision
+     * policy for tables with a <a
+     * href="../../../../concepts/tables.html#primary-keys"
+     * target="_top">primary key</a>, and is ignored on tables with no primary
+     * key.
      * 
      * @param <TRequest>  The type of object being added.
      * @param typeObjectMap  Type object map used for encoding input objects.
@@ -15069,18 +15123,32 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
-     *                 UPDATE_ON_EXISTING_PK}: Can be used to customize
-     *                 behavior when the updated primary key value already
-     *                 exists as described in {@link
-     *                 GPUdb#insertRecords(TypeObjectMap, String, List, Map)}.
+     *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
+     *                 policy for tables with a <a
+     *                 href="../../../../concepts/tables.html#primary-keys"
+     *                 target="_top">primary key</a> when updating columns of
+     *                 the <a
+     *                 href="../../../../concepts/tables.html#primary-keys"
+     *                 target="_top">primary key</a> or inserting new records.
+     *                 If {@code true}, existing records with primary key
+     *                 values that match those of a record being updated or
+     *                 inserted will be replaced by the updated and new
+     *                 records.  If {@code false}, existing records with
+     *                 matching primary key values will remain unchanged, and
+     *                 the updated or new records with primary key values that
+     *                 match those of existing records will be discarded.  If
+     *                 the specified table does not have a primary key, then
+     *                 this option has no effect.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#TRUE
-     *                 TRUE}
+     *                 TRUE}: Overwrite existing records when updated and
+     *                 inserted records have the same primary keys
      *                         <li> {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
-     *                 FALSE}
+     *                 FALSE}: Discard updated and inserted records when the
+     *                 same primary keys already exist
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#FALSE
@@ -15491,8 +15559,8 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    public VisualizeImageClassbreakResponse visualizeImageClassbreak(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbAttr, List<String> cbVals, String cbPointcolorAttr, List<String> cbPointcolorVals, String cbPointsizeAttr, List<String> cbPointsizeVals, String cbPointshapeAttr, List<String> cbPointshapeVals, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options, List<Integer> cbTransparencyVec) throws GPUdbException {
-        VisualizeImageClassbreakRequest actualRequest_ = new VisualizeImageClassbreakRequest(tableNames, worldTableNames, xColumnName, yColumnName, geometryColumnName, trackIds, cbAttr, cbVals, cbPointcolorAttr, cbPointcolorVals, cbPointsizeAttr, cbPointsizeVals, cbPointshapeAttr, cbPointshapeVals, minX, maxX, minY, maxY, width, height, projection, bgColor, styleOptions, options, cbTransparencyVec);
+    public VisualizeImageClassbreakResponse visualizeImageClassbreak(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbAttr, List<String> cbVals, String cbPointcolorAttr, List<String> cbPointcolorVals, String cbPointalphaAttr, List<String> cbPointalphaVals, String cbPointsizeAttr, List<String> cbPointsizeVals, String cbPointshapeAttr, List<String> cbPointshapeVals, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options, List<Integer> cbTransparencyVec) throws GPUdbException {
+        VisualizeImageClassbreakRequest actualRequest_ = new VisualizeImageClassbreakRequest(tableNames, worldTableNames, xColumnName, yColumnName, geometryColumnName, trackIds, cbAttr, cbVals, cbPointcolorAttr, cbPointcolorVals, cbPointalphaAttr, cbPointalphaVals, cbPointsizeAttr, cbPointsizeVals, cbPointshapeAttr, cbPointshapeVals, minX, maxX, minY, maxY, width, height, projection, bgColor, styleOptions, options, cbTransparencyVec);
         VisualizeImageClassbreakResponse actualResponse_ = new VisualizeImageClassbreakResponse();
         submitRequest("/visualize/image/classbreak", actualRequest_, actualResponse_, false);
         return actualResponse_;
