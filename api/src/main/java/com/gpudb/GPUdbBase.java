@@ -64,8 +64,12 @@ import org.xerial.snappy.Snappy;
  */
 public abstract class GPUdbBase {
 
-    // The amount of time for checking if a given IP/hostname is good (3 seconds)
-    private static final int DEFAULT_SERVER_CONNECTION_TIMEOUT = 3000;
+    // The amount of time for checking if a given IP/hostname is good (10 seconds)
+    private static final int DEFAULT_SERVER_CONNECTION_TIMEOUT = 10000;
+
+    // The amount of time of inactivity after which the connection would be
+    // validated: 200ms
+    private static final int DEFAULT_CONNECTION_INACTIVITY_VALIDATION_TIMEOUT = 200;
 
     // The number of times that the API will attempt to submit a host
     // manager endpoint request.  We need this in case the user chose
@@ -75,7 +79,7 @@ public abstract class GPUdbBase {
 
     // The maxium number of connections across all or an individual host
     private static final int DEFAULT_MAX_TOTAL_CONNECTIONS    = 40;
-    private static final int DEFAULT_MAX_CONNECTIONS_PER_HOST = 40;
+    private static final int DEFAULT_MAX_CONNECTIONS_PER_HOST = 10;
 
     /**
      * A set of configurable options for the GPUdb API. May be passed into the
@@ -93,6 +97,7 @@ public abstract class GPUdbBase {
         private Map<String, String> httpHeaders = new HashMap<>();
         private int hmPort = 9300;  // Default host manager port
         private int timeout;
+        private int connectionInactivityValidationTimeout = DEFAULT_CONNECTION_INACTIVITY_VALIDATION_TIMEOUT;
         private int serverConnectionTimeout = DEFAULT_SERVER_CONNECTION_TIMEOUT;
         private int maxTotalConnections     = DEFAULT_MAX_TOTAL_CONNECTIONS;
         private int maxConnectionsPerHost   = DEFAULT_MAX_CONNECTIONS_PER_HOST;
@@ -206,6 +211,20 @@ public abstract class GPUdbBase {
          */
         public int getHostManagerPort() {
             return hmPort;
+        }
+
+        /**
+         * Gets the period of inactivity (in milliseconds) after
+         * which connection validity would be checked before reusing it.
+         * This is for fine-tuning server connection parameters.  Using the
+         * default of 200ms should suffice for most users.
+         *
+         * @return  the connection inactivity period (in ms)
+         *
+         * @see #setConnectionInactivityValidationTimeout(int)
+         */
+        public int getConnectionInactivityValidationTimeout() {
+            return connectionInactivityValidationTimeout;
         }
 
         /**
@@ -493,7 +512,7 @@ public abstract class GPUdbBase {
          * will result in requests being aborted.  A timeout of zero is interpreted
          * as an infinite timeout. Note that this is different from the request
          *
-         * The default is 3000, which is equivalent to 3 seconds.
+         * The default is 10000, which is equivalent to 10 seconds.
          *
          * @param value  the server connection timeout value
          * @return       the current {@link Options} instance
@@ -507,6 +526,27 @@ public abstract class GPUdbBase {
             }
 
             serverConnectionTimeout = value;
+            return this;
+        }
+
+        /**
+         * Sets the period of inactivity (in milliseconds) after
+         * which connection validity would be checked before reusing it.
+         * This is for fine-tuning server connection parameters.  Using the
+         * default of 200ms should suffice for most users.
+         *
+         * The default is 200 (in milliseconds).
+         *
+         * *Note*: Non-positive value passed to this method disables connection
+         *         validation.  So, use with great caution!
+         *
+         * @param value  the connection inactivity timeout (in ms)
+         * @return       the current {@link Options} instance
+         *
+         * @see #getServerConnectionTimeout()
+         */
+        public Options setConnectionInactivityValidationTimeout(int value) {
+            connectionInactivityValidationTimeout = value;
             return this;
         }
 
@@ -531,7 +571,7 @@ public abstract class GPUdbBase {
 
         /**
          * Sets the maximum number of connections, per host, allowed at
-         * any given time.  Must be 1 at a minimum.  The default value is 40.
+         * any given time.  Must be 1 at a minimum.  The default value is 10.
          *
          * @param value  the maxConnectionsPerHost value
          * @return       the current {@link Options} instance
@@ -1016,6 +1056,7 @@ public abstract class GPUdbBase {
         PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager( connSocketFactoryRegistry );
         connectionManager.setMaxTotal( options.getMaxTotalConnections() );
         connectionManager.setDefaultMaxPerRoute( options.getMaxConnectionsPerHost() );
+        connectionManager.setValidateAfterInactivity( options.getConnectionInactivityValidationTimeout() );
 
         // Set the timeout defaults
         RequestConfig requestConfig = RequestConfig.custom()

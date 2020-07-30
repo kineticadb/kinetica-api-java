@@ -2,6 +2,24 @@
 
 ## Version 7.0
 
+### Version 7.0.18.1 - 2020-07-29
+
+#### Added
+-   GPUdb.Options member connectionInactivityValidationTimeout which controls
+    the period of inactivity after which a connection would be checked
+    for inactivity or stale-ness before leasing to a client.  The value is given
+    in milliseconds.  The default value is 200 ms.  Note that this is for
+    fine-tuning the connection manager, and should be used with deep
+    understanding of how connections are managed.  The default value would
+    likely suffice for most users; we're just letting the user have the control,
+    if they want it.
+
+#### Changed
+-   The default value of GPUdb.Options member serverConnectionTimeout to 10000
+    (equivalent to 10 seconds).
+-   The default value of GPUdb.Options member maxConnectionsPerHost to 10.
+
+
 ### Version 7.0.18.0 - 2020-07-28
 
 #### Note
