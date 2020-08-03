@@ -57,7 +57,7 @@ public final class Type implements Serializable {
             BYTES
         }
 
-        
+
         /**
          * An enumeration of all the Kinetica column types (including
          * sub-types that are determined by the properties used).
@@ -98,7 +98,7 @@ public final class Type implements Serializable {
             WKB
         }
 
-        
+
         private transient String name;
         private transient Class<?> type;
         private transient boolean isNullable;
@@ -264,7 +264,7 @@ public final class Type implements Serializable {
                     columnType = ColumnType.WKB;
                 }
             }
-            
+
         }   // end init
 
         /**
@@ -454,7 +454,7 @@ public final class Type implements Serializable {
 
 
     /**
-     * Creates a {@link Type} object with the specified dynamic schema metadata and 
+     * Creates a {@link Type} object with the specified dynamic schema metadata and
      * encoded dynamic table data.
      *
      * @param schemaString   a String object containing the dynamic schema
@@ -493,7 +493,7 @@ public final class Type implements Serializable {
         // The encoded response is structured column-based; so any element's
         // size (i.e. list size) gives the total number of records
         int recordCount = ((List<?>)data.get(0)).size();
-        
+
         // The number of columns given in the encoded data must match
         // the given schema string
         if (expressions.size() < fieldCount)
@@ -636,7 +636,7 @@ public final class Type implements Serializable {
         return new Type("", columns);
     }
 
-    
+
     private transient String label;
     private transient List<Column> columns;
     private transient Map<String, Integer> columnMap;

@@ -38,6 +38,28 @@ public class FilterByBoxGeometryResponse implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Additional information.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByBoxGeometryResponse.Info#QUALIFIED_VIEW_NAME
+     * QUALIFIED_VIEW_NAME}: The fully qualified name of the view (i.e.
+     * including the schema)
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code info}.
+     */
+    public static final class Info {
+
+        /**
+         * The fully qualified name of the view (i.e. including the schema)
+         */
+        public static final String QUALIFIED_VIEW_NAME = "qualified_view_name";
+
+        private Info() {  }
+    }
+
     private long count;
     private Map<String, String> info;
 
@@ -72,6 +94,13 @@ public class FilterByBoxGeometryResponse implements IndexedRecord {
     /**
      * 
      * @return Additional information.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByBoxGeometryResponse.Info#QUALIFIED_VIEW_NAME
+     *         QUALIFIED_VIEW_NAME}: The fully qualified name of the view (i.e.
+     *         including the schema)
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getInfo() {
@@ -81,6 +110,13 @@ public class FilterByBoxGeometryResponse implements IndexedRecord {
     /**
      * 
      * @param info  Additional information.
+     *              <ul>
+     *                      <li> {@link
+     *              com.gpudb.protocol.FilterByBoxGeometryResponse.Info#QUALIFIED_VIEW_NAME
+     *              QUALIFIED_VIEW_NAME}: The fully qualified name of the view
+     *              (i.e. including the schema)
+     *              </ul>
+     *              The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

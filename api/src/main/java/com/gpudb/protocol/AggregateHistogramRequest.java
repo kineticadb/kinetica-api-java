@@ -17,20 +17,21 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#aggregateHistogram(AggregateHistogramRequest)}.
  * <p>
- * Performs a histogram calculation given a table, a column, and an interval
- * function. The {@code interval} is used to produce bins of that size and the
- * result, computed over the records falling within each bin, is returned.  For
- * each bin, the start value is inclusive, but the end value is
+ * Performs a histogram calculation given a table, a column, and an
+ * interval function. The {@code interval} is used to produce bins of that size
+ * and the result, computed over the records falling within each bin, is
+ * returned.
+ * For each bin, the start value is inclusive, but the end value is
  * exclusive--except for the very last bin for which the end value is also
  * inclusive.  The value returned for each bin is the number of records in it,
- * except when a column name is provided as a {@code value_column}.  In this
- * latter case the sum of the values corresponding to the {@code value_column}
- * is used as the result instead.  The total number of bins requested cannot
- * exceed 10,000.
+ * except when a column name is provided as a
+ * {@code value_column}.  In this latter case the sum of the
+ * values corresponding to the {@code value_column} is used as the
+ * result instead.  The total number of bins requested cannot exceed 10,000.
  * <p>
  * NOTE:  The Kinetica instance being accessed must be running a CUDA
- * (GPU-based) build to service a request that specifies a {@code value_column}
- * option.
+ * (GPU-based)
+ * build to service a request that specifies a {@code value_column}.
  */
 public class AggregateHistogramRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -104,7 +105,10 @@ public class AggregateHistogramRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table or collection.
+     *                   performed. Must be an existing table, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * @param columnName  Name of a column or an expression of one or more
      *                    column names over which the histogram will be
      *                    calculated.
@@ -136,7 +140,10 @@ public class AggregateHistogramRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table on which the operation will be performed. Must
-     *         be an existing table or collection.
+     *         be an existing table, in [schema_name.]table_name format, using
+     *         standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.
      * 
      */
     public String getTableName() {
@@ -146,7 +153,10 @@ public class AggregateHistogramRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table or collection.
+     *                   performed. Must be an existing table, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -119,8 +119,11 @@ public class LockTableRequest implements IndexedRecord {
     /**
      * Constructs a LockTableRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to be locked. It must be a currently
-     *                   existing table, collection, or view.
+     * @param tableName  Name of the table to be locked, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  It must be a
+     *                   currently existing table or view.
      * @param lockType  The type of lock being applied to the table. Setting it
      *                  to {@code status} will return the current lock status
      *                  of the table without changing it.
@@ -157,8 +160,11 @@ public class LockTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to be locked. It must be a currently existing
-     *         table, collection, or view.
+     * @return Name of the table to be locked, in [schema_name.]table_name
+     *         format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  It must be a currently
+     *         existing table or view.
      * 
      */
     public String getTableName() {
@@ -167,8 +173,11 @@ public class LockTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to be locked. It must be a currently
-     *                   existing table, collection, or view.
+     * @param tableName  Name of the table to be locked, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  It must be a
+     *                   currently existing table or view.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

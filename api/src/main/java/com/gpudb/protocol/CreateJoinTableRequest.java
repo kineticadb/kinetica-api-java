@@ -57,13 +57,15 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the join. If
-     * the collection provided is non-existent, the collection will be
-     * automatically created. If empty, then the join will be at the top level.
-     * The default value is ''.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
+     * the join as part of {@code joinTableName} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of a schema for the join. If the schema is
+     * non-existent, it will be automatically created.  The default value is
+     * ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
-     * MAX_QUERY_DIMENSIONS}: Obsolete in GPUdb v7.0
+     * MAX_QUERY_DIMENSIONS}: No longer used.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#OPTIMIZE_LOOKUPS
      * OPTIMIZE_LOOKUPS}: Use more memory to speed up the joining of tables.
@@ -99,15 +101,17 @@ public class CreateJoinTableRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the join. If the collection
-         * provided is non-existent, the collection will be automatically
-         * created. If empty, then the join will be at the top level.  The
+         * [DEPRECATED--please specify the containing schema for the join as
+         * part of {@code joinTableName} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of a schema for the join. If the
+         * schema is non-existent, it will be automatically created.  The
          * default value is ''.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * Obsolete in GPUdb v7.0
+         * No longer used.
          */
         public static final String MAX_QUERY_DIMENSIONS = "max_query_dimensions";
 
@@ -177,12 +181,18 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * Constructs a CreateJoinTableRequest object with the specified
      * parameters.
      * 
-     * @param joinTableName  Name of the join table to be created.  Has the
-     *                       same naming restrictions as <a
-     *                       href="../../../../../concepts/tables.html"
-     *                       target="_top">tables</a>.
-     * @param tableNames  The list of table names composing the join.
-     *                    Corresponds to a SQL statement FROM clause.
+     * @param joinTableName  Name of the join table to be created, in
+     *                       [schema_name.]table_name format, using standard <a
+     *                       href="../../../../../concepts/tables.html#table-name-resolution"
+     *                       target="_top">name resolution rules</a> and
+     *                       meeting <a
+     *                       href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                       target="_top">table naming criteria</a>.
+     * @param tableNames  The list of table names composing the join, each in
+     *                    [schema_name.]table_name format, using standard <a
+     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    target="_top">name resolution rules</a>.  Corresponds
+     *                    to a SQL statement FROM clause.
      * @param columnNames  List of member table columns or column expressions
      *                     to be included in the join. Columns can be prefixed
      *                     with 'table_id.column_name', where 'table_id' is the
@@ -204,14 +214,16 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the join. If the collection provided is
-     *                 non-existent, the collection will be automatically
-     *                 created. If empty, then the join will be at the top
-     *                 level.  The default value is ''.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the join as part of {@code
+     *                 joinTableName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the join. If the schema is non-existent, it will be
+     *                 automatically created.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
-     *                 MAX_QUERY_DIMENSIONS}: Obsolete in GPUdb v7.0
+     *                 MAX_QUERY_DIMENSIONS}: No longer used.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#OPTIMIZE_LOOKUPS
      *                 OPTIMIZE_LOOKUPS}: Use more memory to speed up the
@@ -263,9 +275,12 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the join table to be created.  Has the same naming
-     *         restrictions as <a href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.
+     * @return Name of the join table to be created, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.
      * 
      */
     public String getJoinTableName() {
@@ -274,10 +289,13 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param joinTableName  Name of the join table to be created.  Has the
-     *                       same naming restrictions as <a
-     *                       href="../../../../../concepts/tables.html"
-     *                       target="_top">tables</a>.
+     * @param joinTableName  Name of the join table to be created, in
+     *                       [schema_name.]table_name format, using standard <a
+     *                       href="../../../../../concepts/tables.html#table-name-resolution"
+     *                       target="_top">name resolution rules</a> and
+     *                       meeting <a
+     *                       href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                       target="_top">table naming criteria</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -289,8 +307,11 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The list of table names composing the join.  Corresponds to a
-     *         SQL statement FROM clause.
+     * @return The list of table names composing the join, each in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Corresponds to a SQL
+     *         statement FROM clause.
      * 
      */
     public List<String> getTableNames() {
@@ -299,8 +320,11 @@ public class CreateJoinTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  The list of table names composing the join.
-     *                    Corresponds to a SQL statement FROM clause.
+     * @param tableNames  The list of table names composing the join, each in
+     *                    [schema_name.]table_name format, using standard <a
+     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    target="_top">name resolution rules</a>.  Corresponds
+     *                    to a SQL statement FROM clause.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -385,13 +409,15 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         join. If the collection provided is non-existent, the collection
-     *         will be automatically created. If empty, then the join will be
-     *         at the top level.  The default value is ''.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema for the join as part of {@code joinTableName} and use
+     *         {@link com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *         create the schema if non-existent]  Name of a schema for the
+     *         join. If the schema is non-existent, it will be automatically
+     *         created.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
-     *         MAX_QUERY_DIMENSIONS}: Obsolete in GPUdb v7.0
+     *         MAX_QUERY_DIMENSIONS}: No longer used.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#OPTIMIZE_LOOKUPS
      *         OPTIMIZE_LOOKUPS}: Use more memory to speed up the joining of
@@ -437,14 +463,16 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the join. If the collection provided is
-     *                 non-existent, the collection will be automatically
-     *                 created. If empty, then the join will be at the top
-     *                 level.  The default value is ''.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the join as part of {@code
+     *                 joinTableName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the join. If the schema is non-existent, it will be
+     *                 automatically created.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#MAX_QUERY_DIMENSIONS
-     *                 MAX_QUERY_DIMENSIONS}: Obsolete in GPUdb v7.0
+     *                 MAX_QUERY_DIMENSIONS}: No longer used.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#OPTIMIZE_LOOKUPS
      *                 OPTIMIZE_LOOKUPS}: Use more memory to speed up the

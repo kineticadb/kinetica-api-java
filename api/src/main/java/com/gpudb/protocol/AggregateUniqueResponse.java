@@ -19,6 +19,29 @@ import org.apache.avro.generic.GenericData;
  * com.gpudb.GPUdb#aggregateUnique(AggregateUniqueRequest)}.
  */
 public class AggregateUniqueResponse {
+
+    /**
+     * Additional information.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.RawAggregateUniqueResponse.Info#QUALIFIED_RESULT_TABLE_NAME
+     * QUALIFIED_RESULT_TABLE_NAME}: The fully qualified name of the table
+     * (i.e. including the schema) used to store the results.
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code info}.
+     */
+    public static final class Info {
+
+        /**
+         * The fully qualified name of the table (i.e. including the schema)
+         * used to store the results.
+         */
+        public static final String QUALIFIED_RESULT_TABLE_NAME = "qualified_result_table_name";
+
+        private Info() {  }
+    }
+
     private String tableName;
     private List<Record> data;
     private boolean hasMoreRecords;
@@ -99,6 +122,13 @@ public class AggregateUniqueResponse {
     /**
      * 
      * @return Additional information.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.RawAggregateUniqueResponse.Info#QUALIFIED_RESULT_TABLE_NAME
+     *         QUALIFIED_RESULT_TABLE_NAME}: The fully qualified name of the
+     *         table (i.e. including the schema) used to store the results.
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getInfo() {
@@ -108,6 +138,14 @@ public class AggregateUniqueResponse {
     /**
      * 
      * @param info  Additional information.
+     *              <ul>
+     *                      <li> {@link
+     *              com.gpudb.protocol.RawAggregateUniqueResponse.Info#QUALIFIED_RESULT_TABLE_NAME
+     *              QUALIFIED_RESULT_TABLE_NAME}: The fully qualified name of
+     *              the table (i.e. including the schema) used to store the
+     *              results.
+     *              </ul>
+     *              The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

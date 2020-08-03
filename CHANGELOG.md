@@ -1,6 +1,73 @@
 # GPUdb Java API Changelog
 
+## Version 7.1
+
+### Version 7.1.0.0 - TBD
+
+#### Added
+-   Support for intra-cluster, also known as N+1, failover.
+-   Support for logging.
+-   GPUdb.Options options (solely handled by getters and setters):
+    -   clusterReconnectCount -- The number of times the API tries to
+                                 reconnect to the same cluster (when a
+                                 failover event has been triggered), before
+                                 actually failing over to any available backup
+                                 cluster.  Does not apply when only a single
+                                 cluster is available.  Default is 1.
+    -   disableFailover -- Indicates whether to disable failover upon failures
+                           (both high availability--or inter-cluster--failover
+                           and N+1--or intra-cluster--failover).  Default false.
+    -   disableAutoDiscovery -- Indicates whether to disable automatic discovery
+                                of backup clusters or worker rank URLs.  If set
+                                to true, then the GPUdb object will not connect
+                                to the database at initialization time, and will
+                                only work with the URLs given.  Default is false.
+    -   haFailoverOrder -- The order of choosing backup clusters in the event of
+                           high availability failover.  Default is
+                           GPUdb.HAFailoverOrder.RANDOM.
+    -   hostnameRegex -- A regular expression to apply to all automatically
+                         discovered URLs for the Kinetica servers.  No default.
+    -   initialConnectionAttemptTimeout -- The timeout used when trying to
+                                           establish a connection to the database
+                                           at GPUdb initialization.  The value is
+                                           given in milliseconds. The default is
+                                           0, which prevents any retry and stores
+                                           the user given URLs as is.
+    -   intraClusterFailoverRetryCount -- The number of times the API tries to
+                                          recover during an intra-cluster (N+1)
+                                          failover scenario.  This positive
+                                          integer determines how many times all
+                                          known ranks will be queried before
+                                          giving up (in the first of two stages
+                                          of recovery process).  The default is 3.
+    -   intraClusterFailoverTimeout -- The amount of time the API tries to
+                                       recover during an intra-cluster (N+1)
+                                       failover scenario.  Given in milliseconds.
+                                       Default is 0 (infinite). This time interval
+                                       spans both stages of the N+1 failover 
+                                       recovery process.
+    -   loggingLevel -- The logging level to use for the API.  By default,
+                        logging is turned off.  If logging properties are set up
+                        by the user (via log4j.properties etc.), then that will
+                        be honored only if the default logging level is used.
+                        Otherwise, the programmatically set level will be used.
+
+
+#### Changed
+-   BulkInserter default retry count to 1 (from 0).
+
+
+#### Deprecated
+-   GPUdb.setHostManagerPort(int) method.  The user must set the host manager
+    at GPUdb initialization; changing the host manager port will not be
+    permitted post-initialization.  The method is now a no-op (until removed
+    in 7.2 or a later version).
+
+
+
+
 ## Version 7.0
+
 
 ### Version 7.0.18.1 - 2020-07-29
 
@@ -21,6 +88,7 @@
 
 
 ### Version 7.0.18.0 - 2020-07-28
+
 
 #### Note
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
@@ -65,19 +133,10 @@
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 
-
-### Version 7.0.14.0 - 2020-03-25
-
-#### Note
--   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
-
-
-
-### Version 7.0.13.0 - 2020-03-10
+### Version 7.0.13.0 - TBD
 
 #### Note
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
-
 
 
 ### Version 7.0.12.1 - 2020-03-04

@@ -215,7 +215,12 @@ public class CreateGraphRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateGraphRequest.Options#GRAPH_TABLE GRAPH_TABLE}:
      * If specified, the created graph is also created as a table with the
-     * given name and following identifier columns: 'EDGE_ID', 'EDGE_NODE1_ID',
+     * given name, in [schema_name.]table_name format, using standard <a
+     * href="../../../../../concepts/tables.html#table-name-resolution"
+     * target="_top">name resolution rules</a> and meeting <a
+     * href="../../../../../concepts/tables.html#table-naming-criteria"
+     * target="_top">table naming criteria</a>.  The table will have the
+     * following identifier columns: 'EDGE_ID', 'EDGE_NODE1_ID',
      * 'EDGE_NODE2_ID'. If left blank, no table is created.  The default value
      * is ''.
      *         <li> {@link
@@ -424,9 +429,14 @@ public class CreateGraphRequest implements IndexedRecord {
 
         /**
          * If specified, the created graph is also created as a table with the
-         * given name and following identifier columns: 'EDGE_ID',
-         * 'EDGE_NODE1_ID', 'EDGE_NODE2_ID'. If left blank, no table is
-         * created.  The default value is ''.
+         * given name, in [schema_name.]table_name format, using standard <a
+         * href="../../../../../concepts/tables.html#table-name-resolution"
+         * target="_top">name resolution rules</a> and meeting <a
+         * href="../../../../../concepts/tables.html#table-naming-criteria"
+         * target="_top">table naming criteria</a>.  The table will have the
+         * following identifier columns: 'EDGE_ID', 'EDGE_NODE1_ID',
+         * 'EDGE_NODE2_ID'. If left blank, no table is created.  The default
+         * value is ''.
          */
         public static final String GRAPH_TABLE = "graph_table";
 
@@ -742,10 +752,15 @@ public class CreateGraphRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#GRAPH_TABLE
      *                 GRAPH_TABLE}: If specified, the created graph is also
-     *                 created as a table with the given name and following
-     *                 identifier columns: 'EDGE_ID', 'EDGE_NODE1_ID',
-     *                 'EDGE_NODE2_ID'. If left blank, no table is created.
-     *                 The default value is ''.
+     *                 created as a table with the given name, in
+     *                 [schema_name.]table_name format, using standard <a
+     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>.  The table will
+     *                 have the following identifier columns: 'EDGE_ID',
+     *                 'EDGE_NODE1_ID', 'EDGE_NODE2_ID'. If left blank, no
+     *                 table is created.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#REMOVE_LABEL_ONLY
      *                 REMOVE_LABEL_ONLY}: When RESTRICTIONS on labeled
@@ -1204,9 +1219,15 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateGraphRequest.Options#GRAPH_TABLE
      *         GRAPH_TABLE}: If specified, the created graph is also created as
-     *         a table with the given name and following identifier columns:
-     *         'EDGE_ID', 'EDGE_NODE1_ID', 'EDGE_NODE2_ID'. If left blank, no
-     *         table is created.  The default value is ''.
+     *         a table with the given name, in [schema_name.]table_name format,
+     *         using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  The table will have
+     *         the following identifier columns: 'EDGE_ID', 'EDGE_NODE1_ID',
+     *         'EDGE_NODE2_ID'. If left blank, no table is created.  The
+     *         default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateGraphRequest.Options#REMOVE_LABEL_ONLY
      *         REMOVE_LABEL_ONLY}: When RESTRICTIONS on labeled entities
@@ -1420,10 +1441,15 @@ public class CreateGraphRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#GRAPH_TABLE
      *                 GRAPH_TABLE}: If specified, the created graph is also
-     *                 created as a table with the given name and following
-     *                 identifier columns: 'EDGE_ID', 'EDGE_NODE1_ID',
-     *                 'EDGE_NODE2_ID'. If left blank, no table is created.
-     *                 The default value is ''.
+     *                 created as a table with the given name, in
+     *                 [schema_name.]table_name format, using standard <a
+     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>.  The table will
+     *                 have the following identifier columns: 'EDGE_ID',
+     *                 'EDGE_NODE1_ID', 'EDGE_NODE2_ID'. If left blank, no
+     *                 table is created.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#REMOVE_LABEL_ONLY
      *                 REMOVE_LABEL_ONLY}: When RESTRICTIONS on labeled

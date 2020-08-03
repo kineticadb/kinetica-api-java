@@ -70,6 +70,53 @@ public class CreateJobRequest implements IndexedRecord {
         private RequestEncoding() {  }
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateJobRequest.Options#REMOVE_JOB_ON_COMPLETE
+     * REMOVE_JOB_ON_COMPLETE}:
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateJobRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.CreateJobRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     *         <li> {@link com.gpudb.protocol.CreateJobRequest.Options#JOB_TAG
+     * JOB_TAG}: Tag to use for submitted job. The same tag could be used on
+     * backup cluster to retrieve response for the job. Tags can use letter,
+     * numbers, '_' and '-'
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * Supported values:
+         * <ul>
+         *         <li> {@link com.gpudb.protocol.CreateJobRequest.Options#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateJobRequest.Options#FALSE FALSE}
+         * </ul>
+         */
+        public static final String REMOVE_JOB_ON_COMPLETE = "remove_job_on_complete";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
+         * Tag to use for submitted job. The same tag could be used on backup
+         * cluster to retrieve response for the job. Tags can use letter,
+         * numbers, '_' and '-'
+         */
+        public static final String JOB_TAG = "job_tag";
+
+        private Options() {  }
+    }
+
     private String endpoint;
     private String requestEncoding;
     private ByteBuffer data;
@@ -123,8 +170,25 @@ public class CreateJobRequest implements IndexedRecord {
      *                 appropriate endpoint to see what values must (or can) be
      *                 specified.  If this parameter is used, then {@code
      *                 requestEncoding} must be {@code json}.
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJobRequest.Options#REMOVE_JOB_ON_COMPLETE
+     *                 REMOVE_JOB_ON_COMPLETE}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJobRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJobRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJobRequest.Options#JOB_TAG
+     *                 JOB_TAG}: Tag to use for submitted job. The same tag
+     *                 could be used on backup cluster to retrieve response for
+     *                 the job. Tags can use letter, numbers, '_' and '-'
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public CreateJobRequest(String endpoint, String requestEncoding, ByteBuffer data, String dataStr, Map<String, String> options) {
@@ -274,7 +338,25 @@ public class CreateJobRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.  The default value is an empty {@link Map}.
+     * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateJobRequest.Options#REMOVE_JOB_ON_COMPLETE
+     *         REMOVE_JOB_ON_COMPLETE}:
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateJobRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateJobRequest.Options#FALSE FALSE}
+     *         </ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateJobRequest.Options#JOB_TAG JOB_TAG}:
+     *         Tag to use for submitted job. The same tag could be used on
+     *         backup cluster to retrieve response for the job. Tags can use
+     *         letter, numbers, '_' and '-'
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -283,8 +365,25 @@ public class CreateJobRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJobRequest.Options#REMOVE_JOB_ON_COMPLETE
+     *                 REMOVE_JOB_ON_COMPLETE}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJobRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJobRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJobRequest.Options#JOB_TAG
+     *                 JOB_TAG}: Tag to use for submitted job. The same tag
+     *                 could be used on backup cluster to retrieve response for
+     *                 the job. Tags can use letter, numbers, '_' and '-'
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

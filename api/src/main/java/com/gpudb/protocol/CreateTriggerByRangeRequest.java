@@ -19,20 +19,24 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createTriggerByRange(CreateTriggerByRangeRequest)}.
  * <p>
- * Sets up a simple range trigger for a column_name for one or more tables.
- * Once the trigger has been activated, any record added to the listed
+ * Sets up a simple range trigger for a column_name for one or more
+ * tables. Once the trigger has been activated, any record added to the listed
  * tables(s) via {@link
  * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} with the chosen
- * column_name's value falling within the specified range will trip the
- * trigger. All such records will be queued at the trigger port (by default
- * '9001' but able to be retrieved via {@link
- * com.gpudb.GPUdb#showSystemStatus(ShowSystemStatusRequest)}) for any
- * listening client to collect. Active triggers can be cancelled by using the
- * {@link com.gpudb.GPUdb#clearTrigger(ClearTriggerRequest)} endpoint or by
+ * column_name's value
+ * falling within the specified range will trip the trigger. All such records
+ * will
+ * be queued at the trigger port (by default '9001' but able to be retrieved
+ * via
+ * {@link com.gpudb.GPUdb#showSystemStatus(ShowSystemStatusRequest)}) for any
+ * listening client to collect. Active
+ * triggers can be cancelled by using the {@link
+ * com.gpudb.GPUdb#clearTrigger(ClearTriggerRequest)} endpoint or by
  * clearing all relevant tables.
  * <p>
  * The output returns the trigger handle as well as indicating success or
- * failure of the trigger activation.
+ * failure
+ * of the trigger activation.
  */
 public class CreateTriggerByRangeRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -84,7 +88,10 @@ public class CreateTriggerByRangeRequest implements IndexedRecord {
      * @param requestId  User-created ID for the trigger. The ID can be
      *                   alphanumeric, contain symbols, and must contain at
      *                   least one character.
-     * @param tableNames  Tables on which the trigger will be active.
+     * @param tableNames  Tables on which the trigger will be active, each in
+     *                    [schema_name.]table_name format, using standard <a
+     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    target="_top">name resolution rules</a>.
      * @param columnName  Name of a numeric column_name on which the trigger is
      *                    activated.
      * @param min  The lower bound (inclusive) for the trigger range.
@@ -128,7 +135,10 @@ public class CreateTriggerByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Tables on which the trigger will be active.
+     * @return Tables on which the trigger will be active, each in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.
      * 
      */
     public List<String> getTableNames() {
@@ -137,7 +147,10 @@ public class CreateTriggerByRangeRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  Tables on which the trigger will be active.
+     * @param tableNames  Tables on which the trigger will be active, each in
+     *                    [schema_name.]table_name format, using standard <a
+     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

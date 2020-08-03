@@ -19,21 +19,25 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createTriggerByArea(CreateTriggerByAreaRequest)}.
  * <p>
- * Sets up an area trigger mechanism for two column_names for one or more
- * tables. (This function is essentially the two-dimensional version of {@link
- * com.gpudb.GPUdb#createTriggerByRange(CreateTriggerByRangeRequest)}.) Once
- * the trigger has been activated, any record added to the listed tables(s) via
- * {@link com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} with the
+ * Sets up an area trigger mechanism for two column_names for one or
+ * more tables. (This function is essentially the two-dimensional version of
+ * {@link com.gpudb.GPUdb#createTriggerByRange(CreateTriggerByRangeRequest)}.)
+ * Once the trigger has been activated, any
+ * record added to the listed tables(s) via {@link
+ * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)} with the
  * chosen columns' values falling within the specified region will trip the
  * trigger. All such records will be queued at the trigger port (by default
- * '9001' but able to be retrieved via {@link
+ * '9001'
+ * but able to be retrieved via {@link
  * com.gpudb.GPUdb#showSystemStatus(ShowSystemStatusRequest)}) for any
- * listening client to collect. Active triggers can be cancelled by using the
+ * listening
+ * client to collect. Active triggers can be cancelled by using the
  * {@link com.gpudb.GPUdb#clearTrigger(ClearTriggerRequest)} endpoint or by
  * clearing all relevant tables.
  * <p>
  * The output returns the trigger handle as well as indicating success or
- * failure of the trigger activation.
+ * failure
+ * of the trigger activation.
  */
 public class CreateTriggerByAreaRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -91,7 +95,10 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
      *                   alphanumeric, contain symbols, and must contain at
      *                   least one character.
      * @param tableNames  Names of the tables on which the trigger will be
-     *                    activated and maintained.
+     *                    activated and maintained, each in
+     *                    [schema_name.]table_name format, using standard <a
+     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    target="_top">name resolution rules</a>.
      * @param xColumnName  Name of a numeric column on which the trigger is
      *                     activated. Usually 'x' for geospatial data points.
      * @param xVector  The respective coordinate values for the region on which
@@ -145,7 +152,10 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
     /**
      * 
      * @return Names of the tables on which the trigger will be activated and
-     *         maintained.
+     *         maintained, each in [schema_name.]table_name format, using
+     *         standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.
      * 
      */
     public List<String> getTableNames() {
@@ -155,7 +165,10 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
     /**
      * 
      * @param tableNames  Names of the tables on which the trigger will be
-     *                    activated and maintained.
+     *                    activated and maintained, each in
+     *                    [schema_name.]table_name format, using standard <a
+     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

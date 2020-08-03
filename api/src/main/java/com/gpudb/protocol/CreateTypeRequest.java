@@ -18,13 +18,13 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createType(CreateTypeRequest)}.
  * <p>
- * Creates a new type describing the layout or schema of a table. The type
- * definition is a JSON string describing the fields (i.e. columns) of the
- * type. Each field consists of a name and a data type. Supported data types
- * are: double, float, int, long, string, and bytes. In addition one or more
- * properties can be specified for each column which customize the memory usage
- * and query availability of that column.  Note that some properties are
- * mutually exclusive--i.e. they cannot be specified for any given column
+ * Creates a new type describing the layout of a table. The type definition is
+ * a JSON string describing the fields (i.e. columns) of the type. Each field
+ * consists of a name and a data type. Supported data types are: double, float,
+ * int, long, string, and bytes. In addition, one or more properties can be
+ * specified for each column which customize the memory usage and query
+ * availability of that column.  Note that some properties are mutually
+ * exclusive--i.e. they cannot be specified for any given column
  * simultaneously.  One example of mutually exclusive properties are {@code
  * data} and {@code store_only}.
  * <p>
@@ -33,7 +33,8 @@ import org.apache.avro.generic.IndexedRecord;
  * href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
  * key</a> can be set across one or more columns. If a primary key is
  * specified, then a uniqueness constraint is enforced, in that only a single
- * object can exist with a given primary key. When {@link
+ * object can exist with a given primary key column value (or set of values for
+ * the key columns, if using a composite primary key). When {@link
  * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest) inserting} data
  * into a table with a primary key, depending on the parameters in the request,
  * incoming objects with primary key values that match existing objects will
@@ -128,6 +129,9 @@ public class CreateTypeRequest implements IndexedRecord {
      * for 'string' columns.  It represents an unsigned long integer data type.
      * The string can only be interpreted as an unsigned long data type with
      * minimum value of zero, and maximum value of 18446744073709551615.
+     *         <li> {@link com.gpudb.protocol.CreateTypeRequest.Properties#UUID
+     * UUID}: Valid only for 'string' columns.  It represents an uuid data
+     * type. Internally, it is stored as an 128-bit ingeger.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#DECIMAL DECIMAL}: Valid
      * only for 'string' columns.  It represents a SQL type NUMERIC(19, 4) data
@@ -309,6 +313,12 @@ public class CreateTypeRequest implements IndexedRecord {
          * 18446744073709551615.
          */
         public static final String ULONG = "ulong";
+
+        /**
+         * Valid only for 'string' columns.  It represents an uuid data type.
+         * Internally, it is stored as an 128-bit ingeger.
+         */
+        public static final String UUID = "uuid";
 
         /**
          * Valid only for 'string' columns.  It represents a SQL type
@@ -569,6 +579,11 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    string can only be interpreted as an unsigned long
      *                    data type with minimum value of zero, and maximum
      *                    value of 18446744073709551615.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.CreateTypeRequest.Properties#UUID
+     *                    UUID}: Valid only for 'string' columns.  It
+     *                    represents an uuid data type. Internally, it is
+     *                    stored as an 128-bit ingeger.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DECIMAL
      *                    DECIMAL}: Valid only for 'string' columns.  It
@@ -839,6 +854,10 @@ public class CreateTypeRequest implements IndexedRecord {
      *         unsigned long data type with minimum value of zero, and maximum
      *         value of 18446744073709551615.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateTypeRequest.Properties#UUID UUID}:
+     *         Valid only for 'string' columns.  It represents an uuid data
+     *         type. Internally, it is stored as an 128-bit ingeger.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#DECIMAL
      *         DECIMAL}: Valid only for 'string' columns.  It represents a SQL
      *         type NUMERIC(19, 4) data type.  There can be up to 15 digits
@@ -1039,6 +1058,11 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    string can only be interpreted as an unsigned long
      *                    data type with minimum value of zero, and maximum
      *                    value of 18446744073709551615.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.CreateTypeRequest.Properties#UUID
+     *                    UUID}: Valid only for 'string' columns.  It
+     *                    represents an uuid data type. Internally, it is
+     *                    stored as an 128-bit ingeger.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DECIMAL
      *                    DECIMAL}: Valid only for 'string' columns.  It

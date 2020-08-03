@@ -18,11 +18,13 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#insertRecordsRandom(InsertRecordsRandomRequest)}.
  * <p>
  * Generates a specified number of random records and adds them to the given
- * table. There is an optional parameter that allows the user to customize the
- * ranges of the column values. It also allows the user to specify linear
- * profiles for some or all columns in which case linear values are generated
- * rather than random ones. Only individual tables are supported for this
- * operation.
+ * table.
+ * There is an optional parameter that allows the user to customize the ranges
+ * of
+ * the column values. It also allows the user to specify linear profiles for
+ * some
+ * or all columns in which case linear values are generated rather than random
+ * ones. Only individual tables are supported for this operation.
  * <p>
  * This operation is synchronous, meaning that a response will not be returned
  * until all random records are fully available.
@@ -72,8 +74,8 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      * something equivalent to: 'options' = {'seed': { 'value': 100 } }
      * <ul>
      *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsRandomRequest.Options#VALUE VALUE}: Pass
-     * the seed value here.
+     * com.gpudb.protocol.InsertRecordsRandomRequest.Options#VALUE VALUE}: The
+     * seed value to use
      * </ul>
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsRandomRequest.Options#ALL ALL}: This key
@@ -243,13 +245,13 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
          * <ul>
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsRandomRequest.Options#VALUE VALUE}:
-         * Pass the seed value here.
+         * The seed value to use
          * </ul>
          */
         public static final String SEED = "seed";
 
         /**
-         * Pass the seed value here.
+         * The seed value to use
          */
         public static final String VALUE = "value";
 
@@ -484,9 +486,11 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      * Constructs an InsertRecordsRandomRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Table to which random records will be added. Must be
-     *                   an existing table.  Also, must be an individual table,
-     *                   not a collection of tables, nor a view of a table.
+     * @param tableName  Table to which random records will be added, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table, not a view.
      * @param count  Number of records to generate.
      * @param options  Optional parameter to pass in specifications for the
      *                 randomness of the values.  This map is different from
@@ -514,7 +518,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsRandomRequest.Options#VALUE
-     *                 VALUE}: Pass the seed value here.
+     *                 VALUE}: The seed value to use
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsRandomRequest.Options#ALL
@@ -702,9 +706,11 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Table to which random records will be added. Must be an existing
-     *         table.  Also, must be an individual table, not a collection of
-     *         tables, nor a view of a table.
+     * @return Table to which random records will be added, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be an existing
+     *         table, not a view.
      * 
      */
     public String getTableName() {
@@ -713,9 +719,11 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Table to which random records will be added. Must be
-     *                   an existing table.  Also, must be an individual table,
-     *                   not a collection of tables, nor a view of a table.
+     * @param tableName  Table to which random records will be added, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table, not a view.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -772,7 +780,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsRandomRequest.Options#VALUE
-     *         VALUE}: Pass the seed value here.
+     *         VALUE}: The seed value to use
      *         </ul>
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsRandomRequest.Options#ALL ALL}:
@@ -967,7 +975,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsRandomRequest.Options#VALUE
-     *                 VALUE}: Pass the seed value here.
+     *                 VALUE}: The seed value to use
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsRandomRequest.Options#ALL

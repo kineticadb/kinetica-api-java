@@ -17,16 +17,19 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)}.
  * <p>
- * Retrieves records from a given table, optionally filtered by an expression
- * and/or sorted by a column. This operation can be performed on tables, views,
- * or on homogeneous collections (collections containing tables of all the same
- * type). Records can be returned encoded as binary, json or geojson.
+ * Retrieves records from a given table, optionally filtered by an
+ * expression and/or sorted by a column. This operation can be performed on
+ * tables
+ * and views. Records can be returned encoded as binary, json, or geojson.
  * <p>
  * This operation supports paging through the data via the {@code offset} and
- * {@code limit} parameters. Note that when paging through a table, if the
- * table (or the underlying table in case of a view) is updated (records are
- * inserted, deleted or modified) the records retrieved may differ between
- * calls based on the updates applied.
+ * {@code limit} parameters.  Note that when paging through a table, if the
+ * table
+ * (or the underlying table in case of a view) is updated (records are
+ * inserted,
+ * deleted or modified) the records retrieved may differ between calls based on
+ * the
+ * updates applied.
  */
 public class GetRecordsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -54,7 +57,8 @@ public class GetRecordsRequest implements IndexedRecord {
 
 
     /**
-     * Specifies the encoding for returned records.
+     * Specifies the encoding for returned records; one of {@code binary},
+     * {@code json}, or {@code geojson}.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.GetRecordsRequest.Encoding#BINARY
@@ -191,9 +195,11 @@ public class GetRecordsRequest implements IndexedRecord {
     /**
      * Constructs a GetRecordsRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table from which the records will be
-     *                   fetched. Must be a table, view or homogeneous
-     *                   collection.
+     * @param tableName  Name of the table or view from which the records will
+     *                   be fetched, in [schema_name.]table_name format, using
+     *                   standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
      *                the results).  The default value is 0.The minimum allowed
@@ -269,9 +275,11 @@ public class GetRecordsRequest implements IndexedRecord {
     /**
      * Constructs a GetRecordsRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table from which the records will be
-     *                   fetched. Must be a table, view or homogeneous
-     *                   collection.
+     * @param tableName  Name of the table or view from which the records will
+     *                   be fetched, in [schema_name.]table_name format, using
+     *                   standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
      *                the results).  The default value is 0.The minimum allowed
@@ -287,7 +295,8 @@ public class GetRecordsRequest implements IndexedRecord {
      *               if more records exist in the result to be fetched, and
      *               {@code offset} & {@code limit} to request subsequent pages
      *               of results.  The default value is -9999.
-     * @param encoding  Specifies the encoding for returned records.
+     * @param encoding  Specifies the encoding for returned records; one of
+     *                  {@code binary}, {@code json}, or {@code geojson}.
      *                  Supported values:
      *                  <ul>
      *                          <li> {@link
@@ -362,8 +371,10 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table from which the records will be fetched. Must
-     *         be a table, view or homogeneous collection.
+     * @return Name of the table or view from which the records will be
+     *         fetched, in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.
      * 
      */
     public String getTableName() {
@@ -372,9 +383,11 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table from which the records will be
-     *                   fetched. Must be a table, view or homogeneous
-     *                   collection.
+     * @param tableName  Name of the table or view from which the records will
+     *                   be fetched, in [schema_name.]table_name format, using
+     *                   standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -453,7 +466,8 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Specifies the encoding for returned records.
+     * @return Specifies the encoding for returned records; one of {@code
+     *         binary}, {@code json}, or {@code geojson}.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -473,7 +487,8 @@ public class GetRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param encoding  Specifies the encoding for returned records.
+     * @param encoding  Specifies the encoding for returned records; one of
+     *                  {@code binary}, {@code json}, or {@code geojson}.
      *                  Supported values:
      *                  <ul>
      *                          <li> {@link

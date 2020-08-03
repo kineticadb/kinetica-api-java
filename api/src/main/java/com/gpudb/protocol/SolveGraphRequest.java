@@ -19,17 +19,21 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#solveGraph(SolveGraphRequest)}.
  * <p>
- * Solves an existing graph for a type of problem (e.g., shortest path, page
- * rank, travelling salesman, etc.) using source nodes, destination nodes, and
+ * Solves an existing graph for a type of problem (e.g., shortest path,
+ * page rank, travelling salesman, etc.) using source nodes, destination nodes,
+ * and
  * additional, optional weights and restrictions.
  * <p>
- * IMPORTANT: It's highly recommended that you review the <a
- * href="../../../../../graph_solver/network_graph_solver.html"
- * target="_top">Network Graphs & Solvers</a> concepts documentation, the <a
- * href="../../../../../graph_solver/examples/graph_rest_guide.html"
- * target="_top">Graph REST Tutorial</a>, and/or some <a
- * href="../../../../../graph_solver/examples.html#solve-graph"
- * target="_top">/solve/graph examples</a> before using this endpoint.
+ * IMPORTANT: It's highly recommended that you review the
+ * <a href="../../../../../graph_solver/network_graph_solver.html"
+ * target="_top">Network Graphs & Solvers</a>
+ * concepts documentation, the
+ * <a href="../../../../../graph_solver/examples/graph_rest_guide.html"
+ * target="_top">Graph REST Tutorial</a>,
+ * and/or some
+ * <a href="../../../../../graph_solver/examples.html#match-graph"
+ * target="_top">/match/graph examples</a>
+ * before using this endpoint.
  */
 public class SolveGraphRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -291,6 +295,34 @@ public class SolveGraphRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_EDGE_PATH
+     * OUTPUT_EDGE_PATH}: If true then concatenated edge ids will be added as
+     * the EDGE path column of the solution table for each source and target
+     * pair in shortest path solves.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.SolveGraphRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_WKT_PATH
+     * OUTPUT_WKT_PATH}: If true then concatenated wkt line segments will be
+     * added as the Wktroute column of the solution table for each source and
+     * target pair in shortest path solves.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.SolveGraphRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -445,6 +477,38 @@ public class SolveGraphRequest implements IndexedRecord {
          */
         public static final String ACCURATE_SNAPS = "accurate_snaps";
 
+        /**
+         * If true then concatenated edge ids will be added as the EDGE path
+         * column of the solution table for each source and target pair in
+         * shortest path solves.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
+         */
+        public static final String OUTPUT_EDGE_PATH = "output_edge_path";
+
+        /**
+         * If true then concatenated wkt line segments will be added as the
+         * Wktroute column of the solution table for each source and target
+         * pair in shortest path solves.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
+         */
+        public static final String OUTPUT_WKT_PATH = "output_wkt_path";
+
         private Options() {  }
     }
 
@@ -584,7 +648,10 @@ public class SolveGraphRequest implements IndexedRecord {
      *                          For {@code BACKHAUL_ROUTING}, this list depicts
      *                          the remote assets.  The default value is an
      *                          empty {@link List}.
-     * @param solutionTable  Name of the table to store the solution.  The
+     * @param solutionTable  Name of the table to store the solution, in
+     *                       [schema_name.]table_name format, using standard <a
+     *                       href="../../../../../concepts/tables.html#table-name-resolution"
+     *                       target="_top">name resolution rules</a>.  The
      *                       default value is 'graph_solutions'.
      * @param options  Additional parameters
      *                 <ul>
@@ -721,6 +788,39 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 less than 1 percent. In batch runs, since the
      *                 performance is of utmost importance, the option is
      *                 always considered 'false'.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_EDGE_PATH
+     *                 OUTPUT_EDGE_PATH}: If true then concatenated edge ids
+     *                 will be added as the EDGE path column of the solution
+     *                 table for each source and target pair in shortest path
+     *                 solves.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_WKT_PATH
+     *                 OUTPUT_WKT_PATH}: If true then concatenated wkt line
+     *                 segments will be added as the Wktroute column of the
+     *                 solution table for each source and target pair in
+     *                 shortest path solves.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1063,7 +1163,10 @@ public class SolveGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to store the solution.  The default value is
+     * @return Name of the table to store the solution, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  The default value is
      *         'graph_solutions'.
      * 
      */
@@ -1073,7 +1176,10 @@ public class SolveGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @param solutionTable  Name of the table to store the solution.  The
+     * @param solutionTable  Name of the table to store the solution, in
+     *                       [schema_name.]table_name format, using standard <a
+     *                       href="../../../../../concepts/tables.html#table-name-resolution"
+     *                       target="_top">name resolution rules</a>.  The
      *                       default value is 'graph_solutions'.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -1206,6 +1312,34 @@ public class SolveGraphRequest implements IndexedRecord {
      *         performance is considered and the difference is well less than 1
      *         percent. In batch runs, since the performance is of utmost
      *         importance, the option is always considered 'false'.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_EDGE_PATH
+     *         OUTPUT_EDGE_PATH}: If true then concatenated edge ids will be
+     *         added as the EDGE path column of the solution table for each
+     *         source and target pair in shortest path solves.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_WKT_PATH
+     *         OUTPUT_WKT_PATH}: If true then concatenated wkt line segments
+     *         will be added as the Wktroute column of the solution table for
+     *         each source and target pair in shortest path solves.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -1360,6 +1494,39 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 less than 1 percent. In batch runs, since the
      *                 performance is of utmost importance, the option is
      *                 always considered 'false'.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_EDGE_PATH
+     *                 OUTPUT_EDGE_PATH}: If true then concatenated edge ids
+     *                 will be added as the EDGE path column of the solution
+     *                 table for each source and target pair in shortest path
+     *                 solves.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_WKT_PATH
+     *                 OUTPUT_WKT_PATH}: If true then concatenated wkt line
+     *                 segments will be added as the Wktroute column of the
+     *                 solution table for each source and target pair in
+     *                 shortest path solves.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

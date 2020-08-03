@@ -44,6 +44,10 @@ public class CreateUnionResponse implements IndexedRecord {
      * <ul>
      *         <li> {@link com.gpudb.protocol.CreateUnionResponse.Info#COUNT
      * COUNT}: Number of records in the final table
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUnionResponse.Info#QUALIFIED_TABLE_NAME
+     * QUALIFIED_TABLE_NAME}: The fully qualified name of the result table
+     * (i.e. including the schema)
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code info}.
@@ -54,6 +58,12 @@ public class CreateUnionResponse implements IndexedRecord {
          * Number of records in the final table
          */
         public static final String COUNT = "count";
+
+        /**
+         * The fully qualified name of the result table (i.e. including the
+         * schema)
+         */
+        public static final String QUALIFIED_TABLE_NAME = "qualified_table_name";
 
         private Info() {  }
     }
@@ -96,6 +106,10 @@ public class CreateUnionResponse implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionResponse.Info#COUNT COUNT}: Number
      *         of records in the final table
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionResponse.Info#QUALIFIED_TABLE_NAME
+     *         QUALIFIED_TABLE_NAME}: The fully qualified name of the result
+     *         table (i.e. including the schema)
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -111,6 +125,10 @@ public class CreateUnionResponse implements IndexedRecord {
      *                      <li> {@link
      *              com.gpudb.protocol.CreateUnionResponse.Info#COUNT COUNT}:
      *              Number of records in the final table
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateUnionResponse.Info#QUALIFIED_TABLE_NAME
+     *              QUALIFIED_TABLE_NAME}: The fully qualified name of the
+     *              result table (i.e. including the schema)
      *              </ul>
      *              The default value is an empty {@link Map}.
      * 

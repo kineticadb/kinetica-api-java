@@ -178,10 +178,14 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                   empty {@link Map}.
      * @param inputTableNames  Names of the tables containing data to be passed
      *                         to the proc. Each name specified must be the
-     *                         name of a currently existing table. If no table
-     *                         names are specified, no data will be passed to
-     *                         the proc.  The default value is an empty {@link
-     *                         List}.
+     *                         name of a currently existing table, in
+     *                         [schema_name.]table_name format, using standard
+     *                         <a
+     *                         href="../../../../../concepts/tables.html#table-name-resolution"
+     *                         target="_top">name resolution rules</a>.  If no
+     *                         table names are specified, no data will be
+     *                         passed to the proc.  The default value is an
+     *                         empty {@link List}.
      * @param inputColumnNames  Map of table names from {@code inputTableNames}
      *                          to lists of names of columns from those tables
      *                          that will be passed to the proc. Each column
@@ -192,12 +196,19 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                          passed to the proc.  The default value is an
      *                          empty {@link Map}.
      * @param outputTableNames  Names of the tables to which output data from
-     *                          the proc will be written. If a specified table
-     *                          does not exist, it will automatically be
-     *                          created with the same schema as the
-     *                          corresponding table (by order) from {@code
-     *                          inputTableNames}, excluding any primary and
-     *                          shard keys. If a specified table is a
+     *                          the proc will be written, each in
+     *                          [schema_name.]table_name format, using standard
+     *                          <a
+     *                          href="../../../../../concepts/tables.html#table-name-resolution"
+     *                          target="_top">name resolution rules</a> and
+     *                          meeting <a
+     *                          href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                          target="_top">table naming criteria</a>. If a
+     *                          specified table does not exist, it will
+     *                          automatically be created with the same schema
+     *                          as the corresponding table (by order) from
+     *                          {@code inputTableNames}, excluding any primary
+     *                          and shard keys. If a specified table is a
      *                          non-persistent result table, it must not have
      *                          primary or shard keys. If no table names are
      *                          specified, no output data can be returned from
@@ -341,8 +352,11 @@ public class ExecuteProcRequest implements IndexedRecord {
      * 
      * @return Names of the tables containing data to be passed to the proc.
      *         Each name specified must be the name of a currently existing
-     *         table. If no table names are specified, no data will be passed
-     *         to the proc.  The default value is an empty {@link List}.
+     *         table, in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  If no table names are
+     *         specified, no data will be passed to the proc.  The default
+     *         value is an empty {@link List}.
      * 
      */
     public List<String> getInputTableNames() {
@@ -353,10 +367,14 @@ public class ExecuteProcRequest implements IndexedRecord {
      * 
      * @param inputTableNames  Names of the tables containing data to be passed
      *                         to the proc. Each name specified must be the
-     *                         name of a currently existing table. If no table
-     *                         names are specified, no data will be passed to
-     *                         the proc.  The default value is an empty {@link
-     *                         List}.
+     *                         name of a currently existing table, in
+     *                         [schema_name.]table_name format, using standard
+     *                         <a
+     *                         href="../../../../../concepts/tables.html#table-name-resolution"
+     *                         target="_top">name resolution rules</a>.  If no
+     *                         table names are specified, no data will be
+     *                         passed to the proc.  The default value is an
+     *                         empty {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -404,14 +422,19 @@ public class ExecuteProcRequest implements IndexedRecord {
     /**
      * 
      * @return Names of the tables to which output data from the proc will be
-     *         written. If a specified table does not exist, it will
-     *         automatically be created with the same schema as the
-     *         corresponding table (by order) from {@code inputTableNames},
-     *         excluding any primary and shard keys. If a specified table is a
-     *         non-persistent result table, it must not have primary or shard
-     *         keys. If no table names are specified, no output data can be
-     *         returned from the proc.  The default value is an empty {@link
-     *         List}.
+     *         written, each in [schema_name.]table_name format, using standard
+     *         <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>. If a specified table
+     *         does not exist, it will automatically be created with the same
+     *         schema as the corresponding table (by order) from {@code
+     *         inputTableNames}, excluding any primary and shard keys. If a
+     *         specified table is a non-persistent result table, it must not
+     *         have primary or shard keys. If no table names are specified, no
+     *         output data can be returned from the proc.  The default value is
+     *         an empty {@link List}.
      * 
      */
     public List<String> getOutputTableNames() {
@@ -421,12 +444,19 @@ public class ExecuteProcRequest implements IndexedRecord {
     /**
      * 
      * @param outputTableNames  Names of the tables to which output data from
-     *                          the proc will be written. If a specified table
-     *                          does not exist, it will automatically be
-     *                          created with the same schema as the
-     *                          corresponding table (by order) from {@code
-     *                          inputTableNames}, excluding any primary and
-     *                          shard keys. If a specified table is a
+     *                          the proc will be written, each in
+     *                          [schema_name.]table_name format, using standard
+     *                          <a
+     *                          href="../../../../../concepts/tables.html#table-name-resolution"
+     *                          target="_top">name resolution rules</a> and
+     *                          meeting <a
+     *                          href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                          target="_top">table naming criteria</a>. If a
+     *                          specified table does not exist, it will
+     *                          automatically be created with the same schema
+     *                          as the corresponding table (by order) from
+     *                          {@code inputTableNames}, excluding any primary
+     *                          and shard keys. If a specified table is a
      *                          non-persistent result table, it must not have
      *                          primary or shard keys. If no table names are
      *                          specified, no output data can be returned from

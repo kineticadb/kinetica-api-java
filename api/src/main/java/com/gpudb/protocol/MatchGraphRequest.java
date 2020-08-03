@@ -19,16 +19,21 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#matchGraph(MatchGraphRequest)}.
  * <p>
- * Matches a directed route implied by a given set of latitude/longitude points
- * to an existing underlying road network graph using a given solution type.
+ * Matches a directed route implied by a given set of
+ * latitude/longitude points to an existing underlying road network graph using
+ * a
+ * given solution type.
 
- * IMPORTANT: It's highly recommended that you review the <a
- * href="../../../../../graph_solver/network_graph_solver.html"
- * target="_top">Network Graphs & Solvers</a> concepts documentation, the <a
- * href="../../../../../graph_solver/examples/graph_rest_guide.html"
- * target="_top">Graph REST Tutorial</a>, and/or some <a
- * href="../../../../../graph_solver/examples.html#match-graph"
- * target="_top">/match/graph examples</a> before using this endpoint.
+ * IMPORTANT: It's highly recommended that you review the
+ * <a href="../../../../../graph_solver/network_graph_solver.html"
+ * target="_top">Network Graphs & Solvers</a>
+ * concepts documentation, the
+ * <a href="../../../../../graph_solver/examples/graph_rest_guide.html"
+ * target="_top">Graph REST Tutorial</a>,
+ * and/or some
+ * <a href="../../../../../graph_solver/examples.html#match-graph"
+ * target="_top">/match/graph examples</a>
+ * before using this endpoint.
  */
 public class MatchGraphRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -552,8 +557,15 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
      *                     MARKOV_CHAIN}.
-     * @param solutionTable  The name of the table used to store the results;
-     *                       this table contains a <a
+     * @param solutionTable  The name of the table used to store the results,
+     *                       in [schema_name.]table_name format, using standard
+     *                       <a
+     *                       href="../../../../../concepts/tables.html#table-name-resolution"
+     *                       target="_top">name resolution rules</a> and
+     *                       meeting <a
+     *                       href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                       target="_top">table naming criteria</a>.  This
+     *                       table contains a <a
      *                       href="../../../../../geospatial/geo_objects.html#geospatial-tracks"
      *                       target="_top">track</a> of geospatial points for
      *                       the matched portion of the graph, a track ID, and
@@ -561,11 +573,9 @@ public class MatchGraphRequest implements IndexedRecord {
      *                       containing a trip ID (that matches the track ID),
      *                       the latitude/longitude pair, the timestamp the
      *                       point was recorded at, and an edge ID
-     *                       corresponding to the matched road segment. Has the
-     *                       same naming restrictions as <a
-     *                       href="../../../../../concepts/tables.html"
-     *                       target="_top">tables</a>. Must not be an existing
-     *                       table of the same name.  The default value is ''.
+     *                       corresponding to the matched road segment. Must
+     *                       not be an existing table of the same name.  The
+     *                       default value is ''.
      * @param options  Additional parameters
      *                 <ul>
      *                         <li> {@link
@@ -911,18 +921,21 @@ public class MatchGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The name of the table used to store the results; this table
-     *         contains a <a
+     * @return The name of the table used to store the results, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  This table contains a
+     *         <a
      *         href="../../../../../geospatial/geo_objects.html#geospatial-tracks"
      *         target="_top">track</a> of geospatial points for the matched
      *         portion of the graph, a track ID, and a score value. Also
      *         outputs a details table containing a trip ID (that matches the
      *         track ID), the latitude/longitude pair, the timestamp the point
      *         was recorded at, and an edge ID corresponding to the matched
-     *         road segment. Has the same naming restrictions as <a
-     *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>. Must not be an existing table of the
-     *         same name.  The default value is ''.
+     *         road segment. Must not be an existing table of the same name.
+     *         The default value is ''.
      * 
      */
     public String getSolutionTable() {
@@ -931,8 +944,15 @@ public class MatchGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @param solutionTable  The name of the table used to store the results;
-     *                       this table contains a <a
+     * @param solutionTable  The name of the table used to store the results,
+     *                       in [schema_name.]table_name format, using standard
+     *                       <a
+     *                       href="../../../../../concepts/tables.html#table-name-resolution"
+     *                       target="_top">name resolution rules</a> and
+     *                       meeting <a
+     *                       href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                       target="_top">table naming criteria</a>.  This
+     *                       table contains a <a
      *                       href="../../../../../geospatial/geo_objects.html#geospatial-tracks"
      *                       target="_top">track</a> of geospatial points for
      *                       the matched portion of the graph, a track ID, and
@@ -940,11 +960,9 @@ public class MatchGraphRequest implements IndexedRecord {
      *                       containing a trip ID (that matches the track ID),
      *                       the latitude/longitude pair, the timestamp the
      *                       point was recorded at, and an edge ID
-     *                       corresponding to the matched road segment. Has the
-     *                       same naming restrictions as <a
-     *                       href="../../../../../concepts/tables.html"
-     *                       target="_top">tables</a>. Must not be an existing
-     *                       table of the same name.  The default value is ''.
+     *                       corresponding to the matched road segment. Must
+     *                       not be an existing table of the same name.  The
+     *                       default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

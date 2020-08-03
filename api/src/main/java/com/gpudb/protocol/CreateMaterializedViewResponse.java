@@ -39,6 +39,29 @@ public class CreateMaterializedViewResponse implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Additional information.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateMaterializedViewResponse.Info#QUALIFIED_TABLE_NAME
+     * QUALIFIED_TABLE_NAME}: The fully qualified name of the result table
+     * (i.e. including the schema)
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code info}.
+     */
+    public static final class Info {
+
+        /**
+         * The fully qualified name of the result table (i.e. including the
+         * schema)
+         */
+        public static final String QUALIFIED_TABLE_NAME = "qualified_table_name";
+
+        private Info() {  }
+    }
+
     private String tableName;
     private String viewId;
     private Map<String, String> info;
@@ -96,6 +119,13 @@ public class CreateMaterializedViewResponse implements IndexedRecord {
     /**
      * 
      * @return Additional information.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateMaterializedViewResponse.Info#QUALIFIED_TABLE_NAME
+     *         QUALIFIED_TABLE_NAME}: The fully qualified name of the result
+     *         table (i.e. including the schema)
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getInfo() {
@@ -105,6 +135,13 @@ public class CreateMaterializedViewResponse implements IndexedRecord {
     /**
      * 
      * @param info  Additional information.
+     *              <ul>
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateMaterializedViewResponse.Info#QUALIFIED_TABLE_NAME
+     *              QUALIFIED_TABLE_NAME}: The fully qualified name of the
+     *              result table (i.e. including the schema)
+     *              </ul>
+     *              The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

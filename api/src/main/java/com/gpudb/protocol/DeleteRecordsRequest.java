@@ -24,9 +24,9 @@ import org.apache.avro.generic.IndexedRecord;
  * (matching multiple records), a single record identified by {@code record_id}
  * options, or all records when using {@code delete_all_records}.  Note that
  * the three selection criteria are mutually exclusive.  This operation cannot
- * be run on a collection or a view.  The operation is synchronous meaning that
- * a response will not be available until the request is completely processed
- * and all the matching records are deleted.
+ * be run on a view.  The operation is synchronous meaning that a response will
+ * not be available until the request is completely processed and all the
+ * matching records are deleted.
  */
 public class DeleteRecordsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -143,9 +143,12 @@ public class DeleteRecordsRequest implements IndexedRecord {
     /**
      * Constructs a DeleteRecordsRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table from which to delete records. The
-     *                   set must be a currently existing table and not a
-     *                   collection or a view.
+     * @param tableName  Name of the table from which to delete records, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>. Must contain
+     *                   the name of an existing table; not applicable to
+     *                   views.
      * @param expressions  A list of the actual predicates, one for each
      *                     select; format should follow the guidelines provided
      *                     <a href="../../../../../concepts/expressions.html"
@@ -199,8 +202,11 @@ public class DeleteRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table from which to delete records. The set must be
-     *         a currently existing table and not a collection or a view.
+     * @return Name of the table from which to delete records, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>. Must contain the name
+     *         of an existing table; not applicable to views.
      * 
      */
     public String getTableName() {
@@ -209,9 +215,12 @@ public class DeleteRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table from which to delete records. The
-     *                   set must be a currently existing table and not a
-     *                   collection or a view.
+     * @param tableName  Name of the table from which to delete records, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>. Must contain
+     *                   the name of an existing table; not applicable to
+     *                   views.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -17,13 +17,32 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#adminRebalance(AdminRebalanceRequest)}.
  * <p>
- * Rebalance the cluster so that all the nodes contain approximately an equal
- * number of records.  The rebalance will also cause the shards to be equally
+ * Rebalance the data in the cluster so that all nodes contain an equal number
+ * of records approximately and/or rebalance the shards to be equally
  * distributed (as much as possible) across all the ranks.
  * <p>
- * This endpoint may take a long time to run, depending on the amount of data
- * in the system. The API call may time out if run directly.  It is recommended
- * to run this endpoint asynchronously via {@link
+ * * If {@link com.gpudb.GPUdb#adminRebalance(AdminRebalanceRequest)} is
+ * invoked after a change is made to the
+ *   cluster, e.g., a host was added or removed,
+ *   <a href="../../../../../concepts/tables.html#sharding"
+ * target="_top">sharded data</a> will be
+ *   evenly redistributed across the cluster by number of shards per rank
+ *   while unsharded data will be redistributed across the cluster by data
+ *   size per rank
+ * * If {@link com.gpudb.GPUdb#adminRebalance(AdminRebalanceRequest)} is
+ * invoked at some point when unsharded
+ *   data (a.k.a.
+ *   <a href="../../../../../concepts/tables.html#random-sharding"
+ * target="_top">randomly-sharded</a>)
+ *   in the cluster is unevenly distributed over time, sharded data will
+ *   not move while unsharded data will be redistributed across the
+ *   cluster by data size per rank
+ * <p>
+ * NOTE: Replicated data will not move as a result of this call
+ * <p>
+ * This endpoint's processing time depends on the amount of data in the system,
+ * thus the API call may time out if run directly.  It is recommended to run
+ * this endpoint asynchronously via {@link
  * com.gpudb.GPUdb#createJob(CreateJobRequest)}.
  */
 public class AdminRebalanceRequest implements IndexedRecord {
@@ -52,10 +71,12 @@ public class AdminRebalanceRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_SHARDED_DATA
-     * REBALANCE_SHARDED_DATA}: If {@code true}, sharded data will be
-     * rebalanced approximately equally across the cluster. Note that for big
-     * clusters, this data transfer could be time consuming and result in
-     * delayed query responses.
+     * REBALANCE_SHARDED_DATA}: If {@code true}, <a
+     * href="../../../../../concepts/tables.html#sharding"
+     * target="_top">sharded data</a> will be rebalanced approximately equally
+     * across the cluster. Note that for clusters with large amounts of sharded
+     * data, this data transfer could be time consuming and result in delayed
+     * query responses.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -67,10 +88,12 @@ public class AdminRebalanceRequest implements IndexedRecord {
      * com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}.
      *         <li> {@link
      * com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_UNSHARDED_DATA
-     * REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded data (data without
-     * primary keys and without shard keys) will be rebalanced approximately
-     * equally across the cluster. Note that for big clusters, this data
-     * transfer could be time consuming and result in delayed query responses.
+     * REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded data (a.k.a. <a
+     * href="../../../../../concepts/tables.html#random-sharding"
+     * target="_top">randomly-sharded</a>) will be rebalanced approximately
+     * equally across the cluster. Note that for clusters with large amounts of
+     * unsharded data, this data transfer could be time consuming and result in
+     * delayed query responses.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -81,29 +104,33 @@ public class AdminRebalanceRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}.
      *         <li> {@link
-     * com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_WHITELIST
-     * TABLE_WHITELIST}: Comma-separated list of unsharded table names to
+     * com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_INCLUDES
+     * TABLE_INCLUDES}: Comma-separated list of unsharded table names to
      * rebalance. Not applicable to sharded tables because they are always
-     * balanced in accordance with their primary key or shard key. Cannot be
-     * used simultaneously with {@code table_blacklist}.
+     * rebalanced. Cannot be used simultaneously with {@code table_excludes}.
+     * This parameter is ignored if {@code rebalance_unsharded_data} is {@code
+     * false}.
      *         <li> {@link
-     * com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_BLACKLIST
-     * TABLE_BLACKLIST}: Comma-separated list of unsharded table names to not
+     * com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_EXCLUDES
+     * TABLE_EXCLUDES}: Comma-separated list of unsharded table names to not
      * rebalance. Not applicable to sharded tables because they are always
-     * balanced in accordance with their primary key or shard key. Cannot be
-     * used simultaneously with {@code table_whitelist}.
+     * rebalanced. Cannot be used simultaneously with {@code table_includes}.
+     * This parameter is ignored if {@code rebalance_unsharded_data} is {@code
+     * false}.
      *         <li> {@link
      * com.gpudb.protocol.AdminRebalanceRequest.Options#AGGRESSIVENESS
-     * AGGRESSIVENESS}: Influences how much data to send per rebalance round.
-     * A higher aggressiveness setting will complete the rebalance faster.  A
-     * lower aggressiveness setting will take longer, but allow for better
-     * interleaving between the rebalance and other queries. Allowed values are
-     * 1 through 10.  The default value is '1'.
+     * AGGRESSIVENESS}: Influences how much data is moved at a time during
+     * rebalance.  A higher {@code aggressiveness} will complete the rebalance
+     * faster.  A lower {@code aggressiveness} will take longer but allow for
+     * better interleaving between the rebalance and other queries. Valid
+     * values are constants from 1 (lowest) to 10 (highest).  The default value
+     * is '1'.
      *         <li> {@link
      * com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
      * COMPACT_AFTER_REBALANCE}: Perform compaction of deleted records once the
-     * rebalance completes, to reclaim memory and disk space. Default is true,
-     * unless {@code repair_incorrectly_sharded_data} is set to {@code true}.
+     * rebalance completes to reclaim memory and disk space. Default is {@code
+     * true}, unless {@code repair_incorrectly_sharded_data} is set to {@code
+     * true}.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -115,8 +142,9 @@ public class AdminRebalanceRequest implements IndexedRecord {
      * com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}.
      *         <li> {@link
      * com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_ONLY
-     * COMPACT_ONLY}: Only perform compaction, do not rebalance. Default is
-     * false.
+     * COMPACT_ONLY}: If set to {@code true}, ignore rebalance options and
+     * attempt to perform compaction of deleted records to reclaim memory and
+     * disk space without rebalancing first.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -129,12 +157,14 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AdminRebalanceRequest.Options#REPAIR_INCORRECTLY_SHARDED_DATA
      * REPAIR_INCORRECTLY_SHARDED_DATA}: Scans for any data sharded incorrectly
-     * and re-routes the correct location. This can be done as part of a
-     * typical rebalance after expanding the cluster, or in a standalone
-     * fashion when it is believed that data is sharded incorrectly somewhere
-     * in the cluster. Compaction will not be performed by default when this is
-     * enabled. This option may also lengthen rebalance time, and increase the
-     * memory used by the rebalance.
+     * and re-routes the data to the correct location. Only necessary if {@link
+     * com.gpudb.GPUdb#adminVerifyDb(AdminVerifyDbRequest)} reports an error in
+     * sharding alignment. This can be done as part of a typical rebalance
+     * after expanding the cluster or in a standalone fashion when it is
+     * believed that data is sharded incorrectly somewhere in the cluster.
+     * Compaction will not be performed by default when this is enabled. If
+     * this option is set to {@code true}, the time necessary to rebalance and
+     * the memory used by the rebalance may increase.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -151,10 +181,12 @@ public class AdminRebalanceRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * If {@code true}, sharded data will be rebalanced approximately
-         * equally across the cluster. Note that for big clusters, this data
-         * transfer could be time consuming and result in delayed query
-         * responses.
+         * If {@code true}, <a
+         * href="../../../../../concepts/tables.html#sharding"
+         * target="_top">sharded data</a> will be rebalanced approximately
+         * equally across the cluster. Note that for clusters with large
+         * amounts of sharded data, this data transfer could be time consuming
+         * and result in delayed query responses.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -170,10 +202,12 @@ public class AdminRebalanceRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * If {@code true}, unsharded data (data without primary keys and
-         * without shard keys) will be rebalanced approximately equally across
-         * the cluster. Note that for big clusters, this data transfer could be
-         * time consuming and result in delayed query responses.
+         * If {@code true}, unsharded data (a.k.a. <a
+         * href="../../../../../concepts/tables.html#random-sharding"
+         * target="_top">randomly-sharded</a>) will be rebalanced approximately
+         * equally across the cluster. Note that for clusters with large
+         * amounts of unsharded data, this data transfer could be time
+         * consuming and result in delayed query responses.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -188,33 +222,36 @@ public class AdminRebalanceRequest implements IndexedRecord {
 
         /**
          * Comma-separated list of unsharded table names to rebalance. Not
-         * applicable to sharded tables because they are always balanced in
-         * accordance with their primary key or shard key. Cannot be used
-         * simultaneously with {@code table_blacklist}.
+         * applicable to sharded tables because they are always rebalanced.
+         * Cannot be used simultaneously with {@code table_excludes}. This
+         * parameter is ignored if {@code rebalance_unsharded_data} is {@code
+         * false}.
          */
-        public static final String TABLE_WHITELIST = "table_whitelist";
+        public static final String TABLE_INCLUDES = "table_includes";
 
         /**
          * Comma-separated list of unsharded table names to not rebalance. Not
-         * applicable to sharded tables because they are always balanced in
-         * accordance with their primary key or shard key. Cannot be used
-         * simultaneously with {@code table_whitelist}.
+         * applicable to sharded tables because they are always rebalanced.
+         * Cannot be used simultaneously with {@code table_includes}. This
+         * parameter is ignored if {@code rebalance_unsharded_data} is {@code
+         * false}.
          */
-        public static final String TABLE_BLACKLIST = "table_blacklist";
+        public static final String TABLE_EXCLUDES = "table_excludes";
 
         /**
-         * Influences how much data to send per rebalance round.  A higher
-         * aggressiveness setting will complete the rebalance faster.  A lower
-         * aggressiveness setting will take longer, but allow for better
-         * interleaving between the rebalance and other queries. Allowed values
-         * are 1 through 10.  The default value is '1'.
+         * Influences how much data is moved at a time during rebalance.  A
+         * higher {@code aggressiveness} will complete the rebalance faster.  A
+         * lower {@code aggressiveness} will take longer but allow for better
+         * interleaving between the rebalance and other queries. Valid values
+         * are constants from 1 (lowest) to 10 (highest).  The default value is
+         * '1'.
          */
         public static final String AGGRESSIVENESS = "aggressiveness";
 
         /**
-         * Perform compaction of deleted records once the rebalance completes,
-         * to reclaim memory and disk space. Default is true, unless {@code
-         * repair_incorrectly_sharded_data} is set to {@code true}.
+         * Perform compaction of deleted records once the rebalance completes
+         * to reclaim memory and disk space. Default is {@code true}, unless
+         * {@code repair_incorrectly_sharded_data} is set to {@code true}.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -228,7 +265,9 @@ public class AdminRebalanceRequest implements IndexedRecord {
         public static final String COMPACT_AFTER_REBALANCE = "compact_after_rebalance";
 
         /**
-         * Only perform compaction, do not rebalance. Default is false.
+         * If set to {@code true}, ignore rebalance options and attempt to
+         * perform compaction of deleted records to reclaim memory and disk
+         * space without rebalancing first.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -242,13 +281,16 @@ public class AdminRebalanceRequest implements IndexedRecord {
         public static final String COMPACT_ONLY = "compact_only";
 
         /**
-         * Scans for any data sharded incorrectly and re-routes the correct
-         * location. This can be done as part of a typical rebalance after
-         * expanding the cluster, or in a standalone fashion when it is
-         * believed that data is sharded incorrectly somewhere in the cluster.
-         * Compaction will not be performed by default when this is enabled.
-         * This option may also lengthen rebalance time, and increase the
-         * memory used by the rebalance.
+         * Scans for any data sharded incorrectly and re-routes the data to the
+         * correct location. Only necessary if {@link
+         * com.gpudb.GPUdb#adminVerifyDb(AdminVerifyDbRequest)} reports an
+         * error in sharding alignment. This can be done as part of a typical
+         * rebalance after expanding the cluster or in a standalone fashion
+         * when it is believed that data is sharded incorrectly somewhere in
+         * the cluster. Compaction will not be performed by default when this
+         * is enabled. If this option is set to {@code true}, the time
+         * necessary to rebalance and the memory used by the rebalance may
+         * increase.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -282,11 +324,13 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_SHARDED_DATA
-     *                 REBALANCE_SHARDED_DATA}: If {@code true}, sharded data
-     *                 will be rebalanced approximately equally across the
-     *                 cluster. Note that for big clusters, this data transfer
-     *                 could be time consuming and result in delayed query
-     *                 responses.
+     *                 REBALANCE_SHARDED_DATA}: If {@code true}, <a
+     *                 href="../../../../../concepts/tables.html#sharding"
+     *                 target="_top">sharded data</a> will be rebalanced
+     *                 approximately equally across the cluster. Note that for
+     *                 clusters with large amounts of sharded data, this data
+     *                 transfer could be time consuming and result in delayed
+     *                 query responses.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -302,11 +346,13 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_UNSHARDED_DATA
      *                 REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded
-     *                 data (data without primary keys and without shard keys)
-     *                 will be rebalanced approximately equally across the
-     *                 cluster. Note that for big clusters, this data transfer
-     *                 could be time consuming and result in delayed query
-     *                 responses.
+     *                 data (a.k.a. <a
+     *                 href="../../../../../concepts/tables.html#random-sharding"
+     *                 target="_top">randomly-sharded</a>) will be rebalanced
+     *                 approximately equally across the cluster. Note that for
+     *                 clusters with large amounts of unsharded data, this data
+     *                 transfer could be time consuming and result in delayed
+     *                 query responses.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -320,33 +366,35 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
      *                 TRUE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_WHITELIST
-     *                 TABLE_WHITELIST}: Comma-separated list of unsharded
-     *                 table names to rebalance. Not applicable to sharded
-     *                 tables because they are always balanced in accordance
-     *                 with their primary key or shard key. Cannot be used
-     *                 simultaneously with {@code table_blacklist}.
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_INCLUDES
+     *                 TABLE_INCLUDES}: Comma-separated list of unsharded table
+     *                 names to rebalance. Not applicable to sharded tables
+     *                 because they are always rebalanced. Cannot be used
+     *                 simultaneously with {@code table_excludes}. This
+     *                 parameter is ignored if {@code rebalance_unsharded_data}
+     *                 is {@code false}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_BLACKLIST
-     *                 TABLE_BLACKLIST}: Comma-separated list of unsharded
-     *                 table names to not rebalance. Not applicable to sharded
-     *                 tables because they are always balanced in accordance
-     *                 with their primary key or shard key. Cannot be used
-     *                 simultaneously with {@code table_whitelist}.
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_EXCLUDES
+     *                 TABLE_EXCLUDES}: Comma-separated list of unsharded table
+     *                 names to not rebalance. Not applicable to sharded tables
+     *                 because they are always rebalanced. Cannot be used
+     *                 simultaneously with {@code table_includes}. This
+     *                 parameter is ignored if {@code rebalance_unsharded_data}
+     *                 is {@code false}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#AGGRESSIVENESS
-     *                 AGGRESSIVENESS}: Influences how much data to send per
-     *                 rebalance round.  A higher aggressiveness setting will
-     *                 complete the rebalance faster.  A lower aggressiveness
-     *                 setting will take longer, but allow for better
+     *                 AGGRESSIVENESS}: Influences how much data is moved at a
+     *                 time during rebalance.  A higher {@code aggressiveness}
+     *                 will complete the rebalance faster.  A lower {@code
+     *                 aggressiveness} will take longer but allow for better
      *                 interleaving between the rebalance and other queries.
-     *                 Allowed values are 1 through 10.  The default value is
-     *                 '1'.
+     *                 Valid values are constants from 1 (lowest) to 10
+     *                 (highest).  The default value is '1'.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
      *                 COMPACT_AFTER_REBALANCE}: Perform compaction of deleted
-     *                 records once the rebalance completes, to reclaim memory
-     *                 and disk space. Default is true, unless {@code
+     *                 records once the rebalance completes to reclaim memory
+     *                 and disk space. Default is {@code true}, unless {@code
      *                 repair_incorrectly_sharded_data} is set to {@code true}.
      *                 Supported values:
      *                 <ul>
@@ -362,8 +410,10 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_ONLY
-     *                 COMPACT_ONLY}: Only perform compaction, do not
-     *                 rebalance. Default is false.
+     *                 COMPACT_ONLY}: If set to {@code true}, ignore rebalance
+     *                 options and attempt to perform compaction of deleted
+     *                 records to reclaim memory and disk space without
+     *                 rebalancing first.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -379,14 +429,17 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REPAIR_INCORRECTLY_SHARDED_DATA
      *                 REPAIR_INCORRECTLY_SHARDED_DATA}: Scans for any data
-     *                 sharded incorrectly and re-routes the correct location.
-     *                 This can be done as part of a typical rebalance after
-     *                 expanding the cluster, or in a standalone fashion when
-     *                 it is believed that data is sharded incorrectly
-     *                 somewhere in the cluster. Compaction will not be
-     *                 performed by default when this is enabled. This option
-     *                 may also lengthen rebalance time, and increase the
-     *                 memory used by the rebalance.
+     *                 sharded incorrectly and re-routes the data to the
+     *                 correct location. Only necessary if {@link
+     *                 com.gpudb.GPUdb#adminVerifyDb(AdminVerifyDbRequest)}
+     *                 reports an error in sharding alignment. This can be done
+     *                 as part of a typical rebalance after expanding the
+     *                 cluster or in a standalone fashion when it is believed
+     *                 that data is sharded incorrectly somewhere in the
+     *                 cluster. Compaction will not be performed by default
+     *                 when this is enabled. If this option is set to {@code
+     *                 true}, the time necessary to rebalance and the memory
+     *                 used by the rebalance may increase.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -413,10 +466,12 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_SHARDED_DATA
-     *         REBALANCE_SHARDED_DATA}: If {@code true}, sharded data will be
-     *         rebalanced approximately equally across the cluster. Note that
-     *         for big clusters, this data transfer could be time consuming and
-     *         result in delayed query responses.
+     *         REBALANCE_SHARDED_DATA}: If {@code true}, <a
+     *         href="../../../../../concepts/tables.html#sharding"
+     *         target="_top">sharded data</a> will be rebalanced approximately
+     *         equally across the cluster. Note that for clusters with large
+     *         amounts of sharded data, this data transfer could be time
+     *         consuming and result in delayed query responses.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -428,11 +483,13 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *         com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}.
      *                 <li> {@link
      *         com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_UNSHARDED_DATA
-     *         REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded data (data
-     *         without primary keys and without shard keys) will be rebalanced
-     *         approximately equally across the cluster. Note that for big
-     *         clusters, this data transfer could be time consuming and result
-     *         in delayed query responses.
+     *         REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded data
+     *         (a.k.a. <a
+     *         href="../../../../../concepts/tables.html#random-sharding"
+     *         target="_top">randomly-sharded</a>) will be rebalanced
+     *         approximately equally across the cluster. Note that for clusters
+     *         with large amounts of unsharded data, this data transfer could
+     *         be time consuming and result in delayed query responses.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -443,32 +500,33 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}.
      *                 <li> {@link
-     *         com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_WHITELIST
-     *         TABLE_WHITELIST}: Comma-separated list of unsharded table names
+     *         com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_INCLUDES
+     *         TABLE_INCLUDES}: Comma-separated list of unsharded table names
      *         to rebalance. Not applicable to sharded tables because they are
-     *         always balanced in accordance with their primary key or shard
-     *         key. Cannot be used simultaneously with {@code table_blacklist}.
+     *         always rebalanced. Cannot be used simultaneously with {@code
+     *         table_excludes}. This parameter is ignored if {@code
+     *         rebalance_unsharded_data} is {@code false}.
      *                 <li> {@link
-     *         com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_BLACKLIST
-     *         TABLE_BLACKLIST}: Comma-separated list of unsharded table names
+     *         com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_EXCLUDES
+     *         TABLE_EXCLUDES}: Comma-separated list of unsharded table names
      *         to not rebalance. Not applicable to sharded tables because they
-     *         are always balanced in accordance with their primary key or
-     *         shard key. Cannot be used simultaneously with {@code
-     *         table_whitelist}.
+     *         are always rebalanced. Cannot be used simultaneously with {@code
+     *         table_includes}. This parameter is ignored if {@code
+     *         rebalance_unsharded_data} is {@code false}.
      *                 <li> {@link
      *         com.gpudb.protocol.AdminRebalanceRequest.Options#AGGRESSIVENESS
-     *         AGGRESSIVENESS}: Influences how much data to send per rebalance
-     *         round.  A higher aggressiveness setting will complete the
-     *         rebalance faster.  A lower aggressiveness setting will take
-     *         longer, but allow for better interleaving between the rebalance
-     *         and other queries. Allowed values are 1 through 10.  The default
-     *         value is '1'.
+     *         AGGRESSIVENESS}: Influences how much data is moved at a time
+     *         during rebalance.  A higher {@code aggressiveness} will complete
+     *         the rebalance faster.  A lower {@code aggressiveness} will take
+     *         longer but allow for better interleaving between the rebalance
+     *         and other queries. Valid values are constants from 1 (lowest) to
+     *         10 (highest).  The default value is '1'.
      *                 <li> {@link
      *         com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
      *         COMPACT_AFTER_REBALANCE}: Perform compaction of deleted records
-     *         once the rebalance completes, to reclaim memory and disk space.
-     *         Default is true, unless {@code repair_incorrectly_sharded_data}
-     *         is set to {@code true}.
+     *         once the rebalance completes to reclaim memory and disk space.
+     *         Default is {@code true}, unless {@code
+     *         repair_incorrectly_sharded_data} is set to {@code true}.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -480,8 +538,9 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *         com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE TRUE}.
      *                 <li> {@link
      *         com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_ONLY
-     *         COMPACT_ONLY}: Only perform compaction, do not rebalance.
-     *         Default is false.
+     *         COMPACT_ONLY}: If set to {@code true}, ignore rebalance options
+     *         and attempt to perform compaction of deleted records to reclaim
+     *         memory and disk space without rebalancing first.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -494,13 +553,16 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AdminRebalanceRequest.Options#REPAIR_INCORRECTLY_SHARDED_DATA
      *         REPAIR_INCORRECTLY_SHARDED_DATA}: Scans for any data sharded
-     *         incorrectly and re-routes the correct location. This can be done
-     *         as part of a typical rebalance after expanding the cluster, or
-     *         in a standalone fashion when it is believed that data is sharded
-     *         incorrectly somewhere in the cluster. Compaction will not be
-     *         performed by default when this is enabled. This option may also
-     *         lengthen rebalance time, and increase the memory used by the
-     *         rebalance.
+     *         incorrectly and re-routes the data to the correct location. Only
+     *         necessary if {@link
+     *         com.gpudb.GPUdb#adminVerifyDb(AdminVerifyDbRequest)} reports an
+     *         error in sharding alignment. This can be done as part of a
+     *         typical rebalance after expanding the cluster or in a standalone
+     *         fashion when it is believed that data is sharded incorrectly
+     *         somewhere in the cluster. Compaction will not be performed by
+     *         default when this is enabled. If this option is set to {@code
+     *         true}, the time necessary to rebalance and the memory used by
+     *         the rebalance may increase.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -524,11 +586,13 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_SHARDED_DATA
-     *                 REBALANCE_SHARDED_DATA}: If {@code true}, sharded data
-     *                 will be rebalanced approximately equally across the
-     *                 cluster. Note that for big clusters, this data transfer
-     *                 could be time consuming and result in delayed query
-     *                 responses.
+     *                 REBALANCE_SHARDED_DATA}: If {@code true}, <a
+     *                 href="../../../../../concepts/tables.html#sharding"
+     *                 target="_top">sharded data</a> will be rebalanced
+     *                 approximately equally across the cluster. Note that for
+     *                 clusters with large amounts of sharded data, this data
+     *                 transfer could be time consuming and result in delayed
+     *                 query responses.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -544,11 +608,13 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_UNSHARDED_DATA
      *                 REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded
-     *                 data (data without primary keys and without shard keys)
-     *                 will be rebalanced approximately equally across the
-     *                 cluster. Note that for big clusters, this data transfer
-     *                 could be time consuming and result in delayed query
-     *                 responses.
+     *                 data (a.k.a. <a
+     *                 href="../../../../../concepts/tables.html#random-sharding"
+     *                 target="_top">randomly-sharded</a>) will be rebalanced
+     *                 approximately equally across the cluster. Note that for
+     *                 clusters with large amounts of unsharded data, this data
+     *                 transfer could be time consuming and result in delayed
+     *                 query responses.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -562,33 +628,35 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TRUE
      *                 TRUE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_WHITELIST
-     *                 TABLE_WHITELIST}: Comma-separated list of unsharded
-     *                 table names to rebalance. Not applicable to sharded
-     *                 tables because they are always balanced in accordance
-     *                 with their primary key or shard key. Cannot be used
-     *                 simultaneously with {@code table_blacklist}.
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_INCLUDES
+     *                 TABLE_INCLUDES}: Comma-separated list of unsharded table
+     *                 names to rebalance. Not applicable to sharded tables
+     *                 because they are always rebalanced. Cannot be used
+     *                 simultaneously with {@code table_excludes}. This
+     *                 parameter is ignored if {@code rebalance_unsharded_data}
+     *                 is {@code false}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_BLACKLIST
-     *                 TABLE_BLACKLIST}: Comma-separated list of unsharded
-     *                 table names to not rebalance. Not applicable to sharded
-     *                 tables because they are always balanced in accordance
-     *                 with their primary key or shard key. Cannot be used
-     *                 simultaneously with {@code table_whitelist}.
+     *                 com.gpudb.protocol.AdminRebalanceRequest.Options#TABLE_EXCLUDES
+     *                 TABLE_EXCLUDES}: Comma-separated list of unsharded table
+     *                 names to not rebalance. Not applicable to sharded tables
+     *                 because they are always rebalanced. Cannot be used
+     *                 simultaneously with {@code table_includes}. This
+     *                 parameter is ignored if {@code rebalance_unsharded_data}
+     *                 is {@code false}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#AGGRESSIVENESS
-     *                 AGGRESSIVENESS}: Influences how much data to send per
-     *                 rebalance round.  A higher aggressiveness setting will
-     *                 complete the rebalance faster.  A lower aggressiveness
-     *                 setting will take longer, but allow for better
+     *                 AGGRESSIVENESS}: Influences how much data is moved at a
+     *                 time during rebalance.  A higher {@code aggressiveness}
+     *                 will complete the rebalance faster.  A lower {@code
+     *                 aggressiveness} will take longer but allow for better
      *                 interleaving between the rebalance and other queries.
-     *                 Allowed values are 1 through 10.  The default value is
-     *                 '1'.
+     *                 Valid values are constants from 1 (lowest) to 10
+     *                 (highest).  The default value is '1'.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
      *                 COMPACT_AFTER_REBALANCE}: Perform compaction of deleted
-     *                 records once the rebalance completes, to reclaim memory
-     *                 and disk space. Default is true, unless {@code
+     *                 records once the rebalance completes to reclaim memory
+     *                 and disk space. Default is {@code true}, unless {@code
      *                 repair_incorrectly_sharded_data} is set to {@code true}.
      *                 Supported values:
      *                 <ul>
@@ -604,8 +672,10 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_ONLY
-     *                 COMPACT_ONLY}: Only perform compaction, do not
-     *                 rebalance. Default is false.
+     *                 COMPACT_ONLY}: If set to {@code true}, ignore rebalance
+     *                 options and attempt to perform compaction of deleted
+     *                 records to reclaim memory and disk space without
+     *                 rebalancing first.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -621,14 +691,17 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REPAIR_INCORRECTLY_SHARDED_DATA
      *                 REPAIR_INCORRECTLY_SHARDED_DATA}: Scans for any data
-     *                 sharded incorrectly and re-routes the correct location.
-     *                 This can be done as part of a typical rebalance after
-     *                 expanding the cluster, or in a standalone fashion when
-     *                 it is believed that data is sharded incorrectly
-     *                 somewhere in the cluster. Compaction will not be
-     *                 performed by default when this is enabled. This option
-     *                 may also lengthen rebalance time, and increase the
-     *                 memory used by the rebalance.
+     *                 sharded incorrectly and re-routes the data to the
+     *                 correct location. Only necessary if {@link
+     *                 com.gpudb.GPUdb#adminVerifyDb(AdminVerifyDbRequest)}
+     *                 reports an error in sharding alignment. This can be done
+     *                 as part of a typical rebalance after expanding the
+     *                 cluster or in a standalone fashion when it is believed
+     *                 that data is sharded incorrectly somewhere in the
+     *                 cluster. Compaction will not be performed by default
+     *                 when this is enabled. If this option is set to {@code
+     *                 true}, the time necessary to rebalance and the memory
+     *                 used by the rebalance may increase.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

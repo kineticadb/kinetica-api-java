@@ -20,22 +20,25 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#insertRecordsRaw(RawInsertRecordsRequest)}.
  * <p>
- * Adds multiple records to the specified table. The operation is synchronous,
- * meaning that a response will not be returned until all the records are fully
- * inserted and available. The response payload provides the counts of the
- * number of records actually inserted and/or updated, and can provide the
+ * Adds multiple records to the specified table. The operation is
+ * synchronous, meaning that a response will not be returned until all the
+ * records
+ * are fully inserted and available. The response payload provides the counts
+ * of
+ * the number of records actually inserted and/or updated, and can provide the
  * unique identifier of each added record.
  * <p>
  * The {@code options} parameter can be used to customize this function's
  * behavior.
  * <p>
- * The {@code update_on_existing_pk} option specifies the record collision
- * policy for inserting into a table with a <a
- * href="../../../../../concepts/tables.html#primary-keys"
- * target="_top">primary key</a>, but is ignored if no primary key exists.
+ * The {@code update_on_existing_pk} option specifies the record
+ * collision policy for inserting into a table with a
+ * <a href="../../../../../concepts/tables.html#primary-keys"
+ * target="_top">primary key</a>, but is ignored if
+ * no primary key exists.
  * <p>
- * The {@code return_record_ids} option indicates that the database should
- * return the unique identifiers of inserted records.
+ * The {@code return_record_ids} option indicates that the
+ * database should return the unique identifiers of inserted records.
  */
 public class RawInsertRecordsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -311,7 +314,10 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      * Constructs a RawInsertRecordsRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Table to which the records are to be added. Must be an
+     * @param tableName  Name of table to which the records are to be added, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * @param list  An array of binary-encoded data for the records to be
      *              added. All records must be of the same type as that of the
@@ -448,7 +454,10 @@ public class RawInsertRecordsRequest implements IndexedRecord {
      * Constructs a RawInsertRecordsRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Table to which the records are to be added. Must be an
+     * @param tableName  Name of table to which the records are to be added, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * @param list  An array of binary-encoded data for the records to be
      *              added. All records must be of the same type as that of the
@@ -600,7 +609,10 @@ public class RawInsertRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Table to which the records are to be added. Must be an existing
+     * @return Name of table to which the records are to be added, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be an existing
      *         table.
      * 
      */
@@ -610,7 +622,10 @@ public class RawInsertRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Table to which the records are to be added. Must be an
+     * @param tableName  Name of table to which the records are to be added, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * 
      * @return {@code this} to mimic the builder pattern.

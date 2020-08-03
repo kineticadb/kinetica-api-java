@@ -17,7 +17,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#alterTable(AlterTableRequest)}.
  * <p>
- * Apply various modifications to a table, view, or collection.  The
+ * Apply various modifications to a table or view.  The
  * available modifications include the following:
  * <p>
  * Manage a table's columns--a column can be added, removed, or have its
@@ -25,6 +25,8 @@ import org.apache.avro.generic.IndexedRecord;
  * properties</a> modified, including
  * whether it is <a href="../../../../../concepts/compression.html"
  * target="_top">compressed</a> or not.
+ * <p>
+ * External tables cannot be modified except for their refresh method.
  * <p>
  * Create or delete an <a
  * href="../../../../../concepts/indexes.html#column-index"
@@ -51,13 +53,13 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * Refresh and manage the refresh mode of a
  * <a href="../../../../../concepts/materialized_views.html"
- * target="_top">materialized view</a>.
+ * target="_top">materialized view</a> or an
+ * <a href="../../../../../concepts/external_tables.html"
+ * target="_top">external table</a>.
  * <p>
  * Set the <a href="../../../../../concepts/ttl.html"
  * target="_top">time-to-live (TTL)</a>. This can be applied
- * to tables, views, or collections.  When applied to collections, every
- * contained
- * table & view that is not protected will have its TTL set to the given value.
+ * to tables or views.
  * <p>
  * Set the global access mode (i.e. locking) for a table. This setting trumps
  * any
@@ -66,11 +68,6 @@ import org.apache.avro.generic.IndexedRecord;
  * to a table marked read-only will not be able to insert records into it. The
  * mode
  * can be set to read-only, write-only, read/write, and no access.
- * <p>
- * Change the <a href="../../../../../concepts/protection.html"
- * target="_top">protection</a> mode to prevent or
- * allow automatic expiration. This can be applied to tables, views, and
- * collections.
  */
 public class AlterTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -123,25 +120,31 @@ public class AlterTableRequest implements IndexedRecord {
      * column does not have the specified index, an error will be returned.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
-     * MOVE_TO_COLLECTION}: Moves a table or view into a collection named
-     * {@code value}.  If the collection provided is non-existent, the
-     * collection will be automatically created. If {@code value} is empty,
-     * then the table or view will be top-level.
+     * MOVE_TO_COLLECTION}: [DEPRECATED--please use {@code move_to_schema} and
+     * use {@link com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create
+     * the schema if non-existent]  Moves a table or view into a schema named
+     * {@code value}.  If the schema provided is non-existent, it will be
+     * automatically created.
      *         <li> {@link
-     * com.gpudb.protocol.AlterTableRequest.Action#PROTECTED PROTECTED}: Sets
-     * whether the given {@code tableName} should be <a
-     * href="../../../../../concepts/protection.html"
-     * target="_top">protected</a> or not. The {@code value} must be either
-     * 'true' or 'false'.
+     * com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_SCHEMA
+     * MOVE_TO_SCHEMA}: Moves a table or view into a schema named {@code
+     * value}.  If the schema provided is non-existent, an error will be
+     * thrown. If {@code value} is empty, then the table or view will be placed
+     * in the user's default schema.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#PROTECTED PROTECTED}: No
+     * longer used.  Previously set whether the given {@code tableName} should
+     * be protected or not. The {@code value} would have been either 'true' or
+     * 'false'.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE RENAME_TABLE}:
-     * Renames a table, view or collection to {@code value}. Has the same
-     * naming restrictions as <a href="../../../../../concepts/tables.html"
-     * target="_top">tables</a>.
+     * Renames a table or view within its current schema to {@code value}. Has
+     * the same naming restrictions as <a
+     * href="../../../../../concepts/tables.html" target="_top">tables</a>.
      *         <li> {@link com.gpudb.protocol.AlterTableRequest.Action#TTL
      * TTL}: Sets the <a href="../../../../../concepts/ttl.html"
-     * target="_top">time-to-live</a> in minutes of the table, view, or
-     * collection specified in {@code tableName}.
+     * target="_top">time-to-live</a> in minutes of the table or view specified
+     * in {@code tableName}.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN ADD_COLUMN}: Adds
      * the column specified in {@code value} to the table specified in {@code
@@ -211,15 +214,26 @@ public class AlterTableRequest implements IndexedRecord {
      * {@code value}. Valid modes are 'no_access', 'read_only', 'write_only'
      * and 'read_write'.
      *         <li> {@link com.gpudb.protocol.AlterTableRequest.Action#REFRESH
-     * REFRESH}: Replays all the table creation commands required to create
-     * this <a href="../../../../../concepts/materialized_views.html"
-     * target="_top">materialized view</a>.
+     * REFRESH}: For a <a
+     * href="../../../../../concepts/materialized_views.html"
+     * target="_top">materialized view</a>, replays all the table creation
+     * commands required to create the view.  For an <a
+     * href="../../../../../concepts/external_tables.html"
+     * target="_top">external table</a>, reloads all data in the table from its
+     * associated source files or <a
+     * href="../../../../../concepts/data_sources.html" target="_top">data
+     * source</a>.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
-     * SET_REFRESH_METHOD}: Sets the method by which this <a
+     * SET_REFRESH_METHOD}: For a <a
      * href="../../../../../concepts/materialized_views.html"
-     * target="_top">materialized view</a> is refreshed to the method specified
-     * in {@code value} - one of 'manual', 'periodic', 'on_change'.
+     * target="_top">materialized view</a>, sets the method by which the view
+     * is refreshed to the method specified in {@code value} - one of 'manual',
+     * 'periodic', or 'on_change'.  For an <a
+     * href="../../../../../concepts/external_tables.html"
+     * target="_top">external table</a>, sets the method by which the table is
+     * refreshed to the method specified in {@code value} - either 'manual' or
+     * 'on_start'.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
      * SET_REFRESH_START_TIME}: Sets the time to start periodic refreshes of
@@ -283,32 +297,40 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String DELETE_INDEX = "delete_index";
 
         /**
-         * Moves a table or view into a collection named {@code value}.  If the
-         * collection provided is non-existent, the collection will be
-         * automatically created. If {@code value} is empty, then the table or
-         * view will be top-level.
+         * [DEPRECATED--please use {@code move_to_schema} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Moves a table or view into a schema named
+         * {@code value}.  If the schema provided is non-existent, it will be
+         * automatically created.
          */
         public static final String MOVE_TO_COLLECTION = "move_to_collection";
 
         /**
-         * Sets whether the given {@code tableName} should be <a
-         * href="../../../../../concepts/protection.html"
-         * target="_top">protected</a> or not. The {@code value} must be either
+         * Moves a table or view into a schema named {@code value}.  If the
+         * schema provided is non-existent, an error will be thrown. If {@code
+         * value} is empty, then the table or view will be placed in the user's
+         * default schema.
+         */
+        public static final String MOVE_TO_SCHEMA = "move_to_schema";
+
+        /**
+         * No longer used.  Previously set whether the given {@code tableName}
+         * should be protected or not. The {@code value} would have been either
          * 'true' or 'false'.
          */
         public static final String PROTECTED = "protected";
 
         /**
-         * Renames a table, view or collection to {@code value}. Has the same
-         * naming restrictions as <a href="../../../../../concepts/tables.html"
-         * target="_top">tables</a>.
+         * Renames a table or view within its current schema to {@code value}.
+         * Has the same naming restrictions as <a
+         * href="../../../../../concepts/tables.html" target="_top">tables</a>.
          */
         public static final String RENAME_TABLE = "rename_table";
 
         /**
          * Sets the <a href="../../../../../concepts/ttl.html"
-         * target="_top">time-to-live</a> in minutes of the table, view, or
-         * collection specified in {@code tableName}.
+         * target="_top">time-to-live</a> in minutes of the table or view
+         * specified in {@code tableName}.
          */
         public static final String TTL = "ttl";
 
@@ -401,18 +423,26 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String SET_GLOBAL_ACCESS_MODE = "set_global_access_mode";
 
         /**
-         * Replays all the table creation commands required to create this <a
-         * href="../../../../../concepts/materialized_views.html"
-         * target="_top">materialized view</a>.
+         * For a <a href="../../../../../concepts/materialized_views.html"
+         * target="_top">materialized view</a>, replays all the table creation
+         * commands required to create the view.  For an <a
+         * href="../../../../../concepts/external_tables.html"
+         * target="_top">external table</a>, reloads all data in the table from
+         * its associated source files or <a
+         * href="../../../../../concepts/data_sources.html" target="_top">data
+         * source</a>.
          */
         public static final String REFRESH = "refresh";
 
         /**
-         * Sets the method by which this <a
-         * href="../../../../../concepts/materialized_views.html"
-         * target="_top">materialized view</a> is refreshed to the method
-         * specified in {@code value} - one of 'manual', 'periodic',
-         * 'on_change'.
+         * For a <a href="../../../../../concepts/materialized_views.html"
+         * target="_top">materialized view</a>, sets the method by which the
+         * view is refreshed to the method specified in {@code value} - one of
+         * 'manual', 'periodic', or 'on_change'.  For an <a
+         * href="../../../../../concepts/external_tables.html"
+         * target="_top">external table</a>, sets the method by which the table
+         * is refreshed to the method specified in {@code value} - either
+         * 'manual' or 'on_start'.
          */
         public static final String SET_REFRESH_METHOD = "set_refresh_method";
 
@@ -499,24 +529,22 @@ public class AlterTableRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterTableRequest.Options#SNAPPY SNAPPY}.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Options#COPY_VALUES_FROM_COLUMN
-     * COPY_VALUES_FROM_COLUMN}: Deprecated.  Please use {@code
-     * add_column_expression} instead.
+     * COPY_VALUES_FROM_COLUMN}: [DEPRECATED--please use {@code
+     * add_column_expression} instead.]
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Options#RENAME_COLUMN
      * RENAME_COLUMN}: When changing a column, specify new column name.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Options#VALIDATE_CHANGE_COLUMN
      * VALIDATE_CHANGE_COLUMN}: When changing a column, validate the change
-     * before applying it. If {@code true}, then validate all values. A value
-     * too large (or too long) for the new type will prevent any change. If
-     * {@code false}, then when a value is too large or long, it will be
-     * truncated.
+     * before applying it (or not).
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#TRUE
-     * TRUE}: true
+     * TRUE}: Validate all values. A value too large (or too long) for the new
+     * type will prevent any change.
      *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#FALSE
-     * FALSE}: false
+     * FALSE}: When a value is too large or long, it will be truncated.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
@@ -626,7 +654,7 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String LZ4HC = "lz4hc";
 
         /**
-         * Deprecated.  Please use {@code add_column_expression} instead.
+         * [DEPRECATED--please use {@code add_column_expression} instead.]
          */
         public static final String COPY_VALUES_FROM_COLUMN = "copy_values_from_column";
 
@@ -636,16 +664,17 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String RENAME_COLUMN = "rename_column";
 
         /**
-         * When changing a column, validate the change before applying it. If
-         * {@code true}, then validate all values. A value too large (or too
-         * long) for the new type will prevent any change. If {@code false},
-         * then when a value is too large or long, it will be truncated.
+         * When changing a column, validate the change before applying it (or
+         * not).
          * Supported values:
          * <ul>
          *         <li> {@link
-         * com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}: true
+         * com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}: Validate
+         * all values. A value too large (or too long) for the new type will
+         * prevent any change.
          *         <li> {@link
-         * com.gpudb.protocol.AlterTableRequest.Options#FALSE FALSE}: false
+         * com.gpudb.protocol.AlterTableRequest.Options#FALSE FALSE}: When a
+         * value is too large or long, it will be truncated.
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
@@ -761,8 +790,11 @@ public class AlterTableRequest implements IndexedRecord {
     /**
      * Constructs an AlterTableRequest object with the specified parameters.
      * 
-     * @param tableName  Table on which the operation will be performed. Must
-     *                   be an existing table, view, or collection.
+     * @param tableName  Table on which the operation will be performed, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table or view.
      * @param action  Modification operation to be applied
      *                Supported values:
      *                <ul>
@@ -792,29 +824,36 @@ public class AlterTableRequest implements IndexedRecord {
      *                the specified index, an error will be returned.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
-     *                MOVE_TO_COLLECTION}: Moves a table or view into a
-     *                collection named {@code value}.  If the collection
-     *                provided is non-existent, the collection will be
-     *                automatically created. If {@code value} is empty, then
-     *                the table or view will be top-level.
+     *                MOVE_TO_COLLECTION}: [DEPRECATED--please use {@code
+     *                move_to_schema} and use {@link
+     *                com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                create the schema if non-existent]  Moves a table or view
+     *                into a schema named {@code value}.  If the schema
+     *                provided is non-existent, it will be automatically
+     *                created.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_SCHEMA
+     *                MOVE_TO_SCHEMA}: Moves a table or view into a schema
+     *                named {@code value}.  If the schema provided is
+     *                non-existent, an error will be thrown. If {@code value}
+     *                is empty, then the table or view will be placed in the
+     *                user's default schema.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#PROTECTED
-     *                PROTECTED}: Sets whether the given {@code tableName}
-     *                should be <a
-     *                href="../../../../../concepts/protection.html"
-     *                target="_top">protected</a> or not. The {@code value}
-     *                must be either 'true' or 'false'.
+     *                PROTECTED}: No longer used.  Previously set whether the
+     *                given {@code tableName} should be protected or not. The
+     *                {@code value} would have been either 'true' or 'false'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE
-     *                RENAME_TABLE}: Renames a table, view or collection to
-     *                {@code value}. Has the same naming restrictions as <a
-     *                href="../../../../../concepts/tables.html"
+     *                RENAME_TABLE}: Renames a table or view within its current
+     *                schema to {@code value}. Has the same naming restrictions
+     *                as <a href="../../../../../concepts/tables.html"
      *                target="_top">tables</a>.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}:
      *                Sets the <a href="../../../../../concepts/ttl.html"
-     *                target="_top">time-to-live</a> in minutes of the table,
-     *                view, or collection specified in {@code tableName}.
+     *                target="_top">time-to-live</a> in minutes of the table or
+     *                view specified in {@code tableName}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
      *                ADD_COLUMN}: Adds the column specified in {@code value}
@@ -893,17 +932,27 @@ public class AlterTableRequest implements IndexedRecord {
      *                and 'read_write'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REFRESH
-     *                REFRESH}: Replays all the table creation commands
-     *                required to create this <a
+     *                REFRESH}: For a <a
      *                href="../../../../../concepts/materialized_views.html"
-     *                target="_top">materialized view</a>.
+     *                target="_top">materialized view</a>, replays all the
+     *                table creation commands required to create the view.  For
+     *                an <a href="../../../../../concepts/external_tables.html"
+     *                target="_top">external table</a>, reloads all data in the
+     *                table from its associated source files or <a
+     *                href="../../../../../concepts/data_sources.html"
+     *                target="_top">data source</a>.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
-     *                SET_REFRESH_METHOD}: Sets the method by which this <a
+     *                SET_REFRESH_METHOD}: For a <a
      *                href="../../../../../concepts/materialized_views.html"
-     *                target="_top">materialized view</a> is refreshed to the
-     *                method specified in {@code value} - one of 'manual',
-     *                'periodic', 'on_change'.
+     *                target="_top">materialized view</a>, sets the method by
+     *                which the view is refreshed to the method specified in
+     *                {@code value} - one of 'manual', 'periodic', or
+     *                'on_change'.  For an <a
+     *                href="../../../../../concepts/external_tables.html"
+     *                target="_top">external table</a>, sets the method by
+     *                which the table is refreshed to the method specified in
+     *                {@code value} - either 'manual' or 'on_start'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
      *                SET_REFRESH_START_TIME}: Sets the time to start periodic
@@ -998,8 +1047,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                 SNAPPY}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COPY_VALUES_FROM_COLUMN
-     *                 COPY_VALUES_FROM_COLUMN}: Deprecated.  Please use {@code
-     *                 add_column_expression} instead.
+     *                 COPY_VALUES_FROM_COLUMN}: [DEPRECATED--please use {@code
+     *                 add_column_expression} instead.]
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#RENAME_COLUMN
      *                 RENAME_COLUMN}: When changing a column, specify new
@@ -1007,19 +1056,17 @@ public class AlterTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#VALIDATE_CHANGE_COLUMN
      *                 VALIDATE_CHANGE_COLUMN}: When changing a column,
-     *                 validate the change before applying it. If {@code true},
-     *                 then validate all values. A value too large (or too
-     *                 long) for the new type will prevent any change. If
-     *                 {@code false}, then when a value is too large or long,
-     *                 it will be truncated.
+     *                 validate the change before applying it (or not).
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}:
-     *                 true
+     *                 Validate all values. A value too large (or too long) for
+     *                 the new type will prevent any change.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#FALSE
-     *                 FALSE}: false
+     *                 FALSE}: When a value is too large or long, it will be
+     *                 truncated.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
@@ -1099,8 +1146,11 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Table on which the operation will be performed. Must be an
-     *         existing table, view, or collection.
+     * @return Table on which the operation will be performed, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be an existing
+     *         table or view.
      * 
      */
     public String getTableName() {
@@ -1109,8 +1159,11 @@ public class AlterTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Table on which the operation will be performed. Must
-     *                   be an existing table, view, or collection.
+     * @param tableName  Table on which the operation will be performed, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table or view.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -1151,28 +1204,34 @@ public class AlterTableRequest implements IndexedRecord {
      *         error will be returned.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
-     *         MOVE_TO_COLLECTION}: Moves a table or view into a collection
-     *         named {@code value}.  If the collection provided is
-     *         non-existent, the collection will be automatically created. If
-     *         {@code value} is empty, then the table or view will be
-     *         top-level.
+     *         MOVE_TO_COLLECTION}: [DEPRECATED--please use {@code
+     *         move_to_schema} and use {@link
+     *         com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+     *         schema if non-existent]  Moves a table or view into a schema
+     *         named {@code value}.  If the schema provided is non-existent, it
+     *         will be automatically created.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_SCHEMA
+     *         MOVE_TO_SCHEMA}: Moves a table or view into a schema named
+     *         {@code value}.  If the schema provided is non-existent, an error
+     *         will be thrown. If {@code value} is empty, then the table or
+     *         view will be placed in the user's default schema.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#PROTECTED
-     *         PROTECTED}: Sets whether the given {@code tableName} should be
-     *         <a href="../../../../../concepts/protection.html"
-     *         target="_top">protected</a> or not. The {@code value} must be
-     *         either 'true' or 'false'.
+     *         PROTECTED}: No longer used.  Previously set whether the given
+     *         {@code tableName} should be protected or not. The {@code value}
+     *         would have been either 'true' or 'false'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE
-     *         RENAME_TABLE}: Renames a table, view or collection to {@code
-     *         value}. Has the same naming restrictions as <a
+     *         RENAME_TABLE}: Renames a table or view within its current schema
+     *         to {@code value}. Has the same naming restrictions as <a
      *         href="../../../../../concepts/tables.html"
      *         target="_top">tables</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}: Sets the
      *         <a href="../../../../../concepts/ttl.html"
-     *         target="_top">time-to-live</a> in minutes of the table, view, or
-     *         collection specified in {@code tableName}.
+     *         target="_top">time-to-live</a> in minutes of the table or view
+     *         specified in {@code tableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
      *         ADD_COLUMN}: Adds the column specified in {@code value} to the
@@ -1248,16 +1307,25 @@ public class AlterTableRequest implements IndexedRecord {
      *         'read_only', 'write_only' and 'read_write'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#REFRESH REFRESH}:
-     *         Replays all the table creation commands required to create this
-     *         <a href="../../../../../concepts/materialized_views.html"
-     *         target="_top">materialized view</a>.
+     *         For a <a href="../../../../../concepts/materialized_views.html"
+     *         target="_top">materialized view</a>, replays all the table
+     *         creation commands required to create the view.  For an <a
+     *         href="../../../../../concepts/external_tables.html"
+     *         target="_top">external table</a>, reloads all data in the table
+     *         from its associated source files or <a
+     *         href="../../../../../concepts/data_sources.html"
+     *         target="_top">data source</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
-     *         SET_REFRESH_METHOD}: Sets the method by which this <a
+     *         SET_REFRESH_METHOD}: For a <a
      *         href="../../../../../concepts/materialized_views.html"
-     *         target="_top">materialized view</a> is refreshed to the method
-     *         specified in {@code value} - one of 'manual', 'periodic',
-     *         'on_change'.
+     *         target="_top">materialized view</a>, sets the method by which
+     *         the view is refreshed to the method specified in {@code value} -
+     *         one of 'manual', 'periodic', or 'on_change'.  For an <a
+     *         href="../../../../../concepts/external_tables.html"
+     *         target="_top">external table</a>, sets the method by which the
+     *         table is refreshed to the method specified in {@code value} -
+     *         either 'manual' or 'on_start'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
      *         SET_REFRESH_START_TIME}: Sets the time to start periodic
@@ -1329,29 +1397,36 @@ public class AlterTableRequest implements IndexedRecord {
      *                the specified index, an error will be returned.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_COLLECTION
-     *                MOVE_TO_COLLECTION}: Moves a table or view into a
-     *                collection named {@code value}.  If the collection
-     *                provided is non-existent, the collection will be
-     *                automatically created. If {@code value} is empty, then
-     *                the table or view will be top-level.
+     *                MOVE_TO_COLLECTION}: [DEPRECATED--please use {@code
+     *                move_to_schema} and use {@link
+     *                com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                create the schema if non-existent]  Moves a table or view
+     *                into a schema named {@code value}.  If the schema
+     *                provided is non-existent, it will be automatically
+     *                created.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#MOVE_TO_SCHEMA
+     *                MOVE_TO_SCHEMA}: Moves a table or view into a schema
+     *                named {@code value}.  If the schema provided is
+     *                non-existent, an error will be thrown. If {@code value}
+     *                is empty, then the table or view will be placed in the
+     *                user's default schema.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#PROTECTED
-     *                PROTECTED}: Sets whether the given {@code tableName}
-     *                should be <a
-     *                href="../../../../../concepts/protection.html"
-     *                target="_top">protected</a> or not. The {@code value}
-     *                must be either 'true' or 'false'.
+     *                PROTECTED}: No longer used.  Previously set whether the
+     *                given {@code tableName} should be protected or not. The
+     *                {@code value} would have been either 'true' or 'false'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE
-     *                RENAME_TABLE}: Renames a table, view or collection to
-     *                {@code value}. Has the same naming restrictions as <a
-     *                href="../../../../../concepts/tables.html"
+     *                RENAME_TABLE}: Renames a table or view within its current
+     *                schema to {@code value}. Has the same naming restrictions
+     *                as <a href="../../../../../concepts/tables.html"
      *                target="_top">tables</a>.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}:
      *                Sets the <a href="../../../../../concepts/ttl.html"
-     *                target="_top">time-to-live</a> in minutes of the table,
-     *                view, or collection specified in {@code tableName}.
+     *                target="_top">time-to-live</a> in minutes of the table or
+     *                view specified in {@code tableName}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_COLUMN
      *                ADD_COLUMN}: Adds the column specified in {@code value}
@@ -1430,17 +1505,27 @@ public class AlterTableRequest implements IndexedRecord {
      *                and 'read_write'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REFRESH
-     *                REFRESH}: Replays all the table creation commands
-     *                required to create this <a
+     *                REFRESH}: For a <a
      *                href="../../../../../concepts/materialized_views.html"
-     *                target="_top">materialized view</a>.
+     *                target="_top">materialized view</a>, replays all the
+     *                table creation commands required to create the view.  For
+     *                an <a href="../../../../../concepts/external_tables.html"
+     *                target="_top">external table</a>, reloads all data in the
+     *                table from its associated source files or <a
+     *                href="../../../../../concepts/data_sources.html"
+     *                target="_top">data source</a>.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
-     *                SET_REFRESH_METHOD}: Sets the method by which this <a
+     *                SET_REFRESH_METHOD}: For a <a
      *                href="../../../../../concepts/materialized_views.html"
-     *                target="_top">materialized view</a> is refreshed to the
-     *                method specified in {@code value} - one of 'manual',
-     *                'periodic', 'on_change'.
+     *                target="_top">materialized view</a>, sets the method by
+     *                which the view is refreshed to the method specified in
+     *                {@code value} - one of 'manual', 'periodic', or
+     *                'on_change'.  For an <a
+     *                href="../../../../../concepts/external_tables.html"
+     *                target="_top">external table</a>, sets the method by
+     *                which the table is refreshed to the method specified in
+     *                {@code value} - either 'manual' or 'on_start'.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
      *                SET_REFRESH_START_TIME}: Sets the time to start periodic
@@ -1568,24 +1653,24 @@ public class AlterTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterTableRequest.Options#SNAPPY SNAPPY}.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#COPY_VALUES_FROM_COLUMN
-     *         COPY_VALUES_FROM_COLUMN}: Deprecated.  Please use {@code
-     *         add_column_expression} instead.
+     *         COPY_VALUES_FROM_COLUMN}: [DEPRECATED--please use {@code
+     *         add_column_expression} instead.]
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#RENAME_COLUMN
      *         RENAME_COLUMN}: When changing a column, specify new column name.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#VALIDATE_CHANGE_COLUMN
      *         VALIDATE_CHANGE_COLUMN}: When changing a column, validate the
-     *         change before applying it. If {@code true}, then validate all
-     *         values. A value too large (or too long) for the new type will
-     *         prevent any change. If {@code false}, then when a value is too
-     *         large or long, it will be truncated.
+     *         change before applying it (or not).
      *         Supported values:
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}: true
+     *         com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}:
+     *         Validate all values. A value too large (or too long) for the new
+     *         type will prevent any change.
      *                 <li> {@link
-     *         com.gpudb.protocol.AlterTableRequest.Options#FALSE FALSE}: false
+     *         com.gpudb.protocol.AlterTableRequest.Options#FALSE FALSE}: When
+     *         a value is too large or long, it will be truncated.
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.
@@ -1706,8 +1791,8 @@ public class AlterTableRequest implements IndexedRecord {
      *                 SNAPPY}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COPY_VALUES_FROM_COLUMN
-     *                 COPY_VALUES_FROM_COLUMN}: Deprecated.  Please use {@code
-     *                 add_column_expression} instead.
+     *                 COPY_VALUES_FROM_COLUMN}: [DEPRECATED--please use {@code
+     *                 add_column_expression} instead.]
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#RENAME_COLUMN
      *                 RENAME_COLUMN}: When changing a column, specify new
@@ -1715,19 +1800,17 @@ public class AlterTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#VALIDATE_CHANGE_COLUMN
      *                 VALIDATE_CHANGE_COLUMN}: When changing a column,
-     *                 validate the change before applying it. If {@code true},
-     *                 then validate all values. A value too large (or too
-     *                 long) for the new type will prevent any change. If
-     *                 {@code false}, then when a value is too large or long,
-     *                 it will be truncated.
+     *                 validate the change before applying it (or not).
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}:
-     *                 true
+     *                 Validate all values. A value too large (or too long) for
+     *                 the new type will prevent any change.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#FALSE
-     *                 FALSE}: false
+     *                 FALSE}: When a value is too large or long, it will be
+     *                 truncated.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#TRUE TRUE}.

@@ -17,11 +17,11 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#appendRecords(AppendRecordsRequest)}.
  * <p>
- * Append (or insert) all records from a source table (specified by {@code
- * sourceTableName}) to a particular target table (specified by {@code
- * tableName}). The field map (specified by {@code fieldMap}) holds the user
- * specified map of target table column names with their mapped source column
- * names.
+ * Append (or insert) all records from a source table
+ * (specified by {@code sourceTableName}) to a particular target table
+ * (specified by {@code tableName}). The field map
+ * (specified by {@code fieldMap}) holds the user specified map of target table
+ * column names with their mapped source column names.
  */
 public class AppendRecordsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -207,9 +207,16 @@ public class AppendRecordsRequest implements IndexedRecord {
     /**
      * Constructs an AppendRecordsRequest object with the specified parameters.
      * 
-     * @param tableName  The table name for the records to be appended. Must be
-     *                   an existing table.
-     * @param sourceTableName  The source table name to get records from. Must
+     * @param tableName  The table name for the records to be appended, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table.
+     * @param sourceTableName  The source table name to get records from, in
+     *                         [schema_name.]table_name format, using standard
+     *                         <a
+     *                         href="../../../../../concepts/tables.html#table-name-resolution"
+     *                         target="_top">name resolution rules</a>.  Must
      *                         be an existing table name.
      * @param fieldMap  Contains the mapping of column names from the target
      *                  table (specified by {@code tableName}) as the keys, and
@@ -305,8 +312,11 @@ public class AppendRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The table name for the records to be appended. Must be an
-     *         existing table.
+     * @return The table name for the records to be appended, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be an existing
+     *         table.
      * 
      */
     public String getTableName() {
@@ -315,8 +325,11 @@ public class AppendRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  The table name for the records to be appended. Must be
-     *                   an existing table.
+     * @param tableName  The table name for the records to be appended, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -328,7 +341,10 @@ public class AppendRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The source table name to get records from. Must be an existing
+     * @return The source table name to get records from, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be an existing
      *         table name.
      * 
      */
@@ -338,7 +354,11 @@ public class AppendRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param sourceTableName  The source table name to get records from. Must
+     * @param sourceTableName  The source table name to get records from, in
+     *                         [schema_name.]table_name format, using standard
+     *                         <a
+     *                         href="../../../../../concepts/tables.html#table-name-resolution"
+     *                         target="_top">name resolution rules</a>.  Must
      *                         be an existing table name.
      * 
      * @return {@code this} to mimic the builder pattern.

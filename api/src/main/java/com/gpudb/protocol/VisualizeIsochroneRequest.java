@@ -19,11 +19,13 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#visualizeIsochrone(VisualizeIsochroneRequest)}.
  * <p>
- * Generate an image containing isolines for travel results using an existing
- * graph. Isolines represent curves of equal cost, with cost typically
+ * Generate an image containing isolines for travel results using an
+ * existing graph. Isolines represent curves of equal cost, with cost typically
  * referring to the time or distance assigned as the weights of the underlying
- * graph. See <a href="../../../../../graph_solver/network_graph_solver.html"
- * target="_top">Network Graphs & Solvers</a> for more information on graphs.
+ * graph. See
+ * <a href="../../../../../graph_solver/network_graph_solver.html"
+ * target="_top">Network Graphs & Solvers</a>
+ * for more information on graphs.
  * .
  */
 public class VisualizeIsochroneRequest implements IndexedRecord {
@@ -968,10 +970,15 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.VisualizeIsochroneRequest.Options#SOLVE_TABLE
-     * SOLVE_TABLE}: Name of the table to host intermediate solve results
-     * containing the position and cost for each vertex in the graph. If the
-     * default value is used, a temporary table is created and deleted once the
-     * solution is calculated.  The default value is ''.
+     * SOLVE_TABLE}: Name of the table to host intermediate solve results, in
+     * [schema_name.]table_name format, using standard <a
+     * href="../../../../../concepts/tables.html#table-name-resolution"
+     * target="_top">name resolution rules</a> and meeting <a
+     * href="../../../../../concepts/tables.html#table-naming-criteria"
+     * target="_top">table naming criteria</a>.  This table will contain the
+     * position and cost for each vertex in the graph. If the default value is
+     * used, a temporary table is created and deleted once the solution is
+     * calculated.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.VisualizeIsochroneRequest.Options#IS_REPLICATED
      * IS_REPLICATED}: If set to {@code true}, replicate the {@code
@@ -1045,10 +1052,15 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of the table to host intermediate solve results containing the
-         * position and cost for each vertex in the graph. If the default value
-         * is used, a temporary table is created and deleted once the solution
-         * is calculated.  The default value is ''.
+         * Name of the table to host intermediate solve results, in
+         * [schema_name.]table_name format, using standard <a
+         * href="../../../../../concepts/tables.html#table-name-resolution"
+         * target="_top">name resolution rules</a> and meeting <a
+         * href="../../../../../concepts/tables.html#table-naming-criteria"
+         * target="_top">table naming criteria</a>.  This table will contain
+         * the position and cost for each vertex in the graph. If the default
+         * value is used, a temporary table is created and deleted once the
+         * solution is calculated.  The default value is ''.
          */
         public static final String SOLVE_TABLE = "solve_table";
 
@@ -1252,8 +1264,14 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      *                       The default value is {@link
      *                       com.gpudb.protocol.VisualizeIsochroneRequest.GenerateImage#TRUE
      *                       TRUE}.
-     * @param levelsTable  Name of the table to output the isochrones,
-     *                     containing levels and their corresponding WKT
+     * @param levelsTable  Name of the table to output the isochrones to, in
+     *                     [schema_name.]table_name format, using standard <a
+     *                     href="../../../../../concepts/tables.html#table-name-resolution"
+     *                     target="_top">name resolution rules</a> and meeting
+     *                     <a
+     *                     href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                     target="_top">table naming criteria</a>.  The table
+     *                     will contain levels and their corresponding WKT
      *                     geometry. If no value is provided, the table is not
      *                     generated.  The default value is ''.
      * @param styleOptions  Various style related options of the isochrone
@@ -1704,10 +1722,16 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.VisualizeIsochroneRequest.Options#SOLVE_TABLE
      *                 SOLVE_TABLE}: Name of the table to host intermediate
-     *                 solve results containing the position and cost for each
-     *                 vertex in the graph. If the default value is used, a
-     *                 temporary table is created and deleted once the solution
-     *                 is calculated.  The default value is ''.
+     *                 solve results, in [schema_name.]table_name format, using
+     *                 standard <a
+     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>.  This table
+     *                 will contain the position and cost for each vertex in
+     *                 the graph. If the default value is used, a temporary
+     *                 table is created and deleted once the solution is
+     *                 calculated.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.VisualizeIsochroneRequest.Options#IS_REPLICATED
      *                 IS_REPLICATED}: If set to {@code true}, replicate the
@@ -2050,9 +2074,14 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to output the isochrones, containing levels
-     *         and their corresponding WKT geometry. If no value is provided,
-     *         the table is not generated.  The default value is ''.
+     * @return Name of the table to output the isochrones to, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  The table will contain
+     *         levels and their corresponding WKT geometry. If no value is
+     *         provided, the table is not generated.  The default value is ''.
      * 
      */
     public String getLevelsTable() {
@@ -2061,8 +2090,14 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
 
     /**
      * 
-     * @param levelsTable  Name of the table to output the isochrones,
-     *                     containing levels and their corresponding WKT
+     * @param levelsTable  Name of the table to output the isochrones to, in
+     *                     [schema_name.]table_name format, using standard <a
+     *                     href="../../../../../concepts/tables.html#table-name-resolution"
+     *                     target="_top">name resolution rules</a> and meeting
+     *                     <a
+     *                     href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                     target="_top">table naming criteria</a>.  The table
+     *                     will contain levels and their corresponding WKT
      *                     geometry. If no value is provided, the table is not
      *                     generated.  The default value is ''.
      * 
@@ -3003,10 +3038,15 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.VisualizeIsochroneRequest.Options#SOLVE_TABLE
      *         SOLVE_TABLE}: Name of the table to host intermediate solve
-     *         results containing the position and cost for each vertex in the
-     *         graph. If the default value is used, a temporary table is
-     *         created and deleted once the solution is calculated.  The
-     *         default value is ''.
+     *         results, in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  This table will
+     *         contain the position and cost for each vertex in the graph. If
+     *         the default value is used, a temporary table is created and
+     *         deleted once the solution is calculated.  The default value is
+     *         ''.
      *                 <li> {@link
      *         com.gpudb.protocol.VisualizeIsochroneRequest.Options#IS_REPLICATED
      *         IS_REPLICATED}: If set to {@code true}, replicate the {@code
@@ -3093,10 +3133,16 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.VisualizeIsochroneRequest.Options#SOLVE_TABLE
      *                 SOLVE_TABLE}: Name of the table to host intermediate
-     *                 solve results containing the position and cost for each
-     *                 vertex in the graph. If the default value is used, a
-     *                 temporary table is created and deleted once the solution
-     *                 is calculated.  The default value is ''.
+     *                 solve results, in [schema_name.]table_name format, using
+     *                 standard <a
+     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>.  This table
+     *                 will contain the position and cost for each vertex in
+     *                 the graph. If the default value is used, a temporary
+     *                 table is created and deleted once the solution is
+     *                 calculated.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.VisualizeIsochroneRequest.Options#IS_REPLICATED
      *                 IS_REPLICATED}: If set to {@code true}, replicate the

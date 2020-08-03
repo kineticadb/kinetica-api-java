@@ -19,33 +19,43 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#queryGraph(QueryGraphRequest)}.
  * <p>
- * Employs a topological query on a network graph generated a-priori by {@link
- * com.gpudb.GPUdb#createGraph(CreateGraphRequest)} and returns a list of
- * adjacent edge(s) or node(s), also known as an adjacency list, depending on
- * what's been provided to the endpoint; providing edges will return nodes and
- * providing nodes will return edges.
+ * Employs a topological query on a network graph generated a-priori by
+ * {@link com.gpudb.GPUdb#createGraph(CreateGraphRequest)} and returns a list
+ * of adjacent edge(s) or node(s),
+ * also known as an adjacency list, depending on what's been provided to the
+ * endpoint; providing edges will return nodes and providing nodes will return
+ * edges.
  * <p>
  * To determine the node(s) or edge(s) adjacent to a value from a given column,
  * provide a list of values to {@code queries}. This field can be populated
- * with column values from any table as long as the type is supported by the
- * given identifier. See <a
+ * with
+ * column values from any table as long as the type is supported by the given
+ * identifier. See
+ * <a
  * href="../../../../../graph_solver/network_graph_solver.html#query-identifiers"
- * target="_top">Query Identifiers</a> for more information.
+ * target="_top">Query Identifiers</a>
+ * for more information.
  * <p>
  * To return the adjacency list in the response, leave {@code adjacencyTable}
  * empty. To return the adjacency list in a table and not in the response,
- * provide a value to {@code adjacencyTable} and set {@code
- * export_query_results} to {@code false}. To return the adjacency list both in
- * a table and the response, provide a value to {@code adjacencyTable} and set
- * {@code export_query_results} to {@code true}.
+ * provide
+ * a value to {@code adjacencyTable} and set
+ * {@code export_query_results} to
+ * {@code false}. To return the
+ * adjacency list both in a table and the response, provide a value to
+ * {@code adjacencyTable} and set {@code export_query_results}
+ * to {@code true}.
  * <p>
- * IMPORTANT: It's highly recommended that you review the <a
- * href="../../../../../graph_solver/network_graph_solver.html"
- * target="_top">Network Graphs & Solvers</a> concepts documentation, the <a
- * href="../../../../../graph_solver/examples/graph_rest_guide.html"
- * target="_top">Graph REST Tutorial</a>, and/or some <a
- * href="../../../../../graph_solver/examples.html#query-graph"
- * target="_top">/query/graph examples</a> before using this endpoint.
+ * IMPORTANT: It's highly recommended that you review the
+ * <a href="../../../../../graph_solver/network_graph_solver.html"
+ * target="_top">Network Graphs & Solvers</a>
+ * concepts documentation, the
+ * <a href="../../../../../graph_solver/examples/graph_rest_guide.html"
+ * target="_top">Graph REST Tutorial</a>,
+ * and/or some
+ * <a href="../../../../../graph_solver/examples.html#match-graph"
+ * target="_top">/match/graph examples</a>
+ * before using this endpoint.
  */
 public class QueryGraphRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -102,7 +112,12 @@ public class QueryGraphRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
      * TARGET_NODES_TABLE}: Name of the table to store the list of the final
-     * nodes reached during the traversal. If this value is left as the
+     * nodes reached during the traversal, in [schema_name.]table_name format,
+     * using standard <a
+     * href="../../../../../concepts/tables.html#table-name-resolution"
+     * target="_top">name resolution rules</a> and meeting <a
+     * href="../../../../../concepts/tables.html#table-naming-criteria"
+     * target="_top">table naming criteria</a>.  If this value is left as the
      * default, the table name will default to the {@code adjacencyTable} value
      * plus a '_nodes' suffix, e.g., '<adjacency_table_name>_nodes'.  The
      * default value is ''.
@@ -198,10 +213,15 @@ public class QueryGraphRequest implements IndexedRecord {
 
         /**
          * Name of the table to store the list of the final nodes reached
-         * during the traversal. If this value is left as the default, the
-         * table name will default to the {@code adjacencyTable} value plus a
-         * '_nodes' suffix, e.g., '<adjacency_table_name>_nodes'.  The default
-         * value is ''.
+         * during the traversal, in [schema_name.]table_name format, using
+         * standard <a
+         * href="../../../../../concepts/tables.html#table-name-resolution"
+         * target="_top">name resolution rules</a> and meeting <a
+         * href="../../../../../concepts/tables.html#table-naming-criteria"
+         * target="_top">table naming criteria</a>.  If this value is left as
+         * the default, the table name will default to the {@code
+         * adjacencyTable} value plus a '_nodes' suffix, e.g.,
+         * '<adjacency_table_name>_nodes'.  The default value is ''.
          */
         public static final String TARGET_NODES_TABLE = "target_nodes_table";
 
@@ -321,15 +341,21 @@ public class QueryGraphRequest implements IndexedRecord {
      *                      combination.  The default value is an empty {@link
      *                      List}.
      * @param adjacencyTable  Name of the table to store the resulting
-     *                        adjacencies. If left blank, the query results are
-     *                        instead returned in the response even if {@code
-     *                        export_query_results} is set to {@code false}. If
-     *                        the 'QUERY_TARGET_NODE_LABEL' <a
+     *                        adjacencies, in [schema_name.]table_name format,
+     *                        using standard <a
+     *                        href="../../../../../concepts/tables.html#table-name-resolution"
+     *                        target="_top">name resolution rules</a> and
+     *                        meeting <a
+     *                        href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                        target="_top">table naming criteria</a>.  If left
+     *                        blank, the query results are instead returned in
+     *                        the response even if {@code export_query_results}
+     *                        is set to {@code false}. If the
+     *                        'QUERY_TARGET_NODE_LABEL' <a
      *                        href="../../../../../graph_solver/network_graph_solver.html#query-identifiers"
      *                        target="_top">query identifier</a> is used in
      *                        {@code queries}, then two additional columns will
-     *                        be available: 'PATH_ID' and 'RING_ID'. See
-     *                                    <a
+     *                        be available: 'PATH_ID' and 'RING_ID'. See <a
      *                        href="../../../../../graph_solver/network_graph_solver.html#using-labels"
      *                        target="_top">Using Labels</a> for more
      *                        information.  The default value is ''.
@@ -377,11 +403,16 @@ public class QueryGraphRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
      *                 TARGET_NODES_TABLE}: Name of the table to store the list
-     *                 of the final nodes reached during the traversal. If this
-     *                 value is left as the default, the table name will
-     *                 default to the {@code adjacencyTable} value plus a
-     *                 '_nodes' suffix, e.g., '<adjacency_table_name>_nodes'.
-     *                 The default value is ''.
+     *                 of the final nodes reached during the traversal, in
+     *                 [schema_name.]table_name format, using standard <a
+     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>.  If this value
+     *                 is left as the default, the table name will default to
+     *                 the {@code adjacencyTable} value plus a '_nodes' suffix,
+     *                 e.g., '<adjacency_table_name>_nodes'.  The default value
+     *                 is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction
@@ -573,15 +604,19 @@ public class QueryGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to store the resulting adjacencies. If left
-     *         blank, the query results are instead returned in the response
-     *         even if {@code export_query_results} is set to {@code false}. If
-     *         the 'QUERY_TARGET_NODE_LABEL' <a
+     * @return Name of the table to store the resulting adjacencies, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  If left blank, the
+     *         query results are instead returned in the response even if
+     *         {@code export_query_results} is set to {@code false}. If the
+     *         'QUERY_TARGET_NODE_LABEL' <a
      *         href="../../../../../graph_solver/network_graph_solver.html#query-identifiers"
      *         target="_top">query identifier</a> is used in {@code queries},
      *         then two additional columns will be available: 'PATH_ID' and
-     *         'RING_ID'. See
-     *                     <a
+     *         'RING_ID'. See <a
      *         href="../../../../../graph_solver/network_graph_solver.html#using-labels"
      *         target="_top">Using Labels</a> for more information.  The
      *         default value is ''.
@@ -594,15 +629,21 @@ public class QueryGraphRequest implements IndexedRecord {
     /**
      * 
      * @param adjacencyTable  Name of the table to store the resulting
-     *                        adjacencies. If left blank, the query results are
-     *                        instead returned in the response even if {@code
-     *                        export_query_results} is set to {@code false}. If
-     *                        the 'QUERY_TARGET_NODE_LABEL' <a
+     *                        adjacencies, in [schema_name.]table_name format,
+     *                        using standard <a
+     *                        href="../../../../../concepts/tables.html#table-name-resolution"
+     *                        target="_top">name resolution rules</a> and
+     *                        meeting <a
+     *                        href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                        target="_top">table naming criteria</a>.  If left
+     *                        blank, the query results are instead returned in
+     *                        the response even if {@code export_query_results}
+     *                        is set to {@code false}. If the
+     *                        'QUERY_TARGET_NODE_LABEL' <a
      *                        href="../../../../../graph_solver/network_graph_solver.html#query-identifiers"
      *                        target="_top">query identifier</a> is used in
      *                        {@code queries}, then two additional columns will
-     *                        be available: 'PATH_ID' and 'RING_ID'. See
-     *                                    <a
+     *                        be available: 'PATH_ID' and 'RING_ID'. See <a
      *                        href="../../../../../graph_solver/network_graph_solver.html#using-labels"
      *                        target="_top">Using Labels</a> for more
      *                        information.  The default value is ''.
@@ -687,7 +728,12 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
      *         TARGET_NODES_TABLE}: Name of the table to store the list of the
-     *         final nodes reached during the traversal. If this value is left
+     *         final nodes reached during the traversal, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  If this value is left
      *         as the default, the table name will default to the {@code
      *         adjacencyTable} value plus a '_nodes' suffix, e.g.,
      *         '<adjacency_table_name>_nodes'.  The default value is ''.
@@ -790,11 +836,16 @@ public class QueryGraphRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#TARGET_NODES_TABLE
      *                 TARGET_NODES_TABLE}: Name of the table to store the list
-     *                 of the final nodes reached during the traversal. If this
-     *                 value is left as the default, the table name will
-     *                 default to the {@code adjacencyTable} value plus a
-     *                 '_nodes' suffix, e.g., '<adjacency_table_name>_nodes'.
-     *                 The default value is ''.
+     *                 of the final nodes reached during the traversal, in
+     *                 [schema_name.]table_name format, using standard <a
+     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>.  If this value
+     *                 is left as the default, the table name will default to
+     *                 the {@code adjacencyTable} value plus a '_nodes' suffix,
+     *                 e.g., '<adjacency_table_name>_nodes'.  The default value
+     *                 is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#RESTRICTION_THRESHOLD_VALUE
      *                 RESTRICTION_THRESHOLD_VALUE}: Value-based restriction

@@ -61,7 +61,10 @@ public class AggregateMinMaxRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table.
+     *                   performed. Must be an existing table, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * @param columnName  Name of a column or an expression of one or more
      *                    column on which the min-max will be calculated.
      * @param options  Optional parameters.  The default value is an empty
@@ -77,7 +80,10 @@ public class AggregateMinMaxRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table on which the operation will be performed. Must
-     *         be an existing table.
+     *         be an existing table, in [schema_name.]table_name format, using
+     *         standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.
      * 
      */
     public String getTableName() {
@@ -87,7 +93,10 @@ public class AggregateMinMaxRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table.
+     *                   performed. Must be an existing table, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

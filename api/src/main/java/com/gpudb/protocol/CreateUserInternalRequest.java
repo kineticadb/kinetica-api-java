@@ -50,6 +50,9 @@ public class CreateUserInternalRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateUserInternalRequest.Options#RESOURCE_GROUP
      * RESOURCE_GROUP}: Name of an existing resource group to associate with
      * this user
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUserInternalRequest.Options#DEFAULT_SCHEMA
+     * DEFAULT_SCHEMA}: default schema associate with this user
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -60,6 +63,11 @@ public class CreateUserInternalRequest implements IndexedRecord {
          * Name of an existing resource group to associate with this user
          */
         public static final String RESOURCE_GROUP = "resource_group";
+
+        /**
+         * default schema associate with this user
+         */
+        public static final String DEFAULT_SCHEMA = "default_schema";
 
         private Options() {  }
     }
@@ -94,6 +102,9 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateUserInternalRequest.Options#RESOURCE_GROUP
      *                 RESOURCE_GROUP}: Name of an existing resource group to
      *                 associate with this user
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserInternalRequest.Options#DEFAULT_SCHEMA
+     *                 DEFAULT_SCHEMA}: default schema associate with this user
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -161,6 +172,9 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateUserInternalRequest.Options#RESOURCE_GROUP
      *         RESOURCE_GROUP}: Name of an existing resource group to associate
      *         with this user
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUserInternalRequest.Options#DEFAULT_SCHEMA
+     *         DEFAULT_SCHEMA}: default schema associate with this user
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -177,6 +191,9 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateUserInternalRequest.Options#RESOURCE_GROUP
      *                 RESOURCE_GROUP}: Name of an existing resource group to
      *                 associate with this user
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserInternalRequest.Options#DEFAULT_SCHEMA
+     *                 DEFAULT_SCHEMA}: default schema associate with this user
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

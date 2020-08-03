@@ -162,8 +162,11 @@ public class RevokePermissionTableRequest implements IndexedRecord {
      *                    TABLE_READ}: Read access to the table.
      *                    </ul>
      * @param tableName  Name of the table to which the permission grants
-     *                   access. Must be an existing table, collection, or
-     *                   view.
+     *                   access, in [schema_name.]table_name format, using
+     *                   standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table, view or schema.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -265,8 +268,11 @@ public class RevokePermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to which the permission grants access. Must be
-     *         an existing table, collection, or view.
+     * @return Name of the table to which the permission grants access, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be an existing
+     *         table, view or schema.
      * 
      */
     public String getTableName() {
@@ -276,8 +282,11 @@ public class RevokePermissionTableRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table to which the permission grants
-     *                   access. Must be an existing table, collection, or
-     *                   view.
+     *                   access, in [schema_name.]table_name format, using
+     *                   standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table, view or schema.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

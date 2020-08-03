@@ -19,12 +19,15 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#filterByArea(FilterByAreaRequest)}.
  * <p>
- * Calculates which objects from a table are within a named area of interest
- * (NAI/polygon). The operation is synchronous, meaning that a response will
- * not be returned until all the matching objects are fully available. The
+ * Calculates which objects from a table are within a named area of
+ * interest (NAI/polygon). The operation is synchronous, meaning that a
+ * response
+ * will not be returned until all the matching objects are fully available. The
  * response payload provides the count of the resulting set. A new resultant
- * set (view) which satisfies the input NAI restriction specification is
- * created with the name {@code viewName} passed in as part of the input.
+ * set
+ * (view) which satisfies the input NAI restriction specification is created
+ * with
+ * the name {@code viewName} passed in as part of the input.
  */
 public class FilterByAreaRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -58,10 +61,11 @@ public class FilterByAreaRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.FilterByAreaRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the newly
-     * created view. If the collection provided is non-existent, the collection
-     * will be automatically created.  If empty, then the newly created view
-     * will be top-level.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
+     * the view as part of {@code viewName} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of a schema for the newly created view. If the
+     * schema provided is non-existent, it will be automatically created.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -69,10 +73,12 @@ public class FilterByAreaRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the newly created view. If
-         * the collection provided is non-existent, the collection will be
-         * automatically created.  If empty, then the newly created view will
-         * be top-level.
+         * [DEPRECATED--please specify the containing schema for the view as
+         * part of {@code viewName} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of a schema for the newly created
+         * view. If the schema provided is non-existent, it will be
+         * automatically created.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -104,17 +110,20 @@ public class FilterByAreaRequest implements IndexedRecord {
     /**
      * Constructs a FilterByAreaRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to filter.  This may be the name of
-     *                   a collection, a table, or a view (when chaining
-     *                   queries).  If filtering a collection, all child tables
-     *                   where the filter expression is valid will be filtered;
-     *                   the filtered result tables will then be placed in a
-     *                   collection specified by {@code viewName}.
+     * @param tableName  Name of the table to filter, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  This may be
+     *                   the name of a table or a view (when chaining queries).
      * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Has the same naming
-     *                  restrictions as <a
-     *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.  The default value is ''.
+     *                  containing the results, in [schema_name.]view_name
+     *                  format, using standard <a
+     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  target="_top">name resolution rules</a> and meeting <a
+     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  target="_top">table naming criteria</a>.  Must not be
+     *                  an already existing table or view.  The default value
+     *                  is ''.
      * @param xColumnName  Name of the column containing the x values to be
      *                     filtered.
      * @param xVector  List of x coordinates of the vertices of the polygon
@@ -127,11 +136,13 @@ public class FilterByAreaRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByAreaRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created.  If empty, then the newly created
-     *                 view will be top-level.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the view as part of {@code
+     *                 viewName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the newly created view. If the schema provided is
+     *                 non-existent, it will be automatically created.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -148,12 +159,11 @@ public class FilterByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to filter.  This may be the name of a
-     *         collection, a table, or a view (when chaining queries).  If
-     *         filtering a collection, all child tables where the filter
-     *         expression is valid will be filtered; the filtered result tables
-     *         will then be placed in a collection specified by {@code
-     *         viewName}.
+     * @return Name of the table to filter, in [schema_name.]table_name format,
+     *         using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  This may be the name
+     *         of a table or a view (when chaining queries).
      * 
      */
     public String getTableName() {
@@ -162,12 +172,11 @@ public class FilterByAreaRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to filter.  This may be the name of
-     *                   a collection, a table, or a view (when chaining
-     *                   queries).  If filtering a collection, all child tables
-     *                   where the filter expression is valid will be filtered;
-     *                   the filtered result tables will then be placed in a
-     *                   collection specified by {@code viewName}.
+     * @param tableName  Name of the table to filter, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  This may be
+     *                   the name of a table or a view (when chaining queries).
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -180,9 +189,13 @@ public class FilterByAreaRequest implements IndexedRecord {
     /**
      * 
      * @return If provided, then this will be the name of the view containing
-     *         the results. Has the same naming restrictions as <a
-     *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.  The default value is ''.
+     *         the results, in [schema_name.]view_name format, using standard
+     *         <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  Must not be an already
+     *         existing table or view.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -192,10 +205,14 @@ public class FilterByAreaRequest implements IndexedRecord {
     /**
      * 
      * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Has the same naming
-     *                  restrictions as <a
-     *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.  The default value is ''.
+     *                  containing the results, in [schema_name.]view_name
+     *                  format, using standard <a
+     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  target="_top">name resolution rules</a> and meeting <a
+     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  target="_top">table naming criteria</a>.  Must not be
+     *                  an already existing table or view.  The default value
+     *                  is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -301,10 +318,12 @@ public class FilterByAreaRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.FilterByAreaRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         newly created view. If the collection provided is non-existent,
-     *         the collection will be automatically created.  If empty, then
-     *         the newly created view will be top-level.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema for the view as part of {@code viewName} and use {@link
+     *         com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+     *         schema if non-existent]  Name of a schema for the newly created
+     *         view. If the schema provided is non-existent, it will be
+     *         automatically created.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -319,11 +338,13 @@ public class FilterByAreaRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByAreaRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created.  If empty, then the newly created
-     *                 view will be top-level.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the view as part of {@code
+     *                 viewName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the newly created view. If the schema provided is
+     *                 non-existent, it will be automatically created.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

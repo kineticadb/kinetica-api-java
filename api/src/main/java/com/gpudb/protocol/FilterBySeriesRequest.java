@@ -19,17 +19,22 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#filterBySeries(FilterBySeriesRequest)}.
  * <p>
- * Filters objects matching all points of the given track (works only on track
- * type data).  It allows users to specify a particular track to find all other
- * points in the table that fall within specified ranges-spatial and
- * temporal-of all points of the given track. Additionally, the user can
- * specify another track to see if the two intersect (or go close to each other
- * within the specified ranges). The user also has the flexibility of using
- * different metrics for the spatial distance calculation: Euclidean (flat
- * geometry) or Great Circle (spherical geometry to approximate the Earth's
- * surface distances). The filtered points are stored in a newly created result
- * set. The return value of the function is the number of points in the
- * resultant set (view).
+ * Filters objects matching all points of the given track (works only
+ * on track type data).  It allows users to specify a particular track to find
+ * all
+ * other points in the table that fall within specified ranges (spatial and
+ * temporal) of all points of the given track. Additionally, the user can
+ * specify
+ * another track to see if the two intersect (or go close to each other within
+ * the
+ * specified ranges). The user also has the flexibility of using different
+ * metrics
+ * for the spatial distance calculation: Euclidean (flat geometry) or Great
+ * Circle
+ * (spherical geometry to approximate the Earth's surface distances). The
+ * filtered
+ * points are stored in a newly created result set. The return value of the
+ * function is the number of points in the resultant set (view).
  * <p>
  * This operation is synchronous, meaning that a response will not be returned
  * until all the objects are fully available.
@@ -64,10 +69,11 @@ public class FilterBySeriesRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.FilterBySeriesRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the newly
-     * created view. If the collection provided is non-existent, the collection
-     * will be automatically created. If empty, then the newly created view
-     * will be top-level.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
+     * the view as part of {@code viewName} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of a schema for the newly created view. If the
+     * schema is non-existent, it will be automatically created.
      *         <li> {@link
      * com.gpudb.protocol.FilterBySeriesRequest.Options#SPATIAL_RADIUS
      * SPATIAL_RADIUS}: A positive number passed as a string representing the
@@ -99,10 +105,12 @@ public class FilterBySeriesRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the newly created view. If
-         * the collection provided is non-existent, the collection will be
-         * automatically created. If empty, then the newly created view will be
-         * top-level.
+         * [DEPRECATED--please specify the containing schema for the view as
+         * part of {@code viewName} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of a schema for the newly created
+         * view. If the schema is non-existent, it will be automatically
+         * created.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -164,15 +172,22 @@ public class FilterBySeriesRequest implements IndexedRecord {
      * Constructs a FilterBySeriesRequest object with the specified parameters.
      * 
      * @param tableName  Name of the table on which the filter by track
-     *                   operation will be performed. Must be a currently
-     *                   existing table with a <a
+     *                   operation will be performed, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>. Must be a
+     *                   currently existing table with a <a
      *                   href="../../../../../geospatial/geo_objects.html"
      *                   target="_top">track</a> present.
      * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Has the same naming
-     *                  restrictions as <a
-     *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.  The default value is ''.
+     *                  containing the results, in [schema_name.]view_name
+     *                  format, using standard <a
+     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  target="_top">name resolution rules</a> and meeting <a
+     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  target="_top">table naming criteria</a>.  Must not be
+     *                  an already existing table or view.  The default value
+     *                  is ''.
      * @param trackId  The ID of the track which will act as the filtering
      *                 points. Must be an existing track within the given
      *                 table.
@@ -183,11 +198,13 @@ public class FilterBySeriesRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterBySeriesRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 view will be top-level.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the view as part of {@code
+     *                 viewName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the newly created view. If the schema is non-existent,
+     *                 it will be automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterBySeriesRequest.Options#SPATIAL_RADIUS
      *                 SPATIAL_RADIUS}: A positive number passed as a string
@@ -232,7 +249,10 @@ public class FilterBySeriesRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table on which the filter by track operation will be
-     *         performed. Must be a currently existing table with a <a
+     *         performed, in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>. Must be a currently
+     *         existing table with a <a
      *         href="../../../../../geospatial/geo_objects.html"
      *         target="_top">track</a> present.
      * 
@@ -244,8 +264,11 @@ public class FilterBySeriesRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table on which the filter by track
-     *                   operation will be performed. Must be a currently
-     *                   existing table with a <a
+     *                   operation will be performed, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>. Must be a
+     *                   currently existing table with a <a
      *                   href="../../../../../geospatial/geo_objects.html"
      *                   target="_top">track</a> present.
      * 
@@ -260,9 +283,13 @@ public class FilterBySeriesRequest implements IndexedRecord {
     /**
      * 
      * @return If provided, then this will be the name of the view containing
-     *         the results. Has the same naming restrictions as <a
-     *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.  The default value is ''.
+     *         the results, in [schema_name.]view_name format, using standard
+     *         <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  Must not be an already
+     *         existing table or view.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -272,10 +299,14 @@ public class FilterBySeriesRequest implements IndexedRecord {
     /**
      * 
      * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Has the same naming
-     *                  restrictions as <a
-     *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.  The default value is ''.
+     *                  containing the results, in [schema_name.]view_name
+     *                  format, using standard <a
+     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  target="_top">name resolution rules</a> and meeting <a
+     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  target="_top">table naming criteria</a>.  Must not be
+     *                  an already existing table or view.  The default value
+     *                  is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -339,10 +370,12 @@ public class FilterBySeriesRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.FilterBySeriesRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         newly created view. If the collection provided is non-existent,
-     *         the collection will be automatically created. If empty, then the
-     *         newly created view will be top-level.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema for the view as part of {@code viewName} and use {@link
+     *         com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+     *         schema if non-existent]  Name of a schema for the newly created
+     *         view. If the schema is non-existent, it will be automatically
+     *         created.
      *                 <li> {@link
      *         com.gpudb.protocol.FilterBySeriesRequest.Options#SPATIAL_RADIUS
      *         SPATIAL_RADIUS}: A positive number passed as a string
@@ -384,11 +417,13 @@ public class FilterBySeriesRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterBySeriesRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 view will be top-level.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the view as part of {@code
+     *                 viewName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the newly created view. If the schema is non-existent,
+     *                 it will be automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterBySeriesRequest.Options#SPATIAL_RADIUS
      *                 SPATIAL_RADIUS}: A positive number passed as a string

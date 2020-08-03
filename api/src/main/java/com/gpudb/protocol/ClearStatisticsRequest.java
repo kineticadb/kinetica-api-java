@@ -60,8 +60,11 @@ public class ClearStatisticsRequest implements IndexedRecord {
      * Constructs a ClearStatisticsRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Name of a table. Must be an existing table.  The
-     *                   default value is ''.
+     * @param tableName  Name of a table, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>. Must be an
+     *                   existing table.  The default value is ''.
      * @param columnName  Name of the column in {@code tableName} for which to
      *                    clear statistics. The column must be from an existing
      *                    table. An empty string clears statistics for all
@@ -78,8 +81,11 @@ public class ClearStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of a table. Must be an existing table.  The default value
-     *         is ''.
+     * @return Name of a table, in [schema_name.]table_name format, using
+     *         standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>. Must be an existing
+     *         table.  The default value is ''.
      * 
      */
     public String getTableName() {
@@ -88,8 +94,11 @@ public class ClearStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of a table. Must be an existing table.  The
-     *                   default value is ''.
+     * @param tableName  Name of a table, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>. Must be an
+     *                   existing table.  The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

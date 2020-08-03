@@ -19,34 +19,40 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
  * <p>
- * For a given table, retrieves the values from the requested column(s). Maps
- * of column name to the array of values as well as the column data type are
- * returned. This endpoint supports pagination with the {@code offset} and
- * {@code limit} parameters.
+ * For a given table, retrieves the values from the requested
+ * column(s). Maps of column name to the array of values as well as the column
+ * data
+ * type are returned. This endpoint supports pagination with the {@code offset}
+ * and {@code limit} parameters.
  * <p>
  * <a href="../../../../../concepts/window.html" target="_top">Window
- * functions</a>, which can perform operations like moving averages, are
- * available through this endpoint as well as {@link
- * com.gpudb.GPUdb#createProjection(CreateProjectionRequest)}.
+ * functions</a>, which can perform
+ * operations like moving averages, are available through this endpoint as well
+ * as
+ * {@link com.gpudb.GPUdb#createProjection(CreateProjectionRequest)}.
  * <p>
  * When using pagination, if the table (or the underlying table in the case of
- * a view) is modified (records are inserted, updated, or deleted) during a
- * call to the endpoint, the records or values retrieved may differ between
- * calls based on the type of the update, e.g., the contiguity across pages
- * cannot be relied upon.
+ * a
+ * view) is modified (records are inserted, updated, or deleted) during a call
+ * to
+ * the endpoint, the records or values retrieved may differ between calls based
+ * on
+ * the type of the update, e.g., the contiguity across pages cannot be relied
+ * upon.
  * <p>
  * If {@code tableName} is empty, selection is performed against a single-row
- * virtual table.  This can be useful in executing temporal (<a
- * href="../../../../../concepts/expressions.html#date-time-functions"
- * target="_top">NOW()</a>), identity (<a
- * href="../../../../../concepts/expressions.html#user-security-functions"
- * target="_top">USER()</a>), or constant-based functions (<a
- * href="../../../../../concepts/expressions.html#scalar-functions"
+ * virtual table.  This can be useful in executing temporal
+ * (<a href="../../../../../concepts/expressions.html#date-time-functions"
+ * target="_top">NOW()</a>), identity
+ * (<a href="../../../../../concepts/expressions.html#user-security-functions"
+ * target="_top">USER()</a>), or
+ * constant-based functions
+ * (<a href="../../../../../concepts/expressions.html#scalar-functions"
  * target="_top">GEODIST(-77.11, 38.88, -71.06, 42.36)</a>).
  * <p>
- * The response is returned as a dynamic schema. For details see: <a
- * href="../../../../../api/index.html#dynamic-schemas" target="_top">dynamic
- * schemas documentation</a>.
+ * The response is returned as a dynamic schema. For details see:
+ * <a href="../../../../../api/index.html#dynamic-schemas"
+ * target="_top">dynamic schemas documentation</a>.
  */
 public class GetRecordsByColumnRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -75,7 +81,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
 
     /**
-     * Specifies the encoding for returned records; either 'binary' or 'json'.
+     * Specifies the encoding for returned records; either {@code binary} or
+     * {@code json}.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -128,8 +135,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * direction, e.g., 'timestamp asc, x desc'.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.GetRecordsByColumnRequest.Options#CONVERT_WKTS_TO_WKBS
-     * CONVERT_WKTS_TO_WKBS}: If true, then WKT string columns will be returned
-     * as WKB bytes.
+     * CONVERT_WKTS_TO_WKBS}: If {@code true}, then WKT string columns will be
+     * returned as WKB bytes.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -187,7 +194,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
         public static final String ORDER_BY = "order_by";
 
         /**
-         * If true, then WKT string columns will be returned as WKB bytes.
+         * If {@code true}, then WKT string columns will be returned as WKB
+         * bytes.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -227,11 +235,14 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * Constructs a GetRecordsByColumnRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Name of the table on which this operation will be
-     *                   performed.  An empty table name retrieves one record
-     *                   from a single-row virtual table, where columns
-     *                   specified should be constants or constant expressions.
-     *                   The table cannot be a parent set.
+     * @param tableName  Name of the table or view on which this operation will
+     *                   be performed, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  An empty
+     *                   table name retrieves one record from a single-row
+     *                   virtual table, where columns specified should be
+     *                   constants or constant expressions.
      * @param columnNames  The list of column values to retrieve.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
@@ -285,8 +296,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 'timestamp asc, x desc'.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#CONVERT_WKTS_TO_WKBS
-     *                 CONVERT_WKTS_TO_WKBS}: If true, then WKT string columns
-     *                 will be returned as WKB bytes.
+     *                 CONVERT_WKTS_TO_WKBS}: If {@code true}, then WKT string
+     *                 columns will be returned as WKB bytes.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -316,11 +327,14 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      * Constructs a GetRecordsByColumnRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Name of the table on which this operation will be
-     *                   performed.  An empty table name retrieves one record
-     *                   from a single-row virtual table, where columns
-     *                   specified should be constants or constant expressions.
-     *                   The table cannot be a parent set.
+     * @param tableName  Name of the table or view on which this operation will
+     *                   be performed, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  An empty
+     *                   table name retrieves one record from a single-row
+     *                   virtual table, where columns specified should be
+     *                   constants or constant expressions.
      * @param columnNames  The list of column values to retrieve.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
@@ -338,7 +352,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *               {@code offset} & {@code limit} to request subsequent pages
      *               of results.  The default value is -9999.
      * @param encoding  Specifies the encoding for returned records; either
-     *                  'binary' or 'json'.
+     *                  {@code binary} or {@code json}.
      *                  Supported values:
      *                  <ul>
      *                          <li> {@link
@@ -388,8 +402,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 'timestamp asc, x desc'.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#CONVERT_WKTS_TO_WKBS
-     *                 CONVERT_WKTS_TO_WKBS}: If true, then WKT string columns
-     *                 will be returned as WKB bytes.
+     *                 CONVERT_WKTS_TO_WKBS}: If {@code true}, then WKT string
+     *                 columns will be returned as WKB bytes.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -417,10 +431,12 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table on which this operation will be performed.  An
-     *         empty table name retrieves one record from a single-row virtual
-     *         table, where columns specified should be constants or constant
-     *         expressions.  The table cannot be a parent set.
+     * @return Name of the table or view on which this operation will be
+     *         performed, in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  An empty table name
+     *         retrieves one record from a single-row virtual table, where
+     *         columns specified should be constants or constant expressions.
      * 
      */
     public String getTableName() {
@@ -429,11 +445,14 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table on which this operation will be
-     *                   performed.  An empty table name retrieves one record
-     *                   from a single-row virtual table, where columns
-     *                   specified should be constants or constant expressions.
-     *                   The table cannot be a parent set.
+     * @param tableName  Name of the table or view on which this operation will
+     *                   be performed, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  An empty
+     *                   table name retrieves one record from a single-row
+     *                   virtual table, where columns specified should be
+     *                   constants or constant expressions.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -534,8 +553,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Specifies the encoding for returned records; either 'binary' or
-     *         'json'.
+     * @return Specifies the encoding for returned records; either {@code
+     *         binary} or {@code json}.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -556,7 +575,7 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
     /**
      * 
      * @param encoding  Specifies the encoding for returned records; either
-     *                  'binary' or 'json'.
+     *                  {@code binary} or {@code json}.
      *                  Supported values:
      *                  <ul>
      *                          <li> {@link
@@ -615,8 +634,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *         The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.GetRecordsByColumnRequest.Options#CONVERT_WKTS_TO_WKBS
-     *         CONVERT_WKTS_TO_WKBS}: If true, then WKT string columns will be
-     *         returned as WKB bytes.
+     *         CONVERT_WKTS_TO_WKBS}: If {@code true}, then WKT string columns
+     *         will be returned as WKB bytes.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -675,8 +694,8 @@ public class GetRecordsByColumnRequest implements IndexedRecord {
      *                 'timestamp asc, x desc'.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsByColumnRequest.Options#CONVERT_WKTS_TO_WKBS
-     *                 CONVERT_WKTS_TO_WKBS}: If true, then WKT string columns
-     *                 will be returned as WKB bytes.
+     *                 CONVERT_WKTS_TO_WKBS}: If {@code true}, then WKT string
+     *                 columns will be returned as WKB bytes.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

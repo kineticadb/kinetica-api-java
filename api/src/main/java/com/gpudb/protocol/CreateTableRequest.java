@@ -17,29 +17,20 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createTable(CreateTableRequest)}.
  * <p>
- * Creates a new table or collection. If a new table is being created,
+ * Creates a new table. If a new table is being created,
  * the type of the table is given by {@code typeId}, which must be the ID of
  * a currently registered type (i.e. one created via {@link
- * com.gpudb.GPUdb#createType(CreateTypeRequest)}). The
- * table will be created inside a collection if the option
- * {@code collection_name} is specified. If that collection does
- * not already exist, it will be created.
- * <p>
- * To create a new collection, specify the name of the collection in
- * {@code tableName} and set the {@code is_collection} option to
- * {@code true}; {@code typeId} will be
- * ignored.
+ * com.gpudb.GPUdb#createType(CreateTypeRequest)}).
  * <p>
  * A table may optionally be designated to use a
  * <a href="../../../../../concepts/tables.html#replication"
  * target="_top">replicated</a> distribution scheme,
- * have <a href="../../../../../concepts/tables.html#foreign-keys"
- * target="_top">foreign keys</a> to other
- * tables assigned, be assigned a
- * <a href="../../../../../concepts/tables.html#partitioning"
- * target="_top">partitioning</a> scheme, or have a
- * <a href="../../../../../rm/concepts.html#tier-strategies" target="_top">tier
- * strategy</a> assigned.
+ * or be assigned: <a href="../../../../../concepts/tables.html#foreign-keys"
+ * target="_top">foreign keys</a> to
+ * other tables, a <a href="../../../../../concepts/tables.html#partitioning"
+ * target="_top">partitioning</a>
+ * scheme, and/or a <a href="../../../../../rm/concepts.html#tier-strategies"
+ * target="_top">tier strategy</a>.
  */
 public class CreateTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -83,14 +74,16 @@ public class CreateTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the newly
-     * created table. If the collection provided is non-existent, the
-     * collection will be automatically created. If empty, then the newly
-     * created table will be a top-level table.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema as
+     * part of {@code tableName} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of a schema which is to contain the newly created
+     * table. If the schema is non-existent, it will be automatically created.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#IS_COLLECTION
-     * IS_COLLECTION}: Indicates whether the new table to be created will be a
-     * collection.
+     * IS_COLLECTION}: [DEPRECATED--please use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create a schema
+     * instead]  Indicates whether to create a schema instead of a table.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TRUE
@@ -115,14 +108,14 @@ public class CreateTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
-     * IS_REPLICATED}: For a table, affects the <a
+     * IS_REPLICATED}: Affects the <a
      * href="../../../../../concepts/tables.html#distribution"
-     * target="_top">distribution scheme</a> for the table's data.  If true and
-     * the given type has no explicit <a
+     * target="_top">distribution scheme</a> for the table's data.  If {@code
+     * true} and the given type has no explicit <a
      * href="../../../../../concepts/tables.html#shard-key" target="_top">shard
      * key</a> defined, the table will be <a
      * href="../../../../../concepts/tables.html#replication"
-     * target="_top">replicated</a>.  If false, the table will be <a
+     * target="_top">replicated</a>.  If {@code false}, the table will be <a
      * href="../../../../../concepts/tables.html#sharding"
      * target="_top">sharded</a> according to the shard key specified in the
      * given {@code typeId}, or <a
@@ -193,9 +186,9 @@ public class CreateTableRequest implements IndexedRecord {
      * target="_top">hash partitioning</a> for example formats.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
-     * IS_AUTOMATIC_PARTITION}: If true, a new partition will be created for
-     * values which don't fall into an existing partition.  Currently only
-     * supported for <a
+     * IS_AUTOMATIC_PARTITION}: If {@code true}, a new partition will be
+     * created for values which don't fall into an existing partition.
+     * Currently only supported for <a
      * href="../../../../../concepts/tables.html#partitioning-by-list"
      * target="_top">list partitions</a>.
      * Supported values:
@@ -208,17 +201,22 @@ public class CreateTableRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TTL
-     * TTL}: For a table, sets the <a href="../../../../../concepts/ttl.html"
+     * TTL}: Sets the <a href="../../../../../concepts/ttl.html"
      * target="_top">TTL</a> of the table specified in {@code tableName}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE CHUNK_SIZE}:
      * Indicates the number of records per chunk to be used for this table.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
-     * IS_RESULT_TABLE}: For a table, indicates whether the table is an
-     * in-memory table. A result table cannot contain store_only, text_search,
-     * or string columns (charN columns are acceptable), and it will not be
-     * retained if the server is restarted.
+     * IS_RESULT_TABLE}: Indicates whether the table is a <a
+     * href="../../../../../concepts/tables_memory_only.html"
+     * target="_top">memory-only table</a>. A result table cannot contain
+     * columns with store_only or text_search <a
+     * href="../../../../../concepts/types.html#data-handling"
+     * target="_top">data-handling</a> or that are <a
+     * href="../../../../../concepts/types.html#primitive-types"
+     * target="_top">non-charN strings</a>, and it will not be retained if the
+     * server is restarted.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TRUE
@@ -262,15 +260,20 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Name of a collection which is to contain the newly created table. If
-         * the collection provided is non-existent, the collection will be
-         * automatically created. If empty, then the newly created table will
-         * be a top-level table.
+         * [DEPRECATED--please specify the containing schema as part of {@code
+         * tableName} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of a schema which is to contain the
+         * newly created table. If the schema is non-existent, it will be
+         * automatically created.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * Indicates whether the new table to be created will be a collection.
+         * [DEPRECATED--please use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create a
+         * schema instead]  Indicates whether to create a schema instead of a
+         * table.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -298,15 +301,15 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String DISALLOW_HOMOGENEOUS_TABLES = "disallow_homogeneous_tables";
 
         /**
-         * For a table, affects the <a
+         * Affects the <a
          * href="../../../../../concepts/tables.html#distribution"
-         * target="_top">distribution scheme</a> for the table's data.  If true
-         * and the given type has no explicit <a
+         * target="_top">distribution scheme</a> for the table's data.  If
+         * {@code true} and the given type has no explicit <a
          * href="../../../../../concepts/tables.html#shard-key"
          * target="_top">shard key</a> defined, the table will be <a
          * href="../../../../../concepts/tables.html#replication"
-         * target="_top">replicated</a>.  If false, the table will be <a
-         * href="../../../../../concepts/tables.html#sharding"
+         * target="_top">replicated</a>.  If {@code false}, the table will be
+         * <a href="../../../../../concepts/tables.html#sharding"
          * target="_top">sharded</a> according to the shard key specified in
          * the given {@code typeId}, or <a
          * href="../../../../../concepts/tables.html#random-sharding"
@@ -416,9 +419,9 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String PARTITION_DEFINITIONS = "partition_definitions";
 
         /**
-         * If true, a new partition will be created for values which don't fall
-         * into an existing partition.  Currently only supported for <a
-         * href="../../../../../concepts/tables.html#partitioning-by-list"
+         * If {@code true}, a new partition will be created for values which
+         * don't fall into an existing partition.  Currently only supported for
+         * <a href="../../../../../concepts/tables.html#partitioning-by-list"
          * target="_top">list partitions</a>.
          * Supported values:
          * <ul>
@@ -433,7 +436,7 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String IS_AUTOMATIC_PARTITION = "is_automatic_partition";
 
         /**
-         * For a table, sets the <a href="../../../../../concepts/ttl.html"
+         * Sets the <a href="../../../../../concepts/ttl.html"
          * target="_top">TTL</a> of the table specified in {@code tableName}.
          */
         public static final String TTL = "ttl";
@@ -444,10 +447,15 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String CHUNK_SIZE = "chunk_size";
 
         /**
-         * For a table, indicates whether the table is an in-memory table. A
-         * result table cannot contain store_only, text_search, or string
-         * columns (charN columns are acceptable), and it will not be retained
-         * if the server is restarted.
+         * Indicates whether the table is a <a
+         * href="../../../../../concepts/tables_memory_only.html"
+         * target="_top">memory-only table</a>. A result table cannot contain
+         * columns with store_only or text_search <a
+         * href="../../../../../concepts/types.html#data-handling"
+         * target="_top">data-handling</a> or that are <a
+         * href="../../../../../concepts/types.html#primitive-types"
+         * target="_top">non-charN strings</a>, and it will not be retained if
+         * the server is restarted.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -490,15 +498,17 @@ public class CreateTableRequest implements IndexedRecord {
     /**
      * Constructs a CreateTableRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to be created. Error for requests
-     *                   with existing table of the same name and type ID may
-     *                   be suppressed by using the {@code no_error_if_exists}
-     *                   option.  See <a
-     *                   href="../../../../../concepts/tables.html"
-     *                   target="_top">Tables</a> for naming restrictions.
+     * @param tableName  Name of the table to be created, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a> and meeting <a
+     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   target="_top">table naming criteria</a>. Error for
+     *                   requests with existing table of the same name and type
+     *                   ID may be suppressed by using the {@code
+     *                   no_error_if_exists} option.
      * @param typeId  ID of a currently registered type. All objects added to
-     *                the newly created table will be of this type.  Ignored if
-     *                {@code is_collection} is {@code true}.
+     *                the newly created table will be of this type.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -520,15 +530,20 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created table. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 table will be a top-level table.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema as part of {@code tableName} and use
+     *                 {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema
+     *                 which is to contain the newly created table. If the
+     *                 schema is non-existent, it will be automatically
+     *                 created.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_COLLECTION
-     *                 IS_COLLECTION}: Indicates whether the new table to be
-     *                 created will be a collection.
+     *                 IS_COLLECTION}: [DEPRECATED--please use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create a schema instead]  Indicates whether to create a
+     *                 schema instead of a table.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -557,16 +572,17 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
-     *                 IS_REPLICATED}: For a table, affects the <a
+     *                 IS_REPLICATED}: Affects the <a
      *                 href="../../../../../concepts/tables.html#distribution"
      *                 target="_top">distribution scheme</a> for the table's
-     *                 data.  If true and the given type has no explicit <a
+     *                 data.  If {@code true} and the given type has no
+     *                 explicit <a
      *                 href="../../../../../concepts/tables.html#shard-key"
      *                 target="_top">shard key</a> defined, the table will be
      *                 <a
      *                 href="../../../../../concepts/tables.html#replication"
-     *                 target="_top">replicated</a>.  If false, the table will
-     *                 be <a
+     *                 target="_top">replicated</a>.  If {@code false}, the
+     *                 table will be <a
      *                 href="../../../../../concepts/tables.html#sharding"
      *                 target="_top">sharded</a> according to the shard key
      *                 specified in the given {@code typeId}, or <a
@@ -647,9 +663,10 @@ public class CreateTableRequest implements IndexedRecord {
      *                 target="_top">hash partitioning</a> for example formats.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
-     *                 IS_AUTOMATIC_PARTITION}: If true, a new partition will
-     *                 be created for values which don't fall into an existing
-     *                 partition.  Currently only supported for <a
+     *                 IS_AUTOMATIC_PARTITION}: If {@code true}, a new
+     *                 partition will be created for values which don't fall
+     *                 into an existing partition.  Currently only supported
+     *                 for <a
      *                 href="../../../../../concepts/tables.html#partitioning-by-list"
      *                 target="_top">list partitions</a>.
      *                 Supported values:
@@ -665,8 +682,7 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}:
-     *                 For a table, sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 Sets the <a href="../../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 tableName}.
      *                         <li> {@link
@@ -675,10 +691,14 @@ public class CreateTableRequest implements IndexedRecord {
      *                 to be used for this table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
-     *                 IS_RESULT_TABLE}: For a table, indicates whether the
-     *                 table is an in-memory table. A result table cannot
-     *                 contain store_only, text_search, or string columns
-     *                 (charN columns are acceptable), and it will not be
+     *                 IS_RESULT_TABLE}: Indicates whether the table is a <a
+     *                 href="../../../../../concepts/tables_memory_only.html"
+     *                 target="_top">memory-only table</a>. A result table
+     *                 cannot contain columns with store_only or text_search <a
+     *                 href="../../../../../concepts/types.html#data-handling"
+     *                 target="_top">data-handling</a> or that are <a
+     *                 href="../../../../../concepts/types.html#primitive-types"
+     *                 target="_top">non-charN strings</a>, and it will not be
      *                 retained if the server is restarted.
      *                 Supported values:
      *                 <ul>
@@ -713,11 +733,14 @@ public class CreateTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to be created. Error for requests with
+     * @return Name of the table to be created, in [schema_name.]table_name
+     *         format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>. Error for requests with
      *         existing table of the same name and type ID may be suppressed by
-     *         using the {@code no_error_if_exists} option.  See <a
-     *         href="../../../../../concepts/tables.html"
-     *         target="_top">Tables</a> for naming restrictions.
+     *         using the {@code no_error_if_exists} option.
      * 
      */
     public String getTableName() {
@@ -726,12 +749,15 @@ public class CreateTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to be created. Error for requests
-     *                   with existing table of the same name and type ID may
-     *                   be suppressed by using the {@code no_error_if_exists}
-     *                   option.  See <a
-     *                   href="../../../../../concepts/tables.html"
-     *                   target="_top">Tables</a> for naming restrictions.
+     * @param tableName  Name of the table to be created, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a> and meeting <a
+     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   target="_top">table naming criteria</a>. Error for
+     *                   requests with existing table of the same name and type
+     *                   ID may be suppressed by using the {@code
+     *                   no_error_if_exists} option.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -744,8 +770,7 @@ public class CreateTableRequest implements IndexedRecord {
     /**
      * 
      * @return ID of a currently registered type. All objects added to the
-     *         newly created table will be of this type.  Ignored if {@code
-     *         is_collection} is {@code true}.
+     *         newly created table will be of this type.
      * 
      */
     public String getTypeId() {
@@ -755,8 +780,7 @@ public class CreateTableRequest implements IndexedRecord {
     /**
      * 
      * @param typeId  ID of a currently registered type. All objects added to
-     *                the newly created table will be of this type.  Ignored if
-     *                {@code is_collection} is {@code true}.
+     *                the newly created table will be of this type.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -787,14 +811,18 @@ public class CreateTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         newly created table. If the collection provided is non-existent,
-     *         the collection will be automatically created. If empty, then the
-     *         newly created table will be a top-level table.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema as part of {@code tableName} and use {@link
+     *         com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+     *         schema if non-existent]  Name of a schema which is to contain
+     *         the newly created table. If the schema is non-existent, it will
+     *         be automatically created.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#IS_COLLECTION
-     *         IS_COLLECTION}: Indicates whether the new table to be created
-     *         will be a collection.
+     *         IS_COLLECTION}: [DEPRECATED--please use {@link
+     *         com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create a
+     *         schema instead]  Indicates whether to create a schema instead of
+     *         a table.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -819,15 +847,15 @@ public class CreateTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
-     *         IS_REPLICATED}: For a table, affects the <a
+     *         IS_REPLICATED}: Affects the <a
      *         href="../../../../../concepts/tables.html#distribution"
      *         target="_top">distribution scheme</a> for the table's data.  If
-     *         true and the given type has no explicit <a
+     *         {@code true} and the given type has no explicit <a
      *         href="../../../../../concepts/tables.html#shard-key"
      *         target="_top">shard key</a> defined, the table will be <a
      *         href="../../../../../concepts/tables.html#replication"
-     *         target="_top">replicated</a>.  If false, the table will be <a
-     *         href="../../../../../concepts/tables.html#sharding"
+     *         target="_top">replicated</a>.  If {@code false}, the table will
+     *         be <a href="../../../../../concepts/tables.html#sharding"
      *         target="_top">sharded</a> according to the shard key specified
      *         in the given {@code typeId}, or <a
      *         href="../../../../../concepts/tables.html#random-sharding"
@@ -902,9 +930,9 @@ public class CreateTableRequest implements IndexedRecord {
      *         target="_top">hash partitioning</a> for example formats.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
-     *         IS_AUTOMATIC_PARTITION}: If true, a new partition will be
-     *         created for values which don't fall into an existing partition.
-     *         Currently only supported for <a
+     *         IS_AUTOMATIC_PARTITION}: If {@code true}, a new partition will
+     *         be created for values which don't fall into an existing
+     *         partition.  Currently only supported for <a
      *         href="../../../../../concepts/tables.html#partitioning-by-list"
      *         target="_top">list partitions</a>.
      *         Supported values:
@@ -917,20 +945,24 @@ public class CreateTableRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *                 <li> {@link
-     *         com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}: For a
-     *         table, sets the <a href="../../../../../concepts/ttl.html"
-     *         target="_top">TTL</a> of the table specified in {@code
-     *         tableName}.
+     *         com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}: Sets the
+     *         <a href="../../../../../concepts/ttl.html" target="_top">TTL</a>
+     *         of the table specified in {@code tableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#CHUNK_SIZE
      *         CHUNK_SIZE}: Indicates the number of records per chunk to be
      *         used for this table.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
-     *         IS_RESULT_TABLE}: For a table, indicates whether the table is an
-     *         in-memory table. A result table cannot contain store_only,
-     *         text_search, or string columns (charN columns are acceptable),
-     *         and it will not be retained if the server is restarted.
+     *         IS_RESULT_TABLE}: Indicates whether the table is a <a
+     *         href="../../../../../concepts/tables_memory_only.html"
+     *         target="_top">memory-only table</a>. A result table cannot
+     *         contain columns with store_only or text_search <a
+     *         href="../../../../../concepts/types.html#data-handling"
+     *         target="_top">data-handling</a> or that are <a
+     *         href="../../../../../concepts/types.html#primitive-types"
+     *         target="_top">non-charN strings</a>, and it will not be retained
+     *         if the server is restarted.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -980,15 +1012,20 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created table. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 table will be a top-level table.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema as part of {@code tableName} and use
+     *                 {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema
+     *                 which is to contain the newly created table. If the
+     *                 schema is non-existent, it will be automatically
+     *                 created.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_COLLECTION
-     *                 IS_COLLECTION}: Indicates whether the new table to be
-     *                 created will be a collection.
+     *                 IS_COLLECTION}: [DEPRECATED--please use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create a schema instead]  Indicates whether to create a
+     *                 schema instead of a table.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1017,16 +1054,17 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
-     *                 IS_REPLICATED}: For a table, affects the <a
+     *                 IS_REPLICATED}: Affects the <a
      *                 href="../../../../../concepts/tables.html#distribution"
      *                 target="_top">distribution scheme</a> for the table's
-     *                 data.  If true and the given type has no explicit <a
+     *                 data.  If {@code true} and the given type has no
+     *                 explicit <a
      *                 href="../../../../../concepts/tables.html#shard-key"
      *                 target="_top">shard key</a> defined, the table will be
      *                 <a
      *                 href="../../../../../concepts/tables.html#replication"
-     *                 target="_top">replicated</a>.  If false, the table will
-     *                 be <a
+     *                 target="_top">replicated</a>.  If {@code false}, the
+     *                 table will be <a
      *                 href="../../../../../concepts/tables.html#sharding"
      *                 target="_top">sharded</a> according to the shard key
      *                 specified in the given {@code typeId}, or <a
@@ -1107,9 +1145,10 @@ public class CreateTableRequest implements IndexedRecord {
      *                 target="_top">hash partitioning</a> for example formats.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
-     *                 IS_AUTOMATIC_PARTITION}: If true, a new partition will
-     *                 be created for values which don't fall into an existing
-     *                 partition.  Currently only supported for <a
+     *                 IS_AUTOMATIC_PARTITION}: If {@code true}, a new
+     *                 partition will be created for values which don't fall
+     *                 into an existing partition.  Currently only supported
+     *                 for <a
      *                 href="../../../../../concepts/tables.html#partitioning-by-list"
      *                 target="_top">list partitions</a>.
      *                 Supported values:
@@ -1125,8 +1164,7 @@ public class CreateTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}:
-     *                 For a table, sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 Sets the <a href="../../../../../concepts/ttl.html"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 tableName}.
      *                         <li> {@link
@@ -1135,10 +1173,14 @@ public class CreateTableRequest implements IndexedRecord {
      *                 to be used for this table.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
-     *                 IS_RESULT_TABLE}: For a table, indicates whether the
-     *                 table is an in-memory table. A result table cannot
-     *                 contain store_only, text_search, or string columns
-     *                 (charN columns are acceptable), and it will not be
+     *                 IS_RESULT_TABLE}: Indicates whether the table is a <a
+     *                 href="../../../../../concepts/tables_memory_only.html"
+     *                 target="_top">memory-only table</a>. A result table
+     *                 cannot contain columns with store_only or text_search <a
+     *                 href="../../../../../concepts/types.html#data-handling"
+     *                 target="_top">data-handling</a> or that are <a
+     *                 href="../../../../../concepts/types.html#primitive-types"
+     *                 target="_top">non-charN strings</a>, and it will not be
      *                 retained if the server is restarted.
      *                 Supported values:
      *                 <ul>

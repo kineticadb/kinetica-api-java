@@ -17,37 +17,44 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#aggregateUniqueRaw(AggregateUniqueRequest)}.
  * <p>
- * Returns all the unique values from a particular column (specified by {@code
- * columnName}) of a particular table or view (specified by {@code tableName}).
- * If {@code columnName} is a numeric column the values will be in {@code
- * binaryEncodedResponse}. Otherwise if {@code columnName} is a string column
- * the values will be in {@code jsonEncodedResponse}.  The results can be paged
- * via the {@code offset} and {@code limit} parameters.
+ * Returns all the unique values from a particular column
+ * (specified by {@code columnName}) of a particular table or view
+ * (specified by {@code tableName}). If {@code columnName} is a numeric column,
+ * the values will be in {@code binaryEncodedResponse}. Otherwise if
+ * {@code columnName} is a string column, the values will be in
+ * {@code jsonEncodedResponse}.  The results can be paged via {@code offset}
+ * and {@code limit} parameters.
  * <p>
  * Columns marked as <a href="../../../../../concepts/types.html#data-handling"
- * target="_top">store-only</a> are unable to be used with this function.
+ * target="_top">store-only</a>
+ * are unable to be used with this function.
  * <p>
  * To get the first 10 unique values sorted in descending order {@code options}
  * would be::
  * <p>
  * {"limit":"10","sort_order":"descending"}.
  * <p>
- * The response is returned as a dynamic schema. For details see: <a
- * href="../../../../../api/index.html#dynamic-schemas" target="_top">dynamic
- * schemas documentation</a>.
+ * The response is returned as a dynamic schema. For details see:
+ * <a href="../../../../../api/index.html#dynamic-schemas"
+ * target="_top">dynamic schemas documentation</a>.
  * <p>
- * If a {@code result_table} name is specified in the {@code options}, the
- * results are stored in a new table with that name--no results are returned in
- * the response.  Both the table name and resulting column name must adhere to
+ * If a {@code result_table} name is specified in the
+ * {@code options}, the results are stored in a new table with that name--no
+ * results are returned in the response.  Both the table name and resulting
+ * column
+ * name must adhere to
  * <a href="../../../../../concepts/tables.html#table" target="_top">standard
- * naming conventions</a>; any column expression will need to be aliased.  If
- * the source table's <a href="../../../../../concepts/tables.html#shard-keys"
- * target="_top">shard key</a> is used as the {@code columnName}, the result
- * table will be sharded, in all other cases it will be replicated.  Sorting
- * will properly function only if the result table is replicated or if there is
- * only one processing node and should not be relied upon in other cases.  Not
- * available if the value of {@code columnName} is an unrestricted-length
- * string.
+ * naming conventions</a>;
+ * any column expression will need to be aliased.  If the source table's
+ * <a href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
+ * key</a> is used as the
+ * {@code columnName}, the result table will be sharded, in all other cases it
+ * will be replicated.  Sorting will properly function only if the result table
+ * is
+ * replicated or if there is only one processing node and should not be relied
+ * upon
+ * in other cases.  Not available if the value of {@code columnName} is an
+ * unrestricted-length string.
  */
 public class AggregateUniqueRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -111,10 +118,12 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the table
-     * specified in {@code result_table}. If the collection provided is
-     * non-existent, the collection will be automatically created. If empty,
-     * then the table will be a top-level table.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema as
+     * part of {@code result_table} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of a schema which is to contain the table
+     * specified in {@code result_table}. If the schema provided is
+     * non-existent, it will be automatically created.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      * EXPRESSION}: Optional filter expression to apply to the table.
@@ -132,10 +141,13 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * com.gpudb.protocol.AggregateUniqueRequest.Options#ASCENDING ASCENDING}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE
-     * RESULT_TABLE}: The name of the table used to store the results. If
-     * present, no results are returned in the response. Has the same naming
-     * restrictions as <a href="../../../../../concepts/tables.html"
-     * target="_top">tables</a>.  Not available if {@code columnName} is an
+     * RESULT_TABLE}: The name of the table used to store the results, in
+     * [schema_name.]table_name format, using standard <a
+     * href="../../../../../concepts/tables.html#table-name-resolution"
+     * target="_top">name resolution rules</a> and meeting <a
+     * href="../../../../../concepts/tables.html#table-naming-criteria"
+     * target="_top">table naming criteria</a>.  If present, no results are
+     * returned in the response.  Not available if {@code columnName} is an
      * unrestricted-length string.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
@@ -201,10 +213,12 @@ public class AggregateUniqueRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the table specified in
-         * {@code result_table}. If the collection provided is non-existent,
-         * the collection will be automatically created. If empty, then the
-         * table will be a top-level table.
+         * [DEPRECATED--please specify the containing schema as part of {@code
+         * result_table} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of a schema which is to contain the
+         * table specified in {@code result_table}. If the schema provided is
+         * non-existent, it will be automatically created.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -233,10 +247,13 @@ public class AggregateUniqueRequest implements IndexedRecord {
         public static final String DESCENDING = "descending";
 
         /**
-         * The name of the table used to store the results. If present, no
-         * results are returned in the response. Has the same naming
-         * restrictions as <a href="../../../../../concepts/tables.html"
-         * target="_top">tables</a>.  Not available if {@code columnName} is an
+         * The name of the table used to store the results, in
+         * [schema_name.]table_name format, using standard <a
+         * href="../../../../../concepts/tables.html#table-name-resolution"
+         * target="_top">name resolution rules</a> and meeting <a
+         * href="../../../../../concepts/tables.html#table-naming-criteria"
+         * target="_top">table naming criteria</a>.  If present, no results are
+         * returned in the response.  Not available if {@code columnName} is an
          * unrestricted-length string.
          */
         public static final String RESULT_TABLE = "result_table";
@@ -337,7 +354,10 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of an existing table or view on which the
-     *                   operation will be performed.
+     *                   operation will be performed, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * @param columnName  Name of the column or an expression containing one or
      *                    more column names on which the unique function would
      *                    be applied.
@@ -360,11 +380,14 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table}. If
-     *                 the collection provided is non-existent, the collection
-     *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema as part of {@code result_table} and
+     *                 use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema
+     *                 which is to contain the table specified in {@code
+     *                 result_table}. If the schema provided is non-existent,
+     *                 it will be automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
@@ -388,11 +411,14 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of the table used to store the
-     *                 results. If present, no results are returned in the
-     *                 response. Has the same naming restrictions as <a
-     *                 href="../../../../../concepts/tables.html"
-     *                 target="_top">tables</a>.  Not available if {@code
-     *                 columnName} is an unrestricted-length string.
+     *                 results, in [schema_name.]table_name format, using
+     *                 standard <a
+     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>.  If present, no
+     *                 results are returned in the response.  Not available if
+     *                 {@code columnName} is an unrestricted-length string.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
@@ -480,7 +506,10 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of an existing table or view on which the
-     *                   operation will be performed.
+     *                   operation will be performed, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * @param columnName  Name of the column or an expression containing one or
      *                    more column names on which the unique function would
      *                    be applied.
@@ -518,11 +547,14 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table}. If
-     *                 the collection provided is non-existent, the collection
-     *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema as part of {@code result_table} and
+     *                 use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema
+     *                 which is to contain the table specified in {@code
+     *                 result_table}. If the schema provided is non-existent,
+     *                 it will be automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
@@ -546,11 +578,14 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of the table used to store the
-     *                 results. If present, no results are returned in the
-     *                 response. Has the same naming restrictions as <a
-     *                 href="../../../../../concepts/tables.html"
-     *                 target="_top">tables</a>.  Not available if {@code
-     *                 columnName} is an unrestricted-length string.
+     *                 results, in [schema_name.]table_name format, using
+     *                 standard <a
+     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>.  If present, no
+     *                 results are returned in the response.  Not available if
+     *                 {@code columnName} is an unrestricted-length string.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
@@ -636,7 +671,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
     /**
      * 
      * @return Name of an existing table or view on which the operation will be
-     *         performed.
+     *         performed, in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.
      * 
      */
     public String getTableName() {
@@ -646,7 +683,10 @@ public class AggregateUniqueRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of an existing table or view on which the
-     *                   operation will be performed.
+     *                   operation will be performed, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -801,10 +841,12 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         table specified in {@code result_table}. If the collection
-     *         provided is non-existent, the collection will be automatically
-     *         created. If empty, then the table will be a top-level table.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema as part of {@code result_table} and use {@link
+     *         com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+     *         schema if non-existent]  Name of a schema which is to contain
+     *         the table specified in {@code result_table}. If the schema
+     *         provided is non-existent, it will be automatically created.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      *         EXPRESSION}: Optional filter expression to apply to the table.
@@ -826,12 +868,14 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         ASCENDING}.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE
-     *         RESULT_TABLE}: The name of the table used to store the results.
-     *         If present, no results are returned in the response. Has the
-     *         same naming restrictions as <a
-     *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.  Not available if {@code columnName}
-     *         is an unrestricted-length string.
+     *         RESULT_TABLE}: The name of the table used to store the results,
+     *         in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  If present, no results
+     *         are returned in the response.  Not available if {@code
+     *         columnName} is an unrestricted-length string.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
      *         RESULT_TABLE_PERSIST}: If {@code true}, then the result table
@@ -904,11 +948,14 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table}. If
-     *                 the collection provided is non-existent, the collection
-     *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema as part of {@code result_table} and
+     *                 use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema
+     *                 which is to contain the table specified in {@code
+     *                 result_table}. If the schema provided is non-existent,
+     *                 it will be automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#EXPRESSION
      *                 EXPRESSION}: Optional filter expression to apply to the
@@ -932,11 +979,14 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE
      *                 RESULT_TABLE}: The name of the table used to store the
-     *                 results. If present, no results are returned in the
-     *                 response. Has the same naming restrictions as <a
-     *                 href="../../../../../concepts/tables.html"
-     *                 target="_top">tables</a>.  Not available if {@code
-     *                 columnName} is an unrestricted-length string.
+     *                 results, in [schema_name.]table_name format, using
+     *                 standard <a
+     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>.  If present, no
+     *                 results are returned in the response.  Not available if
+     *                 {@code columnName} is an unrestricted-length string.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result

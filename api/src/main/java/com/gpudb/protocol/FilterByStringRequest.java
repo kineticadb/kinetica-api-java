@@ -19,12 +19,13 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#filterByString(FilterByStringRequest)}.
  * <p>
- * Calculates which objects from a table, collection, or view match a string
- * expression for the given string columns. The options 'case_sensitive' can be
- * used to modify the behavior for all modes except 'search'. For 'search' mode
- * details and limitations, see <a
- * href="../../../../../concepts/full_text_search.html" target="_top">Full Text
- * Search</a>.
+ * Calculates which objects from a table or view match a string
+ * expression for the given string columns. Setting
+ * {@code case_sensitive} can modify case sensitivity in matching
+ * for all modes except {@code search}. For
+ * {@code search} mode details and limitations, see
+ * <a href="../../../../../concepts/full_text_search.html" target="_top">Full
+ * Text Search</a>.
  */
 public class FilterByStringRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -125,14 +126,15 @@ public class FilterByStringRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.FilterByStringRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the newly
-     * created view. If the collection provided is non-existent, the collection
-     * will be automatically created. If empty, then the newly created view
-     * will be top-level.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
+     * the view as part of {@code viewName} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of a schema for the newly created view. If the
+     * schema is non-existent, it will be automatically created.
      *         <li> {@link
      * com.gpudb.protocol.FilterByStringRequest.Options#CASE_SENSITIVE
-     * CASE_SENSITIVE}: If 'false' then string filtering will ignore case. Does
-     * not apply to 'search' mode.
+     * CASE_SENSITIVE}: If {@code false} then string filtering will ignore
+     * case. Does not apply to {@code search} mode.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -149,16 +151,18 @@ public class FilterByStringRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the newly created view. If
-         * the collection provided is non-existent, the collection will be
-         * automatically created. If empty, then the newly created view will be
-         * top-level.
+         * [DEPRECATED--please specify the containing schema for the view as
+         * part of {@code viewName} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of a schema for the newly created
+         * view. If the schema is non-existent, it will be automatically
+         * created.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * If 'false' then string filtering will ignore case. Does not apply to
-         * 'search' mode.
+         * If {@code false} then string filtering will ignore case. Does not
+         * apply to {@code search} mode.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -200,13 +204,20 @@ public class FilterByStringRequest implements IndexedRecord {
      * Constructs a FilterByStringRequest object with the specified parameters.
      * 
      * @param tableName  Name of the table on which the filter operation will
-     *                   be performed.  Must be an existing table, collection
-     *                   or view.
+     *                   be performed, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table or view.
      * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Has the same naming
-     *                  restrictions as <a
-     *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.  The default value is ''.
+     *                  containing the results, in [schema_name.]view_name
+     *                  format, using standard <a
+     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  target="_top">name resolution rules</a> and meeting <a
+     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  target="_top">table naming criteria</a>.  Must not be
+     *                  an already existing table or view.  The default value
+     *                  is ''.
      * @param expression  The expression with which to filter the table.
      * @param mode  The string filtering mode to apply. See below for details.
      *              Supported values:
@@ -238,20 +249,22 @@ public class FilterByStringRequest implements IndexedRecord {
      *              records is too large, it will return 0.
      *              </ul>
      * @param columnNames  List of columns on which to apply the filter.
-     *                     Ignored for 'search' mode.
+     *                     Ignored for {@code search} mode.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByStringRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 view will be top-level.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the view as part of {@code
+     *                 viewName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the newly created view. If the schema is non-existent,
+     *                 it will be automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByStringRequest.Options#CASE_SENSITIVE
-     *                 CASE_SENSITIVE}: If 'false' then string filtering will
-     *                 ignore case. Does not apply to 'search' mode.
+     *                 CASE_SENSITIVE}: If {@code false} then string filtering
+     *                 will ignore case. Does not apply to {@code search} mode.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -280,7 +293,10 @@ public class FilterByStringRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table on which the filter operation will be
-     *         performed.  Must be an existing table, collection or view.
+     *         performed, in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be an existing
+     *         table or view.
      * 
      */
     public String getTableName() {
@@ -290,8 +306,11 @@ public class FilterByStringRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table on which the filter operation will
-     *                   be performed.  Must be an existing table, collection
-     *                   or view.
+     *                   be performed, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table or view.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -304,9 +323,13 @@ public class FilterByStringRequest implements IndexedRecord {
     /**
      * 
      * @return If provided, then this will be the name of the view containing
-     *         the results. Has the same naming restrictions as <a
-     *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.  The default value is ''.
+     *         the results, in [schema_name.]view_name format, using standard
+     *         <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  Must not be an already
+     *         existing table or view.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -316,10 +339,14 @@ public class FilterByStringRequest implements IndexedRecord {
     /**
      * 
      * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Has the same naming
-     *                  restrictions as <a
-     *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.  The default value is ''.
+     *                  containing the results, in [schema_name.]view_name
+     *                  format, using standard <a
+     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  target="_top">name resolution rules</a> and meeting <a
+     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  target="_top">table naming criteria</a>.  Must not be
+     *                  an already existing table or view.  The default value
+     *                  is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -428,8 +455,8 @@ public class FilterByStringRequest implements IndexedRecord {
 
     /**
      * 
-     * @return List of columns on which to apply the filter. Ignored for
-     *         'search' mode.
+     * @return List of columns on which to apply the filter. Ignored for {@code
+     *         search} mode.
      * 
      */
     public List<String> getColumnNames() {
@@ -439,7 +466,7 @@ public class FilterByStringRequest implements IndexedRecord {
     /**
      * 
      * @param columnNames  List of columns on which to apply the filter.
-     *                     Ignored for 'search' mode.
+     *                     Ignored for {@code search} mode.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -455,14 +482,16 @@ public class FilterByStringRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.FilterByStringRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         newly created view. If the collection provided is non-existent,
-     *         the collection will be automatically created. If empty, then the
-     *         newly created view will be top-level.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema for the view as part of {@code viewName} and use {@link
+     *         com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+     *         schema if non-existent]  Name of a schema for the newly created
+     *         view. If the schema is non-existent, it will be automatically
+     *         created.
      *                 <li> {@link
      *         com.gpudb.protocol.FilterByStringRequest.Options#CASE_SENSITIVE
-     *         CASE_SENSITIVE}: If 'false' then string filtering will ignore
-     *         case. Does not apply to 'search' mode.
+     *         CASE_SENSITIVE}: If {@code false} then string filtering will
+     *         ignore case. Does not apply to {@code search} mode.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -486,15 +515,17 @@ public class FilterByStringRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByStringRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 view will be top-level.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the view as part of {@code
+     *                 viewName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the newly created view. If the schema is non-existent,
+     *                 it will be automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByStringRequest.Options#CASE_SENSITIVE
-     *                 CASE_SENSITIVE}: If 'false' then string filtering will
-     *                 ignore case. Does not apply to 'search' mode.
+     *                 CASE_SENSITIVE}: If {@code false} then string filtering
+     *                 will ignore case. Does not apply to {@code search} mode.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

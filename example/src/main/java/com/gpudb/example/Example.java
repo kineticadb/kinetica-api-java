@@ -28,260 +28,273 @@ public class Example
 {
     public static class MyType extends RecordObject
     {
-	// Fields and their properties
-	@RecordObject.Column(order = 0, properties = { "data" })
-	public double col1;
+        // Fields and their properties
+        @RecordObject.Column(order = 0, properties = { "data" })
+            public double col1;
 
-	@RecordObject.Column(order = 1, properties = { "data" })
-	public String col2;
+        @RecordObject.Column(order = 1, properties = { "data" })
+            public String col2;
 
-	@RecordObject.Column(order = 2, properties = { "data" })
-	public String group_id;
+        @RecordObject.Column(order = 2, properties = { "data" })
+            public String group_id;
 
-	private MyType() {}
+        private MyType() {}
     } // end class MyType
 
 
     public static void main(String[] args) throws GPUdbException
     {
-	// Establish a connection with a locally running instance of GPUdb
-        GPUdb gpudb = new GPUdb("http://localhost:9191");
+        // Get the URL to use from the command line, or use the default
+        String url = System.getProperty("url", "http://127.0.0.1:9191");
 
-	// Register the desired data type with GPUdb
-	Type type = RecordObject.getType( MyType.class );
-	// The type ID returned by GPUdb is needed to create a table later
-	String type_id = type.create( gpudb );
-	System.out.println( "Type id of newly created type: " + type_id + "\n" );
+        // Get the log level from the command line, if any
+        GPUdb.Options options = new GPUdb.Options();
+        String logLevel = System.getProperty("logLevel", "");
+        if ( !logLevel.isEmpty() ) {
+            System.out.println( "Log level given by the user: " + logLevel );
+            options.setLoggingLevel( logLevel );
+        } else {
+            System.out.println( "No log level given by the user." );
+        }
 
-	// Column names (used in queries)
-	String col1 = "col1";
-	String col2 = "col2";
-	String group_id = "group_id";
+        // Establish a connection with a locally running instance of GPUdb
+        GPUdb gpudb = new GPUdb( url, options );
 
-	// Create a table with 'MyType' data type
-	String table_name = "my_table_1";
-	Map<String, String> create_table_options = GPUdb.options( CreateTableRequest.Options.NO_ERROR_IF_EXISTS,
-								  CreateTableRequest.Options.TRUE );
-	gpudb.createTable( table_name, type_id, create_table_options );
+        // Register the desired data type with GPUdb
+        Type type = RecordObject.getType( MyType.class );
+        // The type ID returned by GPUdb is needed to create a table later
+        String type_id = type.create( gpudb );
+        System.out.println( "Type id of newly created type: " + type_id + "\n" );
 
-	int numRecords = 10;
+        // Column names (used in queries)
+        String col1 = "col1";
+        String col2 = "col2";
+        String group_id = "group_id";
 
-	// Utilize a convenience functions for inserting records in batches
-	BulkInserter<MyType> bulkInserter = new BulkInserter<MyType>( gpudb,
-								      table_name,
-								      type,
-								      numRecords,
-								      null );
+        // Create a table with 'MyType' data type
+        String table_name = "my_table_1";
+        Map<String, String> create_table_options = GPUdb.options( CreateTableRequest.Options.NO_ERROR_IF_EXISTS,
+                                                                  CreateTableRequest.Options.TRUE );
+        gpudb.createTable( table_name, type_id, create_table_options );
 
-	// Generate data to be inserted into the table
-	for (int i = 0; i < numRecords; i++)
-	{
-	    MyType record = new MyType();
-	    record.put( 0, (i + 0.1) ); // col1
-	    record.put( 1, ("string " + String.valueOf( i ) ) ); // col2
-	    record.put( 2, "Group 1" );  // group_id
-	    bulkInserter.insert( record );
-	}  // done generating the objects
+        int numRecords = 10;
 
-	// To actually insert the records, flush the bulk inserter object.
-	bulkInserter.flush();
+        // Utilize a convenience functions for inserting records in batches
+        BulkInserter<MyType> bulkInserter = new BulkInserter<MyType>( gpudb,
+                                                                      table_name,
+                                                                      type,
+                                                                      numRecords,
+                                                                      null );
 
-	// Retrieve the inserted records
-	Map<String, String> blank_options = new LinkedHashMap<String, String>();
-	GetRecordsRequest getRecordsReq = new GetRecordsRequest( table_name,
-								 0, numRecords,
-								 blank_options );
-	GetRecordsResponse getRecordsRsp;
-	getRecordsRsp = gpudb.getRecords( getRecordsReq );
-	System.out.println( "Returned records: " + getRecordsRsp.getData() + "\n" );
+        // Generate data to be inserted into the table
+        for (int i = 0; i < numRecords; i++)
+        {
+            MyType record = new MyType();
+            record.put( 0, (i + 0.1) ); // col1
+            record.put( 1, ("string " + String.valueOf( i ) ) ); // col2
+            record.put( 2, "Group 1" );  // group_id
+            bulkInserter.insert( record );
+        }  // done generating the objects
 
-	// Perform a filter calculation on the table
-	FilterResponse filterRsp;
-	String view_name = "view1";
-	String expression = "col1 = 1.1";
-	filterRsp = gpudb.filter( table_name, view_name,
-				  expression, blank_options );
-	System.out.println( "Number of records returned by the filter expression: "
-			    + filterRsp.getCount() + "\n" );
+        // To actually insert the records, flush the bulk inserter object.
+        bulkInserter.flush();
 
-	// Retrieve the filtered records (the retrieval method is the same
-	// as that from a regular table)
-	GetRecordsResponse filteredRecordsRsp;
-	filteredRecordsRsp = gpudb.getRecords( view_name,
-					       0, 100, blank_options );
-	System.out.println( "Filtered records (" + expression + ") :" + filteredRecordsRsp.getData() + "\n" );
+        // Retrieve the inserted records
+        Map<String, String> blank_options = new LinkedHashMap<String, String>();
+        GetRecordsRequest getRecordsReq = new GetRecordsRequest( table_name,
+                                                                 0, numRecords,
+                                                                 blank_options );
+        GetRecordsResponse getRecordsRsp;
+        getRecordsRsp = gpudb.getRecords( getRecordsReq );
+        System.out.println( "Returned records: " + getRecordsRsp.getData() + "\n" );
+
+        // Perform a filter calculation on the table
+        FilterResponse filterRsp;
+        String view_name = "view1";
+        String expression = "col1 = 1.1";
+        filterRsp = gpudb.filter( table_name, view_name,
+                                  expression, blank_options );
+        System.out.println( "Number of records returned by the filter expression: "
+                            + filterRsp.getCount() + "\n" );
+
+        // Retrieve the filtered records (the retrieval method is the same
+        // as that from a regular table)
+        GetRecordsResponse filteredRecordsRsp;
+        filteredRecordsRsp = gpudb.getRecords( view_name,
+                                               0, 100, blank_options );
+        System.out.println( "Filtered records (" + expression + ") :" + filteredRecordsRsp.getData() + "\n" );
 	
-	// Drop the view
-	gpudb.clearTable( view_name, "", blank_options );
+        // Drop the view
+        gpudb.clearTable( view_name, "", blank_options );
 
-	// Perform another filter calculation on the table
-	String expression_2 = "(col1 <= 9) and (group_id='Group 1')";
-	filterRsp = gpudb.filter( table_name, view_name,
-				  expression_2, blank_options );
-	System.out.println( "Number of records returned by the second filter expression (" + expression + ") :"
-			    + filterRsp.getCount() + "\n" );
+        // Perform another filter calculation on the table
+        String expression_2 = "(col1 <= 9) and (group_id='Group 1')";
+        filterRsp = gpudb.filter( table_name, view_name,
+                                  expression_2, blank_options );
+        System.out.println( "Number of records returned by the second filter expression (" + expression + ") :"
+                            + filterRsp.getCount() + "\n" );
 
-	// Retrieve the filtered records (the retrieval method is the same
-	// as that from a regular table)
-	filteredRecordsRsp = gpudb.getRecords( view_name,
-					       0, 100, blank_options );
-	System.out.println( "Filtered records: " + filteredRecordsRsp.getData() + "\n" );
+        // Retrieve the filtered records (the retrieval method is the same
+        // as that from a regular table)
+        filteredRecordsRsp = gpudb.getRecords( view_name,
+                                               0, 100, blank_options );
+        System.out.println( "Filtered records: " + filteredRecordsRsp.getData() + "\n" );
 
-	// Perform a filter by list calculation on the table
-	FilterByListResponse filterByListRsp;
-	String view_name_2 = "view2";
-	// Set up the search criteria: for col1, look for values
-	// '1.1', '2.1', and '5.1'
-	Map<String, List<String>> columnValuesMap = new LinkedHashMap<String, List<String>>();
-	List<String> values = new ArrayList<String>();
-	values.add( "1.1" );
-	values.add( "2.1" );
-	values.add( "5.1" );
-	columnValuesMap.put( col1, values );
-	filterByListRsp = gpudb.filterByList( table_name, view_name_2,
-					      columnValuesMap, blank_options );
-	System.out.println( "Number of records returned by the filter by list expression: "
-			    + filterByListRsp.getCount() + "\n" );
+        // Perform a filter by list calculation on the table
+        FilterByListResponse filterByListRsp;
+        String view_name_2 = "view2";
+        // Set up the search criteria: for col1, look for values
+        // '1.1', '2.1', and '5.1'
+        Map<String, List<String>> columnValuesMap = new LinkedHashMap<String, List<String>>();
+        List<String> values = new ArrayList<String>();
+        values.add( "1.1" );
+        values.add( "2.1" );
+        values.add( "5.1" );
+        columnValuesMap.put( col1, values );
+        filterByListRsp = gpudb.filterByList( table_name, view_name_2,
+                                              columnValuesMap, blank_options );
+        System.out.println( "Number of records returned by the filter by list expression: "
+                            + filterByListRsp.getCount() + "\n" );
 
-	// Retrieve the filtered (by list) records
-	filteredRecordsRsp = gpudb.getRecords( view_name_2,
-					       0, 100, blank_options );
-	System.out.println( "Filtered (by list) records: "
-			    + filteredRecordsRsp.getData() + "\n" );
-
-
-	// Perform a filter by range calculation on the table
-	FilterByRangeResponse filterByRangeRsp;
-	String view_name_3 = "view3";
-	filterByRangeRsp = gpudb.filterByRange( table_name, view_name_3,
-						col1, 1, 5,
-						blank_options );
-	System.out.println( "Number of records returned by the filter by range expression: "
-			    + filterByRangeRsp.getCount() + "\n" );
-
-	// Retrieve the filtered (by list) records
-	filteredRecordsRsp = gpudb.getRecords( view_name_3,
-					       0, 100, blank_options );
-	System.out.println( "Filtered (by range) records: "
-			    + filteredRecordsRsp.getData() + "\n" );
-
-	// Perform an aggregate (statistics) operation
-	AggregateStatisticsResponse aggStatsRsp;
-	aggStatsRsp = gpudb.aggregateStatistics( table_name,
-						 col1,
-						 "count,sum,mean",
-						 blank_options );
-	System.out.println( "Statistics of values in 'col1': "
-			    + aggStatsRsp.getStats() + "\n" );
-
-	// Generate more data to be inserted into the table
-	int numRecords2 = 8;
-	for (int i = 1; i < numRecords2; i++)
-	{
-	    MyType record = new MyType();
-	    record.put( 0, (i + 10.1) ); // col1
-	    // 'col2' values are NOT unique from the first group of records
-	    record.put( 1, ("string " + String.valueOf( i ) ) ); // col2
-	    record.put( 2, "Group 2" );  // group_id
-	    bulkInserter.insert( record );
-	}  // done generating the objects
-
-	// Actually insert the records
-	bulkInserter.flush();
+        // Retrieve the filtered (by list) records
+        filteredRecordsRsp = gpudb.getRecords( view_name_2,
+                                               0, 100, blank_options );
+        System.out.println( "Filtered (by list) records: "
+                            + filteredRecordsRsp.getData() + "\n" );
 
 
-	// Find unique values in a column
-	AggregateUniqueResponse uniqueRsp;
-	uniqueRsp = gpudb.aggregateUnique( table_name,
-					   group_id,
-					   0, 30,
-					   blank_options );
-	System.out.println( "Unique values in the '" + group_id + "' column: "
-			    + uniqueRsp.getData() + "\n" );
+        // Perform a filter by range calculation on the table
+        FilterByRangeResponse filterByRangeRsp;
+        String view_name_3 = "view3";
+        filterByRangeRsp = gpudb.filterByRange( table_name, view_name_3,
+                                                col1, 1, 5,
+                                                blank_options );
+        System.out.println( "Number of records returned by the filter by range expression: "
+                            + filterByRangeRsp.getCount() + "\n" );
+
+        // Retrieve the filtered (by list) records
+        filteredRecordsRsp = gpudb.getRecords( view_name_3,
+                                               0, 100, blank_options );
+        System.out.println( "Filtered (by range) records: "
+                            + filteredRecordsRsp.getData() + "\n" );
+
+        // Perform an aggregate (statistics) operation
+        AggregateStatisticsResponse aggStatsRsp;
+        aggStatsRsp = gpudb.aggregateStatistics( table_name,
+                                                 col1,
+                                                 "count,sum,mean",
+                                                 blank_options );
+        System.out.println( "Statistics of values in 'col1': "
+                            + aggStatsRsp.getStats() + "\n" );
+
+        // Generate more data to be inserted into the table
+        int numRecords2 = 8;
+        for (int i = 1; i < numRecords2; i++)
+        {
+            MyType record = new MyType();
+            record.put( 0, (i + 10.1) ); // col1
+            // 'col2' values are NOT unique from the first group of records
+            record.put( 1, ("string " + String.valueOf( i ) ) ); // col2
+            record.put( 2, "Group 2" );  // group_id
+            bulkInserter.insert( record );
+        }  // done generating the objects
+
+        // Actually insert the records
+        bulkInserter.flush();
 
 
-	// Perform a group by aggregation (on column 'col2')
-	AggregateGroupByResponse groupByRsp;
-	List<String> columns = new ArrayList<String>();
-	columns.add( col2 );
-	groupByRsp = gpudb.aggregateGroupBy( table_name,
-					     columns,
-					     0, 1000,
-					     blank_options );
-	System.out.println( "Group by results for the '" + col2 + "' column: "
-			    + groupByRsp.getData() + "\n" );
-
-	// Perform another group by aggregation on:
-	//  * column 'group_id'
-	//  * count of all
-	//  * sum of 'col1'
-	columns.clear();
-	columns.add( group_id );
-	columns.add( "count(*)" );
-	columns.add( "sum(" + col1 + ")" );
-	groupByRsp = gpudb.aggregateGroupBy( table_name,
-					     columns,
-					     0, 1000,
-					     blank_options );
-	System.out.println( "Second group by results: "
-			    + groupByRsp.getData() + "\n" );
+        // Find unique values in a column
+        AggregateUniqueResponse uniqueRsp;
+        uniqueRsp = gpudb.aggregateUnique( table_name,
+                                           group_id,
+                                           0, 30,
+                                           blank_options );
+        System.out.println( "Unique values in the '" + group_id + "' column: "
+                            + uniqueRsp.getData() + "\n" );
 
 
-	// Perform another group by aggregation operation
-	columns.clear();
-	columns.add( group_id );
-	columns.add( "sum(" + col1 + "*10)" );
-	groupByRsp = gpudb.aggregateGroupBy( table_name,
-					     columns,
-					     0, 1000,
-					     blank_options );
-	System.out.println( "Third group by results: "
-			    + groupByRsp.getData() + "\n" );
+        // Perform a group by aggregation (on column 'col2')
+        AggregateGroupByResponse groupByRsp;
+        List<String> columns = new ArrayList<String>();
+        columns.add( col2 );
+        groupByRsp = gpudb.aggregateGroupBy( table_name,
+                                             columns,
+                                             0, 1000,
+                                             blank_options );
+        System.out.println( "Group by results for the '" + col2 + "' column: "
+                            + groupByRsp.getData() + "\n" );
+
+        // Perform another group by aggregation on:
+        //  * column 'group_id'
+        //  * count of all
+        //  * sum of 'col1'
+        columns.clear();
+        columns.add( group_id );
+        columns.add( "count(*)" );
+        columns.add( "sum(" + col1 + ")" );
+        groupByRsp = gpudb.aggregateGroupBy( table_name,
+                                             columns,
+                                             0, 1000,
+                                             blank_options );
+        System.out.println( "Second group by results: "
+                            + groupByRsp.getData() + "\n" );
 
 
-	// Add more data to the table
-	int numRecords3 = 10;
-	for (int i = 4; i < numRecords3; i++)
-	{
-	    MyType record = new MyType();
-	    record.put( 0, (i + 0.6) ); // col1
-	    // 'col2' values are NOT unique from the first group of records
-	    record.put( 1, ("string 2" + String.valueOf( i ) ) ); // col2
-	    record.put( 2, "Group 1" );  // group_id
-	    bulkInserter.insert( record );
-	}  // done generating the objects
-
-	// Actually insert the records
-	bulkInserter.flush();
+        // Perform another group by aggregation operation
+        columns.clear();
+        columns.add( group_id );
+        columns.add( "sum(" + col1 + "*10)" );
+        groupByRsp = gpudb.aggregateGroupBy( table_name,
+                                             columns,
+                                             0, 1000,
+                                             blank_options );
+        System.out.println( "Third group by results: "
+                            + groupByRsp.getData() + "\n" );
 
 
-	// Do a histogram on the data
-	AggregateHistogramResponse histogramRsp;
-	double start = 1.1;
-	double end = 2;
-	double interval = 1;
-	histogramRsp = gpudb.aggregateHistogram( table_name,
-						 col1,
-						 start, end,
-						 interval,
-						 blank_options );
-	System.out.println( "Histogram counts: " + histogramRsp.getCounts() + "\n" );
+        // Add more data to the table
+        int numRecords3 = 10;
+        for (int i = 4; i < numRecords3; i++)
+        {
+            MyType record = new MyType();
+            record.put( 0, (i + 0.6) ); // col1
+            // 'col2' values are NOT unique from the first group of records
+            record.put( 1, ("string 2" + String.valueOf( i ) ) ); // col2
+            record.put( 2, "Group 1" );  // group_id
+            bulkInserter.insert( record );
+        }  // done generating the objects
+
+        // Actually insert the records
+        bulkInserter.flush();
 
 
-	// Drop the table
-	gpudb.clearTable( table_name, "", blank_options );
+        // Do a histogram on the data
+        AggregateHistogramResponse histogramRsp;
+        double start = 1.1;
+        double end = 2;
+        double interval = 1;
+        histogramRsp = gpudb.aggregateHistogram( table_name,
+                                                 col1,
+                                                 start, end,
+                                                 interval,
+                                                 blank_options );
+        System.out.println( "Histogram counts: " + histogramRsp.getCounts() + "\n" );
 
-	// Check that dropping a table automatically drops all the
-	// dependent views
-	try
-	{
-	    getRecordsRsp = gpudb.getRecords( view_name_3,
-					      0, 100, blank_options );
-	    System.out.println( "Error: Dropping original table did NOT drop all views!\n" );
-	} catch (GPUdbException e)
-	{
-	    System.out.println( "Dropping original table dropped all views as expected.\n" );
-	}
+
+        // Drop the table
+        gpudb.clearTable( table_name, "", blank_options );
+
+        // Check that dropping a table automatically drops all the
+        // dependent views
+        try
+        {
+            getRecordsRsp = gpudb.getRecords( view_name_3,
+                                              0, 100, blank_options );
+            System.out.println( "Error: Dropping original table did NOT drop all views!\n" );
+        } catch (GPUdbException e)
+        {
+            System.out.println( "Dropping original table dropped all views as expected.\n" );
+        }
 
     } // end main
 

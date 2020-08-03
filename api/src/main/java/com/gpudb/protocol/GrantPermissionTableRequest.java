@@ -164,9 +164,13 @@ public class GrantPermissionTableRequest implements IndexedRecord {
      *                    TABLE_READ}: Read access to the table.
      *                    </ul>
      * @param tableName  Name of the table to which the permission grants
-     *                   access. Must be an existing table, collection, or
-     *                   view. If a collection, the permission also applies to
-     *                   tables and views in the collection.
+     *                   access, in [schema_name.]table_name format, using
+     *                   standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table, view, or schema. If a schema, the
+     *                   permission also applies to tables and views in the
+     *                   schema.
      * @param filterExpression  Optional filter expression to apply to this
      *                          grant.  Only rows that match the filter will be
      *                          affected.  The default value is ''.
@@ -272,9 +276,12 @@ public class GrantPermissionTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to which the permission grants access. Must be
-     *         an existing table, collection, or view. If a collection, the
-     *         permission also applies to tables and views in the collection.
+     * @return Name of the table to which the permission grants access, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be an existing
+     *         table, view, or schema. If a schema, the permission also applies
+     *         to tables and views in the schema.
      * 
      */
     public String getTableName() {
@@ -284,9 +291,13 @@ public class GrantPermissionTableRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table to which the permission grants
-     *                   access. Must be an existing table, collection, or
-     *                   view. If a collection, the permission also applies to
-     *                   tables and views in the collection.
+     *                   access, in [schema_name.]table_name format, using
+     *                   standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table, view, or schema. If a schema, the
+     *                   permission also applies to tables and views in the
+     *                   schema.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

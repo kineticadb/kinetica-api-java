@@ -19,17 +19,24 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#aggregateKMeans(AggregateKMeansRequest)}.
  * <p>
- * This endpoint runs the k-means algorithm - a heuristic algorithm that
- * attempts to do k-means clustering.  An ideal k-means clustering algorithm
+ * This endpoint runs the k-means algorithm - a heuristic algorithm
+ * that attempts to do k-means clustering.  An ideal k-means clustering
+ * algorithm
  * selects k points such that the sum of the mean squared distances of each
- * member of the set to the nearest of the k points is minimized.  The k-means
- * algorithm however does not necessarily produce such an ideal cluster.   It
- * begins with a randomly selected set of k points and then refines the
- * location of the points iteratively and settles to a local minimum.  Various
- * parameters and options are provided to control the heuristic search.
+ * member
+ * of the set to the nearest of the k points is minimized.  The k-means
+ * algorithm
+ * however does not necessarily produce such an ideal cluster.   It begins with
+ * a
+ * randomly selected set of k points and then refines the location of the
+ * points
+ * iteratively and settles to a local minimum.  Various parameters and options
+ * are
+ * provided to control the heuristic search.
  * <p>
  * NOTE:  The Kinetica instance being accessed must be running a CUDA
- * (GPU-based) build to service this request.
+ * (GPU-based)
+ * build to service this request.
  */
 public class AggregateKMeansRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -120,7 +127,10 @@ public class AggregateKMeansRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table or collection.
+     *                   performed. Must be an existing table, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * @param columnNames  List of column names on which the operation would be
      *                     performed. If n columns are provided then each of
      *                     the k result points will have n dimensions
@@ -158,7 +168,10 @@ public class AggregateKMeansRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table on which the operation will be performed. Must
-     *         be an existing table or collection.
+     *         be an existing table, in [schema_name.]table_name format, using
+     *         standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.
      * 
      */
     public String getTableName() {
@@ -168,7 +181,10 @@ public class AggregateKMeansRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table or collection.
+     *                   performed. Must be an existing table, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

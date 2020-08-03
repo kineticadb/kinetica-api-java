@@ -19,10 +19,12 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#alterTableMetadata(AlterTableMetadataRequest)}.
  * <p>
- * Updates (adds or changes) metadata for tables. The metadata key and values
- * must both be strings. This is an easy way to annotate whole tables rather
+ * Updates (adds or changes) metadata for tables. The metadata key and
+ * values must both be strings. This is an easy way to annotate whole tables
+ * rather
  * than single records within tables.  Some examples of metadata are owner of
- * the table, table creation timestamp etc.
+ * the
+ * table, table creation timestamp etc.
  */
 public class AlterTableMetadataRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -64,8 +66,11 @@ public class AlterTableMetadataRequest implements IndexedRecord {
      * Constructs an AlterTableMetadataRequest object with the specified
      * parameters.
      * 
-     * @param tableNames  Names of the tables whose metadata will be updated.
-     *                    All specified tables must exist, or an error will be
+     * @param tableNames  Names of the tables whose metadata will be updated,
+     *                    in [schema_name.]table_name format, using standard <a
+     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    target="_top">name resolution rules</a>.  All
+     *                    specified tables must exist, or an error will be
      *                    returned.
      * @param metadataMap  A map which contains the metadata of the tables that
      *                     are to be updated. Note that only one map is
@@ -85,8 +90,11 @@ public class AlterTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Names of the tables whose metadata will be updated. All
-     *         specified tables must exist, or an error will be returned.
+     * @return Names of the tables whose metadata will be updated, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  All specified tables
+     *         must exist, or an error will be returned.
      * 
      */
     public List<String> getTableNames() {
@@ -95,8 +103,11 @@ public class AlterTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  Names of the tables whose metadata will be updated.
-     *                    All specified tables must exist, or an error will be
+     * @param tableNames  Names of the tables whose metadata will be updated,
+     *                    in [schema_name.]table_name format, using standard <a
+     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    target="_top">name resolution rules</a>.  All
+     *                    specified tables must exist, or an error will be
      *                    returned.
      * 
      * @return {@code this} to mimic the builder pattern.

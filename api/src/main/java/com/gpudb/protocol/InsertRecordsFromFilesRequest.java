@@ -20,18 +20,23 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#insertRecordsFromFiles(InsertRecordsFromFilesRequest)}.
  * <p>
  * Reads from one or more files located on the server and inserts the data into
- * a new or existing table.
+ * a new or
+ * existing table.
  * <p>
- * For CSV files, there are two loading schemes: positional and name-based. The
- * name-based loading scheme is enabled when the file has a header present and
- * {@code text_has_header} is set to {@code true}. In this scheme, the source
- * file(s) field names must match the target table's column names exactly;
- * however, the source file can have more fields than the target table has
- * columns. If {@code error_handling} is set to {@code permissive}, the source
- * file can have fewer fields than the target table has columns. If the
- * name-based loading scheme is being used, names matching the file header's
- * names may be provided to {@code columns_to_load} instead of numbers, but
- * ranges are not supported.
+ * For delimited text files, there are two loading schemes: positional and
+ * name-based. The name-based
+ * loading scheme is enabled when the file has a header present and
+ * {@code text_has_header} is set to
+ * {@code true}. In this scheme, the source file(s) field names
+ * must match the target table's column names exactly; however, the source file
+ * can have more fields
+ * than the target table has columns. If {@code error_handling} is set to
+ * {@code permissive}, the source file can have fewer fields
+ * than the target table has columns. If the name-based loading scheme is being
+ * used, names matching
+ * the file header's names may be provided to {@code columns_to_load} instead
+ * of
+ * numbers, but ranges are not supported.
 
  * Returns once all files are processed.
  */
@@ -42,6 +47,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
             .fields()
                 .name("tableName").type().stringType().noDefault()
                 .name("filepaths").type().array().items().stringType().noDefault()
+                .name("modifyColumns").type().map().values().map().values().stringType().noDefault()
                 .name("createTableOptions").type().map().values().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
@@ -60,7 +66,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
 
     /**
-     * Options used when creating a new table.
+     * Options used when creating the target table.
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TYPE_ID
@@ -85,21 +91,15 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FALSE
      * FALSE}.
      *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the newly
-     * created table. If the collection provided is non-existent, the
-     * collection will be automatically created. If empty, then the newly
-     * created table will be a top-level table.
-     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_REPLICATED
-     * IS_REPLICATED}: For a table, affects the <a
+     * IS_REPLICATED}: Affects the <a
      * href="../../../../../concepts/tables.html#distribution"
-     * target="_top">distribution scheme</a> for the table's data.  If true and
-     * the given type has no explicit <a
+     * target="_top">distribution scheme</a> for the table's data.  If {@code
+     * true} and the given type has no explicit <a
      * href="../../../../../concepts/tables.html#shard-key" target="_top">shard
      * key</a> defined, the table will be <a
      * href="../../../../../concepts/tables.html#replication"
-     * target="_top">replicated</a>.  If false, the table will be <a
+     * target="_top">replicated</a>.  If {@code false}, the table will be <a
      * href="../../../../../concepts/tables.html#sharding"
      * target="_top">sharded</a> according to the shard key specified in the
      * given {@code type_id}, or <a
@@ -177,9 +177,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * target="_top">hash partitioning</a> for example formats.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
-     * IS_AUTOMATIC_PARTITION}: If true, a new partition will be created for
-     * values which don't fall into an existing partition.  Currently only
-     * supported for <a
+     * IS_AUTOMATIC_PARTITION}: If {@code true}, a new partition will be
+     * created for values which don't fall into an existing partition.
+     * Currently only supported for <a
      * href="../../../../../concepts/tables.html#partitioning-by-list"
      * target="_top">list partitions</a>.
      * Supported values:
@@ -196,7 +196,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TTL
-     * TTL}: For a table, sets the <a href="../../../../../concepts/ttl.html"
+     * TTL}: Sets the <a href="../../../../../concepts/ttl.html"
      * target="_top">TTL</a> of the table specified in {@code tableName}.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#CHUNK_SIZE
@@ -204,10 +204,15 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * this table.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_RESULT_TABLE
-     * IS_RESULT_TABLE}: For a table, indicates whether the table is an
-     * in-memory table. A result table cannot contain store_only, text_search,
-     * or string columns (charN columns are acceptable), and it will not be
-     * retained if the server is restarted.
+     * IS_RESULT_TABLE}: Indicates whether the table is a <a
+     * href="../../../../../concepts/tables_memory_only.html"
+     * target="_top">memory-only table</a>. A result table cannot contain
+     * columns with store_only or text_search <a
+     * href="../../../../../concepts/types.html#data-handling"
+     * target="_top">data-handling</a> or that are <a
+     * href="../../../../../concepts/types.html#primitive-types"
+     * target="_top">non-charN strings</a>, and it will not be retained if the
+     * server is restarted.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -264,23 +269,15 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Name of a collection which is to contain the newly created table. If
-         * the collection provided is non-existent, the collection will be
-         * automatically created. If empty, then the newly created table will
-         * be a top-level table.
-         */
-        public static final String COLLECTION_NAME = "collection_name";
-
-        /**
-         * For a table, affects the <a
+         * Affects the <a
          * href="../../../../../concepts/tables.html#distribution"
-         * target="_top">distribution scheme</a> for the table's data.  If true
-         * and the given type has no explicit <a
+         * target="_top">distribution scheme</a> for the table's data.  If
+         * {@code true} and the given type has no explicit <a
          * href="../../../../../concepts/tables.html#shard-key"
          * target="_top">shard key</a> defined, the table will be <a
          * href="../../../../../concepts/tables.html#replication"
-         * target="_top">replicated</a>.  If false, the table will be <a
-         * href="../../../../../concepts/tables.html#sharding"
+         * target="_top">replicated</a>.  If {@code false}, the table will be
+         * <a href="../../../../../concepts/tables.html#sharding"
          * target="_top">sharded</a> according to the shard key specified in
          * the given {@code type_id}, or <a
          * href="../../../../../concepts/tables.html#random-sharding"
@@ -396,9 +393,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String PARTITION_DEFINITIONS = "partition_definitions";
 
         /**
-         * If true, a new partition will be created for values which don't fall
-         * into an existing partition.  Currently only supported for <a
-         * href="../../../../../concepts/tables.html#partitioning-by-list"
+         * If {@code true}, a new partition will be created for values which
+         * don't fall into an existing partition.  Currently only supported for
+         * <a href="../../../../../concepts/tables.html#partitioning-by-list"
          * target="_top">list partitions</a>.
          * Supported values:
          * <ul>
@@ -416,7 +413,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String IS_AUTOMATIC_PARTITION = "is_automatic_partition";
 
         /**
-         * For a table, sets the <a href="../../../../../concepts/ttl.html"
+         * Sets the <a href="../../../../../concepts/ttl.html"
          * target="_top">TTL</a> of the table specified in {@code tableName}.
          */
         public static final String TTL = "ttl";
@@ -427,10 +424,15 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String CHUNK_SIZE = "chunk_size";
 
         /**
-         * For a table, indicates whether the table is an in-memory table. A
-         * result table cannot contain store_only, text_search, or string
-         * columns (charN columns are acceptable), and it will not be retained
-         * if the server is restarted.
+         * Indicates whether the table is a <a
+         * href="../../../../../concepts/tables_memory_only.html"
+         * target="_top">memory-only table</a>. A result table cannot contain
+         * columns with store_only or text_search <a
+         * href="../../../../../concepts/types.html#data-handling"
+         * target="_top">data-handling</a> or that are <a
+         * href="../../../../../concepts/types.html#primitive-types"
+         * target="_top">non-charN strings</a>, and it will not be retained if
+         * the server is restarted.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -464,67 +466,112 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BAD_RECORD_TABLE_NAME
+     * BAD_RECORD_TABLE_NAME}: Optional name of a table to which records that
+     * were rejected are written.  The bad-record-table has the following
+     * columns: line_number (long), line_rejected (string), error_message
+     * (string).
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BAD_RECORD_TABLE_LIMIT
+     * BAD_RECORD_TABLE_LIMIT}: A positive integer indicating the maximum
+     * number of records that can be  written to the bad-record-table.
+     * Default value is 10000
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BATCH_SIZE
-     * BATCH_SIZE}: Specifies number of records to process before inserting.
+     * BATCH_SIZE}: Internal tuning parameter--number of records per batch when
+     * inserting data.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COLUMN_FORMATS
      * COLUMN_FORMATS}: For each target column specified, applies the
-     * column-property-bound format to the source data loaded into that column.
-     * Each column format will contain a mapping of one or more of its column
+     * column-property-bound format to the source data
+     * loaded into that column.  Each column format will contain a mapping of
+     * one or more of its column
      * properties to an appropriate format for each property.  Currently
-     * supported column properties include date, time, & datetime. The
-     * parameter value must be formatted as a JSON string of maps of column
-     * names to maps of column properties to their corresponding column
-     * formats, e.g., { "order_date" : { "date" : "%Y.%m.%d" }, "order_time" :
-     * { "time" : "%H:%M:%S" } }.  See {@code default_column_formats} for valid
-     * format syntax.
+     * supported column properties
+     * include date, time, & datetime. The parameter value must be formatted as
+     * a JSON string of maps of
+     * column names to maps of column properties to their corresponding column
+     * formats, e.g.,
+     * '{ "order_date" : { "date" : "%Y.%m.%d" }, "order_time" : { "time" :
+     * "%H:%M:%S" } }'.
+     * <p>
+     * See {@code default_column_formats} for valid format syntax.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COLUMNS_TO_LOAD
-     * COLUMNS_TO_LOAD}: For {@code delimited_text} {@code file_type} only.
-     * Specifies a comma-delimited list of column positions or names to load
-     * instead of loading all columns in the file(s); if more than one file is
-     * being loaded, the list of columns will apply to all files. Column
-     * numbers can be specified discretely or as a range, e.g., a value of
-     * '5,7,1..3' will create a table with the first column in the table being
-     * the fifth column in the file, followed by seventh column in the file,
-     * then the first column through the fourth column in the file.
+     * COLUMNS_TO_LOAD}: Specifies a comma-delimited list of columns from the
+     * source data to
+     * load.  If more than one file is being loaded, this list applies to all
+     * files.
+     * <p>
+     * Column numbers can be specified discretely or as a range.  For example,
+     * a value of '5,7,1..3' will
+     * insert values from the fifth column in the source data into the first
+     * column in the target table,
+     * from the seventh column in the source data into the second column in the
+     * target table, and from the
+     * first through third columns in the source data into the third through
+     * fifth columns in the target
+     * table.
+     * <p>
+     * If the source data contains a header, column names matching the file
+     * header names may be provided
+     * instead of column numbers.  If the target table doesn't exist, the table
+     * will be created with the
+     * columns in this order.  If the target table does exist with columns in a
+     * different order than the
+     * source data, this list can be used to match the order of the target
+     * table.  For example, a value of
+     * 'C, B, A' will create a three column table with column C, followed by
+     * column B, followed by column
+     * A; or will insert those fields in that order into a table created with
+     * columns in that order.  If
+     * the target table exists, the column names must match the source data
+     * field names for a name-mapping
+     * to be successful.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COLUMNS_TO_SKIP
+     * COLUMNS_TO_SKIP}: Specifies a comma-delimited list of columns from the
+     * source data to
+     * skip.  Mutually exclusive to columns_to_load.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
+     * DATASOURCE_NAME}: Name of an existing external data source from which
+     * data file(s) specified in {@code filepaths} will be loaded
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DEFAULT_COLUMN_FORMATS
      * DEFAULT_COLUMN_FORMATS}: Specifies the default format to be applied to
-     * source data loaded into columns with the corresponding column property.
-     * This default column-property-bound format can be overridden by
-     * specifying a column property & format for a given target column in
-     * {@code column_formats}. For each specified annotation, the format will
-     * apply to all columns with that annotation unless a custom {@code
-     * column_formats} for that annotation is specified. The parameter value
-     * must be formatted as a JSON string that is a map of column properties to
-     * their respective column formats, e.g., { "date" : "%Y.%m.%d", "time" :
-     * "%H:%M:%S" }. Column formats are specified as a string of control
-     * characters and plain text. The supported control characters are 'Y',
-     * 'm', 'd', 'H', 'M', 'S', and 's', which follow the Linux 'strptime()'
+     * source data loaded
+     * into columns with the corresponding column property.  Currently
+     * supported column properties include
+     * date, time, & datetime.  This default column-property-bound format can
+     * be overridden by specifying a
+     * column property & format for a given target column in {@code
+     * column_formats}. For
+     * each specified annotation, the format will apply to all columns with
+     * that annotation unless a custom
+     * {@code column_formats} for that annotation is specified.
+     * <p>
+     * The parameter value must be formatted as a JSON string that is a map of
+     * column properties to their
+     * respective column formats, e.g., '{ "date" : "%Y.%m.%d", "time" :
+     * "%H:%M:%S" }'.  Column
+     * formats are specified as a string of control characters and plain text.
+     * The supported control
+     * characters are 'Y', 'm', 'd', 'H', 'M', 'S', and 's', which follow the
+     * Linux 'strptime()'
      * specification, as well as 's', which specifies seconds and fractional
-     * seconds (though the fractional component will be truncated past
-     * milliseconds). Formats for the 'date' annotation must include the 'Y',
-     * 'm', and 'd' control characters. Formats for the 'time' annotation must
-     * include the 'H', 'M', and either 'S' or 's' (but not both) control
+     * seconds (though the fractional
+     * component will be truncated past milliseconds).
+     * <p>
+     * Formats for the 'date' annotation must include the 'Y', 'm', and 'd'
+     * control characters. Formats for
+     * the 'time' annotation must include the 'H', 'M', and either 'S' or 's'
+     * (but not both) control
      * characters. Formats for the 'datetime' annotation meet both the 'date'
-     * and 'time' control character requirements. For example, '{"datetime" :
-     * "%m/%d/%Y %H:%M:%S" }' would be used to interpret text as "05/04/2000
-     * 12:12:11"
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DRY_RUN
-     * DRY_RUN}: If set to {@code true}, no data will be inserted but the file
-     * will be read with the applied {@code error_handling} mode and the number
-     * of valid records that would be normally inserted are returned.
-     * Supported values:
-     * <ul>
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE FALSE}
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE TRUE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE FALSE}.
+     * and 'time' control character
+     * requirements. For example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }' would
+     * be used to interpret text
+     * as "05/04/2000 12:12:11"
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ERROR_HANDLING
      * ERROR_HANDLING}: Specifies how errors should be handled upon insertion.
@@ -540,68 +587,154 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ABORT ABORT}:
      * Stops current insertion and aborts entire operation when an error is
-     * encountered.
+     * encountered.  Primary key collisions are considered abortable errors in
+     * this mode.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PERMISSIVE
      * PERMISSIVE}.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FILE_TYPE
-     * FILE_TYPE}: File type for the file(s).
+     * FILE_TYPE}: Specifies the type of the file(s) whose records will be
+     * inserted.
      * Supported values:
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
-     * DELIMITED_TEXT}: Indicates the file(s) are in delimited text format,
+     * DELIMITED_TEXT}: Indicates the file(s) are in delimited text format;
      * e.g., CSV, TSV, PSV, etc.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
+     * PARQUET}: Indicates the file(s) are in Parquet format. Parquet files are
+     * not supported yet.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
      * DELIMITED_TEXT}.
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#INGESTION_MODE
+     * INGESTION_MODE}: Whether to do a full load, dry run, or perform a type
+     * inference on the source data.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FULL FULL}: Run
+     * a type inference on the source data (if needed) and ingest
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DRY_RUN
+     * DRY_RUN}: Does not load data, but walks through the source data and
+     * determines the number of valid records, taking into account the current
+     * mode of {@code error_handling}.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TYPE_INFERENCE_ONLY
+     * TYPE_INFERENCE_ONLY}: Infer the type of the source data and return,
+     * without ingesting any data.  The inferred type is returned in the
+     * response.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FULL FULL}.
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
-     * LOADING_MODE}: Specifies how to divide data loading among nodes.
+     * LOADING_MODE}: Scheme for distributing the extraction and loading of
+     * data from the source data file(s).
      * Supported values:
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#HEAD HEAD}: The
-     * head node loads all data. All files must be available on the head node.
+     * head node loads all data. All files must be available to the head node.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DISTRIBUTED_SHARED
-     * DISTRIBUTED_SHARED}: The worker nodes coordinate loading a set of files
-     * that are available to all of them. All files must be available on all
-     * nodes. This option is best when there is a shared file system.
+     * DISTRIBUTED_SHARED}: The head node coordinates loading data by worker
+     * processes across all nodes from shared files available to all workers.
+     * <p>
+     * NOTE:
+     * <p>
+     * Instead of existing on a shared source, the files can be duplicated on a
+     * source local to each host
+     * to improve performance, though the files must appear as the same data
+     * set from the perspective of
+     * all hosts performing the load.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DISTRIBUTED_LOCAL
-     * DISTRIBUTED_LOCAL}: Each worker node loads all files that are available
-     * to it. This option is best when each worker node has its own file
-     * system.
+     * DISTRIBUTED_LOCAL}: A single worker process on each node loads all files
+     * that are available to it. This option works best when each worker loads
+     * files from its own file
+     * system, to maximize performance. In order to avoid data duplication,
+     * either each worker performing
+     * the load needs to have visibility to a set of files unique to it (no
+     * file is visible to more than
+     * one node) or the target table needs to have a primary key (which will
+     * allow the worker to
+     * automatically deduplicate data).
+     * <p>
+     * NOTE:
+     * <p>
+     * If the target table doesn't exist, the table structure will be
+     * determined by the head node. If the
+     * head node has no files local to it, it will be unable to determine the
+     * structure and the request
+     * will fail.
+     * <p>
+     * This mode should not be used in conjuction with a data source, as data
+     * sources are seen by all
+     * worker processes as shared resources with no 'local' component.
+     * <p>
+     * If the head node is configured to have no worker processes, no data
+     * strictly accessible to the head
+     * node will be loaded.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#HEAD HEAD}.
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PRIMARY_KEYS
+     * PRIMARY_KEYS}: Optional: comma separated list of column names, to set as
+     * primary keys, when not specified in the type.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHARD_KEYS
+     * SHARD_KEYS}: Optional: comma separated list of column names, to set as
+     * primary keys, when not specified in the type.  The default value is ''.
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_COMMENT_STRING
-     * TEXT_COMMENT_STRING}: For {@code delimited_text} {@code file_type} only.
-     * All lines in the file(s) starting with the provided string are ignored.
-     * The comment string has no effect unless it appears at the beginning of a
-     * line.  The default value is '#'.
+     * TEXT_COMMENT_STRING}: Specifies the character string that should be
+     * interpreted as a comment line
+     * prefix in the source data.  All lines in the data starting with the
+     * provided string are ignored.
+     * <p>
+     * For {@code delimited_text} {@code file_type} only.  The default value is
+     * '#'.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_DELIMITER
-     * TEXT_DELIMITER}: For {@code delimited_text} {@code file_type} only.
-     * Specifies the delimiter for values and columns in the header row (if
-     * present). Must be a single character.  The default value is ','.
+     * TEXT_DELIMITER}: Specifies the character delimiting field values in the
+     * source data
+     * and field names in the header (if present).
+     * <p>
+     * For {@code delimited_text} {@code file_type} only.  The default value is
+     * ','.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_ESCAPE_CHARACTER
-     * TEXT_ESCAPE_CHARACTER}: For {@code delimited_text} {@code file_type}
-     * only.  The character used in the file(s) to escape certain character
-     * sequences in text. For example, the escape character followed by a
-     * literal 'n' escapes to a newline character within the field. Can be used
-     * within quoted string to escape a quote character. An empty value for
-     * this option does not specify an escape character.
+     * TEXT_ESCAPE_CHARACTER}: Specifies the character that is used to escape
+     * other characters in
+     * the source data.
+     * <p>
+     * An 'a', 'b', 'f', 'n', 'r', 't', or 'v' preceded by an escape character
+     * will be interpreted as the
+     * ASCII bell, backspace, form feed, line feed, carriage return, horizontal
+     * tab, & vertical tab,
+     * respectively.  For example, the escape character followed by an 'n' will
+     * be interpreted as a newline
+     * within a field value.
+     * <p>
+     * The escape character can also be used to escape the quoting character,
+     * and will be treated as an
+     * escape character whether it is within a quoted field value or not.
+     * <p>
+     * For {@code delimited_text} {@code file_type} only.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_HAS_HEADER
-     * TEXT_HAS_HEADER}: For {@code delimited_text} {@code file_type} only.
-     * Indicates whether the delimited text files have a header row.
+     * TEXT_HAS_HEADER}: Indicates whether the source data contains a header
+     * row.
+     * <p>
+     * For {@code delimited_text} {@code file_type} only.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -613,24 +746,36 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE TRUE}.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_HEADER_PROPERTY_DELIMITER
-     * TEXT_HEADER_PROPERTY_DELIMITER}: For {@code delimited_text} {@code
-     * file_type} only. Specifies the delimiter for column properties in the
-     * header row (if present). Cannot be set to same value as text_delimiter.
-     * The default value is '|'.
+     * TEXT_HEADER_PROPERTY_DELIMITER}: Specifies the delimiter for
+     * <a href="../../../../../concepts/types.html#column-properties"
+     * target="_top">column properties</a> in the header row (if
+     * present).  Cannot be set to same value as {@code text_delimiter}.
+     * <p>
+     * For {@code delimited_text} {@code file_type} only.  The default value is
+     * '|'.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_NULL_STRING
-     * TEXT_NULL_STRING}: For {@code delimited_text} {@code file_type} only.
-     * The value in the file(s) to treat as a null value in the database.  The
-     * default value is ''.
+     * TEXT_NULL_STRING}: Specifies the character string that should be
+     * interpreted as a null
+     * value in the source data.
+     * <p>
+     * For {@code delimited_text} {@code file_type} only.  The default value is
+     * ''.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_QUOTE_CHARACTER
-     * TEXT_QUOTE_CHARACTER}: For {@code delimited_text} {@code file_type}
-     * only. The quote character used in the file(s), typically encompassing a
-     * field value. The character must appear at beginning and end of field to
-     * take effect. Delimiters within quoted fields are not treated as
-     * delimiters. Within a quoted field, double quotes (") can be used to
-     * escape a single literal quote character. To not have a quote character,
-     * specify an empty string ("").  The default value is '"'.
+     * TEXT_QUOTE_CHARACTER}: Specifies the character that should be
+     * interpreted as a field value
+     * quoting character in the source data.  The character must appear at
+     * beginning and end of field value
+     * to take effect.  Delimiters within quoted fields are treated as literals
+     * and not delimiters.  Within
+     * a quoted field, two consecutive quote characters will be interpreted as
+     * a single literal quote
+     * character, effectively escaping it.  To not have a quote character,
+     * specify an empty string.
+     * <p>
+     * For {@code delimited_text} {@code file_type} only.  The default value is
+     * '"'.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUNCATE_TABLE
      * TRUNCATE_TABLE}: If set to {@code true}, truncates the table specified
@@ -655,82 +800,122 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Specifies number of records to process before inserting.
+         * Optional name of a table to which records that were rejected are
+         * written.  The bad-record-table has the following columns:
+         * line_number (long), line_rejected (string), error_message (string).
+         */
+        public static final String BAD_RECORD_TABLE_NAME = "bad_record_table_name";
+
+        /**
+         * A positive integer indicating the maximum number of records that can
+         * be  written to the bad-record-table.   Default value is 10000
+         */
+        public static final String BAD_RECORD_TABLE_LIMIT = "bad_record_table_limit";
+
+        /**
+         * Internal tuning parameter--number of records per batch when
+         * inserting data.
          */
         public static final String BATCH_SIZE = "batch_size";
 
         /**
          * For each target column specified, applies the column-property-bound
-         * format to the source data loaded into that column.  Each column
-         * format will contain a mapping of one or more of its column
+         * format to the source data
+         * loaded into that column.  Each column format will contain a mapping
+         * of one or more of its column
          * properties to an appropriate format for each property.  Currently
-         * supported column properties include date, time, & datetime. The
-         * parameter value must be formatted as a JSON string of maps of column
-         * names to maps of column properties to their corresponding column
-         * formats, e.g., { "order_date" : { "date" : "%Y.%m.%d" },
-         * "order_time" : { "time" : "%H:%M:%S" } }.  See {@code
-         * default_column_formats} for valid format syntax.
+         * supported column properties
+         * include date, time, & datetime. The parameter value must be
+         * formatted as a JSON string of maps of
+         * column names to maps of column properties to their corresponding
+         * column formats, e.g.,
+         * '{ "order_date" : { "date" : "%Y.%m.%d" }, "order_time" : { "time" :
+         * "%H:%M:%S" } }'.
+         * <p>
+         * See {@code default_column_formats} for valid format syntax.
          */
         public static final String COLUMN_FORMATS = "column_formats";
 
         /**
-         * For {@code delimited_text} {@code file_type} only. Specifies a
-         * comma-delimited list of column positions or names to load instead of
-         * loading all columns in the file(s); if more than one file is being
-         * loaded, the list of columns will apply to all files. Column numbers
-         * can be specified discretely or as a range, e.g., a value of
-         * '5,7,1..3' will create a table with the first column in the table
-         * being the fifth column in the file, followed by seventh column in
-         * the file, then the first column through the fourth column in the
-         * file.
+         * Specifies a comma-delimited list of columns from the source data to
+         * load.  If more than one file is being loaded, this list applies to
+         * all files.
+         * <p>
+         * Column numbers can be specified discretely or as a range.  For
+         * example, a value of '5,7,1..3' will
+         * insert values from the fifth column in the source data into the
+         * first column in the target table,
+         * from the seventh column in the source data into the second column in
+         * the target table, and from the
+         * first through third columns in the source data into the third
+         * through fifth columns in the target
+         * table.
+         * <p>
+         * If the source data contains a header, column names matching the file
+         * header names may be provided
+         * instead of column numbers.  If the target table doesn't exist, the
+         * table will be created with the
+         * columns in this order.  If the target table does exist with columns
+         * in a different order than the
+         * source data, this list can be used to match the order of the target
+         * table.  For example, a value of
+         * 'C, B, A' will create a three column table with column C, followed
+         * by column B, followed by column
+         * A; or will insert those fields in that order into a table created
+         * with columns in that order.  If
+         * the target table exists, the column names must match the source data
+         * field names for a name-mapping
+         * to be successful.
          */
         public static final String COLUMNS_TO_LOAD = "columns_to_load";
 
         /**
-         * Specifies the default format to be applied to source data loaded
-         * into columns with the corresponding column property.  This default
-         * column-property-bound format can be overridden by specifying a
-         * column property & format for a given target column in {@code
-         * column_formats}. For each specified annotation, the format will
-         * apply to all columns with that annotation unless a custom {@code
-         * column_formats} for that annotation is specified. The parameter
-         * value must be formatted as a JSON string that is a map of column
-         * properties to their respective column formats, e.g., { "date" :
-         * "%Y.%m.%d", "time" : "%H:%M:%S" }. Column formats are specified as a
-         * string of control characters and plain text. The supported control
-         * characters are 'Y', 'm', 'd', 'H', 'M', 'S', and 's', which follow
-         * the Linux 'strptime()' specification, as well as 's', which
-         * specifies seconds and fractional seconds (though the fractional
-         * component will be truncated past milliseconds). Formats for the
-         * 'date' annotation must include the 'Y', 'm', and 'd' control
-         * characters. Formats for the 'time' annotation must include the 'H',
-         * 'M', and either 'S' or 's' (but not both) control characters.
-         * Formats for the 'datetime' annotation meet both the 'date' and
-         * 'time' control character requirements. For example, '{"datetime" :
-         * "%m/%d/%Y %H:%M:%S" }' would be used to interpret text as
-         * "05/04/2000 12:12:11"
+         * Specifies a comma-delimited list of columns from the source data to
+         * skip.  Mutually exclusive to columns_to_load.
          */
-        public static final String DEFAULT_COLUMN_FORMATS = "default_column_formats";
+        public static final String COLUMNS_TO_SKIP = "columns_to_skip";
 
         /**
-         * If set to {@code true}, no data will be inserted but the file will
-         * be read with the applied {@code error_handling} mode and the number
-         * of valid records that would be normally inserted are returned.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
-         * FALSE}
-         *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE TRUE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
-         * FALSE}.
+         * Name of an existing external data source from which data file(s)
+         * specified in {@code filepaths} will be loaded
          */
-        public static final String DRY_RUN = "dry_run";
-        public static final String FALSE = "false";
-        public static final String TRUE = "true";
+        public static final String DATASOURCE_NAME = "datasource_name";
+
+        /**
+         * Specifies the default format to be applied to source data loaded
+         * into columns with the corresponding column property.  Currently
+         * supported column properties include
+         * date, time, & datetime.  This default column-property-bound format
+         * can be overridden by specifying a
+         * column property & format for a given target column in {@code
+         * column_formats}. For
+         * each specified annotation, the format will apply to all columns with
+         * that annotation unless a custom
+         * {@code column_formats} for that annotation is specified.
+         * <p>
+         * The parameter value must be formatted as a JSON string that is a map
+         * of column properties to their
+         * respective column formats, e.g., '{ "date" : "%Y.%m.%d", "time" :
+         * "%H:%M:%S" }'.  Column
+         * formats are specified as a string of control characters and plain
+         * text. The supported control
+         * characters are 'Y', 'm', 'd', 'H', 'M', 'S', and 's', which follow
+         * the Linux 'strptime()'
+         * specification, as well as 's', which specifies seconds and
+         * fractional seconds (though the fractional
+         * component will be truncated past milliseconds).
+         * <p>
+         * Formats for the 'date' annotation must include the 'Y', 'm', and 'd'
+         * control characters. Formats for
+         * the 'time' annotation must include the 'H', 'M', and either 'S' or
+         * 's' (but not both) control
+         * characters. Formats for the 'datetime' annotation meet both the
+         * 'date' and 'time' control character
+         * requirements. For example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }'
+         * would be used to interpret text
+         * as "05/04/2000 12:12:11"
+         */
+        public static final String DEFAULT_COLUMN_FORMATS = "default_column_formats";
 
         /**
          * Specifies how errors should be handled upon insertion.
@@ -746,7 +931,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ABORT
          * ABORT}: Stops current insertion and aborts entire operation when an
-         * error is encountered.
+         * error is encountered.  Primary key collisions are considered
+         * abortable errors in this mode.
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PERMISSIVE
@@ -767,18 +953,23 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
         /**
          * Stops current insertion and aborts entire operation when an error is
-         * encountered.
+         * encountered.  Primary key collisions are considered abortable errors
+         * in this mode.
          */
         public static final String ABORT = "abort";
 
         /**
-         * File type for the file(s).
+         * Specifies the type of the file(s) whose records will be inserted.
          * Supported values:
          * <ul>
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
-         * DELIMITED_TEXT}: Indicates the file(s) are in delimited text format,
+         * DELIMITED_TEXT}: Indicates the file(s) are in delimited text format;
          * e.g., CSV, TSV, PSV, etc.
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
+         * PARQUET}: Indicates the file(s) are in Parquet format. Parquet files
+         * are not supported yet.
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -787,30 +978,111 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String FILE_TYPE = "file_type";
 
         /**
-         * Indicates the file(s) are in delimited text format, e.g., CSV, TSV,
+         * Indicates the file(s) are in delimited text format; e.g., CSV, TSV,
          * PSV, etc.
          */
         public static final String DELIMITED_TEXT = "delimited_text";
 
         /**
-         * Specifies how to divide data loading among nodes.
+         * Indicates the file(s) are in Parquet format. Parquet files are not
+         * supported yet.
+         */
+        public static final String PARQUET = "parquet";
+
+        /**
+         * Whether to do a full load, dry run, or perform a type inference on
+         * the source data.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FULL FULL}:
+         * Run a type inference on the source data (if needed) and ingest
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DRY_RUN
+         * DRY_RUN}: Does not load data, but walks through the source data and
+         * determines the number of valid records, taking into account the
+         * current mode of {@code error_handling}.
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TYPE_INFERENCE_ONLY
+         * TYPE_INFERENCE_ONLY}: Infer the type of the source data and return,
+         * without ingesting any data.  The inferred type is returned in the
+         * response.
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FULL FULL}.
+         */
+        public static final String INGESTION_MODE = "ingestion_mode";
+
+        /**
+         * Run a type inference on the source data (if needed) and ingest
+         */
+        public static final String FULL = "full";
+
+        /**
+         * Does not load data, but walks through the source data and determines
+         * the number of valid records, taking into account the current mode of
+         * {@code error_handling}.
+         */
+        public static final String DRY_RUN = "dry_run";
+
+        /**
+         * Infer the type of the source data and return, without ingesting any
+         * data.  The inferred type is returned in the response.
+         */
+        public static final String TYPE_INFERENCE_ONLY = "type_inference_only";
+
+        /**
+         * Scheme for distributing the extraction and loading of data from the
+         * source data file(s).
          * Supported values:
          * <ul>
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#HEAD HEAD}:
-         * The head node loads all data. All files must be available on the
+         * The head node loads all data. All files must be available to the
          * head node.
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DISTRIBUTED_SHARED
-         * DISTRIBUTED_SHARED}: The worker nodes coordinate loading a set of
-         * files that are available to all of them. All files must be available
-         * on all nodes. This option is best when there is a shared file
-         * system.
+         * DISTRIBUTED_SHARED}: The head node coordinates loading data by
+         * worker
+         * processes across all nodes from shared files available to all
+         * workers.
+         * <p>
+         * NOTE:
+         * <p>
+         * Instead of existing on a shared source, the files can be duplicated
+         * on a source local to each host
+         * to improve performance, though the files must appear as the same
+         * data set from the perspective of
+         * all hosts performing the load.
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DISTRIBUTED_LOCAL
-         * DISTRIBUTED_LOCAL}: Each worker node loads all files that are
-         * available to it. This option is best when each worker node has its
-         * own file system.
+         * DISTRIBUTED_LOCAL}: A single worker process on each node loads all
+         * files
+         * that are available to it. This option works best when each worker
+         * loads files from its own file
+         * system, to maximize performance. In order to avoid data duplication,
+         * either each worker performing
+         * the load needs to have visibility to a set of files unique to it (no
+         * file is visible to more than
+         * one node) or the target table needs to have a primary key (which
+         * will allow the worker to
+         * automatically deduplicate data).
+         * <p>
+         * NOTE:
+         * <p>
+         * If the target table doesn't exist, the table structure will be
+         * determined by the head node. If the
+         * head node has no files local to it, it will be unable to determine
+         * the structure and the request
+         * will fail.
+         * <p>
+         * This mode should not be used in conjuction with a data source, as
+         * data sources are seen by all
+         * worker processes as shared resources with no 'local' component.
+         * <p>
+         * If the head node is configured to have no worker processes, no data
+         * strictly accessible to the head
+         * node will be loaded.
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#HEAD HEAD}.
@@ -818,52 +1090,112 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String LOADING_MODE = "loading_mode";
 
         /**
-         * The head node loads all data. All files must be available on the
+         * The head node loads all data. All files must be available to the
          * head node.
          */
         public static final String HEAD = "head";
 
         /**
-         * The worker nodes coordinate loading a set of files that are
-         * available to all of them. All files must be available on all nodes.
-         * This option is best when there is a shared file system.
+         * The head node coordinates loading data by worker
+         * processes across all nodes from shared files available to all
+         * workers.
+         * <p>
+         * NOTE:
+         * <p>
+         * Instead of existing on a shared source, the files can be duplicated
+         * on a source local to each host
+         * to improve performance, though the files must appear as the same
+         * data set from the perspective of
+         * all hosts performing the load.
          */
         public static final String DISTRIBUTED_SHARED = "distributed_shared";
 
         /**
-         * Each worker node loads all files that are available to it. This
-         * option is best when each worker node has its own file system.
+         * A single worker process on each node loads all files
+         * that are available to it. This option works best when each worker
+         * loads files from its own file
+         * system, to maximize performance. In order to avoid data duplication,
+         * either each worker performing
+         * the load needs to have visibility to a set of files unique to it (no
+         * file is visible to more than
+         * one node) or the target table needs to have a primary key (which
+         * will allow the worker to
+         * automatically deduplicate data).
+         * <p>
+         * NOTE:
+         * <p>
+         * If the target table doesn't exist, the table structure will be
+         * determined by the head node. If the
+         * head node has no files local to it, it will be unable to determine
+         * the structure and the request
+         * will fail.
+         * <p>
+         * This mode should not be used in conjuction with a data source, as
+         * data sources are seen by all
+         * worker processes as shared resources with no 'local' component.
+         * <p>
+         * If the head node is configured to have no worker processes, no data
+         * strictly accessible to the head
+         * node will be loaded.
          */
         public static final String DISTRIBUTED_LOCAL = "distributed_local";
 
         /**
-         * For {@code delimited_text} {@code file_type} only. All lines in the
-         * file(s) starting with the provided string are ignored. The comment
-         * string has no effect unless it appears at the beginning of a line.
-         * The default value is '#'.
+         * Optional: comma separated list of column names, to set as primary
+         * keys, when not specified in the type.  The default value is ''.
+         */
+        public static final String PRIMARY_KEYS = "primary_keys";
+
+        /**
+         * Optional: comma separated list of column names, to set as primary
+         * keys, when not specified in the type.  The default value is ''.
+         */
+        public static final String SHARD_KEYS = "shard_keys";
+
+        /**
+         * Specifies the character string that should be interpreted as a
+         * comment line
+         * prefix in the source data.  All lines in the data starting with the
+         * provided string are ignored.
+         * <p>
+         * For {@code delimited_text} {@code file_type} only.  The default
+         * value is '#'.
          */
         public static final String TEXT_COMMENT_STRING = "text_comment_string";
 
         /**
-         * For {@code delimited_text} {@code file_type} only. Specifies the
-         * delimiter for values and columns in the header row (if present).
-         * Must be a single character.  The default value is ','.
+         * Specifies the character delimiting field values in the source data
+         * and field names in the header (if present).
+         * <p>
+         * For {@code delimited_text} {@code file_type} only.  The default
+         * value is ','.
          */
         public static final String TEXT_DELIMITER = "text_delimiter";
 
         /**
-         * For {@code delimited_text} {@code file_type} only.  The character
-         * used in the file(s) to escape certain character sequences in text.
-         * For example, the escape character followed by a literal 'n' escapes
-         * to a newline character within the field. Can be used within quoted
-         * string to escape a quote character. An empty value for this option
-         * does not specify an escape character.
+         * Specifies the character that is used to escape other characters in
+         * the source data.
+         * <p>
+         * An 'a', 'b', 'f', 'n', 'r', 't', or 'v' preceded by an escape
+         * character will be interpreted as the
+         * ASCII bell, backspace, form feed, line feed, carriage return,
+         * horizontal tab, & vertical tab,
+         * respectively.  For example, the escape character followed by an 'n'
+         * will be interpreted as a newline
+         * within a field value.
+         * <p>
+         * The escape character can also be used to escape the quoting
+         * character, and will be treated as an
+         * escape character whether it is within a quoted field value or not.
+         * <p>
+         * For {@code delimited_text} {@code file_type} only.
          */
         public static final String TEXT_ESCAPE_CHARACTER = "text_escape_character";
 
         /**
-         * For {@code delimited_text} {@code file_type} only. Indicates whether
-         * the delimited text files have a header row.
+         * Indicates whether the source data contains a header row.
+         * <p>
+         * For {@code delimited_text} {@code file_type} only.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -876,30 +1208,42 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE TRUE}.
          */
         public static final String TEXT_HAS_HEADER = "text_has_header";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         /**
-         * For {@code delimited_text} {@code file_type} only. Specifies the
-         * delimiter for column properties in the header row (if present).
-         * Cannot be set to same value as text_delimiter.  The default value is
-         * '|'.
+         * Specifies the delimiter for
+         * <a href="../../../../../concepts/types.html#column-properties"
+         * target="_top">column properties</a> in the header row (if
+         * present).  Cannot be set to same value as {@code text_delimiter}.
+         * <p>
+         * For {@code delimited_text} {@code file_type} only.  The default
+         * value is '|'.
          */
         public static final String TEXT_HEADER_PROPERTY_DELIMITER = "text_header_property_delimiter";
 
         /**
-         * For {@code delimited_text} {@code file_type} only. The value in the
-         * file(s) to treat as a null value in the database.  The default value
-         * is ''.
+         * Specifies the character string that should be interpreted as a null
+         * value in the source data.
+         * <p>
+         * For {@code delimited_text} {@code file_type} only.  The default
+         * value is ''.
          */
         public static final String TEXT_NULL_STRING = "text_null_string";
 
         /**
-         * For {@code delimited_text} {@code file_type} only. The quote
-         * character used in the file(s), typically encompassing a field value.
-         * The character must appear at beginning and end of field to take
-         * effect. Delimiters within quoted fields are not treated as
-         * delimiters. Within a quoted field, double quotes (") can be used to
-         * escape a single literal quote character. To not have a quote
-         * character, specify an empty string ("").  The default value is '"'.
+         * Specifies the character that should be interpreted as a field value
+         * quoting character in the source data.  The character must appear at
+         * beginning and end of field value
+         * to take effect.  Delimiters within quoted fields are treated as
+         * literals and not delimiters.  Within
+         * a quoted field, two consecutive quote characters will be interpreted
+         * as a single literal quote
+         * character, effectively escaping it.  To not have a quote character,
+         * specify an empty string.
+         * <p>
+         * For {@code delimited_text} {@code file_type} only.  The default
+         * value is '"'.
          */
         public static final String TEXT_QUOTE_CHARACTER = "text_quote_character";
 
@@ -931,6 +1275,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
     private String tableName;
     private List<String> filepaths;
+    private Map<String, Map<String, String>> modifyColumns;
     private Map<String, String> createTableOptions;
     private Map<String, String> options;
 
@@ -942,6 +1287,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
     public InsertRecordsFromFilesRequest() {
         tableName = "";
         filepaths = new ArrayList<>();
+        modifyColumns = new LinkedHashMap<>();
         createTableOptions = new LinkedHashMap<>();
         options = new LinkedHashMap<>();
     }
@@ -951,9 +1297,19 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of the table into which the data will be
-     *                   inserted. If the table does not exist, the table will
-     *                   be created using either an existing {@code type_id} or
-     *                   the type inferred from the file.
+     *                   inserted, in
+     *                   [schema_name.]table_name format, using standard
+     *                   <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
+     *                   If the table does not exist, the table will be created
+     *                   using either an existing
+     *                   {@code type_id} or the type inferred from the
+     *                   file, and the new table name will have to meet
+     *                   standard
+     *                   <a
+     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   target="_top">table naming criteria</a>.
      * @param filepaths  Absolute or relative filepath(s) from where files will
      *                   be loaded. Relative filepaths are relative to the
      *                   defined <a
@@ -964,7 +1320,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                   text delimiter will be defaulted to a tab character.
      *                   If the first path ends in .psv, the text delimiter
      *                   will be defaulted to a pipe character (|).
-     * @param createTableOptions  Options used when creating a new table.
+     * @param modifyColumns  Not implemented yet.  The default value is an
+     *                       empty {@link Map}.
+     * @param createTableOptions  Options used when creating the target table.
      *                            <ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TYPE_ID
@@ -992,26 +1350,18 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FALSE
      *                            FALSE}.
      *                                    <li> {@link
-     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#COLLECTION_NAME
-     *                            COLLECTION_NAME}: Name of a collection which
-     *                            is to contain the newly created table. If the
-     *                            collection provided is non-existent, the
-     *                            collection will be automatically created. If
-     *                            empty, then the newly created table will be a
-     *                            top-level table.
-     *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_REPLICATED
-     *                            IS_REPLICATED}: For a table, affects the <a
+     *                            IS_REPLICATED}: Affects the <a
      *                            href="../../../../../concepts/tables.html#distribution"
      *                            target="_top">distribution scheme</a> for the
-     *                            table's data.  If true and the given type has
-     *                            no explicit <a
+     *                            table's data.  If {@code true} and the given
+     *                            type has no explicit <a
      *                            href="../../../../../concepts/tables.html#shard-key"
      *                            target="_top">shard key</a> defined, the
      *                            table will be <a
      *                            href="../../../../../concepts/tables.html#replication"
-     *                            target="_top">replicated</a>.  If false, the
-     *                            table will be <a
+     *                            target="_top">replicated</a>.  If {@code
+     *                            false}, the table will be <a
      *                            href="../../../../../concepts/tables.html#sharding"
      *                            target="_top">sharded</a> according to the
      *                            shard key specified in the given {@code
@@ -1099,9 +1449,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            example formats.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
-     *                            IS_AUTOMATIC_PARTITION}: If true, a new
-     *                            partition will be created for values which
-     *                            don't fall into an existing partition.
+     *                            IS_AUTOMATIC_PARTITION}: If {@code true}, a
+     *                            new partition will be created for values
+     *                            which don't fall into an existing partition.
      *                            Currently only supported for <a
      *                            href="../../../../../concepts/tables.html#partitioning-by-list"
      *                            target="_top">list partitions</a>.
@@ -1119,7 +1469,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            FALSE}.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TTL
-     *                            TTL}: For a table, sets the <a
+     *                            TTL}: Sets the <a
      *                            href="../../../../../concepts/ttl.html"
      *                            target="_top">TTL</a> of the table specified
      *                            in {@code tableName}.
@@ -1129,12 +1479,19 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            per chunk to be used for this table.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_RESULT_TABLE
-     *                            IS_RESULT_TABLE}: For a table, indicates
-     *                            whether the table is an in-memory table. A
-     *                            result table cannot contain store_only,
-     *                            text_search, or string columns (charN columns
-     *                            are acceptable), and it will not be retained
-     *                            if the server is restarted.
+     *                            IS_RESULT_TABLE}: Indicates whether the table
+     *                            is a <a
+     *                            href="../../../../../concepts/tables_memory_only.html"
+     *                            target="_top">memory-only table</a>. A result
+     *                            table cannot contain columns with store_only
+     *                            or text_search <a
+     *                            href="../../../../../concepts/types.html#data-handling"
+     *                            target="_top">data-handling</a> or that are
+     *                            <a
+     *                            href="../../../../../concepts/types.html#primitive-types"
+     *                            target="_top">non-charN strings</a>, and it
+     *                            will not be retained if the server is
+     *                            restarted.
      *                            Supported values:
      *                            <ul>
      *                                    <li> {@link
@@ -1164,83 +1521,111 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BAD_RECORD_TABLE_NAME
+     *                 BAD_RECORD_TABLE_NAME}: Optional name of a table to
+     *                 which records that were rejected are written.  The
+     *                 bad-record-table has the following columns: line_number
+     *                 (long), line_rejected (string), error_message (string).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BAD_RECORD_TABLE_LIMIT
+     *                 BAD_RECORD_TABLE_LIMIT}: A positive integer indicating
+     *                 the maximum number of records that can be  written to
+     *                 the bad-record-table.   Default value is 10000
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BATCH_SIZE
-     *                 BATCH_SIZE}: Specifies number of records to process
-     *                 before inserting.
+     *                 BATCH_SIZE}: Internal tuning parameter--number of
+     *                 records per batch when inserting data.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COLUMN_FORMATS
      *                 COLUMN_FORMATS}: For each target column specified,
      *                 applies the column-property-bound format to the source
-     *                 data loaded into that column.  Each column format will
+     *                 data
+     *                 loaded into that column.  Each column format will
      *                 contain a mapping of one or more of its column
      *                 properties to an appropriate format for each property.
-     *                 Currently supported column properties include date,
-     *                 time, & datetime. The parameter value must be formatted
-     *                 as a JSON string of maps of column names to maps of
-     *                 column properties to their corresponding column formats,
-     *                 e.g., { "order_date" : { "date" : "%Y.%m.%d" },
-     *                 "order_time" : { "time" : "%H:%M:%S" } }.  See {@code
-     *                 default_column_formats} for valid format syntax.
+     *                 Currently supported column properties
+     *                 include date, time, & datetime. The parameter value must
+     *                 be formatted as a JSON string of maps of
+     *                 column names to maps of column properties to their
+     *                 corresponding column formats, e.g.,
+     *                 '{ "order_date" : { "date" : "%Y.%m.%d" }, "order_time"
+     *                 : { "time" : "%H:%M:%S" } }'.
+     *                 See {@code default_column_formats} for valid format
+     *                 syntax.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COLUMNS_TO_LOAD
-     *                 COLUMNS_TO_LOAD}: For {@code delimited_text} {@code
-     *                 file_type} only. Specifies a comma-delimited list of
-     *                 column positions or names to load instead of loading all
-     *                 columns in the file(s); if more than one file is being
-     *                 loaded, the list of columns will apply to all files.
+     *                 COLUMNS_TO_LOAD}: Specifies a comma-delimited list of
+     *                 columns from the source data to
+     *                 load.  If more than one file is being loaded, this list
+     *                 applies to all files.
      *                 Column numbers can be specified discretely or as a
-     *                 range, e.g., a value of '5,7,1..3' will create a table
-     *                 with the first column in the table being the fifth
-     *                 column in the file, followed by seventh column in the
-     *                 file, then the first column through the fourth column in
-     *                 the file.
+     *                 range.  For example, a value of '5,7,1..3' will
+     *                 insert values from the fifth column in the source data
+     *                 into the first column in the target table,
+     *                 from the seventh column in the source data into the
+     *                 second column in the target table, and from the
+     *                 first through third columns in the source data into the
+     *                 third through fifth columns in the target
+     *                 table.
+     *                 If the source data contains a header, column names
+     *                 matching the file header names may be provided
+     *                 instead of column numbers.  If the target table doesn't
+     *                 exist, the table will be created with the
+     *                 columns in this order.  If the target table does exist
+     *                 with columns in a different order than the
+     *                 source data, this list can be used to match the order of
+     *                 the target table.  For example, a value of
+     *                 'C, B, A' will create a three column table with column
+     *                 C, followed by column B, followed by column
+     *                 A; or will insert those fields in that order into a
+     *                 table created with columns in that order.  If
+     *                 the target table exists, the column names must match the
+     *                 source data field names for a name-mapping
+     *                 to be successful.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COLUMNS_TO_SKIP
+     *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
+     *                 columns from the source data to
+     *                 skip.  Mutually exclusive to columns_to_load.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
+     *                 DATASOURCE_NAME}: Name of an existing external data
+     *                 source from which data file(s) specified in {@code
+     *                 filepaths} will be loaded
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DEFAULT_COLUMN_FORMATS
      *                 DEFAULT_COLUMN_FORMATS}: Specifies the default format to
-     *                 be applied to source data loaded into columns with the
-     *                 corresponding column property.  This default
+     *                 be applied to source data loaded
+     *                 into columns with the corresponding column property.
+     *                 Currently supported column properties include
+     *                 date, time, & datetime.  This default
      *                 column-property-bound format can be overridden by
-     *                 specifying a column property & format for a given target
-     *                 column in {@code column_formats}. For each specified
-     *                 annotation, the format will apply to all columns with
-     *                 that annotation unless a custom {@code column_formats}
-     *                 for that annotation is specified. The parameter value
-     *                 must be formatted as a JSON string that is a map of
-     *                 column properties to their respective column formats,
-     *                 e.g., { "date" : "%Y.%m.%d", "time" : "%H:%M:%S" }.
-     *                 Column formats are specified as a string of control
-     *                 characters and plain text. The supported control
+     *                 specifying a
+     *                 column property & format for a given target column in
+     *                 {@code column_formats}. For
+     *                 each specified annotation, the format will apply to all
+     *                 columns with that annotation unless a custom
+     *                 {@code column_formats} for that annotation is specified.
+     *                 The parameter value must be formatted as a JSON string
+     *                 that is a map of column properties to their
+     *                 respective column formats, e.g., '{ "date" : "%Y.%m.%d",
+     *                 "time" : "%H:%M:%S" }'.  Column
+     *                 formats are specified as a string of control characters
+     *                 and plain text. The supported control
      *                 characters are 'Y', 'm', 'd', 'H', 'M', 'S', and 's',
-     *                 which follow the Linux 'strptime()' specification, as
-     *                 well as 's', which specifies seconds and fractional
-     *                 seconds (though the fractional component will be
-     *                 truncated past milliseconds). Formats for the 'date'
-     *                 annotation must include the 'Y', 'm', and 'd' control
-     *                 characters. Formats for the 'time' annotation must
-     *                 include the 'H', 'M', and either 'S' or 's' (but not
-     *                 both) control characters. Formats for the 'datetime'
-     *                 annotation meet both the 'date' and 'time' control
-     *                 character requirements. For example, '{"datetime" :
-     *                 "%m/%d/%Y %H:%M:%S" }' would be used to interpret text
+     *                 which follow the Linux 'strptime()'
+     *                 specification, as well as 's', which specifies seconds
+     *                 and fractional seconds (though the fractional
+     *                 component will be truncated past milliseconds).
+     *                 Formats for the 'date' annotation must include the 'Y',
+     *                 'm', and 'd' control characters. Formats for
+     *                 the 'time' annotation must include the 'H', 'M', and
+     *                 either 'S' or 's' (but not both) control
+     *                 characters. Formats for the 'datetime' annotation meet
+     *                 both the 'date' and 'time' control character
+     *                 requirements. For example, '{"datetime" : "%m/%d/%Y
+     *                 %H:%M:%S" }' would be used to interpret text
      *                 as "05/04/2000 12:12:11"
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DRY_RUN
-     *                 DRY_RUN}: If set to {@code true}, no data will be
-     *                 inserted but the file will be read with the applied
-     *                 {@code error_handling} mode and the number of valid
-     *                 records that would be normally inserted are returned.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
-     *                 FALSE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
-     *                 TRUE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
-     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ERROR_HANDLING
      *                 ERROR_HANDLING}: Specifies how errors should be handled
@@ -1258,77 +1643,154 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ABORT
      *                 ABORT}: Stops current insertion and aborts entire
-     *                 operation when an error is encountered.
+     *                 operation when an error is encountered.  Primary key
+     *                 collisions are considered abortable errors in this mode.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PERMISSIVE
      *                 PERMISSIVE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FILE_TYPE
-     *                 FILE_TYPE}: File type for the file(s).
+     *                 FILE_TYPE}: Specifies the type of the file(s) whose
+     *                 records will be inserted.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
      *                 DELIMITED_TEXT}: Indicates the file(s) are in delimited
-     *                 text format, e.g., CSV, TSV, PSV, etc.
+     *                 text format; e.g., CSV, TSV, PSV, etc.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
+     *                 PARQUET}: Indicates the file(s) are in Parquet format.
+     *                 Parquet files are not supported yet.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
      *                 DELIMITED_TEXT}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#INGESTION_MODE
+     *                 INGESTION_MODE}: Whether to do a full load, dry run, or
+     *                 perform a type inference on the source data.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FULL
+     *                 FULL}: Run a type inference on the source data (if
+     *                 needed) and ingest
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DRY_RUN
+     *                 DRY_RUN}: Does not load data, but walks through the
+     *                 source data and determines the number of valid records,
+     *                 taking into account the current mode of {@code
+     *                 error_handling}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TYPE_INFERENCE_ONLY
+     *                 TYPE_INFERENCE_ONLY}: Infer the type of the source data
+     *                 and return, without ingesting any data.  The inferred
+     *                 type is returned in the response.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FULL
+     *                 FULL}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
-     *                 LOADING_MODE}: Specifies how to divide data loading
-     *                 among nodes.
+     *                 LOADING_MODE}: Scheme for distributing the extraction
+     *                 and loading of data from the source data file(s).
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#HEAD
      *                 HEAD}: The head node loads all data. All files must be
-     *                 available on the head node.
+     *                 available to the head node.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DISTRIBUTED_SHARED
-     *                 DISTRIBUTED_SHARED}: The worker nodes coordinate loading
-     *                 a set of files that are available to all of them. All
-     *                 files must be available on all nodes. This option is
-     *                 best when there is a shared file system.
+     *                 DISTRIBUTED_SHARED}: The head node coordinates loading
+     *                 data by worker
+     *                 processes across all nodes from shared files available
+     *                 to all workers.
+     *                 NOTE:
+     *                 Instead of existing on a shared source, the files can be
+     *                 duplicated on a source local to each host
+     *                 to improve performance, though the files must appear as
+     *                 the same data set from the perspective of
+     *                 all hosts performing the load.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DISTRIBUTED_LOCAL
-     *                 DISTRIBUTED_LOCAL}: Each worker node loads all files
-     *                 that are available to it. This option is best when each
-     *                 worker node has its own file system.
+     *                 DISTRIBUTED_LOCAL}: A single worker process on each node
+     *                 loads all files
+     *                 that are available to it. This option works best when
+     *                 each worker loads files from its own file
+     *                 system, to maximize performance. In order to avoid data
+     *                 duplication, either each worker performing
+     *                 the load needs to have visibility to a set of files
+     *                 unique to it (no file is visible to more than
+     *                 one node) or the target table needs to have a primary
+     *                 key (which will allow the worker to
+     *                 automatically deduplicate data).
+     *                 NOTE:
+     *                 If the target table doesn't exist, the table structure
+     *                 will be determined by the head node. If the
+     *                 head node has no files local to it, it will be unable to
+     *                 determine the structure and the request
+     *                 will fail.
+     *                 This mode should not be used in conjuction with a data
+     *                 source, as data sources are seen by all
+     *                 worker processes as shared resources with no 'local'
+     *                 component.
+     *                 If the head node is configured to have no worker
+     *                 processes, no data strictly accessible to the head
+     *                 node will be loaded.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#HEAD
      *                 HEAD}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PRIMARY_KEYS
+     *                 PRIMARY_KEYS}: Optional: comma separated list of column
+     *                 names, to set as primary keys, when not specified in the
+     *                 type.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHARD_KEYS
+     *                 SHARD_KEYS}: Optional: comma separated list of column
+     *                 names, to set as primary keys, when not specified in the
+     *                 type.  The default value is ''.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_COMMENT_STRING
-     *                 TEXT_COMMENT_STRING}: For {@code delimited_text} {@code
-     *                 file_type} only. All lines in the file(s) starting with
-     *                 the provided string are ignored. The comment string has
-     *                 no effect unless it appears at the beginning of a line.
-     *                 The default value is '#'.
+     *                 TEXT_COMMENT_STRING}: Specifies the character string
+     *                 that should be interpreted as a comment line
+     *                 prefix in the source data.  All lines in the data
+     *                 starting with the provided string are ignored.
+     *                 For {@code delimited_text} {@code file_type} only.  The
+     *                 default value is '#'.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_DELIMITER
-     *                 TEXT_DELIMITER}: For {@code delimited_text} {@code
-     *                 file_type} only. Specifies the delimiter for values and
-     *                 columns in the header row (if present). Must be a single
-     *                 character.  The default value is ','.
+     *                 TEXT_DELIMITER}: Specifies the character delimiting
+     *                 field values in the source data
+     *                 and field names in the header (if present).
+     *                 For {@code delimited_text} {@code file_type} only.  The
+     *                 default value is ','.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_ESCAPE_CHARACTER
-     *                 TEXT_ESCAPE_CHARACTER}: For {@code delimited_text}
-     *                 {@code file_type} only.  The character used in the
-     *                 file(s) to escape certain character sequences in text.
-     *                 For example, the escape character followed by a literal
-     *                 'n' escapes to a newline character within the field. Can
-     *                 be used within quoted string to escape a quote
-     *                 character. An empty value for this option does not
-     *                 specify an escape character.
+     *                 TEXT_ESCAPE_CHARACTER}: Specifies the character that is
+     *                 used to escape other characters in
+     *                 the source data.
+     *                 An 'a', 'b', 'f', 'n', 'r', 't', or 'v' preceded by an
+     *                 escape character will be interpreted as the
+     *                 ASCII bell, backspace, form feed, line feed, carriage
+     *                 return, horizontal tab, & vertical tab,
+     *                 respectively.  For example, the escape character
+     *                 followed by an 'n' will be interpreted as a newline
+     *                 within a field value.
+     *                 The escape character can also be used to escape the
+     *                 quoting character, and will be treated as an
+     *                 escape character whether it is within a quoted field
+     *                 value or not.
+     *                 For {@code delimited_text} {@code file_type} only.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_HAS_HEADER
-     *                 TEXT_HAS_HEADER}: For {@code delimited_text} {@code
-     *                 file_type} only. Indicates whether the delimited text
-     *                 files have a header row.
+     *                 TEXT_HAS_HEADER}: Indicates whether the source data
+     *                 contains a header row.
+     *                 For {@code delimited_text} {@code file_type} only.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1343,27 +1805,37 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_HEADER_PROPERTY_DELIMITER
-     *                 TEXT_HEADER_PROPERTY_DELIMITER}: For {@code
-     *                 delimited_text} {@code file_type} only. Specifies the
-     *                 delimiter for column properties in the header row (if
-     *                 present). Cannot be set to same value as text_delimiter.
-     *                 The default value is '|'.
+     *                 TEXT_HEADER_PROPERTY_DELIMITER}: Specifies the delimiter
+     *                 for
+     *                 <a
+     *                 href="../../../../../concepts/types.html#column-properties"
+     *                 target="_top">column properties</a> in the header row
+     *                 (if
+     *                 present).  Cannot be set to same value as {@code
+     *                 text_delimiter}.
+     *                 For {@code delimited_text} {@code file_type} only.  The
+     *                 default value is '|'.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_NULL_STRING
-     *                 TEXT_NULL_STRING}: For {@code delimited_text} {@code
-     *                 file_type} only. The value in the file(s) to treat as a
-     *                 null value in the database.  The default value is ''.
+     *                 TEXT_NULL_STRING}: Specifies the character string that
+     *                 should be interpreted as a null
+     *                 value in the source data.
+     *                 For {@code delimited_text} {@code file_type} only.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_QUOTE_CHARACTER
-     *                 TEXT_QUOTE_CHARACTER}: For {@code delimited_text} {@code
-     *                 file_type} only. The quote character used in the
-     *                 file(s), typically encompassing a field value. The
-     *                 character must appear at beginning and end of field to
-     *                 take effect. Delimiters within quoted fields are not
-     *                 treated as delimiters. Within a quoted field, double
-     *                 quotes (") can be used to escape a single literal quote
-     *                 character. To not have a quote character, specify an
-     *                 empty string ("").  The default value is '"'.
+     *                 TEXT_QUOTE_CHARACTER}: Specifies the character that
+     *                 should be interpreted as a field value
+     *                 quoting character in the source data.  The character
+     *                 must appear at beginning and end of field value
+     *                 to take effect.  Delimiters within quoted fields are
+     *                 treated as literals and not delimiters.  Within
+     *                 a quoted field, two consecutive quote characters will be
+     *                 interpreted as a single literal quote
+     *                 character, effectively escaping it.  To not have a quote
+     *                 character, specify an empty string.
+     *                 For {@code delimited_text} {@code file_type} only.  The
+     *                 default value is '"'.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
@@ -1390,18 +1862,28 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 The default value is an empty {@link Map}.
      * 
      */
-    public InsertRecordsFromFilesRequest(String tableName, List<String> filepaths, Map<String, String> createTableOptions, Map<String, String> options) {
+    public InsertRecordsFromFilesRequest(String tableName, List<String> filepaths, Map<String, Map<String, String>> modifyColumns, Map<String, String> createTableOptions, Map<String, String> options) {
         this.tableName = (tableName == null) ? "" : tableName;
         this.filepaths = (filepaths == null) ? new ArrayList<String>() : filepaths;
+        this.modifyColumns = (modifyColumns == null) ? new LinkedHashMap<String, Map<String, String>>() : modifyColumns;
         this.createTableOptions = (createTableOptions == null) ? new LinkedHashMap<String, String>() : createTableOptions;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
      * 
-     * @return Name of the table into which the data will be inserted. If the
-     *         table does not exist, the table will be created using either an
-     *         existing {@code type_id} or the type inferred from the file.
+     * @return Name of the table into which the data will be inserted, in
+     *         [schema_name.]table_name format, using standard
+     *         <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.
+     *         If the table does not exist, the table will be created using
+     *         either an existing
+     *         {@code type_id} or the type inferred from the
+     *         file, and the new table name will have to meet standard
+     *         <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.
      * 
      */
     public String getTableName() {
@@ -1411,9 +1893,19 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table into which the data will be
-     *                   inserted. If the table does not exist, the table will
-     *                   be created using either an existing {@code type_id} or
-     *                   the type inferred from the file.
+     *                   inserted, in
+     *                   [schema_name.]table_name format, using standard
+     *                   <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
+     *                   If the table does not exist, the table will be created
+     *                   using either an existing
+     *                   {@code type_id} or the type inferred from the
+     *                   file, and the new table name will have to meet
+     *                   standard
+     *                   <a
+     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   target="_top">table naming criteria</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -1462,7 +1954,29 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Options used when creating a new table.
+     * @return Not implemented yet.  The default value is an empty {@link Map}.
+     * 
+     */
+    public Map<String, Map<String, String>> getModifyColumns() {
+        return modifyColumns;
+    }
+
+    /**
+     * 
+     * @param modifyColumns  Not implemented yet.  The default value is an
+     *                       empty {@link Map}.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public InsertRecordsFromFilesRequest setModifyColumns(Map<String, Map<String, String>> modifyColumns) {
+        this.modifyColumns = (modifyColumns == null) ? new LinkedHashMap<String, Map<String, String>>() : modifyColumns;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Options used when creating the target table.
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TYPE_ID
@@ -1488,22 +2002,16 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FALSE
      *         FALSE}.
      *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         newly created table. If the collection provided is non-existent,
-     *         the collection will be automatically created. If empty, then the
-     *         newly created table will be a top-level table.
-     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_REPLICATED
-     *         IS_REPLICATED}: For a table, affects the <a
+     *         IS_REPLICATED}: Affects the <a
      *         href="../../../../../concepts/tables.html#distribution"
      *         target="_top">distribution scheme</a> for the table's data.  If
-     *         true and the given type has no explicit <a
+     *         {@code true} and the given type has no explicit <a
      *         href="../../../../../concepts/tables.html#shard-key"
      *         target="_top">shard key</a> defined, the table will be <a
      *         href="../../../../../concepts/tables.html#replication"
-     *         target="_top">replicated</a>.  If false, the table will be <a
-     *         href="../../../../../concepts/tables.html#sharding"
+     *         target="_top">replicated</a>.  If {@code false}, the table will
+     *         be <a href="../../../../../concepts/tables.html#sharding"
      *         target="_top">sharded</a> according to the shard key specified
      *         in the given {@code type_id}, or <a
      *         href="../../../../../concepts/tables.html#random-sharding"
@@ -1583,9 +2091,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         target="_top">hash partitioning</a> for example formats.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
-     *         IS_AUTOMATIC_PARTITION}: If true, a new partition will be
-     *         created for values which don't fall into an existing partition.
-     *         Currently only supported for <a
+     *         IS_AUTOMATIC_PARTITION}: If {@code true}, a new partition will
+     *         be created for values which don't fall into an existing
+     *         partition.  Currently only supported for <a
      *         href="../../../../../concepts/tables.html#partitioning-by-list"
      *         target="_top">list partitions</a>.
      *         Supported values:
@@ -1602,19 +2110,24 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TTL
-     *         TTL}: For a table, sets the <a
-     *         href="../../../../../concepts/ttl.html" target="_top">TTL</a> of
-     *         the table specified in {@code tableName}.
+     *         TTL}: Sets the <a href="../../../../../concepts/ttl.html"
+     *         target="_top">TTL</a> of the table specified in {@code
+     *         tableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#CHUNK_SIZE
      *         CHUNK_SIZE}: Indicates the number of records per chunk to be
      *         used for this table.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_RESULT_TABLE
-     *         IS_RESULT_TABLE}: For a table, indicates whether the table is an
-     *         in-memory table. A result table cannot contain store_only,
-     *         text_search, or string columns (charN columns are acceptable),
-     *         and it will not be retained if the server is restarted.
+     *         IS_RESULT_TABLE}: Indicates whether the table is a <a
+     *         href="../../../../../concepts/tables_memory_only.html"
+     *         target="_top">memory-only table</a>. A result table cannot
+     *         contain columns with store_only or text_search <a
+     *         href="../../../../../concepts/types.html#data-handling"
+     *         target="_top">data-handling</a> or that are <a
+     *         href="../../../../../concepts/types.html#primitive-types"
+     *         target="_top">non-charN strings</a>, and it will not be retained
+     *         if the server is restarted.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -1646,7 +2159,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param createTableOptions  Options used when creating a new table.
+     * @param createTableOptions  Options used when creating the target table.
      *                            <ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TYPE_ID
@@ -1674,26 +2187,18 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FALSE
      *                            FALSE}.
      *                                    <li> {@link
-     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#COLLECTION_NAME
-     *                            COLLECTION_NAME}: Name of a collection which
-     *                            is to contain the newly created table. If the
-     *                            collection provided is non-existent, the
-     *                            collection will be automatically created. If
-     *                            empty, then the newly created table will be a
-     *                            top-level table.
-     *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_REPLICATED
-     *                            IS_REPLICATED}: For a table, affects the <a
+     *                            IS_REPLICATED}: Affects the <a
      *                            href="../../../../../concepts/tables.html#distribution"
      *                            target="_top">distribution scheme</a> for the
-     *                            table's data.  If true and the given type has
-     *                            no explicit <a
+     *                            table's data.  If {@code true} and the given
+     *                            type has no explicit <a
      *                            href="../../../../../concepts/tables.html#shard-key"
      *                            target="_top">shard key</a> defined, the
      *                            table will be <a
      *                            href="../../../../../concepts/tables.html#replication"
-     *                            target="_top">replicated</a>.  If false, the
-     *                            table will be <a
+     *                            target="_top">replicated</a>.  If {@code
+     *                            false}, the table will be <a
      *                            href="../../../../../concepts/tables.html#sharding"
      *                            target="_top">sharded</a> according to the
      *                            shard key specified in the given {@code
@@ -1781,9 +2286,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            example formats.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
-     *                            IS_AUTOMATIC_PARTITION}: If true, a new
-     *                            partition will be created for values which
-     *                            don't fall into an existing partition.
+     *                            IS_AUTOMATIC_PARTITION}: If {@code true}, a
+     *                            new partition will be created for values
+     *                            which don't fall into an existing partition.
      *                            Currently only supported for <a
      *                            href="../../../../../concepts/tables.html#partitioning-by-list"
      *                            target="_top">list partitions</a>.
@@ -1801,7 +2306,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            FALSE}.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TTL
-     *                            TTL}: For a table, sets the <a
+     *                            TTL}: Sets the <a
      *                            href="../../../../../concepts/ttl.html"
      *                            target="_top">TTL</a> of the table specified
      *                            in {@code tableName}.
@@ -1811,12 +2316,19 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            per chunk to be used for this table.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_RESULT_TABLE
-     *                            IS_RESULT_TABLE}: For a table, indicates
-     *                            whether the table is an in-memory table. A
-     *                            result table cannot contain store_only,
-     *                            text_search, or string columns (charN columns
-     *                            are acceptable), and it will not be retained
-     *                            if the server is restarted.
+     *                            IS_RESULT_TABLE}: Indicates whether the table
+     *                            is a <a
+     *                            href="../../../../../concepts/tables_memory_only.html"
+     *                            target="_top">memory-only table</a>. A result
+     *                            table cannot contain columns with store_only
+     *                            or text_search <a
+     *                            href="../../../../../concepts/types.html#data-handling"
+     *                            target="_top">data-handling</a> or that are
+     *                            <a
+     *                            href="../../../../../concepts/types.html#primitive-types"
+     *                            target="_top">non-charN strings</a>, and it
+     *                            will not be retained if the server is
+     *                            restarted.
      *                            Supported values:
      *                            <ul>
      *                                    <li> {@link
@@ -1857,75 +2369,107 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BAD_RECORD_TABLE_NAME
+     *         BAD_RECORD_TABLE_NAME}: Optional name of a table to which
+     *         records that were rejected are written.  The bad-record-table
+     *         has the following columns: line_number (long), line_rejected
+     *         (string), error_message (string).
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BAD_RECORD_TABLE_LIMIT
+     *         BAD_RECORD_TABLE_LIMIT}: A positive integer indicating the
+     *         maximum number of records that can be  written to the
+     *         bad-record-table.   Default value is 10000
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BATCH_SIZE
-     *         BATCH_SIZE}: Specifies number of records to process before
-     *         inserting.
+     *         BATCH_SIZE}: Internal tuning parameter--number of records per
+     *         batch when inserting data.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COLUMN_FORMATS
      *         COLUMN_FORMATS}: For each target column specified, applies the
-     *         column-property-bound format to the source data loaded into that
-     *         column.  Each column format will contain a mapping of one or
-     *         more of its column properties to an appropriate format for each
-     *         property.  Currently supported column properties include date,
-     *         time, & datetime. The parameter value must be formatted as a
-     *         JSON string of maps of column names to maps of column properties
-     *         to their corresponding column formats, e.g., { "order_date" : {
-     *         "date" : "%Y.%m.%d" }, "order_time" : { "time" : "%H:%M:%S" } }.
+     *         column-property-bound format to the source data
+     *         loaded into that column.  Each column format will contain a
+     *         mapping of one or more of its column
+     *         properties to an appropriate format for each property.
+     *         Currently supported column properties
+     *         include date, time, & datetime. The parameter value must be
+     *         formatted as a JSON string of maps of
+     *         column names to maps of column properties to their corresponding
+     *         column formats, e.g.,
+     *         '{ "order_date" : { "date" : "%Y.%m.%d" }, "order_time" : {
+     *         "time" : "%H:%M:%S" } }'.
      *         See {@code default_column_formats} for valid format syntax.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COLUMNS_TO_LOAD
-     *         COLUMNS_TO_LOAD}: For {@code delimited_text} {@code file_type}
-     *         only. Specifies a comma-delimited list of column positions or
-     *         names to load instead of loading all columns in the file(s); if
-     *         more than one file is being loaded, the list of columns will
-     *         apply to all files. Column numbers can be specified discretely
-     *         or as a range, e.g., a value of '5,7,1..3' will create a table
-     *         with the first column in the table being the fifth column in the
-     *         file, followed by seventh column in the file, then the first
-     *         column through the fourth column in the file.
+     *         COLUMNS_TO_LOAD}: Specifies a comma-delimited list of columns
+     *         from the source data to
+     *         load.  If more than one file is being loaded, this list applies
+     *         to all files.
+     *         Column numbers can be specified discretely or as a range.  For
+     *         example, a value of '5,7,1..3' will
+     *         insert values from the fifth column in the source data into the
+     *         first column in the target table,
+     *         from the seventh column in the source data into the second
+     *         column in the target table, and from the
+     *         first through third columns in the source data into the third
+     *         through fifth columns in the target
+     *         table.
+     *         If the source data contains a header, column names matching the
+     *         file header names may be provided
+     *         instead of column numbers.  If the target table doesn't exist,
+     *         the table will be created with the
+     *         columns in this order.  If the target table does exist with
+     *         columns in a different order than the
+     *         source data, this list can be used to match the order of the
+     *         target table.  For example, a value of
+     *         'C, B, A' will create a three column table with column C,
+     *         followed by column B, followed by column
+     *         A; or will insert those fields in that order into a table
+     *         created with columns in that order.  If
+     *         the target table exists, the column names must match the source
+     *         data field names for a name-mapping
+     *         to be successful.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COLUMNS_TO_SKIP
+     *         COLUMNS_TO_SKIP}: Specifies a comma-delimited list of columns
+     *         from the source data to
+     *         skip.  Mutually exclusive to columns_to_load.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
+     *         DATASOURCE_NAME}: Name of an existing external data source from
+     *         which data file(s) specified in {@code filepaths} will be loaded
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DEFAULT_COLUMN_FORMATS
      *         DEFAULT_COLUMN_FORMATS}: Specifies the default format to be
-     *         applied to source data loaded into columns with the
-     *         corresponding column property.  This default
-     *         column-property-bound format can be overridden by specifying a
+     *         applied to source data loaded
+     *         into columns with the corresponding column property.  Currently
+     *         supported column properties include
+     *         date, time, & datetime.  This default column-property-bound
+     *         format can be overridden by specifying a
      *         column property & format for a given target column in {@code
-     *         column_formats}. For each specified annotation, the format will
-     *         apply to all columns with that annotation unless a custom {@code
-     *         column_formats} for that annotation is specified. The parameter
-     *         value must be formatted as a JSON string that is a map of column
-     *         properties to their respective column formats, e.g., { "date" :
-     *         "%Y.%m.%d", "time" : "%H:%M:%S" }. Column formats are specified
-     *         as a string of control characters and plain text. The supported
-     *         control characters are 'Y', 'm', 'd', 'H', 'M', 'S', and 's',
-     *         which follow the Linux 'strptime()' specification, as well as
-     *         's', which specifies seconds and fractional seconds (though the
-     *         fractional component will be truncated past milliseconds).
+     *         column_formats}. For
+     *         each specified annotation, the format will apply to all columns
+     *         with that annotation unless a custom
+     *         {@code column_formats} for that annotation is specified.
+     *         The parameter value must be formatted as a JSON string that is a
+     *         map of column properties to their
+     *         respective column formats, e.g., '{ "date" : "%Y.%m.%d", "time"
+     *         : "%H:%M:%S" }'.  Column
+     *         formats are specified as a string of control characters and
+     *         plain text. The supported control
+     *         characters are 'Y', 'm', 'd', 'H', 'M', 'S', and 's', which
+     *         follow the Linux 'strptime()'
+     *         specification, as well as 's', which specifies seconds and
+     *         fractional seconds (though the fractional
+     *         component will be truncated past milliseconds).
      *         Formats for the 'date' annotation must include the 'Y', 'm', and
-     *         'd' control characters. Formats for the 'time' annotation must
-     *         include the 'H', 'M', and either 'S' or 's' (but not both)
-     *         control characters. Formats for the 'datetime' annotation meet
-     *         both the 'date' and 'time' control character requirements. For
-     *         example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }' would be used to
-     *         interpret text as "05/04/2000 12:12:11"
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DRY_RUN
-     *         DRY_RUN}: If set to {@code true}, no data will be inserted but
-     *         the file will be read with the applied {@code error_handling}
-     *         mode and the number of valid records that would be normally
-     *         inserted are returned.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
-     *         FALSE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
-     *         TRUE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
-     *         FALSE}.
+     *         'd' control characters. Formats for
+     *         the 'time' annotation must include the 'H', 'M', and either 'S'
+     *         or 's' (but not both) control
+     *         characters. Formats for the 'datetime' annotation meet both the
+     *         'date' and 'time' control character
+     *         requirements. For example, '{"datetime" : "%m/%d/%Y %H:%M:%S" }'
+     *         would be used to interpret text
+     *         as "05/04/2000 12:12:11"
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ERROR_HANDLING
      *         ERROR_HANDLING}: Specifies how errors should be handled upon
@@ -1942,75 +2486,152 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ABORT
      *         ABORT}: Stops current insertion and aborts entire operation when
-     *         an error is encountered.
+     *         an error is encountered.  Primary key collisions are considered
+     *         abortable errors in this mode.
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PERMISSIVE
      *         PERMISSIVE}.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FILE_TYPE
-     *         FILE_TYPE}: File type for the file(s).
+     *         FILE_TYPE}: Specifies the type of the file(s) whose records will
+     *         be inserted.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
      *         DELIMITED_TEXT}: Indicates the file(s) are in delimited text
-     *         format, e.g., CSV, TSV, PSV, etc.
+     *         format; e.g., CSV, TSV, PSV, etc.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
+     *         PARQUET}: Indicates the file(s) are in Parquet format. Parquet
+     *         files are not supported yet.
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
      *         DELIMITED_TEXT}.
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#INGESTION_MODE
+     *         INGESTION_MODE}: Whether to do a full load, dry run, or perform
+     *         a type inference on the source data.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FULL
+     *         FULL}: Run a type inference on the source data (if needed) and
+     *         ingest
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DRY_RUN
+     *         DRY_RUN}: Does not load data, but walks through the source data
+     *         and determines the number of valid records, taking into account
+     *         the current mode of {@code error_handling}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TYPE_INFERENCE_ONLY
+     *         TYPE_INFERENCE_ONLY}: Infer the type of the source data and
+     *         return, without ingesting any data.  The inferred type is
+     *         returned in the response.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FULL
+     *         FULL}.
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
-     *         LOADING_MODE}: Specifies how to divide data loading among nodes.
+     *         LOADING_MODE}: Scheme for distributing the extraction and
+     *         loading of data from the source data file(s).
      *         Supported values:
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#HEAD
      *         HEAD}: The head node loads all data. All files must be available
-     *         on the head node.
+     *         to the head node.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DISTRIBUTED_SHARED
-     *         DISTRIBUTED_SHARED}: The worker nodes coordinate loading a set
-     *         of files that are available to all of them. All files must be
-     *         available on all nodes. This option is best when there is a
-     *         shared file system.
+     *         DISTRIBUTED_SHARED}: The head node coordinates loading data by
+     *         worker
+     *         processes across all nodes from shared files available to all
+     *         workers.
+     *         NOTE:
+     *         Instead of existing on a shared source, the files can be
+     *         duplicated on a source local to each host
+     *         to improve performance, though the files must appear as the same
+     *         data set from the perspective of
+     *         all hosts performing the load.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DISTRIBUTED_LOCAL
-     *         DISTRIBUTED_LOCAL}: Each worker node loads all files that are
-     *         available to it. This option is best when each worker node has
-     *         its own file system.
+     *         DISTRIBUTED_LOCAL}: A single worker process on each node loads
+     *         all files
+     *         that are available to it. This option works best when each
+     *         worker loads files from its own file
+     *         system, to maximize performance. In order to avoid data
+     *         duplication, either each worker performing
+     *         the load needs to have visibility to a set of files unique to it
+     *         (no file is visible to more than
+     *         one node) or the target table needs to have a primary key (which
+     *         will allow the worker to
+     *         automatically deduplicate data).
+     *         NOTE:
+     *         If the target table doesn't exist, the table structure will be
+     *         determined by the head node. If the
+     *         head node has no files local to it, it will be unable to
+     *         determine the structure and the request
+     *         will fail.
+     *         This mode should not be used in conjuction with a data source,
+     *         as data sources are seen by all
+     *         worker processes as shared resources with no 'local' component.
+     *         If the head node is configured to have no worker processes, no
+     *         data strictly accessible to the head
+     *         node will be loaded.
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#HEAD
      *         HEAD}.
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PRIMARY_KEYS
+     *         PRIMARY_KEYS}: Optional: comma separated list of column names,
+     *         to set as primary keys, when not specified in the type.  The
+     *         default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHARD_KEYS
+     *         SHARD_KEYS}: Optional: comma separated list of column names, to
+     *         set as primary keys, when not specified in the type.  The
+     *         default value is ''.
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_COMMENT_STRING
-     *         TEXT_COMMENT_STRING}: For {@code delimited_text} {@code
-     *         file_type} only. All lines in the file(s) starting with the
-     *         provided string are ignored. The comment string has no effect
-     *         unless it appears at the beginning of a line.  The default value
-     *         is '#'.
+     *         TEXT_COMMENT_STRING}: Specifies the character string that should
+     *         be interpreted as a comment line
+     *         prefix in the source data.  All lines in the data starting with
+     *         the provided string are ignored.
+     *         For {@code delimited_text} {@code file_type} only.  The default
+     *         value is '#'.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_DELIMITER
-     *         TEXT_DELIMITER}: For {@code delimited_text} {@code file_type}
-     *         only. Specifies the delimiter for values and columns in the
-     *         header row (if present). Must be a single character.  The
-     *         default value is ','.
+     *         TEXT_DELIMITER}: Specifies the character delimiting field values
+     *         in the source data
+     *         and field names in the header (if present).
+     *         For {@code delimited_text} {@code file_type} only.  The default
+     *         value is ','.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_ESCAPE_CHARACTER
-     *         TEXT_ESCAPE_CHARACTER}: For {@code delimited_text} {@code
-     *         file_type} only.  The character used in the file(s) to escape
-     *         certain character sequences in text. For example, the escape
-     *         character followed by a literal 'n' escapes to a newline
-     *         character within the field. Can be used within quoted string to
-     *         escape a quote character. An empty value for this option does
-     *         not specify an escape character.
+     *         TEXT_ESCAPE_CHARACTER}: Specifies the character that is used to
+     *         escape other characters in
+     *         the source data.
+     *         An 'a', 'b', 'f', 'n', 'r', 't', or 'v' preceded by an escape
+     *         character will be interpreted as the
+     *         ASCII bell, backspace, form feed, line feed, carriage return,
+     *         horizontal tab, & vertical tab,
+     *         respectively.  For example, the escape character followed by an
+     *         'n' will be interpreted as a newline
+     *         within a field value.
+     *         The escape character can also be used to escape the quoting
+     *         character, and will be treated as an
+     *         escape character whether it is within a quoted field value or
+     *         not.
+     *         For {@code delimited_text} {@code file_type} only.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_HAS_HEADER
-     *         TEXT_HAS_HEADER}: For {@code delimited_text} {@code file_type}
-     *         only. Indicates whether the delimited text files have a header
-     *         row.
+     *         TEXT_HAS_HEADER}: Indicates whether the source data contains a
+     *         header row.
+     *         For {@code delimited_text} {@code file_type} only.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -2025,25 +2646,34 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         TRUE}.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_HEADER_PROPERTY_DELIMITER
-     *         TEXT_HEADER_PROPERTY_DELIMITER}: For {@code delimited_text}
-     *         {@code file_type} only. Specifies the delimiter for column
-     *         properties in the header row (if present). Cannot be set to same
-     *         value as text_delimiter.  The default value is '|'.
+     *         TEXT_HEADER_PROPERTY_DELIMITER}: Specifies the delimiter for
+     *         <a href="../../../../../concepts/types.html#column-properties"
+     *         target="_top">column properties</a> in the header row (if
+     *         present).  Cannot be set to same value as {@code
+     *         text_delimiter}.
+     *         For {@code delimited_text} {@code file_type} only.  The default
+     *         value is '|'.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_NULL_STRING
-     *         TEXT_NULL_STRING}: For {@code delimited_text} {@code file_type}
-     *         only. The value in the file(s) to treat as a null value in the
-     *         database.  The default value is ''.
+     *         TEXT_NULL_STRING}: Specifies the character string that should be
+     *         interpreted as a null
+     *         value in the source data.
+     *         For {@code delimited_text} {@code file_type} only.  The default
+     *         value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_QUOTE_CHARACTER
-     *         TEXT_QUOTE_CHARACTER}: For {@code delimited_text} {@code
-     *         file_type} only. The quote character used in the file(s),
-     *         typically encompassing a field value. The character must appear
-     *         at beginning and end of field to take effect. Delimiters within
-     *         quoted fields are not treated as delimiters. Within a quoted
-     *         field, double quotes (") can be used to escape a single literal
-     *         quote character. To not have a quote character, specify an empty
-     *         string ("").  The default value is '"'.
+     *         TEXT_QUOTE_CHARACTER}: Specifies the character that should be
+     *         interpreted as a field value
+     *         quoting character in the source data.  The character must appear
+     *         at beginning and end of field value
+     *         to take effect.  Delimiters within quoted fields are treated as
+     *         literals and not delimiters.  Within
+     *         a quoted field, two consecutive quote characters will be
+     *         interpreted as a single literal quote
+     *         character, effectively escaping it.  To not have a quote
+     *         character, specify an empty string.
+     *         For {@code delimited_text} {@code file_type} only.  The default
+     *         value is '"'.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUNCATE_TABLE
      *         TRUNCATE_TABLE}: If set to {@code true}, truncates the table
@@ -2077,83 +2707,111 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BAD_RECORD_TABLE_NAME
+     *                 BAD_RECORD_TABLE_NAME}: Optional name of a table to
+     *                 which records that were rejected are written.  The
+     *                 bad-record-table has the following columns: line_number
+     *                 (long), line_rejected (string), error_message (string).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BAD_RECORD_TABLE_LIMIT
+     *                 BAD_RECORD_TABLE_LIMIT}: A positive integer indicating
+     *                 the maximum number of records that can be  written to
+     *                 the bad-record-table.   Default value is 10000
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BATCH_SIZE
-     *                 BATCH_SIZE}: Specifies number of records to process
-     *                 before inserting.
+     *                 BATCH_SIZE}: Internal tuning parameter--number of
+     *                 records per batch when inserting data.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COLUMN_FORMATS
      *                 COLUMN_FORMATS}: For each target column specified,
      *                 applies the column-property-bound format to the source
-     *                 data loaded into that column.  Each column format will
+     *                 data
+     *                 loaded into that column.  Each column format will
      *                 contain a mapping of one or more of its column
      *                 properties to an appropriate format for each property.
-     *                 Currently supported column properties include date,
-     *                 time, & datetime. The parameter value must be formatted
-     *                 as a JSON string of maps of column names to maps of
-     *                 column properties to their corresponding column formats,
-     *                 e.g., { "order_date" : { "date" : "%Y.%m.%d" },
-     *                 "order_time" : { "time" : "%H:%M:%S" } }.  See {@code
-     *                 default_column_formats} for valid format syntax.
+     *                 Currently supported column properties
+     *                 include date, time, & datetime. The parameter value must
+     *                 be formatted as a JSON string of maps of
+     *                 column names to maps of column properties to their
+     *                 corresponding column formats, e.g.,
+     *                 '{ "order_date" : { "date" : "%Y.%m.%d" }, "order_time"
+     *                 : { "time" : "%H:%M:%S" } }'.
+     *                 See {@code default_column_formats} for valid format
+     *                 syntax.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COLUMNS_TO_LOAD
-     *                 COLUMNS_TO_LOAD}: For {@code delimited_text} {@code
-     *                 file_type} only. Specifies a comma-delimited list of
-     *                 column positions or names to load instead of loading all
-     *                 columns in the file(s); if more than one file is being
-     *                 loaded, the list of columns will apply to all files.
+     *                 COLUMNS_TO_LOAD}: Specifies a comma-delimited list of
+     *                 columns from the source data to
+     *                 load.  If more than one file is being loaded, this list
+     *                 applies to all files.
      *                 Column numbers can be specified discretely or as a
-     *                 range, e.g., a value of '5,7,1..3' will create a table
-     *                 with the first column in the table being the fifth
-     *                 column in the file, followed by seventh column in the
-     *                 file, then the first column through the fourth column in
-     *                 the file.
+     *                 range.  For example, a value of '5,7,1..3' will
+     *                 insert values from the fifth column in the source data
+     *                 into the first column in the target table,
+     *                 from the seventh column in the source data into the
+     *                 second column in the target table, and from the
+     *                 first through third columns in the source data into the
+     *                 third through fifth columns in the target
+     *                 table.
+     *                 If the source data contains a header, column names
+     *                 matching the file header names may be provided
+     *                 instead of column numbers.  If the target table doesn't
+     *                 exist, the table will be created with the
+     *                 columns in this order.  If the target table does exist
+     *                 with columns in a different order than the
+     *                 source data, this list can be used to match the order of
+     *                 the target table.  For example, a value of
+     *                 'C, B, A' will create a three column table with column
+     *                 C, followed by column B, followed by column
+     *                 A; or will insert those fields in that order into a
+     *                 table created with columns in that order.  If
+     *                 the target table exists, the column names must match the
+     *                 source data field names for a name-mapping
+     *                 to be successful.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#COLUMNS_TO_SKIP
+     *                 COLUMNS_TO_SKIP}: Specifies a comma-delimited list of
+     *                 columns from the source data to
+     *                 skip.  Mutually exclusive to columns_to_load.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DATASOURCE_NAME
+     *                 DATASOURCE_NAME}: Name of an existing external data
+     *                 source from which data file(s) specified in {@code
+     *                 filepaths} will be loaded
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DEFAULT_COLUMN_FORMATS
      *                 DEFAULT_COLUMN_FORMATS}: Specifies the default format to
-     *                 be applied to source data loaded into columns with the
-     *                 corresponding column property.  This default
+     *                 be applied to source data loaded
+     *                 into columns with the corresponding column property.
+     *                 Currently supported column properties include
+     *                 date, time, & datetime.  This default
      *                 column-property-bound format can be overridden by
-     *                 specifying a column property & format for a given target
-     *                 column in {@code column_formats}. For each specified
-     *                 annotation, the format will apply to all columns with
-     *                 that annotation unless a custom {@code column_formats}
-     *                 for that annotation is specified. The parameter value
-     *                 must be formatted as a JSON string that is a map of
-     *                 column properties to their respective column formats,
-     *                 e.g., { "date" : "%Y.%m.%d", "time" : "%H:%M:%S" }.
-     *                 Column formats are specified as a string of control
-     *                 characters and plain text. The supported control
+     *                 specifying a
+     *                 column property & format for a given target column in
+     *                 {@code column_formats}. For
+     *                 each specified annotation, the format will apply to all
+     *                 columns with that annotation unless a custom
+     *                 {@code column_formats} for that annotation is specified.
+     *                 The parameter value must be formatted as a JSON string
+     *                 that is a map of column properties to their
+     *                 respective column formats, e.g., '{ "date" : "%Y.%m.%d",
+     *                 "time" : "%H:%M:%S" }'.  Column
+     *                 formats are specified as a string of control characters
+     *                 and plain text. The supported control
      *                 characters are 'Y', 'm', 'd', 'H', 'M', 'S', and 's',
-     *                 which follow the Linux 'strptime()' specification, as
-     *                 well as 's', which specifies seconds and fractional
-     *                 seconds (though the fractional component will be
-     *                 truncated past milliseconds). Formats for the 'date'
-     *                 annotation must include the 'Y', 'm', and 'd' control
-     *                 characters. Formats for the 'time' annotation must
-     *                 include the 'H', 'M', and either 'S' or 's' (but not
-     *                 both) control characters. Formats for the 'datetime'
-     *                 annotation meet both the 'date' and 'time' control
-     *                 character requirements. For example, '{"datetime" :
-     *                 "%m/%d/%Y %H:%M:%S" }' would be used to interpret text
+     *                 which follow the Linux 'strptime()'
+     *                 specification, as well as 's', which specifies seconds
+     *                 and fractional seconds (though the fractional
+     *                 component will be truncated past milliseconds).
+     *                 Formats for the 'date' annotation must include the 'Y',
+     *                 'm', and 'd' control characters. Formats for
+     *                 the 'time' annotation must include the 'H', 'M', and
+     *                 either 'S' or 's' (but not both) control
+     *                 characters. Formats for the 'datetime' annotation meet
+     *                 both the 'date' and 'time' control character
+     *                 requirements. For example, '{"datetime" : "%m/%d/%Y
+     *                 %H:%M:%S" }' would be used to interpret text
      *                 as "05/04/2000 12:12:11"
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DRY_RUN
-     *                 DRY_RUN}: If set to {@code true}, no data will be
-     *                 inserted but the file will be read with the applied
-     *                 {@code error_handling} mode and the number of valid
-     *                 records that would be normally inserted are returned.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
-     *                 FALSE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
-     *                 TRUE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
-     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ERROR_HANDLING
      *                 ERROR_HANDLING}: Specifies how errors should be handled
@@ -2171,77 +2829,154 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ABORT
      *                 ABORT}: Stops current insertion and aborts entire
-     *                 operation when an error is encountered.
+     *                 operation when an error is encountered.  Primary key
+     *                 collisions are considered abortable errors in this mode.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PERMISSIVE
      *                 PERMISSIVE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FILE_TYPE
-     *                 FILE_TYPE}: File type for the file(s).
+     *                 FILE_TYPE}: Specifies the type of the file(s) whose
+     *                 records will be inserted.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
      *                 DELIMITED_TEXT}: Indicates the file(s) are in delimited
-     *                 text format, e.g., CSV, TSV, PSV, etc.
+     *                 text format; e.g., CSV, TSV, PSV, etc.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
+     *                 PARQUET}: Indicates the file(s) are in Parquet format.
+     *                 Parquet files are not supported yet.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
      *                 DELIMITED_TEXT}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#INGESTION_MODE
+     *                 INGESTION_MODE}: Whether to do a full load, dry run, or
+     *                 perform a type inference on the source data.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FULL
+     *                 FULL}: Run a type inference on the source data (if
+     *                 needed) and ingest
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DRY_RUN
+     *                 DRY_RUN}: Does not load data, but walks through the
+     *                 source data and determines the number of valid records,
+     *                 taking into account the current mode of {@code
+     *                 error_handling}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TYPE_INFERENCE_ONLY
+     *                 TYPE_INFERENCE_ONLY}: Infer the type of the source data
+     *                 and return, without ingesting any data.  The inferred
+     *                 type is returned in the response.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FULL
+     *                 FULL}.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
-     *                 LOADING_MODE}: Specifies how to divide data loading
-     *                 among nodes.
+     *                 LOADING_MODE}: Scheme for distributing the extraction
+     *                 and loading of data from the source data file(s).
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#HEAD
      *                 HEAD}: The head node loads all data. All files must be
-     *                 available on the head node.
+     *                 available to the head node.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DISTRIBUTED_SHARED
-     *                 DISTRIBUTED_SHARED}: The worker nodes coordinate loading
-     *                 a set of files that are available to all of them. All
-     *                 files must be available on all nodes. This option is
-     *                 best when there is a shared file system.
+     *                 DISTRIBUTED_SHARED}: The head node coordinates loading
+     *                 data by worker
+     *                 processes across all nodes from shared files available
+     *                 to all workers.
+     *                 NOTE:
+     *                 Instead of existing on a shared source, the files can be
+     *                 duplicated on a source local to each host
+     *                 to improve performance, though the files must appear as
+     *                 the same data set from the perspective of
+     *                 all hosts performing the load.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DISTRIBUTED_LOCAL
-     *                 DISTRIBUTED_LOCAL}: Each worker node loads all files
-     *                 that are available to it. This option is best when each
-     *                 worker node has its own file system.
+     *                 DISTRIBUTED_LOCAL}: A single worker process on each node
+     *                 loads all files
+     *                 that are available to it. This option works best when
+     *                 each worker loads files from its own file
+     *                 system, to maximize performance. In order to avoid data
+     *                 duplication, either each worker performing
+     *                 the load needs to have visibility to a set of files
+     *                 unique to it (no file is visible to more than
+     *                 one node) or the target table needs to have a primary
+     *                 key (which will allow the worker to
+     *                 automatically deduplicate data).
+     *                 NOTE:
+     *                 If the target table doesn't exist, the table structure
+     *                 will be determined by the head node. If the
+     *                 head node has no files local to it, it will be unable to
+     *                 determine the structure and the request
+     *                 will fail.
+     *                 This mode should not be used in conjuction with a data
+     *                 source, as data sources are seen by all
+     *                 worker processes as shared resources with no 'local'
+     *                 component.
+     *                 If the head node is configured to have no worker
+     *                 processes, no data strictly accessible to the head
+     *                 node will be loaded.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#HEAD
      *                 HEAD}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PRIMARY_KEYS
+     *                 PRIMARY_KEYS}: Optional: comma separated list of column
+     *                 names, to set as primary keys, when not specified in the
+     *                 type.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHARD_KEYS
+     *                 SHARD_KEYS}: Optional: comma separated list of column
+     *                 names, to set as primary keys, when not specified in the
+     *                 type.  The default value is ''.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_COMMENT_STRING
-     *                 TEXT_COMMENT_STRING}: For {@code delimited_text} {@code
-     *                 file_type} only. All lines in the file(s) starting with
-     *                 the provided string are ignored. The comment string has
-     *                 no effect unless it appears at the beginning of a line.
-     *                 The default value is '#'.
+     *                 TEXT_COMMENT_STRING}: Specifies the character string
+     *                 that should be interpreted as a comment line
+     *                 prefix in the source data.  All lines in the data
+     *                 starting with the provided string are ignored.
+     *                 For {@code delimited_text} {@code file_type} only.  The
+     *                 default value is '#'.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_DELIMITER
-     *                 TEXT_DELIMITER}: For {@code delimited_text} {@code
-     *                 file_type} only. Specifies the delimiter for values and
-     *                 columns in the header row (if present). Must be a single
-     *                 character.  The default value is ','.
+     *                 TEXT_DELIMITER}: Specifies the character delimiting
+     *                 field values in the source data
+     *                 and field names in the header (if present).
+     *                 For {@code delimited_text} {@code file_type} only.  The
+     *                 default value is ','.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_ESCAPE_CHARACTER
-     *                 TEXT_ESCAPE_CHARACTER}: For {@code delimited_text}
-     *                 {@code file_type} only.  The character used in the
-     *                 file(s) to escape certain character sequences in text.
-     *                 For example, the escape character followed by a literal
-     *                 'n' escapes to a newline character within the field. Can
-     *                 be used within quoted string to escape a quote
-     *                 character. An empty value for this option does not
-     *                 specify an escape character.
+     *                 TEXT_ESCAPE_CHARACTER}: Specifies the character that is
+     *                 used to escape other characters in
+     *                 the source data.
+     *                 An 'a', 'b', 'f', 'n', 'r', 't', or 'v' preceded by an
+     *                 escape character will be interpreted as the
+     *                 ASCII bell, backspace, form feed, line feed, carriage
+     *                 return, horizontal tab, & vertical tab,
+     *                 respectively.  For example, the escape character
+     *                 followed by an 'n' will be interpreted as a newline
+     *                 within a field value.
+     *                 The escape character can also be used to escape the
+     *                 quoting character, and will be treated as an
+     *                 escape character whether it is within a quoted field
+     *                 value or not.
+     *                 For {@code delimited_text} {@code file_type} only.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_HAS_HEADER
-     *                 TEXT_HAS_HEADER}: For {@code delimited_text} {@code
-     *                 file_type} only. Indicates whether the delimited text
-     *                 files have a header row.
+     *                 TEXT_HAS_HEADER}: Indicates whether the source data
+     *                 contains a header row.
+     *                 For {@code delimited_text} {@code file_type} only.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -2256,27 +2991,37 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_HEADER_PROPERTY_DELIMITER
-     *                 TEXT_HEADER_PROPERTY_DELIMITER}: For {@code
-     *                 delimited_text} {@code file_type} only. Specifies the
-     *                 delimiter for column properties in the header row (if
-     *                 present). Cannot be set to same value as text_delimiter.
-     *                 The default value is '|'.
+     *                 TEXT_HEADER_PROPERTY_DELIMITER}: Specifies the delimiter
+     *                 for
+     *                 <a
+     *                 href="../../../../../concepts/types.html#column-properties"
+     *                 target="_top">column properties</a> in the header row
+     *                 (if
+     *                 present).  Cannot be set to same value as {@code
+     *                 text_delimiter}.
+     *                 For {@code delimited_text} {@code file_type} only.  The
+     *                 default value is '|'.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_NULL_STRING
-     *                 TEXT_NULL_STRING}: For {@code delimited_text} {@code
-     *                 file_type} only. The value in the file(s) to treat as a
-     *                 null value in the database.  The default value is ''.
+     *                 TEXT_NULL_STRING}: Specifies the character string that
+     *                 should be interpreted as a null
+     *                 value in the source data.
+     *                 For {@code delimited_text} {@code file_type} only.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_QUOTE_CHARACTER
-     *                 TEXT_QUOTE_CHARACTER}: For {@code delimited_text} {@code
-     *                 file_type} only. The quote character used in the
-     *                 file(s), typically encompassing a field value. The
-     *                 character must appear at beginning and end of field to
-     *                 take effect. Delimiters within quoted fields are not
-     *                 treated as delimiters. Within a quoted field, double
-     *                 quotes (") can be used to escape a single literal quote
-     *                 character. To not have a quote character, specify an
-     *                 empty string ("").  The default value is '"'.
+     *                 TEXT_QUOTE_CHARACTER}: Specifies the character that
+     *                 should be interpreted as a field value
+     *                 quoting character in the source data.  The character
+     *                 must appear at beginning and end of field value
+     *                 to take effect.  Delimiters within quoted fields are
+     *                 treated as literals and not delimiters.  Within
+     *                 a quoted field, two consecutive quote characters will be
+     *                 interpreted as a single literal quote
+     *                 character, effectively escaping it.  To not have a quote
+     *                 character, specify an empty string.
+     *                 For {@code delimited_text} {@code file_type} only.  The
+     *                 default value is '"'.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
@@ -2343,9 +3088,12 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
                 return this.filepaths;
 
             case 2:
-                return this.createTableOptions;
+                return this.modifyColumns;
 
             case 3:
+                return this.createTableOptions;
+
+            case 4:
                 return this.options;
 
             default:
@@ -2376,10 +3124,14 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
                 break;
 
             case 2:
-                this.createTableOptions = (Map<String, String>)value;
+                this.modifyColumns = (Map<String, Map<String, String>>)value;
                 break;
 
             case 3:
+                this.createTableOptions = (Map<String, String>)value;
+                break;
+
+            case 4:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -2402,6 +3154,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
         return ( this.tableName.equals( that.tableName )
                  && this.filepaths.equals( that.filepaths )
+                 && this.modifyColumns.equals( that.modifyColumns )
                  && this.createTableOptions.equals( that.createTableOptions )
                  && this.options.equals( that.options ) );
     }
@@ -2418,6 +3171,10 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         builder.append( gd.toString( "filepaths" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.filepaths ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "modifyColumns" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.modifyColumns ) );
         builder.append( ", " );
         builder.append( gd.toString( "createTableOptions" ) );
         builder.append( ": " );
@@ -2436,6 +3193,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.tableName.hashCode();
         hashCode = (31 * hashCode) + this.filepaths.hashCode();
+        hashCode = (31 * hashCode) + this.modifyColumns.hashCode();
         hashCode = (31 * hashCode) + this.createTableOptions.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;

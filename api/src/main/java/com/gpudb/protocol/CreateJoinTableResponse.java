@@ -39,6 +39,29 @@ public class CreateJoinTableResponse implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Additional information.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateJoinTableResponse.Info#QUALIFIED_JOIN_TABLE_NAME
+     * QUALIFIED_JOIN_TABLE_NAME}: The fully qualified name of the join table
+     * (i.e. including the schema)
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code info}.
+     */
+    public static final class Info {
+
+        /**
+         * The fully qualified name of the join table (i.e. including the
+         * schema)
+         */
+        public static final String QUALIFIED_JOIN_TABLE_NAME = "qualified_join_table_name";
+
+        private Info() {  }
+    }
+
     private String joinTableName;
     private long count;
     private Map<String, String> info;
@@ -97,6 +120,13 @@ public class CreateJoinTableResponse implements IndexedRecord {
     /**
      * 
      * @return Additional information.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateJoinTableResponse.Info#QUALIFIED_JOIN_TABLE_NAME
+     *         QUALIFIED_JOIN_TABLE_NAME}: The fully qualified name of the join
+     *         table (i.e. including the schema)
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getInfo() {
@@ -106,6 +136,13 @@ public class CreateJoinTableResponse implements IndexedRecord {
     /**
      * 
      * @param info  Additional information.
+     *              <ul>
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateJoinTableResponse.Info#QUALIFIED_JOIN_TABLE_NAME
+     *              QUALIFIED_JOIN_TABLE_NAME}: The fully qualified name of the
+     *              join table (i.e. including the schema)
+     *              </ul>
+     *              The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

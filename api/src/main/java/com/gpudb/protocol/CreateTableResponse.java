@@ -40,6 +40,29 @@ public class CreateTableResponse implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Additional information.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableResponse.Info#QUALIFIED_TABLE_NAME
+     * QUALIFIED_TABLE_NAME}: The fully qualified name of the new table (i.e.
+     * including the schema)
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code info}.
+     */
+    public static final class Info {
+
+        /**
+         * The fully qualified name of the new table (i.e. including the
+         * schema)
+         */
+        public static final String QUALIFIED_TABLE_NAME = "qualified_table_name";
+
+        private Info() {  }
+    }
+
     private String tableName;
     private String typeId;
     private boolean isCollection;
@@ -96,7 +119,8 @@ public class CreateTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates if the created entity is a collection.
+     * @return [DEPRECATED--this will always return false]  Indicates if the
+     *         created entity is a schema.
      * 
      */
     public boolean getIsCollection() {
@@ -105,7 +129,8 @@ public class CreateTableResponse implements IndexedRecord {
 
     /**
      * 
-     * @param isCollection  Indicates if the created entity is a collection.
+     * @param isCollection  [DEPRECATED--this will always return false]
+     *                      Indicates if the created entity is a schema.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -118,6 +143,13 @@ public class CreateTableResponse implements IndexedRecord {
     /**
      * 
      * @return Additional information.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableResponse.Info#QUALIFIED_TABLE_NAME
+     *         QUALIFIED_TABLE_NAME}: The fully qualified name of the new table
+     *         (i.e. including the schema)
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getInfo() {
@@ -127,6 +159,13 @@ public class CreateTableResponse implements IndexedRecord {
     /**
      * 
      * @param info  Additional information.
+     *              <ul>
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateTableResponse.Info#QUALIFIED_TABLE_NAME
+     *              QUALIFIED_TABLE_NAME}: The fully qualified name of the new
+     *              table (i.e. including the schema)
+     *              </ul>
+     *              The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -45,6 +45,10 @@ public class CreateProjectionResponse implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionResponse.Info#COUNT COUNT}: Number of
      * records in the final table
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionResponse.Info#QUALIFIED_PROJECTION_NAME
+     * QUALIFIED_PROJECTION_NAME}: The fully qualified name of the projection
+     * (i.e. including the schema).
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code info}.
@@ -55,6 +59,12 @@ public class CreateProjectionResponse implements IndexedRecord {
          * Number of records in the final table
          */
         public static final String COUNT = "count";
+
+        /**
+         * The fully qualified name of the projection (i.e. including the
+         * schema).
+         */
+        public static final String QUALIFIED_PROJECTION_NAME = "qualified_projection_name";
 
         private Info() {  }
     }
@@ -97,6 +107,10 @@ public class CreateProjectionResponse implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionResponse.Info#COUNT COUNT}:
      *         Number of records in the final table
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionResponse.Info#QUALIFIED_PROJECTION_NAME
+     *         QUALIFIED_PROJECTION_NAME}: The fully qualified name of the
+     *         projection (i.e. including the schema).
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -112,6 +126,10 @@ public class CreateProjectionResponse implements IndexedRecord {
      *                      <li> {@link
      *              com.gpudb.protocol.CreateProjectionResponse.Info#COUNT
      *              COUNT}: Number of records in the final table
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateProjectionResponse.Info#QUALIFIED_PROJECTION_NAME
+     *              QUALIFIED_PROJECTION_NAME}: The fully qualified name of the
+     *              projection (i.e. including the schema).
      *              </ul>
      *              The default value is an empty {@link Map}.
      * 

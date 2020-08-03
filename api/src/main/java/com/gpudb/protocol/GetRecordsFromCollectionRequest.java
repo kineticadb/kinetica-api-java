@@ -17,15 +17,17 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}.
  * <p>
- * Retrieves records from a collection. The operation can optionally return the
- * record IDs which can be used in certain queries such as {@link
- * com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}.
+ * Retrieves records from a collection. The operation can optionally
+ * return the record IDs which can be used in certain queries such as
+ * {@link com.gpudb.GPUdb#deleteRecords(DeleteRecordsRequest)}.
  * <p>
  * This operation supports paging through the data via the {@code offset} and
  * {@code limit} parameters.
  * <p>
  * Note that when using the Java API, it is not possible to retrieve records
- * from join tables using this operation.
+ * from
+ * join views using this operation.
+ * (DEPRECATED)
  */
 public class GetRecordsFromCollectionRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -53,7 +55,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
 
     /**
-     * Specifies the encoding for returned records; either 'binary' or 'json'.
+     * Specifies the encoding for returned records; either {@code binary} or
+     * {@code json}.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -79,8 +82,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#RETURN_RECORD_IDS
-     * RETURN_RECORD_IDS}: If 'true' then return the internal record ID along
-     * with each returned record. Default is 'false'.
+     * RETURN_RECORD_IDS}: If {@code true} then return the internal record ID
+     * along with each returned record.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -97,8 +100,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * If 'true' then return the internal record ID along with each
-         * returned record. Default is 'false'.
+         * If {@code true} then return the internal record ID along with each
+         * returned record.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -141,8 +144,11 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of the collection or table from which records are
-     *                   to be retrieved. Must be an existing collection or
-     *                   table.
+     *                   to be retrieved, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing collection or table.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
      *                the results).  The default value is 0.The minimum allowed
@@ -161,9 +167,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#RETURN_RECORD_IDS
-     *                 RETURN_RECORD_IDS}: If 'true' then return the internal
-     *                 record ID along with each returned record. Default is
-     *                 'false'.
+     *                 RETURN_RECORD_IDS}: If {@code true} then return the
+     *                 internal record ID along with each returned record.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -193,8 +198,11 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of the collection or table from which records are
-     *                   to be retrieved. Must be an existing collection or
-     *                   table.
+     *                   to be retrieved, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing collection or table.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
      *                the results).  The default value is 0.The minimum allowed
@@ -210,7 +218,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *               to request subsequent pages of results.  The default value
      *               is -9999.
      * @param encoding  Specifies the encoding for returned records; either
-     *                  'binary' or 'json'.
+     *                  {@code binary} or {@code json}.
      *                  Supported values:
      *                  <ul>
      *                          <li> {@link
@@ -227,9 +235,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#RETURN_RECORD_IDS
-     *                 RETURN_RECORD_IDS}: If 'true' then return the internal
-     *                 record ID along with each returned record. Default is
-     *                 'false'.
+     *                 RETURN_RECORD_IDS}: If {@code true} then return the
+     *                 internal record ID along with each returned record.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -257,7 +264,10 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the collection or table from which records are to be
-     *         retrieved. Must be an existing collection or table.
+     *         retrieved, in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be an existing
+     *         collection or table.
      * 
      */
     public String getTableName() {
@@ -267,8 +277,11 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the collection or table from which records are
-     *                   to be retrieved. Must be an existing collection or
-     *                   table.
+     *                   to be retrieved, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing collection or table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -344,8 +357,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Specifies the encoding for returned records; either 'binary' or
-     *         'json'.
+     * @return Specifies the encoding for returned records; either {@code
+     *         binary} or {@code json}.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -367,7 +380,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
     /**
      * 
      * @param encoding  Specifies the encoding for returned records; either
-     *                  'binary' or 'json'.
+     *                  {@code binary} or {@code json}.
      *                  Supported values:
      *                  <ul>
      *                          <li> {@link
@@ -395,8 +408,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#RETURN_RECORD_IDS
-     *         RETURN_RECORD_IDS}: If 'true' then return the internal record ID
-     *         along with each returned record. Default is 'false'.
+     *         RETURN_RECORD_IDS}: If {@code true} then return the internal
+     *         record ID along with each returned record.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -423,9 +436,8 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.GetRecordsFromCollectionRequest.Options#RETURN_RECORD_IDS
-     *                 RETURN_RECORD_IDS}: If 'true' then return the internal
-     *                 record ID along with each returned record. Default is
-     *                 'false'.
+     *                 RETURN_RECORD_IDS}: If {@code true} then return the
+     *                 internal record ID along with each returned record.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

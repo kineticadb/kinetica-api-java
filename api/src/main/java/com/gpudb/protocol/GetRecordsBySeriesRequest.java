@@ -17,18 +17,20 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#getRecordsBySeriesRaw(GetRecordsBySeriesRequest)}.
  * <p>
- * Retrieves the complete series/track records from the given {@code
- * worldTableName} based on the partial track information contained in the
- * {@code tableName}.
+ * Retrieves the complete series/track records from the given
+ * {@code worldTableName} based on the partial track information contained in
+ * the {@code tableName}.
  * <p>
  * This operation supports paging through the data via the {@code offset} and
  * {@code limit} parameters.
  * <p>
  * In contrast to {@link com.gpudb.GPUdb#getRecordsRaw(GetRecordsRequest)} this
- * returns records grouped by series/track. So if {@code offset} is 0 and
- * {@code limit} is 5 this operation would return the first 5 series/tracks in
- * {@code tableName}. Each series/track will be returned sorted by their
- * TIMESTAMP column.
+ * returns records grouped by
+ * series/track. So if {@code offset} is 0 and {@code limit} is 5 this
+ * operation
+ * would return the first 5 series/tracks in {@code tableName}. Each
+ * series/track
+ * will be returned sorted by their TIMESTAMP column.
  */
 public class GetRecordsBySeriesRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -57,7 +59,8 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
 
     /**
-     * Specifies the encoding for returned records; either 'binary' or 'json'.
+     * Specifies the encoding for returned records; either {@code binary} or
+     * {@code json}.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -98,11 +101,18 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      * Constructs a GetRecordsBySeriesRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Name of the collection/table/view for which
-     *                   series/tracks will be fetched.
+     * @param tableName  Name of the table or view for which series/tracks will
+     *                   be fetched, in [schema_name.]table_name format, using
+     *                   standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * @param worldTableName  Name of the table containing the complete
      *                        series/track information to be returned for the
-     *                        tracks present in the {@code tableName}.
+     *                        tracks present in the {@code tableName}, in
+     *                        [schema_name.]table_name format, using standard
+     *                        <a
+     *                        href="../../../../../concepts/tables.html#table-name-resolution"
+     *                        target="_top">name resolution rules</a>.
      *                        Typically this is used when retrieving
      *                        series/tracks from a view (which contains partial
      *                        series/tracks) but the user wants to retrieve the
@@ -132,11 +142,18 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      * Constructs a GetRecordsBySeriesRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Name of the collection/table/view for which
-     *                   series/tracks will be fetched.
+     * @param tableName  Name of the table or view for which series/tracks will
+     *                   be fetched, in [schema_name.]table_name format, using
+     *                   standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * @param worldTableName  Name of the table containing the complete
      *                        series/track information to be returned for the
-     *                        tracks present in the {@code tableName}.
+     *                        tracks present in the {@code tableName}, in
+     *                        [schema_name.]table_name format, using standard
+     *                        <a
+     *                        href="../../../../../concepts/tables.html#table-name-resolution"
+     *                        target="_top">name resolution rules</a>.
      *                        Typically this is used when retrieving
      *                        series/tracks from a view (which contains partial
      *                        series/tracks) but the user wants to retrieve the
@@ -150,7 +167,7 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      *               indicate that the max number of results should be
      *               returned.  The default value is 250.
      * @param encoding  Specifies the encoding for returned records; either
-     *                  'binary' or 'json'.
+     *                  {@code binary} or {@code json}.
      *                  Supported values:
      *                  <ul>
      *                          <li> {@link
@@ -178,8 +195,10 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the collection/table/view for which series/tracks will
-     *         be fetched.
+     * @return Name of the table or view for which series/tracks will be
+     *         fetched, in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.
      * 
      */
     public String getTableName() {
@@ -188,8 +207,11 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the collection/table/view for which
-     *                   series/tracks will be fetched.
+     * @param tableName  Name of the table or view for which series/tracks will
+     *                   be fetched, in [schema_name.]table_name format, using
+     *                   standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -203,10 +225,13 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      * 
      * @return Name of the table containing the complete series/track
      *         information to be returned for the tracks present in the {@code
-     *         tableName}. Typically this is used when retrieving series/tracks
-     *         from a view (which contains partial series/tracks) but the user
-     *         wants to retrieve the entire original series/tracks. Can be
-     *         blank.
+     *         tableName}, in [schema_name.]table_name format, using standard
+     *         <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Typically this is used
+     *         when retrieving series/tracks from a view (which contains
+     *         partial series/tracks) but the user wants to retrieve the entire
+     *         original series/tracks. Can be blank.
      * 
      */
     public String getWorldTableName() {
@@ -217,7 +242,11 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      * 
      * @param worldTableName  Name of the table containing the complete
      *                        series/track information to be returned for the
-     *                        tracks present in the {@code tableName}.
+     *                        tracks present in the {@code tableName}, in
+     *                        [schema_name.]table_name format, using standard
+     *                        <a
+     *                        href="../../../../../concepts/tables.html#table-name-resolution"
+     *                        target="_top">name resolution rules</a>.
      *                        Typically this is used when retrieving
      *                        series/tracks from a view (which contains partial
      *                        series/tracks) but the user wants to retrieve the
@@ -287,8 +316,8 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Specifies the encoding for returned records; either 'binary' or
-     *         'json'.
+     * @return Specifies the encoding for returned records; either {@code
+     *         binary} or {@code json}.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -309,7 +338,7 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
     /**
      * 
      * @param encoding  Specifies the encoding for returned records; either
-     *                  'binary' or 'json'.
+     *                  {@code binary} or {@code json}.
      *                  Supported values:
      *                  <ul>
      *                          <li> {@link

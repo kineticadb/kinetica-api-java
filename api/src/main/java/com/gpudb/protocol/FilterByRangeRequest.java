@@ -17,13 +17,16 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#filterByRange(FilterByRangeRequest)}.
  * <p>
- * Calculates which objects from a table have a column that is within the given
- * bounds. An object from the table identified by {@code tableName} is added to
- * the view {@code viewName} if its column is within [{@code lowerBound},
- * {@code upperBound}] (inclusive). The operation is synchronous. The response
- * provides a count of the number of objects which passed the bound filter.
- * Although this functionality can also be accomplished with the standard
- * filter function, it is more efficient.
+ * Calculates which objects from a table have a column that is within
+ * the given bounds. An object from the table identified by {@code tableName}
+ * is
+ * added to the view {@code viewName} if its column is within
+ * [{@code lowerBound}, {@code upperBound}] (inclusive). The operation is
+ * synchronous. The response provides a count of the number of objects which
+ * passed
+ * the bound filter.  Although this functionality can also be accomplished with
+ * the
+ * standard filter function, it is more efficient.
  * <p>
  * For track objects, the count reflects how many points fall within the given
  * bounds (which may not include all the track points of any given track).
@@ -59,10 +62,11 @@ public class FilterByRangeRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.FilterByRangeRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the newly
-     * created view. If the collection provided is non-existent, the collection
-     * will be automatically created. If empty, then the newly created view
-     * will be top-level.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
+     * the view as part of {@code viewName} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of a schema for the newly created view. If the
+     * schema is non-existent, it will be automatically created.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -70,10 +74,12 @@ public class FilterByRangeRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the newly created view. If
-         * the collection provided is non-existent, the collection will be
-         * automatically created. If empty, then the newly created view will be
-         * top-level.
+         * [DEPRECATED--please specify the containing schema for the view as
+         * part of {@code viewName} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of a schema for the newly created
+         * view. If the schema is non-existent, it will be automatically
+         * created.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -102,13 +108,20 @@ public class FilterByRangeRequest implements IndexedRecord {
      * Constructs a FilterByRangeRequest object with the specified parameters.
      * 
      * @param tableName  Name of the table on which the filter by range
-     *                   operation will be performed.  Must be an existing
-     *                   table.
+     *                   operation will be performed, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table.
      * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Has the same naming
-     *                  restrictions as <a
-     *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.  The default value is ''.
+     *                  containing the results, in [schema_name.]view_name
+     *                  format, using standard <a
+     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  target="_top">name resolution rules</a> and meeting <a
+     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  target="_top">table naming criteria</a>.  Must not be
+     *                  an already existing table or view.  The default value
+     *                  is ''.
      * @param columnName  Name of a column on which the operation would be
      *                    applied.
      * @param lowerBound  Value of the lower bound (inclusive).
@@ -117,11 +130,13 @@ public class FilterByRangeRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByRangeRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 view will be top-level.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the view as part of {@code
+     *                 viewName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the newly created view. If the schema is non-existent,
+     *                 it will be automatically created.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -138,7 +153,10 @@ public class FilterByRangeRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table on which the filter by range operation will be
-     *         performed.  Must be an existing table.
+     *         performed, in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be an existing
+     *         table.
      * 
      */
     public String getTableName() {
@@ -148,8 +166,11 @@ public class FilterByRangeRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table on which the filter by range
-     *                   operation will be performed.  Must be an existing
-     *                   table.
+     *                   operation will be performed, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -162,9 +183,13 @@ public class FilterByRangeRequest implements IndexedRecord {
     /**
      * 
      * @return If provided, then this will be the name of the view containing
-     *         the results. Has the same naming restrictions as <a
-     *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.  The default value is ''.
+     *         the results, in [schema_name.]view_name format, using standard
+     *         <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  Must not be an already
+     *         existing table or view.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -174,10 +199,14 @@ public class FilterByRangeRequest implements IndexedRecord {
     /**
      * 
      * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Has the same naming
-     *                  restrictions as <a
-     *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.  The default value is ''.
+     *                  containing the results, in [schema_name.]view_name
+     *                  format, using standard <a
+     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  target="_top">name resolution rules</a> and meeting <a
+     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  target="_top">table naming criteria</a>.  Must not be
+     *                  an already existing table or view.  The default value
+     *                  is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -257,10 +286,12 @@ public class FilterByRangeRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.FilterByRangeRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         newly created view. If the collection provided is non-existent,
-     *         the collection will be automatically created. If empty, then the
-     *         newly created view will be top-level.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema for the view as part of {@code viewName} and use {@link
+     *         com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+     *         schema if non-existent]  Name of a schema for the newly created
+     *         view. If the schema is non-existent, it will be automatically
+     *         created.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -275,11 +306,13 @@ public class FilterByRangeRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByRangeRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 view will be top-level.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the view as part of {@code
+     *                 viewName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the newly created view. If the schema is non-existent,
+     *                 it will be automatically created.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

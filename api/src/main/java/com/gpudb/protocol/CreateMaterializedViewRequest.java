@@ -17,16 +17,18 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createMaterializedView(CreateMaterializedViewRequest)}.
  * <p>
- * Initiates the process of creating a materialized view, reserving the view's
- * name to prevent other views or tables from being created with that name.
+ * Initiates the process of creating a materialized view, reserving the
+ * view's name to prevent other views or tables from being created with that
+ * name.
  * <p>
- * For materialized view details and examples, see <a
- * href="../../../../../concepts/materialized_views.html"
+ * For materialized view details and examples, see
+ * <a href="../../../../../concepts/materialized_views.html"
  * target="_top">Materialized Views</a>.
  * <p>
  * The response contains {@code viewId}, which is used to tag each subsequent
  * operation (projection, union, aggregation, filter, or join) that will
- * compose the view.
+ * compose
+ * the view.
  */
 public class CreateMaterializedViewRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -55,10 +57,12 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.CreateMaterializedViewRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the newly
-     * created view. If the collection provided is non-existent, the collection
-     * will be automatically created. If empty, then the newly created table
-     * will be a top-level table.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
+     * the materialized view as part of {@code tableName} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of a schema which is to contain the newly created
+     * view. If the schema provided is non-existent, it will be automatically
+     * created.
      *         <li> {@link
      * com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL TTL}: Sets
      * the <a href="../../../../../concepts/ttl.html" target="_top">TTL</a> of
@@ -122,10 +126,12 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the newly created view. If
-         * the collection provided is non-existent, the collection will be
-         * automatically created. If empty, then the newly created table will
-         * be a top-level table.
+         * [DEPRECATED--please specify the containing schema for the
+         * materialized view as part of {@code tableName} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of a schema which is to contain the
+         * newly created view. If the schema provided is non-existent, it will
+         * be automatically created.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -247,16 +253,24 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of the table to be created that is the top-level
-     *                   table of the materialized view.
+     *                   table of the materialized view, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a> and meeting <a
+     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   target="_top">table naming criteria</a>.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 table will be a top-level table.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the materialized view as part of
+     *                 {@code tableName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema
+     *                 which is to contain the newly created view. If the
+     *                 schema provided is non-existent, it will be
+     *                 automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL
      *                 TTL}: Sets the <a
@@ -337,7 +351,12 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table to be created that is the top-level table of
-     *         the materialized view.
+     *         the materialized view, in [schema_name.]table_name format, using
+     *         standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.
      * 
      */
     public String getTableName() {
@@ -347,7 +366,12 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table to be created that is the top-level
-     *                   table of the materialized view.
+     *                   table of the materialized view, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a> and meeting <a
+     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   target="_top">table naming criteria</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -363,10 +387,13 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         newly created view. If the collection provided is non-existent,
-     *         the collection will be automatically created. If empty, then the
-     *         newly created table will be a top-level table.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema for the materialized view as part of {@code tableName}
+     *         and use {@link
+     *         com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+     *         schema if non-existent]  Name of a schema which is to contain
+     *         the newly created view. If the schema provided is non-existent,
+     *         it will be automatically created.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL
      *         TTL}: Sets the <a href="../../../../../concepts/ttl.html"
@@ -444,11 +471,14 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 table will be a top-level table.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the materialized view as part of
+     *                 {@code tableName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema
+     *                 which is to contain the newly created view. If the
+     *                 schema provided is non-existent, it will be
+     *                 automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL
      *                 TTL}: Sets the <a

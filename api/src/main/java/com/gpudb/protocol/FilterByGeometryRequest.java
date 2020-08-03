@@ -17,9 +17,8 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#filterByGeometry(FilterByGeometryRequest)}.
  * <p>
- * Applies a geometry filter against a geospatial geometry column in a given
- * table, collection or view. The filtering geometry is provided by {@code
- * inputWkt}.
+ * Applies a geometry filter against a geospatial geometry column in a
+ * given table or view. The filtering geometry is provided by {@code inputWkt}.
  */
 public class FilterByGeometryRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -131,10 +130,11 @@ public class FilterByGeometryRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.FilterByGeometryRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the newly
-     * created view. If the collection provided is non-existent, the collection
-     * will be automatically created. If empty, then the newly created view
-     * will be top-level.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
+     * the view as part of {@code viewName} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of a schema for the newly created view. If the
+     * schema provided is non-existent, it will be automatically created.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -142,10 +142,12 @@ public class FilterByGeometryRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the newly created view. If
-         * the collection provided is non-existent, the collection will be
-         * automatically created. If empty, then the newly created view will be
-         * top-level.
+         * [DEPRECATED--please specify the containing schema for the view as
+         * part of {@code viewName} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of a schema for the newly created
+         * view. If the schema provided is non-existent, it will be
+         * automatically created.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -177,13 +179,21 @@ public class FilterByGeometryRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of the table on which the filter by geometry will
-     *                   be performed.  Must be an existing table, collection
-     *                   or view containing a geospatial geometry column.
+     *                   be performed, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table or view containing a geospatial
+     *                   geometry column.
      * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Has the same naming
-     *                  restrictions as <a
-     *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.  The default value is ''.
+     *                  containing the results, in [schema_name.]view_name
+     *                  format, using standard <a
+     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  target="_top">name resolution rules</a> and meeting <a
+     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  target="_top">table naming criteria</a>.  Must not be
+     *                  an already existing table or view.  The default value
+     *                  is ''.
      * @param columnName  Name of the column to be used in the filter. Must be
      *                    a geospatial geometry column.
      * @param inputWkt  A geometry in WKT format that will be used to filter
@@ -227,11 +237,13 @@ public class FilterByGeometryRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByGeometryRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 view will be top-level.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the view as part of {@code
+     *                 viewName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the newly created view. If the schema provided is
+     *                 non-existent, it will be automatically created.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -248,8 +260,10 @@ public class FilterByGeometryRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table on which the filter by geometry will be
-     *         performed.  Must be an existing table, collection or view
-     *         containing a geospatial geometry column.
+     *         performed, in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be an existing
+     *         table or view containing a geospatial geometry column.
      * 
      */
     public String getTableName() {
@@ -259,8 +273,12 @@ public class FilterByGeometryRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table on which the filter by geometry will
-     *                   be performed.  Must be an existing table, collection
-     *                   or view containing a geospatial geometry column.
+     *                   be performed, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table or view containing a geospatial
+     *                   geometry column.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -273,9 +291,13 @@ public class FilterByGeometryRequest implements IndexedRecord {
     /**
      * 
      * @return If provided, then this will be the name of the view containing
-     *         the results. Has the same naming restrictions as <a
-     *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.  The default value is ''.
+     *         the results, in [schema_name.]view_name format, using standard
+     *         <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  Must not be an already
+     *         existing table or view.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -285,10 +307,14 @@ public class FilterByGeometryRequest implements IndexedRecord {
     /**
      * 
      * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Has the same naming
-     *                  restrictions as <a
-     *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.  The default value is ''.
+     *                  containing the results, in [schema_name.]view_name
+     *                  format, using standard <a
+     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  target="_top">name resolution rules</a> and meeting <a
+     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  target="_top">table naming criteria</a>.  Must not be
+     *                  an already existing table or view.  The default value
+     *                  is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -434,10 +460,12 @@ public class FilterByGeometryRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.FilterByGeometryRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         newly created view. If the collection provided is non-existent,
-     *         the collection will be automatically created. If empty, then the
-     *         newly created view will be top-level.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema for the view as part of {@code viewName} and use {@link
+     *         com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+     *         schema if non-existent]  Name of a schema for the newly created
+     *         view. If the schema provided is non-existent, it will be
+     *         automatically created.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -452,11 +480,13 @@ public class FilterByGeometryRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByGeometryRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 view will be top-level.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the view as part of {@code
+     *                 viewName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the newly created view. If the schema provided is
+     *                 non-existent, it will be automatically created.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

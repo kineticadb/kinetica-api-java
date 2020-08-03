@@ -61,15 +61,16 @@ public class ShowTableResponse implements IndexedRecord {
      * com.gpudb.protocol.ShowTableResponse.TableDescriptions#COLLECTION
      * COLLECTION}
      *         <li> {@link
-     * com.gpudb.protocol.ShowTableResponse.TableDescriptions#VIEW VIEW}
-     *         <li> {@link
-     * com.gpudb.protocol.ShowTableResponse.TableDescriptions#REPLICATED
-     * REPLICATED}
-     *         <li> {@link
      * com.gpudb.protocol.ShowTableResponse.TableDescriptions#JOIN JOIN}
      *         <li> {@link
-     * com.gpudb.protocol.ShowTableResponse.TableDescriptions#RESULT_TABLE
-     * RESULT_TABLE}
+     * com.gpudb.protocol.ShowTableResponse.TableDescriptions#LOGICAL_EXTERNAL_TABLE
+     * LOGICAL_EXTERNAL_TABLE}
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTableResponse.TableDescriptions#LOGICAL_VIEW
+     * LOGICAL_VIEW}
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTableResponse.TableDescriptions#MATERIALIZED_EXTERNAL_TABLE
+     * MATERIALIZED_EXTERNAL_TABLE}
      *         <li> {@link
      * com.gpudb.protocol.ShowTableResponse.TableDescriptions#MATERIALIZED_VIEW
      * MATERIALIZED_VIEW}
@@ -79,18 +80,32 @@ public class ShowTableResponse implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.ShowTableResponse.TableDescriptions#MATERIALIZED_VIEW_UNDER_CONSTRUCTION
      * MATERIALIZED_VIEW_UNDER_CONSTRUCTION}
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTableResponse.TableDescriptions#REPLICATED
+     * REPLICATED}
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTableResponse.TableDescriptions#RESULT_TABLE
+     * RESULT_TABLE}
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTableResponse.TableDescriptions#SCHEMA SCHEMA}
+     *         <li> {@link
+     * com.gpudb.protocol.ShowTableResponse.TableDescriptions#VIEW VIEW}
      * </ul>
      * A set of string constants for the parameter {@code tableDescriptions}.
      */
     public static final class TableDescriptions {
         public static final String COLLECTION = "COLLECTION";
-        public static final String VIEW = "VIEW";
-        public static final String REPLICATED = "REPLICATED";
         public static final String JOIN = "JOIN";
-        public static final String RESULT_TABLE = "RESULT_TABLE";
+        public static final String LOGICAL_EXTERNAL_TABLE = "LOGICAL_EXTERNAL_TABLE";
+        public static final String LOGICAL_VIEW = "LOGICAL_VIEW";
+        public static final String MATERIALIZED_EXTERNAL_TABLE = "MATERIALIZED_EXTERNAL_TABLE";
         public static final String MATERIALIZED_VIEW = "MATERIALIZED_VIEW";
         public static final String MATERIALIZED_VIEW_MEMBER = "MATERIALIZED_VIEW_MEMBER";
         public static final String MATERIALIZED_VIEW_UNDER_CONSTRUCTION = "MATERIALIZED_VIEW_UNDER_CONSTRUCTION";
+        public static final String REPLICATED = "REPLICATED";
+        public static final String RESULT_TABLE = "RESULT_TABLE";
+        public static final String SCHEMA = "SCHEMA";
+        public static final String VIEW = "VIEW";
 
         private TableDescriptions() {  }
     }
@@ -133,9 +148,8 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String REQUEST_AVRO_JSON = "request_avro_json";
 
         /**
-         * Indicates whether the respective table is <a
-         * href="../../../../../concepts/protection.html"
-         * target="_top">protected</a> or not.
+         * No longer used.  Indicated whether the respective table was
+         * protected or not.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -155,15 +169,21 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String RECORD_BYTES = "record_bytes";
 
         /**
-         * The names of the collections this table is part of. Only set if
-         * table is part of a collection
+         * [DEPRECATED--use schema_name instead]  This will now contain the
+         * name of the schema for the table.  There can only be one schema for
+         * a table.
          */
         public static final String COLLECTION_NAMES = "collection_names";
 
         /**
+         * The name of the schema for the table.  There can only be one schema
+         * for a table.
+         */
+        public static final String SCHEMA_NAME = "schema_name";
+
+        /**
          * The value of the <a href="../../../../../concepts/ttl.html"
-         * target="_top">time-to-live</a> setting.  Not present for
-         * collections.
+         * target="_top">time-to-live</a> setting.  Not present for schemas.
          */
         public static final String TABLE_TTL = "table_ttl";
 
@@ -171,7 +191,7 @@ public class ShowTableResponse implements IndexedRecord {
          * The remaining <a href="../../../../../concepts/ttl.html"
          * target="_top">time-to-live</a>, in minutes, before the respective
          * table expires (-1 if it will never expire).  Not present for
-         * collections.
+         * schemas.
          */
         public static final String REMAINING_TABLE_TTL = "remaining_table_ttl";
 
@@ -180,14 +200,14 @@ public class ShowTableResponse implements IndexedRecord {
          * href="../../../../../concepts/tables.html#foreign-key"
          * target="_top">foreign keys</a>, of the format 'source_column
          * references target_table(primary_key_column)'. Not present for
-         * collections.  The default value is ''.
+         * schemas.  The default value is ''.
          */
         public static final String FOREIGN_KEYS = "foreign_keys";
 
         /**
-         * Foreign shard key description of the format: 'fk_foreign_key
-         * references pk_column_name from pk_table_name(pk_primary_key)'. Not
-         * present for collections.  The default value is ''.
+         * Foreign shard key description of the format: <fk_foreign_key>
+         * references <pk_column_name> from <pk_table_name>(<pk_primary_key>).
+         * Not present for schemas.  The default value is ''.
          */
         public static final String FOREIGN_SHARD_KEY = "foreign_shard_key";
 
@@ -269,7 +289,7 @@ public class ShowTableResponse implements IndexedRecord {
         /**
          * Semicolon-separated list of columns that have <a
          * href="../../../../../concepts/indexes.html#column-index"
-         * target="_top">indexes</a>. Not present for collections.  The default
+         * target="_top">indexes</a>. Not present for schemas.  The default
          * value is ''.
          */
         public static final String ATTRIBUTE_INDEXES = "attribute_indexes";
@@ -279,8 +299,8 @@ public class ShowTableResponse implements IndexedRecord {
          * href="../../../../../concepts/compression.html"
          * target="_top">compressed</a> columns with the corresponding
          * compression type for each; e.g.:
-         * {first_name,snappy};{last_name,lz4hc}. Not present for collections.
-         * The default value is ''.
+         * {first_name,snappy};{last_name,lz4hc}. Not present for schemas.  The
+         * default value is ''.
          */
         public static final String COMPRESSED_COLUMNS = "compressed_columns";
 
@@ -446,13 +466,12 @@ public class ShowTableResponse implements IndexedRecord {
      * 
      * @return If {@code tableName} is a table or view, then the single element
      *         of the array is {@code tableName}. If {@code tableName} is a
-     *         collection and {@code show_children} is set to {@code true},
-     *         then this array is populated with the names of all tables and
-     *         views contained by the given collection; if {@code
-     *         show_children} is {@code false} then this array will only
-     *         include the collection name itself. If {@code tableName} is an
-     *         empty string, then the array contains the names of all
-     *         collections and top-level tables.
+     *         schema and {@code show_children} is set to {@code true}, then
+     *         this array is populated with the names of all tables and views
+     *         in the given schema; if {@code show_children} is {@code false}
+     *         then this array will only include the schema name itself. If
+     *         {@code tableName} is an empty string, then the array contains
+     *         the names of all tables in the user's default schema.
      * 
      */
     public List<String> getTableNames() {
@@ -463,15 +482,14 @@ public class ShowTableResponse implements IndexedRecord {
      * 
      * @param tableNames  If {@code tableName} is a table or view, then the
      *                    single element of the array is {@code tableName}. If
-     *                    {@code tableName} is a collection and {@code
+     *                    {@code tableName} is a schema and {@code
      *                    show_children} is set to {@code true}, then this
      *                    array is populated with the names of all tables and
-     *                    views contained by the given collection; if {@code
-     *                    show_children} is {@code false} then this array will
-     *                    only include the collection name itself. If {@code
-     *                    tableName} is an empty string, then the array
-     *                    contains the names of all collections and top-level
-     *                    tables.
+     *                    views in the given schema; if {@code show_children}
+     *                    is {@code false} then this array will only include
+     *                    the schema name itself. If {@code tableName} is an
+     *                    empty string, then the array contains the names of
+     *                    all tables in the user's default schema.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -491,17 +509,17 @@ public class ShowTableResponse implements IndexedRecord {
      *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#COLLECTION
      *         COLLECTION}
      *                 <li> {@link
-     *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#VIEW
-     *         VIEW}
-     *                 <li> {@link
-     *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#REPLICATED
-     *         REPLICATED}
-     *                 <li> {@link
      *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#JOIN
      *         JOIN}
      *                 <li> {@link
-     *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#RESULT_TABLE
-     *         RESULT_TABLE}
+     *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#LOGICAL_EXTERNAL_TABLE
+     *         LOGICAL_EXTERNAL_TABLE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#LOGICAL_VIEW
+     *         LOGICAL_VIEW}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#MATERIALIZED_EXTERNAL_TABLE
+     *         MATERIALIZED_EXTERNAL_TABLE}
      *                 <li> {@link
      *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#MATERIALIZED_VIEW
      *         MATERIALIZED_VIEW}
@@ -511,6 +529,18 @@ public class ShowTableResponse implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#MATERIALIZED_VIEW_UNDER_CONSTRUCTION
      *         MATERIALIZED_VIEW_UNDER_CONSTRUCTION}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#REPLICATED
+     *         REPLICATED}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#RESULT_TABLE
+     *         RESULT_TABLE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#SCHEMA
+     *         SCHEMA}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowTableResponse.TableDescriptions#VIEW
+     *         VIEW}
      *         </ul>
      * 
      */
@@ -528,17 +558,17 @@ public class ShowTableResponse implements IndexedRecord {
      *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#COLLECTION
      *                           COLLECTION}
      *                                   <li> {@link
-     *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#VIEW
-     *                           VIEW}
-     *                                   <li> {@link
-     *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#REPLICATED
-     *                           REPLICATED}
-     *                                   <li> {@link
      *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#JOIN
      *                           JOIN}
      *                                   <li> {@link
-     *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#RESULT_TABLE
-     *                           RESULT_TABLE}
+     *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#LOGICAL_EXTERNAL_TABLE
+     *                           LOGICAL_EXTERNAL_TABLE}
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#LOGICAL_VIEW
+     *                           LOGICAL_VIEW}
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#MATERIALIZED_EXTERNAL_TABLE
+     *                           MATERIALIZED_EXTERNAL_TABLE}
      *                                   <li> {@link
      *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#MATERIALIZED_VIEW
      *                           MATERIALIZED_VIEW}
@@ -548,6 +578,18 @@ public class ShowTableResponse implements IndexedRecord {
      *                                   <li> {@link
      *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#MATERIALIZED_VIEW_UNDER_CONSTRUCTION
      *                           MATERIALIZED_VIEW_UNDER_CONSTRUCTION}
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#REPLICATED
+     *                           REPLICATED}
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#RESULT_TABLE
+     *                           RESULT_TABLE}
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#SCHEMA
+     *                           SCHEMA}
+     *                                   <li> {@link
+     *                           com.gpudb.protocol.ShowTableResponse.TableDescriptions#VIEW
+     *                           VIEW}
      *                           </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

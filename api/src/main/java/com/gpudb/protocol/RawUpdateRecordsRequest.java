@@ -20,32 +20,37 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#updateRecordsRaw(RawUpdateRecordsRequest)}.
  * <p>
- * Runs multiple predicate-based updates in a single call.  With the list of
- * given expressions, any matching record's column values will be updated as
- * provided in {@code newValuesMaps}.  There is also an optional 'upsert'
+ * Runs multiple predicate-based updates in a single call.  With the
+ * list of given expressions, any matching record's column values will be
+ * updated
+ * as provided in {@code newValuesMaps}.  There is also an optional 'upsert'
  * capability where if a particular predicate doesn't match any existing
- * record, then a new record can be inserted.
+ * record,
+ * then a new record can be inserted.
  * <p>
  * Note that this operation can only be run on an original table and not on a
- * collection or a result view.
+ * result view.
  * <p>
- * This operation can update primary key values.  By default only 'pure primary
- * key' predicates are allowed when updating primary key values. If the primary
- * key for a table is the column 'attr1', then the operation will only accept
- * predicates of the form: "attr1 == 'foo'" if the attr1 column is being
+ * This operation can update primary key values.  By default only
+ * 'pure primary key' predicates are allowed when updating primary key values.
+ * If
+ * the primary key for a table is the column 'attr1', then the operation will
+ * only
+ * accept predicates of the form: "attr1 == 'foo'" if the attr1 column is being
  * updated.  For a composite primary key (e.g. columns 'attr1' and 'attr2')
- * then this operation will only accept predicates of the form: "(attr1 ==
- * 'foo') and (attr2 == 'bar')".  Meaning, all primary key columns must appear
- * in an equality predicate in the expressions.  Furthermore each 'pure primary
- * key' predicate must be unique within a given request.  These restrictions
- * can be removed by utilizing some available options through {@code
- * options}.Note that this operation can only be run on an original table and
- * not on a collection or a result view.
+ * then
+ * this operation will only accept predicates of the form:
+ * "(attr1 == 'foo') and (attr2 == 'bar')".  Meaning, all primary key columns
+ * must appear in an equality predicate in the expressions.  Furthermore each
+ * 'pure primary key' predicate must be unique within a given request.  These
+ * restrictions can be removed by utilizing some available options through
+ * {@code options}.
  * <p>
- * The {@code update_on_existing_pk} option specifies the record collision
- * policy for tables with a <a
+ * The {@code update_on_existing_pk} option specifies the record
+ * collision policy for tables with a <a
  * href="../../../../../concepts/tables.html#primary-keys"
- * target="_top">primary key</a>, and is ignored on tables with no primary key.
+ * target="_top">primary key</a>, and
+ * is ignored on tables with no primary key.
  */
 public class RawUpdateRecordsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -343,8 +348,11 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      * Constructs a RawUpdateRecordsRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Table to be updated. Must be a currently existing
-     *                   table and not a collection or view.
+     * @param tableName  Name of table to be updated, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be a
+     *                   currently existing table and not a view.
      * @param expressions  A list of the actual predicates, one for each
      *                     update; format should follow the guidelines {@link
      *                     com.gpudb.GPUdb#filter(FilterRequest) here}.
@@ -503,8 +511,11 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      * Constructs a RawUpdateRecordsRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Table to be updated. Must be a currently existing
-     *                   table and not a collection or view.
+     * @param tableName  Name of table to be updated, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be a
+     *                   currently existing table and not a view.
      * @param expressions  A list of the actual predicates, one for each
      *                     update; format should follow the guidelines {@link
      *                     com.gpudb.GPUdb#filter(FilterRequest) here}.
@@ -680,8 +691,11 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Table to be updated. Must be a currently existing table and not
-     *         a collection or view.
+     * @return Name of table to be updated, in [schema_name.]table_name format,
+     *         using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be a currently
+     *         existing table and not a view.
      * 
      */
     public String getTableName() {
@@ -690,8 +704,11 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Table to be updated. Must be a currently existing
-     *                   table and not a collection or view.
+     * @param tableName  Name of table to be updated, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be a
+     *                   currently existing table and not a view.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

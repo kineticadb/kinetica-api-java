@@ -146,8 +146,10 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      * Constructs a CreateTableMonitorRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Name of the table to monitor. Must not refer to a
-     *                   collection.
+     * @param tableName  Name of the table to monitor, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -185,7 +187,10 @@ public class CreateTableMonitorRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to monitor. Must not refer to a collection.
+     * @return Name of the table to monitor, in [schema_name.]table_name
+     *         format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.
      * 
      */
     public String getTableName() {
@@ -194,8 +199,10 @@ public class CreateTableMonitorRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to monitor. Must not refer to a
-     *                   collection.
+     * @param tableName  Name of the table to monitor, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

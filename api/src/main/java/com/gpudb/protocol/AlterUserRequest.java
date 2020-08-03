@@ -54,6 +54,10 @@ public class AlterUserRequest implements IndexedRecord {
      * SET_RESOURCE_GROUP}: Sets the resource group for an internal user. The
      * resource group must exist, otherwise, an empty string assigns the user
      * to the default resource group.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterUserRequest.Action#SET_DEFAULT_SCHEMA
+     * SET_DEFAULT_SCHEMA}: Set the default_schema for an internal user. An
+     * empty string means the user will have no default schema.
      * </ul>
      * A set of string constants for the parameter {@code action}.
      */
@@ -70,6 +74,12 @@ public class AlterUserRequest implements IndexedRecord {
          * default resource group.
          */
         public static final String SET_RESOURCE_GROUP = "set_resource_group";
+
+        /**
+         * Set the default_schema for an internal user. An empty string means
+         * the user will have no default schema.
+         */
+        public static final String SET_DEFAULT_SCHEMA = "set_default_schema";
 
         private Action() {  }
     }
@@ -107,6 +117,11 @@ public class AlterUserRequest implements IndexedRecord {
      *                internal user. The resource group must exist, otherwise,
      *                an empty string assigns the user to the default resource
      *                group.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterUserRequest.Action#SET_DEFAULT_SCHEMA
+     *                SET_DEFAULT_SCHEMA}: Set the default_schema for an
+     *                internal user. An empty string means the user will have
+     *                no default schema.
      *                </ul>
      * @param value  The value of the modification, depending on {@code
      *               action}.
@@ -156,6 +171,11 @@ public class AlterUserRequest implements IndexedRecord {
      *         SET_RESOURCE_GROUP}: Sets the resource group for an internal
      *         user. The resource group must exist, otherwise, an empty string
      *         assigns the user to the default resource group.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterUserRequest.Action#SET_DEFAULT_SCHEMA
+     *         SET_DEFAULT_SCHEMA}: Set the default_schema for an internal
+     *         user. An empty string means the user will have no default
+     *         schema.
      *         </ul>
      * 
      */
@@ -178,6 +198,11 @@ public class AlterUserRequest implements IndexedRecord {
      *                internal user. The resource group must exist, otherwise,
      *                an empty string assigns the user to the default resource
      *                group.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterUserRequest.Action#SET_DEFAULT_SCHEMA
+     *                SET_DEFAULT_SCHEMA}: Set the default_schema for an
+     *                internal user. An empty string means the user will have
+     *                no default schema.
      *                </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

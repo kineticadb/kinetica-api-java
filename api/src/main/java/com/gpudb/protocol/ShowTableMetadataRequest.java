@@ -58,8 +58,11 @@ public class ShowTableMetadataRequest implements IndexedRecord {
      * Constructs a ShowTableMetadataRequest object with the specified
      * parameters.
      * 
-     * @param tableNames  Tables whose metadata will be fetched. All provided
-     *                    tables must exist, or an error is returned.
+     * @param tableNames  Names of tables whose metadata will be fetched, in
+     *                    [schema_name.]table_name format, using standard <a
+     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    target="_top">name resolution rules</a>.  All
+     *                    provided tables must exist, or an error is returned.
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
      * 
@@ -71,8 +74,11 @@ public class ShowTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Tables whose metadata will be fetched. All provided tables must
-     *         exist, or an error is returned.
+     * @return Names of tables whose metadata will be fetched, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  All provided tables
+     *         must exist, or an error is returned.
      * 
      */
     public List<String> getTableNames() {
@@ -81,8 +87,11 @@ public class ShowTableMetadataRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  Tables whose metadata will be fetched. All provided
-     *                    tables must exist, or an error is returned.
+     * @param tableNames  Names of tables whose metadata will be fetched, in
+     *                    [schema_name.]table_name format, using standard <a
+     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    target="_top">name resolution rules</a>.  All
+     *                    provided tables must exist, or an error is returned.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

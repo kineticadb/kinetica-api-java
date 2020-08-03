@@ -21,21 +21,25 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * Rotate the column values into rows values.
  * <p>
- * For unpivot details and examples, see <a
- * href="../../../../../concepts/unpivot.html" target="_top">Unpivot</a>.  For
- * limitations, see <a href="../../../../../concepts/unpivot.html#limitations"
+ * For unpivot details and examples, see
+ * <a href="../../../../../concepts/unpivot.html" target="_top">Unpivot</a>.
+ * For limitations, see
+ * <a href="../../../../../concepts/unpivot.html#limitations"
  * target="_top">Unpivot Limitations</a>.
  * <p>
  * Unpivot is used to normalize tables that are built for cross tabular
- * reporting purposes. The unpivot operator rotates the column values for all
- * the pivoted columns. A variable column, value column and all columns from
- * the source table except the unpivot columns are projected into the result
- * table. The variable column and value columns in the result table indicate
- * the pivoted column name and values respectively.
+ * reporting
+ * purposes. The unpivot operator rotates the column values for all the pivoted
+ * columns. A variable column, value column and all columns from the source
+ * table
+ * except the unpivot columns are projected into the result table. The variable
+ * column and value columns in the result table indicate the pivoted column
+ * name
+ * and values respectively.
  * <p>
- * The response is returned as a dynamic schema. For details see: <a
- * href="../../../../../api/index.html#dynamic-schemas" target="_top">dynamic
- * schemas documentation</a>.
+ * The response is returned as a dynamic schema. For details see:
+ * <a href="../../../../../api/index.html#dynamic-schemas"
+ * target="_top">dynamic schemas documentation</a>.
  */
 public class AggregateUnpivotRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -100,16 +104,21 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the table
-     * specified in {@code result_table}. If the collection provided is
-     * non-existent, the collection will be automatically created. If empty,
-     * then the table will be a top-level table.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema as
+     * part of {@code result_table} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of a schema which is to contain the table
+     * specified in {@code result_table}. If the schema is non-existent, it
+     * will be automatically created.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE
-     * RESULT_TABLE}: The name of the table used to store the results. Has the
-     * same naming restrictions as <a
-     * href="../../../../../concepts/tables.html" target="_top">tables</a>. If
-     * present, no results are returned in the response.
+     * RESULT_TABLE}: The name of a table used to store the results, in
+     * [schema_name.]table_name format, using standard <a
+     * href="../../../../../concepts/tables.html#table-name-resolution"
+     * target="_top">name resolution rules</a> and meeting <a
+     * href="../../../../../concepts/tables.html#table-naming-criteria"
+     * target="_top">table naming criteria</a>. If present, no results are
+     * returned in the response.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_PERSIST
      * RESULT_TABLE_PERSIST}: If {@code true}, then the result table specified
@@ -197,18 +206,23 @@ public class AggregateUnpivotRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the table specified in
-         * {@code result_table}. If the collection provided is non-existent,
-         * the collection will be automatically created. If empty, then the
-         * table will be a top-level table.
+         * [DEPRECATED--please specify the containing schema as part of {@code
+         * result_table} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of a schema which is to contain the
+         * table specified in {@code result_table}. If the schema is
+         * non-existent, it will be automatically created.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * The name of the table used to store the results. Has the same naming
-         * restrictions as <a href="../../../../../concepts/tables.html"
-         * target="_top">tables</a>. If present, no results are returned in the
-         * response.
+         * The name of a table used to store the results, in
+         * [schema_name.]table_name format, using standard <a
+         * href="../../../../../concepts/tables.html#table-name-resolution"
+         * target="_top">name resolution rules</a> and meeting <a
+         * href="../../../../../concepts/tables.html#table-naming-criteria"
+         * target="_top">table naming criteria</a>. If present, no results are
+         * returned in the response.
          */
         public static final String RESULT_TABLE = "result_table";
 
@@ -344,7 +358,10 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table/view.
+     *                   performed. Must be an existing table/view, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * @param columnNames  List of column names or expressions. A wildcard '*'
      *                     can be used to include all the non-pivoted columns
      *                     from the source table.
@@ -359,18 +376,24 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table}. If
-     *                 the collection provided is non-existent, the collection
-     *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema as part of {@code result_table} and
+     *                 use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema
+     *                 which is to contain the table specified in {@code
+     *                 result_table}. If the schema is non-existent, it will be
+     *                 automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE
-     *                 RESULT_TABLE}: The name of the table used to store the
-     *                 results. Has the same naming restrictions as <a
-     *                 href="../../../../../concepts/tables.html"
-     *                 target="_top">tables</a>. If present, no results are
-     *                 returned in the response.
+     *                 RESULT_TABLE}: The name of a table used to store the
+     *                 results, in [schema_name.]table_name format, using
+     *                 standard <a
+     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>. If present, no
+     *                 results are returned in the response.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
@@ -490,7 +513,10 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table/view.
+     *                   performed. Must be an existing table/view, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * @param columnNames  List of column names or expressions. A wildcard '*'
      *                     can be used to include all the non-pivoted columns
      *                     from the source table.
@@ -520,18 +546,24 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table}. If
-     *                 the collection provided is non-existent, the collection
-     *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema as part of {@code result_table} and
+     *                 use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema
+     *                 which is to contain the table specified in {@code
+     *                 result_table}. If the schema is non-existent, it will be
+     *                 automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE
-     *                 RESULT_TABLE}: The name of the table used to store the
-     *                 results. Has the same naming restrictions as <a
-     *                 href="../../../../../concepts/tables.html"
-     *                 target="_top">tables</a>. If present, no results are
-     *                 returned in the response.
+     *                 RESULT_TABLE}: The name of a table used to store the
+     *                 results, in [schema_name.]table_name format, using
+     *                 standard <a
+     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>. If present, no
+     *                 results are returned in the response.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result
@@ -649,7 +681,10 @@ public class AggregateUnpivotRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table on which the operation will be performed. Must
-     *         be an existing table/view.
+     *         be an existing table/view, in [schema_name.]table_name format,
+     *         using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.
      * 
      */
     public String getTableName() {
@@ -659,7 +694,10 @@ public class AggregateUnpivotRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table on which the operation will be
-     *                   performed. Must be an existing table/view.
+     *                   performed. Must be an existing table/view, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -817,17 +855,21 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         table specified in {@code result_table}. If the collection
-     *         provided is non-existent, the collection will be automatically
-     *         created. If empty, then the table will be a top-level table.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema as part of {@code result_table} and use {@link
+     *         com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+     *         schema if non-existent]  Name of a schema which is to contain
+     *         the table specified in {@code result_table}. If the schema is
+     *         non-existent, it will be automatically created.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE
-     *         RESULT_TABLE}: The name of the table used to store the results.
-     *         Has the same naming restrictions as <a
-     *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>. If present, no results are returned in
-     *         the response.
+     *         RESULT_TABLE}: The name of a table used to store the results, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>. If present, no results
+     *         are returned in the response.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_PERSIST
      *         RESULT_TABLE_PERSIST}: If {@code true}, then the result table
@@ -927,18 +969,24 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table}. If
-     *                 the collection provided is non-existent, the collection
-     *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema as part of {@code result_table} and
+     *                 use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema
+     *                 which is to contain the table specified in {@code
+     *                 result_table}. If the schema is non-existent, it will be
+     *                 automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE
-     *                 RESULT_TABLE}: The name of the table used to store the
-     *                 results. Has the same naming restrictions as <a
-     *                 href="../../../../../concepts/tables.html"
-     *                 target="_top">tables</a>. If present, no results are
-     *                 returned in the response.
+     *                 RESULT_TABLE}: The name of a table used to store the
+     *                 results, in [schema_name.]table_name format, using
+     *                 standard <a
+     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>. If present, no
+     *                 results are returned in the response.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE_PERSIST
      *                 RESULT_TABLE_PERSIST}: If {@code true}, then the result

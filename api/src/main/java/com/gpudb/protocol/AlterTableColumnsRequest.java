@@ -78,19 +78,19 @@ public class AlterTableColumnsRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Table on which the operation will be performed. Must
-     *                   be an existing table or view.
-     * @param columnAlterations  list of alter table add/delete/change column
-     *                           requests - all for the same table.
-     *                                           each request is a map that
-     *                           includes 'column_name', 'action' and the
-     *                           options specific for the action,
-     *                                           note that the same options as
-     *                           in alter table requests but in the same map as
-     *                           the column name and the action. For example:
-     *                           [{'column_name':'col_1','action':'change_column','rename_column':'col_2'},
-     *                           {'column_name':'col_1','action':'add_column',
-     *                           'type':'int','default_value':'1'}
-     *                                           ]
+     *                   be an existing table or view, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
+     * @param columnAlterations  List of alter table add/delete/change column
+     *                           requests - all for the same table. Each
+     *                           request is a map that includes 'column_name',
+     *                           'action' and the options specific for the
+     *                           action. Note that the same options as in alter
+     *                           table requests but in the same map as the
+     *                           column name and the action. For example:
+     *                           [{'column_name':'col_1','action':'change_column','rename_column':'col_2'},{'column_name':'col_1','action':'add_column',
+     *                           'type':'int','default_value':'1'}]
      * @param options  Optional parameters.
      * 
      */
@@ -103,7 +103,10 @@ public class AlterTableColumnsRequest implements IndexedRecord {
     /**
      * 
      * @return Table on which the operation will be performed. Must be an
-     *         existing table or view.
+     *         existing table or view, in [schema_name.]table_name format,
+     *         using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.
      * 
      */
     public String getTableName() {
@@ -113,7 +116,10 @@ public class AlterTableColumnsRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Table on which the operation will be performed. Must
-     *                   be an existing table or view.
+     *                   be an existing table or view, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -125,17 +131,13 @@ public class AlterTableColumnsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return list of alter table add/delete/change column requests - all for
-     *         the same table.
-     *                         each request is a map that includes
-     *         'column_name', 'action' and the options specific for the action,
-     *                         note that the same options as in alter table
-     *         requests but in the same map as the column name and the action.
-     *         For example:
-     *         [{'column_name':'col_1','action':'change_column','rename_column':'col_2'},
-     *                         {'column_name':'col_1','action':'add_column',
-     *         'type':'int','default_value':'1'}
-     *                         ]
+     * @return List of alter table add/delete/change column requests - all for
+     *         the same table. Each request is a map that includes
+     *         'column_name', 'action' and the options specific for the action.
+     *         Note that the same options as in alter table requests but in the
+     *         same map as the column name and the action. For example:
+     *         [{'column_name':'col_1','action':'change_column','rename_column':'col_2'},{'column_name':'col_1','action':'add_column',
+     *         'type':'int','default_value':'1'}]
      * 
      */
     public List<Map<String, String>> getColumnAlterations() {
@@ -144,18 +146,15 @@ public class AlterTableColumnsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param columnAlterations  list of alter table add/delete/change column
-     *                           requests - all for the same table.
-     *                                           each request is a map that
-     *                           includes 'column_name', 'action' and the
-     *                           options specific for the action,
-     *                                           note that the same options as
-     *                           in alter table requests but in the same map as
-     *                           the column name and the action. For example:
-     *                           [{'column_name':'col_1','action':'change_column','rename_column':'col_2'},
-     *                           {'column_name':'col_1','action':'add_column',
-     *                           'type':'int','default_value':'1'}
-     *                                           ]
+     * @param columnAlterations  List of alter table add/delete/change column
+     *                           requests - all for the same table. Each
+     *                           request is a map that includes 'column_name',
+     *                           'action' and the options specific for the
+     *                           action. Note that the same options as in alter
+     *                           table requests but in the same map as the
+     *                           column name and the action. For example:
+     *                           [{'column_name':'col_1','action':'change_column','rename_column':'col_2'},{'column_name':'col_1','action':'add_column',
+     *                           'type':'int','default_value':'1'}]
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

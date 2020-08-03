@@ -17,11 +17,14 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#filterByBox(FilterByBoxRequest)}.
  * <p>
- * Calculates how many objects within the given table lie in a rectangular box.
- * The operation is synchronous, meaning that a response will not be returned
- * until all the objects are fully available. The response payload provides the
- * count of the resulting set. A new resultant set which satisfies the input
- * NAI restriction specification is also created when a {@code viewName} is
+ * Calculates how many objects within the given table lie in a
+ * rectangular box. The operation is synchronous, meaning that a response will
+ * not
+ * be returned until all the objects are fully available. The response payload
+ * provides the count of the resulting set. A new resultant set which satisfies
+ * the
+ * input NAI restriction specification is also created when a {@code viewName}
+ * is
  * passed in as part of the input payload.
  */
 public class FilterByBoxRequest implements IndexedRecord {
@@ -58,10 +61,11 @@ public class FilterByBoxRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.FilterByBoxRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the newly
-     * created view. If the collection provided is non-existent, the collection
-     * will be automatically created. If empty, then the newly created view
-     * will be top-level.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
+     * the view as part of {@code viewName} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of a schema for the newly created view. If the
+     * schema is non-existent, it will be automatically created.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -69,10 +73,12 @@ public class FilterByBoxRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the newly created view. If
-         * the collection provided is non-existent, the collection will be
-         * automatically created. If empty, then the newly created view will be
-         * top-level.
+         * [DEPRECATED--please specify the containing schema for the view as
+         * part of {@code viewName} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of a schema for the newly created
+         * view. If the schema is non-existent, it will be automatically
+         * created.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -105,12 +111,20 @@ public class FilterByBoxRequest implements IndexedRecord {
      * Constructs a FilterByBoxRequest object with the specified parameters.
      * 
      * @param tableName  Name of the table on which the bounding box operation
-     *                   will be performed. Must be an existing table.
-     * @param viewName  Optional name of the result view that will be created
-     *                  containing the results of the query. Has the same
-     *                  naming restrictions as <a
-     *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.  The default value is ''.
+     *                   will be performed, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table.
+     * @param viewName  If provided, then this will be the name of the view
+     *                  containing the results, in [schema_name.]view_name
+     *                  format, using standard <a
+     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  target="_top">name resolution rules</a> and meeting <a
+     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  target="_top">table naming criteria</a>.  Must not be
+     *                  an already existing table or view.  The default value
+     *                  is ''.
      * @param xColumnName  Name of the column on which to perform the bounding
      *                     box query. Must be a valid numeric column.
      * @param minX  Lower bound for the column chosen by {@code xColumnName}.
@@ -127,11 +141,13 @@ public class FilterByBoxRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByBoxRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 view will be top-level.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the view as part of {@code
+     *                 viewName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the newly created view. If the schema is non-existent,
+     *                 it will be automatically created.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -151,7 +167,10 @@ public class FilterByBoxRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table on which the bounding box operation will be
-     *         performed. Must be an existing table.
+     *         performed, in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be an existing
+     *         table.
      * 
      */
     public String getTableName() {
@@ -161,7 +180,11 @@ public class FilterByBoxRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table on which the bounding box operation
-     *                   will be performed. Must be an existing table.
+     *                   will be performed, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -173,10 +196,14 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional name of the result view that will be created containing
-     *         the results of the query. Has the same naming restrictions as <a
-     *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.  The default value is ''.
+     * @return If provided, then this will be the name of the view containing
+     *         the results, in [schema_name.]view_name format, using standard
+     *         <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  Must not be an already
+     *         existing table or view.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -185,11 +212,15 @@ public class FilterByBoxRequest implements IndexedRecord {
 
     /**
      * 
-     * @param viewName  Optional name of the result view that will be created
-     *                  containing the results of the query. Has the same
-     *                  naming restrictions as <a
-     *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.  The default value is ''.
+     * @param viewName  If provided, then this will be the name of the view
+     *                  containing the results, in [schema_name.]view_name
+     *                  format, using standard <a
+     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  target="_top">name resolution rules</a> and meeting <a
+     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  target="_top">table naming criteria</a>.  Must not be
+     *                  an already existing table or view.  The default value
+     *                  is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -343,10 +374,12 @@ public class FilterByBoxRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.FilterByBoxRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         newly created view. If the collection provided is non-existent,
-     *         the collection will be automatically created. If empty, then the
-     *         newly created view will be top-level.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema for the view as part of {@code viewName} and use {@link
+     *         com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+     *         schema if non-existent]  Name of a schema for the newly created
+     *         view. If the schema is non-existent, it will be automatically
+     *         created.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -361,11 +394,13 @@ public class FilterByBoxRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByBoxRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 view will be top-level.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the view as part of {@code
+     *                 viewName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the newly created view. If the schema is non-existent,
+     *                 it will be automatically created.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

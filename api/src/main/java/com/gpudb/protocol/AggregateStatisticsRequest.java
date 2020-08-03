@@ -17,44 +17,63 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#aggregateStatistics(AggregateStatisticsRequest)}.
  * <p>
- * Calculates the requested statistics of the given column(s) in a given table.
+ * Calculates the requested statistics of the given column(s) in a
+ * given table.
  * <p>
- * The available statistics are {@code count} (number of total objects), {@code
- * mean}, {@code stdv} (standard deviation), {@code variance}, {@code skew},
- * {@code kurtosis}, {@code sum}, {@code min}, {@code max}, {@code
- * weighted_average}, {@code cardinality} (unique count), {@code
- * estimated_cardinality}, {@code percentile} and {@code percentile_rank}.
+ * The available statistics are:
+ *   {@code count} (number of total objects),
+ *   {@code mean},
+ *   {@code stdv} (standard deviation),
+ *   {@code variance},
+ *   {@code skew},
+ *   {@code kurtosis},
+ *   {@code sum},
+ *   {@code min},
+ *   {@code max},
+ *   {@code weighted_average},
+ *   {@code cardinality} (unique count),
+ *   {@code estimated_cardinality},
+ *   {@code percentile}, and
+ *   {@code percentile_rank}.
  * <p>
  * Estimated cardinality is calculated by using the hyperloglog approximation
  * technique.
  * <p>
  * Percentiles and percentile ranks are approximate and are calculated using
- * the t-digest algorithm. They must include the desired {@code
- * percentile}/{@code percentile_rank}. To compute multiple percentiles each
- * value must be specified separately (i.e.
+ * the
+ * t-digest algorithm. They must include the desired
+ * {@code percentile}/{@code percentile_rank}.
+ * To compute multiple percentiles each value must be specified separately
+ * (i.e.
  * 'percentile(75.0),percentile(99.0),percentile_rank(1234.56),percentile_rank(-5)').
  * <p>
- * A second, comma-separated value can be added to the {@code percentile}
- * statistic to calculate percentile resolution, e.g., a 50th percentile with
- * 200 resolution would be 'percentile(50,200)'.
+ * A second, comma-separated value can be added to the
+ * {@code percentile} statistic to calculate percentile
+ * resolution, e.g., a 50th percentile with 200 resolution would be
+ * 'percentile(50,200)'.
  * <p>
- * The weighted average statistic requires a {@code weight_column_name} to be
- * specified in {@code options}. The weighted average is then defined as the
- * sum of the products of {@code columnName} times the {@code
- * weight_column_name} values divided by the sum of the {@code
- * weight_column_name} values.
+ * The weighted average statistic requires a weight column to be specified in
+ * {@code weight_column_name}.  The weighted average is then
+ * defined as the sum of the products of {@code columnName} times the
+ * {@code weight_column_name} values divided by the sum of the
+ * {@code weight_column_name} values.
  * <p>
- * Additional columns can be used in the calculation of statistics via the
- * {@code additional_column_names} option.  Values in these columns will be
- * included in the overall aggregate calculation--individual aggregates will
- * not be calculated per additional column.  For instance, requesting the
- * {@code count} & {@code mean} of {@code columnName} x and {@code
- * additional_column_names} y & z, where x holds the numbers 1-10, y holds
- * 11-20, and z holds 21-30, would return the total number of x, y, & z values
- * (30), and the single average value across all x, y, & z values (15.5).
+ * Additional columns can be used in the calculation of statistics via
+ * {@code additional_column_names}.  Values in these columns will
+ * be included in the overall aggregate calculation--individual aggregates will
+ * not
+ * be calculated per additional column.  For instance, requesting the
+ * {@code count} & {@code mean} of
+ * {@code columnName} x and {@code additional_column_names}
+ * y & z, where x holds the numbers 1-10, y holds 11-20, and z holds 21-30,
+ * would
+ * return the total number of x, y, & z values (30), and the single average
+ * value
+ * across all x, y, & z values (15.5).
  * <p>
  * The response includes a list of key/value pairs of each statistic requested
- * and its corresponding value.
+ * and
+ * its corresponding value.
  */
 public class AggregateStatisticsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -278,7 +297,10 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of the table on which the statistics operation
-     *                   will be performed.
+     *                   will be performed, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * @param columnName  Name of the primary column for which the statistics
      *                    are to be calculated.
      * @param stats  Comma separated list of the statistics to calculate, e.g.
@@ -369,7 +391,9 @@ public class AggregateStatisticsRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table on which the statistics operation will be
-     *         performed.
+     *         performed, in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.
      * 
      */
     public String getTableName() {
@@ -379,7 +403,10 @@ public class AggregateStatisticsRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table on which the statistics operation
-     *                   will be performed.
+     *                   will be performed, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

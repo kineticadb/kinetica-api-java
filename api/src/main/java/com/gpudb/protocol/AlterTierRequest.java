@@ -16,15 +16,17 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#alterTier(AlterTierRequest)}.
  * <p>
- * Alters properties of an exisiting <a
- * href="../../../../../rm/concepts.html#storage-tiers" target="_top">tier</a>
- * to facilitate <a href="../../../../../rm/concepts.html"
- * target="_top">resource management</a>.
+ * Alters properties of an exisiting
+ * <a href="../../../../../rm/concepts.html#storage-tiers"
+ * target="_top">tier</a> to facilitate
+ * <a href="../../../../../rm/concepts.html" target="_top">resource
+ * management</a>.
  * <p>
- * To disable <a
- * href="../../../../../rm/concepts.html#watermark-based-eviction"
- * target="_top">watermark-based eviction</a>, set both {@code high_watermark}
- * and {@code low_watermark} to 100.
+ * To disable
+ * <a href="../../../../../rm/concepts.html#watermark-based-eviction"
+ * target="_top">watermark-based eviction</a>,
+ * set both {@code high_watermark} and
+ * {@code low_watermark} to 100.
  */
 public class AlterTierRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

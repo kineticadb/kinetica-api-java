@@ -17,10 +17,11 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#clearTable(ClearTableRequest)}.
  * <p>
- * Clears (drops) one or all tables in the database cluster. The operation is
- * synchronous meaning that the table will be cleared before the function
- * returns. The response payload returns the status of the operation along with
- * the name of the table that was cleared.
+ * Clears (drops) one or all tables in the database cluster. The
+ * operation is synchronous meaning that the table will be cleared before the
+ * function returns. The response payload returns the status of the operation
+ * along
+ * with the name of the table that was cleared.
  */
 public class ClearTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -108,11 +109,14 @@ public class ClearTableRequest implements IndexedRecord {
     /**
      * Constructs a ClearTableRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to be cleared. Must be an existing
-     *                   table. Empty string clears all available tables,
-     *                   though this behavior is be prevented by default via
-     *                   gpudb.conf parameter 'disable_clear_all'.  The default
-     *                   value is ''.
+     * @param tableName  Name of the table to be cleared, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>. Must be an
+     *                   existing table. Empty string clears all available
+     *                   tables, though this behavior is be prevented by
+     *                   default via gpudb.conf parameter 'disable_clear_all'.
+     *                   The default value is ''.
      * @param authorization  No longer used. User can pass an empty string.
      *                       The default value is ''.
      * @param options  Optional parameters.
@@ -147,9 +151,12 @@ public class ClearTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to be cleared. Must be an existing table.
-     *         Empty string clears all available tables, though this behavior
-     *         is be prevented by default via gpudb.conf parameter
+     * @return Name of the table to be cleared, in [schema_name.]table_name
+     *         format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>. Must be an existing
+     *         table. Empty string clears all available tables, though this
+     *         behavior is be prevented by default via gpudb.conf parameter
      *         'disable_clear_all'.  The default value is ''.
      * 
      */
@@ -159,11 +166,14 @@ public class ClearTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to be cleared. Must be an existing
-     *                   table. Empty string clears all available tables,
-     *                   though this behavior is be prevented by default via
-     *                   gpudb.conf parameter 'disable_clear_all'.  The default
-     *                   value is ''.
+     * @param tableName  Name of the table to be cleared, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>. Must be an
+     *                   existing table. Empty string clears all available
+     *                   tables, though this behavior is be prevented by
+     *                   default via gpudb.conf parameter 'disable_clear_all'.
+     *                   The default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

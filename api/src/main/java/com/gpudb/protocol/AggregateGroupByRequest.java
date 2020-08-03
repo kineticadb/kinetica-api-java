@@ -149,10 +149,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the table
-     * specified in {@code result_table}. If the collection provided is
-     * non-existent, the collection will be automatically created. If empty,
-     * then the table will be a top-level table.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema as
+     * part of {@code result_table} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of a schema which is to contain the table
+     * specified in {@code result_table}. If the schema provided is
+     * non-existent, it will be automatically created.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
      * EXPRESSION}: Filter expression to apply to the table prior to computing
@@ -198,14 +200,16 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE VALUE}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
-     * RESULT_TABLE}: The name of the table used to store the results. Has the
-     * same naming restrictions as <a
-     * href="../../../../../concepts/tables.html" target="_top">tables</a>.
-     * Column names (group-by and aggregate fields) need to be given aliases
-     * e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If present, no
-     * results are returned in the response.  This option is not available if
-     * one of the grouping attributes is an unrestricted string (i.e.; not
-     * charN) type.
+     * RESULT_TABLE}: The name of a table used to store the results, in
+     * [schema_name.]table_name format, using standard <a
+     * href="../../../../../concepts/tables.html#table-name-resolution"
+     * target="_top">name resolution rules</a> and meeting <a
+     * href="../../../../../concepts/tables.html#table-naming-criteria"
+     * target="_top">table naming criteria</a>.  Column names (group-by and
+     * aggregate fields) need to be given aliases e.g. ["FChar256 as fchar256",
+     * "sum(FDouble) as sfd"].  If present, no results are returned in the
+     * response.  This option is not available if one of the grouping
+     * attributes is an unrestricted string (i.e.; not charN) type.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
      * RESULT_TABLE_PERSIST}: If {@code true}, then the result table specified
@@ -313,10 +317,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the table specified in
-         * {@code result_table}. If the collection provided is non-existent,
-         * the collection will be automatically created. If empty, then the
-         * table will be a top-level table.
+         * [DEPRECATED--please specify the containing schema as part of {@code
+         * result_table} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of a schema which is to contain the
+         * table specified in {@code result_table}. If the schema provided is
+         * non-existent, it will be automatically created.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -402,13 +408,17 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String VALUE = "value";
 
         /**
-         * The name of the table used to store the results. Has the same naming
-         * restrictions as <a href="../../../../../concepts/tables.html"
-         * target="_top">tables</a>. Column names (group-by and aggregate
-         * fields) need to be given aliases e.g. ["FChar256 as fchar256",
-         * "sum(FDouble) as sfd"].  If present, no results are returned in the
-         * response.  This option is not available if one of the grouping
-         * attributes is an unrestricted string (i.e.; not charN) type.
+         * The name of a table used to store the results, in
+         * [schema_name.]table_name format, using standard <a
+         * href="../../../../../concepts/tables.html#table-name-resolution"
+         * target="_top">name resolution rules</a> and meeting <a
+         * href="../../../../../concepts/tables.html#table-naming-criteria"
+         * target="_top">table naming criteria</a>.  Column names (group-by and
+         * aggregate fields) need to be given aliases e.g. ["FChar256 as
+         * fchar256", "sum(FDouble) as sfd"].  If present, no results are
+         * returned in the response.  This option is not available if one of
+         * the grouping attributes is an unrestricted string (i.e.; not charN)
+         * type.
          */
         public static final String RESULT_TABLE = "result_table";
 
@@ -566,7 +576,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of an existing table or view on which the
-     *                   operation will be performed.
+     *                   operation will be performed, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * @param columnNames  List of one or more column names, expressions, and
      *                     aggregate expressions.
      * @param offset  A positive integer indicating the number of initial
@@ -588,11 +601,14 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table}. If
-     *                 the collection provided is non-existent, the collection
-     *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema as part of {@code result_table} and
+     *                 use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema
+     *                 which is to contain the table specified in {@code
+     *                 result_table}. If the schema provided is non-existent,
+     *                 it will be automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
      *                 EXPRESSION}: Filter expression to apply to the table
@@ -644,14 +660,17 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 VALUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
-     *                 RESULT_TABLE}: The name of the table used to store the
-     *                 results. Has the same naming restrictions as <a
-     *                 href="../../../../../concepts/tables.html"
-     *                 target="_top">tables</a>. Column names (group-by and
-     *                 aggregate fields) need to be given aliases e.g.
-     *                 ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If
-     *                 present, no results are returned in the response.  This
-     *                 option is not available if one of the grouping
+     *                 RESULT_TABLE}: The name of a table used to store the
+     *                 results, in [schema_name.]table_name format, using
+     *                 standard <a
+     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>.  Column names
+     *                 (group-by and aggregate fields) need to be given aliases
+     *                 e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].
+     *                 If present, no results are returned in the response.
+     *                 This option is not available if one of the grouping
      *                 attributes is an unrestricted string (i.e.; not charN)
      *                 type.
      *                         <li> {@link
@@ -795,7 +814,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of an existing table or view on which the
-     *                   operation will be performed.
+     *                   operation will be performed, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * @param columnNames  List of one or more column names, expressions, and
      *                     aggregate expressions.
      * @param offset  A positive integer indicating the number of initial
@@ -832,11 +854,14 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table}. If
-     *                 the collection provided is non-existent, the collection
-     *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema as part of {@code result_table} and
+     *                 use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema
+     *                 which is to contain the table specified in {@code
+     *                 result_table}. If the schema provided is non-existent,
+     *                 it will be automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
      *                 EXPRESSION}: Filter expression to apply to the table
@@ -888,14 +913,17 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 VALUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
-     *                 RESULT_TABLE}: The name of the table used to store the
-     *                 results. Has the same naming restrictions as <a
-     *                 href="../../../../../concepts/tables.html"
-     *                 target="_top">tables</a>. Column names (group-by and
-     *                 aggregate fields) need to be given aliases e.g.
-     *                 ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If
-     *                 present, no results are returned in the response.  This
-     *                 option is not available if one of the grouping
+     *                 RESULT_TABLE}: The name of a table used to store the
+     *                 results, in [schema_name.]table_name format, using
+     *                 standard <a
+     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>.  Column names
+     *                 (group-by and aggregate fields) need to be given aliases
+     *                 e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].
+     *                 If present, no results are returned in the response.
+     *                 This option is not available if one of the grouping
      *                 attributes is an unrestricted string (i.e.; not charN)
      *                 type.
      *                         <li> {@link
@@ -1037,7 +1065,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
     /**
      * 
      * @return Name of an existing table or view on which the operation will be
-     *         performed.
+     *         performed, in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.
      * 
      */
     public String getTableName() {
@@ -1047,7 +1077,10 @@ public class AggregateGroupByRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of an existing table or view on which the
-     *                   operation will be performed.
+     *                   operation will be performed, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -1201,10 +1234,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         table specified in {@code result_table}. If the collection
-     *         provided is non-existent, the collection will be automatically
-     *         created. If empty, then the table will be a top-level table.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema as part of {@code result_table} and use {@link
+     *         com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+     *         schema if non-existent]  Name of a schema which is to contain
+     *         the table specified in {@code result_table}. If the schema
+     *         provided is non-existent, it will be automatically created.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
      *         EXPRESSION}: Filter expression to apply to the table prior to
@@ -1252,15 +1287,17 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#VALUE VALUE}.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
-     *         RESULT_TABLE}: The name of the table used to store the results.
-     *         Has the same naming restrictions as <a
-     *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>. Column names (group-by and aggregate
-     *         fields) need to be given aliases e.g. ["FChar256 as fchar256",
-     *         "sum(FDouble) as sfd"].  If present, no results are returned in
-     *         the response.  This option is not available if one of the
-     *         grouping attributes is an unrestricted string (i.e.; not charN)
-     *         type.
+     *         RESULT_TABLE}: The name of a table used to store the results, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  Column names (group-by
+     *         and aggregate fields) need to be given aliases e.g. ["FChar256
+     *         as fchar256", "sum(FDouble) as sfd"].  If present, no results
+     *         are returned in the response.  This option is not available if
+     *         one of the grouping attributes is an unrestricted string (i.e.;
+     *         not charN) type.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE_PERSIST
      *         RESULT_TABLE_PERSIST}: If {@code true}, then the result table
@@ -1380,11 +1417,14 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the table specified in {@code result_table}. If
-     *                 the collection provided is non-existent, the collection
-     *                 will be automatically created. If empty, then the table
-     *                 will be a top-level table.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema as part of {@code result_table} and
+     *                 use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema
+     *                 which is to contain the table specified in {@code
+     *                 result_table}. If the schema provided is non-existent,
+     *                 it will be automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#EXPRESSION
      *                 EXPRESSION}: Filter expression to apply to the table
@@ -1436,14 +1476,17 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 VALUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
-     *                 RESULT_TABLE}: The name of the table used to store the
-     *                 results. Has the same naming restrictions as <a
-     *                 href="../../../../../concepts/tables.html"
-     *                 target="_top">tables</a>. Column names (group-by and
-     *                 aggregate fields) need to be given aliases e.g.
-     *                 ["FChar256 as fchar256", "sum(FDouble) as sfd"].  If
-     *                 present, no results are returned in the response.  This
-     *                 option is not available if one of the grouping
+     *                 RESULT_TABLE}: The name of a table used to store the
+     *                 results, in [schema_name.]table_name format, using
+     *                 standard <a
+     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 target="_top">name resolution rules</a> and meeting <a
+     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 target="_top">table naming criteria</a>.  Column names
+     *                 (group-by and aggregate fields) need to be given aliases
+     *                 e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].
+     *                 If present, no results are returned in the response.
+     *                 This option is not available if one of the grouping
      *                 attributes is an unrestricted string (i.e.; not charN)
      *                 type.
      *                         <li> {@link

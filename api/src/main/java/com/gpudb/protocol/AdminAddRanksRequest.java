@@ -19,26 +19,26 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#adminAddRanks(AdminAddRanksRequest)}.
  * <p>
- * Add one or more new ranks to the Kinetica cluster. The new ranks will not
- * contain any data initially, other than replicated tables, and not be
- * assigned any shards. To rebalance data across the cluster, which includes
- * shifting some shard key assignments to newly added ranks, see {@link
- * com.gpudb.GPUdb#adminRebalance(AdminRebalanceRequest)}.
+ * Add one or more ranks to an existing Kinetica cluster. The new ranks will
+ * not contain any data initially (other than replicated tables) and will not
+ * be assigned any shards. To rebalance data and shards across the cluster, use
+ * {@link com.gpudb.GPUdb#adminRebalance(AdminRebalanceRequest)}.
  * <p>
  * For example, if attempting to add three new ranks (two ranks on host
  * 172.123.45.67 and one rank on host 172.123.45.68) to a Kinetica cluster with
  * additional configuration parameters:
  * <p>
- * * {@code hosts} would be an array including 172.123.45.67 in the first two
- * indices (signifying two ranks being added to host 172.123.45.67) and
- * 172.123.45.68 in the last index (signifying one rank being added to host
- * 172.123.45.67)
- * <p>
- * * {@code configParams} would be an array of maps, with each map
- * corresponding to the ranks being added in {@code hosts}. The key of each map
- * would be the configuration parameter name and the value would be the
- * parameter's value, e.g. 'rank.gpu':'1'
- * <p>
+ * * {@code hosts}
+ *   would be an array including 172.123.45.67 in the first two indices
+ *   (signifying two ranks being added to host 172.123.45.67) and
+ *   172.123.45.68 in the last index (signifying one rank being added
+ *   to host 172.123.45.67)
+ * * {@code configParams}
+ *   would be an array of maps, with each map corresponding to the ranks
+ *   being added in {@code hosts}. The key of each map would be
+ *   the configuration parameter name and the value would be the
+ *   parameter's value, e.g. '{"rank.gpu":"1"}'
+
  * This endpoint's processing includes copying all replicated table data to the
  * new rank(s) and therefore could take a long time. The API call may time out
  * if run directly.  It is recommended to run this endpoint asynchronously via
@@ -126,21 +126,49 @@ public class AdminAddRanksRequest implements IndexedRecord {
     /**
      * Constructs an AdminAddRanksRequest object with the specified parameters.
      * 
-     * @param hosts  The IP address of each rank being added to the cluster.
-     *               Insert one entry per rank, even if they are on the same
-     *               host. The order of the hosts in the array only matters as
-     *               it relates to the {@code configParams}.
-     * @param configParams  Configuration parameters to apply to the new ranks,
-     *                      e.g., which GPU to use. Configuration parameters
-     *                      that start with 'rankN.', where N is the rank
-     *                      number, should omit the N, as the new rank
-     *                      number(s) are not allocated until the ranks are
-     *                      created. Each entry in this array corresponds to
-     *                      the entry at the same array index in the {@code
-     *                      hosts}. This array must either be completely empty
-     *                      or have the same number of elements as the hosts
-     *                      array.  An empty array will result in the new ranks
-     *                      being set only with default parameters.
+     * @param hosts  Array of host IP addresses (matching a hostN.address from
+     *               the gpudb.conf file), or host identifiers (e.g. 'host0'
+     *               from the gpudb.conf file), on which to add ranks to the
+     *               cluster. The hosts must already be in the cluster. If
+     *               needed beforehand, to add a new host to the cluster use
+     *               {@link com.gpudb.GPUdb#adminAddHost(AdminAddHostRequest)}.
+     *               Include the same entry as many times as there are ranks to
+     *               add to the cluster, e.g., if two ranks on host
+     *               172.123.45.67 should be added, {@code hosts} could look
+     *               like '["172.123.45.67", "172.123.45.67"]'. All ranks will
+     *               be added simultaneously, i.e. they're not added in the
+     *               order of this array. Each entry in this array corresponds
+     *               to the entry at the same index in the {@code
+     *               configParams}.
+     * @param configParams  Array of maps containing configuration parameters
+     *                      to apply to the new ranks found in {@code hosts}.
+     *                      For example, '{"rank.gpu":"2",
+     *                      "tier.ram.rank.limit":"10000000000"}'. Currently,
+     *                      the available parameters are rank-specific
+     *                      parameters in the <a
+     *                      href="../../../../../config/index.html#network"
+     *                      target="_top">Network</a>, <a
+     *                      href="../../../../../config/index.html#hardware"
+     *                      target="_top">Hardware</a>, <a
+     *                      href="../../../../../config/index.html#text-search"
+     *                      target="_top">Text Search</a>, and <a
+     *                      href="../../../../../config/index.html#ram-tier"
+     *                      target="_top">RAM Tiered Storage</a> sections in
+     *                      the gpudb.conf file, with the key exception of the
+     *                      'rankN.host' settings in the Network section that
+     *                      will be determined by {@code hosts} instead. Though
+     *                      many of these configuration parameters typically
+     *                      are affixed with 'rankN' in the gpudb.conf file
+     *                      (where N is the rank number), the 'N' should be
+     *                      omitted in {@code configParams} as the new rank
+     *                      number(s) are not allocated until the ranks have
+     *                      been added to the cluster. Each entry in this array
+     *                      corresponds to the entry at the same index in the
+     *                      {@code hosts}. This array must either be completely
+     *                      empty or have the same number of elements as the
+     *                      {@code hosts}.  An empty {@code configParams} array
+     *                      will result in the new ranks being set with default
+     *                      parameters.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -171,10 +199,19 @@ public class AdminAddRanksRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The IP address of each rank being added to the cluster. Insert
-     *         one entry per rank, even if they are on the same host. The order
-     *         of the hosts in the array only matters as it relates to the
-     *         {@code configParams}.
+     * @return Array of host IP addresses (matching a hostN.address from the
+     *         gpudb.conf file), or host identifiers (e.g. 'host0' from the
+     *         gpudb.conf file), on which to add ranks to the cluster. The
+     *         hosts must already be in the cluster. If needed beforehand, to
+     *         add a new host to the cluster use {@link
+     *         com.gpudb.GPUdb#adminAddHost(AdminAddHostRequest)}. Include the
+     *         same entry as many times as there are ranks to add to the
+     *         cluster, e.g., if two ranks on host 172.123.45.67 should be
+     *         added, {@code hosts} could look like '["172.123.45.67",
+     *         "172.123.45.67"]'. All ranks will be added simultaneously, i.e.
+     *         they're not added in the order of this array. Each entry in this
+     *         array corresponds to the entry at the same index in the {@code
+     *         configParams}.
      * 
      */
     public List<String> getHosts() {
@@ -183,10 +220,20 @@ public class AdminAddRanksRequest implements IndexedRecord {
 
     /**
      * 
-     * @param hosts  The IP address of each rank being added to the cluster.
-     *               Insert one entry per rank, even if they are on the same
-     *               host. The order of the hosts in the array only matters as
-     *               it relates to the {@code configParams}.
+     * @param hosts  Array of host IP addresses (matching a hostN.address from
+     *               the gpudb.conf file), or host identifiers (e.g. 'host0'
+     *               from the gpudb.conf file), on which to add ranks to the
+     *               cluster. The hosts must already be in the cluster. If
+     *               needed beforehand, to add a new host to the cluster use
+     *               {@link com.gpudb.GPUdb#adminAddHost(AdminAddHostRequest)}.
+     *               Include the same entry as many times as there are ranks to
+     *               add to the cluster, e.g., if two ranks on host
+     *               172.123.45.67 should be added, {@code hosts} could look
+     *               like '["172.123.45.67", "172.123.45.67"]'. All ranks will
+     *               be added simultaneously, i.e. they're not added in the
+     *               order of this array. Each entry in this array corresponds
+     *               to the entry at the same index in the {@code
+     *               configParams}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -198,15 +245,30 @@ public class AdminAddRanksRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Configuration parameters to apply to the new ranks, e.g., which
-     *         GPU to use. Configuration parameters that start with 'rankN.',
-     *         where N is the rank number, should omit the N, as the new rank
-     *         number(s) are not allocated until the ranks are created. Each
-     *         entry in this array corresponds to the entry at the same array
-     *         index in the {@code hosts}. This array must either be completely
-     *         empty or have the same number of elements as the hosts array.
-     *         An empty array will result in the new ranks being set only with
-     *         default parameters.
+     * @return Array of maps containing configuration parameters to apply to
+     *         the new ranks found in {@code hosts}. For example,
+     *         '{"rank.gpu":"2", "tier.ram.rank.limit":"10000000000"}'.
+     *         Currently, the available parameters are rank-specific parameters
+     *         in the <a href="../../../../../config/index.html#network"
+     *         target="_top">Network</a>, <a
+     *         href="../../../../../config/index.html#hardware"
+     *         target="_top">Hardware</a>, <a
+     *         href="../../../../../config/index.html#text-search"
+     *         target="_top">Text Search</a>, and <a
+     *         href="../../../../../config/index.html#ram-tier"
+     *         target="_top">RAM Tiered Storage</a> sections in the gpudb.conf
+     *         file, with the key exception of the 'rankN.host' settings in the
+     *         Network section that will be determined by {@code hosts}
+     *         instead. Though many of these configuration parameters typically
+     *         are affixed with 'rankN' in the gpudb.conf file (where N is the
+     *         rank number), the 'N' should be omitted in {@code configParams}
+     *         as the new rank number(s) are not allocated until the ranks have
+     *         been added to the cluster. Each entry in this array corresponds
+     *         to the entry at the same index in the {@code hosts}. This array
+     *         must either be completely empty or have the same number of
+     *         elements as the {@code hosts}.  An empty {@code configParams}
+     *         array will result in the new ranks being set with default
+     *         parameters.
      * 
      */
     public List<Map<String, String>> getConfigParams() {
@@ -215,17 +277,35 @@ public class AdminAddRanksRequest implements IndexedRecord {
 
     /**
      * 
-     * @param configParams  Configuration parameters to apply to the new ranks,
-     *                      e.g., which GPU to use. Configuration parameters
-     *                      that start with 'rankN.', where N is the rank
-     *                      number, should omit the N, as the new rank
-     *                      number(s) are not allocated until the ranks are
-     *                      created. Each entry in this array corresponds to
-     *                      the entry at the same array index in the {@code
-     *                      hosts}. This array must either be completely empty
-     *                      or have the same number of elements as the hosts
-     *                      array.  An empty array will result in the new ranks
-     *                      being set only with default parameters.
+     * @param configParams  Array of maps containing configuration parameters
+     *                      to apply to the new ranks found in {@code hosts}.
+     *                      For example, '{"rank.gpu":"2",
+     *                      "tier.ram.rank.limit":"10000000000"}'. Currently,
+     *                      the available parameters are rank-specific
+     *                      parameters in the <a
+     *                      href="../../../../../config/index.html#network"
+     *                      target="_top">Network</a>, <a
+     *                      href="../../../../../config/index.html#hardware"
+     *                      target="_top">Hardware</a>, <a
+     *                      href="../../../../../config/index.html#text-search"
+     *                      target="_top">Text Search</a>, and <a
+     *                      href="../../../../../config/index.html#ram-tier"
+     *                      target="_top">RAM Tiered Storage</a> sections in
+     *                      the gpudb.conf file, with the key exception of the
+     *                      'rankN.host' settings in the Network section that
+     *                      will be determined by {@code hosts} instead. Though
+     *                      many of these configuration parameters typically
+     *                      are affixed with 'rankN' in the gpudb.conf file
+     *                      (where N is the rank number), the 'N' should be
+     *                      omitted in {@code configParams} as the new rank
+     *                      number(s) are not allocated until the ranks have
+     *                      been added to the cluster. Each entry in this array
+     *                      corresponds to the entry at the same index in the
+     *                      {@code hosts}. This array must either be completely
+     *                      empty or have the same number of elements as the
+     *                      {@code hosts}.  An empty {@code configParams} array
+     *                      will result in the new ranks being set with default
+     *                      parameters.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

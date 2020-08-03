@@ -3,19 +3,25 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>7.0.18.1</version>
+    <version>7.1.0.0</version>
     <packaging>jar</packaging>
     <name>Kinetica Java API</name>
     <distributionManagement>
-       <repository>
-          <id>releases</id>
-          <name>Releases</name>
-          <url>http://files.kinetica.com/nexus/content/repositories/releases</url>
-       </repository>
+       <!-- DO NOT ACCIDENTALLY PUSH TO OUR PUBLIC REPOSITORIES BEFORE GA -->
+       <!-- <repository> -->
+       <!--    <id>releases</id> -->
+       <!--    <name>Releases</name> -->
+       <!--    <url>http://files.kinetica.com/nexus/content/repositories/releases</url> -->
+       <!-- </repository> -->
+       <!-- <snapshotRepository> -->
+       <!--    <id>snapshots</id> -->
+       <!--    <name>Snapshots</name> -->
+       <!--    <url>http://files.kinetica.com/nexus/content/repositories/snapshots</url> -->
+       <!-- </snapshotRepository> -->
        <snapshotRepository>
           <id>snapshots</id>
           <name>Snapshots</name>
-          <url>http://files.kinetica.com/nexus/content/repositories/snapshots</url>
+          <url>http://files.kinetica.com/nexus/content/repositories/internal-snapshots</url>
        </snapshotRepository>
     </distributionManagement>
     <dependencies>
@@ -44,6 +50,11 @@
             <artifactId>threetenbp</artifactId>
             <version>1.4.0</version>
         </dependency>
+        <dependency>
+	        <groupId>log4j</groupId>
+	        <artifactId>log4j</artifactId>
+	        <version>1.2.17</version>
+	    </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -55,7 +66,7 @@
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gpudb-api.version>7.0.18.1</gpudb-api.version>
+        <gpudb-api.version>7.1.0.0</gpudb-api.version>
     </properties>
     <profiles>
         <profile>

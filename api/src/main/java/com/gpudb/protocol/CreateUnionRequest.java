@@ -80,10 +80,12 @@ public class CreateUnionRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the output
-     * table. If the collection provided is non-existent, the collection will
-     * be automatically created. If empty, the output table will be a top-level
-     * table.  The default value is ''.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
+     * the projection as part of {@code tableName} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of the schema for the output table. If the schema
+     * provided is non-existent, it will be automatically created.  The default
+     * value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
      * MATERIALIZE_ON_GPU}: No longer used.  See <a
@@ -195,10 +197,12 @@ public class CreateUnionRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the output table. If the
-         * collection provided is non-existent, the collection will be
-         * automatically created. If empty, the output table will be a
-         * top-level table.  The default value is ''.
+         * [DEPRECATED--please specify the containing schema for the projection
+         * as part of {@code tableName} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of the schema for the output table. If
+         * the schema provided is non-existent, it will be automatically
+         * created.  The default value is ''.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -409,12 +413,17 @@ public class CreateUnionRequest implements IndexedRecord {
     /**
      * Constructs a CreateUnionRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table to be created. Has the same naming
-     *                   restrictions as <a
-     *                   href="../../../../../concepts/tables.html"
-     *                   target="_top">tables</a>.
-     * @param tableNames  The list of table names to merge. Must contain the
-     *                    names of one or more existing tables.
+     * @param tableName  Name of the table to be created, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a> and meeting <a
+     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   target="_top">table naming criteria</a>.
+     * @param tableNames  The list of table names to merge, in
+     *                    [schema_name.]table_name format, using standard <a
+     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    target="_top">name resolution rules</a>.  Must
+     *                    contain the names of one or more existing tables.
      * @param inputColumnNames  The list of columns from each of the
      *                          corresponding input tables.
      * @param outputColumnNames  The list of names of the columns to be stored
@@ -423,11 +432,14 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the output table. If the collection provided is
-     *                 non-existent, the collection will be automatically
-     *                 created. If empty, the output table will be a top-level
-     *                 table.  The default value is ''.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the projection as part of {@code
+     *                 tableName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of the schema
+     *                 for the output table. If the schema provided is
+     *                 non-existent, it will be automatically created.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
@@ -571,9 +583,12 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table to be created. Has the same naming
-     *         restrictions as <a href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.
+     * @return Name of the table to be created, in [schema_name.]table_name
+     *         format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.
      * 
      */
     public String getTableName() {
@@ -582,10 +597,12 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table to be created. Has the same naming
-     *                   restrictions as <a
-     *                   href="../../../../../concepts/tables.html"
-     *                   target="_top">tables</a>.
+     * @param tableName  Name of the table to be created, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a> and meeting <a
+     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   target="_top">table naming criteria</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -597,8 +614,11 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The list of table names to merge. Must contain the names of one
-     *         or more existing tables.
+     * @return The list of table names to merge, in [schema_name.]table_name
+     *         format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must contain the names
+     *         of one or more existing tables.
      * 
      */
     public List<String> getTableNames() {
@@ -607,8 +627,11 @@ public class CreateUnionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  The list of table names to merge. Must contain the
-     *                    names of one or more existing tables.
+     * @param tableNames  The list of table names to merge, in
+     *                    [schema_name.]table_name format, using standard <a
+     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    target="_top">name resolution rules</a>.  Must
+     *                    contain the names of one or more existing tables.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -669,10 +692,12 @@ public class CreateUnionRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         output table. If the collection provided is non-existent, the
-     *         collection will be automatically created. If empty, the output
-     *         table will be a top-level table.  The default value is ''.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema for the projection as part of {@code tableName} and use
+     *         {@link com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *         create the schema if non-existent]  Name of the schema for the
+     *         output table. If the schema provided is non-existent, it will be
+     *         automatically created.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
      *         MATERIALIZE_ON_GPU}: No longer used.  See <a
@@ -803,11 +828,14 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the output table. If the collection provided is
-     *                 non-existent, the collection will be automatically
-     *                 created. If empty, the output table will be a top-level
-     *                 table.  The default value is ''.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the projection as part of {@code
+     *                 tableName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of the schema
+     *                 for the output table. If the schema provided is
+     *                 non-existent, it will be automatically created.  The
+     *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: No longer used.  See <a

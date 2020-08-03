@@ -24,8 +24,7 @@ public class AdminRemoveRanksResponse implements IndexedRecord {
             .record("AdminRemoveRanksResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("removedRanks").type().array().items().intType().noDefault()
-                .name("results").type().array().items().stringType().noDefault()
+                .name("removedRanks").type().array().items().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -41,8 +40,7 @@ public class AdminRemoveRanksResponse implements IndexedRecord {
         return schema$;
     }
 
-    private List<Integer> removedRanks;
-    private List<String> results;
+    private List<String> removedRanks;
     private Map<String, String> info;
 
 
@@ -54,49 +52,25 @@ public class AdminRemoveRanksResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Ranks that were removed from the cluster.  May be empty in the
-     *         case of failures.
+     * @return The number assigned to each rank removed from the cluster. This
+     *         array will be empty if the operation fails.
      * 
      */
-    public List<Integer> getRemovedRanks() {
+    public List<String> getRemovedRanks() {
         return removedRanks;
     }
 
     /**
      * 
-     * @param removedRanks  Ranks that were removed from the cluster.  May be
-     *                      empty in the case of failures.
+     * @param removedRanks  The number assigned to each rank removed from the
+     *                      cluster. This array will be empty if the operation
+     *                      fails.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminRemoveRanksResponse setRemovedRanks(List<Integer> removedRanks) {
-        this.removedRanks = (removedRanks == null) ? new ArrayList<Integer>() : removedRanks;
-        return this;
-    }
-
-    /**
-     * 
-     * @return Text description of the result of each rank being removed.
-     *         Indicates the reason for any errors that occur. Entries are in
-     *         the same order as the {@code ranks}.
-     * 
-     */
-    public List<String> getResults() {
-        return results;
-    }
-
-    /**
-     * 
-     * @param results  Text description of the result of each rank being
-     *                 removed. Indicates the reason for any errors that occur.
-     *                 Entries are in the same order as the {@code ranks}.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public AdminRemoveRanksResponse setResults(List<String> results) {
-        this.results = (results == null) ? new ArrayList<String>() : results;
+    public AdminRemoveRanksResponse setRemovedRanks(List<String> removedRanks) {
+        this.removedRanks = (removedRanks == null) ? new ArrayList<String>() : removedRanks;
         return this;
     }
 
@@ -151,9 +125,6 @@ public class AdminRemoveRanksResponse implements IndexedRecord {
                 return this.removedRanks;
 
             case 1:
-                return this.results;
-
-            case 2:
                 return this.info;
 
             default:
@@ -176,14 +147,10 @@ public class AdminRemoveRanksResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.removedRanks = (List<Integer>)value;
+                this.removedRanks = (List<String>)value;
                 break;
 
             case 1:
-                this.results = (List<String>)value;
-                break;
-
-            case 2:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -205,7 +172,6 @@ public class AdminRemoveRanksResponse implements IndexedRecord {
         AdminRemoveRanksResponse that = (AdminRemoveRanksResponse)obj;
 
         return ( this.removedRanks.equals( that.removedRanks )
-                 && this.results.equals( that.results )
                  && this.info.equals( that.info ) );
     }
 
@@ -217,10 +183,6 @@ public class AdminRemoveRanksResponse implements IndexedRecord {
         builder.append( gd.toString( "removedRanks" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.removedRanks ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "results" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.results ) );
         builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
@@ -234,7 +196,6 @@ public class AdminRemoveRanksResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.removedRanks.hashCode();
-        hashCode = (31 * hashCode) + this.results.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

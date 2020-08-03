@@ -20,34 +20,38 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#createProjection(CreateProjectionRequest)}.
  * <p>
  * Creates a new <a href="../../../../../concepts/projections.html"
- * target="_top">projection</a> of an existing table. A projection represents a
- * subset of the columns (potentially including derived columns) of a table.
+ * target="_top">projection</a> of
+ * an existing table. A projection represents a subset of the columns
+ * (potentially
+ * including derived columns) of a table.
  * <p>
- * For projection details and examples, see <a
- * href="../../../../../concepts/projections.html"
- * target="_top">Projections</a>.  For limitations, see <a
- * href="../../../../../concepts/projections.html#limitations-and-cautions"
+ * For projection details and examples, see
+ * <a href="../../../../../concepts/projections.html"
+ * target="_top">Projections</a>.  For limitations, see
+ * <a href="../../../../../concepts/projections.html#limitations-and-cautions"
  * target="_top">Projection Limitations and Cautions</a>.
  * <p>
  * <a href="../../../../../concepts/window.html" target="_top">Window
- * functions</a>, which can perform operations like moving averages, are
- * available through this endpoint as well as {@link
- * com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
+ * functions</a>, which can perform
+ * operations like moving averages, are available through this endpoint as well
+ * as
+ * {@link com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
  * <p>
- * A projection can be created with a different <a
- * href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
- * key</a> than the source table.  By specifying {@code shard_key}, the
- * projection will be sharded according to the specified columns, regardless of
- * how the source table is sharded.  The source table can even be unsharded or
- * replicated.
+ * A projection can be created with a different
+ * <a href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
+ * key</a> than the source table.
+ * By specifying {@code shard_key}, the projection will be sharded
+ * according to the specified columns, regardless of how the source table is
+ * sharded.  The source table can even be unsharded or replicated.
  * <p>
  * If {@code tableName} is empty, selection is performed against a single-row
- * virtual table.  This can be useful in executing temporal (<a
- * href="../../../../../concepts/expressions.html#date-time-functions"
- * target="_top">NOW()</a>), identity (<a
- * href="../../../../../concepts/expressions.html#user-security-functions"
- * target="_top">USER()</a>), or constant-based functions (<a
- * href="../../../../../concepts/expressions.html#scalar-functions"
+ * virtual table.  This can be useful in executing temporal
+ * (<a href="../../../../../concepts/expressions.html#date-time-functions"
+ * target="_top">NOW()</a>), identity
+ * (<a href="../../../../../concepts/expressions.html#user-security-functions"
+ * target="_top">USER()</a>), or
+ * constant-based functions
+ * (<a href="../../../../../concepts/expressions.html#scalar-functions"
  * target="_top">GEODIST(-77.11, 38.88, -71.06, 42.36)</a>).
  */
 public class CreateProjectionRequest implements IndexedRecord {
@@ -79,12 +83,12 @@ public class CreateProjectionRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a <a
-     * href="../../../../../concepts/collections.html"
-     * target="_top">collection</a> to which the projection is to be assigned
-     * as a child. If the collection provided is non-existent, the collection
-     * will be automatically created. If empty, then the projection will be at
-     * the top level.  The default value is ''.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
+     * the projection as part of {@code projectionName} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of a schema for the projection. If the schema is
+     * non-existent, it will be automatically created.  The default value is
+     * ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      * EXPRESSION}: An optional filter <a
@@ -202,11 +206,12 @@ public class CreateProjectionRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a <a href="../../../../../concepts/collections.html"
-         * target="_top">collection</a> to which the projection is to be
-         * assigned as a child. If the collection provided is non-existent, the
-         * collection will be automatically created. If empty, then the
-         * projection will be at the top level.  The default value is ''.
+         * [DEPRECATED--please specify the containing schema for the projection
+         * as part of {@code projectionName} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of a schema for the projection. If the
+         * schema is non-existent, it will be automatically created.  The
+         * default value is ''.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -378,14 +383,21 @@ public class CreateProjectionRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of the existing table on which the projection is
-     *                   to be applied.  An empty table name creates a
-     *                   projection from a single-row virtual table, where
-     *                   columns specified should be constants or constant
-     *                   expressions.
-     * @param projectionName  Name of the projection to be created. Has the
-     *                        same naming restrictions as <a
-     *                        href="../../../../../concepts/tables.html"
-     *                        target="_top">tables</a>.
+     *                   to be applied, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  An empty
+     *                   table name creates a projection from a single-row
+     *                   virtual table, where columns specified should be
+     *                   constants or constant expressions.
+     * @param projectionName  Name of the projection to be created, in
+     *                        [schema_name.]table_name format, using standard
+     *                        <a
+     *                        href="../../../../../concepts/tables.html#table-name-resolution"
+     *                        target="_top">name resolution rules</a> and
+     *                        meeting <a
+     *                        href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                        target="_top">table naming criteria</a>.
      * @param columnNames  List of columns from {@code tableName} to be
      *                     included in the projection. Can include derived
      *                     columns. Can be specified as aliased via the syntax
@@ -394,13 +406,13 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a <a
-     *                 href="../../../../../concepts/collections.html"
-     *                 target="_top">collection</a> to which the projection is
-     *                 to be assigned as a child. If the collection provided is
-     *                 non-existent, the collection will be automatically
-     *                 created. If empty, then the projection will be at the
-     *                 top level.  The default value is ''.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the projection as part of {@code
+     *                 projectionName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the projection. If the schema is non-existent, it will
+     *                 be automatically created.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      *                 EXPRESSION}: An optional filter <a
@@ -556,9 +568,11 @@ public class CreateProjectionRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the existing table on which the projection is to be
-     *         applied.  An empty table name creates a projection from a
-     *         single-row virtual table, where columns specified should be
-     *         constants or constant expressions.
+     *         applied, in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  An empty table name
+     *         creates a projection from a single-row virtual table, where
+     *         columns specified should be constants or constant expressions.
      * 
      */
     public String getTableName() {
@@ -568,10 +582,13 @@ public class CreateProjectionRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the existing table on which the projection is
-     *                   to be applied.  An empty table name creates a
-     *                   projection from a single-row virtual table, where
-     *                   columns specified should be constants or constant
-     *                   expressions.
+     *                   to be applied, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  An empty
+     *                   table name creates a projection from a single-row
+     *                   virtual table, where columns specified should be
+     *                   constants or constant expressions.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -583,9 +600,12 @@ public class CreateProjectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the projection to be created. Has the same naming
-     *         restrictions as <a href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.
+     * @return Name of the projection to be created, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.
      * 
      */
     public String getProjectionName() {
@@ -594,10 +614,14 @@ public class CreateProjectionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param projectionName  Name of the projection to be created. Has the
-     *                        same naming restrictions as <a
-     *                        href="../../../../../concepts/tables.html"
-     *                        target="_top">tables</a>.
+     * @param projectionName  Name of the projection to be created, in
+     *                        [schema_name.]table_name format, using standard
+     *                        <a
+     *                        href="../../../../../concepts/tables.html#table-name-resolution"
+     *                        target="_top">name resolution rules</a> and
+     *                        meeting <a
+     *                        href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                        target="_top">table naming criteria</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -639,12 +663,12 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a <a
-     *         href="../../../../../concepts/collections.html"
-     *         target="_top">collection</a> to which the projection is to be
-     *         assigned as a child. If the collection provided is non-existent,
-     *         the collection will be automatically created. If empty, then the
-     *         projection will be at the top level.  The default value is ''.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema for the projection as part of {@code projectionName} and
+     *         use {@link com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *         create the schema if non-existent]  Name of a schema for the
+     *         projection. If the schema is non-existent, it will be
+     *         automatically created.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      *         EXPRESSION}: An optional filter <a
@@ -778,13 +802,13 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a <a
-     *                 href="../../../../../concepts/collections.html"
-     *                 target="_top">collection</a> to which the projection is
-     *                 to be assigned as a child. If the collection provided is
-     *                 non-existent, the collection will be automatically
-     *                 created. If empty, then the projection will be at the
-     *                 top level.  The default value is ''.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the projection as part of {@code
+     *                 projectionName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the projection. If the schema is non-existent, it will
+     *                 be automatically created.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      *                 EXPRESSION}: An optional filter <a

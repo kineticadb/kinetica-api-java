@@ -24,8 +24,7 @@ public class AdminAddRanksResponse implements IndexedRecord {
             .record("AdminAddRanksResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("addedRanks").type().array().items().intType().noDefault()
-                .name("results").type().array().items().stringType().noDefault()
+                .name("addedRanks").type().array().items().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -41,8 +40,7 @@ public class AdminAddRanksResponse implements IndexedRecord {
         return schema$;
     }
 
-    private List<Integer> addedRanks;
-    private List<String> results;
+    private List<String> addedRanks;
     private Map<String, String> info;
 
 
@@ -54,51 +52,26 @@ public class AdminAddRanksResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The number assigned to each newly added rank, in the same order
-     *         as the ranks in the {@code hosts}. Will be empty if the
-     *         operation fails.
+     * @return The number assigned to each added rank, formatted as 'rankN', in
+     *         the same order as the ranks in {@code hosts} and {@code
+     *         configParams}.
      * 
      */
-    public List<Integer> getAddedRanks() {
+    public List<String> getAddedRanks() {
         return addedRanks;
     }
 
     /**
      * 
-     * @param addedRanks  The number assigned to each newly added rank, in the
-     *                    same order as the ranks in the {@code hosts}. Will be
-     *                    empty if the operation fails.
+     * @param addedRanks  The number assigned to each added rank, formatted as
+     *                    'rankN', in the same order as the ranks in {@code
+     *                    hosts} and {@code configParams}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminAddRanksResponse setAddedRanks(List<Integer> addedRanks) {
-        this.addedRanks = (addedRanks == null) ? new ArrayList<Integer>() : addedRanks;
-        return this;
-    }
-
-    /**
-     * 
-     * @return Text description of the result of each rank being added.
-     *         Indicates the reason for any errors that occur. Entries are in
-     *         the same order as the {@code hosts}.
-     * 
-     */
-    public List<String> getResults() {
-        return results;
-    }
-
-    /**
-     * 
-     * @param results  Text description of the result of each rank being added.
-     *                 Indicates the reason for any errors that occur. Entries
-     *                 are in the same order as the {@code hosts}.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public AdminAddRanksResponse setResults(List<String> results) {
-        this.results = (results == null) ? new ArrayList<String>() : results;
+    public AdminAddRanksResponse setAddedRanks(List<String> addedRanks) {
+        this.addedRanks = (addedRanks == null) ? new ArrayList<String>() : addedRanks;
         return this;
     }
 
@@ -153,9 +126,6 @@ public class AdminAddRanksResponse implements IndexedRecord {
                 return this.addedRanks;
 
             case 1:
-                return this.results;
-
-            case 2:
                 return this.info;
 
             default:
@@ -178,14 +148,10 @@ public class AdminAddRanksResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.addedRanks = (List<Integer>)value;
+                this.addedRanks = (List<String>)value;
                 break;
 
             case 1:
-                this.results = (List<String>)value;
-                break;
-
-            case 2:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -207,7 +173,6 @@ public class AdminAddRanksResponse implements IndexedRecord {
         AdminAddRanksResponse that = (AdminAddRanksResponse)obj;
 
         return ( this.addedRanks.equals( that.addedRanks )
-                 && this.results.equals( that.results )
                  && this.info.equals( that.info ) );
     }
 
@@ -219,10 +184,6 @@ public class AdminAddRanksResponse implements IndexedRecord {
         builder.append( gd.toString( "addedRanks" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.addedRanks ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "results" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.results ) );
         builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
@@ -236,7 +197,6 @@ public class AdminAddRanksResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.addedRanks.hashCode();
-        hashCode = (31 * hashCode) + this.results.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

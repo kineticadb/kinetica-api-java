@@ -42,6 +42,26 @@ public class GetJobRequest implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.GetJobRequest.Options#JOB_TAG
+     * JOB_TAG}: Job tag returned in call to create the job
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * Job tag returned in call to create the job
+         */
+        public static final String JOB_TAG = "job_tag";
+
+        private Options() {  }
+    }
+
     private long jobId;
     private Map<String, String> options;
 
@@ -58,8 +78,13 @@ public class GetJobRequest implements IndexedRecord {
      * 
      * @param jobId  A unique identifier for the job whose status and result is
      *               to be fetched.
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetJobRequest.Options#JOB_TAG
+     *                 JOB_TAG}: Job tag returned in call to create the job
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public GetJobRequest(long jobId, Map<String, String> options) {
@@ -92,7 +117,13 @@ public class GetJobRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.  The default value is an empty {@link Map}.
+     * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.GetJobRequest.Options#JOB_TAG JOB_TAG}: Job
+     *         tag returned in call to create the job
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -101,8 +132,13 @@ public class GetJobRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GetJobRequest.Options#JOB_TAG
+     *                 JOB_TAG}: Job tag returned in call to create the job
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -23,8 +23,8 @@ import org.apache.avro.generic.IndexedRecord;
  * type of job and the current state of execution, the action may not be
  * successfully executed. The final result of the attempted actions for each
  * specified job is returned in the status array of the response. See <a
- * href="../../../../../gpudbAdmin/job_manager.html" target="_top">Job
- * Manager</a> for more information.
+ * href="../../../../../admin/job_manager.html" target="_top">Job Manager</a>
+ * for more information.
  */
 public class AdminAlterJobsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -64,6 +64,27 @@ public class AdminAlterJobsRequest implements IndexedRecord {
         private Action() {  }
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminAlterJobsRequest.Options#JOB_TAG JOB_TAG}: Job
+     * tag returned in call to create the job
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * Job tag returned in call to create the job
+         */
+        public static final String JOB_TAG = "job_tag";
+
+        private Options() {  }
+    }
+
     private List<Long> jobIds;
     private String action;
     private Map<String, String> options;
@@ -90,8 +111,13 @@ public class AdminAlterJobsRequest implements IndexedRecord {
      *                com.gpudb.protocol.AdminAlterJobsRequest.Action#CANCEL
      *                CANCEL}
      *                </ul>
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminAlterJobsRequest.Options#JOB_TAG
+     *                 JOB_TAG}: Job tag returned in call to create the job
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public AdminAlterJobsRequest(List<Long> jobIds, String action, Map<String, String> options) {
@@ -155,7 +181,13 @@ public class AdminAlterJobsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.  The default value is an empty {@link Map}.
+     * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminAlterJobsRequest.Options#JOB_TAG
+     *         JOB_TAG}: Job tag returned in call to create the job
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -164,8 +196,13 @@ public class AdminAlterJobsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AdminAlterJobsRequest.Options#JOB_TAG
+     *                 JOB_TAG}: Job tag returned in call to create the job
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

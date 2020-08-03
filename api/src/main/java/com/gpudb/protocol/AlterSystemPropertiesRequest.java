@@ -54,8 +54,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SM_OMP_THREADS
      * SM_OMP_THREADS}: Set the number of OpenMP threads that will be used to
-     * service filter & aggregation requests against collections to the
-     * specified integer value.
+     * service filter & aggregation requests to the specified integer value.
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KERNEL_OMP_THREADS
      * KERNEL_OMP_THREADS}: Set the number of kernel OpenMP threads to the
@@ -124,7 +123,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SET_MESSAGE_TIMERS_ENABLED
      * SET_MESSAGE_TIMERS_ENABLED}: Enables the communicator test to collect
      * additional timing statistics when the value string is {@code true}.
-     * Disables the collection when the value string is {@code false}
+     * Disables collecting statistics when the value string is {@code false}
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -182,10 +181,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
      * ENABLE_OVERLAPPED_EQUI_JOIN}: Enable overlapped-equi-join filter.  The
      * default value is 'true'.
-     *         <li> {@link
-     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_COMPOUND_EQUI_JOIN
-     * ENABLE_COMPOUND_EQUI_JOIN}: Enable compound-equi-join filter plan type.
-     * The default value is 'false'.
      * </ul>
      * A set of string constants for the parameter {@code propertyUpdatesMap}.
      */
@@ -193,8 +188,7 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
         /**
          * Set the number of OpenMP threads that will be used to service filter
-         * & aggregation requests against collections to the specified integer
-         * value.
+         * & aggregation requests to the specified integer value.
          */
         public static final String SM_OMP_THREADS = "sm_omp_threads";
 
@@ -284,8 +278,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
 
         /**
          * Enables the communicator test to collect additional timing
-         * statistics when the value string is {@code true}. Disables the
-         * collection when the value string is {@code false}
+         * statistics when the value string is {@code true}. Disables
+         * collecting statistics when the value string is {@code false}
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -368,12 +362,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          */
         public static final String ENABLE_OVERLAPPED_EQUI_JOIN = "enable_overlapped_equi_join";
 
-        /**
-         * Enable compound-equi-join filter plan type.  The default value is
-         * 'false'.
-         */
-        public static final String ENABLE_COMPOUND_EQUI_JOIN = "enable_compound_equi_join";
-
         private PropertyUpdatesMap() {  }
     }
 
@@ -401,8 +389,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SM_OMP_THREADS
      *                            SM_OMP_THREADS}: Set the number of OpenMP
      *                            threads that will be used to service filter &
-     *                            aggregation requests against collections to
-     *                            the specified integer value.
+     *                            aggregation requests to the specified integer
+     *                            value.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KERNEL_OMP_THREADS
      *                            KERNEL_OMP_THREADS}: Set the number of kernel
@@ -489,8 +477,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            SET_MESSAGE_TIMERS_ENABLED}: Enables the
      *                            communicator test to collect additional
      *                            timing statistics when the value string is
-     *                            {@code true}. Disables the collection when
-     *                            the value string is {@code false}
+     *                            {@code true}. Disables collecting statistics
+     *                            when the value string is {@code false}
      *                            Supported values:
      *                            <ul>
      *                                    <li> {@link
@@ -566,11 +554,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            ENABLE_OVERLAPPED_EQUI_JOIN}: Enable
      *                            overlapped-equi-join filter.  The default
      *                            value is 'true'.
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_COMPOUND_EQUI_JOIN
-     *                            ENABLE_COMPOUND_EQUI_JOIN}: Enable
-     *                            compound-equi-join filter plan type.  The
-     *                            default value is 'false'.
      *                            </ul>
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
@@ -589,8 +572,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SM_OMP_THREADS
      *         SM_OMP_THREADS}: Set the number of OpenMP threads that will be
-     *         used to service filter & aggregation requests against
-     *         collections to the specified integer value.
+     *         used to service filter & aggregation requests to the specified
+     *         integer value.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KERNEL_OMP_THREADS
      *         KERNEL_OMP_THREADS}: Set the number of kernel OpenMP threads to
@@ -664,8 +647,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SET_MESSAGE_TIMERS_ENABLED
      *         SET_MESSAGE_TIMERS_ENABLED}: Enables the communicator test to
      *         collect additional timing statistics when the value string is
-     *         {@code true}. Disables the collection when the value string is
-     *         {@code false}
+     *         {@code true}. Disables collecting statistics when the value
+     *         string is {@code false}
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -727,10 +710,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
      *         ENABLE_OVERLAPPED_EQUI_JOIN}: Enable overlapped-equi-join
      *         filter.  The default value is 'true'.
-     *                 <li> {@link
-     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_COMPOUND_EQUI_JOIN
-     *         ENABLE_COMPOUND_EQUI_JOIN}: Enable compound-equi-join filter
-     *         plan type.  The default value is 'false'.
      *         </ul>
      * 
      */
@@ -747,8 +726,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SM_OMP_THREADS
      *                            SM_OMP_THREADS}: Set the number of OpenMP
      *                            threads that will be used to service filter &
-     *                            aggregation requests against collections to
-     *                            the specified integer value.
+     *                            aggregation requests to the specified integer
+     *                            value.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KERNEL_OMP_THREADS
      *                            KERNEL_OMP_THREADS}: Set the number of kernel
@@ -835,8 +814,8 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            SET_MESSAGE_TIMERS_ENABLED}: Enables the
      *                            communicator test to collect additional
      *                            timing statistics when the value string is
-     *                            {@code true}. Disables the collection when
-     *                            the value string is {@code false}
+     *                            {@code true}. Disables collecting statistics
+     *                            when the value string is {@code false}
      *                            Supported values:
      *                            <ul>
      *                                    <li> {@link
@@ -912,11 +891,6 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            ENABLE_OVERLAPPED_EQUI_JOIN}: Enable
      *                            overlapped-equi-join filter.  The default
      *                            value is 'true'.
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_COMPOUND_EQUI_JOIN
-     *                            ENABLE_COMPOUND_EQUI_JOIN}: Enable
-     *                            compound-equi-join filter plan type.  The
-     *                            default value is 'false'.
      *                            </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

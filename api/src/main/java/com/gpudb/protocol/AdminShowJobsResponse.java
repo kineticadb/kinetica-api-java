@@ -46,6 +46,29 @@ public class AdminShowJobsResponse implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Additional information.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AdminShowJobsResponse.Info#JOB_TAG JOB_TAG}: The job
+     * tag specified by the user or if unspecified by user, an internally
+     * generated unique identifier for the job across clusters.
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code info}.
+     */
+    public static final class Info {
+
+        /**
+         * The job tag specified by the user or if unspecified by user, an
+         * internally generated unique identifier for the job across clusters.
+         */
+        public static final String JOB_TAG = "job_tag";
+
+        private Info() {  }
+    }
+
     private List<Long> jobId;
     private List<String> status;
     private List<String> endpointName;
@@ -170,6 +193,14 @@ public class AdminShowJobsResponse implements IndexedRecord {
     /**
      * 
      * @return Additional information.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AdminShowJobsResponse.Info#JOB_TAG JOB_TAG}:
+     *         The job tag specified by the user or if unspecified by user, an
+     *         internally generated unique identifier for the job across
+     *         clusters.
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getInfo() {
@@ -179,6 +210,14 @@ public class AdminShowJobsResponse implements IndexedRecord {
     /**
      * 
      * @param info  Additional information.
+     *              <ul>
+     *                      <li> {@link
+     *              com.gpudb.protocol.AdminShowJobsResponse.Info#JOB_TAG
+     *              JOB_TAG}: The job tag specified by the user or if
+     *              unspecified by user, an internally generated unique
+     *              identifier for the job across clusters.
+     *              </ul>
+     *              The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

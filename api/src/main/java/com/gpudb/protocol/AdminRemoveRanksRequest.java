@@ -19,14 +19,18 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#adminRemoveRanks(AdminRemoveRanksRequest)}.
  * <p>
- * Remove one or more ranks from the cluster. All data in the ranks to be
- * removed is rebalanced to other ranks before the node is removed unless the
- * {@code rebalance_sharded_data} or {@code rebalance_unsharded_data}
- * parameters are set to {@code false} in the {@code options}.
+ * Remove one or more ranks from an existing Kinetica cluster. All data will be
+ * rebalanced to other ranks before the rank(s) is removed unless the {@code
+ * rebalance_sharded_data} or {@code rebalance_unsharded_data} parameters are
+ * set to {@code false} in the {@code options}, in which case the corresponding
+ * <a href="../../../../../concepts/tables.html#sharding" target="_top">sharded
+ * data</a> and/or unsharded data (a.k.a. <a
+ * href="../../../../../concepts/tables.html#random-sharding"
+ * target="_top">randomly-sharded</a>) will be deleted.
  * <p>
- * Due to the rebalancing, this endpoint may take a long time to run, depending
- * on the amount of data in the system. The API call may time out if run
- * directly.  It is recommended to run this endpoint asynchronously via {@link
+ * This endpoint's processing time depends on the amount of data in the system,
+ * thus the API call may time out if run directly.  It is recommended to run
+ * this endpoint asynchronously via {@link
  * com.gpudb.GPUdb#createJob(CreateJobRequest)}.
  */
 public class AdminRemoveRanksRequest implements IndexedRecord {
@@ -34,7 +38,7 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
             .record("AdminRemoveRanksRequest")
             .namespace("com.gpudb")
             .fields()
-                .name("ranks").type().array().items().intType().noDefault()
+                .name("ranks").type().array().items().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -56,10 +60,12 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_SHARDED_DATA
-     * REBALANCE_SHARDED_DATA}: When {@code true}, data with primary keys or
-     * shard keys will be rebalanced to other ranks prior to rank removal. Note
-     * that for big clusters, this data transfer could be time consuming and
-     * result in delayed query responses.
+     * REBALANCE_SHARDED_DATA}: If {@code true}, <a
+     * href="../../../../../concepts/tables.html#sharding"
+     * target="_top">sharded data</a> will be rebalanced approximately equally
+     * across the cluster. Note that for clusters with large amounts of sharded
+     * data, this data transfer could be time consuming and result in delayed
+     * query responses.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -71,10 +77,12 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      * com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE TRUE}.
      *         <li> {@link
      * com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_UNSHARDED_DATA
-     * REBALANCE_UNSHARDED_DATA}: When {@code true}, unsharded data (data
-     * without primary keys and without shard keys) will be rebalanced to other
-     * ranks prior to rank removal. Note that for big clusters, this data
-     * transfer could be time consuming and result in delayed query responses.
+     * REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded data (a.k.a. <a
+     * href="../../../../../concepts/tables.html#random-sharding"
+     * target="_top">randomly-sharded</a>) will be rebalanced approximately
+     * equally across the cluster. Note that for clusters with large amounts of
+     * unsharded data, this data transfer could be time consuming and result in
+     * delayed query responses.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -86,12 +94,12 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      * com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE TRUE}.
      *         <li> {@link
      * com.gpudb.protocol.AdminRemoveRanksRequest.Options#AGGRESSIVENESS
-     * AGGRESSIVENESS}: Influences how much data to send per rebalance round,
-     * during the rebalance portion of removing ranks.  A higher aggressiveness
-     * setting will complete the rebalance faster.  A lower aggressiveness
-     * setting will take longer, but allow for better interleaving between the
-     * rebalance and other queries. Allowed values are 1 through 10.  The
-     * default value is '1'.
+     * AGGRESSIVENESS}: Influences how much data is moved at a time during
+     * rebalance.  A higher {@code aggressiveness} will complete the rebalance
+     * faster.  A lower {@code aggressiveness} will take longer but allow for
+     * better interleaving between the rebalance and other queries. Valid
+     * values are constants from 1 (lowest) to 10 (highest).  The default value
+     * is '1'.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -99,10 +107,12 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * When {@code true}, data with primary keys or shard keys will be
-         * rebalanced to other ranks prior to rank removal. Note that for big
-         * clusters, this data transfer could be time consuming and result in
-         * delayed query responses.
+         * If {@code true}, <a
+         * href="../../../../../concepts/tables.html#sharding"
+         * target="_top">sharded data</a> will be rebalanced approximately
+         * equally across the cluster. Note that for clusters with large
+         * amounts of sharded data, this data transfer could be time consuming
+         * and result in delayed query responses.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -118,10 +128,12 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * When {@code true}, unsharded data (data without primary keys and
-         * without shard keys) will be rebalanced to other ranks prior to rank
-         * removal. Note that for big clusters, this data transfer could be
-         * time consuming and result in delayed query responses.
+         * If {@code true}, unsharded data (a.k.a. <a
+         * href="../../../../../concepts/tables.html#random-sharding"
+         * target="_top">randomly-sharded</a>) will be rebalanced approximately
+         * equally across the cluster. Note that for clusters with large
+         * amounts of unsharded data, this data transfer could be time
+         * consuming and result in delayed query responses.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -135,19 +147,19 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
         public static final String REBALANCE_UNSHARDED_DATA = "rebalance_unsharded_data";
 
         /**
-         * Influences how much data to send per rebalance round, during the
-         * rebalance portion of removing ranks.  A higher aggressiveness
-         * setting will complete the rebalance faster.  A lower aggressiveness
-         * setting will take longer, but allow for better interleaving between
-         * the rebalance and other queries. Allowed values are 1 through 10.
-         * The default value is '1'.
+         * Influences how much data is moved at a time during rebalance.  A
+         * higher {@code aggressiveness} will complete the rebalance faster.  A
+         * lower {@code aggressiveness} will take longer but allow for better
+         * interleaving between the rebalance and other queries. Valid values
+         * are constants from 1 (lowest) to 10 (highest).  The default value is
+         * '1'.
          */
         public static final String AGGRESSIVENESS = "aggressiveness";
 
         private Options() {  }
     }
 
-    private List<Integer> ranks;
+    private List<String> ranks;
     private Map<String, String> options;
 
 
@@ -163,16 +175,27 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      * Constructs an AdminRemoveRanksRequest object with the specified
      * parameters.
      * 
-     * @param ranks  Rank numbers of the ranks to be removed from the cluster.
+     * @param ranks  Each array value designates one or more ranks to remove
+     *               from the cluster. Values can be formatted as 'rankN' for a
+     *               specific rank, 'hostN' (from the gpudb.conf file) to
+     *               remove all ranks on that host, or the host IP address
+     *               (hostN.address from the gpub.conf file) which also removes
+     *               all ranks on that host. Rank 0 (the head rank) cannot be
+     *               removed (but can be moved to another host using {@link
+     *               com.gpudb.GPUdb#adminSwitchover(AdminSwitchoverRequest)}).
+     *               At least one worker rank must be left in the cluster after
+     *               the operation.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_SHARDED_DATA
-     *                 REBALANCE_SHARDED_DATA}: When {@code true}, data with
-     *                 primary keys or shard keys will be rebalanced to other
-     *                 ranks prior to rank removal. Note that for big clusters,
-     *                 this data transfer could be time consuming and result in
-     *                 delayed query responses.
+     *                 REBALANCE_SHARDED_DATA}: If {@code true}, <a
+     *                 href="../../../../../concepts/tables.html#sharding"
+     *                 target="_top">sharded data</a> will be rebalanced
+     *                 approximately equally across the cluster. Note that for
+     *                 clusters with large amounts of sharded data, this data
+     *                 transfer could be time consuming and result in delayed
+     *                 query responses.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -187,11 +210,14 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_UNSHARDED_DATA
-     *                 REBALANCE_UNSHARDED_DATA}: When {@code true}, unsharded
-     *                 data (data without primary keys and without shard keys)
-     *                 will be rebalanced to other ranks prior to rank removal.
-     *                 Note that for big clusters, this data transfer could be
-     *                 time consuming and result in delayed query responses.
+     *                 REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded
+     *                 data (a.k.a. <a
+     *                 href="../../../../../concepts/tables.html#random-sharding"
+     *                 target="_top">randomly-sharded</a>) will be rebalanced
+     *                 approximately equally across the cluster. Note that for
+     *                 clusters with large amounts of unsharded data, this data
+     *                 transfer could be time consuming and result in delayed
+     *                 query responses.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -206,41 +232,58 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#AGGRESSIVENESS
-     *                 AGGRESSIVENESS}: Influences how much data to send per
-     *                 rebalance round, during the rebalance portion of
-     *                 removing ranks.  A higher aggressiveness setting will
-     *                 complete the rebalance faster.  A lower aggressiveness
-     *                 setting will take longer, but allow for better
+     *                 AGGRESSIVENESS}: Influences how much data is moved at a
+     *                 time during rebalance.  A higher {@code aggressiveness}
+     *                 will complete the rebalance faster.  A lower {@code
+     *                 aggressiveness} will take longer but allow for better
      *                 interleaving between the rebalance and other queries.
-     *                 Allowed values are 1 through 10.  The default value is
-     *                 '1'.
+     *                 Valid values are constants from 1 (lowest) to 10
+     *                 (highest).  The default value is '1'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
      */
-    public AdminRemoveRanksRequest(List<Integer> ranks, Map<String, String> options) {
-        this.ranks = (ranks == null) ? new ArrayList<Integer>() : ranks;
+    public AdminRemoveRanksRequest(List<String> ranks, Map<String, String> options) {
+        this.ranks = (ranks == null) ? new ArrayList<String>() : ranks;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
     /**
      * 
-     * @return Rank numbers of the ranks to be removed from the cluster.
+     * @return Each array value designates one or more ranks to remove from the
+     *         cluster. Values can be formatted as 'rankN' for a specific rank,
+     *         'hostN' (from the gpudb.conf file) to remove all ranks on that
+     *         host, or the host IP address (hostN.address from the gpub.conf
+     *         file) which also removes all ranks on that host. Rank 0 (the
+     *         head rank) cannot be removed (but can be moved to another host
+     *         using {@link
+     *         com.gpudb.GPUdb#adminSwitchover(AdminSwitchoverRequest)}). At
+     *         least one worker rank must be left in the cluster after the
+     *         operation.
      * 
      */
-    public List<Integer> getRanks() {
+    public List<String> getRanks() {
         return ranks;
     }
 
     /**
      * 
-     * @param ranks  Rank numbers of the ranks to be removed from the cluster.
+     * @param ranks  Each array value designates one or more ranks to remove
+     *               from the cluster. Values can be formatted as 'rankN' for a
+     *               specific rank, 'hostN' (from the gpudb.conf file) to
+     *               remove all ranks on that host, or the host IP address
+     *               (hostN.address from the gpub.conf file) which also removes
+     *               all ranks on that host. Rank 0 (the head rank) cannot be
+     *               removed (but can be moved to another host using {@link
+     *               com.gpudb.GPUdb#adminSwitchover(AdminSwitchoverRequest)}).
+     *               At least one worker rank must be left in the cluster after
+     *               the operation.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public AdminRemoveRanksRequest setRanks(List<Integer> ranks) {
-        this.ranks = (ranks == null) ? new ArrayList<Integer>() : ranks;
+    public AdminRemoveRanksRequest setRanks(List<String> ranks) {
+        this.ranks = (ranks == null) ? new ArrayList<String>() : ranks;
         return this;
     }
 
@@ -250,10 +293,12 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_SHARDED_DATA
-     *         REBALANCE_SHARDED_DATA}: When {@code true}, data with primary
-     *         keys or shard keys will be rebalanced to other ranks prior to
-     *         rank removal. Note that for big clusters, this data transfer
-     *         could be time consuming and result in delayed query responses.
+     *         REBALANCE_SHARDED_DATA}: If {@code true}, <a
+     *         href="../../../../../concepts/tables.html#sharding"
+     *         target="_top">sharded data</a> will be rebalanced approximately
+     *         equally across the cluster. Note that for clusters with large
+     *         amounts of sharded data, this data transfer could be time
+     *         consuming and result in delayed query responses.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -265,11 +310,13 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *         com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE TRUE}.
      *                 <li> {@link
      *         com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_UNSHARDED_DATA
-     *         REBALANCE_UNSHARDED_DATA}: When {@code true}, unsharded data
-     *         (data without primary keys and without shard keys) will be
-     *         rebalanced to other ranks prior to rank removal. Note that for
-     *         big clusters, this data transfer could be time consuming and
-     *         result in delayed query responses.
+     *         REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded data
+     *         (a.k.a. <a
+     *         href="../../../../../concepts/tables.html#random-sharding"
+     *         target="_top">randomly-sharded</a>) will be rebalanced
+     *         approximately equally across the cluster. Note that for clusters
+     *         with large amounts of unsharded data, this data transfer could
+     *         be time consuming and result in delayed query responses.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -281,12 +328,12 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *         com.gpudb.protocol.AdminRemoveRanksRequest.Options#TRUE TRUE}.
      *                 <li> {@link
      *         com.gpudb.protocol.AdminRemoveRanksRequest.Options#AGGRESSIVENESS
-     *         AGGRESSIVENESS}: Influences how much data to send per rebalance
-     *         round, during the rebalance portion of removing ranks.  A higher
-     *         aggressiveness setting will complete the rebalance faster.  A
-     *         lower aggressiveness setting will take longer, but allow for
-     *         better interleaving between the rebalance and other queries.
-     *         Allowed values are 1 through 10.  The default value is '1'.
+     *         AGGRESSIVENESS}: Influences how much data is moved at a time
+     *         during rebalance.  A higher {@code aggressiveness} will complete
+     *         the rebalance faster.  A lower {@code aggressiveness} will take
+     *         longer but allow for better interleaving between the rebalance
+     *         and other queries. Valid values are constants from 1 (lowest) to
+     *         10 (highest).  The default value is '1'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -301,11 +348,13 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_SHARDED_DATA
-     *                 REBALANCE_SHARDED_DATA}: When {@code true}, data with
-     *                 primary keys or shard keys will be rebalanced to other
-     *                 ranks prior to rank removal. Note that for big clusters,
-     *                 this data transfer could be time consuming and result in
-     *                 delayed query responses.
+     *                 REBALANCE_SHARDED_DATA}: If {@code true}, <a
+     *                 href="../../../../../concepts/tables.html#sharding"
+     *                 target="_top">sharded data</a> will be rebalanced
+     *                 approximately equally across the cluster. Note that for
+     *                 clusters with large amounts of sharded data, this data
+     *                 transfer could be time consuming and result in delayed
+     *                 query responses.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -320,11 +369,14 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_UNSHARDED_DATA
-     *                 REBALANCE_UNSHARDED_DATA}: When {@code true}, unsharded
-     *                 data (data without primary keys and without shard keys)
-     *                 will be rebalanced to other ranks prior to rank removal.
-     *                 Note that for big clusters, this data transfer could be
-     *                 time consuming and result in delayed query responses.
+     *                 REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded
+     *                 data (a.k.a. <a
+     *                 href="../../../../../concepts/tables.html#random-sharding"
+     *                 target="_top">randomly-sharded</a>) will be rebalanced
+     *                 approximately equally across the cluster. Note that for
+     *                 clusters with large amounts of unsharded data, this data
+     *                 transfer could be time consuming and result in delayed
+     *                 query responses.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -339,14 +391,13 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *                 TRUE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#AGGRESSIVENESS
-     *                 AGGRESSIVENESS}: Influences how much data to send per
-     *                 rebalance round, during the rebalance portion of
-     *                 removing ranks.  A higher aggressiveness setting will
-     *                 complete the rebalance faster.  A lower aggressiveness
-     *                 setting will take longer, but allow for better
+     *                 AGGRESSIVENESS}: Influences how much data is moved at a
+     *                 time during rebalance.  A higher {@code aggressiveness}
+     *                 will complete the rebalance faster.  A lower {@code
+     *                 aggressiveness} will take longer but allow for better
      *                 interleaving between the rebalance and other queries.
-     *                 Allowed values are 1 through 10.  The default value is
-     *                 '1'.
+     *                 Valid values are constants from 1 (lowest) to 10
+     *                 (highest).  The default value is '1'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -410,7 +461,7 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.ranks = (List<Integer>)value;
+                this.ranks = (List<String>)value;
                 break;
 
             case 1:

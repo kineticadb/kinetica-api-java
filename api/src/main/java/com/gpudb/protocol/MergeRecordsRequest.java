@@ -19,21 +19,23 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#mergeRecords(MergeRecordsRequest)}.
  * <p>
- * Create a new empty result table (specified by {@code tableName}), and insert
- * all records from source tables (specified by {@code sourceTableNames}) based
- * on the field mapping information (specified by {@code fieldMaps}).
+ * Create a new empty result table (specified by {@code tableName}),
+ * and insert all records from source tables
+ * (specified by {@code sourceTableNames}) based on the field mapping
+ * information (specified by {@code fieldMaps}).
  * <p>
- * For merge records details and examples, see <a
- * href="../../../../../concepts/merge_records.html" target="_top">Merge
- * Records</a>.  For limitations, see <a
+ * For merge records details and examples, see
+ * <a href="../../../../../concepts/merge_records.html" target="_top">Merge
+ * Records</a>.  For limitations, see
+ * <a
  * href="../../../../../concepts/merge_records.html#limitations-and-cautions"
  * target="_top">Merge Records Limitations and Cautions</a>.
 
  * The field map (specified by {@code fieldMaps}) holds the user-specified maps
- * of target table column names to source table columns. The array of {@code
- * fieldMaps} must match one-to-one with the {@code sourceTableNames}, e.g.,
- * there's a map present in {@code fieldMaps} for each table listed in {@code
- * sourceTableNames}.
+ * of target table column names to source table columns. The array of
+ * {@code fieldMaps} must match one-to-one with the {@code sourceTableNames},
+ * e.g., there's a map present in {@code fieldMaps} for each table listed in
+ * {@code sourceTableNames}.
  */
 public class MergeRecordsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -64,10 +66,11 @@ public class MergeRecordsRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.MergeRecordsRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the newly
-     * created merged table specified by {@code tableName}. If the collection
-     * provided is non-existent, the collection will be automatically created.
-     * If empty, then the newly created merged table will be a top-level table.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
+     * the merged table as part of {@code tableName} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of a schema for the newly created merged table
+     * specified by {@code tableName}.
      *         <li> {@link
      * com.gpudb.protocol.MergeRecordsRequest.Options#IS_REPLICATED
      * IS_REPLICATED}: Indicates the <a
@@ -120,11 +123,11 @@ public class MergeRecordsRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the newly created merged
-         * table specified by {@code tableName}. If the collection provided is
-         * non-existent, the collection will be automatically created. If
-         * empty, then the newly created merged table will be a top-level
-         * table.
+         * [DEPRECATED--please specify the containing schema for the merged
+         * table as part of {@code tableName} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of a schema for the newly created
+         * merged table specified by {@code tableName}.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -208,10 +211,20 @@ public class MergeRecordsRequest implements IndexedRecord {
     /**
      * Constructs a MergeRecordsRequest object with the specified parameters.
      * 
-     * @param tableName  The new result table name for the records to be
-     *                   merged.  Must NOT be an existing table.
-     * @param sourceTableNames  The list of source table names to get the
-     *                          records from. Must be existing table names.
+     * @param tableName  The name of the new result table for the records to be
+     *                   merged into, in [schema_name.]table_name format, using
+     *                   standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a> and meeting <a
+     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   target="_top">table naming criteria</a>.  Must NOT be
+     *                   an existing table.
+     * @param sourceTableNames  The list of names of source tables to get the
+     *                          records from, each in [schema_name.]table_name
+     *                          format, using standard <a
+     *                          href="../../../../../concepts/tables.html#table-name-resolution"
+     *                          target="_top">name resolution rules</a>.  Must
+     *                          be existing table names.
      * @param fieldMaps  Contains a list of source/target column mappings, one
      *                   mapping for each source table listed in {@code
      *                   sourceTableNames} being merged into the target table
@@ -227,12 +240,13 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created merged table specified by
-     *                 {@code tableName}. If the collection provided is
-     *                 non-existent, the collection will be automatically
-     *                 created. If empty, then the newly created merged table
-     *                 will be a top-level table.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the merged table as part of {@code
+     *                 tableName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the newly created merged table specified by {@code
+     *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#IS_REPLICATED
      *                 IS_REPLICATED}: Indicates the <a
@@ -303,8 +317,13 @@ public class MergeRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The new result table name for the records to be merged.  Must
-     *         NOT be an existing table.
+     * @return The name of the new result table for the records to be merged
+     *         into, in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  Must NOT be an
+     *         existing table.
      * 
      */
     public String getTableName() {
@@ -313,8 +332,14 @@ public class MergeRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  The new result table name for the records to be
-     *                   merged.  Must NOT be an existing table.
+     * @param tableName  The name of the new result table for the records to be
+     *                   merged into, in [schema_name.]table_name format, using
+     *                   standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a> and meeting <a
+     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   target="_top">table naming criteria</a>.  Must NOT be
+     *                   an existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -326,8 +351,11 @@ public class MergeRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return The list of source table names to get the records from. Must be
-     *         existing table names.
+     * @return The list of names of source tables to get the records from, each
+     *         in [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be existing table
+     *         names.
      * 
      */
     public List<String> getSourceTableNames() {
@@ -336,8 +364,12 @@ public class MergeRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param sourceTableNames  The list of source table names to get the
-     *                          records from. Must be existing table names.
+     * @param sourceTableNames  The list of names of source tables to get the
+     *                          records from, each in [schema_name.]table_name
+     *                          format, using standard <a
+     *                          href="../../../../../concepts/tables.html#table-name-resolution"
+     *                          target="_top">name resolution rules</a>.  Must
+     *                          be existing table names.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -393,11 +425,11 @@ public class MergeRecordsRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.MergeRecordsRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         newly created merged table specified by {@code tableName}. If
-     *         the collection provided is non-existent, the collection will be
-     *         automatically created. If empty, then the newly created merged
-     *         table will be a top-level table.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema for the merged table as part of {@code tableName} and use
+     *         {@link com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *         create the schema if non-existent]  Name of a schema for the
+     *         newly created merged table specified by {@code tableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.MergeRecordsRequest.Options#IS_REPLICATED
      *         IS_REPLICATED}: Indicates the <a
@@ -459,12 +491,13 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created merged table specified by
-     *                 {@code tableName}. If the collection provided is
-     *                 non-existent, the collection will be automatically
-     *                 created. If empty, then the newly created merged table
-     *                 will be a top-level table.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the merged table as part of {@code
+     *                 tableName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the newly created merged table specified by {@code
+     *                 tableName}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#IS_REPLICATED
      *                 IS_REPLICATED}: Indicates the <a

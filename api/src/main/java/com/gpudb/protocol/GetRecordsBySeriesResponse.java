@@ -59,9 +59,7 @@ public class GetRecordsBySeriesResponse<T> {
     /**
      * 
      * @return The type IDs (one per series/track) of the returned
-     *         series/tracks. This is useful when {@code tableName} is a
-     *         collection and the returned series/tracks belong to tables with
-     *         different types.
+     *         series/tracks.
      * 
      */
     public List<String> getTypeNames() {
@@ -71,9 +69,7 @@ public class GetRecordsBySeriesResponse<T> {
     /**
      * 
      * @param typeNames  The type IDs (one per series/track) of the returned
-     *                   series/tracks. This is useful when {@code tableName}
-     *                   is a collection and the returned series/tracks belong
-     *                   to tables with different types.
+     *                   series/tracks.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

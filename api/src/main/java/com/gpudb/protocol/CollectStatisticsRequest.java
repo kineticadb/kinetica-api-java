@@ -61,7 +61,11 @@ public class CollectStatisticsRequest implements IndexedRecord {
      * Constructs a CollectStatisticsRequest object with the specified
      * parameters.
      * 
-     * @param tableName  Name of a table. Must be an existing table.
+     * @param tableName  Name of a table, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table.
      * @param columnNames  List of one or more column names in {@code
      *                     tableName} for which to collect statistics
      *                     (cardinality, mean value, etc.).
@@ -77,7 +81,11 @@ public class CollectStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of a table. Must be an existing table.
+     * @return Name of a table, in [schema_name.]table_name format, using
+     *         standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be an existing
+     *         table.
      * 
      */
     public String getTableName() {
@@ -86,7 +94,11 @@ public class CollectStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of a table. Must be an existing table.
+     * @param tableName  Name of a table, in [schema_name.]table_name format,
+     *                   using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

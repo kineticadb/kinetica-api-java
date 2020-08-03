@@ -17,17 +17,21 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#filterByRadius(FilterByRadiusRequest)}.
  * <p>
- * Calculates which objects from a table lie within a circle with the given
- * radius and center point (i.e. circular NAI). The operation is synchronous,
+ * Calculates which objects from a table lie within a circle with the
+ * given radius and center point (i.e. circular NAI). The operation is
+ * synchronous,
  * meaning that a response will not be returned until all the objects are fully
  * available. The response payload provides the count of the resulting set. A
- * new resultant set (view) which satisfies the input circular NAI restriction
+ * new
+ * resultant set (view) which satisfies the input circular NAI restriction
  * specification is also created if a {@code viewName} is passed in as part of
  * the request.
  * <p>
  * For track data, all track points that lie within the circle plus one point
- * on either side of the circle (if the track goes beyond the circle) will be
- * included in the result.
+ * on
+ * either side of the circle (if the track goes beyond the circle) will be
+ * included
+ * in the result.
  */
 public class FilterByRadiusRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -62,10 +66,11 @@ public class FilterByRadiusRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.FilterByRadiusRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the newly
-     * created view. If the collection provided is non-existent, the collection
-     * will be automatically created. If empty, then the newly created view
-     * will be top-level.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
+     * the view as part of {@code viewName} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of a schema which is to contain the newly created
+     * view. If the schema is non-existent, it will be automatically created.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -73,10 +78,12 @@ public class FilterByRadiusRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the newly created view. If
-         * the collection provided is non-existent, the collection will be
-         * automatically created. If empty, then the newly created view will be
-         * top-level.
+         * [DEPRECATED--please specify the containing schema for the view as
+         * part of {@code viewName} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of a schema which is to contain the
+         * newly created view. If the schema is non-existent, it will be
+         * automatically created.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -108,13 +115,20 @@ public class FilterByRadiusRequest implements IndexedRecord {
      * Constructs a FilterByRadiusRequest object with the specified parameters.
      * 
      * @param tableName  Name of the table on which the filter by radius
-     *                   operation will be performed.  Must be an existing
-     *                   table.
+     *                   operation will be performed, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table.
      * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Has the same naming
-     *                  restrictions as <a
-     *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.  The default value is ''.
+     *                  containing the results, in [schema_name.]view_name
+     *                  format, using standard <a
+     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  target="_top">name resolution rules</a> and meeting <a
+     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  target="_top">table naming criteria</a>.  Must not be
+     *                  an already existing table or view.  The default value
+     *                  is ''.
      * @param xColumnName  Name of the column to be used for the x-coordinate
      *                     (the longitude) of the center.
      * @param xCenter  Value of the longitude of the center. Must be within
@@ -134,11 +148,14 @@ public class FilterByRadiusRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByRadiusRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 view will be top-level.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the view as part of {@code
+     *                 viewName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema
+     *                 which is to contain the newly created view. If the
+     *                 schema is non-existent, it will be automatically
+     *                 created.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -157,7 +174,11 @@ public class FilterByRadiusRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table on which the filter by radius operation will
-     *         be performed.  Must be an existing table.
+     *         be performed, in [schema_name.]table_name format, using standard
+     *         <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be an existing
+     *         table.
      * 
      */
     public String getTableName() {
@@ -167,8 +188,11 @@ public class FilterByRadiusRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table on which the filter by radius
-     *                   operation will be performed.  Must be an existing
-     *                   table.
+     *                   operation will be performed, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -181,9 +205,13 @@ public class FilterByRadiusRequest implements IndexedRecord {
     /**
      * 
      * @return If provided, then this will be the name of the view containing
-     *         the results. Has the same naming restrictions as <a
-     *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.  The default value is ''.
+     *         the results, in [schema_name.]view_name format, using standard
+     *         <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  Must not be an already
+     *         existing table or view.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -193,10 +221,14 @@ public class FilterByRadiusRequest implements IndexedRecord {
     /**
      * 
      * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Has the same naming
-     *                  restrictions as <a
-     *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.  The default value is ''.
+     *                  containing the results, in [schema_name.]view_name
+     *                  format, using standard <a
+     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  target="_top">name resolution rules</a> and meeting <a
+     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  target="_top">table naming criteria</a>.  Must not be
+     *                  an already existing table or view.  The default value
+     *                  is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -336,10 +368,12 @@ public class FilterByRadiusRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.FilterByRadiusRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         newly created view. If the collection provided is non-existent,
-     *         the collection will be automatically created. If empty, then the
-     *         newly created view will be top-level.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema for the view as part of {@code viewName} and use {@link
+     *         com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+     *         schema if non-existent]  Name of a schema which is to contain
+     *         the newly created view. If the schema is non-existent, it will
+     *         be automatically created.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -354,11 +388,14 @@ public class FilterByRadiusRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByRadiusRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 view will be top-level.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the view as part of {@code
+     *                 viewName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema
+     *                 which is to contain the newly created view. If the
+     *                 schema is non-existent, it will be automatically
+     *                 created.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

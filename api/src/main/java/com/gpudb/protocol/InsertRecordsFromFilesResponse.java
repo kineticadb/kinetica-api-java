@@ -6,6 +6,7 @@
 package com.gpudb.protocol;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -24,6 +25,9 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
             .fields()
                 .name("tableName").type().stringType().noDefault()
                 .name("typeId").type().stringType().noDefault()
+                .name("typeDefinition").type().stringType().noDefault()
+                .name("typeLabel").type().stringType().noDefault()
+                .name("typeProperties").type().map().values().array().items().stringType().noDefault()
                 .name("countInserted").type().longType().noDefault()
                 .name("countSkipped").type().longType().noDefault()
                 .name("countUpdated").type().longType().noDefault()
@@ -44,6 +48,9 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     private String tableName;
     private String typeId;
+    private String typeDefinition;
+    private String typeLabel;
+    private Map<String, List<String>> typeProperties;
     private long countInserted;
     private long countSkipped;
     private long countUpdated;
@@ -80,7 +87,9 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Type ID for the table.
+     * @return ID of the currently registered table structure <a
+     *         href="../../../../../concepts/types.html" target="_top">type</a>
+     *         for the target table
      * 
      */
     public String getTypeId() {
@@ -89,7 +98,9 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param typeId  Type ID for the table.
+     * @param typeId  ID of the currently registered table structure <a
+     *                href="../../../../../concepts/types.html"
+     *                target="_top">type</a> for the target table
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -101,7 +112,76 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Number of records inserted.
+     * @return A JSON string describing the columns of the target table
+     * 
+     */
+    public String getTypeDefinition() {
+        return typeDefinition;
+    }
+
+    /**
+     * 
+     * @param typeDefinition  A JSON string describing the columns of the
+     *                        target table
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public InsertRecordsFromFilesResponse setTypeDefinition(String typeDefinition) {
+        this.typeDefinition = (typeDefinition == null) ? "" : typeDefinition;
+        return this;
+    }
+
+    /**
+     * 
+     * @return The user-defined description associated with the target table's
+     *         structure
+     * 
+     */
+    public String getTypeLabel() {
+        return typeLabel;
+    }
+
+    /**
+     * 
+     * @param typeLabel  The user-defined description associated with the
+     *                   target table's structure
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public InsertRecordsFromFilesResponse setTypeLabel(String typeLabel) {
+        this.typeLabel = (typeLabel == null) ? "" : typeLabel;
+        return this;
+    }
+
+    /**
+     * 
+     * @return A mapping of each target table column name to an array of column
+     *         properties associated with that column
+     * 
+     */
+    public Map<String, List<String>> getTypeProperties() {
+        return typeProperties;
+    }
+
+    /**
+     * 
+     * @param typeProperties  A mapping of each target table column name to an
+     *                        array of column properties associated with that
+     *                        column
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public InsertRecordsFromFilesResponse setTypeProperties(Map<String, List<String>> typeProperties) {
+        this.typeProperties = (typeProperties == null) ? new LinkedHashMap<String, List<String>>() : typeProperties;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Number of records inserted into the target table.
      * 
      */
     public long getCountInserted() {
@@ -110,7 +190,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param countInserted  Number of records inserted.
+     * @param countInserted  Number of records inserted into the target table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -122,7 +202,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Number of records skipped when not running in {@code abort}
+     * @return Number of records skipped, when not running in {@code abort}
      *         error handling mode.
      * 
      */
@@ -132,7 +212,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param countSkipped  Number of records skipped when not running in
+     * @param countSkipped  Number of records skipped, when not running in
      *                      {@code abort} error handling mode.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -145,7 +225,8 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Number of records updated.  The default value is -1.
+     * @return [Not yet implemented]  Number of records updated within the
+     *         target table.
      * 
      */
     public long getCountUpdated() {
@@ -154,8 +235,8 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param countUpdated  Number of records updated.  The default value is
-     *                      -1.
+     * @param countUpdated  [Not yet implemented]  Number of records updated
+     *                      within the target table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -219,15 +300,24 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
                 return this.typeId;
 
             case 2:
-                return this.countInserted;
+                return this.typeDefinition;
 
             case 3:
-                return this.countSkipped;
+                return this.typeLabel;
 
             case 4:
-                return this.countUpdated;
+                return this.typeProperties;
 
             case 5:
+                return this.countInserted;
+
+            case 6:
+                return this.countSkipped;
+
+            case 7:
+                return this.countUpdated;
+
+            case 8:
                 return this.info;
 
             default:
@@ -258,18 +348,30 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
                 break;
 
             case 2:
-                this.countInserted = (Long)value;
+                this.typeDefinition = (String)value;
                 break;
 
             case 3:
-                this.countSkipped = (Long)value;
+                this.typeLabel = (String)value;
                 break;
 
             case 4:
-                this.countUpdated = (Long)value;
+                this.typeProperties = (Map<String, List<String>>)value;
                 break;
 
             case 5:
+                this.countInserted = (Long)value;
+                break;
+
+            case 6:
+                this.countSkipped = (Long)value;
+                break;
+
+            case 7:
+                this.countUpdated = (Long)value;
+                break;
+
+            case 8:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -292,6 +394,9 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
         return ( this.tableName.equals( that.tableName )
                  && this.typeId.equals( that.typeId )
+                 && this.typeDefinition.equals( that.typeDefinition )
+                 && this.typeLabel.equals( that.typeLabel )
+                 && this.typeProperties.equals( that.typeProperties )
                  && ( this.countInserted == that.countInserted )
                  && ( this.countSkipped == that.countSkipped )
                  && ( this.countUpdated == that.countUpdated )
@@ -310,6 +415,18 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
         builder.append( gd.toString( "typeId" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.typeId ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "typeDefinition" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.typeDefinition ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "typeLabel" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.typeLabel ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "typeProperties" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.typeProperties ) );
         builder.append( ", " );
         builder.append( gd.toString( "countInserted" ) );
         builder.append( ": " );
@@ -336,6 +453,9 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.tableName.hashCode();
         hashCode = (31 * hashCode) + this.typeId.hashCode();
+        hashCode = (31 * hashCode) + this.typeDefinition.hashCode();
+        hashCode = (31 * hashCode) + this.typeLabel.hashCode();
+        hashCode = (31 * hashCode) + this.typeProperties.hashCode();
         hashCode = (31 * hashCode) + ((Long)this.countInserted).hashCode();
         hashCode = (31 * hashCode) + ((Long)this.countSkipped).hashCode();
         hashCode = (31 * hashCode) + ((Long)this.countUpdated).hashCode();

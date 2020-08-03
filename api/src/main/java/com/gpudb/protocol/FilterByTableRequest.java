@@ -17,15 +17,18 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#filterByTable(FilterByTableRequest)}.
  * <p>
- * Filters objects in one table based on objects in another table. The user
- * must specify matching column types from the two tables (i.e. the target
+ * Filters objects in one table based on objects in another table. The
+ * user must specify matching column types from the two tables (i.e. the target
  * table from which objects will be filtered and the source table based on
- * which the filter will be created); the column names need not be the same. If
- * a {@code viewName} is specified, then the filtered objects will then be put
- * in a newly created view. The operation is synchronous, meaning that a
- * response will not be returned until all objects are fully available in the
- * result view. The return value contains the count (i.e. the size) of the
- * resulting view.
+ * which
+ * the filter will be created); the column names need not be the same. If a
+ * {@code viewName} is specified, then the filtered objects will then be put in
+ * a
+ * newly created view. The operation is synchronous, meaning that a response
+ * will
+ * not be returned until all objects are fully available in the result view.
+ * The
+ * return value contains the count (i.e. the size) of the resulting view.
  */
 public class FilterByTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -58,10 +61,11 @@ public class FilterByTableRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.FilterByTableRequest.Options#COLLECTION_NAME
-     * COLLECTION_NAME}: Name of a collection which is to contain the newly
-     * created view. If the collection provided is non-existent, the collection
-     * will be automatically created. If empty, then the newly created view
-     * will be top-level.
+     * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
+     * the view as part of {@code viewName} and use {@link
+     * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the schema
+     * if non-existent]  Name of a schema for the newly created view. If the
+     * schema is non-existent, it will be automatically created.
      *         <li> {@link
      * com.gpudb.protocol.FilterByTableRequest.Options#FILTER_MODE
      * FILTER_MODE}: String indicating the filter mode, either {@code in_table}
@@ -127,10 +131,12 @@ public class FilterByTableRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * Name of a collection which is to contain the newly created view. If
-         * the collection provided is non-existent, the collection will be
-         * automatically created. If empty, then the newly created view will be
-         * top-level.
+         * [DEPRECATED--please specify the containing schema for the view as
+         * part of {@code viewName} and use {@link
+         * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+         * schema if non-existent]  Name of a schema for the newly created
+         * view. If the schema is non-existent, it will be automatically
+         * created.
          */
         public static final String COLLECTION_NAME = "collection_name";
 
@@ -245,19 +251,30 @@ public class FilterByTableRequest implements IndexedRecord {
     /**
      * Constructs a FilterByTableRequest object with the specified parameters.
      * 
-     * @param tableName  Name of the table whose data will be filtered. Must be
-     *                   an existing table.
+     * @param tableName  Name of the table whose data will be filtered, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table.
      * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Has the same naming
-     *                  restrictions as <a
-     *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.  The default value is ''.
+     *                  containing the results, in [schema_name.]view_name
+     *                  format, using standard <a
+     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  target="_top">name resolution rules</a> and meeting <a
+     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  target="_top">table naming criteria</a>.  Must not be
+     *                  an already existing table or view.  The default value
+     *                  is ''.
      * @param columnName  Name of the column by whose value the data will be
      *                    filtered from the table designated by {@code
      *                    tableName}.
      * @param sourceTableName  Name of the table whose data will be compared
-     *                         against in the table called {@code tableName}.
-     *                         Must be an existing table.
+     *                         against in the table called {@code tableName},
+     *                         in [schema_name.]table_name format, using
+     *                         standard <a
+     *                         href="../../../../../concepts/tables.html#table-name-resolution"
+     *                         target="_top">name resolution rules</a>.  Must
+     *                         be an existing table.
      * @param sourceTableColumnName  Name of the column in the {@code
      *                               sourceTableName} whose values will be used
      *                               as the filter for table {@code tableName}.
@@ -268,11 +285,13 @@ public class FilterByTableRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 view will be top-level.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the view as part of {@code
+     *                 viewName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the newly created view. If the schema is non-existent,
+     *                 it will be automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#FILTER_MODE
      *                 FILTER_MODE}: String indicating the filter mode, either
@@ -360,8 +379,11 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table whose data will be filtered. Must be an
-     *         existing table.
+     * @return Name of the table whose data will be filtered, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be an existing
+     *         table.
      * 
      */
     public String getTableName() {
@@ -370,8 +392,11 @@ public class FilterByTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableName  Name of the table whose data will be filtered. Must be
-     *                   an existing table.
+     * @param tableName  Name of the table whose data will be filtered, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  Must be an
+     *                   existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -384,9 +409,13 @@ public class FilterByTableRequest implements IndexedRecord {
     /**
      * 
      * @return If provided, then this will be the name of the view containing
-     *         the results. Has the same naming restrictions as <a
-     *         href="../../../../../concepts/tables.html"
-     *         target="_top">tables</a>.  The default value is ''.
+     *         the results, in [schema_name.]view_name format, using standard
+     *         <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a> and meeting <a
+     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         target="_top">table naming criteria</a>.  Must not be an already
+     *         existing table or view.  The default value is ''.
      * 
      */
     public String getViewName() {
@@ -396,10 +425,14 @@ public class FilterByTableRequest implements IndexedRecord {
     /**
      * 
      * @param viewName  If provided, then this will be the name of the view
-     *                  containing the results. Has the same naming
-     *                  restrictions as <a
-     *                  href="../../../../../concepts/tables.html"
-     *                  target="_top">tables</a>.  The default value is ''.
+     *                  containing the results, in [schema_name.]view_name
+     *                  format, using standard <a
+     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  target="_top">name resolution rules</a> and meeting <a
+     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  target="_top">table naming criteria</a>.  Must not be
+     *                  an already existing table or view.  The default value
+     *                  is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -436,7 +469,11 @@ public class FilterByTableRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the table whose data will be compared against in the
-     *         table called {@code tableName}. Must be an existing table.
+     *         table called {@code tableName}, in [schema_name.]table_name
+     *         format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  Must be an existing
+     *         table.
      * 
      */
     public String getSourceTableName() {
@@ -446,8 +483,12 @@ public class FilterByTableRequest implements IndexedRecord {
     /**
      * 
      * @param sourceTableName  Name of the table whose data will be compared
-     *                         against in the table called {@code tableName}.
-     *                         Must be an existing table.
+     *                         against in the table called {@code tableName},
+     *                         in [schema_name.]table_name format, using
+     *                         standard <a
+     *                         href="../../../../../concepts/tables.html#table-name-resolution"
+     *                         target="_top">name resolution rules</a>.  Must
+     *                         be an existing table.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -492,10 +533,12 @@ public class FilterByTableRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.FilterByTableRequest.Options#COLLECTION_NAME
-     *         COLLECTION_NAME}: Name of a collection which is to contain the
-     *         newly created view. If the collection provided is non-existent,
-     *         the collection will be automatically created. If empty, then the
-     *         newly created view will be top-level.
+     *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
+     *         schema for the view as part of {@code viewName} and use {@link
+     *         com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
+     *         schema if non-existent]  Name of a schema for the newly created
+     *         view. If the schema is non-existent, it will be automatically
+     *         created.
      *                 <li> {@link
      *         com.gpudb.protocol.FilterByTableRequest.Options#FILTER_MODE
      *         FILTER_MODE}: String indicating the filter mode, either {@code
@@ -574,11 +617,13 @@ public class FilterByTableRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#COLLECTION_NAME
-     *                 COLLECTION_NAME}: Name of a collection which is to
-     *                 contain the newly created view. If the collection
-     *                 provided is non-existent, the collection will be
-     *                 automatically created. If empty, then the newly created
-     *                 view will be top-level.
+     *                 COLLECTION_NAME}: [DEPRECATED--please specify the
+     *                 containing schema for the view as part of {@code
+     *                 viewName} and use {@link
+     *                 com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to
+     *                 create the schema if non-existent]  Name of a schema for
+     *                 the newly created view. If the schema is non-existent,
+     *                 it will be automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#FILTER_MODE
      *                 FILTER_MODE}: String indicating the filter mode, either

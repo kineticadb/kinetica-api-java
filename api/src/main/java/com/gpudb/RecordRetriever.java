@@ -1,6 +1,7 @@
 package com.gpudb;
 
 import com.gpudb.GPUdbBase.GPUdbExitException;
+import com.gpudb.GPUdbBase.GPUdbUnauthorizedAccessException;
 import com.gpudb.protocol.AdminShowShardsRequest;
 import com.gpudb.protocol.AdminShowShardsResponse;
 import com.gpudb.protocol.GetRecordsRequest;
@@ -56,7 +57,7 @@ public class RecordRetriever<T> {
         this(gpudb, tableName, type, null, null, null);
     }
 
-    
+
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
      *
@@ -151,7 +152,7 @@ public class RecordRetriever<T> {
     }
 
 
-    
+
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
      *
@@ -172,7 +173,7 @@ public class RecordRetriever<T> {
         this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, workers, null);
     }
 
-    
+
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
      *
@@ -195,7 +196,7 @@ public class RecordRetriever<T> {
         this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, workers, options);
     }
 
-    
+
     private RecordRetriever( GPUdb gpudb,
                              String tableName,
                              Type type,
@@ -222,7 +223,7 @@ public class RecordRetriever<T> {
         }
         // We will always need to use this for getByKey
         this.options.put(GetRecordsRequest.Options.FAST_INDEX_LOOKUP, GetRecordsRequest.Options.TRUE);
-        
+
         // We need to know how many clusters are in the HA ring (for failover
         // purposes)
         this.dbHARingSize = gpudb.getHARingSize();
@@ -234,7 +235,7 @@ public class RecordRetriever<T> {
         // Keep track of which cluster we're using (helpful in knowing if an
         // HA failover has happened)
         this.currentHeadNodeURL = gpudb.getURL();
-        
+
         RecordKeyBuilder<T> shardKeyBuilderTemp;
 
         if (typeObjectMap == null) {
@@ -296,7 +297,7 @@ public class RecordRetriever<T> {
             return this.currentHeadNodeURL;
         }
     }
-    
+
     /**
      * Sets the current head node URL in a thread-safe manner.
      */
@@ -305,7 +306,7 @@ public class RecordRetriever<T> {
             this.currentHeadNodeURL = newCurrURL;
         }
     }
-    
+
     /**
      * Use the current head node URL in a thread-safe manner.
      */
@@ -323,41 +324,58 @@ public class RecordRetriever<T> {
             this.numClusterSwitches = value;
         }
     }
-    
+
 
     /**
-     * Force a high-availability cluster failover over.  Check the health of the
+     * Force a high-availability cluster (inter-cluster) or ring-resiliency
+     * (intra-cluster) failover over, as appropriate.  Check the health of the
      * cluster (either head node only, or head node and worker ranks, based on
      * the retriever configuration), and use it if healthy.  If no healthy cluster
      * is found, then throw an error.  Otherwise, stop at the first healthy cluster.
      *
+     *
+     * @returns whether a successful failover recovery happened.
+     *
      * @throws GPUdbException if a successful failover could not be achieved.
      */
-    private synchronized void forceHAFailover(URL currURL, int currCountClusterSwitches) throws GPUdbException {
+    private synchronized boolean forceFailover(URL oldURL, int currCountClusterSwitches)
+        throws GPUdbException {
+        GPUdbLogger.debug_with_info( "Forced failover begin..." );
         // The whole failover scenario needs to happen in a thread-safe
         // manner; since this happens only upon failure, it's ok to
-        // synchronize the whole block
+        // synchronize the whole method
+
+        // We'll need to know which URL we're using at the moment
+        URL currURL = oldURL;
+
+        // Try to fail over as many times as there are clusters
         for (int i = 0; i < this.dbHARingSize; ++i) {
             // Try to switch to a new cluster
             try {
+                GPUdbLogger.debug_with_info( "Forced HA failover attempt #" + i );
                 this.gpudb.switchURL( currURL, currCountClusterSwitches );
             } catch (GPUdbBase.GPUdbHAUnavailableException ex ) {
                 // Have tried all clusters; back to square 1
+                throw ex;
+            } catch (GPUdbBase.GPUdbFailoverDisabledException ex) {
+                // Failover is disabled
                 throw ex;
             }
 
             // Update the reference points
             currURL                  = this.gpudb.getURL();
             currCountClusterSwitches = this.gpudb.getNumClusterSwitches();
-            
-            boolean isClusterHealthy = true;
 
             // We did switch to a different cluster; now check the health
             // of the cluster, starting with the head node
-            if ( !this.gpudb.isKineticaRunning( this.gpudb.getURL() ) ) {
+            if ( !this.gpudb.isKineticaRunning( currURL ) ) {
                 continue; // try the next cluster because this head node is down
             }
 
+            // Check if we switched the rank-0 URL
+            boolean didSwitchURL = !currURL.equals( oldURL );
+
+            boolean isClusterHealthy = true;
             if ( this.isMultiHeadEnabled ) {
                 // Obtain the worker rank addresses
                 com.gpudb.WorkerList workerRanks;
@@ -368,7 +386,7 @@ public class RecordRetriever<T> {
                     // Some problem occurred; move to the next cluster
                     continue;
                 }
-                
+
                 // Check the health of all the worker ranks
                 for ( URL workerRank : workerRanks) {
                     if ( !this.gpudb.isKineticaRunning( workerRank ) ) {
@@ -381,17 +399,20 @@ public class RecordRetriever<T> {
                 // Save the healthy cluster's URL as the current head node URL
                 this.setCurrentHeadNodeURL( currURL );
                 this.setCurrentClusterSwitchCount( currCountClusterSwitches );
-                return;
+                GPUdbLogger.debug_with_info( "Did we actually switch the URL? "
+                                             + didSwitchURL );
+                return didSwitchURL;
             }
-        }
+            // else, this cluster is not healthy; try switching again
+        }   // end for
 
         // If we get here, it means we've failed over across the whole HA ring at least
         // once (could be more times if other threads are causing failover, too)
         String errorMsg = ("HA failover could not find any healthy cluster (all GPUdb clusters with "
-                           + "head nodes [" + this.gpudb.getURLs().toString()
+                           + "head nodes [" + currURL.toString()
                            + "] tried)");
         throw new GPUdbException( errorMsg );
-    }   // end forceHAFailover
+    }   // end forceFailover
 
 
     /**
@@ -415,11 +436,20 @@ public class RecordRetriever<T> {
      * @return  a bool indicating whether the shard mapping was updated or not.
      */
     private synchronized boolean updateWorkerQueues( int countClusterSwitches, boolean doReconstructWorkerURLs ) throws GPUdbException {
+
+        // Flag for if the worker rank URLs need to be re-constructed when asked
+        // for iff multi-head i/o is enabled and the caller asked for it.
+        boolean reconstructWorkerURLS = ( doReconstructWorkerURLs
+                                          && this.isMultiHeadEnabled );
+        GPUdbLogger.debug_with_info( "Reconstruct worker URLs?: "
+                                     + reconstructWorkerURLS );
+
         // The entire worker queue update process should happen in a thread-safe
         // manner; since this happens only upon failover, the time penalty for
         // single-threading this part is acceptable
         try {
-            // Get the latest shard mapping information
+            // Get the latest shard mapping information; note that this endpoint
+            // call might trigger an N+1 or HA failover in the GPUdb object
             AdminShowShardsResponse shardInfo = gpudb.adminShowShards(new AdminShowShardsRequest());
 
             // Get the shard version
@@ -431,14 +461,27 @@ public class RecordRetriever<T> {
                 // ring node
                 int _numClusterSwitches = this.gpudb.getNumClusterSwitches();
                 if ( countClusterSwitches == _numClusterSwitches ) {
-                    // Still using the same cluster; so no change needed
+                    GPUdbLogger.debug_with_info( "# cluster switches and shard versions the same" );
+
+                    // Still using the same cluster; but may have done an N+1
+                    // failover
+                    if ( reconstructWorkerURLS )
+                    {
+                        // The caller needs to know if we ended up updating the
+                        // worker rank URLs
+                        return reconstructWorkerURLs();
+                    }
+
+                    // Not appropriate to update worker URLs; then no change
+                    // has happened
+                    GPUdbLogger.debug_with_info( "Returning false" );
                     return false;
                 }
 
                 // Update the HA ring node switch counter
                 this.setCurrentClusterSwitchCount( _numClusterSwitches );
             }
-        
+
             // Save the new shard version and also when we're updating the mapping
             this.shardVersion = newShardVersion;
 
@@ -452,6 +495,8 @@ public class RecordRetriever<T> {
             if ( ex.hadConnectionFailure() ) {
                 // Could not update the worker queues because we can't connect
                 // to the database
+                GPUdbLogger.debug_with_info( "Had connection failure: "
+                                             + ex.getMessage() );
                 return false;
             } else {
                 // Unknown errors not handled here
@@ -466,28 +511,34 @@ public class RecordRetriever<T> {
 
         // The worker queues need to be re-constructed when asked for
         // iff multi-head i/o is enabled and the table is not replicated
-        if ( doReconstructWorkerURLs
-             && this.isMultiHeadEnabled )
+        if ( reconstructWorkerURLS )
         {
             reconstructWorkerURLs();
         }
-        
+
+        GPUdbLogger.debug_with_info( "Returning true" );
         return true; // the shard mapping was updated indeed
     }  // end updateWorkerQueues
 
 
     /**
      * Reconstructs the list of worker URLs.
+     *
+     * @returns whether we ended up reconstructing the worker queues or not.
      */
-    private synchronized void reconstructWorkerURLs() throws GPUdbException {
+    private synchronized boolean reconstructWorkerURLs() throws GPUdbException {
 
         // Get the latest worker list (use whatever IP regex was used initially)
         if ( this.workerList == null )
             throw new GPUdbException( "No worker list exists!" );
+
         com.gpudb.WorkerList newWorkerList = new com.gpudb.WorkerList( this.gpudb,
                                                                        this.workerList.getIpRegex() );
-        if (newWorkerList == this.workerList) {
-            return; // nothing to do since the worker list did not change
+        GPUdbLogger.debug_with_info( "Current worker list: " + this.workerList.toString() );
+        GPUdbLogger.debug_with_info( "New worker list:     " + newWorkerList.toString() );
+        if ( newWorkerList.equals( this.workerList ) ) {
+            GPUdbLogger.debug_with_info( "Worker list remained the same; returning false" );
+            return false; // the worker list did not change
         }
 
         // Update the worker list
@@ -515,8 +566,11 @@ public class RecordRetriever<T> {
         // Get the number of workers
         this.numRanks = newWorkerUrls.size();
 
-        // Save the new queue for future use
+        // Save the new URLs for future use
         this.workerUrls = newWorkerUrls;
+
+        GPUdbLogger.debug_with_info( "Worker list was updated, returning true" );
+        return true; // we did change the URLs!
     }  // end reconstructWorkerURLs
 
 
@@ -636,11 +690,14 @@ public class RecordRetriever<T> {
                 } catch (GPUdbException ex) {
                     throw new GPUdbException( "Unable to calculate the shard value; please check data for unshardable values");
                 }
-                    
+
                 URL url = workerUrls.get(shardKey.route(routingTable));
+                GPUdbLogger.debug_with_info( "Retrieving records from rank at "
+                                             + url.toString() );
                 response = gpudb.submitRequest(url, request, response, false);
             } else {
                 // Get from the head node
+                GPUdbLogger.debug_with_info( "Retrieving records from rank-0" );
                 response = gpudb.submitRequest("/get/records", request, response, false);
             }
 
@@ -664,31 +721,48 @@ public class RecordRetriever<T> {
 
             decodedResponse.setTotalNumberOfRecords(response.getTotalNumberOfRecords());
             decodedResponse.setHasMoreRecords(response.getHasMoreRecords());
-        } catch (GPUdbException ex) {
+        } catch ( GPUdbUnauthorizedAccessException ex ) {
+            // Any permission related problem should get propagated
+            throw ex;
+        } catch ( GPUdbException ex ) {
+            boolean didFailoverSucceed = false;
             if ( (ex instanceof GPUdbExitException)
                  || ex.hadConnectionFailure() ) {
+                GPUdbLogger.debug_with_info( "Caught EXIT exception or "
+                                             + "had other connection failure: "
+                                             + ex.getMessage() );
                 // We did encounter an HA failover trigger
                 // Switch to a different, healthy cluster in the HA ring, if any
                 try {
                     // Switch to a different, healthy cluster in the HA ring, if any
-                    forceHAFailover( currURL, currentCountClusterSwitches );
+                    forceFailover( currURL, currentCountClusterSwitches );
+                    didFailoverSucceed = true;
                 } catch (GPUdbException ex2) {
                     // We've now tried all the HA clusters and circled back;
                     // propagate the error to the user
                     String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
-                    throw new GPUdbException( originalCause
+                    throw new GPUdbException( originalCause + "; "
                                               + ex2.getMessage(), true );
                 }
+            } else {
+                // For debugging purposes only (can be very useful!)
+                GPUdbLogger.debug_with_info( "Caught GPUdbException: "
+                                             + ex.getMessage() );
             }
+            GPUdbLogger.debug_with_info( "Did failover succeed? " + didFailoverSucceed );
 
             // Update the worker queues since we've failed over to a
             // different cluster
+            GPUdbLogger.debug_with_info( "Updating worker queues" );
             boolean updatedWorkerQueues = updateWorkerQueues( currentCountClusterSwitches );
+            GPUdbLogger.debug_with_info( "Did we update the worker queue? " + updatedWorkerQueues );
             boolean retry = false;
             synchronized ( this.shardUpdateTime ) {
-                retry = ( updatedWorkerQueues
+                retry = ( didFailoverSucceed
+                          || updatedWorkerQueues
                           || ( retrievalAttemptTimestamp < this.shardUpdateTime.longValue() ) );
             }
+            GPUdbLogger.debug_with_info( "'retry' value: " + retry );
             if ( retry ) {
                 // We need to try fetching the records again
                 try {
@@ -700,6 +774,8 @@ public class RecordRetriever<T> {
             }
             throw new GPUdbException( ex.getMessage() );
         } catch (Exception ex) {
+            GPUdbLogger.debug_with_info( "Caught java exception: "
+                                         + ex.getMessage() );
             // Retrieval failed, but maybe due to shard mapping changes (due to
             // cluster reconfiguration)? Check if the mapping needs to be updated
             // or has been updated by another thread already after the
@@ -740,5 +816,5 @@ public class RecordRetriever<T> {
      *
      *       The `setOptions()` method would have to be changed as well.
      */
-    
+
 }  // class RecordRetriever

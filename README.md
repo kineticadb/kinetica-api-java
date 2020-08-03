@@ -1,4 +1,4 @@
-# Kinetica Java API
+# Kinetica Java API 
 
 
 There are two projects in this repository: the Kinetica Java API and an example
@@ -6,29 +6,55 @@ project.
 
 ## API
 
-
 In the api directory, run the following command in the api direcotry to create
 the API JAR:
 
+```
 > mvn clean package
+```
 
 
 In order to use the API JAR for the example, run the following command to
 install the jar in the local repository:
 
+```
 > mvn install
+```
 
 
-The documentation can be found at http://www.kinetica.com/docs/7.0/index.html.
+The documentation can be found at http://www.kinetica.com/docs/7.1/index.html.
 The Java specific documentation can be found at:
 
-*   http://www.kinetica.com/docs/7.0/tutorials/java_guide.html
-*   http://www.kinetica.com/docs/7.0/api/java/index.html
+*   http://www.kinetica.com/docs/7.1/tutorials/java_guide.html
+*   http://www.kinetica.com/docs/7.1/api/java/index.html
 
 
 For changes to the client-side API, please see CHANGELOG.md.  For changes
 to GPUdb functions, please see CHANGELOG-FUNCTIONS.md.
 
+```
+log4j.appender.com.gpudb=INFO, stdout # or whatever appender you wish to use
+```
+
+Alternatively, the logging can be enabled and the log level set programmatically
+by using the appropriate GPUdb.Options method:
+
+```
+    GPUdb.Options options = new GPUdb.Options();
+    options.setLoggingLevel( logLevel ); // For example, "info" or "debug"
+    GPUdb gpudb = new GPUdb( url, options );
+```
+
+
+
+### API Logging
+
+To enable logging, either use an appropriate log4j properties file, e.g.
+log4j.properties, in the classpath of the application with the following
+logger in it:
+
+```
+```
 
 ### SSL Configuration
 
@@ -57,8 +83,8 @@ that use the Java API:
 ```
 
 
-## Example
 
+## Example
 
 To build the jar, run the following command in the example directory:
 
@@ -69,6 +95,13 @@ Then, to run the example, in the target directory, run the following command:
 
 > java -jar gpudb-api-example-1.0-jar-with-dependencies.jar
 
-Please make sure that Kinetica is running at the URL and port specified in
-line 4 of example/src/main/java/com/gpudb/example/Example.java (the default
-is "http://localhost:9191").
+To provide the URL of the Kinetica server and/or configure the log level,
+use the following options:
+
+> java -DlogLevel=debug -Durl=http://172.42.0.80:9191 \
+     -jar gpudb-api-example-1.0-jar-with-dependencies.jar
+
+Note that the default URL is "http://localhost:9191" and the default log level
+is OFF.  Also note that the two options, if given, must precede the `-jar`
+option.
+

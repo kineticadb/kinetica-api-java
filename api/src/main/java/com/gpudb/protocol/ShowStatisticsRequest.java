@@ -19,7 +19,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#showStatistics(ShowStatisticsRequest)}.
  * <p>
- * Retrieves the collected column statistics for the specified table.
+ * Retrieves the collected column statistics for the specified table(s).
  */
 public class ShowStatisticsRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -57,8 +57,11 @@ public class ShowStatisticsRequest implements IndexedRecord {
     /**
      * Constructs a ShowStatisticsRequest object with the specified parameters.
      * 
-     * @param tableNames  Tables whose metadata will be fetched. All provided
-     *                    tables must exist, or an error is returned.
+     * @param tableNames  Names of tables whose metadata will be fetched, each
+     *                    in [schema_name.]table_name format, using standard <a
+     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    target="_top">name resolution rules</a>.  All
+     *                    provided tables must exist, or an error is returned.
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
      * 
@@ -70,8 +73,11 @@ public class ShowStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Tables whose metadata will be fetched. All provided tables must
-     *         exist, or an error is returned.
+     * @return Names of tables whose metadata will be fetched, each in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  All provided tables
+     *         must exist, or an error is returned.
      * 
      */
     public List<String> getTableNames() {
@@ -80,8 +86,11 @@ public class ShowStatisticsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param tableNames  Tables whose metadata will be fetched. All provided
-     *                    tables must exist, or an error is returned.
+     * @param tableNames  Names of tables whose metadata will be fetched, each
+     *                    in [schema_name.]table_name format, using standard <a
+     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    target="_top">name resolution rules</a>.  All
+     *                    provided tables must exist, or an error is returned.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

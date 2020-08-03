@@ -21,7 +21,13 @@ api/.project
 api/.settings/
 api/mvn.log
 doc
+example/.classpath
+example/.project
+example/.settings/
 target
+tests/.classpath
+tests/.project
+tests/.settings/
 
 # For netbeans
 nbproject

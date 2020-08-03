@@ -64,8 +64,10 @@ public class AggregateConvexHullRequest implements IndexedRecord {
      * parameters.
      * 
      * @param tableName  Name of table on which the operation will be
-     *                   performed. Must be an existing table.  It cannot be a
-     *                   collection.
+     *                   performed. Must be an existing table, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * @param xColumnName  Name of the column containing the x coordinates of
      *                     the points for the operation being performed.
      * @param yColumnName  Name of the column containing the y coordinates of
@@ -84,7 +86,10 @@ public class AggregateConvexHullRequest implements IndexedRecord {
     /**
      * 
      * @return Name of table on which the operation will be performed. Must be
-     *         an existing table.  It cannot be a collection.
+     *         an existing table, in [schema_name.]table_name format, using
+     *         standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.
      * 
      */
     public String getTableName() {
@@ -94,8 +99,10 @@ public class AggregateConvexHullRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of table on which the operation will be
-     *                   performed. Must be an existing table.  It cannot be a
-     *                   collection.
+     *                   performed. Must be an existing table, in
+     *                   [schema_name.]table_name format, using standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -16,11 +16,12 @@ import org.apache.avro.generic.IndexedRecord;
 /**
  * A set of parameters for {@link com.gpudb.GPUdb#showTable(ShowTableRequest)}.
  * <p>
- * Retrieves detailed information about a table, view, or collection, specified
- * in {@code tableName}. If the supplied {@code tableName} is a collection, the
- * call can return information about either the collection itself or the tables
- * and views it contains. If {@code tableName} is empty, information about all
- * collections and top-level tables and views can be returned.
+ * Retrieves detailed information about a table, view, or schema,
+ * specified in {@code tableName}. If the supplied {@code tableName} is a
+ * schema the call can return information about either the schema itself or the
+ * tables and views it contains. If {@code tableName} is empty, information
+ * about
+ * all schemas will be returned.
  * <p>
  * If the option {@code get_sizes} is set to
  * {@code true}, then the number of records
@@ -28,13 +29,18 @@ import org.apache.avro.generic.IndexedRecord;
  * {@code fullSizes}), along with the total number of objects across all
  * requested tables (in {@code totalSize} and {@code totalFullSize}).
  * <p>
- * For a collection, setting the {@code show_children} option to {@code false}
- * returns only information about the collection itself; setting {@code
- * show_children} to {@code true} returns a list of tables and views contained
- * in the collection, along with their corresponding detail.
+ * For a schema, setting the {@code show_children} option to
+ * {@code false} returns only information
+ * about the schema itself; setting {@code show_children} to
+ * {@code true} returns a list of tables and
+ * views contained in the schema, along with their corresponding detail.
  * <p>
- * To retrieve a list of every table, view, and collection in the database, set
- * {@code tableName} to '*' and {@code show_children} to {@code true}.
+ * To retrieve a list of every table, view, and schema in the database, set
+ * {@code tableName} to '*' and {@code show_children} to
+ * {@code true}.  When doing this, the
+ * returned {@code totalSize} and {@code totalFullSize} will not include the
+ * sizes of
+ * non-base tables (e.g., filters, views, joins, etc.).
  */
 public class ShowTableRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -89,9 +95,9 @@ public class ShowTableRequest implements IndexedRecord {
      * com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.ShowTableRequest.Options#SHOW_CHILDREN
-     * SHOW_CHILDREN}: If {@code tableName} is a collection, then {@code true}
-     * will return information about the children of the collection, and {@code
-     * false} will return information about the collection itself. If {@code
+     * SHOW_CHILDREN}: If {@code tableName} is a schema, then {@code true} will
+     * return information about the tables and views in the schema, and {@code
+     * false} will return information about the schema itself. If {@code
      * tableName} is a table or view, {@code show_children} must be {@code
      * false}. If {@code tableName} is empty, then {@code show_children} must
      * be {@code true}.
@@ -170,9 +176,9 @@ public class ShowTableRequest implements IndexedRecord {
         public static final String GET_SIZES = "get_sizes";
 
         /**
-         * If {@code tableName} is a collection, then {@code true} will return
-         * information about the children of the collection, and {@code false}
-         * will return information about the collection itself. If {@code
+         * If {@code tableName} is a schema, then {@code true} will return
+         * information about the tables and views in the schema, and {@code
+         * false} will return information about the schema itself. If {@code
          * tableName} is a table or view, {@code show_children} must be {@code
          * false}. If {@code tableName} is empty, then {@code show_children}
          * must be {@code true}.
@@ -238,9 +244,11 @@ public class ShowTableRequest implements IndexedRecord {
      * Constructs a ShowTableRequest object with the specified parameters.
      * 
      * @param tableName  Name of the table for which to retrieve the
-     *                   information. If blank, then information about all
-     *                   collections and top-level tables and views is
-     *                   returned.
+     *                   information, in [schema_name.]table_name format, using
+     *                   standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  If blank,
+     *                   then returns information about all tables and views.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -273,14 +281,13 @@ public class ShowTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowTableRequest.Options#SHOW_CHILDREN
-     *                 SHOW_CHILDREN}: If {@code tableName} is a collection,
-     *                 then {@code true} will return information about the
-     *                 children of the collection, and {@code false} will
-     *                 return information about the collection itself. If
-     *                 {@code tableName} is a table or view, {@code
-     *                 show_children} must be {@code false}. If {@code
-     *                 tableName} is empty, then {@code show_children} must be
-     *                 {@code true}.
+     *                 SHOW_CHILDREN}: If {@code tableName} is a schema, then
+     *                 {@code true} will return information about the tables
+     *                 and views in the schema, and {@code false} will return
+     *                 information about the schema itself. If {@code
+     *                 tableName} is a table or view, {@code show_children}
+     *                 must be {@code false}. If {@code tableName} is empty,
+     *                 then {@code show_children} must be {@code true}.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -330,9 +337,11 @@ public class ShowTableRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the table for which to retrieve the information. If
-     *         blank, then information about all collections and top-level
-     *         tables and views is returned.
+     * @return Name of the table for which to retrieve the information, in
+     *         [schema_name.]table_name format, using standard <a
+     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         target="_top">name resolution rules</a>.  If blank, then returns
+     *         information about all tables and views.
      * 
      */
     public String getTableName() {
@@ -342,9 +351,11 @@ public class ShowTableRequest implements IndexedRecord {
     /**
      * 
      * @param tableName  Name of the table for which to retrieve the
-     *                   information. If blank, then information about all
-     *                   collections and top-level tables and views is
-     *                   returned.
+     *                   information, in [schema_name.]table_name format, using
+     *                   standard <a
+     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   target="_top">name resolution rules</a>.  If blank,
+     *                   then returns information about all tables and views.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -387,13 +398,12 @@ public class ShowTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.ShowTableRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.ShowTableRequest.Options#SHOW_CHILDREN
-     *         SHOW_CHILDREN}: If {@code tableName} is a collection, then
-     *         {@code true} will return information about the children of the
-     *         collection, and {@code false} will return information about the
-     *         collection itself. If {@code tableName} is a table or view,
-     *         {@code show_children} must be {@code false}. If {@code
-     *         tableName} is empty, then {@code show_children} must be {@code
-     *         true}.
+     *         SHOW_CHILDREN}: If {@code tableName} is a schema, then {@code
+     *         true} will return information about the tables and views in the
+     *         schema, and {@code false} will return information about the
+     *         schema itself. If {@code tableName} is a table or view, {@code
+     *         show_children} must be {@code false}. If {@code tableName} is
+     *         empty, then {@code show_children} must be {@code true}.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -472,14 +482,13 @@ public class ShowTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowTableRequest.Options#SHOW_CHILDREN
-     *                 SHOW_CHILDREN}: If {@code tableName} is a collection,
-     *                 then {@code true} will return information about the
-     *                 children of the collection, and {@code false} will
-     *                 return information about the collection itself. If
-     *                 {@code tableName} is a table or view, {@code
-     *                 show_children} must be {@code false}. If {@code
-     *                 tableName} is empty, then {@code show_children} must be
-     *                 {@code true}.
+     *                 SHOW_CHILDREN}: If {@code tableName} is a schema, then
+     *                 {@code true} will return information about the tables
+     *                 and views in the schema, and {@code false} will return
+     *                 information about the schema itself. If {@code
+     *                 tableName} is a table or view, {@code show_children}
+     *                 must be {@code false}. If {@code tableName} is empty,
+     *                 then {@code show_children} must be {@code true}.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
