@@ -129,9 +129,6 @@ public class CreateTypeRequest implements IndexedRecord {
      * for 'string' columns.  It represents an unsigned long integer data type.
      * The string can only be interpreted as an unsigned long data type with
      * minimum value of zero, and maximum value of 18446744073709551615.
-     *         <li> {@link com.gpudb.protocol.CreateTypeRequest.Properties#UUID
-     * UUID}: Valid only for 'string' columns.  It represents an uuid data
-     * type. Internally, it is stored as an 128-bit ingeger.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#DECIMAL DECIMAL}: Valid
      * only for 'string' columns.  It represents a SQL type NUMERIC(19, 4) data
@@ -313,12 +310,6 @@ public class CreateTypeRequest implements IndexedRecord {
          * 18446744073709551615.
          */
         public static final String ULONG = "ulong";
-
-        /**
-         * Valid only for 'string' columns.  It represents an uuid data type.
-         * Internally, it is stored as an 128-bit ingeger.
-         */
-        public static final String UUID = "uuid";
 
         /**
          * Valid only for 'string' columns.  It represents a SQL type
@@ -579,11 +570,6 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    string can only be interpreted as an unsigned long
      *                    data type with minimum value of zero, and maximum
      *                    value of 18446744073709551615.
-     *                            <li> {@link
-     *                    com.gpudb.protocol.CreateTypeRequest.Properties#UUID
-     *                    UUID}: Valid only for 'string' columns.  It
-     *                    represents an uuid data type. Internally, it is
-     *                    stored as an 128-bit ingeger.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DECIMAL
      *                    DECIMAL}: Valid only for 'string' columns.  It
@@ -854,10 +840,6 @@ public class CreateTypeRequest implements IndexedRecord {
      *         unsigned long data type with minimum value of zero, and maximum
      *         value of 18446744073709551615.
      *                 <li> {@link
-     *         com.gpudb.protocol.CreateTypeRequest.Properties#UUID UUID}:
-     *         Valid only for 'string' columns.  It represents an uuid data
-     *         type. Internally, it is stored as an 128-bit ingeger.
-     *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#DECIMAL
      *         DECIMAL}: Valid only for 'string' columns.  It represents a SQL
      *         type NUMERIC(19, 4) data type.  There can be up to 15 digits
@@ -1058,11 +1040,6 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    string can only be interpreted as an unsigned long
      *                    data type with minimum value of zero, and maximum
      *                    value of 18446744073709551615.
-     *                            <li> {@link
-     *                    com.gpudb.protocol.CreateTypeRequest.Properties#UUID
-     *                    UUID}: Valid only for 'string' columns.  It
-     *                    represents an uuid data type. Internally, it is
-     *                    stored as an 128-bit ingeger.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DECIMAL
      *                    DECIMAL}: Valid only for 'string' columns.  It

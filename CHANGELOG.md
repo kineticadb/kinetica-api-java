@@ -44,13 +44,19 @@
                                        recover during an intra-cluster (N+1)
                                        failover scenario.  Given in milliseconds.
                                        Default is 0 (infinite). This time interval
-                                       spans both stages of the N+1 failover 
+                                       spans both stages of the N+1 failover
                                        recovery process.
     -   loggingLevel -- The logging level to use for the API.  By default,
                         logging is turned off.  If logging properties are set up
                         by the user (via log4j.properties etc.), then that will
                         be honored only if the default logging level is used.
                         Otherwise, the programmatically set level will be used.
+-   Added class GPUdb.ClusterAddressInfo which contains information about a
+    given Kinetica cluster, including rank URLs and hostnames.
+-   GPUdb methods:
+    -   getHARingInfo()
+    -   getHARingSize()
+    -   getPrimaryHostName()
 
 
 #### Changed
