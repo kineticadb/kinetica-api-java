@@ -19,16 +19,21 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#matchGraph(MatchGraphRequest)}.
  * <p>
- * Matches a directed route implied by a given set of latitude/longitude points
- * to an existing underlying road network graph using a given solution type.
+ * Matches a directed route implied by a given set of
+ * latitude/longitude points to an existing underlying road network graph using
+ * a
+ * given solution type.
 
- * IMPORTANT: It's highly recommended that you review the <a
- * href="../../../../../graph_solver/network_graph_solver.html"
- * target="_top">Network Graphs & Solvers</a> concepts documentation, the <a
- * href="../../../../../graph_solver/examples/graph_rest_guide.html"
- * target="_top">Graph REST Tutorial</a>, and/or some <a
- * href="../../../../../graph_solver/examples.html#match-graph"
- * target="_top">/match/graph examples</a> before using this endpoint.
+ * IMPORTANT: It's highly recommended that you review the
+ * <a href="../../../../../graph_solver/network_graph_solver.html"
+ * target="_top">Network Graphs & Solvers</a>
+ * concepts documentation, the
+ * <a href="../../../../../graph_solver/examples/graph_rest_guide.html"
+ * target="_top">Graph REST Tutorial</a>,
+ * and/or some
+ * <a href="../../../../../graph_solver/examples.html#match-graph"
+ * target="_top">/match/graph examples</a>
+ * before using this endpoint.
  */
 public class MatchGraphRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -501,18 +506,21 @@ public class MatchGraphRequest implements IndexedRecord {
      * @param graphName  Name of the underlying geospatial graph resource to
      *                   match to using {@code samplePoints}.
      * @param samplePoints  Sample points used to match to an underlying
-     *                      geospatial graph. Sample points must be specified
-     *                      using <a
+     *                      geospatial
+     *                      graph. Sample points must be specified using
+     *                      <a
      *                      href="../../../../../graph_solver/network_graph_solver.html#match-identifiers"
-     *                      target="_top">identifiers</a>; identifiers are
-     *                      grouped as <a
+     *                      target="_top">identifiers</a>;
+     *                      identifiers are grouped as
+     *                      <a
      *                      href="../../../../../graph_solver/network_graph_solver.html#match-combinations"
-     *                      target="_top">combinations</a>. Identifiers can be
-     *                      used with: existing column names, e.g.,
+     *                      target="_top">combinations</a>.
+     *                      Identifiers can be used with: existing column
+     *                      names, e.g.,
      *                      'table.column AS SAMPLE_X'; expressions, e.g.,
      *                      'ST_MAKEPOINT(table.x, table.y) AS
-     *                      SAMPLE_WKTPOINT'; or raw values, e.g., '{1, 2, 10}
-     *                      AS SAMPLE_TRIPID'.
+     *                      SAMPLE_WKTPOINT'; or constant values, e.g.,
+     *                      '{1, 2, 10} AS SAMPLE_TRIPID'.
      * @param solveMethod  The type of solver to use for graph matching.
      *                     Supported values:
      *                     <ul>
@@ -777,16 +785,20 @@ public class MatchGraphRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Sample points used to match to an underlying geospatial graph.
-     *         Sample points must be specified using <a
+     * @return Sample points used to match to an underlying geospatial
+     *         graph. Sample points must be specified using
+     *         <a
      *         href="../../../../../graph_solver/network_graph_solver.html#match-identifiers"
-     *         target="_top">identifiers</a>; identifiers are grouped as <a
+     *         target="_top">identifiers</a>;
+     *         identifiers are grouped as
+     *         <a
      *         href="../../../../../graph_solver/network_graph_solver.html#match-combinations"
-     *         target="_top">combinations</a>. Identifiers can be used with:
-     *         existing column names, e.g., 'table.column AS SAMPLE_X';
-     *         expressions, e.g., 'ST_MAKEPOINT(table.x, table.y) AS
-     *         SAMPLE_WKTPOINT'; or raw values, e.g., '{1, 2, 10} AS
-     *         SAMPLE_TRIPID'.
+     *         target="_top">combinations</a>.
+     *         Identifiers can be used with: existing column names, e.g.,
+     *         'table.column AS SAMPLE_X'; expressions, e.g.,
+     *         'ST_MAKEPOINT(table.x, table.y) AS SAMPLE_WKTPOINT'; or constant
+     *         values, e.g.,
+     *         '{1, 2, 10} AS SAMPLE_TRIPID'.
      * 
      */
     public List<String> getSamplePoints() {
@@ -796,18 +808,21 @@ public class MatchGraphRequest implements IndexedRecord {
     /**
      * 
      * @param samplePoints  Sample points used to match to an underlying
-     *                      geospatial graph. Sample points must be specified
-     *                      using <a
+     *                      geospatial
+     *                      graph. Sample points must be specified using
+     *                      <a
      *                      href="../../../../../graph_solver/network_graph_solver.html#match-identifiers"
-     *                      target="_top">identifiers</a>; identifiers are
-     *                      grouped as <a
+     *                      target="_top">identifiers</a>;
+     *                      identifiers are grouped as
+     *                      <a
      *                      href="../../../../../graph_solver/network_graph_solver.html#match-combinations"
-     *                      target="_top">combinations</a>. Identifiers can be
-     *                      used with: existing column names, e.g.,
+     *                      target="_top">combinations</a>.
+     *                      Identifiers can be used with: existing column
+     *                      names, e.g.,
      *                      'table.column AS SAMPLE_X'; expressions, e.g.,
      *                      'ST_MAKEPOINT(table.x, table.y) AS
-     *                      SAMPLE_WKTPOINT'; or raw values, e.g., '{1, 2, 10}
-     *                      AS SAMPLE_TRIPID'.
+     *                      SAMPLE_WKTPOINT'; or constant values, e.g.,
+     *                      '{1, 2, 10} AS SAMPLE_TRIPID'.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
