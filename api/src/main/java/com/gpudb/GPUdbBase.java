@@ -4476,6 +4476,8 @@ public abstract class GPUdbBase {
                                          + urlQueue.size() + "): "
                                          + java.util.Arrays.toString(urlQueue.toArray()) );
 
+            // We need to know down the road if this URL was discovered by the
+            // API or was given by the user.
             if (numProcessedURLs >= numUserGivenURLs) {
                 GPUdbLogger.debug_with_info( "This url is API discovered");
                 isDiscoveredURL = true;
@@ -4579,9 +4581,62 @@ public abstract class GPUdbBase {
                 continue;
             }
 
-            // Save the fact that this user given URL belong to an existing
-            // cluster
+            // Create an object to store all the information about this cluster
+            // (this could fail due to a host name regex mismatch)
+            ClusterAddressInfo clusterInfo = createClusterAddressInfo( url, systemProperties );
+
+            // We need to evaluate if we should save the auto-detected addresses
             if ( !isDiscoveredURL ) {
+                GPUdbLogger.debug_with_info( "Got cluster info for user-given URL" );
+
+                // If the URL was not user given, and if the addresses that we
+                // just got from the server does not contain this given IP at
+                // all, then we might have an internal vs. external IP issue.
+                if ( !clusterInfo.doesClusterContainNode( url.getHost() ) ) {
+                    // Yup, it's true--the server given URLs do not contain
+                    // the user given hostname.
+                    GPUdbLogger.debug_with_info( "Obtained cluster addresses do NOT "
+                                                 + "contain user given url : "
+                                                 + urlStr );
+
+                    // So, now we check if the server given addresses are
+                    // reachable.  If they are, proceed as usual.  If they
+                    // are not reachable, it is possible that the user given
+                    // addresses are internal addresses that the client
+                    // application's environment has access to, but the
+                    // environment does _not_ have access to the public
+                    // addresses returned by the server.
+                    if ( !isKineticaRunning( clusterInfo.getActiveHeadNodeUrl() ) ) {
+                        // Alas, the server given head rank is NOT reachable!
+                        GPUdbLogger.debug_with_info( "Obtained cluster addresses do NOT "
+                                                     + "contain user given url : "
+                                                     + urlStr );
+
+                        // So, we discard the server given addresses and store
+                        // the user given address.
+                        // We also need to disable failover since the user
+                        // user given addresses are useless for failover (we
+                        // won't have the proper hostnames for N+1!)
+                        this.disableAutoDiscovery = true;
+                        this.disableFailover = true;
+                        GPUdbLogger.debug_with_info( "Disabling auto detection of "
+                                                     + "server addresses" );
+                        GPUdbLogger.warn( "Using user-given URL (" + urlStr
+                                          + ") over server provided addresses; "
+                                          + " will be unable to recover during "
+                                          + "N+1 or intra-cluster failover events." );
+                        GPUdbLogger.warn( "Disabling API failover mechanism!" );
+                        throw new GPUdbException( "Could not connect to server-"
+                                                  + "given  addresses: "
+                                                  + clusterInfo.toString()
+                                                  + " (user given URL: " + urlStr
+                                                  + ")" );
+                    }
+                }   // end if
+
+
+                // Save the fact that this URL, if user given, belong to an
+                // existing cluster
                 GPUdbLogger.debug_with_info("Adding index " + this.hostAddresses.size()
                                             + " for url " + urlStr + " to "
                                             + "clusterIndicesOfUserGivenURLs" );
@@ -4591,9 +4646,8 @@ public abstract class GPUdbBase {
                                             + " to clusterIndicesOfUserGivenURLs" );
             } // end if
 
-            // Create an object to store all the information about this cluster
-            // (this could fail due to a host name regex mismatch)
-            ClusterAddressInfo clusterInfo = createClusterAddressInfo( url, systemProperties );
+
+
             this.hostAddresses.add( clusterInfo );
 
             GPUdbLogger.debug_with_info( "Added cluster for url: " + urlStr );
@@ -5695,7 +5749,8 @@ public abstract class GPUdbBase {
             HttpURLConnection connection = null;
 
             try {
-                connection = initializeHttpConnection( getURL() );
+                GPUdbLogger.debug_with_info( "Pinging URL: " + url.toString() );
+                connection = initializeHttpConnection( url );
 
                 // Ping is a get, unlike all endpoints which are post
                 connection.setRequestMethod("GET");
@@ -5749,16 +5804,32 @@ public abstract class GPUdbBase {
 
     /**
      * Pings the given URL and returns the response.  If no response,
-     * returns an empty string.
+     * returns an empty string.  Use the timeout of this GPUdb class.
      *
      * @return the ping response, or an empty string if it fails.
      */
     public String ping(URL url) {
+        return ping( url, this.timeout );
+    }
+
+
+    /**
+     * Pings the given URL and returns the response.  If no response,
+     * returns an empty string.
+     *
+     * @param url  the URL to which the connection needs to be made
+     * @param timeout a positive integer representing the number of
+     *                milliseconds to use for connection timeout
+     *
+     * @return the ping response, or an empty string if it fails.
+     */
+    public String ping(URL url, int timeout) {
+        GPUdbLogger.debug_with_info( "Pinging URL: " + url.toString() );
 
         HttpURLConnection connection = null;
 
         try {
-            connection = initializeHttpConnection( url );
+            connection = initializeHttpConnection( url, timeout );
 
             // Ping is a get, unlike all endpoints which are post
             connection.setRequestMethod("GET");
@@ -5801,12 +5872,15 @@ public abstract class GPUdbBase {
 
     /**
      * Verifies that GPUdb is running at the given URL (does not do any HA failover).
+     * Use a very short timeout so that we don't wait for a long time if the server
+     * at the given URL is not accessible.
      *
      * @return true if Kinetica is running, false otherwise.
      */
     public boolean isKineticaRunning(URL url) {
 
-        String pingResponse = ping( url );
+        // Use a super short timeout (0.5 second)
+        String pingResponse = ping( url, 500 );
         GPUdbLogger.debug_with_info( "HTTP server @ " + url.toString()
                                      + " responded with: '"
                                      + pingResponse + "'" );

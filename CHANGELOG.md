@@ -2,7 +2,22 @@
 
 ## Version 7.1
 
-### Version 7.1.0.0 - TBD
+### Version 7.1.0.1 - 2020-09-29
+
+#### Added
+-   Another `ping()` method that takes in a timeout as a second parameter.
+
+
+#### Changed
+-   `GPUdb` constructor behavior such that if the server at the user given IP
+    address responds with public IPs that the client application environment
+    cannot acces, the `GPUdb` object will be created with the user given IP
+    addresses, completely disregarding the public addresses given by the
+    server.  The side-effect of this that the API's failover mechanism
+    must be disabled; this is logged as a warning.
+
+
+### Version 7.1.0.0 - 2020-08-18
 
 #### Added
 -   Support for intra-cluster, also known as N+1, failover.

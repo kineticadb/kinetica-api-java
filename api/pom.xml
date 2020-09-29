@@ -3,26 +3,25 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>7.1.0.0</version>
+    <version>7.1.0.1</version>
     <packaging>jar</packaging>
     <name>Kinetica Java API</name>
     <distributionManagement>
-       <!-- DO NOT ACCIDENTALLY PUSH TO OUR PUBLIC REPOSITORIES BEFORE GA -->
-       <!-- <repository> -->
-       <!--    <id>releases</id> -->
-       <!--    <name>Releases</name> -->
-       <!--    <url>http://files.kinetica.com/nexus/content/repositories/releases</url> -->
-       <!-- </repository> -->
-       <!-- <snapshotRepository> -->
-       <!--    <id>snapshots</id> -->
-       <!--    <name>Snapshots</name> -->
-       <!--    <url>http://files.kinetica.com/nexus/content/repositories/snapshots</url> -->
-       <!-- </snapshotRepository> -->
+       <repository>
+          <id>releases</id>
+          <name>Releases</name>
+          <url>http://files.kinetica.com/nexus/content/repositories/releases</url>
+       </repository>
        <snapshotRepository>
           <id>snapshots</id>
           <name>Snapshots</name>
-          <url>http://files.kinetica.com/nexus/content/repositories/internal-snapshots</url>
+          <url>http://files.kinetica.com/nexus/content/repositories/snapshots</url>
        </snapshotRepository>
+       <!-- <snapshotRepository> -->
+       <!--    <id>snapshots</id> -->
+       <!--    <name>Snapshots</name> -->
+       <!--    <url>http://files.kinetica.com/nexus/content/repositories/internal-snapshots</url> -->
+       <!-- </snapshotRepository> -->
     </distributionManagement>
     <dependencies>
         <dependency>
@@ -66,7 +65,7 @@
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gpudb-api.version>7.1.0.0</gpudb-api.version>
+        <gpudb-api.version>7.1.0.1</gpudb-api.version>
     </properties>
     <profiles>
         <profile>
