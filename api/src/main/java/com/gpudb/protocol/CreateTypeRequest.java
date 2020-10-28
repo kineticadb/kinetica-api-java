@@ -129,6 +129,9 @@ public class CreateTypeRequest implements IndexedRecord {
      * for 'string' columns.  It represents an unsigned long integer data type.
      * The string can only be interpreted as an unsigned long data type with
      * minimum value of zero, and maximum value of 18446744073709551615.
+     *         <li> {@link com.gpudb.protocol.CreateTypeRequest.Properties#UUID
+     * UUID}: Valid only for 'string' columns.  It represents an uuid data
+     * type. Internally, it is stored as a 128-bit integer.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#DECIMAL DECIMAL}: Valid
      * only for 'string' columns.  It represents a SQL type NUMERIC(19, 4) data
@@ -254,6 +257,10 @@ public class CreateTypeRequest implements IndexedRecord {
      * INIT_WITH_NOW}: For 'date', 'time', 'datetime', or 'timestamp' column
      * types, replace empty strings and invalid timestamps with 'NOW()' upon
      * insert.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_UUID
+     * INIT_WITH_UUID}: For 'uuid' type,  repalce empty strings and invalid
+     * uuid values with new_uuid()' upon insert.
      * </ul>
      * A set of string constants for the parameter {@code properties}.
      */
@@ -310,6 +317,12 @@ public class CreateTypeRequest implements IndexedRecord {
          * 18446744073709551615.
          */
         public static final String ULONG = "ulong";
+
+        /**
+         * Valid only for 'string' columns.  It represents an uuid data type.
+         * Internally, it is stored as a 128-bit integer.
+         */
+        public static final String UUID = "uuid";
 
         /**
          * Valid only for 'string' columns.  It represents a SQL type
@@ -486,6 +499,12 @@ public class CreateTypeRequest implements IndexedRecord {
          */
         public static final String INIT_WITH_NOW = "init_with_now";
 
+        /**
+         * For 'uuid' type,  repalce empty strings and invalid uuid values with
+         * new_uuid()' upon insert.
+         */
+        public static final String INIT_WITH_UUID = "init_with_uuid";
+
         private Properties() {  }
     }
 
@@ -570,6 +589,11 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    string can only be interpreted as an unsigned long
      *                    data type with minimum value of zero, and maximum
      *                    value of 18446744073709551615.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.CreateTypeRequest.Properties#UUID
+     *                    UUID}: Valid only for 'string' columns.  It
+     *                    represents an uuid data type. Internally, it is
+     *                    stored as a 128-bit integer.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DECIMAL
      *                    DECIMAL}: Valid only for 'string' columns.  It
@@ -727,6 +751,11 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    INIT_WITH_NOW}: For 'date', 'time', 'datetime', or
      *                    'timestamp' column types, replace empty strings and
      *                    invalid timestamps with 'NOW()' upon insert.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_UUID
+     *                    INIT_WITH_UUID}: For 'uuid' type,  repalce empty
+     *                    strings and invalid uuid values with new_uuid()' upon
+     *                    insert.
      *                    </ul>
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
@@ -839,6 +868,10 @@ public class CreateTypeRequest implements IndexedRecord {
      *         integer data type. The string can only be interpreted as an
      *         unsigned long data type with minimum value of zero, and maximum
      *         value of 18446744073709551615.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTypeRequest.Properties#UUID UUID}:
+     *         Valid only for 'string' columns.  It represents an uuid data
+     *         type. Internally, it is stored as a 128-bit integer.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#DECIMAL
      *         DECIMAL}: Valid only for 'string' columns.  It represents a SQL
@@ -974,6 +1007,10 @@ public class CreateTypeRequest implements IndexedRecord {
      *         INIT_WITH_NOW}: For 'date', 'time', 'datetime', or 'timestamp'
      *         column types, replace empty strings and invalid timestamps with
      *         'NOW()' upon insert.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_UUID
+     *         INIT_WITH_UUID}: For 'uuid' type,  repalce empty strings and
+     *         invalid uuid values with new_uuid()' upon insert.
      *         </ul>
      * 
      */
@@ -1040,6 +1077,11 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    string can only be interpreted as an unsigned long
      *                    data type with minimum value of zero, and maximum
      *                    value of 18446744073709551615.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.CreateTypeRequest.Properties#UUID
+     *                    UUID}: Valid only for 'string' columns.  It
+     *                    represents an uuid data type. Internally, it is
+     *                    stored as a 128-bit integer.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DECIMAL
      *                    DECIMAL}: Valid only for 'string' columns.  It
@@ -1197,6 +1239,11 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    INIT_WITH_NOW}: For 'date', 'time', 'datetime', or
      *                    'timestamp' column types, replace empty strings and
      *                    invalid timestamps with 'NOW()' upon insert.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_UUID
+     *                    INIT_WITH_UUID}: For 'uuid' type,  repalce empty
+     *                    strings and invalid uuid values with new_uuid()' upon
+     *                    insert.
      *                    </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -61,6 +61,12 @@ public final class ColumnProperty {
     public static final String ULONG = "ulong";
 
     /**
+     * Valid only for 'string' columns.  It represents an uuid data type.
+     * Internally, it is stored as a 128-bit integer.
+     */
+    public static final String UUID = "uuid";
+
+    /**
      * Valid only for 'string' columns.  It represents a SQL type NUMERIC(19,
      * 4) data type.  There can be up to 15 digits before the decimal point and
      * up to four digits in the fractional part.  The value can be positive or
@@ -232,6 +238,12 @@ public final class ColumnProperty {
      * empty strings and invalid timestamps with 'NOW()' upon insert.
      */
     public static final String INIT_WITH_NOW = "init_with_now";
+
+    /**
+     * For 'uuid' type,  repalce empty strings and invalid uuid values with
+     * new_uuid()' upon insert.
+     */
+    public static final String INIT_WITH_UUID = "init_with_uuid";
 
     private ColumnProperty() {  }
 }

@@ -113,13 +113,23 @@ public class AlterDatasourceRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
      * FALSE}.
      *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_STORAGE_ACCOUNT_NAME
+     * AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure storage account to use as
+     * the data source, this is valid only if tenant_id is specified
+     *         <li> {@link
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_CONTAINER_NAME
      * AZURE_CONTAINER_NAME}: Name of the Azure storage container to use as the
      * data source
      *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_TENANT_ID
+     * AZURE_TENANT_ID}: Active Directory tenant ID (or directory ID)
+     *         <li> {@link
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_SAS_TOKEN
      * AZURE_SAS_TOKEN}: Shared access signature token for Azure storage
      * account to use as the data source
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
+     * AZURE_OAUTH_TOKEN}: Oauth token to access given storage container
      * </ul>
      * A set of string constants for the parameter {@code
      * datasourceUpdatesMap}.
@@ -211,15 +221,31 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String HDFS_USE_KERBEROS = "hdfs_use_kerberos";
 
         /**
+         * Name of the Azure storage account to use as the data source, this is
+         * valid only if tenant_id is specified
+         */
+        public static final String AZURE_STORAGE_ACCOUNT_NAME = "azure_storage_account_name";
+
+        /**
          * Name of the Azure storage container to use as the data source
          */
         public static final String AZURE_CONTAINER_NAME = "azure_container_name";
+
+        /**
+         * Active Directory tenant ID (or directory ID)
+         */
+        public static final String AZURE_TENANT_ID = "azure_tenant_id";
 
         /**
          * Shared access signature token for Azure storage account to use as
          * the data source
          */
         public static final String AZURE_SAS_TOKEN = "azure_sas_token";
+
+        /**
+         * Oauth token to access given storage container
+         */
+        public static final String AZURE_OAUTH_TOKEN = "azure_oauth_token";
 
         private DatasourceUpdatesMap() {  }
     }
@@ -320,14 +346,28 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
      *                              FALSE}.
      *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_STORAGE_ACCOUNT_NAME
+     *                              AZURE_STORAGE_ACCOUNT_NAME}: Name of the
+     *                              Azure storage account to use as the data
+     *                              source, this is valid only if tenant_id is
+     *                              specified
+     *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_CONTAINER_NAME
      *                              AZURE_CONTAINER_NAME}: Name of the Azure
      *                              storage container to use as the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_TENANT_ID
+     *                              AZURE_TENANT_ID}: Active Directory tenant
+     *                              ID (or directory ID)
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_SAS_TOKEN
      *                              AZURE_SAS_TOKEN}: Shared access signature
      *                              token for Azure storage account to use as
      *                              the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
+     *                              AZURE_OAUTH_TOKEN}: Oauth token to access
+     *                              given storage container
      *                              </ul>
      * @param options  Optional parameters.
      * 
@@ -435,13 +475,25 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
      *         FALSE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_STORAGE_ACCOUNT_NAME
+     *         AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure storage account
+     *         to use as the data source, this is valid only if tenant_id is
+     *         specified
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_CONTAINER_NAME
      *         AZURE_CONTAINER_NAME}: Name of the Azure storage container to
      *         use as the data source
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_TENANT_ID
+     *         AZURE_TENANT_ID}: Active Directory tenant ID (or directory ID)
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_SAS_TOKEN
      *         AZURE_SAS_TOKEN}: Shared access signature token for Azure
      *         storage account to use as the data source
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
+     *         AZURE_OAUTH_TOKEN}: Oauth token to access given storage
+     *         container
      *         </ul>
      * 
      */
@@ -527,14 +579,28 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
      *                              FALSE}.
      *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_STORAGE_ACCOUNT_NAME
+     *                              AZURE_STORAGE_ACCOUNT_NAME}: Name of the
+     *                              Azure storage account to use as the data
+     *                              source, this is valid only if tenant_id is
+     *                              specified
+     *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_CONTAINER_NAME
      *                              AZURE_CONTAINER_NAME}: Name of the Azure
      *                              storage container to use as the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_TENANT_ID
+     *                              AZURE_TENANT_ID}: Active Directory tenant
+     *                              ID (or directory ID)
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_SAS_TOKEN
      *                              AZURE_SAS_TOKEN}: Shared access signature
      *                              token for Azure storage account to use as
      *                              the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
+     *                              AZURE_OAUTH_TOKEN}: Oauth token to access
+     *                              given storage container
      *                              </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -605,8 +605,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * e.g., CSV, TSV, PSV, etc.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
-     * PARQUET}: Indicates the file(s) are in Parquet format. Parquet files are
-     * not supported yet.
+     * PARQUET}: Indicates the file(s) are in Parquet format.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -968,8 +967,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * e.g., CSV, TSV, PSV, etc.
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
-         * PARQUET}: Indicates the file(s) are in Parquet format. Parquet files
-         * are not supported yet.
+         * PARQUET}: Indicates the file(s) are in Parquet format.
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -984,8 +982,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String DELIMITED_TEXT = "delimited_text";
 
         /**
-         * Indicates the file(s) are in Parquet format. Parquet files are not
-         * supported yet.
+         * Indicates the file(s) are in Parquet format.
          */
         public static final String PARQUET = "parquet";
 
@@ -1662,7 +1659,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
      *                 PARQUET}: Indicates the file(s) are in Parquet format.
-     *                 Parquet files are not supported yet.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -2504,8 +2500,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         format; e.g., CSV, TSV, PSV, etc.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
-     *         PARQUET}: Indicates the file(s) are in Parquet format. Parquet
-     *         files are not supported yet.
+     *         PARQUET}: Indicates the file(s) are in Parquet format.
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -2848,7 +2843,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
      *                 PARQUET}: Indicates the file(s) are in Parquet format.
-     *                 Parquet files are not supported yet.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT

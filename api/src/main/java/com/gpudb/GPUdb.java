@@ -3504,14 +3504,28 @@ public class GPUdb extends GPUdbBase {
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
      *                              FALSE}.
      *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_STORAGE_ACCOUNT_NAME
+     *                              AZURE_STORAGE_ACCOUNT_NAME}: Name of the
+     *                              Azure storage account to use as the data
+     *                              source, this is valid only if tenant_id is
+     *                              specified
+     *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_CONTAINER_NAME
      *                              AZURE_CONTAINER_NAME}: Name of the Azure
      *                              storage container to use as the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_TENANT_ID
+     *                              AZURE_TENANT_ID}: Active Directory tenant
+     *                              ID (or directory ID)
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_SAS_TOKEN
      *                              AZURE_SAS_TOKEN}: Shared access signature
      *                              token for Azure storage account to use as
      *                              the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
+     *                              AZURE_OAUTH_TOKEN}: Oauth token to access
+     *                              given storage container
      *                              </ul>
      * @param options  Optional parameters.
      * 
@@ -5320,13 +5334,26 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_STORAGE_ACCOUNT_NAME
+     *                 AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure storage
+     *                 account to use as the data source, this is valid only if
+     *                 tenant_id is specified
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_CONTAINER_NAME
      *                 AZURE_CONTAINER_NAME}: Name of the Azure storage
      *                 container to use as the data source
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_TENANT_ID
+     *                 AZURE_TENANT_ID}: Active Directory tenant ID (or
+     *                 directory ID)
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_SAS_TOKEN
      *                 AZURE_SAS_TOKEN}: Shared access signature token for
      *                 Azure storage account to use as the data source
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_OAUTH_TOKEN
+     *                 AZURE_OAUTH_TOKEN}: Oauth token to access given storage
+     *                 container
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -8156,6 +8183,11 @@ public class GPUdb extends GPUdbBase {
      *                    data type with minimum value of zero, and maximum
      *                    value of 18446744073709551615.
      *                            <li> {@link
+     *                    com.gpudb.protocol.CreateTypeRequest.Properties#UUID
+     *                    UUID}: Valid only for 'string' columns.  It
+     *                    represents an uuid data type. Internally, it is
+     *                    stored as a 128-bit integer.
+     *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DECIMAL
      *                    DECIMAL}: Valid only for 'string' columns.  It
      *                    represents a SQL type NUMERIC(19, 4) data type.
@@ -8312,6 +8344,11 @@ public class GPUdb extends GPUdbBase {
      *                    INIT_WITH_NOW}: For 'date', 'time', 'datetime', or
      *                    'timestamp' column types, replace empty strings and
      *                    invalid timestamps with 'NOW()' upon insert.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_UUID
+     *                    INIT_WITH_UUID}: For 'uuid' type,  repalce empty
+     *                    strings and invalid uuid values with new_uuid()' upon
+     *                    insert.
      *                    </ul>
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
@@ -13900,7 +13937,6 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
      *                 PARQUET}: Indicates the file(s) are in Parquet format.
-     *                 Parquet files are not supported yet.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -14505,7 +14541,6 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PARQUET
      *                 PARQUET}: Indicates the file(s) are in Parquet format.
-     *                 Parquet files are not supported yet.
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT

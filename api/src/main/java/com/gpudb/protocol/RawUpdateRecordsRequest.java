@@ -532,11 +532,11 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                         element from this list will be added to the
      *                         table.  The default value is an empty {@link
      *                         List}.
-     * @param recordsToInsertStr  An optional list of new json-avro encoded
-     *                            objects to insert, one for each update, to be
-     *                            added to the set if the particular update did
-     *                            not affect any objects.  The default value is
-     *                            an empty {@link List}.
+     * @param recordsToInsertStr  An optional list of JSON encoded objects to
+     *                            insert, one for each update, to be added if
+     *                            the particular update did not match any
+     *                            objects.  The default value is an empty
+     *                            {@link List}.
      * @param recordEncoding  Identifies which of {@code recordsToInsert} and
      *                        {@code recordsToInsertStr} should be used.
      *                        Supported values:
@@ -806,10 +806,9 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @return An optional list of new json-avro encoded objects to insert, one
-     *         for each update, to be added to the set if the particular update
-     *         did not affect any objects.  The default value is an empty
-     *         {@link List}.
+     * @return An optional list of JSON encoded objects to insert, one for each
+     *         update, to be added if the particular update did not match any
+     *         objects.  The default value is an empty {@link List}.
      * 
      */
     public List<String> getRecordsToInsertStr() {
@@ -818,11 +817,11 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
     /**
      * 
-     * @param recordsToInsertStr  An optional list of new json-avro encoded
-     *                            objects to insert, one for each update, to be
-     *                            added to the set if the particular update did
-     *                            not affect any objects.  The default value is
-     *                            an empty {@link List}.
+     * @param recordsToInsertStr  An optional list of JSON encoded objects to
+     *                            insert, one for each update, to be added if
+     *                            the particular update did not match any
+     *                            objects.  The default value is an empty
+     *                            {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

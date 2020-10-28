@@ -96,13 +96,23 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}.
      *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_STORAGE_ACCOUNT_NAME
+     * AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure storage account to use as
+     * the data source, this is valid only if tenant_id is specified
+     *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_CONTAINER_NAME
      * AZURE_CONTAINER_NAME}: Name of the Azure storage container to use as the
      * data source
      *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_TENANT_ID
+     * AZURE_TENANT_ID}: Active Directory tenant ID (or directory ID)
+     *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_SAS_TOKEN
      * AZURE_SAS_TOKEN}: Shared access signature token for Azure storage
      * account to use as the data source
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_OAUTH_TOKEN
+     * AZURE_OAUTH_TOKEN}: Oauth token to access given storage container
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -170,15 +180,31 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String HDFS_USE_KERBEROS = "hdfs_use_kerberos";
 
         /**
+         * Name of the Azure storage account to use as the data source, this is
+         * valid only if tenant_id is specified
+         */
+        public static final String AZURE_STORAGE_ACCOUNT_NAME = "azure_storage_account_name";
+
+        /**
          * Name of the Azure storage container to use as the data source
          */
         public static final String AZURE_CONTAINER_NAME = "azure_container_name";
+
+        /**
+         * Active Directory tenant ID (or directory ID)
+         */
+        public static final String AZURE_TENANT_ID = "azure_tenant_id";
 
         /**
          * Shared access signature token for Azure storage account to use as
          * the data source
          */
         public static final String AZURE_SAS_TOKEN = "azure_sas_token";
+
+        /**
+         * Oauth token to access given storage container
+         */
+        public static final String AZURE_OAUTH_TOKEN = "azure_oauth_token";
 
         private Options() {  }
     }
@@ -272,13 +298,26 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_STORAGE_ACCOUNT_NAME
+     *                 AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure storage
+     *                 account to use as the data source, this is valid only if
+     *                 tenant_id is specified
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_CONTAINER_NAME
      *                 AZURE_CONTAINER_NAME}: Name of the Azure storage
      *                 container to use as the data source
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_TENANT_ID
+     *                 AZURE_TENANT_ID}: Active Directory tenant ID (or
+     *                 directory ID)
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_SAS_TOKEN
      *                 AZURE_SAS_TOKEN}: Shared access signature token for
      *                 Azure storage account to use as the data source
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_OAUTH_TOKEN
+     *                 AZURE_OAUTH_TOKEN}: Oauth token to access given storage
+     *                 container
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -435,13 +474,25 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_STORAGE_ACCOUNT_NAME
+     *         AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure storage account
+     *         to use as the data source, this is valid only if tenant_id is
+     *         specified
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_CONTAINER_NAME
      *         AZURE_CONTAINER_NAME}: Name of the Azure storage container to
      *         use as the data source
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_TENANT_ID
+     *         AZURE_TENANT_ID}: Active Directory tenant ID (or directory ID)
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_SAS_TOKEN
      *         AZURE_SAS_TOKEN}: Shared access signature token for Azure
      *         storage account to use as the data source
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_OAUTH_TOKEN
+     *         AZURE_OAUTH_TOKEN}: Oauth token to access given storage
+     *         container
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -511,13 +562,26 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_STORAGE_ACCOUNT_NAME
+     *                 AZURE_STORAGE_ACCOUNT_NAME}: Name of the Azure storage
+     *                 account to use as the data source, this is valid only if
+     *                 tenant_id is specified
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_CONTAINER_NAME
      *                 AZURE_CONTAINER_NAME}: Name of the Azure storage
      *                 container to use as the data source
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_TENANT_ID
+     *                 AZURE_TENANT_ID}: Active Directory tenant ID (or
+     *                 directory ID)
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_SAS_TOKEN
      *                 AZURE_SAS_TOKEN}: Shared access signature token for
      *                 Azure storage account to use as the data source
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_OAUTH_TOKEN
+     *                 AZURE_OAUTH_TOKEN}: Oauth token to access given storage
+     *                 container
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
