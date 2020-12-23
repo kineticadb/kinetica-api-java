@@ -56,7 +56,7 @@ public class RecordRetriever<T> {
         this(gpudb, tableName, type, null, null, null);
     }
 
-    
+
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
      *
@@ -151,7 +151,7 @@ public class RecordRetriever<T> {
     }
 
 
-    
+
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
      *
@@ -172,7 +172,7 @@ public class RecordRetriever<T> {
         this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, workers, null);
     }
 
-    
+
     /**
      * Creates a {@link RecordRetriever} with the specified parameters.
      *
@@ -195,7 +195,7 @@ public class RecordRetriever<T> {
         this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, workers, options);
     }
 
-    
+
     private RecordRetriever( GPUdb gpudb,
                              String tableName,
                              Type type,
@@ -221,8 +221,9 @@ public class RecordRetriever<T> {
             this.options = new HashMap<>();
         }
         // We will always need to use this for getByKey
-        this.options.put(GetRecordsRequest.Options.FAST_INDEX_LOOKUP, GetRecordsRequest.Options.TRUE);
-        
+        this.options.put( GetRecordsRequest.Options.FAST_INDEX_LOOKUP,
+                          GetRecordsRequest.Options.TRUE );
+
         // We need to know how many clusters are in the HA ring (for failover
         // purposes)
         this.dbHARingSize = gpudb.getHARingSize();
@@ -234,7 +235,7 @@ public class RecordRetriever<T> {
         // Keep track of which cluster we're using (helpful in knowing if an
         // HA failover has happened)
         this.currentHeadNodeURL = gpudb.getURL();
-        
+
         RecordKeyBuilder<T> shardKeyBuilderTemp;
 
         if (typeObjectMap == null) {
@@ -296,7 +297,7 @@ public class RecordRetriever<T> {
             return this.currentHeadNodeURL;
         }
     }
-    
+
     /**
      * Sets the current head node URL in a thread-safe manner.
      */
@@ -305,7 +306,7 @@ public class RecordRetriever<T> {
             this.currentHeadNodeURL = newCurrURL;
         }
     }
-    
+
     /**
      * Use the current head node URL in a thread-safe manner.
      */
@@ -323,7 +324,7 @@ public class RecordRetriever<T> {
             this.numClusterSwitches = value;
         }
     }
-    
+
 
     /**
      * Force a high-availability cluster failover over.  Check the health of the
@@ -349,7 +350,7 @@ public class RecordRetriever<T> {
             // Update the reference points
             currURL                  = this.gpudb.getURL();
             currCountClusterSwitches = this.gpudb.getNumClusterSwitches();
-            
+
             boolean isClusterHealthy = true;
 
             // We did switch to a different cluster; now check the health
@@ -368,7 +369,7 @@ public class RecordRetriever<T> {
                     // Some problem occurred; move to the next cluster
                     continue;
                 }
-                
+
                 // Check the health of all the worker ranks
                 for ( URL workerRank : workerRanks) {
                     if ( !this.gpudb.isKineticaRunning( workerRank ) ) {
@@ -438,7 +439,7 @@ public class RecordRetriever<T> {
                 // Update the HA ring node switch counter
                 this.setCurrentClusterSwitchCount( _numClusterSwitches );
             }
-        
+
             // Save the new shard version and also when we're updating the mapping
             this.shardVersion = newShardVersion;
 
@@ -471,7 +472,7 @@ public class RecordRetriever<T> {
         {
             reconstructWorkerURLs();
         }
-        
+
         return true; // the shard mapping was updated indeed
     }  // end updateWorkerQueues
 
@@ -540,13 +541,13 @@ public class RecordRetriever<T> {
 
     /**
      * Gets the options currently used for the retriever methods.  Note
-     * that any {@link GetRecordsRequest.Options.EXPRESSION} options will
-     * get overridden at the next {@link getByKey} call with the appropriate
-     * expression.
+     * that any {@link com.gpudb.protocol.GetRecordsRequest.Options#EXPRESSION}
+     * options will get overridden at the next {@link #getByKey} call with the
+     * appropriate expression.
      *
      * @return  the options used during record retrieval
      *
-     * @see setOptions
+     * @see #setOptions
      */
     public Map<String, String> getOptions() {
         return this.options;
@@ -560,7 +561,7 @@ public class RecordRetriever<T> {
      *
      * @return         the current {@link RecordRetriever} instance
      *
-     * @see com.gpudb.protocol.GetRecordsRequest.Options.EXPRESSION
+     * @see com.gpudb.protocol.GetRecordsRequest.Options#EXPRESSION
      */
     public RecordRetriever setOptions( Map<String, String> options ) {
         // Set the options in a thread-safe manner
@@ -636,7 +637,7 @@ public class RecordRetriever<T> {
                 } catch (GPUdbException ex) {
                     throw new GPUdbException( "Unable to calculate the shard value; please check data for unshardable values");
                 }
-                    
+
                 URL url = workerUrls.get(shardKey.route(routingTable));
                 response = gpudb.submitRequest(url, request, response, false);
             } else {
@@ -740,5 +741,5 @@ public class RecordRetriever<T> {
      *
      *       The `setOptions()` method would have to be changed as well.
      */
-    
+
 }  // class RecordRetriever

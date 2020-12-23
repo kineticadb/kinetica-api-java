@@ -2,10 +2,24 @@
 
 ## Version 7.0
 
+### Version 7.0.20.1 - 2020-12-23
+
+#### Performance Enhancements
+-   Converted the BulkInserter flushing mechanism from single-threaded
+    to parallel-threaded.
+
+
 ### Version 7.0.20.0 - 2020-11-25
 
 #### Note
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
+### Version 7.0.19.1 - 2020-12-23
+
+#### Performance Enhancements
+-   Converted the BulkInserter flushing mechanism from single-threaded
+    to parallel-threaded.
 
 
 ### Version 7.0.19.0 - 2020-08-24

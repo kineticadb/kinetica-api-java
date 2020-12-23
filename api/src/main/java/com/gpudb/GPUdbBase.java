@@ -2740,7 +2740,7 @@ public abstract class GPUdbBase {
     /**
      * Verifies that GPUdb is running at the given URL (does not do any HA failover).
      *
-     * @returns true if Kinetica is running, false otherwise.
+     * @return true if Kinetica is running, false otherwise.
      */
     public boolean isKineticaRunning(URL url) {
 

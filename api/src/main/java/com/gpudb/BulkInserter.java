@@ -9,12 +9,20 @@ import com.gpudb.protocol.RawInsertRecordsRequest;
 import com.gpudb.protocol.ShowTableResponse;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
@@ -115,26 +123,50 @@ public class BulkInserter<T> {
         }
     }
 
-    private static final class WorkerQueue<T> {
+
+    /**
+     * A callable class that stores a list of records to insert and can also insert
+     * those records in its call() method.
+     */
+    private static final class WorkerQueue<T> implements Callable {
+        private final GPUdb gpudb;
         private final URL url;
+        private final String tableName;
         private final int capacity;
         private final boolean hasPrimaryKey;
         private final boolean updateOnExistingPk;
         private List<T> queue;
         private Map<RecordKey, Integer> primaryKeyMap;
+        private final TypeObjectMap<T> typeObjectMap;
+        private final Map<String, String> options;
 
-        public WorkerQueue(URL url, int capacity, boolean hasPrimaryKey, boolean updateOnExistingPk) {
-            this.url = url;
-            this.capacity = capacity;
-            this.hasPrimaryKey = hasPrimaryKey;
+        public WorkerQueue( GPUdb gpudb, URL url, String tableName,
+                            int capacity,
+                            boolean hasPrimaryKey, boolean updateOnExistingPk,
+                            Map<String, String> options,
+                            TypeObjectMap<T> typeObjectMap ) {
+            this.gpudb     = gpudb;
+            this.url       = url;
+            this.tableName = tableName;
+            this.capacity           = capacity;
+            this.hasPrimaryKey      = hasPrimaryKey;
             this.updateOnExistingPk = updateOnExistingPk;
-            queue = new ArrayList<>(capacity);
+            this.options            = options;
+            this.typeObjectMap      = typeObjectMap;
+
+            // Allow some extra room when allocating the memory since we may
+            // sometimes go over the capacity before we flush
+            queue = new ArrayList<>( (int)Math.round( capacity * 1.25 ) );
 
             if (hasPrimaryKey) {
                 primaryKeyMap = new HashMap<>(Math.round(capacity / 0.75f) + 1, 0.75f);
             }
         }
 
+        /*
+         * Returns the currently queued records and re-initializes the queue
+         * for new records.
+         */
         public List<T> flush() {
             List<T> oldQueue = queue;
             queue = new ArrayList<>(capacity);
@@ -146,7 +178,12 @@ public class BulkInserter<T> {
             return oldQueue;
         }
 
-        public List<T> insert(T record, RecordKey key) {
+        /**
+         * Insert the given record.  Return true if the record
+         * is inserted into the queue, and false if it hasn't
+         * (based on primary key conflicts and user options).
+         */
+        public boolean insert(T record, RecordKey key) {
             if (hasPrimaryKey && key.isValid()) {
                 if (updateOnExistingPk) {
                     Integer keyIndex = primaryKeyMap.get(key);
@@ -159,7 +196,7 @@ public class BulkInserter<T> {
                     }
                 } else {
                     if (primaryKeyMap.containsKey(key)) {
-                        return null;
+                        return false;
                     }
 
                     queue.add(record);
@@ -169,17 +206,222 @@ public class BulkInserter<T> {
                 queue.add(record);
             }
 
-            if (queue.size() == capacity) {
-                return flush();
+            return true;
+        }
+
+
+        /**
+         * Returns if the queue is full (based on the capacity).
+         */
+        public boolean isQueueFull() {
+            if (queue.size() >= capacity) {
+                return true;
             } else {
-                return null;
+                return false;
             }
         }
+
+
+        /**
+         * Inserts the records in the queue.  Returns a {@link
+         * com.gpudb.GPUdbBase.WorkerQueueInsertionResult} object
+         * containing the result of the insertion, or null if no
+         * insertion was attempted.
+         */
+        @Override
+        public WorkerQueueInsertionResult<T> call() throws Exception {
+            // Get the currently queued records (we shall try inserting them)
+            List<T> queuedRecords = this.queue;
+            this.queue = new ArrayList<>( capacity );
+
+            // Clear out the map of records to primary index (used for the
+            // purpose of updating existing primary keys)
+            if (primaryKeyMap != null) {
+                primaryKeyMap.clear();
+            }
+
+            // If nothing to insert, return a null object for the response
+            if ( queuedRecords.isEmpty() ) {
+                return null;
+            }
+
+            // First, encode the records to create the request packet
+            RawInsertRecordsRequest request;
+            try {
+                List<ByteBuffer> encodedRecords;
+                if ( this.typeObjectMap == null ) {
+                    encodedRecords = Avro.encode( (List<? extends IndexedRecord>)queuedRecords,
+                                                  this.gpudb.getThreadCount(),
+                                                  this.gpudb.getExecutor() );
+                } else {
+                    encodedRecords = Avro.encode( this.typeObjectMap,
+                                                  queuedRecords,
+                                                  this.gpudb.getThreadCount(),
+                                                  this.gpudb.getExecutor() );
+                }
+                request = new RawInsertRecordsRequest( this.tableName,
+                                                       encodedRecords,
+                                                       options);
+            } catch (Exception ex) {
+                // Can't even attempt the insertion! Need to let the caller know.
+                return new WorkerQueueInsertionResult<T>( url, this.gpudb.getURL(),
+                                                          null,
+                                                          queuedRecords,
+                                                          false, false, false,
+                                                          this.gpudb.getNumClusterSwitches(),
+                                                          0, ex );
+            }
+
+            // Some flags for necessary follow-up work
+            boolean doUpdateWorkers = false;
+            boolean doFailover      = false;
+            boolean isSuccess       = false;
+
+            // Information that we will need to pass via the result object
+            Exception exception   = null;
+            List<T> failedRecords = null;
+
+            InsertRecordsResponse response = new InsertRecordsResponse();
+
+            long insertionAttemptTimestamp = new Timestamp( System.currentTimeMillis() ).getTime();
+            URL headRankURL = this.gpudb.getURL();
+            int countClusterSwitches = this.gpudb.getNumClusterSwitches();
+
+            try {
+                if (url == null) {
+                    response = this.gpudb.submitRequest("/insert/records", request, response, true);
+                } else {
+                    response = this.gpudb.submitRequest(url, request, response, true);
+                }
+
+                // Check if shard re-balancing is under way at the server; if so,
+                // we need to update the shard mapping
+                if ( "true".equals( response.getInfo().get( "data_rerouted" ) ) ) {
+                    doUpdateWorkers = true;
+                }
+
+                // Insertion worked!
+                isSuccess = true;
+            } catch (GPUdbException ex) {
+                // If some connection issue occurred, we want to force an HA failover
+                if ( (ex instanceof GPUdbExitException)
+                     || ex.hadConnectionFailure() ) {
+                    // We did encounter an HA failover trigger
+                    doFailover = true;
+                }
+
+                // Need to pass the records that we couldn't insert and the
+                // exception we caught for further analysis down the road
+                failedRecords = queuedRecords;
+                exception     = ex;
+            } catch (Exception ex) {
+                // Need to pass the records that we couldn't insert and the
+                // exception we caught for further analysis down the road
+                failedRecords = queuedRecords;
+                exception     = ex;
+            }
+
+            // Package the response nicely with all relevant information
+            return new WorkerQueueInsertionResult<T>( url, headRankURL, response,
+                                                      failedRecords,
+                                                      isSuccess,
+                                                      doUpdateWorkers,
+                                                      doFailover,
+                                                      countClusterSwitches,
+                                                      insertionAttemptTimestamp,
+                                                      exception );
+        }  // end call
 
         public URL getUrl() {
             return url;
         }
-    }
+    }   // end class WorkerQueue
+
+
+
+    /**
+     * A container for storing all relevant results for an attempted insertion
+     * of records.  Will contain an /insert/records response, any record
+     * that failed to be inserted, and some boolean flags around success and
+     * other follow-up work that may need to be done.  Also contains any
+     * encountered exception.
+     */
+    private static final class WorkerQueueInsertionResult<T> {
+        private final URL workerUrl;
+        private final URL headUrl;
+        private final InsertRecordsResponse insertResponse;
+        private final List<T>   failedRecords;
+        private final Exception failureException;
+        private final boolean   didSucceed;
+        private final boolean   doUpdateWorkers;
+        private final boolean   doFailover;
+        private final int       countClusterSwitches;
+        private final long      insertionAttemptTimestamp;
+
+        public WorkerQueueInsertionResult( URL workerUrl,
+                                           URL headUrl,
+                                           InsertRecordsResponse insertResponse,
+                                           List<T>   failedRecords,
+                                           boolean   didSucceed,
+                                           boolean   doUpdateWorkers,
+                                           boolean   doFailover,
+                                           int       countClusterSwitches,
+                                           long      insertionAttemptTimestamp,
+                                           Exception exception ) {
+            this.workerUrl        = workerUrl;
+            this.headUrl          = headUrl;
+            this.insertResponse   = insertResponse;
+            this.failedRecords    = failedRecords;
+            this.didSucceed       = didSucceed;
+            this.doUpdateWorkers  = doUpdateWorkers;
+            this.doFailover       = doFailover;
+            this.failureException = exception;
+            this.countClusterSwitches      = countClusterSwitches;
+            this.insertionAttemptTimestamp = insertionAttemptTimestamp;
+        }
+
+        public URL getWorkerUrl() {
+            return this.workerUrl;
+        }
+
+        public URL getHeadUrl() {
+            return this.headUrl;
+        }
+
+        public InsertRecordsResponse getInsertResponse() {
+            return this.insertResponse;
+        }
+
+        public List<T> getFailedRecords() {
+            return this.failedRecords;
+        }
+
+        public Exception getFailureException() {
+            return this.failureException;
+        }
+
+        public boolean getDidSucceed() {
+            return this.didSucceed;
+        }
+
+        public boolean getDoUpdateWorkers() {
+            return this.doUpdateWorkers;
+        }
+
+        public boolean getDoFailover() {
+            return this.doFailover;
+        }
+
+        public int getCountClusterSwitches() {
+            return this.countClusterSwitches;
+        }
+
+        public long getInsertionAttemptTimestamp() {
+            return this.insertionAttemptTimestamp;
+        }
+
+    }  // end class WorkerQueueInsertionResult
+
 
     // BulkInserter Members
     private final Object haFailoverLock;
@@ -191,6 +433,7 @@ public class BulkInserter<T> {
     private final Map<String, String> options;
     private final RecordKeyBuilder<T> primaryKeyBuilder;
     private final RecordKeyBuilder<T> shardKeyBuilder;
+    private final ExecutorService workerExecutorService;
     private final boolean isReplicatedTable;
     private final boolean isMultiHeadEnabled;
     private final boolean useHeadNode;
@@ -305,11 +548,17 @@ public class BulkInserter<T> {
     private BulkInserter(GPUdb gpudb, String tableName, Type type, TypeObjectMap<T> typeObjectMap, int batchSize, Map<String, String> options, com.gpudb.WorkerList workers) throws GPUdbException {
 
         haFailoverLock = new Object();
-        
+
         this.gpudb = gpudb;
         this.tableName = tableName;
         this.typeObjectMap = typeObjectMap;
         this.workerList    = workers;
+
+        // Initialize the thread pool for workers based on the resources
+        // available on the system
+        workerExecutorService = Executors.newFixedThreadPool( Runtime
+                                                              .getRuntime()
+                                                              .availableProcessors() );
 
         // Initialize the shard version and update time
         this.shardVersion = 0;
@@ -326,19 +575,19 @@ public class BulkInserter<T> {
         // Keep track of which cluster we're using (helpful in knowing if an
         // HA failover has happened)
         this.currentHeadNodeURL = gpudb.getURL();
-        
+
         // Validate that the table exists
         if ( !gpudb.hasTable( tableName, null ).getTableExists() ) {
             throw new GPUdbException( "Table '" + tableName + "' does not exist!" );
         }
-            
+
         // Check if it is a replicated table (if so, then can't do
         // multi-head ingestion; will have to force rank-0 ingestion)
         this.isReplicatedTable = gpudb.showTable( tableName, null )
                                       .getTableDescriptions()
                                       .get( 0 )
                                       .contains( ShowTableResponse.TableDescriptions.REPLICATED );
-            
+
         // Set if multi-head I/O is turned on at the server
         this.isMultiHeadEnabled = ( this.workerList != null && !this.workerList.isEmpty() );
 
@@ -351,7 +600,7 @@ public class BulkInserter<T> {
             throw new IllegalArgumentException("Batch size must be greater than zero.");
         }
         this.batchSize = batchSize;
-        
+
         if (options != null) {
             this.options = Collections.unmodifiableMap(new HashMap<>(options));
         } else {
@@ -389,9 +638,17 @@ public class BulkInserter<T> {
         // Save whether this table has a primary key
         this.hasPrimaryKey = (this.primaryKeyBuilder != null);
 
-        this.updateOnExistingPk = options != null
-            && options.containsKey(InsertRecordsRequest.Options.UPDATE_ON_EXISTING_PK)
-            && options.get(InsertRecordsRequest.Options.UPDATE_ON_EXISTING_PK).equals(InsertRecordsRequest.Options.TRUE);
+        // And wheter we need to update records with existing primary keys
+        this.updateOnExistingPk = ( (options != null)
+                                    && options.containsKey( InsertRecordsRequest
+                                                            .Options
+                                                            .UPDATE_ON_EXISTING_PK )
+                                    && options.get( InsertRecordsRequest
+                                                    .Options
+                                                    .UPDATE_ON_EXISTING_PK )
+                                               .equals( InsertRecordsRequest
+                                                        .Options
+                                                        .TRUE ) );
 
         this.workerQueues = new ArrayList<>();
 
@@ -400,16 +657,22 @@ public class BulkInserter<T> {
             // If we have multiple workers, then use those (unless the table
             // is replicated)
             if ( !this.useHeadNode ) {
-                
+
                 for (URL url : this.workerList) {
                     if (url == null) {
                         // Handle removed ranks
                         this.workerQueues.add( null );
                     } else {
-                        this.workerQueues.add(new WorkerQueue<T>( GPUdbBase.appendPathToURL(url, "/insert/records"),
+                        URL insertURL = GPUdbBase.appendPathToURL( url,
+                                                                   "/insert/records" );
+                        this.workerQueues.add(new WorkerQueue<T>( this.gpudb,
+                                                                  insertURL,
+                                                                  this.tableName,
                                                                   batchSize,
                                                                   this.hasPrimaryKey,
-                                                                  this.updateOnExistingPk ) );
+                                                                  this.updateOnExistingPk,
+                                                                  this.options,
+                                                                  this.typeObjectMap ) );
                     }
                 }
 
@@ -418,12 +681,19 @@ public class BulkInserter<T> {
 
                 this.numRanks = this.workerQueues.size();
             } else { // use the head node only for insertion
+                URL insertURL = null;
                 if (gpudb.getURLs().size() == 1) {
-                    this.workerQueues.add(new WorkerQueue<T>(GPUdbBase.appendPathToURL(gpudb.getURL(), "/insert/records"), batchSize, primaryKeyBuilder != null, updateOnExistingPk));
-                } else {
-                    this.workerQueues.add(new WorkerQueue<T>(null, batchSize, primaryKeyBuilder != null, updateOnExistingPk));
+                    insertURL = GPUdbBase.appendPathToURL( gpudb.getURL(),
+                                                           "/insert/records" );
                 }
 
+                this.workerQueues.add( new WorkerQueue<T>( this.gpudb, insertURL,
+                                                           this.tableName,
+                                                           batchSize,
+                                                           (primaryKeyBuilder != null),
+                                                           updateOnExistingPk,
+                                                           this.options,
+                                                           this.typeObjectMap ) );
                 routingTable = null;
                 this.numRanks = 1;
             }
@@ -441,7 +711,7 @@ public class BulkInserter<T> {
             return this.currentHeadNodeURL;
         }
     }
-    
+
     /**
      * Sets the current head node URL in a thread-safe manner.
      */
@@ -450,7 +720,7 @@ public class BulkInserter<T> {
             this.currentHeadNodeURL = newCurrURL;
         }
     }
-    
+
     /**
      * Use the current count of HA failover events in a thread-safe manner.
      */
@@ -459,7 +729,7 @@ public class BulkInserter<T> {
             return this.numClusterSwitches;
         }
     }
-    
+
     /**
      * Set the current count of HA failover events in a thread-safe manner.
      */
@@ -468,7 +738,7 @@ public class BulkInserter<T> {
             this.numClusterSwitches = value;
         }
     }
-    
+
 
     /**
      * Force a high-availability cluster failover over.  Check the health of the
@@ -479,7 +749,7 @@ public class BulkInserter<T> {
      * @throws GPUdbException if a successful failover could not be achieved.
      */
     private synchronized void forceHAFailover(URL currURL, int currCountClusterSwitches) throws GPUdbException {
-        
+
         for (int i = 0; i < this.dbHARingSize; ++i) {
             // Try to switch to a new cluster
             try {
@@ -492,7 +762,7 @@ public class BulkInserter<T> {
             // Update the reference points
             currURL                  = this.gpudb.getURL();
             currCountClusterSwitches = this.gpudb.getNumClusterSwitches();
-            
+
             // We did switch to a different cluster; now check the health
             // of the cluster, starting with the head node
             if ( !this.gpudb.isKineticaRunning( currURL ) ) {
@@ -510,7 +780,7 @@ public class BulkInserter<T> {
                     // Some problem occurred; move to the next cluster
                     continue;
                 }
-                
+
                 // Check the health of all the worker ranks
                 for ( URL workerRank : workerRanks) {
                     if ( !this.gpudb.isKineticaRunning( workerRank ) ) {
@@ -580,7 +850,7 @@ public class BulkInserter<T> {
                 // Update the HA ring node switch counter
                 this.setCurrentClusterSwitchCount( _numClusterSwitches );
             }
-        
+
             // Save the new shard version
             this.shardVersion = newShardVersion;
 
@@ -607,7 +877,7 @@ public class BulkInserter<T> {
         // cluster switches
         this.setCurrentHeadNodeURL( this.gpudb.getURL() );
         this.setCurrentClusterSwitchCount( this.gpudb.getNumClusterSwitches() );
-        
+
         // The worker queues need to be re-constructed when asked for
         // iff multi-head i/o is enabled and the table is not replicated
         if ( doReconstructWorkerQueues
@@ -615,7 +885,7 @@ public class BulkInserter<T> {
         {
             reconstructWorkerQueues();
         }
-        
+
         return true; // the shard mapping was updated indeed
     }  // end updateWorkerQueues
 
@@ -624,7 +894,7 @@ public class BulkInserter<T> {
      * Reconstructs the worker queues and re-queues records in the old
      * queues.
      */
-    private synchronized void reconstructWorkerQueues() throws GPUdbException { 
+    private synchronized void reconstructWorkerQueues() throws GPUdbException {
 
         // Using the worker ranks for multi-head ingestion; so need to rebuild
         // the worker queues
@@ -650,10 +920,14 @@ public class BulkInserter<T> {
                 }
                 else {
                     // Add a queue for a currently active rank
-                    newWorkerQueues.add( new WorkerQueue<T>( GPUdbBase.appendPathToURL(url, "/insert/records"),
+                    URL insertURL = GPUdbBase.appendPathToURL( url, "/insert/records" );
+                    newWorkerQueues.add( new WorkerQueue<T>( this.gpudb, insertURL,
+                                                             this.tableName,
                                                              batchSize,
                                                              (this.primaryKeyBuilder != null),
-                                                             this.updateOnExistingPk ) );
+                                                             this.updateOnExistingPk,
+                                                             this.options,
+                                                             this.typeObjectMap ) );
                 }
             } catch (MalformedURLException ex) {
                 throw new GPUdbException( ex.getMessage(), ex );
@@ -669,7 +943,7 @@ public class BulkInserter<T> {
         List< WorkerQueue<T> > oldWorkerQueues;
         oldWorkerQueues = this.workerQueues;
         this.workerQueues = newWorkerQueues;
-        
+
         // Re-queue any existing queued records
         for ( WorkerQueue<T> oldQueue : oldWorkerQueues ) {
             if ( oldQueue != null ) { // skipping removed ranks
@@ -786,181 +1060,283 @@ public class BulkInserter<T> {
      * @throws InsertException if an error occurs while inserting
      */
     public void flush() throws InsertException {
-        for (WorkerQueue<T> workerQueue : workerQueues) {
+        // Flush all queues, regardless of how full they are.  Also, we will
+        // retry based on user configuration.
+        this.flushQueues( this.workerQueues, this.retryCount );
+    }
+
+
+    /**
+     * Flush the records of a given worker queue.
+     */
+    private void flush( WorkerQueue<T> workerQueue ) throws InsertException {
+        // Flush only the given single queue.  Also, we will retry based on user
+        // configuration.
+        List<WorkerQueue<T>> workerQueues = new ArrayList<>();
+        workerQueues.add( workerQueue );
+        this.flushQueues( workerQueues, this.retryCount );
+    }
+
+
+    /**
+     * Flush only the queues that are already full.
+     *
+     * @param retryCount  the number of times we have left to retry inserting
+     *
+     * @throws InsertException if an error occurs while flushing
+     */
+    private void flushFullQueues( int retryCount ) throws InsertException {
+        List<WorkerQueue<T>> fullQueues = new ArrayList<>();
+
+        for (WorkerQueue<T> workerQueue : this.workerQueues) {
 
             // Handle removed ranks
             if ( workerQueue == null)
                 continue;
-            
-            List<T> queue;
 
-            synchronized (workerQueue) {
-                queue = workerQueue.flush();
+            // We will flush only full queues
+            if ( workerQueue.isQueueFull() ) {
+                fullQueues.add( workerQueue );
             }
 
-            flush( queue, workerQueue.getUrl(), true );
         }
+
+        this.flushQueues( fullQueues, retryCount );
     }
 
-    @SuppressWarnings("unchecked")
-    private void flush(List<T> queue, URL url, boolean forcedFlush) throws InsertException {
-        if (queue.isEmpty()) {
-            return;
+
+    /**
+     * Flush only the queues that are already full.
+     *
+     * If any queue encounters a failover scenario, trigger the failover
+     * mechanism to re-establish connection with the server.  Then, re-insert
+     * all records that we failed to insert.
+     *
+     * @param queues      the queues that we need to flush
+     * @param retryCount  the number of times we have left to retry inserting
+     *
+     * @throws InsertException if an error occurs while flushing
+     */
+    private void flushQueues( List<WorkerQueue<T>> queues, int retryCount )
+        throws InsertException {
+
+        // Create an execution completion service that will let each queue
+        // work in an independent parallel thread.  We will consume the
+        // result of the queues as they complete (in the order of completion).
+        CompletionService<WorkerQueueInsertionResult<T>> queueService
+            = new ExecutorCompletionService<>( this.workerExecutorService );
+		List< Future< WorkerQueueInsertionResult<T> >> futureResults
+            = new ArrayList<>();
+
+        // Add all the given tasks to the service
+        int countQueueSubmitted = 0;
+        for (WorkerQueue<T> workerQueue : queues) {
+
+            // Handle removed ranks
+            if ( workerQueue == null)
+                continue;
+
+            // Submit each extant worker queue to the service and also
+            // to the list of future results
+            futureResults.add( queueService.submit( workerQueue ) );
+            ++countQueueSubmitted;
         }
 
-        int retries = retryCount;
-        
-        try {
-            RawInsertRecordsRequest request;
+        boolean doUpdateWorkers  = false;
+        boolean doFailover       = false;
+        boolean doRetryInsertion = false;
+        int     latestCountClusterSwitches       = 0;
+        long    latestInsertionAttemptTimestamp  = 0;
+        List<URL> failedWorkerUrls       = new ArrayList<>();
+        List<T> failedRecords            = new ArrayList<>();
+        List<Exception> workerExceptions = new ArrayList<>();
 
-            if (typeObjectMap == null) {
-                request = new RawInsertRecordsRequest(tableName, Avro.encode((List<? extends IndexedRecord>)queue, gpudb.getThreadCount(), gpudb.getExecutor()), options);
-            } else {
-                request = new RawInsertRecordsRequest(tableName, Avro.encode(typeObjectMap, queue, gpudb.getThreadCount(), gpudb.getExecutor()), options);
+        // Handle the results of the parallel insertions.  Aggregate results,
+        // or set up the need for retry or failover.
+        for (int i = 0; i < countQueueSubmitted; ++i) {
+            // Note that this take() will block until the next queue has
+            // completed its work
+            WorkerQueueInsertionResult<T> result;
+            try {
+                result = queueService.take().get();
+            } catch ( ExecutionException
+                      | java.lang.InterruptedException ex ) {
+                // Something interrupted the execution of the threads.
+                // TODO: Is this the best way to handle it?
+                continue;
             }
 
-            InsertRecordsResponse response = new InsertRecordsResponse();
+            // Empty queues would return null results
+            if ( result ==  null ) {
+                continue;
+            }
 
-            // int retries = retryCount;
-            long insertionAttemptTimestamp = 0;
-            URL currURL;
-            int currentCountClusterSwitches;
+            // Handle the result, if any
+            if ( result.getDidSucceed() ) {
+                // The insertion for this queue succeeded; aggregate the results
+                countInserted.addAndGet( result
+                                         .getInsertResponse()
+                                         .getCountInserted() );
+                countUpdated.addAndGet(  result
+                                         .getInsertResponse()
+                                         .getCountUpdated()  );
 
-            while (true) {
-                // Save a snapshot of the state of the object pre-insertion attempt
-                insertionAttemptTimestamp = new Timestamp( System.currentTimeMillis() ).getTime();
-                currURL = getCurrentHeadNodeURL();
-                currentCountClusterSwitches = getCurrentClusterSwitchCount();
+                // Check if shard re-balancing is under way at the server; if so,
+                // we need to update the shard mapping
+                if ( "true".equals( result
+                                    .getInsertResponse()
+                                    .getInfo()
+                                    .get( "data_rerouted" ) ) ) {
+                    doUpdateWorkers = true;
+                }
+            } else {
+                // Something went wrong and the data was not inserted.
+                doRetryInsertion = true;
 
-                try {
-                    if (url == null) {
-                        response = gpudb.submitRequest("/insert/records", request, response, true);
-                    } else {
-                        response = gpudb.submitRequest(url, request, response, true);
-                    }
+                // Figure out went wrong with the insertion and what follow-up
+                // steps need to be done, including saving the records that
+                // could not be inserted.
 
-                    countInserted.addAndGet( response.getCountInserted() );
-                    countUpdated.addAndGet(  response.getCountUpdated()  );
+                failedWorkerUrls.add( result.getWorkerUrl() );
 
-                    // Check if shard re-balancing is under way at the server; if so,
-                    // we need to update the shard mapping
-                    if ( "true".equals( response.getInfo().get( "data_rerouted" ) ) ) {
-                        updateWorkerQueues( currentCountClusterSwitches );
-                    }
+                List<T> workerFailedRecords = result.getFailedRecords();
+                if ( workerFailedRecords != null ) {
+                    failedRecords.addAll( workerFailedRecords );
+                }
 
-                    break; // out of the while loop
-                } catch (GPUdbException ex) {
-                    // If some connection issue occurred, we want to force an HA failover
-                    if ( (ex instanceof GPUdbExitException)
-                         || ex.hadConnectionFailure() ) {
-                        // We did encounter an HA failover trigger
-                        try {
-                            // Switch to a different cluster in the HA ring, if any
-                            forceHAFailover( currURL, currentCountClusterSwitches );
-                        } catch (GPUdbException ex2) {
-                            // We've now tried all the HA clusters and circled back;
-                            // propagate the error to the user, but only there
-                            // are no more retries left
-                            String originalCause = (ex.getCause() == null) ? ex.toString() : ex.getCause().toString();
-                            throw new GPUdbException( originalCause
-                                                      + ex2.getMessage(), true );
-                        }
-                    }
+                if ( result.getDoUpdateWorkers() ) {
+                    // We're only saving true values so that we don't
+                    // accidentally override a true value based on a previous
+                    // worker's result with a false value of this worker.  We
+                    // are trying to find out if *any* worker has triggered a
+                    // need for updating our worker list.
+                    doUpdateWorkers = true;
+                }
 
-                    // Update the worker queues since we've failed over to a
-                    // different cluster
-                    boolean updatedWorkerQueues = updateWorkerQueues( currentCountClusterSwitches );
+                if ( result.getDoFailover() ) {
+                    // We're only saving true values so that we don't
+                    // accidentally override a true value based on a previous
+                    // worker's result with a false value of this worker.  We
+                    // are trying to find out if *any* worker has triggered a
+                    // need for updating our worker list.
+                    doFailover = true;
+                    // We need to update the worker if we have to fail over
+                    doUpdateWorkers = true;
+                }
 
-                    boolean retry = false;
-                    synchronized ( this.shardUpdateTime ) {
-                        retry = ( updatedWorkerQueues
-                                  || ( insertionAttemptTimestamp < this.shardUpdateTime.longValue() ) );
-                    }
-                    if ( retry ) {
-                        // Now that we've switched to a different cluster, re-insert
-                        // since no worker queue has these records any more (but the
-                        // records may go to a worker queue different from the one
-                        // they came from)
-                        --retries;
-                        try {
-                            this.insert( queue );
+                int workerCountClusterSwitches = result.getCountClusterSwitches();
+                if ( workerCountClusterSwitches > latestCountClusterSwitches ) {
+                    // We're only saving the largest value so that we know the
+                    // latest cluster switch (in the gpudb object) that was
+                    // encountered by the workers.
+                    latestCountClusterSwitches = workerCountClusterSwitches;
+                }
 
-                            // If the user intends a forceful flush, i.e. the public flush()
-                            // was invoked, then make sure that the records get flushed
-                            if ( forcedFlush ) {
-                                this.flush();
-                            }
-                            break; // out of the while loop
-                        } catch (Exception ex2) {
-                            // Re-setting the exception since we may re-try again
-                            if (retries <= 0) {
-                                throw ex2;
-                            }
-                        }
-                    }
+                long workerInsertionAttemptTimestamp = result.getInsertionAttemptTimestamp();
+                if ( workerInsertionAttemptTimestamp > latestInsertionAttemptTimestamp ) {
+                    // We're only saving the largest value so that we know the
+                    // latest insertion attempt timestamp by the workers.
+                    latestInsertionAttemptTimestamp = workerInsertionAttemptTimestamp;
+                }
 
-                    // If we still have retries left, then we'll go into the next
-                    // iteration of the infinite while loop; otherwise, propagate
-                    // the exception
-                    if (retries > 0)  {
-                        --retries;
-                    } else {
-                        // No more retries; propagate exception to user along with the
-                        // failed queue of records
-                        throw new InsertException( url, queue, ex.getMessage(), ex );
-                    }
-                } catch (Exception ex) {
-                    // Insertion failed, but maybe due to shard mapping changes (due to
-                    // cluster reconfiguration)? Check if the mapping needs to be updated
-                    // or has been updated by another thread already after the
-                    // insertion was attemtped
-                    boolean updatedWorkerQueues = updateWorkerQueues( currentCountClusterSwitches );
+                // Save any exception encountered by the worker
+                workerExceptions.add( result.getFailureException() );
+            }  // end if
+        }  // end loop handling results
 
-                    boolean retry = false;
-                    synchronized ( this.shardUpdateTime ) {
-                        retry = ( updatedWorkerQueues
-                                  || ( insertionAttemptTimestamp < this.shardUpdateTime.longValue() ) );
-                    }
-                    if ( retry ) {
-                        // We need to try inserting the records again since no worker
-                        // queue has these records any more (but the records may
-                        // go to a worker queue different from the one they came from)
-                        --retries;
-                        try {
-                            this.insert( queue );
+        // TODO: Figure out if this is the URL that should be passed via the
+        // insert exception
+        URL currHeadUrl = getCurrentHeadNodeURL();
 
-                            // If the user intends a forceful flush, i.e. the public flush()
-                            // was invoked, then make sure that the records get flushed
-                            if ( forcedFlush ) {
-                                this.flush();
-                            }
+        // Concatenate all the error messages encountered by the workers, if any
+        String originalCauses = "";
+        if ( doRetryInsertion ) {
+            StringBuilder builder = new StringBuilder();
+            builder.append( "[ " );
+            int numFailedWorkers = failedWorkerUrls.size();
+            for ( int i = 0; i < numFailedWorkers; ++i ) {
+                URL workerUrl = failedWorkerUrls.get( i );
+                Exception ex_ = workerExceptions.get( i );
 
-                            break; // out of the while loop
-                        } catch (Exception ex2) {
-                            // Re-setting the exception since we may re-try again
-                            ex = ex2;
-                        }
-                    }
-
-                    // If we still have retries left, then we'll go into the next
-                    // iteration of the infinite while loop; otherwise, propagate
-                    // the exception
-                    if (retries > 0) {
-                        --retries;
-                    } else {
-                        throw ex;
-                    }
+                // Concatenate only non-null exceptions' messages
+                if ( ex_ != null ) {
+                    builder.append( "worker URL " + workerUrl + ": ");
+                    builder.append( (ex_.getCause() == null)
+                                    ? ex_.toString() : ex_.getCause().toString() );
+                    builder.append( "; " );
                 }
             }
-        } catch (GPUdbBase.SubmitException ex) {
-            throw new InsertException(ex.getURL(), queue, ex.getMessage(), ex);
-        } catch (Exception ex) {
-            throw new InsertException(url, queue, ex.getMessage(), ex);
+            builder.append( " ]" );
+            originalCauses = builder.toString();
         }
-    }
+
+        // Failover if needed
+        if ( doFailover ) {
+            try {
+                // Switch to a different cluster in the HA ring, if any
+                // TODO: Check which head node url needs to be used here
+                forceHAFailover( currHeadUrl, latestCountClusterSwitches );
+            } catch (GPUdbException ex) {
+                // We've now tried all the HA clusters and circled back;
+                // propagate the error to the user.
+
+                // Let the user know that there was a problem and which
+                // records could not be inserted
+                GPUdbException exception = new GPUdbException( ex.getMessage()
+                                                               + ".  Original causes "
+                                                               + " encountered by workers: "
+                                                               + originalCauses,
+                                                               true );
+                throw new InsertException( currHeadUrl, failedRecords,
+                                           exception.getMessage(),
+                                           exception );
+            }
+        }   // end failover
+
+        if ( doUpdateWorkers ) {
+            // Update the workers because we either failed over or the shard
+            // mapping has to be updated (due to added/removed ranks)
+            try {
+                updateWorkerQueues( latestCountClusterSwitches );
+            } catch (Exception ex) {
+                // Let the user know that there was a problem and which records
+                // could not be inserted
+                throw new InsertException( currHeadUrl, failedRecords,
+                                           ex.getMessage(), ex);
+            }
+        }
+
+        if ( doRetryInsertion ) {
+            // We need to re-attempt inserting the records that did not get
+            // ingested.
+
+            // For a failover scenario, we won't count the next trial as a
+            // a true retry since.  Note that without this check, failover
+            // doesn't happen properly since we run out of retries.
+            if ( !doFailover ) {
+                // Not a failover scenario; so the insertion failure happened
+                // for some other reason.  Count the next attempt as a retry.
+                --retryCount;
+            }
+
+            // Retry insertion of the failed records (recursive call to our
+            // private insertion with the retry count decreased to halt
+            // the recursion as needed
+            boolean couldRetry = this.insert( failedRecords, retryCount );
+            if ( !couldRetry ) {
+                // We ran out of chances to retry.  Let the user know this and
+                // pass along the records that we could not insert.
+                String message = ("Insertion failed; ran out of retries.  "
+                                  + "Original causes encountered by workers: "
+                                  + originalCauses );
+                throw new InsertException( currHeadUrl, failedRecords, message );
+
+            }
+        }
+    }   // end flushQueues
 
 
-    
+
     /**
      * Queues a record for insertion into GPUdb. If the queue reaches the
      * {@link #getBatchSize batch size}, all records in the queue will be
@@ -970,11 +1346,13 @@ public class BulkInserter<T> {
      * being inserted if needed (for example, to retry).
      *
      * @param record  the record to insert
+     * @param flushWhenFull  boolean flag indicating if the queue should be flushed
+     *                       if it is full after inserting this record.
      *
      * @throws GPUdbException if an error occurs while calculating shard/primary keys
      * @throws InsertException if an error occurs while inserting
      */
-    public void insert(T record) throws InsertException {
+    private void insert(T record, boolean flushWhenFull) throws InsertException {
         RecordKey primaryKey;
         RecordKey shardKey;
 
@@ -1014,19 +1392,105 @@ public class BulkInserter<T> {
             throw new InsertException( (URL)null, queuedRecord,
                                        "Attempted to insert into worker rank that has been removed!  Maybe need to update the shard mapping.");
         }
-        
-        List<T> queue;
 
+        // Insert the record into the queue
         synchronized (workerQueue) {
-            queue = workerQueue.insert(record, primaryKey);
-        }
+            workerQueue.insert(record, primaryKey);
 
-        if (queue != null) {
-            flush(queue, workerQueue.getUrl(), false );
+            // Flush the queue if it is full
+            if ( flushWhenFull && workerQueue.isQueueFull() ) {
+                this.flush( workerQueue );
+                // this.flushFullQueues();
+            }
         }
+    }   // end private insert( single record, flush when full flag )
+
+
+    /**
+     * Queues a record for insertion into GPUdb. If the queue reaches the
+     * {@link #getBatchSize batch size}, all records in the queue will be
+     * inserted into GPUdb before the method returns. If an error occurs while
+     * inserting the records, the records will no longer be in the queue nor in
+     * GPUdb; catch {@link InsertException} to get the list of records that were
+     * being inserted if needed (for example, to retry).
+     *
+     * @param record  the record to insert
+     *
+     * @throws GPUdbException if an error occurs while calculating shard/primary keys
+     * @throws InsertException if an error occurs while inserting
+     */
+    public void insert(T record) throws InsertException {
+        // Do flush the queue when it is full.  Note that we are setting
+        // flushWhenFull to true here to preserve backward compatibility.
+        // Before version 7.0.19.1, the insertion and flushing in this class
+        // was single threaded; so each time records got inserted to this class
+        // (whether via this insert(single record) or the insert( many records ) )
+        // method, we always flushed any queue that became full.  Now that we
+        // are using background threads to flush the queues paralelly, if we
+        // don't have this 'flushWhenFull' mechanism, the insert( single record )
+        // method would _never_ flush any queue.  We can't change the method's
+        // behavior that much; it would break existing client code potentially.
+        // So, the insert( multiple records ) does not flush the queues upon
+        // every individual insert (check that method's code; it passes false
+        // where we pass true here for the 2nd parameter), this method does.
+        this.insert( record, true );
     }   // end insert( single record )
 
-    
+
+    /**
+     * Queues a list of records for insertion into GPUdb. If any queue reaches
+     * the {@link #getBatchSize batch size}, all records in that queue will be
+     * inserted into GPUdb before the method returns. If an error occurs while
+     * inserting the queued records, the records will no longer be in that queue
+     * nor in GPUdb; catch {@link InsertException} to get the list of records
+     * that were being inserted (including any from the queue in question and
+     * any remaining in the list not yet queued) if needed (for example, to
+     * retry). Note that depending on the number of records, multiple calls to
+     * GPUdb may occur.
+     *
+     * If no retries are left, then returns false indicating it could not
+     * attempt insertion.  Otherwise, returns true upon successful insertion.
+     *
+     * @param records      the records to insert
+     * @param retryCount   the number of times we have left to retry insertion
+     *                     the given list of records
+     *
+     * @throws InsertException if an error occurs while inserting
+     */
+    @SuppressWarnings("unchecked")
+    private boolean insert(List<T> records, int retryCount ) throws InsertException {
+        // Let the user know that we ran out of retries
+        if ( retryCount < 0 ) {
+            // Retry count of 0 means try once but do no retry
+            return false;
+        }
+
+        for (int i = 0; i < records.size(); ++i) {
+            try {
+                // Do not flush after inserting this record (otherwise it
+                // becomes essentially sequential flushing)
+                insert( records.get(i), false );
+            } catch (InsertException ex) {
+                List<T> queue = (List<T>)ex.getRecords();
+
+                synchronized ( queue ) {
+                    for (int j = i + 1; j < records.size(); j++) {
+                        queue.add(records.get(j));
+                    }
+                }
+
+                throw ex;
+            }
+        }
+
+        // Flush all the queues that are full in parallel
+        this.flushFullQueues( retryCount );
+
+        // We succeeded in inserting all the records!
+        return true;
+    }
+
+
     /**
      * Queues a list of records for insertion into GPUdb. If any queue reaches
      * the {@link #getBatchSize batch size}, all records in that queue will be
@@ -1044,20 +1508,7 @@ public class BulkInserter<T> {
      */
     @SuppressWarnings("unchecked")
     public void insert(List<T> records) throws InsertException {
-        for (int i = 0; i < records.size(); ++i) {
-            try {
-                insert( records.get(i) );
-            } catch (InsertException ex) {
-                List<T> queue = (List<T>)ex.getRecords();
-
-                synchronized ( queue ) {
-                    for (int j = i + 1; j < records.size(); j++) {
-                        queue.add(records.get(j));
-                    }
-                }
-
-                throw ex;
-            }
-        }
+        // Try to insert all the records with the alotted retry count
+        this.insert( records, this.retryCount );
     }
 }
