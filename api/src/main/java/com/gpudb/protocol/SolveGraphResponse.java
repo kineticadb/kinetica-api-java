@@ -54,7 +54,7 @@ public class SolveGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates a successful solution.
+     * @return Indicates a successful solution on all servers.
      * 
      */
     public boolean getResult() {
@@ -63,7 +63,7 @@ public class SolveGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @param result  Indicates a successful solution.
+     * @param result  Indicates a successful solution on all servers.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

@@ -28,6 +28,9 @@ import org.apache.avro.generic.IndexedRecord;
  * href="../../../../../concepts/tables.html#random-sharding"
  * target="_top">randomly-sharded</a>) will be deleted.
  * <p>
+ * The database must be offline for this operation, see {@link
+ * com.gpudb.GPUdb#adminOffline(AdminOfflineRequest)}
+ * <p>
  * This endpoint's processing time depends on the amount of data in the system,
  * thus the API call may time out if run directly.  It is recommended to run
  * this endpoint asynchronously via {@link
@@ -99,7 +102,7 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      * faster.  A lower {@code aggressiveness} will take longer but allow for
      * better interleaving between the rebalance and other queries. Valid
      * values are constants from 1 (lowest) to 10 (highest).  The default value
-     * is '1'.
+     * is '10'.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -152,7 +155,7 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
          * lower {@code aggressiveness} will take longer but allow for better
          * interleaving between the rebalance and other queries. Valid values
          * are constants from 1 (lowest) to 10 (highest).  The default value is
-         * '1'.
+         * '10'.
          */
         public static final String AGGRESSIVENESS = "aggressiveness";
 
@@ -238,7 +241,7 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *                 aggressiveness} will take longer but allow for better
      *                 interleaving between the rebalance and other queries.
      *                 Valid values are constants from 1 (lowest) to 10
-     *                 (highest).  The default value is '1'.
+     *                 (highest).  The default value is '10'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -333,7 +336,7 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *         the rebalance faster.  A lower {@code aggressiveness} will take
      *         longer but allow for better interleaving between the rebalance
      *         and other queries. Valid values are constants from 1 (lowest) to
-     *         10 (highest).  The default value is '1'.
+     *         10 (highest).  The default value is '10'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -397,7 +400,7 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *                 aggressiveness} will take longer but allow for better
      *                 interleaving between the rebalance and other queries.
      *                 Valid values are constants from 1 (lowest) to 10
-     *                 (highest).  The default value is '1'.
+     *                 (highest).  The default value is '10'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

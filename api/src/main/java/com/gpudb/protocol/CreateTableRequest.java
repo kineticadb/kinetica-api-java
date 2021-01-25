@@ -166,6 +166,10 @@ public class CreateTableRequest implements IndexedRecord {
      * HASH}: Use <a
      * href="../../../../../concepts/tables.html#partitioning-by-hash"
      * target="_top">hash partitioning</a>.
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#SERIES
+     * SERIES}: Use <a
+     * href="../../../../../concepts/tables.html#partitioning-by-series"
+     * target="_top">series partitioning</a>.
      * </ul>
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -365,6 +369,10 @@ public class CreateTableRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateTableRequest.Options#HASH HASH}: Use <a
          * href="../../../../../concepts/tables.html#partitioning-by-hash"
          * target="_top">hash partitioning</a>.
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#SERIES SERIES}: Use <a
+         * href="../../../../../concepts/tables.html#partitioning-by-series"
+         * target="_top">series partitioning</a>.
          * </ul>
          */
         public static final String PARTITION_TYPE = "partition_type";
@@ -396,6 +404,13 @@ public class CreateTableRequest implements IndexedRecord {
          * target="_top">hash partitioning</a>.
          */
         public static final String HASH = "HASH";
+
+        /**
+         * Use <a
+         * href="../../../../../concepts/tables.html#partitioning-by-series"
+         * target="_top">series partitioning</a>.
+         */
+        public static final String SERIES = "SERIES";
 
         /**
          * Comma-separated list of partition keys, which are the columns or
@@ -641,6 +656,11 @@ public class CreateTableRequest implements IndexedRecord {
      *                 HASH}: Use <a
      *                 href="../../../../../concepts/tables.html#partitioning-by-hash"
      *                 target="_top">hash partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#SERIES
+     *                 SERIES}: Use <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-series"
+     *                 target="_top">series partitioning</a>.
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -909,6 +929,11 @@ public class CreateTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableRequest.Options#HASH HASH}: Use <a
      *         href="../../../../../concepts/tables.html#partitioning-by-hash"
      *         target="_top">hash partitioning</a>.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#SERIES SERIES}:
+     *         Use <a
+     *         href="../../../../../concepts/tables.html#partitioning-by-series"
+     *         target="_top">series partitioning</a>.
      *         </ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -1123,6 +1148,11 @@ public class CreateTableRequest implements IndexedRecord {
      *                 HASH}: Use <a
      *                 href="../../../../../concepts/tables.html#partitioning-by-hash"
      *                 target="_top">hash partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#SERIES
+     *                 SERIES}: Use <a
+     *                 href="../../../../../concepts/tables.html#partitioning-by-series"
+     *                 target="_top">series partitioning</a>.
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS

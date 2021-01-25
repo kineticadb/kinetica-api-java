@@ -20,8 +20,17 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#executeProc(ExecuteProcRequest)}.
  * <p>
- * Executes a proc. This endpoint is asynchronous and does not wait for the
- * proc to complete before returning.
+ * Executes a proc. This endpoint is asynchronous and does not wait for
+ * the proc to complete before returning.
+ * <p>
+ * If the proc being executed is distributed, {@code inputTableNames} &
+ * {@code inputColumnNames} may be passed to the proc to use for reading data,
+ * and {@code outputTableNames} may be passed to the proc to use for writing
+ * data.
+ * <p>
+ * If the proc being executed is non-distributed, these table parameters will
+ * be
+ * ignored.
  */
 public class ExecuteProcRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -177,43 +186,54 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                   parameter and its value.  The default value is an
      *                   empty {@link Map}.
      * @param inputTableNames  Names of the tables containing data to be passed
-     *                         to the proc. Each name specified must be the
-     *                         name of a currently existing table, in
+     *                         to the
+     *                         proc. Each name specified must be the name of a
+     *                         currently existing table, in
      *                         [schema_name.]table_name format, using standard
      *                         <a
      *                         href="../../../../../concepts/tables.html#table-name-resolution"
-     *                         target="_top">name resolution rules</a>.  If no
-     *                         table names are specified, no data will be
-     *                         passed to the proc.  The default value is an
-     *                         empty {@link List}.
+     *                         target="_top">name resolution rules</a>.
+     *                         If no table names are specified, no data will be
+     *                         passed to the proc.  This
+     *                         parameter is ignored if the proc has a
+     *                         non-distributed execution mode.  The default
+     *                         value is an empty {@link List}.
      * @param inputColumnNames  Map of table names from {@code inputTableNames}
-     *                          to lists of names of columns from those tables
-     *                          that will be passed to the proc. Each column
-     *                          name specified must be the name of an existing
-     *                          column in the corresponding table. If a table
-     *                          name from {@code inputTableNames} is not
+     *                          to lists
+     *                          of names of columns from those tables that will
+     *                          be passed to the proc. Each
+     *                          column name specified must be the name of an
+     *                          existing column in the
+     *                          corresponding table. If a table name from
+     *                          {@code inputTableNames} is not
      *                          included, all columns from that table will be
-     *                          passed to the proc.  The default value is an
-     *                          empty {@link Map}.
+     *                          passed to the proc.  This
+     *                          parameter is ignored if the proc has a
+     *                          non-distributed execution mode.  The default
+     *                          value is an empty {@link Map}.
      * @param outputTableNames  Names of the tables to which output data from
-     *                          the proc will be written, each in
-     *                          [schema_name.]table_name format, using standard
+     *                          the proc will
+     *                          be written, each in [schema_name.]table_name
+     *                          format, using standard
      *                          <a
      *                          href="../../../../../concepts/tables.html#table-name-resolution"
-     *                          target="_top">name resolution rules</a> and
-     *                          meeting <a
+     *                          target="_top">name resolution rules</a>
+     *                          and meeting <a
      *                          href="../../../../../concepts/tables.html#table-naming-criteria"
-     *                          target="_top">table naming criteria</a>. If a
-     *                          specified table does not exist, it will
-     *                          automatically be created with the same schema
-     *                          as the corresponding table (by order) from
+     *                          target="_top">table naming criteria</a>.
+     *                          If a specified table does not exist, it will
+     *                          automatically be created with the
+     *                          same schema as the corresponding table (by
+     *                          order) from
      *                          {@code inputTableNames}, excluding any primary
-     *                          and shard keys. If a specified table is a
-     *                          non-persistent result table, it must not have
-     *                          primary or shard keys. If no table names are
-     *                          specified, no output data can be returned from
-     *                          the proc.  The default value is an empty {@link
-     *                          List}.
+     *                          and shard keys. If a specified
+     *                          table is a non-persistent result table, it must
+     *                          not have primary or shard keys.
+     *                          If no table names are specified, no output data
+     *                          can be returned from the proc.
+     *                          This parameter is ignored if the proc has a
+     *                          non-distributed execution mode.  The default
+     *                          value is an empty {@link List}.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -350,13 +370,17 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Names of the tables containing data to be passed to the proc.
-     *         Each name specified must be the name of a currently existing
-     *         table, in [schema_name.]table_name format, using standard <a
+     * @return Names of the tables containing data to be passed to the
+     *         proc. Each name specified must be the name of a currently
+     *         existing table, in
+     *         [schema_name.]table_name format, using standard
+     *         <a
      *         href="../../../../../concepts/tables.html#table-name-resolution"
-     *         target="_top">name resolution rules</a>.  If no table names are
-     *         specified, no data will be passed to the proc.  The default
-     *         value is an empty {@link List}.
+     *         target="_top">name resolution rules</a>.
+     *         If no table names are specified, no data will be passed to the
+     *         proc.  This
+     *         parameter is ignored if the proc has a non-distributed execution
+     *         mode.  The default value is an empty {@link List}.
      * 
      */
     public List<String> getInputTableNames() {
@@ -366,15 +390,18 @@ public class ExecuteProcRequest implements IndexedRecord {
     /**
      * 
      * @param inputTableNames  Names of the tables containing data to be passed
-     *                         to the proc. Each name specified must be the
-     *                         name of a currently existing table, in
+     *                         to the
+     *                         proc. Each name specified must be the name of a
+     *                         currently existing table, in
      *                         [schema_name.]table_name format, using standard
      *                         <a
      *                         href="../../../../../concepts/tables.html#table-name-resolution"
-     *                         target="_top">name resolution rules</a>.  If no
-     *                         table names are specified, no data will be
-     *                         passed to the proc.  The default value is an
-     *                         empty {@link List}.
+     *                         target="_top">name resolution rules</a>.
+     *                         If no table names are specified, no data will be
+     *                         passed to the proc.  This
+     *                         parameter is ignored if the proc has a
+     *                         non-distributed execution mode.  The default
+     *                         value is an empty {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -386,13 +413,17 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Map of table names from {@code inputTableNames} to lists of
-     *         names of columns from those tables that will be passed to the
-     *         proc. Each column name specified must be the name of an existing
-     *         column in the corresponding table. If a table name from {@code
-     *         inputTableNames} is not included, all columns from that table
-     *         will be passed to the proc.  The default value is an empty
-     *         {@link Map}.
+     * @return Map of table names from {@code inputTableNames} to lists
+     *         of names of columns from those tables that will be passed to the
+     *         proc. Each
+     *         column name specified must be the name of an existing column in
+     *         the
+     *         corresponding table. If a table name from {@code
+     *         inputTableNames} is not
+     *         included, all columns from that table will be passed to the
+     *         proc.  This
+     *         parameter is ignored if the proc has a non-distributed execution
+     *         mode.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, List<String>> getInputColumnNames() {
@@ -402,14 +433,18 @@ public class ExecuteProcRequest implements IndexedRecord {
     /**
      * 
      * @param inputColumnNames  Map of table names from {@code inputTableNames}
-     *                          to lists of names of columns from those tables
-     *                          that will be passed to the proc. Each column
-     *                          name specified must be the name of an existing
-     *                          column in the corresponding table. If a table
-     *                          name from {@code inputTableNames} is not
+     *                          to lists
+     *                          of names of columns from those tables that will
+     *                          be passed to the proc. Each
+     *                          column name specified must be the name of an
+     *                          existing column in the
+     *                          corresponding table. If a table name from
+     *                          {@code inputTableNames} is not
      *                          included, all columns from that table will be
-     *                          passed to the proc.  The default value is an
-     *                          empty {@link Map}.
+     *                          passed to the proc.  This
+     *                          parameter is ignored if the proc has a
+     *                          non-distributed execution mode.  The default
+     *                          value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -421,20 +456,26 @@ public class ExecuteProcRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Names of the tables to which output data from the proc will be
-     *         written, each in [schema_name.]table_name format, using standard
+     * @return Names of the tables to which output data from the proc will
+     *         be written, each in [schema_name.]table_name format, using
+     *         standard
      *         <a
      *         href="../../../../../concepts/tables.html#table-name-resolution"
-     *         target="_top">name resolution rules</a> and meeting <a
+     *         target="_top">name resolution rules</a>
+     *         and meeting <a
      *         href="../../../../../concepts/tables.html#table-naming-criteria"
-     *         target="_top">table naming criteria</a>. If a specified table
-     *         does not exist, it will automatically be created with the same
-     *         schema as the corresponding table (by order) from {@code
-     *         inputTableNames}, excluding any primary and shard keys. If a
-     *         specified table is a non-persistent result table, it must not
-     *         have primary or shard keys. If no table names are specified, no
-     *         output data can be returned from the proc.  The default value is
-     *         an empty {@link List}.
+     *         target="_top">table naming criteria</a>.
+     *         If a specified table does not exist, it will automatically be
+     *         created with the
+     *         same schema as the corresponding table (by order) from
+     *         {@code inputTableNames}, excluding any primary and shard keys.
+     *         If a specified
+     *         table is a non-persistent result table, it must not have primary
+     *         or shard keys.
+     *         If no table names are specified, no output data can be returned
+     *         from the proc.
+     *         This parameter is ignored if the proc has a non-distributed
+     *         execution mode.  The default value is an empty {@link List}.
      * 
      */
     public List<String> getOutputTableNames() {
@@ -444,24 +485,28 @@ public class ExecuteProcRequest implements IndexedRecord {
     /**
      * 
      * @param outputTableNames  Names of the tables to which output data from
-     *                          the proc will be written, each in
-     *                          [schema_name.]table_name format, using standard
+     *                          the proc will
+     *                          be written, each in [schema_name.]table_name
+     *                          format, using standard
      *                          <a
      *                          href="../../../../../concepts/tables.html#table-name-resolution"
-     *                          target="_top">name resolution rules</a> and
-     *                          meeting <a
+     *                          target="_top">name resolution rules</a>
+     *                          and meeting <a
      *                          href="../../../../../concepts/tables.html#table-naming-criteria"
-     *                          target="_top">table naming criteria</a>. If a
-     *                          specified table does not exist, it will
-     *                          automatically be created with the same schema
-     *                          as the corresponding table (by order) from
+     *                          target="_top">table naming criteria</a>.
+     *                          If a specified table does not exist, it will
+     *                          automatically be created with the
+     *                          same schema as the corresponding table (by
+     *                          order) from
      *                          {@code inputTableNames}, excluding any primary
-     *                          and shard keys. If a specified table is a
-     *                          non-persistent result table, it must not have
-     *                          primary or shard keys. If no table names are
-     *                          specified, no output data can be returned from
-     *                          the proc.  The default value is an empty {@link
-     *                          List}.
+     *                          and shard keys. If a specified
+     *                          table is a non-persistent result table, it must
+     *                          not have primary or shard keys.
+     *                          If no table names are specified, no output data
+     *                          can be returned from the proc.
+     *                          This parameter is ignored if the proc has a
+     *                          non-distributed execution mode.  The default
+     *                          value is an empty {@link List}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

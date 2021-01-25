@@ -21,6 +21,9 @@ import org.apache.avro.generic.IndexedRecord;
  * of records approximately and/or rebalance the shards to be equally
  * distributed (as much as possible) across all the ranks.
  * <p>
+ * The database must be offline for this operation, see {@link
+ * com.gpudb.GPUdb#adminOffline(AdminOfflineRequest)}
+ * <p>
  * * If {@link com.gpudb.GPUdb#adminRebalance(AdminRebalanceRequest)} is
  * invoked after a change is made to the
  *   cluster, e.g., a host was added or removed,
@@ -124,7 +127,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
      * faster.  A lower {@code aggressiveness} will take longer but allow for
      * better interleaving between the rebalance and other queries. Valid
      * values are constants from 1 (lowest) to 10 (highest).  The default value
-     * is '1'.
+     * is '10'.
      *         <li> {@link
      * com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
      * COMPACT_AFTER_REBALANCE}: Perform compaction of deleted records once the
@@ -244,7 +247,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
          * lower {@code aggressiveness} will take longer but allow for better
          * interleaving between the rebalance and other queries. Valid values
          * are constants from 1 (lowest) to 10 (highest).  The default value is
-         * '1'.
+         * '10'.
          */
         public static final String AGGRESSIVENESS = "aggressiveness";
 
@@ -389,7 +392,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 aggressiveness} will take longer but allow for better
      *                 interleaving between the rebalance and other queries.
      *                 Valid values are constants from 1 (lowest) to 10
-     *                 (highest).  The default value is '1'.
+     *                 (highest).  The default value is '10'.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
      *                 COMPACT_AFTER_REBALANCE}: Perform compaction of deleted
@@ -520,7 +523,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *         the rebalance faster.  A lower {@code aggressiveness} will take
      *         longer but allow for better interleaving between the rebalance
      *         and other queries. Valid values are constants from 1 (lowest) to
-     *         10 (highest).  The default value is '1'.
+     *         10 (highest).  The default value is '10'.
      *                 <li> {@link
      *         com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
      *         COMPACT_AFTER_REBALANCE}: Perform compaction of deleted records
@@ -651,7 +654,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 aggressiveness} will take longer but allow for better
      *                 interleaving between the rebalance and other queries.
      *                 Valid values are constants from 1 (lowest) to 10
-     *                 (highest).  The default value is '1'.
+     *                 (highest).  The default value is '10'.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
      *                 COMPACT_AFTER_REBALANCE}: Perform compaction of deleted

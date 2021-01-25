@@ -792,6 +792,23 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
      * NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file per
      * rank. Default will be external_file_reader_num_tasks
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TYPE_INFERENCE_MODE
+     * TYPE_INFERENCE_MODE}: optimize type inference for:
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
+     * ACCURACY}: scans all data to get exactly-typed & sized columns for all
+     * data present
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED SPEED}:
+     * picks the widest possible column types so that 'all' values will fit
+     * with minimum data scanned
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
+     * ACCURACY}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -1266,6 +1283,37 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * external_file_reader_num_tasks
          */
         public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
+
+        /**
+         * optimize type inference for:
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
+         * ACCURACY}: scans all data to get exactly-typed & sized columns for
+         * all data present
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
+         * SPEED}: picks the widest possible column types so that 'all' values
+         * will fit with minimum data scanned
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
+         * ACCURACY}.
+         */
+        public static final String TYPE_INFERENCE_MODE = "type_inference_mode";
+
+        /**
+         * scans all data to get exactly-typed & sized columns for all data
+         * present
+         */
+        public static final String ACCURACY = "accuracy";
+
+        /**
+         * picks the widest possible column types so that 'all' values will fit
+         * with minimum data scanned
+         */
+        public static final String SPEED = "speed";
 
         private Options() {  }
     }
@@ -1854,6 +1902,23 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading file per rank. Default will be
      *                 external_file_reader_num_tasks
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TYPE_INFERENCE_MODE
+     *                 TYPE_INFERENCE_MODE}: optimize type inference for:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
+     *                 ACCURACY}: scans all data to get exactly-typed & sized
+     *                 columns for all data present
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
+     *                 SPEED}: picks the widest possible column types so that
+     *                 'all' values will fit with minimum data scanned
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
+     *                 ACCURACY}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -2689,6 +2754,23 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
      *         NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file
      *         per rank. Default will be external_file_reader_num_tasks
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TYPE_INFERENCE_MODE
+     *         TYPE_INFERENCE_MODE}: optimize type inference for:
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
+     *         ACCURACY}: scans all data to get exactly-typed & sized columns
+     *         for all data present
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
+     *         SPEED}: picks the widest possible column types so that 'all'
+     *         values will fit with minimum data scanned
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
+     *         ACCURACY}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -3038,6 +3120,23 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading file per rank. Default will be
      *                 external_file_reader_num_tasks
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TYPE_INFERENCE_MODE
+     *                 TYPE_INFERENCE_MODE}: optimize type inference for:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
+     *                 ACCURACY}: scans all data to get exactly-typed & sized
+     *                 columns for all data present
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
+     *                 SPEED}: picks the widest possible column types so that
+     *                 'all' values will fit with minimum data scanned
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
+     *                 ACCURACY}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

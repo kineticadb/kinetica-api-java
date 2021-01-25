@@ -175,6 +175,24 @@ public class QueryGraphRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_SOLVE_RESULTS
+     * EXPORT_SOLVE_RESULTS}: Returns solution results inside the {@code
+     * adjacencyListIntArray} array in the response if set to {@code true}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.QueryGraphRequest.Options#SERVER_ID SERVER_ID}:
+     * Indicates which graph server(s) to send the request to. Default is to
+     * send to the server, amongst those containing the corresponding graph,
+     * that has the most computational bandwidth.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -285,6 +303,28 @@ public class QueryGraphRequest implements IndexedRecord {
          * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
          */
         public static final String AND_LABELS = "and_labels";
+
+        /**
+         * Returns solution results inside the {@code adjacencyListIntArray}
+         * array in the response if set to {@code true}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
+         */
+        public static final String EXPORT_SOLVE_RESULTS = "export_solve_results";
+
+        /**
+         * Indicates which graph server(s) to send the request to. Default is
+         * to send to the server, amongst those containing the corresponding
+         * graph, that has the most computational bandwidth.
+         */
+        public static final String SERVER_ID = "server_id";
 
         private Options() {  }
     }
@@ -479,6 +519,28 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_SOLVE_RESULTS
+     *                 EXPORT_SOLVE_RESULTS}: Returns solution results inside
+     *                 the {@code adjacencyListIntArray} array in the response
+     *                 if set to {@code true}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#SERVER_ID
+     *                 SERVER_ID}: Indicates which graph server(s) to send the
+     *                 request to. Default is to send to the server, amongst
+     *                 those containing the corresponding graph, that has the
+     *                 most computational bandwidth.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -793,6 +855,26 @@ public class QueryGraphRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_SOLVE_RESULTS
+     *         EXPORT_SOLVE_RESULTS}: Returns solution results inside the
+     *         {@code adjacencyListIntArray} array in the response if set to
+     *         {@code true}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.QueryGraphRequest.Options#SERVER_ID
+     *         SERVER_ID}: Indicates which graph server(s) to send the request
+     *         to. Default is to send to the server, amongst those containing
+     *         the corresponding graph, that has the most computational
+     *         bandwidth.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -912,6 +994,28 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_SOLVE_RESULTS
+     *                 EXPORT_SOLVE_RESULTS}: Returns solution results inside
+     *                 the {@code adjacencyListIntArray} array in the response
+     *                 if set to {@code true}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#SERVER_ID
+     *                 SERVER_ID}: Indicates which graph server(s) to send the
+     *                 request to. Default is to send to the server, amongst
+     *                 those containing the corresponding graph, that has the
+     *                 most computational bandwidth.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

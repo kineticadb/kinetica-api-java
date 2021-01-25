@@ -248,6 +248,12 @@ public class AlterTableRequest implements IndexedRecord {
      * target="_top">materialized view</a> to the value specified in {@code
      * value}.  Also, sets the refresh method to periodic if not already set.
      *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_EXECUTE_AS
+     * SET_REFRESH_EXECUTE_AS}: Sets the user name to refresh this <a
+     * href="../../../../../concepts/materialized_views.html"
+     * target="_top">materialized view</a> to the value specified in {@code
+     * value}.
+     *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#REMOVE_TEXT_SEARCH_ATTRIBUTES
      * REMOVE_TEXT_SEARCH_ATTRIBUTES}: Removes <a
      * href="../../../../../concepts/full_text_search.html" target="_top">text
@@ -463,6 +469,14 @@ public class AlterTableRequest implements IndexedRecord {
          * set.
          */
         public static final String SET_REFRESH_PERIOD = "set_refresh_period";
+
+        /**
+         * Sets the user name to refresh this <a
+         * href="../../../../../concepts/materialized_views.html"
+         * target="_top">materialized view</a> to the value specified in {@code
+         * value}.
+         */
+        public static final String SET_REFRESH_EXECUTE_AS = "set_refresh_execute_as";
 
         /**
          * Removes <a href="../../../../../concepts/full_text_search.html"
@@ -971,6 +985,13 @@ public class AlterTableRequest implements IndexedRecord {
      *                specified in {@code value}.  Also, sets the refresh
      *                method to periodic if not already set.
      *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_EXECUTE_AS
+     *                SET_REFRESH_EXECUTE_AS}: Sets the user name to refresh
+     *                this <a
+     *                href="../../../../../concepts/materialized_views.html"
+     *                target="_top">materialized view</a> to the value
+     *                specified in {@code value}.
+     *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_TEXT_SEARCH_ATTRIBUTES
      *                REMOVE_TEXT_SEARCH_ATTRIBUTES}: Removes <a
      *                href="../../../../../concepts/full_text_search.html"
@@ -1344,6 +1365,12 @@ public class AlterTableRequest implements IndexedRecord {
      *         {@code value}.  Also, sets the refresh method to periodic if not
      *         already set.
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_EXECUTE_AS
+     *         SET_REFRESH_EXECUTE_AS}: Sets the user name to refresh this <a
+     *         href="../../../../../concepts/materialized_views.html"
+     *         target="_top">materialized view</a> to the value specified in
+     *         {@code value}.
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#REMOVE_TEXT_SEARCH_ATTRIBUTES
      *         REMOVE_TEXT_SEARCH_ATTRIBUTES}: Removes <a
      *         href="../../../../../concepts/full_text_search.html"
@@ -1543,6 +1570,13 @@ public class AlterTableRequest implements IndexedRecord {
      *                target="_top">materialized view</a> to the value
      *                specified in {@code value}.  Also, sets the refresh
      *                method to periodic if not already set.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_EXECUTE_AS
+     *                SET_REFRESH_EXECUTE_AS}: Sets the user name to refresh
+     *                this <a
+     *                href="../../../../../concepts/materialized_views.html"
+     *                target="_top">materialized view</a> to the value
+     *                specified in {@code value}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_TEXT_SEARCH_ATTRIBUTES
      *                REMOVE_TEXT_SEARCH_ATTRIBUTES}: Removes <a

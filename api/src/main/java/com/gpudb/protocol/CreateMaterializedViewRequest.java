@@ -119,6 +119,9 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      * REFRESH_START_TIME}: When {@code refresh_method} is {@code periodic},
      * specifies the first time at which a refresh is to be done.  Value is a
      * datetime string with format 'YYYY-MM-DD HH:MM:SS'.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateMaterializedViewRequest.Options#EXECUTE_AS
+     * EXECUTE_AS}: User name to use to run the refresh job
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -232,6 +235,11 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
          */
         public static final String REFRESH_START_TIME = "refresh_start_time";
 
+        /**
+         * User name to use to run the refresh job
+         */
+        public static final String EXECUTE_AS = "execute_as";
+
         private Options() {  }
     }
 
@@ -339,6 +347,9 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 {@code periodic}, specifies the first time at which a
      *                 refresh is to be done.  Value is a datetime string with
      *                 format 'YYYY-MM-DD HH:MM:SS'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#EXECUTE_AS
+     *                 EXECUTE_AS}: User name to use to run the refresh job
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -457,6 +468,9 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *         periodic}, specifies the first time at which a refresh is to be
      *         done.  Value is a datetime string with format 'YYYY-MM-DD
      *         HH:MM:SS'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#EXECUTE_AS
+     *         EXECUTE_AS}: User name to use to run the refresh job
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -547,6 +561,9 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 {@code periodic}, specifies the first time at which a
      *                 refresh is to be done.  Value is a datetime string with
      *                 format 'YYYY-MM-DD HH:MM:SS'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#EXECUTE_AS
+     *                 EXECUTE_AS}: User name to use to run the refresh job
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

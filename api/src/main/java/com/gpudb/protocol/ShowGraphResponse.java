@@ -25,7 +25,10 @@ public class ShowGraphResponse implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("result").type().booleanType().noDefault()
+                .name("load").type().array().items().intType().noDefault()
+                .name("memory").type().array().items().longType().noDefault()
                 .name("graphNames").type().array().items().stringType().noDefault()
+                .name("graphServerIds").type().array().items().intType().noDefault()
                 .name("directed").type().array().items().booleanType().noDefault()
                 .name("numNodes").type().array().items().longType().noDefault()
                 .name("numEdges").type().array().items().longType().noDefault()
@@ -49,7 +52,10 @@ public class ShowGraphResponse implements IndexedRecord {
     }
 
     private boolean result;
+    private List<Integer> load;
+    private List<Long> memory;
     private List<String> graphNames;
+    private List<Integer> graphServerIds;
     private List<Boolean> directed;
     private List<Long> numNodes;
     private List<Long> numEdges;
@@ -68,8 +74,8 @@ public class ShowGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Indicates a successf. This call will fails of the graph
-     *         specified in the request does not exist.
+     * @return Indicates a success. This call will fails of the graph specified
+     *         in the request does not exist.
      * 
      */
     public boolean getResult() {
@@ -78,7 +84,7 @@ public class ShowGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @param result  Indicates a successf. This call will fails of the graph
+     * @param result  Indicates a success. This call will fails of the graph
      *                specified in the request does not exist.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -86,6 +92,50 @@ public class ShowGraphResponse implements IndexedRecord {
      */
     public ShowGraphResponse setResult(boolean result) {
         this.result = result;
+        return this;
+    }
+
+    /**
+     * 
+     * @return A percentage approximating the current computational load on the
+     *         server.
+     * 
+     */
+    public List<Integer> getLoad() {
+        return load;
+    }
+
+    /**
+     * 
+     * @param load  A percentage approximating the current computational load
+     *              on the server.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowGraphResponse setLoad(List<Integer> load) {
+        this.load = (load == null) ? new ArrayList<Integer>() : load;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Available memory.
+     * 
+     */
+    public List<Long> getMemory() {
+        return memory;
+    }
+
+    /**
+     * 
+     * @param memory  Available memory.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowGraphResponse setMemory(List<Long> memory) {
+        this.memory = (memory == null) ? new ArrayList<Long>() : memory;
         return this;
     }
 
@@ -107,6 +157,27 @@ public class ShowGraphResponse implements IndexedRecord {
      */
     public ShowGraphResponse setGraphNames(List<String> graphNames) {
         this.graphNames = (graphNames == null) ? new ArrayList<String>() : graphNames;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Id(s) of the graph(s).
+     * 
+     */
+    public List<Integer> getGraphServerIds() {
+        return graphServerIds;
+    }
+
+    /**
+     * 
+     * @param graphServerIds  Id(s) of the graph(s).
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowGraphResponse setGraphServerIds(List<Integer> graphServerIds) {
+        this.graphServerIds = (graphServerIds == null) ? new ArrayList<Integer>() : graphServerIds;
         return this;
     }
 
@@ -327,30 +398,39 @@ public class ShowGraphResponse implements IndexedRecord {
                 return this.result;
 
             case 1:
-                return this.graphNames;
+                return this.load;
 
             case 2:
-                return this.directed;
+                return this.memory;
 
             case 3:
-                return this.numNodes;
+                return this.graphNames;
 
             case 4:
-                return this.numEdges;
+                return this.graphServerIds;
 
             case 5:
-                return this.isPersisted;
+                return this.directed;
 
             case 6:
-                return this.isSyncDb;
+                return this.numNodes;
 
             case 7:
-                return this.hasInsertTableMonitor;
+                return this.numEdges;
 
             case 8:
-                return this.originalRequest;
+                return this.isPersisted;
 
             case 9:
+                return this.isSyncDb;
+
+            case 10:
+                return this.hasInsertTableMonitor;
+
+            case 11:
+                return this.originalRequest;
+
+            case 12:
                 return this.info;
 
             default:
@@ -377,38 +457,50 @@ public class ShowGraphResponse implements IndexedRecord {
                 break;
 
             case 1:
-                this.graphNames = (List<String>)value;
+                this.load = (List<Integer>)value;
                 break;
 
             case 2:
-                this.directed = (List<Boolean>)value;
+                this.memory = (List<Long>)value;
                 break;
 
             case 3:
-                this.numNodes = (List<Long>)value;
+                this.graphNames = (List<String>)value;
                 break;
 
             case 4:
-                this.numEdges = (List<Long>)value;
+                this.graphServerIds = (List<Integer>)value;
                 break;
 
             case 5:
-                this.isPersisted = (List<Boolean>)value;
+                this.directed = (List<Boolean>)value;
                 break;
 
             case 6:
-                this.isSyncDb = (List<Boolean>)value;
+                this.numNodes = (List<Long>)value;
                 break;
 
             case 7:
-                this.hasInsertTableMonitor = (List<Boolean>)value;
+                this.numEdges = (List<Long>)value;
                 break;
 
             case 8:
-                this.originalRequest = (List<String>)value;
+                this.isPersisted = (List<Boolean>)value;
                 break;
 
             case 9:
+                this.isSyncDb = (List<Boolean>)value;
+                break;
+
+            case 10:
+                this.hasInsertTableMonitor = (List<Boolean>)value;
+                break;
+
+            case 11:
+                this.originalRequest = (List<String>)value;
+                break;
+
+            case 12:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -430,7 +522,10 @@ public class ShowGraphResponse implements IndexedRecord {
         ShowGraphResponse that = (ShowGraphResponse)obj;
 
         return ( ( this.result == that.result )
+                 && this.load.equals( that.load )
+                 && this.memory.equals( that.memory )
                  && this.graphNames.equals( that.graphNames )
+                 && this.graphServerIds.equals( that.graphServerIds )
                  && this.directed.equals( that.directed )
                  && this.numNodes.equals( that.numNodes )
                  && this.numEdges.equals( that.numEdges )
@@ -450,9 +545,21 @@ public class ShowGraphResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.result ) );
         builder.append( ", " );
+        builder.append( gd.toString( "load" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.load ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "memory" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.memory ) );
+        builder.append( ", " );
         builder.append( gd.toString( "graphNames" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.graphNames ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "graphServerIds" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.graphServerIds ) );
         builder.append( ", " );
         builder.append( gd.toString( "directed" ) );
         builder.append( ": " );
@@ -494,7 +601,10 @@ public class ShowGraphResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + ((Boolean)this.result).hashCode();
+        hashCode = (31 * hashCode) + this.load.hashCode();
+        hashCode = (31 * hashCode) + this.memory.hashCode();
         hashCode = (31 * hashCode) + this.graphNames.hashCode();
+        hashCode = (31 * hashCode) + this.graphServerIds.hashCode();
         hashCode = (31 * hashCode) + this.directed.hashCode();
         hashCode = (31 * hashCode) + this.numNodes.hashCode();
         hashCode = (31 * hashCode) + this.numEdges.hashCode();

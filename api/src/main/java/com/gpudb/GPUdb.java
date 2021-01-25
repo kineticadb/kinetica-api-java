@@ -257,6 +257,9 @@ public class GPUdb extends GPUdbBase {
      * will not be assigned any shards. To rebalance data and shards across the
      * cluster, use {@link GPUdb#adminRebalance(AdminRebalanceRequest)}.
      * <p>
+     * The database must be offline for this operation, see {@link
+     * GPUdb#adminOffline(AdminOfflineRequest)}
+     * <p>
      * For example, if attempting to add three new ranks (two ranks on host
      * 172.123.45.67 and one rank on host 172.123.45.68) to a Kinetica cluster
      * with additional configuration parameters:
@@ -300,6 +303,9 @@ public class GPUdb extends GPUdbBase {
      * will not contain any data initially (other than replicated tables) and
      * will not be assigned any shards. To rebalance data and shards across the
      * cluster, use {@link GPUdb#adminRebalance(Map)}.
+     * <p>
+     * The database must be offline for this operation, see {@link
+     * GPUdb#adminOffline(boolean, Map)}
      * <p>
      * For example, if attempting to add three new ranks (two ranks on host
      * 172.123.45.67 and one rank on host 172.123.45.68) to a Kinetica cluster
@@ -613,6 +619,9 @@ public class GPUdb extends GPUdbBase {
      * number of records approximately and/or rebalance the shards to be
      * equally distributed (as much as possible) across all the ranks.
      * <p>
+     * The database must be offline for this operation, see {@link
+     * GPUdb#adminOffline(AdminOfflineRequest)}
+     * <p>
      * * If {@link GPUdb#adminRebalance(AdminRebalanceRequest)} is invoked
      * after a change is made to the
      *   cluster, e.g., a host was added or removed,
@@ -659,6 +668,9 @@ public class GPUdb extends GPUdbBase {
      * Rebalance the data in the cluster so that all nodes contain an equal
      * number of records approximately and/or rebalance the shards to be
      * equally distributed (as much as possible) across all the ranks.
+     * <p>
+     * The database must be offline for this operation, see {@link
+     * GPUdb#adminOffline(boolean, Map)}
      * <p>
      * * If {@link GPUdb#adminRebalance(Map)} is invoked after a change is made
      * to the
@@ -753,7 +765,7 @@ public class GPUdb extends GPUdbBase {
      *                 aggressiveness} will take longer but allow for better
      *                 interleaving between the rebalance and other queries.
      *                 Valid values are constants from 1 (lowest) to 10
-     *                 (highest).  The default value is '1'.
+     *                 (highest).  The default value is '10'.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#COMPACT_AFTER_REBALANCE
      *                 COMPACT_AFTER_REBALANCE}: Perform compaction of deleted
@@ -923,6 +935,9 @@ public class GPUdb extends GPUdbBase {
      * href="../../../../concepts/tables.html#random-sharding"
      * target="_top">randomly-sharded</a>) will be deleted.
      * <p>
+     * The database must be offline for this operation, see {@link
+     * GPUdb#adminOffline(AdminOfflineRequest)}
+     * <p>
      * This endpoint's processing time depends on the amount of data in the
      * system, thus the API call may time out if run directly.  It is
      * recommended to run this endpoint asynchronously via {@link
@@ -956,6 +971,9 @@ public class GPUdb extends GPUdbBase {
      * data</a> and/or unsharded data (a.k.a. <a
      * href="../../../../concepts/tables.html#random-sharding"
      * target="_top">randomly-sharded</a>) will be deleted.
+     * <p>
+     * The database must be offline for this operation, see {@link
+     * GPUdb#adminOffline(boolean, Map)}
      * <p>
      * This endpoint's processing time depends on the amount of data in the
      * system, thus the API call may time out if run directly.  It is
@@ -1025,7 +1043,7 @@ public class GPUdb extends GPUdbBase {
      *                 aggressiveness} will take longer but allow for better
      *                 interleaving between the rebalance and other queries.
      *                 Valid values are constants from 1 (lowest) to 10
-     *                 (highest).  The default value is '1'.
+     *                 (highest).  The default value is '10'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -4327,6 +4345,13 @@ public class GPUdb extends GPUdbBase {
      *                specified in {@code value}.  Also, sets the refresh
      *                method to periodic if not already set.
      *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_EXECUTE_AS
+     *                SET_REFRESH_EXECUTE_AS}: Sets the user name to refresh
+     *                this <a
+     *                href="../../../../concepts/materialized_views.html"
+     *                target="_top">materialized view</a> to the value
+     *                specified in {@code value}.
+     *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_TEXT_SEARCH_ATTRIBUTES
      *                REMOVE_TEXT_SEARCH_ATTRIBUTES}: Removes <a
      *                href="../../../../concepts/full_text_search.html"
@@ -5736,6 +5761,41 @@ public class GPUdb extends GPUdbBase {
      *                 intersections; the smaller the value, the larger the
      *                 threshold for right and left turns; 0 < turn_angle < 90.
      *                 The default value is '60'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#IS_PARTITIONED
+     *                 IS_PARTITIONED}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#SERVER_ID
+     *                 SERVER_ID}: Indicates which graph server(s) to send the
+     *                 request to. Default is to send to the server with the
+     *                 most available memory.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#USE_RTREE
+     *                 USE_RTREE}: Use an range tree structure to accelerate
+     *                 and improve the accuracy of snapping, especially to
+     *                 edges.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -6118,6 +6178,9 @@ public class GPUdb extends GPUdbBase {
      *                 {@code periodic}, specifies the first time at which a
      *                 refresh is to be done.  Value is a datetime string with
      *                 format 'YYYY-MM-DD HH:MM:SS'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#EXECUTE_AS
+     *                 EXECUTE_AS}: User name to use to run the refresh job
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -6138,11 +6201,10 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates an instance (proc) of the user-defined function (UDF) specified
-     * by the given command, options, and files, and makes it available for
-     * execution.  For details on UDFs, see: <a
-     * href="../../../../concepts/udf.html" target="_top">User-Defined
-     * Functions</a>
+     * Creates an instance (proc) of the
+     * <a href="../../../../concepts/udf.html" target="_top">user-defined
+     * functions</a> (UDF) specified by the
+     * given command, options, and files, and makes it available for execution.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -6163,11 +6225,10 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates an instance (proc) of the user-defined function (UDF) specified
-     * by the given command, options, and files, and makes it available for
-     * execution.  For details on UDFs, see: <a
-     * href="../../../../concepts/udf.html" target="_top">User-Defined
-     * Functions</a>
+     * Creates an instance (proc) of the
+     * <a href="../../../../concepts/udf.html" target="_top">user-defined
+     * functions</a> (UDF) specified by the
+     * given command, options, and files, and makes it available for execution.
      * 
      * @param procName  Name of the proc to be created. Must not be the name of
      *                  a currently existing proc.
@@ -6177,39 +6238,53 @@ public class GPUdb extends GPUdbBase {
      *                               <li> {@link
      *                       com.gpudb.protocol.CreateProcRequest.ExecutionMode#DISTRIBUTED
      *                       DISTRIBUTED}: Input table data will be divided
-     *                       into data segments that are distributed across all
-     *                       nodes in the cluster, and the proc command will be
-     *                       invoked once per data segment in parallel. Output
-     *                       table data from each invocation will be saved to
-     *                       the same node as the corresponding input data.
+     *                       into data
+     *                       segments that are distributed across all nodes in
+     *                       the cluster, and the proc
+     *                       command will be invoked once per data segment in
+     *                       parallel. Output table data
+     *                       from each invocation will be saved to the same
+     *                       node as the corresponding input
+     *                       data.
      *                               <li> {@link
      *                       com.gpudb.protocol.CreateProcRequest.ExecutionMode#NONDISTRIBUTED
      *                       NONDISTRIBUTED}: The proc command will be invoked
-     *                       only once per execution, and will not have access
-     *                       to any input or output table data.
+     *                       only once per
+     *                       execution, and will not have direct access to any
+     *                       tables named as input or
+     *                       output table parameters in the call to {@link
+     *                       GPUdb#executeProc(String, Map, Map, List, Map,
+     *                       List, Map)}.  It will,
+     *                       however, be able to access the database using
+     *                       native API calls.
      *                       </ul>
      *                       The default value is {@link
      *                       com.gpudb.protocol.CreateProcRequest.ExecutionMode#DISTRIBUTED
      *                       DISTRIBUTED}.
      * @param files  A map of the files that make up the proc. The keys of the
      *               map are file names, and the values are the binary contents
-     *               of the files. The file names may include subdirectory
-     *               names (e.g. 'subdir/file') but must not resolve to a
-     *               directory above the root for the proc.  The default value
-     *               is an empty {@link Map}.
+     *               of the files. The
+     *               file names may include subdirectory names (e.g.
+     *               'subdir/file') but must not
+     *               resolve to a directory above the root for the proc.  The
+     *               default value is an empty {@link Map}.
      * @param command  The command (excluding arguments) that will be invoked
-     *                 when the proc is executed. It will be invoked from the
-     *                 directory containing the proc {@code files} and may be
-     *                 any command that can be resolved from that directory. It
-     *                 need not refer to a file actually in that directory; for
-     *                 example, it could be 'java' if the proc is a Java
-     *                 application; however, any necessary external programs
-     *                 must be preinstalled on every database node. If the
-     *                 command refers to a file in that directory, it must be
-     *                 preceded with './' as per Linux convention. If not
-     *                 specified, and exactly one file is provided in {@code
-     *                 files}, that file will be invoked.  The default value is
-     *                 ''.
+     *                 when
+     *                 the proc is executed. It will be invoked from the
+     *                 directory containing the proc
+     *                 {@code files} and may be any command that can be
+     *                 resolved from that directory.
+     *                 It need not refer to a file actually in that directory;
+     *                 for example, it could be
+     *                 'java' if the proc is a Java application; however, any
+     *                 necessary external
+     *                 programs must be preinstalled on every database node. If
+     *                 the command refers to a
+     *                 file in that directory, it must be preceded with './' as
+     *                 per Linux convention.
+     *                 If not specified, and exactly one file is provided in
+     *                 {@code files}, that file
+     *                 will be invoked.  The default value is ''.
      * @param args  An array of command-line arguments that will be passed to
      *              {@code command} when the proc is executed.  The default
      *              value is an empty {@link List}.
@@ -6941,6 +7016,11 @@ public class GPUdb extends GPUdbBase {
      *                 HASH}: Use <a
      *                 href="../../../../concepts/tables.html#partitioning-by-hash"
      *                 target="_top">hash partitioning</a>.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#SERIES
+     *                 SERIES}: Use <a
+     *                 href="../../../../concepts/tables.html#partitioning-by-series"
+     *                 target="_top">series partitioning</a>.
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -7169,7 +7249,7 @@ public class GPUdb extends GPUdbBase {
      *                            href="../../../../concepts/tables.html#random-sharding"
      *                            target="_top">randomly sharded</a>, if no
      *                            shard key is specified.
-     *                             Note that a type containing a shard key
+     *                            Note that a type containing a shard key
      *                            cannot be used to create a replicated table.
      *                            Supported values:
      *                            <ul>
@@ -7693,6 +7773,23 @@ public class GPUdb extends GPUdbBase {
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading file per rank. Default will be
      *                 external_file_reader_num_tasks
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TYPE_INFERENCE_MODE
+     *                 TYPE_INFERENCE_MODE}: optimize type inference for:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
+     *                 ACCURACY}: scans all data to get exactly-typed & sized
+     *                 columns for all data present
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED
+     *                 SPEED}: picks the widest possible column types so that
+     *                 'all' values will fit with minimum data scanned
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
+     *                 ACCURACY}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -8783,6 +8880,11 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.DeleteGraphRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteGraphRequest.Options#SERVER_ID
+     *                 SERVER_ID}: Indicates which graph server(s) to send the
+     *                 request to. Default is to send to get information about
+     *                 all the servers.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -9222,8 +9324,19 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Executes a proc. This endpoint is asynchronous and does not wait for the
-     * proc to complete before returning.
+     * Executes a proc. This endpoint is asynchronous and does not wait for
+     * the proc to complete before returning.
+     * <p>
+     * If the proc being executed is distributed, {@code inputTableNames} &
+     * {@code inputColumnNames} may be passed to the proc to use for reading
+     * data,
+     * and {@code outputTableNames} may be passed to the proc to use for
+     * writing
+     * data.
+     * <p>
+     * If the proc being executed is non-distributed, these table parameters
+     * will be
+     * ignored.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -9244,8 +9357,19 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Executes a proc. This endpoint is asynchronous and does not wait for the
-     * proc to complete before returning.
+     * Executes a proc. This endpoint is asynchronous and does not wait for
+     * the proc to complete before returning.
+     * <p>
+     * If the proc being executed is distributed, {@code inputTableNames} &
+     * {@code inputColumnNames} may be passed to the proc to use for reading
+     * data,
+     * and {@code outputTableNames} may be passed to the proc to use for
+     * writing
+     * data.
+     * <p>
+     * If the proc being executed is non-distributed, these table parameters
+     * will be
+     * ignored.
      * 
      * @param procName  Name of the proc to execute. Must be the name of a
      *                  currently existing proc.
@@ -9257,43 +9381,54 @@ public class GPUdb extends GPUdbBase {
      *                   parameter and its value.  The default value is an
      *                   empty {@link Map}.
      * @param inputTableNames  Names of the tables containing data to be passed
-     *                         to the proc. Each name specified must be the
-     *                         name of a currently existing table, in
+     *                         to the
+     *                         proc. Each name specified must be the name of a
+     *                         currently existing table, in
      *                         [schema_name.]table_name format, using standard
      *                         <a
      *                         href="../../../../concepts/tables.html#table-name-resolution"
-     *                         target="_top">name resolution rules</a>.  If no
-     *                         table names are specified, no data will be
-     *                         passed to the proc.  The default value is an
-     *                         empty {@link List}.
+     *                         target="_top">name resolution rules</a>.
+     *                         If no table names are specified, no data will be
+     *                         passed to the proc.  This
+     *                         parameter is ignored if the proc has a
+     *                         non-distributed execution mode.  The default
+     *                         value is an empty {@link List}.
      * @param inputColumnNames  Map of table names from {@code inputTableNames}
-     *                          to lists of names of columns from those tables
-     *                          that will be passed to the proc. Each column
-     *                          name specified must be the name of an existing
-     *                          column in the corresponding table. If a table
-     *                          name from {@code inputTableNames} is not
+     *                          to lists
+     *                          of names of columns from those tables that will
+     *                          be passed to the proc. Each
+     *                          column name specified must be the name of an
+     *                          existing column in the
+     *                          corresponding table. If a table name from
+     *                          {@code inputTableNames} is not
      *                          included, all columns from that table will be
-     *                          passed to the proc.  The default value is an
-     *                          empty {@link Map}.
+     *                          passed to the proc.  This
+     *                          parameter is ignored if the proc has a
+     *                          non-distributed execution mode.  The default
+     *                          value is an empty {@link Map}.
      * @param outputTableNames  Names of the tables to which output data from
-     *                          the proc will be written, each in
-     *                          [schema_name.]table_name format, using standard
+     *                          the proc will
+     *                          be written, each in [schema_name.]table_name
+     *                          format, using standard
      *                          <a
      *                          href="../../../../concepts/tables.html#table-name-resolution"
-     *                          target="_top">name resolution rules</a> and
-     *                          meeting <a
+     *                          target="_top">name resolution rules</a>
+     *                          and meeting <a
      *                          href="../../../../concepts/tables.html#table-naming-criteria"
-     *                          target="_top">table naming criteria</a>. If a
-     *                          specified table does not exist, it will
-     *                          automatically be created with the same schema
-     *                          as the corresponding table (by order) from
+     *                          target="_top">table naming criteria</a>.
+     *                          If a specified table does not exist, it will
+     *                          automatically be created with the
+     *                          same schema as the corresponding table (by
+     *                          order) from
      *                          {@code inputTableNames}, excluding any primary
-     *                          and shard keys. If a specified table is a
-     *                          non-persistent result table, it must not have
-     *                          primary or shard keys. If no table names are
-     *                          specified, no output data can be returned from
-     *                          the proc.  The default value is an empty {@link
-     *                          List}.
+     *                          and shard keys. If a specified
+     *                          table is a non-persistent result table, it must
+     *                          not have primary or shard keys.
+     *                          If no table names are specified, no output data
+     *                          can be returned from the proc.
+     *                          This parameter is ignored if the proc has a
+     *                          non-distributed execution mode.  The default
+     *                          value is an empty {@link List}.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -14132,6 +14267,23 @@ public class GPUdb extends GPUdbBase {
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading file per rank. Default will be
      *                 external_file_reader_num_tasks
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TYPE_INFERENCE_MODE
+     *                 TYPE_INFERENCE_MODE}: optimize type inference for:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
+     *                 ACCURACY}: scans all data to get exactly-typed & sized
+     *                 columns for all data present
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
+     *                 SPEED}: picks the widest possible column types so that
+     *                 'all' values will fit with minimum data scanned
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
+     *                 ACCURACY}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -14667,6 +14819,23 @@ public class GPUdb extends GPUdbBase {
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading file per rank. Default will be
      *                 external_file_reader_num_tasks
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TYPE_INFERENCE_MODE
+     *                 TYPE_INFERENCE_MODE}: optimize type inference for:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ACCURACY
+     *                 ACCURACY}: scans all data to get exactly-typed & sized
+     *                 columns for all data present
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SPEED
+     *                 SPEED}: picks the widest possible column types so that
+     *                 'all' values will fit with minimum data scanned
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ACCURACY
+     *                 ACCURACY}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -15447,6 +15616,14 @@ public class GPUdb extends GPUdbBase {
      *                 towards a particular demand location (store id) with its
      *                 corresponding cost.  The default value is 'true'.
      *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#OUTPUT_TRACKS
+     *                 OUTPUT_TRACKS}: For the {@code match_supply_demand}
+     *                 solver only. When it is true (non-default), the output
+     *                 will be in tracks format for all the round trips of each
+     *                 truck in which the timestamps are populated directly
+     *                 from the edge weights starting from their originating
+     *                 depots.  The default value is 'false'.
+     *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRIP_COST
      *                 MAX_TRIP_COST}: For the {@code match_supply_demand}
      *                 solver only. If this constraint is greater than zero
@@ -15496,7 +15673,7 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_LIMIT
      *                 TRUCK_SERVICE_LIMIT}: For the {@code
-     *                 match_supply_demand} solver only. If specified (greather
+     *                 match_supply_demand} solver only. If specified (greater
      *                 than zero), any truck's total service cost (distance or
      *                 time) will be limited by the specified value including
      *                 multiple rounds (if set).  The default value is '0.0'.
@@ -15519,6 +15696,12 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#SERVER_ID
+     *                 SERVER_ID}: Indicates which graph server(s) to send the
+     *                 request to. Default is to send to the server, amongst
+     *                 those containing the corresponding graph, that has the
+     *                 most computational bandwidth.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -16280,6 +16463,28 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_SOLVE_RESULTS
+     *                 EXPORT_SOLVE_RESULTS}: Returns solution results inside
+     *                 the {@code adjacencyListIntArray} array in the response
+     *                 if set to {@code true}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.QueryGraphRequest.Options#SERVER_ID
+     *                 SERVER_ID}: Indicates which graph server(s) to send the
+     *                 request to. Default is to send to the server, amongst
+     *                 those containing the corresponding graph, that has the
+     *                 most computational bandwidth.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -16712,6 +16917,11 @@ public class GPUdb extends GPUdbBase {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.ShowGraphRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowGraphRequest.Options#SERVER_ID
+     *                 SERVER_ID}: Indicates which graph server(s) to send the
+     *                 request to. Default is to send to get information about
+     *                 all the servers.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -17851,8 +18061,8 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
      * target="_top">Graph REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../graph_solver/examples.html#solve-graph"
-     * target="_top">/solve/graph examples</a>
+     * <a href="../../../../graph_solver/examples.html#match-graph"
+     * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
      * @param request  Request object containing the parameters for the
@@ -17886,8 +18096,8 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
      * target="_top">Graph REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../graph_solver/examples.html#solve-graph"
-     * target="_top">/solve/graph examples</a>
+     * <a href="../../../../graph_solver/examples.html#match-graph"
+     * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
      * @param graphName  Name of the graph resource to solve.
@@ -18199,6 +18409,14 @@ public class GPUdb extends GPUdbBase {
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#SERVER_ID
+     *                 SERVER_ID}: Indicates which graph server(s) to send the
+     *                 request to. Default is to send to the server, amongst
+     *                 those containing the corresponding graph, that has the
+     *                 most computational bandwidth. For SHORTEST_PATH solver
+     *                 type, the input is split amongst the server containing
+     *                 the corresponding graph.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -19146,8 +19364,8 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    public VisualizeImageClassbreakResponse visualizeImageClassbreak(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbAttr, List<String> cbVals, String cbPointcolorAttr, List<String> cbPointcolorVals, String cbPointalphaAttr, List<String> cbPointalphaVals, String cbPointsizeAttr, List<String> cbPointsizeVals, String cbPointshapeAttr, List<String> cbPointshapeVals, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options, List<Integer> cbTransparencyVec) throws GPUdbException {
-        VisualizeImageClassbreakRequest actualRequest_ = new VisualizeImageClassbreakRequest(tableNames, worldTableNames, xColumnName, yColumnName, geometryColumnName, trackIds, cbAttr, cbVals, cbPointcolorAttr, cbPointcolorVals, cbPointalphaAttr, cbPointalphaVals, cbPointsizeAttr, cbPointsizeVals, cbPointshapeAttr, cbPointshapeVals, minX, maxX, minY, maxY, width, height, projection, bgColor, styleOptions, options, cbTransparencyVec);
+    public VisualizeImageClassbreakResponse visualizeImageClassbreak(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String symbolColumnName, String geometryColumnName, List<List<String>> trackIds, String cbAttr, List<String> cbVals, String cbPointcolorAttr, List<String> cbPointcolorVals, String cbPointalphaAttr, List<String> cbPointalphaVals, String cbPointsizeAttr, List<String> cbPointsizeVals, String cbPointshapeAttr, List<String> cbPointshapeVals, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options, List<Integer> cbTransparencyVec) throws GPUdbException {
+        VisualizeImageClassbreakRequest actualRequest_ = new VisualizeImageClassbreakRequest(tableNames, worldTableNames, xColumnName, yColumnName, symbolColumnName, geometryColumnName, trackIds, cbAttr, cbVals, cbPointcolorAttr, cbPointcolorVals, cbPointalphaAttr, cbPointalphaVals, cbPointsizeAttr, cbPointsizeVals, cbPointshapeAttr, cbPointshapeVals, minX, maxX, minY, maxY, width, height, projection, bgColor, styleOptions, options, cbTransparencyVec);
         VisualizeImageClassbreakResponse actualResponse_ = new VisualizeImageClassbreakResponse();
         submitRequest("/visualize/image/classbreak", actualRequest_, actualResponse_, false);
         return actualResponse_;

@@ -105,7 +105,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * given {@code type_id}, or
      * <a href="../../../../../concepts/tables.html#random-sharding"
      * target="_top">randomly sharded</a>, if no shard key is specified.
-     *  Note that a type containing a shard key cannot be used to create a
+     * Note that a type containing a shard key cannot be used to create a
      * replicated table.
      * Supported values:
      * <ul>
@@ -294,7 +294,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * given {@code type_id}, or
          * <a href="../../../../../concepts/tables.html#random-sharding"
          * target="_top">randomly sharded</a>, if no shard key is specified.
-         *  Note that a type containing a shard key cannot be used to create a
+         * Note that a type containing a shard key cannot be used to create a
          * replicated table.
          * Supported values:
          * <ul>
@@ -836,6 +836,23 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableExternalRequest.Options#NUM_TASKS_PER_RANK
      * NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file per
      * rank. Default will be external_file_reader_num_tasks
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#TYPE_INFERENCE_MODE
+     * TYPE_INFERENCE_MODE}: optimize type inference for:
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
+     * ACCURACY}: scans all data to get exactly-typed & sized columns for all
+     * data present
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED SPEED}:
+     * picks the widest possible column types so that 'all' values will fit
+     * with minimum data scanned
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
+     * ACCURACY}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -1362,6 +1379,37 @@ public class CreateTableExternalRequest implements IndexedRecord {
          */
         public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
 
+        /**
+         * optimize type inference for:
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
+         * ACCURACY}: scans all data to get exactly-typed & sized columns for
+         * all data present
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED SPEED}:
+         * picks the widest possible column types so that 'all' values will fit
+         * with minimum data scanned
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
+         * ACCURACY}.
+         */
+        public static final String TYPE_INFERENCE_MODE = "type_inference_mode";
+
+        /**
+         * scans all data to get exactly-typed & sized columns for all data
+         * present
+         */
+        public static final String ACCURACY = "accuracy";
+
+        /**
+         * picks the widest possible column types so that 'all' values will fit
+         * with minimum data scanned
+         */
+        public static final String SPEED = "speed";
+
         private Options() {  }
     }
 
@@ -1467,7 +1515,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            href="../../../../../concepts/tables.html#random-sharding"
      *                            target="_top">randomly sharded</a>, if no
      *                            shard key is specified.
-     *                             Note that a type containing a shard key
+     *                            Note that a type containing a shard key
      *                            cannot be used to create a replicated table.
      *                            Supported values:
      *                            <ul>
@@ -1991,6 +2039,23 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading file per rank. Default will be
      *                 external_file_reader_num_tasks
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TYPE_INFERENCE_MODE
+     *                 TYPE_INFERENCE_MODE}: optimize type inference for:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
+     *                 ACCURACY}: scans all data to get exactly-typed & sized
+     *                 columns for all data present
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED
+     *                 SPEED}: picks the widest possible column types so that
+     *                 'all' values will fit with minimum data scanned
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
+     *                 ACCURACY}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -2160,8 +2225,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <a href="../../../../../concepts/tables.html#random-sharding"
      *         target="_top">randomly sharded</a>, if no shard key is
      *         specified.
-     *          Note that a type containing a shard key cannot be used to
-     *         create a replicated table.
+     *         Note that a type containing a shard key cannot be used to create
+     *         a replicated table.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -2367,7 +2432,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            href="../../../../../concepts/tables.html#random-sharding"
      *                            target="_top">randomly sharded</a>, if no
      *                            shard key is specified.
-     *                             Note that a type containing a shard key
+     *                            Note that a type containing a shard key
      *                            cannot be used to create a replicated table.
      *                            Supported values:
      *                            <ul>
@@ -2888,6 +2953,23 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#NUM_TASKS_PER_RANK
      *         NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file
      *         per rank. Default will be external_file_reader_num_tasks
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#TYPE_INFERENCE_MODE
+     *         TYPE_INFERENCE_MODE}: optimize type inference for:
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
+     *         ACCURACY}: scans all data to get exactly-typed & sized columns
+     *         for all data present
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED
+     *         SPEED}: picks the widest possible column types so that 'all'
+     *         values will fit with minimum data scanned
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
+     *         ACCURACY}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -3263,6 +3345,23 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
      *                 reading file per rank. Default will be
      *                 external_file_reader_num_tasks
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TYPE_INFERENCE_MODE
+     *                 TYPE_INFERENCE_MODE}: optimize type inference for:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
+     *                 ACCURACY}: scans all data to get exactly-typed & sized
+     *                 columns for all data present
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED
+     *                 SPEED}: picks the widest possible column types so that
+     *                 'all' values will fit with minimum data scanned
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
+     *                 ACCURACY}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

@@ -222,7 +222,8 @@ public class RecordRetriever<T> {
             this.options = new HashMap<>();
         }
         // We will always need to use this for getByKey
-        this.options.put(GetRecordsRequest.Options.FAST_INDEX_LOOKUP, GetRecordsRequest.Options.TRUE);
+        this.options.put( GetRecordsRequest.Options.FAST_INDEX_LOOKUP,
+                          GetRecordsRequest.Options.TRUE );
 
         // We need to know how many clusters are in the HA ring (for failover
         // purposes)
@@ -594,13 +595,13 @@ public class RecordRetriever<T> {
 
     /**
      * Gets the options currently used for the retriever methods.  Note
-     * that any {@link GetRecordsRequest.Options.EXPRESSION} options will
-     * get overridden at the next {@link getByKey} call with the appropriate
-     * expression.
+     * that any {@link com.gpudb.protocol.GetRecordsRequest.Options#EXPRESSION}
+     * options will get overridden at the next {@link #getByKey} call with the
+     * appropriate expression.
      *
      * @return  the options used during record retrieval
      *
-     * @see setOptions
+     * @see #setOptions
      */
     public Map<String, String> getOptions() {
         return this.options;
@@ -614,7 +615,7 @@ public class RecordRetriever<T> {
      *
      * @return         the current {@link RecordRetriever} instance
      *
-     * @see com.gpudb.protocol.GetRecordsRequest.Options.EXPRESSION
+     * @see com.gpudb.protocol.GetRecordsRequest.Options#EXPRESSION
      */
     public RecordRetriever setOptions( Map<String, String> options ) {
         // Set the options in a thread-safe manner

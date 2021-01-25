@@ -24,6 +24,7 @@ public class ModifyGraphResponse implements IndexedRecord {
             .record("ModifyGraphResponse")
             .namespace("com.gpudb")
             .fields()
+                .name("result").type().booleanType().noDefault()
                 .name("numNodes").type().longType().noDefault()
                 .name("numEdges").type().longType().noDefault()
                 .name("edgesIds").type().array().items().longType().noDefault()
@@ -42,6 +43,7 @@ public class ModifyGraphResponse implements IndexedRecord {
         return schema$;
     }
 
+    private boolean result;
     private long numNodes;
     private long numEdges;
     private List<Long> edgesIds;
@@ -52,6 +54,27 @@ public class ModifyGraphResponse implements IndexedRecord {
      * Constructs a ModifyGraphResponse object with default parameters.
      */
     public ModifyGraphResponse() {
+    }
+
+    /**
+     * 
+     * @return Indicates a successful modification on all servers.
+     * 
+     */
+    public boolean getResult() {
+        return result;
+    }
+
+    /**
+     * 
+     * @param result  Indicates a successful modification on all servers.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ModifyGraphResponse setResult(boolean result) {
+        this.result = result;
+        return this;
     }
 
     /**
@@ -167,15 +190,18 @@ public class ModifyGraphResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.numNodes;
+                return this.result;
 
             case 1:
-                return this.numEdges;
+                return this.numNodes;
 
             case 2:
-                return this.edgesIds;
+                return this.numEdges;
 
             case 3:
+                return this.edgesIds;
+
+            case 4:
                 return this.info;
 
             default:
@@ -198,18 +224,22 @@ public class ModifyGraphResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.numNodes = (Long)value;
+                this.result = (Boolean)value;
                 break;
 
             case 1:
-                this.numEdges = (Long)value;
+                this.numNodes = (Long)value;
                 break;
 
             case 2:
-                this.edgesIds = (List<Long>)value;
+                this.numEdges = (Long)value;
                 break;
 
             case 3:
+                this.edgesIds = (List<Long>)value;
+                break;
+
+            case 4:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -230,7 +260,8 @@ public class ModifyGraphResponse implements IndexedRecord {
 
         ModifyGraphResponse that = (ModifyGraphResponse)obj;
 
-        return ( ( this.numNodes == that.numNodes )
+        return ( ( this.result == that.result )
+                 && ( this.numNodes == that.numNodes )
                  && ( this.numEdges == that.numEdges )
                  && this.edgesIds.equals( that.edgesIds )
                  && this.info.equals( that.info ) );
@@ -241,6 +272,10 @@ public class ModifyGraphResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
+        builder.append( gd.toString( "result" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.result ) );
+        builder.append( ", " );
         builder.append( gd.toString( "numNodes" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.numNodes ) );
@@ -264,6 +299,7 @@ public class ModifyGraphResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
+        hashCode = (31 * hashCode) + ((Boolean)this.result).hashCode();
         hashCode = (31 * hashCode) + ((Long)this.numNodes).hashCode();
         hashCode = (31 * hashCode) + ((Long)this.numEdges).hashCode();
         hashCode = (31 * hashCode) + this.edgesIds.hashCode();

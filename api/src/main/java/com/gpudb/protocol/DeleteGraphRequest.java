@@ -59,6 +59,10 @@ public class DeleteGraphRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.DeleteGraphRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.DeleteGraphRequest.Options#SERVER_ID SERVER_ID}:
+     * Indicates which graph server(s) to send the request to. Default is to
+     * send to get information about all the servers.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -83,6 +87,12 @@ public class DeleteGraphRequest implements IndexedRecord {
         public static final String DELETE_PERSIST = "delete_persist";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * Indicates which graph server(s) to send the request to. Default is
+         * to send to get information about all the servers.
+         */
+        public static final String SERVER_ID = "server_id";
 
         private Options() {  }
     }
@@ -123,6 +133,11 @@ public class DeleteGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.DeleteGraphRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteGraphRequest.Options#SERVER_ID
+     *                 SERVER_ID}: Indicates which graph server(s) to send the
+     *                 request to. Default is to send to get information about
+     *                 all the servers.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -173,6 +188,10 @@ public class DeleteGraphRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.DeleteGraphRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.DeleteGraphRequest.Options#SERVER_ID
+     *         SERVER_ID}: Indicates which graph server(s) to send the request
+     *         to. Default is to send to get information about all the servers.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -203,6 +222,11 @@ public class DeleteGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.DeleteGraphRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteGraphRequest.Options#SERVER_ID
+     *                 SERVER_ID}: Indicates which graph server(s) to send the
+     *                 request to. Default is to send to get information about
+     *                 all the servers.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

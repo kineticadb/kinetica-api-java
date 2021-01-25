@@ -5,6 +5,7 @@
  */
 package com.gpudb.protocol;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
                 .name("countSkipped").type().longType().noDefault()
                 .name("countUpdated").type().longType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
+                .name("files").type().array().items().stringType().noDefault()
             .endRecord();
 
 
@@ -55,6 +57,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
     private long countSkipped;
     private long countUpdated;
     private Map<String, String> info;
+    private List<String> files;
 
 
     /**
@@ -268,6 +271,27 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
     }
 
     /**
+     * 
+     * @return The default value is an empty {@link Map}.
+     * 
+     */
+    public List<String> getFiles() {
+        return files;
+    }
+
+    /**
+     * 
+     * @param files  The default value is an empty {@link Map}.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public InsertRecordsFromFilesResponse setFiles(List<String> files) {
+        this.files = (files == null) ? new ArrayList<String>() : files;
+        return this;
+    }
+
+    /**
      * This method supports the Avro framework and is not intended to be called
      * directly by the user.
      * 
@@ -319,6 +343,9 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
 
             case 8:
                 return this.info;
+
+            case 9:
+                return this.files;
 
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
@@ -375,6 +402,10 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
                 this.info = (Map<String, String>)value;
                 break;
 
+            case 9:
+                this.files = (List<String>)value;
+                break;
+
             default:
                 throw new IndexOutOfBoundsException("Invalid index specified.");
         }
@@ -400,7 +431,8 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
                  && ( this.countInserted == that.countInserted )
                  && ( this.countSkipped == that.countSkipped )
                  && ( this.countUpdated == that.countUpdated )
-                 && this.info.equals( that.info ) );
+                 && this.info.equals( that.info )
+                 && this.files.equals( that.files ) );
     }
 
     @Override
@@ -443,6 +475,10 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.info ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "files" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.files ) );
         builder.append( "}" );
 
         return builder.toString();
@@ -460,6 +496,7 @@ public class InsertRecordsFromFilesResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + ((Long)this.countSkipped).hashCode();
         hashCode = (31 * hashCode) + ((Long)this.countUpdated).hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
+        hashCode = (31 * hashCode) + this.files.hashCode();
         return hashCode;
     }
 

@@ -221,6 +221,13 @@ public class MatchGraphRequest implements IndexedRecord {
      * particular demand location (store id) with its corresponding cost.  The
      * default value is 'true'.
      *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#OUTPUT_TRACKS
+     * OUTPUT_TRACKS}: For the {@code match_supply_demand} solver only. When it
+     * is true (non-default), the output will be in tracks format for all the
+     * round trips of each truck in which the timestamps are populated directly
+     * from the edge weights starting from their originating depots.  The
+     * default value is 'false'.
+     *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRIP_COST
      * MAX_TRIP_COST}: For the {@code match_supply_demand} solver only. If this
      * constraint is greater than zero (default) then the trucks will skip
@@ -260,7 +267,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_LIMIT
      * TRUCK_SERVICE_LIMIT}: For the {@code match_supply_demand} solver only.
-     * If specified (greather than zero), any truck's total service cost
+     * If specified (greater than zero), any truck's total service cost
      * (distance or time) will be limited by the specified value including
      * multiple rounds (if set).  The default value is '0.0'.
      *         <li> {@link
@@ -277,6 +284,11 @@ public class MatchGraphRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#SERVER_ID SERVER_ID}:
+     * Indicates which graph server(s) to send the request to. Default is to
+     * send to the server, amongst those containing the corresponding graph,
+     * that has the most computational bandwidth.  The default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -407,6 +419,15 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String AGGREGATED_OUTPUT = "aggregated_output";
 
         /**
+         * For the {@code match_supply_demand} solver only. When it is true
+         * (non-default), the output will be in tracks format for all the round
+         * trips of each truck in which the timestamps are populated directly
+         * from the edge weights starting from their originating depots.  The
+         * default value is 'false'.
+         */
+        public static final String OUTPUT_TRACKS = "output_tracks";
+
+        /**
          * For the {@code match_supply_demand} solver only. If this constraint
          * is greater than zero (default) then the trucks will skip travelling
          * from one demand location to another if the cost between them is
@@ -455,7 +476,7 @@ public class MatchGraphRequest implements IndexedRecord {
 
         /**
          * For the {@code match_supply_demand} solver only. If specified
-         * (greather than zero), any truck's total service cost (distance or
+         * (greater than zero), any truck's total service cost (distance or
          * time) will be limited by the specified value including multiple
          * rounds (if set).  The default value is '0.0'.
          */
@@ -478,6 +499,14 @@ public class MatchGraphRequest implements IndexedRecord {
          * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
          */
         public static final String ENABLE_TRUCK_REUSE = "enable_truck_reuse";
+
+        /**
+         * Indicates which graph server(s) to send the request to. Default is
+         * to send to the server, amongst those containing the corresponding
+         * graph, that has the most computational bandwidth.  The default value
+         * is ''.
+         */
+        public static final String SERVER_ID = "server_id";
 
         private Options() {  }
     }
@@ -681,6 +710,14 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 towards a particular demand location (store id) with its
      *                 corresponding cost.  The default value is 'true'.
      *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#OUTPUT_TRACKS
+     *                 OUTPUT_TRACKS}: For the {@code match_supply_demand}
+     *                 solver only. When it is true (non-default), the output
+     *                 will be in tracks format for all the round trips of each
+     *                 truck in which the timestamps are populated directly
+     *                 from the edge weights starting from their originating
+     *                 depots.  The default value is 'false'.
+     *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRIP_COST
      *                 MAX_TRIP_COST}: For the {@code match_supply_demand}
      *                 solver only. If this constraint is greater than zero
@@ -730,7 +767,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_LIMIT
      *                 TRUCK_SERVICE_LIMIT}: For the {@code
-     *                 match_supply_demand} solver only. If specified (greather
+     *                 match_supply_demand} solver only. If specified (greater
      *                 than zero), any truck's total service cost (distance or
      *                 time) will be limited by the specified value including
      *                 multiple rounds (if set).  The default value is '0.0'.
@@ -753,6 +790,12 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#SERVER_ID
+     *                 SERVER_ID}: Indicates which graph server(s) to send the
+     *                 request to. Default is to send to the server, amongst
+     *                 those containing the corresponding graph, that has the
+     *                 most computational bandwidth.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1082,6 +1125,13 @@ public class MatchGraphRequest implements IndexedRecord {
      *         (LINESTRING) towards a particular demand location (store id)
      *         with its corresponding cost.  The default value is 'true'.
      *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#OUTPUT_TRACKS
+     *         OUTPUT_TRACKS}: For the {@code match_supply_demand} solver only.
+     *         When it is true (non-default), the output will be in tracks
+     *         format for all the round trips of each truck in which the
+     *         timestamps are populated directly from the edge weights starting
+     *         from their originating depots.  The default value is 'false'.
+     *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRIP_COST
      *         MAX_TRIP_COST}: For the {@code match_supply_demand} solver only.
      *         If this constraint is greater than zero (default) then the
@@ -1126,7 +1176,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_LIMIT
      *         TRUCK_SERVICE_LIMIT}: For the {@code match_supply_demand} solver
-     *         only. If specified (greather than zero), any truck's total
+     *         only. If specified (greater than zero), any truck's total
      *         service cost (distance or time) will be limited by the specified
      *         value including multiple rounds (if set).  The default value is
      *         '0.0'.
@@ -1146,6 +1196,12 @@ public class MatchGraphRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#SERVER_ID
+     *         SERVER_ID}: Indicates which graph server(s) to send the request
+     *         to. Default is to send to the server, amongst those containing
+     *         the corresponding graph, that has the most computational
+     *         bandwidth.  The default value is ''.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1258,6 +1314,14 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 towards a particular demand location (store id) with its
      *                 corresponding cost.  The default value is 'true'.
      *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#OUTPUT_TRACKS
+     *                 OUTPUT_TRACKS}: For the {@code match_supply_demand}
+     *                 solver only. When it is true (non-default), the output
+     *                 will be in tracks format for all the round trips of each
+     *                 truck in which the timestamps are populated directly
+     *                 from the edge weights starting from their originating
+     *                 depots.  The default value is 'false'.
+     *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRIP_COST
      *                 MAX_TRIP_COST}: For the {@code match_supply_demand}
      *                 solver only. If this constraint is greater than zero
@@ -1307,7 +1371,7 @@ public class MatchGraphRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUCK_SERVICE_LIMIT
      *                 TRUCK_SERVICE_LIMIT}: For the {@code
-     *                 match_supply_demand} solver only. If specified (greather
+     *                 match_supply_demand} solver only. If specified (greater
      *                 than zero), any truck's total service cost (distance or
      *                 time) will be limited by the specified value including
      *                 multiple rounds (if set).  The default value is '0.0'.
@@ -1330,6 +1394,12 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#SERVER_ID
+     *                 SERVER_ID}: Indicates which graph server(s) to send the
+     *                 request to. Default is to send to the server, amongst
+     *                 those containing the corresponding graph, that has the
+     *                 most computational bandwidth.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

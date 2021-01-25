@@ -262,6 +262,35 @@ public class CreateGraphRequest implements IndexedRecord {
      * larger the threshold for sharp turns and intersections; the smaller the
      * value, the larger the threshold for right and left turns; 0 < turn_angle
      * < 90.  The default value is '60'.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateGraphRequest.Options#IS_PARTITIONED
+     * IS_PARTITIONED}:
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateGraphRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateGraphRequest.Options#SERVER_ID SERVER_ID}:
+     * Indicates which graph server(s) to send the request to. Default is to
+     * send to the server with the most available memory.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateGraphRequest.Options#USE_RTREE USE_RTREE}: Use
+     * an range tree structure to accelerate and improve the accuracy of
+     * snapping, especially to edges.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateGraphRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -485,6 +514,40 @@ public class CreateGraphRequest implements IndexedRecord {
          * '60'.
          */
         public static final String TURN_ANGLE = "turn_angle";
+
+        /**
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
+         */
+        public static final String IS_PARTITIONED = "is_partitioned";
+
+        /**
+         * Indicates which graph server(s) to send the request to. Default is
+         * to send to the server with the most available memory.
+         */
+        public static final String SERVER_ID = "server_id";
+
+        /**
+         * Use an range tree structure to accelerate and improve the accuracy
+         * of snapping, especially to edges.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
+         */
+        public static final String USE_RTREE = "use_rtree";
 
         private Options() {  }
     }
@@ -830,6 +893,41 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 intersections; the smaller the value, the larger the
      *                 threshold for right and left turns; 0 < turn_angle < 90.
      *                 The default value is '60'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#IS_PARTITIONED
+     *                 IS_PARTITIONED}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#SERVER_ID
+     *                 SERVER_ID}: Indicates which graph server(s) to send the
+     *                 request to. Default is to send to the server with the
+     *                 most available memory.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#USE_RTREE
+     *                 USE_RTREE}: Use an range tree structure to accelerate
+     *                 and improve the accuracy of snapping, especially to
+     *                 edges.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1336,6 +1434,36 @@ public class CreateGraphRequest implements IndexedRecord {
      *         threshold for sharp turns and intersections; the smaller the
      *         value, the larger the threshold for right and left turns; 0 <
      *         turn_angle < 90.  The default value is '60'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateGraphRequest.Options#IS_PARTITIONED
+     *         IS_PARTITIONED}:
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateGraphRequest.Options#SERVER_ID
+     *         SERVER_ID}: Indicates which graph server(s) to send the request
+     *         to. Default is to send to the server with the most available
+     *         memory.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateGraphRequest.Options#USE_RTREE
+     *         USE_RTREE}: Use an range tree structure to accelerate and
+     *         improve the accuracy of snapping, especially to edges.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1565,6 +1693,41 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 intersections; the smaller the value, the larger the
      *                 threshold for right and left turns; 0 < turn_angle < 90.
      *                 The default value is '60'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#IS_PARTITIONED
+     *                 IS_PARTITIONED}:
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#SERVER_ID
+     *                 SERVER_ID}: Indicates which graph server(s) to send the
+     *                 request to. Default is to send to the server with the
+     *                 most available memory.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#USE_RTREE
+     *                 USE_RTREE}: Use an range tree structure to accelerate
+     *                 and improve the accuracy of snapping, especially to
+     *                 edges.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
