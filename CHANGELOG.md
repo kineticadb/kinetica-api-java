@@ -2,6 +2,12 @@
 
 ## Version 7.1
 
+### Version 7.1.2.1 - 2021-01-26
+
+#### Fixed
+-   An issue with BulkInserter flush when retryCount > 0
+
+
 ### Version 7.1.2.0 - 2021-01-25
 
 #### Performance Enhancements

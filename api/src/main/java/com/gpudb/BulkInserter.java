@@ -1125,8 +1125,29 @@ public class BulkInserter<T> {
      */
     public void flush() throws InsertException {
         // Flush all queues, regardless of how full they are.  Also, we will
-        // retry based on user configuration.
-        this.flushQueues( this.workerQueues, this.retryCount );
+        // retry based on user configuration.  Note the last param
+        // lets the called method know that the user is forcing this flush;
+        // this is important for recursive calls.
+        this.flush( this.retryCount );
+    }
+
+
+    /**
+     * Ensures that any queued records are inserted into GPUdb. If an error
+     * occurs while inserting the records from any queue, the records will no
+     * longer be in that queue nor in GPUdb; catch {@link InsertException} to
+     * get the list of records that were being inserted if needed (for example,
+     * to retry). Other queues may also still contain unflushed records if
+     * this occurs.
+     *
+     * @throws InsertException if an error occurs while inserting
+     */
+    private void flush( int retryCount ) throws InsertException {
+        // Flush all queues, regardless of how full they are.  Also, we will
+        // retry based on user configuration.  Note the last param
+        // lets the called method know that the user is forcing this flush;
+        // this is important for recursive calls.
+        this.flushQueues( this.workerQueues, retryCount, true );
     }
 
 
@@ -1138,7 +1159,7 @@ public class BulkInserter<T> {
         // configuration.
         List<WorkerQueue<T>> workerQueues = new ArrayList<>();
         workerQueues.add( workerQueue );
-        this.flushQueues( workerQueues, this.retryCount );
+        this.flushQueues( workerQueues, this.retryCount, false );
     }
 
 
@@ -1155,17 +1176,21 @@ public class BulkInserter<T> {
         for (WorkerQueue<T> workerQueue : this.workerQueues) {
 
             // Handle removed ranks
-            if ( workerQueue == null)
+            if ( workerQueue == null) {
                 continue;
+            }
 
             // We will flush only full queues
             if ( workerQueue.isQueueFull() ) {
+                GPUdbLogger.debug_with_info( "Adding full queue for "
+                                             + workerQueue.getUrl() );
                 fullQueues.add( workerQueue );
             }
 
         }
 
-        this.flushQueues( fullQueues, retryCount );
+        GPUdbLogger.debug_with_info( "Before calling flushQueues()" );
+        this.flushQueues( fullQueues, retryCount, false );
     }
 
 
@@ -1178,11 +1203,23 @@ public class BulkInserter<T> {
      *
      * @param queues      the queues that we need to flush
      * @param retryCount  the number of times we have left to retry inserting
+     * @param forcedFlush boolean indicating if the user wants a forced flush
+     *                    of all the records.  Useful in error cases when
+     *                    insertion retries happen.
      *
      * @throws InsertException if an error occurs while flushing
      */
-    private void flushQueues( List<WorkerQueue<T>> queues, int retryCount )
+    private void flushQueues( List<WorkerQueue<T>> queues, int retryCount,
+                              boolean forcedFlush )
         throws InsertException {
+        GPUdbLogger.debug_with_info( "Begin; # queues " + queues.size()
+                                     + "; retryCount: " + retryCount );
+        // Let the user know that we ran out of retries
+        if ( ( retryCount < 0 ) || (queues.size() == 0) ) {
+            // Retry count of 0 means try once but do no retry
+            GPUdbLogger.debug_with_info( "Returning without further action" );
+            return;
+        }
 
         // Create an execution completion service that will let each queue
         // work in an independent parallel thread.  We will consume the
@@ -1197,14 +1234,17 @@ public class BulkInserter<T> {
         for (WorkerQueue<T> workerQueue : queues) {
 
             // Handle removed ranks
-            if ( workerQueue == null)
+            if ( workerQueue == null) {
+                GPUdbLogger.debug_with_info( "Skipping null worker queue" );
                 continue;
+            }
 
             // Submit each extant worker queue to the service and also
             // to the list of future results
             futureResults.add( queueService.submit( workerQueue ) );
             ++countQueueSubmitted;
         }
+        GPUdbLogger.debug_with_info( "# queues submitted: " + countQueueSubmitted );
 
         boolean doUpdateWorkers  = false;
         boolean doFailover       = false;
@@ -1237,6 +1277,7 @@ public class BulkInserter<T> {
 
             // Handle the result, if any
             if ( result.getDidSucceed() ) {
+                GPUdbLogger.debug_with_info( "Flush thread succeeded" );
                 // The insertion for this queue succeeded; aggregate the results
                 countInserted.addAndGet( result
                                          .getInsertResponse()
@@ -1408,13 +1449,12 @@ public class BulkInserter<T> {
                                              + retryCount );
                 --retryCount;
             }
+            GPUdbLogger.debug_with_info( "retryCount: " + retryCount );
 
             // Retry insertion of the failed records (recursive call to our
             // private insertion with the retry count decreased to halt
             // the recursion as needed
-            GPUdbLogger.debug_with_info( "Before retry" );
             boolean couldRetry = this.insert( failedRecords, retryCount );
-            GPUdbLogger.debug_with_info( "After retry; success?: " + couldRetry );
             if ( !couldRetry ) {
                 // We ran out of chances to retry.  Let the user know this and
                 // pass along the records that we could not insert.
@@ -1424,6 +1464,16 @@ public class BulkInserter<T> {
                 throw new InsertException( currHeadUrl, failedRecords, message );
 
             }
+
+            // If this is part of a user-initiated forced flush, then we
+            // need to call the flush method again (otherwise, failed records
+            // may have been queued but not actually inserted).
+            if ( forcedFlush ) {
+                GPUdbLogger.debug_with_info( "Before forced flush" );
+                this.flush( retryCount );
+                GPUdbLogger.debug_with_info( "after forced flush" );
+            }
+            GPUdbLogger.debug_with_info( "end flushQueues" );
         }
     }   // end flushQueues
 
@@ -1492,7 +1542,6 @@ public class BulkInserter<T> {
             // Flush the queue if it is full
             if ( flushWhenFull && workerQueue.isQueueFull() ) {
                 this.flush( workerQueue );
-                // this.flushFullQueues();
             }
         }
     }   // end private insert( single record, flush when full flag )
@@ -1554,6 +1603,8 @@ public class BulkInserter<T> {
         // Let the user know that we ran out of retries
         if ( retryCount < 0 ) {
             // Retry count of 0 means try once but do no retry
+            GPUdbLogger.debug_with_info( "retryCount: " + retryCount
+                                         + "; returning false" );
             return false;
         }
 
@@ -1576,7 +1627,9 @@ public class BulkInserter<T> {
         }
 
         // Flush all the queues that are full in parallel
+        GPUdbLogger.debug_with_info( "Before flushing full queues" );
         this.flushFullQueues( retryCount );
+        GPUdbLogger.debug_with_info( "After flushing full queues" );
 
         // We succeeded in inserting all the records!
         return true;
