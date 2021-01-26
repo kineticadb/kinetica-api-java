@@ -1061,8 +1061,29 @@ public class BulkInserter<T> {
      */
     public void flush() throws InsertException {
         // Flush all queues, regardless of how full they are.  Also, we will
-        // retry based on user configuration.
-        this.flushQueues( this.workerQueues, this.retryCount );
+        // retry based on user configuration.  Note the last param
+        // lets the called method know that the user is forcing this flush;
+        // this is important for recursive calls.
+        this.flush( this.retryCount );
+    }
+
+
+    /**
+     * Ensures that any queued records are inserted into GPUdb. If an error
+     * occurs while inserting the records from any queue, the records will no
+     * longer be in that queue nor in GPUdb; catch {@link InsertException} to
+     * get the list of records that were being inserted if needed (for example,
+     * to retry). Other queues may also still contain unflushed records if
+     * this occurs.
+     *
+     * @throws InsertException if an error occurs while inserting
+     */
+    private void flush( int retryCount ) throws InsertException {
+        // Flush all queues, regardless of how full they are.  Also, we will
+        // retry based on user configuration.  Note the last param
+        // lets the called method know that the user is forcing this flush;
+        // this is important for recursive calls.
+        this.flushQueues( this.workerQueues, retryCount, true );
     }
 
 
@@ -1074,7 +1095,7 @@ public class BulkInserter<T> {
         // configuration.
         List<WorkerQueue<T>> workerQueues = new ArrayList<>();
         workerQueues.add( workerQueue );
-        this.flushQueues( workerQueues, this.retryCount );
+        this.flushQueues( workerQueues, this.retryCount, false );
     }
 
 
@@ -1091,8 +1112,9 @@ public class BulkInserter<T> {
         for (WorkerQueue<T> workerQueue : this.workerQueues) {
 
             // Handle removed ranks
-            if ( workerQueue == null)
+            if ( workerQueue == null) {
                 continue;
+            }
 
             // We will flush only full queues
             if ( workerQueue.isQueueFull() ) {
@@ -1101,7 +1123,7 @@ public class BulkInserter<T> {
 
         }
 
-        this.flushQueues( fullQueues, retryCount );
+        this.flushQueues( fullQueues, retryCount, false );
     }
 
 
@@ -1114,11 +1136,20 @@ public class BulkInserter<T> {
      *
      * @param queues      the queues that we need to flush
      * @param retryCount  the number of times we have left to retry inserting
+     * @param forcedFlush boolean indicating if the user wants a forced flush
+     *                    of all the records.  Useful in error cases when
+     *                    insertion retries happen.
      *
      * @throws InsertException if an error occurs while flushing
      */
-    private void flushQueues( List<WorkerQueue<T>> queues, int retryCount )
+    private void flushQueues( List<WorkerQueue<T>> queues, int retryCount,
+                              boolean forcedFlush )
         throws InsertException {
+        // Let the user know that we ran out of retries
+        if ( ( retryCount < 0 ) || (queues.size() == 0) ) {
+            // Retry count of 0 means try once but do no retry
+            return;
+        }
 
         // Create an execution completion service that will let each queue
         // work in an independent parallel thread.  We will consume the
@@ -1133,8 +1164,9 @@ public class BulkInserter<T> {
         for (WorkerQueue<T> workerQueue : queues) {
 
             // Handle removed ranks
-            if ( workerQueue == null)
+            if ( workerQueue == null) {
                 continue;
+            }
 
             // Submit each extant worker queue to the service and also
             // to the list of future results
@@ -1332,6 +1364,13 @@ public class BulkInserter<T> {
                 throw new InsertException( currHeadUrl, failedRecords, message );
 
             }
+
+            // If this is part of a user-initiated forced flush, then we
+            // need to call the flush method again (otherwise, failed records
+            // may have been queued but not actually inserted).
+            if ( forcedFlush ) {
+                this.flush( retryCount );
+            }
         }
     }   // end flushQueues
 
@@ -1400,7 +1439,6 @@ public class BulkInserter<T> {
             // Flush the queue if it is full
             if ( flushWhenFull && workerQueue.isQueueFull() ) {
                 this.flush( workerQueue );
-                // this.flushFullQueues();
             }
         }
     }   // end private insert( single record, flush when full flag )

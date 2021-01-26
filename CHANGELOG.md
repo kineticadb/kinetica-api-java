@@ -2,6 +2,12 @@
 
 ## Version 7.0
 
+### Version 7.0.20.2 - 2021-01-26
+
+#### Fixed
+-   An issue with BulkInserter flush when retryCount > 0
+
+
 ### Version 7.0.20.1 - 2020-12-23
 
 #### Performance Enhancements
@@ -13,6 +19,12 @@
 
 #### Note
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
+### Version 7.0.19.2 - 2021-01-26
+
+#### Fixed
+-   An issue with BulkInserter flush when retryCount > 0
 
 
 ### Version 7.0.19.1 - 2020-12-23
