@@ -20,10 +20,10 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericData;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Immutable collection of metadata about a GPUdb type.
@@ -781,7 +781,7 @@ public final class Type implements Serializable {
 
         JsonNode rootType = root.get("type");
 
-        if (rootType == null || !"record".equals(rootType.getTextValue())) {
+        if (rootType == null || !"record".equals(rootType.textValue())) {
             throw new IllegalArgumentException("Schema must be of type record.");
         }
 
@@ -791,7 +791,7 @@ public final class Type implements Serializable {
             throw new IllegalArgumentException("Schema has no fields.");
         }
 
-        Iterator<JsonNode> fieldIterator = fields.getElements();
+        Iterator<JsonNode> fieldIterator = fields.elements();
 
         while (fieldIterator.hasNext()) {
             JsonNode field = fieldIterator.next();
@@ -806,7 +806,7 @@ public final class Type implements Serializable {
                 throw new IllegalArgumentException("Schema has unnamed field.");
             }
 
-            String columnName = fieldName.getTextValue();
+            String columnName = fieldName.textValue();
 
             if (columnMap.containsKey(columnName)) {
                  throw new IllegalArgumentException("Duplicate field name " + columnName + ".");
@@ -826,16 +826,16 @@ public final class Type implements Serializable {
             boolean isNullable = false;
 
             if (fieldType.isTextual()) {
-                fieldTypeString = fieldType.getTextValue();
+                fieldTypeString = fieldType.textValue();
             } else {
-                Iterator<JsonNode> fieldTypeIterator = fieldType.getElements();
+                Iterator<JsonNode> fieldTypeIterator = fieldType.elements();
 
                 while (fieldTypeIterator.hasNext()) {
                     JsonNode fieldTypeElement = fieldTypeIterator.next();
                     boolean valid = false;
 
                     if (fieldTypeElement.isTextual()) {
-                        String fieldTypeElementString = fieldTypeElement.getTextValue();
+                        String fieldTypeElementString = fieldTypeElement.textValue();
 
                         if (fieldTypeString != null && fieldTypeElementString.equals("null")) {
                             valid = true;

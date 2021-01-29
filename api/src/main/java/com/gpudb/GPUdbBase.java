@@ -64,9 +64,9 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.xerial.snappy.Snappy;
 
 
@@ -3701,7 +3701,7 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info( "Got status: " + clusterOpRunningVal.toString() );
 
             if ( ( clusterOpRunningVal != null)
-                 && SHOW_SYSTEM_STATUS_RESPONSE_TRUE.equals( clusterOpRunningVal.getTextValue() ) ) {
+                 && SHOW_SYSTEM_STATUS_RESPONSE_TRUE.equals( clusterOpRunningVal.textValue() ) ) {
                 GPUdbLogger.debug_with_info( "Returning true");
                 return true;
             }
@@ -3726,7 +3726,7 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info( "Got status: " + clusterOpStatusVal.toString() );
 
             if ( ( clusterOpStatusVal != null)
-                 && SHOW_SYSTEM_STATUS_RESPONSE_CLUSTER_IRRECOVERABLE.equals( clusterOpStatusVal.getTextValue() ) ) {
+                 && SHOW_SYSTEM_STATUS_RESPONSE_CLUSTER_IRRECOVERABLE.equals( clusterOpStatusVal.textValue() ) ) {
                 GPUdbLogger.debug_with_info( "Returning true");
                 return true;
             }
@@ -3751,7 +3751,7 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info( "Got status: " + systemStatus.toString() );
 
             if ( ( systemStatus != null)
-                 && SHOW_SYSTEM_STATUS_RESPONSE_LEADERLESS.equals( systemStatus.getTextValue() ) ) {
+                 && SHOW_SYSTEM_STATUS_RESPONSE_LEADERLESS.equals( systemStatus.textValue() ) ) {
                 GPUdbLogger.debug_with_info( "Returning true");
                 return true;
             }
@@ -3776,7 +3776,7 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info( "Got status: " + systemStatus.toString() );
 
             if ( ( systemStatus != null)
-                 && SHOW_SYSTEM_STATUS_RESPONSE_RUNNING.equals( systemStatus.getTextValue() ) ) {
+                 && SHOW_SYSTEM_STATUS_RESPONSE_RUNNING.equals( systemStatus.textValue() ) ) {
                 GPUdbLogger.debug_with_info( "Returning true");
                 return true;
             }
@@ -3802,7 +3802,7 @@ public abstract class GPUdbBase {
             GPUdbLogger.debug_with_info( url.toString()  + " got status: " + systemStatus.toString() );
 
             if ( ( systemStatus != null)
-                 && SHOW_SYSTEM_STATUS_RESPONSE_RUNNING.equals( systemStatus.getTextValue() ) ) {
+                 && SHOW_SYSTEM_STATUS_RESPONSE_RUNNING.equals( systemStatus.textValue() ) ) {
                 GPUdbLogger.debug_with_info( url.toString()  + " returning true");
                 return true;
             }
