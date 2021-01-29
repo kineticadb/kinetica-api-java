@@ -2,6 +2,24 @@
 
 ## Version 7.0
 
+### Version 7.0.20.3 - 2021-01-28
+
+#### Security
+-   Updated the following dependency package versions to eliminate known
+    security risks and other issues:
+    -  org.apache.avro     1.8.1  -> 1.10.1
+    -  commons-codec:      1.10   -> 1.13
+    -  httpclient:         4.5.11 -> 4.5.13
+    -  maven-shade-plugin: 2.1    -> 3.2.4
+
+#### Notes
+-   Due to the dependency updates, applications using this API may
+    start getting a warning log from SLF4J saying:
+    ```Failed to load class org.slf4j.impl.StaticLoggerBinder```
+    This is an innocuous warning.  Please see the README file for
+    more details.
+
+
 ### Version 7.0.20.2 - 2021-01-26
 
 #### Fixed
