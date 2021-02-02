@@ -2,6 +2,19 @@
 
 ## Version 7.0
 
+### Version 7.0.20.4 - 2021-02-02
+
+#### Added
+-   Class `GPUdb.GPUdbVersion` that represents the Kinetica server's
+    version (the one the API is connected to).
+-   Method `GPUdb.getServerVersion()`.
+
+
+#### Changed
+-   Added support for multi-head key lookup for replicated tables.
+
+
+
 ### Version 7.0.20.3 - 2021-01-28
 
 #### Security
@@ -37,6 +50,19 @@
 
 #### Note
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
+### Version 7.0.19.3 - 2021-02-01
+
+#### Added
+-   Class `GPUdb.GPUdbVersion` that represents the Kinetica server's
+    version (the one the API is connected to).
+-   Method `GPUdb.getServerVersion()`.
+
+
+#### Changed
+-   Added support for multi-head key lookup for replicated tables.
+
 
 
 ### Version 7.0.19.2 - 2021-01-26
