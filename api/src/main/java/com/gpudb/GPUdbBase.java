@@ -130,6 +130,8 @@ public abstract class GPUdbBase {
     // JSON parser
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
+    // Some string constants to be used internally
+    private static final String DATABASE_SERVER_VERSION_KEY = "version.gpudb_core_version";
 
     /**
      * A set of configurable options for the GPUdb API. May be passed into the
@@ -1073,6 +1075,182 @@ public abstract class GPUdbBase {
 
     }  // end class Options
 
+
+    /**
+     * Contains the version of the client API or the GPUdb server.
+     * Has helper methods to compare with other versions.
+     */
+    public static final class GPUdbVersion {
+        private final int major;
+        private final int minor;
+        private final int revision;
+        private final int abiVersion;
+
+        public GPUdbVersion( int major, int minor,
+                             int revision, int abiVersion ) {
+            this.major = major;
+            this.minor = minor;
+            this.revision = revision;
+            this.abiVersion = abiVersion;
+        }
+
+        /**
+         * Gets the major (first) component of the version.
+         *
+         * @return  the 'major' component value
+         */
+        public int getMajor() {
+            return this.major;
+        }
+
+        /**
+         * Gets the minor (second) component of the version.
+         *
+         * @return  the 'minor' component value
+         */
+        public int getMinor() {
+            return this.minor;
+        }
+
+        /**
+         * Gets the revision (third) component of the version.
+         *
+         * @return  the 'revision' component value
+         */
+        public int getRevision() {
+            return this.revision;
+        }
+
+        /**
+         * Gets the ABI version (fourth) component of the version.
+         *
+         * @return  the 'ABI version' component value
+         */
+        public int getAbiVersion() {
+            return this.abiVersion;
+        }
+
+
+        /**
+         * Given all four components of a version, check if this version
+         * object is newer than the given one (not equal to).
+         *
+         * @return true if this version is newer than the given version.
+         */
+        public boolean isNewerThan( int major, int minor,
+                                    int revision, int abiVersion ) {
+            if ( this.major > major ) {
+                // Example: _7_.2.1.0 is newer than _5_.0.0.0
+                return true;
+            }
+            if ( (this.major == major) && (this.minor > minor) ) {
+                // Example: 6._2_.0.0 is newer than 6._1_.1.0, but
+                // 7._2_.0.0 is NOT newer than 8._1_.0.0
+                return true;
+            }
+            if ( (this.major == major) && (this.minor == minor)
+                 && (this.revision > revision) ) {
+                // Example: 6.2._2_.0 is newer than 6.2._1_.0, but
+                // 7.7._3_.0 is NOT newer than 9.9._0_.0
+                return true;
+            }
+            if ( (this.major == major) && (this.minor == minor)
+                 && (this.revision == revision)
+                 && (this.abiVersion > abiVersion) ) {
+                // Example: 6.2.1._3_ is newer than 6.2.1._1_, but
+                // 7.7.3._1_ is NOT newer than 9.9.0._0_
+                return true;
+            }
+
+            // All others must be a newer version than this
+            return false;
+        }  // isNewerrThan
+
+        /**
+         * Given all four components of a version, check if this version
+         * object is older than the given one (not equal to).
+         *
+         * @return true if this version is older than the given version.
+         */
+        public boolean isOlderThan( int major, int minor,
+                                    int revision, int abiVersion ) {
+            if ( this.major < major ) {
+                // Example: _6_.2.1.0 is older than _7_.0.0.0
+                return true;
+            }
+            if ( (this.major == major) && (this.minor < minor) ) {
+                // Example: 6._1_.1.0 is older than 6._2_.0.0, but
+                // 8._1_.0.0 is NOT older than 7._2_.0.0
+                return true;
+            }
+            if ( (this.major == major) && (this.minor == minor)
+                 && (this.revision < revision) ) {
+                // Example: 6.2._1_.0 is older than 6.2._2_.0, but
+                // 9.9._0_.0 is NOT older than 7.7._3_.0
+                return true;
+            }
+            if ( (this.major == major) && (this.minor == minor)
+                 && (this.revision == revision)
+                 && (this.abiVersion < abiVersion) ) {
+                // Example: 6.2.1._1_ is older than 6.2.1._3_, but
+                // 9.9.0._0_ is NOT older than 7.7.3._1_
+                return true;
+            }
+            // All others must be an older version than this
+            return false;
+        }  // end isOlderThan
+
+
+        /**
+         * Given all four components of a version, check if this version
+         * object is to the given one.
+         *
+         * @return true if this version is the same as the given version.
+         */
+        public boolean isEqualTo( int major, int minor,
+                                  int revision, int abiVersion ) {
+            return ( (this.major == major)
+                     && (this.minor == minor)
+                     && (this.revision == revision)
+                     && (this.abiVersion == abiVersion) );
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if( obj == this ) {
+                return true;
+            }
+
+            if( (obj == null) || (obj.getClass() != this.getClass()) ) {
+                return false;
+            }
+
+            GPUdbVersion that = (GPUdbVersion)obj;
+
+            return ( (this.major == that.major)
+                     && (this.minor == that.minor)
+                     && (this.revision == that.revision)
+                     && (this.abiVersion == that.abiVersion) );
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append( this.major );
+            builder.append( "." );
+            builder.append( this.minor );
+            builder.append( "." );
+            builder.append( this.revision );
+            builder.append( "." );
+            builder.append( this.abiVersion );
+
+            return builder.toString();
+        }
+
+    }  // end class GPUdbVersion
+
+
+
     /**
      * An exception that occurred during the submission of a request to GPUdb.
      */
@@ -1843,6 +2021,7 @@ public abstract class GPUdbBase {
     private int           clusterReconnectCount;
     private long          intraClusterFailoverTimeoutNS;
     private long          initialConnectionAttemptTimeoutNS;
+    private GPUdbVersion  serverVersion;
     private ExecutorService     executor;
     private Map<String, String> httpHeaders;
     private HASynchronicityMode haSyncMode;
@@ -2066,6 +2245,13 @@ public abstract class GPUdbBase {
         GPUdbLogger.debug_with_info( "Before parsing URLs" );
         parseUrls( urls );
         GPUdbLogger.debug_with_info( "After parsing URLs; ring size " + getHARingSize() + " this.haUrlIndices size " + this.haUrlIndices.size() );
+
+        // Get the Kinetica server's version and store it for future use
+        try {
+            updateServerVersion();
+        } catch (GPUdbException ex) {
+            GPUdbLogger.debug_with_info( "Could not update the server version: " + ex.getMessage() );
+        }
     }   // end init
 
 
@@ -2174,6 +2360,17 @@ public abstract class GPUdbBase {
      */
     public String getPrimaryHostname() {
         return this.primaryUrlHostname;
+    }
+
+
+    /**
+     * Gets the version of the database server that this client is connected
+     * to.  If the server version was not successfully saved, then returns null.
+     *
+     * @return  the server version {@link GPUdbBase.GPUdbVersion}, or null.
+     */
+    public GPUdbVersion getServerVersion() {
+        return this.serverVersion;
     }
 
 
@@ -4820,6 +5017,82 @@ public abstract class GPUdbBase {
         // randomly shuffled indices)
         setCurrClusterIndexPointer( 0 );
     }   // end randomizeURLs
+
+
+    /**
+     * Given the system properties, extract and return the server version.  If
+     * no server version was not able to parsed, throw an exception.
+     *
+     * @return {@link GPUdbBase.GPUdbVersion} object or null.
+     */
+    private GPUdbVersion parseServerVersion( Map<String, String> systemProperties )
+        throws GPUdbException {
+        // Get the server version in a stirng format
+        String serverVersionStr = systemProperties.get( DATABASE_SERVER_VERSION_KEY );
+
+        if ( serverVersionStr == null ) {
+            throw new GPUdbException( "System properties does not have any entry "
+                                      + "for the '" + DATABASE_SERVER_VERSION_KEY
+                                      + "' key" );
+        }
+
+        // Now parse the version string
+        try {
+            // Split on period (.); note that the expected format is
+            // A.B.C.D.datewithtimestamp.  We will only extract A, B, C, and D.
+            int[] components = new int[4];
+            // Need to escape the period since we're passing a regex
+            String[] componentStrings = serverVersionStr.split( "\\.", 5 );
+            // Check that we get at least four components
+            if ( componentStrings.length < 4 ) {
+                throw new GPUdbException( "Server version string in /show/system/properties "
+                                          + "response malformed (expect four periods): "
+                                          + serverVersionStr );
+            }
+            // Parse each component
+            for ( int i = 0; i < 4; ++i  ) {
+                components[ i ] = Integer.valueOf( componentStrings[ i ] );
+            }
+
+            return new GPUdbVersion( components[0], components[1],
+                                     components[2], components[3] );
+        } catch (Exception ex) {
+            throw new GPUdbException( "Could not parse server version; error: "
+                                      + ex.getMessage(), ex );
+        }
+    }  // end parseServerVersion
+
+
+
+
+
+    /**
+     * If the database version hasn't been set already, update it by querying
+     * the server about its system properties.  If any issue arises, throw
+     * an exception.  Save the server version internally.
+     */
+    protected void updateServerVersion() throws GPUdbException {
+        if ( this.serverVersion != null ) {
+            // We've already gotten the server version; so nothing to do!
+            return;
+        }
+
+        // Get the database version from the server
+        try {
+            ShowSystemPropertiesResponse response;
+            response = submitRequest( appendPathToURL( this.getURL(),
+                                                       "/show/system/properties" ),
+                                      new ShowSystemPropertiesRequest(),
+                                      new ShowSystemPropertiesResponse(),
+                                      false );
+            this.serverVersion = parseServerVersion( response.getPropertyMap() );
+        } catch ( MalformedURLException | GPUdbException ex ) {
+            String msg = ( "Failed to get database version from the server; "
+                           + ex.getMessage() );
+            throw new GPUdbException( msg, ex );
+        }
+    }  // end updateServerVersion
+
 
 
     // Type Management
