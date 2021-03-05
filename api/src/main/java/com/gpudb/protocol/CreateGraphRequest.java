@@ -23,12 +23,12 @@ import org.apache.avro.generic.IndexedRecord;
  * restrictions.
 
  * IMPORTANT: It's highly recommended that you review the
- * <a href="../../../../../graph_solver/network_graph_solver.html"
+ * <a href="../../../../../../graph_solver/network_graph_solver/"
  * target="_top">Network Graphs & Solvers</a>
  * concepts documentation, the
- * <a href="../../../../../graph_solver/examples/graph_rest_guide.html"
+ * <a href="../../../../../../graph_solver/examples/graph_rest_guide/"
  * target="_top">Graph REST Tutorial</a>,
- * and/or some <a href="../../../../../graph_solver/examples.html"
+ * and/or some <a href="../../../../../../graph_solver/examples/"
  * target="_top">graph examples</a> before
  * using this endpoint.
  */
@@ -62,7 +62,7 @@ public class CreateGraphRequest implements IndexedRecord {
     /**
      * If set to {@code true}, the graph will be directed. If set to {@code
      * false}, the graph will not be directed. Consult <a
-     * href="../../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     * href="../../../../../../graph_solver/network_graph_solver/#directed-graphs"
      * target="_top">Directed Graphs</a> for more details.
      * Supported values:
      * <ul>
@@ -167,7 +167,7 @@ public class CreateGraphRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateGraphRequest.Options#SAVE_PERSIST
      * SAVE_PERSIST}: If set to {@code true}, the graph will be saved in the
-     * persist directory (see the <a href="../../../../../config/index.html"
+     * persist directory (see the <a href="../../../../../../config/"
      * target="_top">config reference</a> for more information). If set to
      * {@code false}, the graph will be removed when the graph server is
      * shutdown.
@@ -218,9 +218,9 @@ public class CreateGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateGraphRequest.Options#GRAPH_TABLE GRAPH_TABLE}:
      * If specified, the created graph is also created as a table with the
      * given name, in [schema_name.]table_name format, using standard <a
-     * href="../../../../../concepts/tables.html#table-name-resolution"
+     * href="../../../../../../concepts/tables/#table-name-resolution"
      * target="_top">name resolution rules</a> and meeting <a
-     * href="../../../../../concepts/tables.html#table-naming-criteria"
+     * href="../../../../../../concepts/tables/#table-naming-criteria"
      * target="_top">table naming criteria</a>.  The table will have the
      * following identifier columns: 'EDGE_ID', 'EDGE_NODE1_ID',
      * 'EDGE_NODE2_ID'. If left blank, no table is created.  The default value
@@ -291,6 +291,9 @@ public class CreateGraphRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateGraphRequest.Options#SQL_REQUEST_AVRO_JSON
+     * SQL_REQUEST_AVRO_JSON}:   The default value is ''.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -404,7 +407,7 @@ public class CreateGraphRequest implements IndexedRecord {
 
         /**
          * If set to {@code true}, the graph will be saved in the persist
-         * directory (see the <a href="../../../../../config/index.html"
+         * directory (see the <a href="../../../../../../config/"
          * target="_top">config reference</a> for more information). If set to
          * {@code false}, the graph will be removed when the graph server is
          * shutdown.
@@ -461,9 +464,9 @@ public class CreateGraphRequest implements IndexedRecord {
         /**
          * If specified, the created graph is also created as a table with the
          * given name, in [schema_name.]table_name format, using standard <a
-         * href="../../../../../concepts/tables.html#table-name-resolution"
+         * href="../../../../../../concepts/tables/#table-name-resolution"
          * target="_top">name resolution rules</a> and meeting <a
-         * href="../../../../../concepts/tables.html#table-naming-criteria"
+         * href="../../../../../../concepts/tables/#table-naming-criteria"
          * target="_top">table naming criteria</a>.  The table will have the
          * following identifier columns: 'EDGE_ID', 'EDGE_NODE1_ID',
          * 'EDGE_NODE2_ID'. If left blank, no table is created.  The default
@@ -549,6 +552,11 @@ public class CreateGraphRequest implements IndexedRecord {
          */
         public static final String USE_RTREE = "use_rtree";
 
+        /**
+         *   The default value is ''.
+         */
+        public static final String SQL_REQUEST_AVRO_JSON = "sql_request_avro_json";
+
         private Options() {  }
     }
 
@@ -580,7 +588,7 @@ public class CreateGraphRequest implements IndexedRecord {
      * @param directedGraph  If set to {@code true}, the graph will be
      *                       directed. If set to {@code false}, the graph will
      *                       not be directed. Consult <a
-     *                       href="../../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     *                       href="../../../../../../graph_solver/network_graph_solver/#directed-graphs"
      *                       target="_top">Directed Graphs</a> for more
      *                       details.
      *                       Supported values:
@@ -598,11 +606,11 @@ public class CreateGraphRequest implements IndexedRecord {
      * @param nodes  Nodes represent fundamental topological units of a graph.
      *               Nodes must be specified using
      *               <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *               href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *               target="_top">identifiers</a>;
      *               identifiers are grouped as
      *               <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *               href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *               target="_top">combinations</a>.
      *               Identifiers can be used with existing column names, e.g.,
      *               'table.column AS NODE_ID', expressions, e.g.,
@@ -617,11 +625,11 @@ public class CreateGraphRequest implements IndexedRecord {
      *               a graph that typically connect nodes. Edges must be
      *               specified using
      *               <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *               href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *               target="_top">identifiers</a>;
      *               identifiers are grouped as
      *               <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *               href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *               target="_top">combinations</a>.
      *               Identifiers can be used with existing column names, e.g.,
      *               'table.column AS EDGE_ID', expressions, e.g.,
@@ -637,11 +645,11 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 Weights must be specified
      *                 using
      *                 <a
-     *                 href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                 href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *                 target="_top">identifiers</a>;
      *                 identifiers are grouped as
      *                 <a
-     *                 href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                 href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *                 target="_top">combinations</a>.
      *                 Identifiers can be used with existing column names,
      *                 e.g.,
@@ -658,11 +666,11 @@ public class CreateGraphRequest implements IndexedRecord {
      *                      for the solution. Restrictions
      *                      must be specified using
      *                      <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *                      target="_top">identifiers</a>;
      *                      identifiers are grouped as
      *                      <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *                      target="_top">combinations</a>.
      *                      Identifiers can be used with existing column names,
      *                      e.g.,
@@ -778,10 +786,10 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateGraphRequest.Options#SAVE_PERSIST
      *                 SAVE_PERSIST}: If set to {@code true}, the graph will be
      *                 saved in the persist directory (see the <a
-     *                 href="../../../../../config/index.html"
-     *                 target="_top">config reference</a> for more
-     *                 information). If set to {@code false}, the graph will be
-     *                 removed when the graph server is shutdown.
+     *                 href="../../../../../../config/" target="_top">config
+     *                 reference</a> for more information). If set to {@code
+     *                 false}, the graph will be removed when the graph server
+     *                 is shutdown.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -840,9 +848,9 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 GRAPH_TABLE}: If specified, the created graph is also
      *                 created as a table with the given name, in
      *                 [schema_name.]table_name format, using standard <a
-     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  The table will
      *                 have the following identifier columns: 'EDGE_ID',
      *                 'EDGE_NODE1_ID', 'EDGE_NODE2_ID'. If left blank, no
@@ -928,6 +936,9 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#SQL_REQUEST_AVRO_JSON
+     *                 SQL_REQUEST_AVRO_JSON}:   The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -967,7 +978,7 @@ public class CreateGraphRequest implements IndexedRecord {
      * 
      * @return If set to {@code true}, the graph will be directed. If set to
      *         {@code false}, the graph will not be directed. Consult <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     *         href="../../../../../../graph_solver/network_graph_solver/#directed-graphs"
      *         target="_top">Directed Graphs</a> for more details.
      *         Supported values:
      *         <ul>
@@ -989,7 +1000,7 @@ public class CreateGraphRequest implements IndexedRecord {
      * @param directedGraph  If set to {@code true}, the graph will be
      *                       directed. If set to {@code false}, the graph will
      *                       not be directed. Consult <a
-     *                       href="../../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     *                       href="../../../../../../graph_solver/network_graph_solver/#directed-graphs"
      *                       target="_top">Directed Graphs</a> for more
      *                       details.
      *                       Supported values:
@@ -1018,11 +1029,11 @@ public class CreateGraphRequest implements IndexedRecord {
      * @return Nodes represent fundamental topological units of a graph.
      *         Nodes must be specified using
      *         <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *         href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *         target="_top">identifiers</a>;
      *         identifiers are grouped as
      *         <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *         href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *         target="_top">combinations</a>.
      *         Identifiers can be used with existing column names, e.g.,
      *         'table.column AS NODE_ID', expressions, e.g.,
@@ -1043,11 +1054,11 @@ public class CreateGraphRequest implements IndexedRecord {
      * @param nodes  Nodes represent fundamental topological units of a graph.
      *               Nodes must be specified using
      *               <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *               href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *               target="_top">identifiers</a>;
      *               identifiers are grouped as
      *               <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *               href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *               target="_top">combinations</a>.
      *               Identifiers can be used with existing column names, e.g.,
      *               'table.column AS NODE_ID', expressions, e.g.,
@@ -1072,11 +1083,11 @@ public class CreateGraphRequest implements IndexedRecord {
      *         a graph that typically connect nodes. Edges must be specified
      *         using
      *         <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *         href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *         target="_top">identifiers</a>;
      *         identifiers are grouped as
      *         <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *         href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *         target="_top">combinations</a>.
      *         Identifiers can be used with existing column names, e.g.,
      *         'table.column AS EDGE_ID', expressions, e.g.,
@@ -1099,11 +1110,11 @@ public class CreateGraphRequest implements IndexedRecord {
      *               a graph that typically connect nodes. Edges must be
      *               specified using
      *               <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *               href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *               target="_top">identifiers</a>;
      *               identifiers are grouped as
      *               <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *               href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *               target="_top">combinations</a>.
      *               Identifiers can be used with existing column names, e.g.,
      *               'table.column AS EDGE_ID', expressions, e.g.,
@@ -1129,11 +1140,11 @@ public class CreateGraphRequest implements IndexedRecord {
      *         be specified
      *         using
      *         <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *         href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *         target="_top">identifiers</a>;
      *         identifiers are grouped as
      *         <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *         href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *         target="_top">combinations</a>.
      *         Identifiers can be used with existing column names, e.g.,
      *         'table.column AS WEIGHTS_EDGE_ID', expressions, e.g.,
@@ -1157,11 +1168,11 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 Weights must be specified
      *                 using
      *                 <a
-     *                 href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                 href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *                 target="_top">identifiers</a>;
      *                 identifiers are grouped as
      *                 <a
-     *                 href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                 href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *                 target="_top">combinations</a>.
      *                 Identifiers can be used with existing column names,
      *                 e.g.,
@@ -1188,11 +1199,11 @@ public class CreateGraphRequest implements IndexedRecord {
      *         solution. Restrictions
      *         must be specified using
      *         <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *         href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *         target="_top">identifiers</a>;
      *         identifiers are grouped as
      *         <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *         href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *         target="_top">combinations</a>.
      *         Identifiers can be used with existing column names, e.g.,
      *         'table.column AS RESTRICTIONS_EDGE_ID', expressions, e.g.,
@@ -1216,11 +1227,11 @@ public class CreateGraphRequest implements IndexedRecord {
      *                      for the solution. Restrictions
      *                      must be specified using
      *                      <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *                      target="_top">identifiers</a>;
      *                      identifiers are grouped as
      *                      <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *                      target="_top">combinations</a>.
      *                      Identifiers can be used with existing column names,
      *                      e.g.,
@@ -1335,7 +1346,7 @@ public class CreateGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateGraphRequest.Options#SAVE_PERSIST
      *         SAVE_PERSIST}: If set to {@code true}, the graph will be saved
      *         in the persist directory (see the <a
-     *         href="../../../../../config/index.html" target="_top">config
+     *         href="../../../../../../config/" target="_top">config
      *         reference</a> for more information). If set to {@code false},
      *         the graph will be removed when the graph server is shutdown.
      *         Supported values:
@@ -1388,9 +1399,9 @@ public class CreateGraphRequest implements IndexedRecord {
      *         GRAPH_TABLE}: If specified, the created graph is also created as
      *         a table with the given name, in [schema_name.]table_name format,
      *         using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a> and meeting <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.  The table will have
      *         the following identifier columns: 'EDGE_ID', 'EDGE_NODE1_ID',
      *         'EDGE_NODE2_ID'. If left blank, no table is created.  The
@@ -1464,6 +1475,9 @@ public class CreateGraphRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateGraphRequest.Options#SQL_REQUEST_AVRO_JSON
+     *         SQL_REQUEST_AVRO_JSON}:   The default value is ''.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1578,10 +1592,10 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateGraphRequest.Options#SAVE_PERSIST
      *                 SAVE_PERSIST}: If set to {@code true}, the graph will be
      *                 saved in the persist directory (see the <a
-     *                 href="../../../../../config/index.html"
-     *                 target="_top">config reference</a> for more
-     *                 information). If set to {@code false}, the graph will be
-     *                 removed when the graph server is shutdown.
+     *                 href="../../../../../../config/" target="_top">config
+     *                 reference</a> for more information). If set to {@code
+     *                 false}, the graph will be removed when the graph server
+     *                 is shutdown.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1640,9 +1654,9 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 GRAPH_TABLE}: If specified, the created graph is also
      *                 created as a table with the given name, in
      *                 [schema_name.]table_name format, using standard <a
-     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  The table will
      *                 have the following identifier columns: 'EDGE_ID',
      *                 'EDGE_NODE1_ID', 'EDGE_NODE2_ID'. If left blank, no
@@ -1728,6 +1742,9 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#SQL_REQUEST_AVRO_JSON
+     *                 SQL_REQUEST_AVRO_JSON}:   The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

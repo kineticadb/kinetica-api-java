@@ -163,7 +163,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      * @param tableName  Name of the table on which the ranged-statistics
      *                   operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param selectExpression  For a non-empty expression statistics are
      *                          calculated for those records for which the
@@ -221,7 +221,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      * @return Name of the table on which the ranged-statistics operation will
      *         be performed, in [schema_name.]table_name format, using standard
      *         <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.
      * 
      */
@@ -234,7 +234,7 @@ public class AggregateStatisticsByRangeRequest implements IndexedRecord {
      * @param tableName  Name of the table on which the ranged-statistics
      *                   operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.

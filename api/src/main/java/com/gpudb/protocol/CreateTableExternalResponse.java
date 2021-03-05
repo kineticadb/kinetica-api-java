@@ -90,7 +90,7 @@ public class CreateTableExternalResponse implements IndexedRecord {
     /**
      * 
      * @return ID of the currently registered table structure <a
-     *         href="../../../../../concepts/types.html" target="_top">type</a>
+     *         href="../../../../../../concepts/types/" target="_top">type</a>
      *         for this external table
      * 
      */
@@ -101,7 +101,7 @@ public class CreateTableExternalResponse implements IndexedRecord {
     /**
      * 
      * @param typeId  ID of the currently registered table structure <a
-     *                href="../../../../../concepts/types.html"
+     *                href="../../../../../../concepts/types/"
      *                target="_top">type</a> for this external table
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -270,19 +270,13 @@ public class CreateTableExternalResponse implements IndexedRecord {
         this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
-
-    /**
-     * 
-     * @return The default value is an empty {@link Map}.
-     * 
-     */
     public List<String> getFiles() {
         return files;
     }
 
     /**
      * 
-     * @param files  The default value is an empty {@link Map}.
+     * @param files
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

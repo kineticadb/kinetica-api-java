@@ -23,9 +23,9 @@ import org.apache.avro.generic.IndexedRecord;
  * rebalanced to other ranks before the rank(s) is removed unless the {@code
  * rebalance_sharded_data} or {@code rebalance_unsharded_data} parameters are
  * set to {@code false} in the {@code options}, in which case the corresponding
- * <a href="../../../../../concepts/tables.html#sharding" target="_top">sharded
+ * <a href="../../../../../../concepts/tables/#sharding" target="_top">sharded
  * data</a> and/or unsharded data (a.k.a. <a
- * href="../../../../../concepts/tables.html#random-sharding"
+ * href="../../../../../../concepts/tables/#random-sharding"
  * target="_top">randomly-sharded</a>) will be deleted.
  * <p>
  * The database must be offline for this operation, see {@link
@@ -64,11 +64,10 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_SHARDED_DATA
      * REBALANCE_SHARDED_DATA}: If {@code true}, <a
-     * href="../../../../../concepts/tables.html#sharding"
-     * target="_top">sharded data</a> will be rebalanced approximately equally
-     * across the cluster. Note that for clusters with large amounts of sharded
-     * data, this data transfer could be time consuming and result in delayed
-     * query responses.
+     * href="../../../../../../concepts/tables/#sharding" target="_top">sharded
+     * data</a> will be rebalanced approximately equally across the cluster.
+     * Note that for clusters with large amounts of sharded data, this data
+     * transfer could be time consuming and result in delayed query responses.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -81,7 +80,7 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_UNSHARDED_DATA
      * REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded data (a.k.a. <a
-     * href="../../../../../concepts/tables.html#random-sharding"
+     * href="../../../../../../concepts/tables/#random-sharding"
      * target="_top">randomly-sharded</a>) will be rebalanced approximately
      * equally across the cluster. Note that for clusters with large amounts of
      * unsharded data, this data transfer could be time consuming and result in
@@ -111,7 +110,7 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
 
         /**
          * If {@code true}, <a
-         * href="../../../../../concepts/tables.html#sharding"
+         * href="../../../../../../concepts/tables/#sharding"
          * target="_top">sharded data</a> will be rebalanced approximately
          * equally across the cluster. Note that for clusters with large
          * amounts of sharded data, this data transfer could be time consuming
@@ -132,7 +131,7 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
 
         /**
          * If {@code true}, unsharded data (a.k.a. <a
-         * href="../../../../../concepts/tables.html#random-sharding"
+         * href="../../../../../../concepts/tables/#random-sharding"
          * target="_top">randomly-sharded</a>) will be rebalanced approximately
          * equally across the cluster. Note that for clusters with large
          * amounts of unsharded data, this data transfer could be time
@@ -193,7 +192,7 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_SHARDED_DATA
      *                 REBALANCE_SHARDED_DATA}: If {@code true}, <a
-     *                 href="../../../../../concepts/tables.html#sharding"
+     *                 href="../../../../../../concepts/tables/#sharding"
      *                 target="_top">sharded data</a> will be rebalanced
      *                 approximately equally across the cluster. Note that for
      *                 clusters with large amounts of sharded data, this data
@@ -215,7 +214,7 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_UNSHARDED_DATA
      *                 REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded
      *                 data (a.k.a. <a
-     *                 href="../../../../../concepts/tables.html#random-sharding"
+     *                 href="../../../../../../concepts/tables/#random-sharding"
      *                 target="_top">randomly-sharded</a>) will be rebalanced
      *                 approximately equally across the cluster. Note that for
      *                 clusters with large amounts of unsharded data, this data
@@ -297,7 +296,7 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_SHARDED_DATA
      *         REBALANCE_SHARDED_DATA}: If {@code true}, <a
-     *         href="../../../../../concepts/tables.html#sharding"
+     *         href="../../../../../../concepts/tables/#sharding"
      *         target="_top">sharded data</a> will be rebalanced approximately
      *         equally across the cluster. Note that for clusters with large
      *         amounts of sharded data, this data transfer could be time
@@ -315,7 +314,7 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *         com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_UNSHARDED_DATA
      *         REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded data
      *         (a.k.a. <a
-     *         href="../../../../../concepts/tables.html#random-sharding"
+     *         href="../../../../../../concepts/tables/#random-sharding"
      *         target="_top">randomly-sharded</a>) will be rebalanced
      *         approximately equally across the cluster. Note that for clusters
      *         with large amounts of unsharded data, this data transfer could
@@ -352,7 +351,7 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_SHARDED_DATA
      *                 REBALANCE_SHARDED_DATA}: If {@code true}, <a
-     *                 href="../../../../../concepts/tables.html#sharding"
+     *                 href="../../../../../../concepts/tables/#sharding"
      *                 target="_top">sharded data</a> will be rebalanced
      *                 approximately equally across the cluster. Note that for
      *                 clusters with large amounts of sharded data, this data
@@ -374,7 +373,7 @@ public class AdminRemoveRanksRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_UNSHARDED_DATA
      *                 REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded
      *                 data (a.k.a. <a
-     *                 href="../../../../../concepts/tables.html#random-sharding"
+     *                 href="../../../../../../concepts/tables/#random-sharding"
      *                 target="_top">randomly-sharded</a>) will be rebalanced
      *                 approximately equally across the cluster. Note that for
      *                 clusters with large amounts of unsharded data, this data

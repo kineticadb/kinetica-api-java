@@ -25,13 +25,13 @@ import org.apache.avro.generic.IndexedRecord;
  * additional, optional weights and restrictions.
  * <p>
  * IMPORTANT: It's highly recommended that you review the
- * <a href="../../../../../graph_solver/network_graph_solver.html"
+ * <a href="../../../../../../graph_solver/network_graph_solver/"
  * target="_top">Network Graphs & Solvers</a>
  * concepts documentation, the
- * <a href="../../../../../graph_solver/examples/graph_rest_guide.html"
+ * <a href="../../../../../../graph_solver/examples/graph_rest_guide/"
  * target="_top">Graph REST Tutorial</a>,
  * and/or some
- * <a href="../../../../../graph_solver/examples.html#match-graph"
+ * <a href="../../../../../../graph_solver/examples/#match-graph"
  * target="_top">/match/graph examples</a>
  * before using this endpoint.
  */
@@ -560,11 +560,11 @@ public class SolveGraphRequest implements IndexedRecord {
      *                        existing
      *                        graph. Weights must be specified using
      *                        <a
-     *                        href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                        href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *                        target="_top">identifiers</a>;
      *                        identifiers are grouped as
      *                        <a
-     *                        href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                        href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *                        target="_top">combinations</a>.
      *                        Identifiers can be used with existing column
      *                        names, e.g.,
@@ -587,11 +587,11 @@ public class SolveGraphRequest implements IndexedRecord {
      *                      existing graph. Restrictions must be specified
      *                      using
      *                      <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *                      target="_top">identifiers</a>;
      *                      identifiers are grouped as
      *                      <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *                      target="_top">combinations</a>.
      *                      Identifiers can be used with existing column names,
      *                      e.g.,
@@ -680,7 +680,7 @@ public class SolveGraphRequest implements IndexedRecord {
      *                          empty {@link List}.
      * @param solutionTable  Name of the table to store the solution, in
      *                       [schema_name.]table_name format, using standard <a
-     *                       href="../../../../../concepts/tables.html#table-name-resolution"
+     *                       href="../../../../../../concepts/tables/#table-name-resolution"
      *                       target="_top">name resolution rules</a>.  The
      *                       default value is 'graph_solutions'.
      * @param options  Additional parameters
@@ -910,11 +910,11 @@ public class SolveGraphRequest implements IndexedRecord {
      * @return Additional weights to apply to the edges of an existing
      *         graph. Weights must be specified using
      *         <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *         href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *         target="_top">identifiers</a>;
      *         identifiers are grouped as
      *         <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *         href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *         target="_top">combinations</a>.
      *         Identifiers can be used with existing column names, e.g.,
      *         'table.column AS WEIGHTS_EDGE_ID', expressions, e.g.,
@@ -941,11 +941,11 @@ public class SolveGraphRequest implements IndexedRecord {
      *                        existing
      *                        graph. Weights must be specified using
      *                        <a
-     *                        href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                        href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *                        target="_top">identifiers</a>;
      *                        identifiers are grouped as
      *                        <a
-     *                        href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                        href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *                        target="_top">combinations</a>.
      *                        Identifiers can be used with existing column
      *                        names, e.g.,
@@ -977,11 +977,11 @@ public class SolveGraphRequest implements IndexedRecord {
      * @return Additional restrictions to apply to the nodes/edges of an
      *         existing graph. Restrictions must be specified using
      *         <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *         href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *         target="_top">identifiers</a>;
      *         identifiers are grouped as
      *         <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *         href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *         target="_top">combinations</a>.
      *         Identifiers can be used with existing column names, e.g.,
      *         'table.column AS RESTRICTIONS_EDGE_ID', expressions, e.g.,
@@ -1013,11 +1013,11 @@ public class SolveGraphRequest implements IndexedRecord {
      *                      existing graph. Restrictions must be specified
      *                      using
      *                      <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *                      target="_top">identifiers</a>;
      *                      identifiers are grouped as
      *                      <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *                      target="_top">combinations</a>.
      *                      Identifiers can be used with existing column names,
      *                      e.g.,
@@ -1231,7 +1231,7 @@ public class SolveGraphRequest implements IndexedRecord {
      * 
      * @return Name of the table to store the solution, in
      *         [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  The default value is
      *         'graph_solutions'.
      * 
@@ -1244,7 +1244,7 @@ public class SolveGraphRequest implements IndexedRecord {
      * 
      * @param solutionTable  Name of the table to store the solution, in
      *                       [schema_name.]table_name format, using standard <a
-     *                       href="../../../../../concepts/tables.html#table-name-resolution"
+     *                       href="../../../../../../concepts/tables/#table-name-resolution"
      *                       target="_top">name resolution rules</a>.  The
      *                       default value is 'graph_solutions'.
      * 

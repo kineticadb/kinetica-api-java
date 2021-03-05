@@ -27,7 +27,7 @@ import org.apache.avro.generic.IndexedRecord;
  * * If {@link com.gpudb.GPUdb#adminRebalance(AdminRebalanceRequest)} is
  * invoked after a change is made to the
  *   cluster, e.g., a host was added or removed,
- *   <a href="../../../../../concepts/tables.html#sharding"
+ *   <a href="../../../../../../concepts/tables/#sharding"
  * target="_top">sharded data</a> will be
  *   evenly redistributed across the cluster by number of shards per rank
  *   while unsharded data will be redistributed across the cluster by data
@@ -35,7 +35,7 @@ import org.apache.avro.generic.IndexedRecord;
  * * If {@link com.gpudb.GPUdb#adminRebalance(AdminRebalanceRequest)} is
  * invoked at some point when unsharded
  *   data (a.k.a.
- *   <a href="../../../../../concepts/tables.html#random-sharding"
+ *   <a href="../../../../../../concepts/tables/#random-sharding"
  * target="_top">randomly-sharded</a>)
  *   in the cluster is unevenly distributed over time, sharded data will
  *   not move while unsharded data will be redistributed across the
@@ -75,11 +75,10 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_SHARDED_DATA
      * REBALANCE_SHARDED_DATA}: If {@code true}, <a
-     * href="../../../../../concepts/tables.html#sharding"
-     * target="_top">sharded data</a> will be rebalanced approximately equally
-     * across the cluster. Note that for clusters with large amounts of sharded
-     * data, this data transfer could be time consuming and result in delayed
-     * query responses.
+     * href="../../../../../../concepts/tables/#sharding" target="_top">sharded
+     * data</a> will be rebalanced approximately equally across the cluster.
+     * Note that for clusters with large amounts of sharded data, this data
+     * transfer could be time consuming and result in delayed query responses.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -92,7 +91,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_UNSHARDED_DATA
      * REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded data (a.k.a. <a
-     * href="../../../../../concepts/tables.html#random-sharding"
+     * href="../../../../../../concepts/tables/#random-sharding"
      * target="_top">randomly-sharded</a>) will be rebalanced approximately
      * equally across the cluster. Note that for clusters with large amounts of
      * unsharded data, this data transfer could be time consuming and result in
@@ -185,7 +184,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
 
         /**
          * If {@code true}, <a
-         * href="../../../../../concepts/tables.html#sharding"
+         * href="../../../../../../concepts/tables/#sharding"
          * target="_top">sharded data</a> will be rebalanced approximately
          * equally across the cluster. Note that for clusters with large
          * amounts of sharded data, this data transfer could be time consuming
@@ -206,7 +205,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
 
         /**
          * If {@code true}, unsharded data (a.k.a. <a
-         * href="../../../../../concepts/tables.html#random-sharding"
+         * href="../../../../../../concepts/tables/#random-sharding"
          * target="_top">randomly-sharded</a>) will be rebalanced approximately
          * equally across the cluster. Note that for clusters with large
          * amounts of unsharded data, this data transfer could be time
@@ -328,7 +327,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_SHARDED_DATA
      *                 REBALANCE_SHARDED_DATA}: If {@code true}, <a
-     *                 href="../../../../../concepts/tables.html#sharding"
+     *                 href="../../../../../../concepts/tables/#sharding"
      *                 target="_top">sharded data</a> will be rebalanced
      *                 approximately equally across the cluster. Note that for
      *                 clusters with large amounts of sharded data, this data
@@ -350,7 +349,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_UNSHARDED_DATA
      *                 REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded
      *                 data (a.k.a. <a
-     *                 href="../../../../../concepts/tables.html#random-sharding"
+     *                 href="../../../../../../concepts/tables/#random-sharding"
      *                 target="_top">randomly-sharded</a>) will be rebalanced
      *                 approximately equally across the cluster. Note that for
      *                 clusters with large amounts of unsharded data, this data
@@ -470,7 +469,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_SHARDED_DATA
      *         REBALANCE_SHARDED_DATA}: If {@code true}, <a
-     *         href="../../../../../concepts/tables.html#sharding"
+     *         href="../../../../../../concepts/tables/#sharding"
      *         target="_top">sharded data</a> will be rebalanced approximately
      *         equally across the cluster. Note that for clusters with large
      *         amounts of sharded data, this data transfer could be time
@@ -488,7 +487,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *         com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_UNSHARDED_DATA
      *         REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded data
      *         (a.k.a. <a
-     *         href="../../../../../concepts/tables.html#random-sharding"
+     *         href="../../../../../../concepts/tables/#random-sharding"
      *         target="_top">randomly-sharded</a>) will be rebalanced
      *         approximately equally across the cluster. Note that for clusters
      *         with large amounts of unsharded data, this data transfer could
@@ -590,7 +589,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_SHARDED_DATA
      *                 REBALANCE_SHARDED_DATA}: If {@code true}, <a
-     *                 href="../../../../../concepts/tables.html#sharding"
+     *                 href="../../../../../../concepts/tables/#sharding"
      *                 target="_top">sharded data</a> will be rebalanced
      *                 approximately equally across the cluster. Note that for
      *                 clusters with large amounts of sharded data, this data
@@ -612,7 +611,7 @@ public class AdminRebalanceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_UNSHARDED_DATA
      *                 REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded
      *                 data (a.k.a. <a
-     *                 href="../../../../../concepts/tables.html#random-sharding"
+     *                 href="../../../../../../concepts/tables/#random-sharding"
      *                 target="_top">randomly-sharded</a>) will be rebalanced
      *                 approximately equally across the cluster. Note that for
      *                 clusters with large amounts of unsharded data, this data

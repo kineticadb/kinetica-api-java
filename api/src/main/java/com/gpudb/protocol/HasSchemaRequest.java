@@ -56,7 +56,7 @@ public class HasSchemaRequest implements IndexedRecord {
      * 
      * @param schemaName  Name of the schema to check for existence, in root,
      *                    using standard <a
-     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    href="../../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
@@ -71,7 +71,7 @@ public class HasSchemaRequest implements IndexedRecord {
      * 
      * @return Name of the schema to check for existence, in root, using
      *         standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.
      * 
      */
@@ -83,7 +83,7 @@ public class HasSchemaRequest implements IndexedRecord {
      * 
      * @param schemaName  Name of the schema to check for existence, in root,
      *                    using standard <a
-     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    href="../../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.

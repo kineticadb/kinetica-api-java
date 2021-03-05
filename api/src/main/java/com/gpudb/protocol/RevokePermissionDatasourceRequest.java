@@ -17,7 +17,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#revokePermissionDatasource(RevokePermissionDatasourceRequest)}.
  * <p>
- * Revokes a <a href="../../../../../concepts/data_sources.html"
+ * Revokes a <a href="../../../../../../concepts/data_sources/"
  * target="_top">data source</a> permission from a user or role.
  */
 public class RevokePermissionDatasourceRequest implements IndexedRecord {

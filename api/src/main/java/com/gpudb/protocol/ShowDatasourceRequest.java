@@ -18,7 +18,7 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#showDatasource(ShowDatasourceRequest)}.
  * <p>
  * Shows information about a specified <a
- * href="../../../../../concepts/data_sources.html" target="_top">data
+ * href="../../../../../../concepts/data_sources/" target="_top">data
  * source</a> or all data sources.
  */
 public class ShowDatasourceRequest implements IndexedRecord {

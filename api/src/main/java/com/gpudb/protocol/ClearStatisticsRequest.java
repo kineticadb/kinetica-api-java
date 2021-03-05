@@ -62,7 +62,7 @@ public class ClearStatisticsRequest implements IndexedRecord {
      * 
      * @param tableName  Name of a table, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>. Must be an
      *                   existing table.  The default value is ''.
      * @param columnName  Name of the column in {@code tableName} for which to
@@ -83,7 +83,7 @@ public class ClearStatisticsRequest implements IndexedRecord {
      * 
      * @return Name of a table, in [schema_name.]table_name format, using
      *         standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>. Must be an existing
      *         table.  The default value is ''.
      * 
@@ -96,7 +96,7 @@ public class ClearStatisticsRequest implements IndexedRecord {
      * 
      * @param tableName  Name of a table, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>. Must be an
      *                   existing table.  The default value is ''.
      * 

@@ -28,9 +28,9 @@ import org.apache.avro.generic.IndexedRecord;
  * simultaneously.  One example of mutually exclusive properties are {@code
  * data} and {@code store_only}.
  * <p>
- * A single <a href="../../../../../concepts/tables.html#primary-keys"
+ * A single <a href="../../../../../../concepts/tables/#primary-keys"
  * target="_top">primary key</a> and/or single <a
- * href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
+ * href="../../../../../../concepts/tables/#shard-keys" target="_top">shard
  * key</a> can be set across one or more columns. If a primary key is
  * specified, then a uniqueness constraint is enforced, in that only a single
  * object can exist with a given primary key column value (or set of values for
@@ -224,12 +224,12 @@ public class CreateTypeRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTypeRequest.Properties#PRIMARY_KEY
      * PRIMARY_KEY}: This property indicates that this column will be part of
      * (or the entire) <a
-     * href="../../../../../concepts/tables.html#primary-keys"
+     * href="../../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a>.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#SHARD_KEY SHARD_KEY}:
      * This property indicates that this column will be part of (or the entire)
-     * <a href="../../../../../concepts/tables.html#shard-keys"
+     * <a href="../../../../../../concepts/tables/#shard-keys"
      * target="_top">shard key</a>.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#NULLABLE NULLABLE}: This
@@ -246,7 +246,7 @@ public class CreateTypeRequest implements IndexedRecord {
      * for the record.
      *         <li> {@link com.gpudb.protocol.CreateTypeRequest.Properties#DICT
      * DICT}: This property indicates that this column should be <a
-     * href="../../../../../concepts/dictionary_encoding.html"
+     * href="../../../../../../concepts/dictionary_encoding/"
      * target="_top">dictionary encoded</a>. It can only be used in conjunction
      * with restricted string (charN), int, long or date columns. Dictionary
      * encoding is best for columns where the cardinality (the number of unique
@@ -454,14 +454,14 @@ public class CreateTypeRequest implements IndexedRecord {
 
         /**
          * This property indicates that this column will be part of (or the
-         * entire) <a href="../../../../../concepts/tables.html#primary-keys"
+         * entire) <a href="../../../../../../concepts/tables/#primary-keys"
          * target="_top">primary key</a>.
          */
         public static final String PRIMARY_KEY = "primary_key";
 
         /**
          * This property indicates that this column will be part of (or the
-         * entire) <a href="../../../../../concepts/tables.html#shard-keys"
+         * entire) <a href="../../../../../../concepts/tables/#shard-keys"
          * target="_top">shard key</a>.
          */
         public static final String SHARD_KEY = "shard_key";
@@ -484,7 +484,7 @@ public class CreateTypeRequest implements IndexedRecord {
 
         /**
          * This property indicates that this column should be <a
-         * href="../../../../../concepts/dictionary_encoding.html"
+         * href="../../../../../../concepts/dictionary_encoding/"
          * target="_top">dictionary encoded</a>. It can only be used in
          * conjunction with restricted string (charN), int, long or date
          * columns. Dictionary encoding is best for columns where the
@@ -711,13 +711,13 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#PRIMARY_KEY
      *                    PRIMARY_KEY}: This property indicates that this
      *                    column will be part of (or the entire) <a
-     *                    href="../../../../../concepts/tables.html#primary-keys"
+     *                    href="../../../../../../concepts/tables/#primary-keys"
      *                    target="_top">primary key</a>.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#SHARD_KEY
      *                    SHARD_KEY}: This property indicates that this column
      *                    will be part of (or the entire) <a
-     *                    href="../../../../../concepts/tables.html#shard-keys"
+     *                    href="../../../../../../concepts/tables/#shard-keys"
      *                    target="_top">shard key</a>.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#NULLABLE
@@ -739,7 +739,7 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DICT
      *                    DICT}: This property indicates that this column
      *                    should be <a
-     *                    href="../../../../../concepts/dictionary_encoding.html"
+     *                    href="../../../../../../concepts/dictionary_encoding/"
      *                    target="_top">dictionary encoded</a>. It can only be
      *                    used in conjunction with restricted string (charN),
      *                    int, long or date columns. Dictionary encoding is
@@ -971,13 +971,13 @@ public class CreateTypeRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTypeRequest.Properties#PRIMARY_KEY
      *         PRIMARY_KEY}: This property indicates that this column will be
      *         part of (or the entire) <a
-     *         href="../../../../../concepts/tables.html#primary-keys"
+     *         href="../../../../../../concepts/tables/#primary-keys"
      *         target="_top">primary key</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#SHARD_KEY
      *         SHARD_KEY}: This property indicates that this column will be
      *         part of (or the entire) <a
-     *         href="../../../../../concepts/tables.html#shard-keys"
+     *         href="../../../../../../concepts/tables/#shard-keys"
      *         target="_top">shard key</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#NULLABLE
@@ -996,7 +996,7 @@ public class CreateTypeRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#DICT DICT}: This
      *         property indicates that this column should be <a
-     *         href="../../../../../concepts/dictionary_encoding.html"
+     *         href="../../../../../../concepts/dictionary_encoding/"
      *         target="_top">dictionary encoded</a>. It can only be used in
      *         conjunction with restricted string (charN), int, long or date
      *         columns. Dictionary encoding is best for columns where the
@@ -1199,13 +1199,13 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#PRIMARY_KEY
      *                    PRIMARY_KEY}: This property indicates that this
      *                    column will be part of (or the entire) <a
-     *                    href="../../../../../concepts/tables.html#primary-keys"
+     *                    href="../../../../../../concepts/tables/#primary-keys"
      *                    target="_top">primary key</a>.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#SHARD_KEY
      *                    SHARD_KEY}: This property indicates that this column
      *                    will be part of (or the entire) <a
-     *                    href="../../../../../concepts/tables.html#shard-keys"
+     *                    href="../../../../../../concepts/tables/#shard-keys"
      *                    target="_top">shard key</a>.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#NULLABLE
@@ -1227,7 +1227,7 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DICT
      *                    DICT}: This property indicates that this column
      *                    should be <a
-     *                    href="../../../../../concepts/dictionary_encoding.html"
+     *                    href="../../../../../../concepts/dictionary_encoding/"
      *                    target="_top">dictionary encoded</a>. It can only be
      *                    used in conjunction with restricted string (charN),
      *                    int, long or date columns. Dictionary encoding is

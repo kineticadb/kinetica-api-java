@@ -149,13 +149,13 @@ public class AdminAddRanksRequest implements IndexedRecord {
      *                      "tier.ram.rank.limit":"10000000000"}'. Currently,
      *                      the available parameters are rank-specific
      *                      parameters in the <a
-     *                      href="../../../../../config/index.html#network"
+     *                      href="../../../../../../config/#network"
      *                      target="_top">Network</a>, <a
-     *                      href="../../../../../config/index.html#hardware"
+     *                      href="../../../../../../config/#hardware"
      *                      target="_top">Hardware</a>, <a
-     *                      href="../../../../../config/index.html#text-search"
+     *                      href="../../../../../../config/#text-search"
      *                      target="_top">Text Search</a>, and <a
-     *                      href="../../../../../config/index.html#ram-tier"
+     *                      href="../../../../../../config/#ram-tier"
      *                      target="_top">RAM Tiered Storage</a> sections in
      *                      the gpudb.conf file, with the key exception of the
      *                      'rankN.host' settings in the Network section that
@@ -252,13 +252,12 @@ public class AdminAddRanksRequest implements IndexedRecord {
      *         the new ranks found in {@code hosts}. For example,
      *         '{"rank.gpu":"2", "tier.ram.rank.limit":"10000000000"}'.
      *         Currently, the available parameters are rank-specific parameters
-     *         in the <a href="../../../../../config/index.html#network"
+     *         in the <a href="../../../../../../config/#network"
      *         target="_top">Network</a>, <a
-     *         href="../../../../../config/index.html#hardware"
+     *         href="../../../../../../config/#hardware"
      *         target="_top">Hardware</a>, <a
-     *         href="../../../../../config/index.html#text-search"
-     *         target="_top">Text Search</a>, and <a
-     *         href="../../../../../config/index.html#ram-tier"
+     *         href="../../../../../../config/#text-search" target="_top">Text
+     *         Search</a>, and <a href="../../../../../../config/#ram-tier"
      *         target="_top">RAM Tiered Storage</a> sections in the gpudb.conf
      *         file, with the key exception of the 'rankN.host' settings in the
      *         Network section that will be determined by {@code hosts}
@@ -286,13 +285,13 @@ public class AdminAddRanksRequest implements IndexedRecord {
      *                      "tier.ram.rank.limit":"10000000000"}'. Currently,
      *                      the available parameters are rank-specific
      *                      parameters in the <a
-     *                      href="../../../../../config/index.html#network"
+     *                      href="../../../../../../config/#network"
      *                      target="_top">Network</a>, <a
-     *                      href="../../../../../config/index.html#hardware"
+     *                      href="../../../../../../config/#hardware"
      *                      target="_top">Hardware</a>, <a
-     *                      href="../../../../../config/index.html#text-search"
+     *                      href="../../../../../../config/#text-search"
      *                      target="_top">Text Search</a>, and <a
-     *                      href="../../../../../config/index.html#ram-tier"
+     *                      href="../../../../../../config/#ram-tier"
      *                      target="_top">RAM Tiered Storage</a> sections in
      *                      the gpudb.conf file, with the key exception of the
      *                      'rankN.host' settings in the Network section that

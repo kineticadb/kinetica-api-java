@@ -22,9 +22,9 @@ import org.apache.avro.generic.IndexedRecord;
  * Creates a table that is the result of a SQL JOIN.
  * <p>
  * For join details and examples see: <a
- * href="../../../../../concepts/joins.html" target="_top">Joins</a>.  For
+ * href="../../../../../../concepts/joins/" target="_top">Joins</a>.  For
  * limitations, see <a
- * href="../../../../../concepts/joins.html#limitations-cautions"
+ * href="../../../../../../concepts/joins/#limitations-cautions"
  * target="_top">Join Limitations and Cautions</a>.
  */
 public class CreateJoinTableRequest implements IndexedRecord {
@@ -80,8 +80,8 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#TTL TTL}: Sets the <a
-     * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
-     * join table specified in {@code joinTableName}.
+     * href="../../../../../../concepts/ttl/" target="_top">TTL</a> of the join
+     * table specified in {@code joinTableName}.
      *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#VIEW_ID VIEW_ID}: view
      * this projection is part of.  The default value is ''.
@@ -132,7 +132,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Sets the <a href="../../../../../concepts/ttl.html"
+         * Sets the <a href="../../../../../../concepts/ttl/"
          * target="_top">TTL</a> of the join table specified in {@code
          * joinTableName}.
          */
@@ -183,14 +183,14 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * 
      * @param joinTableName  Name of the join table to be created, in
      *                       [schema_name.]table_name format, using standard <a
-     *                       href="../../../../../concepts/tables.html#table-name-resolution"
+     *                       href="../../../../../../concepts/tables/#table-name-resolution"
      *                       target="_top">name resolution rules</a> and
      *                       meeting <a
-     *                       href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                       href="../../../../../../concepts/tables/#table-naming-criteria"
      *                       target="_top">table naming criteria</a>.
      * @param tableNames  The list of table names composing the join, each in
      *                    [schema_name.]table_name format, using standard <a
-     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    href="../../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.  Corresponds
      *                    to a SQL statement FROM clause.
      * @param columnNames  List of member table columns or column expressions
@@ -207,7 +207,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * @param expressions  An optional list of expressions to combine and
      *                     filter the joined tables.  Corresponds to a SQL
      *                     statement WHERE clause. For details see: <a
-     *                     href="../../../../../concepts/expressions.html"
+     *                     href="../../../../../../concepts/expressions/"
      *                     target="_top">expressions</a>.  The default value is
      *                     an empty {@link List}.
      * @param options  Optional parameters.
@@ -242,8 +242,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#TTL
-     *                 TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the join table specified in
      *                 {@code joinTableName}.
      *                         <li> {@link
@@ -277,9 +276,9 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * 
      * @return Name of the join table to be created, in
      *         [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a> and meeting <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.
      * 
      */
@@ -291,10 +290,10 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * 
      * @param joinTableName  Name of the join table to be created, in
      *                       [schema_name.]table_name format, using standard <a
-     *                       href="../../../../../concepts/tables.html#table-name-resolution"
+     *                       href="../../../../../../concepts/tables/#table-name-resolution"
      *                       target="_top">name resolution rules</a> and
      *                       meeting <a
-     *                       href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                       href="../../../../../../concepts/tables/#table-naming-criteria"
      *                       target="_top">table naming criteria</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -309,7 +308,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * 
      * @return The list of table names composing the join, each in
      *         [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  Corresponds to a SQL
      *         statement FROM clause.
      * 
@@ -322,7 +321,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * 
      * @param tableNames  The list of table names composing the join, each in
      *                    [schema_name.]table_name format, using standard <a
-     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    href="../../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.  Corresponds
      *                    to a SQL statement FROM clause.
      * 
@@ -377,7 +376,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * 
      * @return An optional list of expressions to combine and filter the joined
      *         tables.  Corresponds to a SQL statement WHERE clause. For
-     *         details see: <a href="../../../../../concepts/expressions.html"
+     *         details see: <a href="../../../../../../concepts/expressions/"
      *         target="_top">expressions</a>.  The default value is an empty
      *         {@link List}.
      * 
@@ -391,7 +390,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * @param expressions  An optional list of expressions to combine and
      *                     filter the joined tables.  Corresponds to a SQL
      *                     statement WHERE clause. For details see: <a
-     *                     href="../../../../../concepts/expressions.html"
+     *                     href="../../../../../../concepts/expressions/"
      *                     target="_top">expressions</a>.  The default value is
      *                     an empty {@link List}.
      * 
@@ -433,7 +432,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#TTL TTL}: Sets
-     *         the <a href="../../../../../concepts/ttl.html"
+     *         the <a href="../../../../../../concepts/ttl/"
      *         target="_top">TTL</a> of the join table specified in {@code
      *         joinTableName}.
      *                 <li> {@link
@@ -491,8 +490,7 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#TTL
-     *                 TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the join table specified in
      *                 {@code joinTableName}.
      *                         <li> {@link

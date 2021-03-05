@@ -17,11 +17,11 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link com.gpudb.GPUdb#filter(FilterRequest)}.
  * <p>
  * Filters data based on the specified expression.  The results are
- * stored in a <a href="../../../../../concepts/filtered_views.html"
+ * stored in a <a href="../../../../../../concepts/filtered_views/"
  * target="_top">result set</a> with the
  * given {@code viewName}.
  * <p>
- * For details see <a href="../../../../../concepts/expressions.html"
+ * For details see <a href="../../../../../../concepts/expressions/"
  * target="_top">Expressions</a>.
  * <p>
  * The response message contains the number of points for which the expression
@@ -64,8 +64,8 @@ public class FilterRequest implements IndexedRecord {
      *         <li> {@link com.gpudb.protocol.FilterRequest.Options#VIEW_ID
      * VIEW_ID}: view this filtered-view is part of.  The default value is ''.
      *         <li> {@link com.gpudb.protocol.FilterRequest.Options#TTL TTL}:
-     * Sets the <a href="../../../../../concepts/ttl.html"
-     * target="_top">TTL</a> of the view specified in {@code viewName}.
+     * Sets the <a href="../../../../../../concepts/ttl/" target="_top">TTL</a>
+     * of the view specified in {@code viewName}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -88,7 +88,7 @@ public class FilterRequest implements IndexedRecord {
         public static final String VIEW_ID = "view_id";
 
         /**
-         * Sets the <a href="../../../../../concepts/ttl.html"
+         * Sets the <a href="../../../../../../concepts/ttl/"
          * target="_top">TTL</a> of the view specified in {@code viewName}.
          */
         public static final String TTL = "ttl";
@@ -117,21 +117,21 @@ public class FilterRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table to filter, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  This may be
      *                   the name of a table or a view (when chaining queries).
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
      * @param expression  The select expression to filter the specified table.
      *                    For details see <a
-     *                    href="../../../../../concepts/expressions.html"
+     *                    href="../../../../../../concepts/expressions/"
      *                    target="_top">Expressions</a>.
      * @param options  Optional parameters.
      *                 <ul>
@@ -150,7 +150,7 @@ public class FilterRequest implements IndexedRecord {
      *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterRequest.Options#TTL TTL}: Sets
-     *                 the <a href="../../../../../concepts/ttl.html"
+     *                 the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the view specified in {@code
      *                 viewName}.
      *                 </ul>
@@ -168,7 +168,7 @@ public class FilterRequest implements IndexedRecord {
      * 
      * @return Name of the table to filter, in [schema_name.]table_name format,
      *         using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  This may be the name
      *         of a table or a view (when chaining queries).
      * 
@@ -181,7 +181,7 @@ public class FilterRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table to filter, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  This may be
      *                   the name of a table or a view (when chaining queries).
      * 
@@ -198,9 +198,9 @@ public class FilterRequest implements IndexedRecord {
      * @return If provided, then this will be the name of the view containing
      *         the results, in [schema_name.]view_name format, using standard
      *         <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a> and meeting <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.  Must not be an already
      *         existing table or view.  The default value is ''.
      * 
@@ -214,9 +214,9 @@ public class FilterRequest implements IndexedRecord {
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
@@ -232,7 +232,7 @@ public class FilterRequest implements IndexedRecord {
     /**
      * 
      * @return The select expression to filter the specified table.  For
-     *         details see <a href="../../../../../concepts/expressions.html"
+     *         details see <a href="../../../../../../concepts/expressions/"
      *         target="_top">Expressions</a>.
      * 
      */
@@ -244,7 +244,7 @@ public class FilterRequest implements IndexedRecord {
      * 
      * @param expression  The select expression to filter the specified table.
      *                    For details see <a
-     *                    href="../../../../../concepts/expressions.html"
+     *                    href="../../../../../../concepts/expressions/"
      *                    target="_top">Expressions</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -271,7 +271,7 @@ public class FilterRequest implements IndexedRecord {
      *         com.gpudb.protocol.FilterRequest.Options#VIEW_ID VIEW_ID}: view
      *         this filtered-view is part of.  The default value is ''.
      *                 <li> {@link com.gpudb.protocol.FilterRequest.Options#TTL
-     *         TTL}: Sets the <a href="../../../../../concepts/ttl.html"
+     *         TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *         target="_top">TTL</a> of the view specified in {@code viewName}.
      *         </ul>
      *         The default value is an empty {@link Map}.
@@ -300,7 +300,7 @@ public class FilterRequest implements IndexedRecord {
      *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterRequest.Options#TTL TTL}: Sets
-     *                 the <a href="../../../../../concepts/ttl.html"
+     *                 the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the view specified in {@code
      *                 viewName}.
      *                 </ul>

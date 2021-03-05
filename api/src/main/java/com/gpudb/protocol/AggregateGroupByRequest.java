@@ -24,14 +24,14 @@ import org.apache.avro.generic.IndexedRecord;
  * is somewhat analogous to an SQL-style SELECT...GROUP BY.
  * <p>
  * For aggregation details and examples, see <a
- * href="../../../../../concepts/aggregation.html"
+ * href="../../../../../../concepts/aggregation/"
  * target="_top">Aggregation</a>.  For limitations, see <a
- * href="../../../../../concepts/aggregation.html#limitations"
+ * href="../../../../../../concepts/aggregation/#limitations"
  * target="_top">Aggregation Limitations</a>.
  * <p>
  * Any column(s) can be grouped on, and all column types except
  * unrestricted-length strings may be used for computing applicable aggregates;
- * columns marked as <a href="../../../../../concepts/types.html#data-handling"
+ * columns marked as <a href="../../../../../../concepts/types/#data-handling"
  * target="_top">store-only</a> are unable to be used in grouping or
  * aggregation.
  * <p>
@@ -49,36 +49,35 @@ import org.apache.avro.generic.IndexedRecord;
  * column_names=['x','y','count(*)','sum(z)'].
  * <p>
  * Available <a
- * href="../../../../../concepts/expressions.html#aggregate-expressions"
+ * href="../../../../../../concepts/expressions/#aggregate-expressions"
  * target="_top">aggregation functions</a> are: count(*), sum, min, max, avg,
  * mean, stddev, stddev_pop, stddev_samp, var, var_pop, var_samp, arg_min,
  * arg_max and count_distinct.
  * <p>
  * Available grouping functions are <a
- * href="../../../../../concepts/rollup.html" target="_top">Rollup</a>, <a
- * href="../../../../../concepts/cube.html" target="_top">Cube</a>, and <a
- * href="../../../../../concepts/grouping_sets.html" target="_top">Grouping
+ * href="../../../../../../concepts/rollup/" target="_top">Rollup</a>, <a
+ * href="../../../../../../concepts/cube/" target="_top">Cube</a>, and <a
+ * href="../../../../../../concepts/grouping_sets/" target="_top">Grouping
  * Sets</a>
  * <p>
  * This service also provides support for <a
- * href="../../../../../concepts/pivot.html" target="_top">Pivot</a>
- * operations.
+ * href="../../../../../../concepts/pivot/" target="_top">Pivot</a> operations.
  * <p>
  * Filtering on aggregates is supported via expressions using <a
- * href="../../../../../concepts/expressions.html#aggregate-expressions"
+ * href="../../../../../../concepts/expressions/#aggregate-expressions"
  * target="_top">aggregation functions</a> supplied to {@code having}.
  * <p>
  * The response is returned as a dynamic schema. For details see: <a
- * href="../../../../../api/index.html#dynamic-schemas" target="_top">dynamic
- * schemas documentation</a>.
+ * href="../../../../../../api/#dynamic-schemas" target="_top">dynamic schemas
+ * documentation</a>.
  * <p>
  * If a {@code result_table} name is specified in the {@code options}, the
  * results are stored in a new table with that name--no results are returned in
  * the response.  Both the table name and resulting column names must adhere to
- * <a href="../../../../../concepts/tables.html#table" target="_top">standard
+ * <a href="../../../../../../concepts/tables/#table" target="_top">standard
  * naming conventions</a>; column/aggregation expressions will need to be
  * aliased.  If the source table's <a
- * href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
+ * href="../../../../../../concepts/tables/#shard-keys" target="_top">shard
  * key</a> is used as the grouping column(s) and all result records are
  * selected ({@code offset} is 0 and {@code limit} is -9999), the result table
  * will be sharded, in all other cases it will be replicated.  Sorting will
@@ -202,9 +201,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
      * RESULT_TABLE}: The name of a table used to store the results, in
      * [schema_name.]table_name format, using standard <a
-     * href="../../../../../concepts/tables.html#table-name-resolution"
+     * href="../../../../../../concepts/tables/#table-name-resolution"
      * target="_top">name resolution rules</a> and meeting <a
-     * href="../../../../../concepts/tables.html#table-naming-criteria"
+     * href="../../../../../../concepts/tables/#table-naming-criteria"
      * target="_top">table naming criteria</a>.  Column names (group-by and
      * aggregate fields) need to be given aliases e.g. ["FChar256 as fchar256",
      * "sum(FDouble) as sfd"].  If present, no results are returned in the
@@ -256,7 +255,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#TTL TTL}: Sets the <a
-     * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
+     * href="../../../../../../concepts/ttl/" target="_top">TTL</a> of the
      * table specified in {@code result_table}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#CHUNK_SIZE
@@ -275,11 +274,11 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      * MATERIALIZE_ON_GPU}: No longer used.  See <a
-     * href="../../../../../rm/concepts.html" target="_top">Resource Management
+     * href="../../../../../../rm/concepts/" target="_top">Resource Management
      * Concepts</a> for information about how resources are managed, <a
-     * href="../../../../../rm/concepts.html" target="_top">Tier Strategy
+     * href="../../../../../../rm/concepts/" target="_top">Tier Strategy
      * Concepts</a> for how resources are targeted for VRAM, and <a
-     * href="../../../../../rm/usage.html#tier-strategies" target="_top">Tier
+     * href="../../../../../../rm/usage/#tier-strategies" target="_top">Tier
      * Strategy Usage</a> for how to specify a table's priority in VRAM.
      * Supported values:
      * <ul>
@@ -410,9 +409,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
         /**
          * The name of a table used to store the results, in
          * [schema_name.]table_name format, using standard <a
-         * href="../../../../../concepts/tables.html#table-name-resolution"
+         * href="../../../../../../concepts/tables/#table-name-resolution"
          * target="_top">name resolution rules</a> and meeting <a
-         * href="../../../../../concepts/tables.html#table-naming-criteria"
+         * href="../../../../../../concepts/tables/#table-naming-criteria"
          * target="_top">table naming criteria</a>.  Column names (group-by and
          * aggregate fields) need to be given aliases e.g. ["FChar256 as
          * fchar256", "sum(FDouble) as sfd"].  If present, no results are
@@ -473,7 +472,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String RESULT_TABLE_GENERATE_PK = "result_table_generate_pk";
 
         /**
-         * Sets the <a href="../../../../../concepts/ttl.html"
+         * Sets the <a href="../../../../../../concepts/ttl/"
          * target="_top">TTL</a> of the table specified in {@code
          * result_table}.
          */
@@ -500,12 +499,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
         public static final String VIEW_ID = "view_id";
 
         /**
-         * No longer used.  See <a href="../../../../../rm/concepts.html"
+         * No longer used.  See <a href="../../../../../../rm/concepts/"
          * target="_top">Resource Management Concepts</a> for information about
-         * how resources are managed, <a href="../../../../../rm/concepts.html"
+         * how resources are managed, <a href="../../../../../../rm/concepts/"
          * target="_top">Tier Strategy Concepts</a> for how resources are
          * targeted for VRAM, and <a
-         * href="../../../../../rm/usage.html#tier-strategies"
+         * href="../../../../../../rm/usage/#tier-strategies"
          * target="_top">Tier Strategy Usage</a> for how to specify a table's
          * priority in VRAM.
          * Supported values:
@@ -578,7 +577,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * @param tableName  Name of an existing table or view on which the
      *                   operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnNames  List of one or more column names, expressions, and
      *                     aggregate expressions.
@@ -591,7 +590,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../../config/index.html#general"
+     *               href="../../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -663,9 +662,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 RESULT_TABLE}: The name of a table used to store the
      *                 results, in [schema_name.]table_name format, using
      *                 standard <a
-     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  Column names
      *                 (group-by and aggregate fields) need to be given aliases
      *                 e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].
@@ -729,8 +728,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TTL
-     *                 TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 result_table}.
      *                         <li> {@link
@@ -751,13 +749,13 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../rm/concepts.html"
+     *                 href="../../../../../../rm/concepts/"
      *                 target="_top">Resource Management Concepts</a> for
      *                 information about how resources are managed, <a
-     *                 href="../../../../../rm/concepts.html"
-     *                 target="_top">Tier Strategy Concepts</a> for how
-     *                 resources are targeted for VRAM, and <a
-     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../../rm/concepts/" target="_top">Tier
+     *                 Strategy Concepts</a> for how resources are targeted for
+     *                 VRAM, and <a
+     *                 href="../../../../../../rm/usage/#tier-strategies"
      *                 target="_top">Tier Strategy Usage</a> for how to specify
      *                 a table's priority in VRAM.
      *                 Supported values:
@@ -816,7 +814,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * @param tableName  Name of an existing table or view on which the
      *                   operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnNames  List of one or more column names, expressions, and
      *                     aggregate expressions.
@@ -829,7 +827,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../../config/index.html#general"
+     *               href="../../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -916,9 +914,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 RESULT_TABLE}: The name of a table used to store the
      *                 results, in [schema_name.]table_name format, using
      *                 standard <a
-     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  Column names
      *                 (group-by and aggregate fields) need to be given aliases
      *                 e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].
@@ -982,8 +980,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TTL
-     *                 TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 result_table}.
      *                         <li> {@link
@@ -1004,13 +1001,13 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../rm/concepts.html"
+     *                 href="../../../../../../rm/concepts/"
      *                 target="_top">Resource Management Concepts</a> for
      *                 information about how resources are managed, <a
-     *                 href="../../../../../rm/concepts.html"
-     *                 target="_top">Tier Strategy Concepts</a> for how
-     *                 resources are targeted for VRAM, and <a
-     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../../rm/concepts/" target="_top">Tier
+     *                 Strategy Concepts</a> for how resources are targeted for
+     *                 VRAM, and <a
+     *                 href="../../../../../../rm/usage/#tier-strategies"
      *                 target="_top">Tier Strategy Usage</a> for how to specify
      *                 a table's priority in VRAM.
      *                 Supported values:
@@ -1066,7 +1063,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * 
      * @return Name of an existing table or view on which the operation will be
      *         performed, in [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.
      * 
      */
@@ -1079,7 +1076,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * @param tableName  Name of an existing table or view on which the
      *                   operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -1146,7 +1143,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         be returned, or END_OF_SET (-9999) to indicate that the max
      *         number of results should be returned.  The number of records
      *         returned will never exceed the server's own limit, defined by
-     *         the <a href="../../../../../config/index.html#general"
+     *         the <a href="../../../../../../config/#general"
      *         target="_top">max_get_records_size</a> parameter in the server
      *         configuration.  Use {@code hasMoreRecords} to see if more
      *         records exist in the result to be fetched, and {@code offset} &
@@ -1165,7 +1162,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../../config/index.html#general"
+     *               href="../../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -1289,9 +1286,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#RESULT_TABLE
      *         RESULT_TABLE}: The name of a table used to store the results, in
      *         [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a> and meeting <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.  Column names (group-by
      *         and aggregate fields) need to be given aliases e.g. ["FChar256
      *         as fchar256", "sum(FDouble) as sfd"].  If present, no results
@@ -1344,7 +1341,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#TTL TTL}:
-     *         Sets the <a href="../../../../../concepts/ttl.html"
+     *         Sets the <a href="../../../../../../concepts/ttl/"
      *         target="_top">TTL</a> of the table specified in {@code
      *         result_table}.
      *                 <li> {@link
@@ -1364,12 +1361,12 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *         MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *         href="../../../../../rm/concepts.html" target="_top">Resource
+     *         href="../../../../../../rm/concepts/" target="_top">Resource
      *         Management Concepts</a> for information about how resources are
-     *         managed, <a href="../../../../../rm/concepts.html"
+     *         managed, <a href="../../../../../../rm/concepts/"
      *         target="_top">Tier Strategy Concepts</a> for how resources are
      *         targeted for VRAM, and <a
-     *         href="../../../../../rm/usage.html#tier-strategies"
+     *         href="../../../../../../rm/usage/#tier-strategies"
      *         target="_top">Tier Strategy Usage</a> for how to specify a
      *         table's priority in VRAM.
      *         Supported values:
@@ -1479,9 +1476,9 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 RESULT_TABLE}: The name of a table used to store the
      *                 results, in [schema_name.]table_name format, using
      *                 standard <a
-     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  Column names
      *                 (group-by and aggregate fields) need to be given aliases
      *                 e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].
@@ -1545,8 +1542,7 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TTL
-     *                 TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 result_table}.
      *                         <li> {@link
@@ -1567,13 +1563,13 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../rm/concepts.html"
+     *                 href="../../../../../../rm/concepts/"
      *                 target="_top">Resource Management Concepts</a> for
      *                 information about how resources are managed, <a
-     *                 href="../../../../../rm/concepts.html"
-     *                 target="_top">Tier Strategy Concepts</a> for how
-     *                 resources are targeted for VRAM, and <a
-     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../../rm/concepts/" target="_top">Tier
+     *                 Strategy Concepts</a> for how resources are targeted for
+     *                 VRAM, and <a
+     *                 href="../../../../../../rm/usage/#tier-strategies"
      *                 target="_top">Tier Strategy Usage</a> for how to specify
      *                 a table's priority in VRAM.
      *                 Supported values:

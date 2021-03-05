@@ -17,7 +17,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#showSchema(ShowSchemaRequest)}.
  * <p>
- * Retrieves information about a <a href="../../../../../concepts/schemas.html"
+ * Retrieves information about a <a href="../../../../../../concepts/schemas/"
  * target="_top">schema</a> (or all schemas), as specified in {@code
  * schemaName}.
  */

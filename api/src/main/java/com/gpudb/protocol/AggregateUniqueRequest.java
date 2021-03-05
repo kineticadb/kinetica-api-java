@@ -25,7 +25,7 @@ import org.apache.avro.generic.IndexedRecord;
  * {@code jsonEncodedResponse}.  The results can be paged via {@code offset}
  * and {@code limit} parameters.
  * <p>
- * Columns marked as <a href="../../../../../concepts/types.html#data-handling"
+ * Columns marked as <a href="../../../../../../concepts/types/#data-handling"
  * target="_top">store-only</a>
  * are unable to be used with this function.
  * <p>
@@ -35,18 +35,18 @@ import org.apache.avro.generic.IndexedRecord;
  * {"limit":"10","sort_order":"descending"}.
  * <p>
  * The response is returned as a dynamic schema. For details see:
- * <a href="../../../../../api/index.html#dynamic-schemas"
- * target="_top">dynamic schemas documentation</a>.
+ * <a href="../../../../../../api/#dynamic-schemas" target="_top">dynamic
+ * schemas documentation</a>.
  * <p>
  * If a {@code result_table} name is specified in the
  * {@code options}, the results are stored in a new table with that name--no
  * results are returned in the response.  Both the table name and resulting
  * column
  * name must adhere to
- * <a href="../../../../../concepts/tables.html#table" target="_top">standard
+ * <a href="../../../../../../concepts/tables/#table" target="_top">standard
  * naming conventions</a>;
  * any column expression will need to be aliased.  If the source table's
- * <a href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
+ * <a href="../../../../../../concepts/tables/#shard-keys" target="_top">shard
  * key</a> is used as the
  * {@code columnName}, the result table will be sharded, in all other cases it
  * will be replicated.  Sorting will properly function only if the result table
@@ -143,9 +143,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE
      * RESULT_TABLE}: The name of the table used to store the results, in
      * [schema_name.]table_name format, using standard <a
-     * href="../../../../../concepts/tables.html#table-name-resolution"
+     * href="../../../../../../concepts/tables/#table-name-resolution"
      * target="_top">name resolution rules</a> and meeting <a
-     * href="../../../../../concepts/tables.html#table-naming-criteria"
+     * href="../../../../../../concepts/tables/#table-naming-criteria"
      * target="_top">table naming criteria</a>.  If present, no results are
      * returned in the response.  Not available if {@code columnName} is an
      * unrestricted-length string.
@@ -195,7 +195,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#TTL TTL}: Sets the <a
-     * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
+     * href="../../../../../../concepts/ttl/" target="_top">TTL</a> of the
      * table specified in {@code result_table}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#CHUNK_SIZE
@@ -249,9 +249,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
         /**
          * The name of the table used to store the results, in
          * [schema_name.]table_name format, using standard <a
-         * href="../../../../../concepts/tables.html#table-name-resolution"
+         * href="../../../../../../concepts/tables/#table-name-resolution"
          * target="_top">name resolution rules</a> and meeting <a
-         * href="../../../../../concepts/tables.html#table-naming-criteria"
+         * href="../../../../../../concepts/tables/#table-naming-criteria"
          * target="_top">table naming criteria</a>.  If present, no results are
          * returned in the response.  Not available if {@code columnName} is an
          * unrestricted-length string.
@@ -309,7 +309,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
         public static final String RESULT_TABLE_GENERATE_PK = "result_table_generate_pk";
 
         /**
-         * Sets the <a href="../../../../../concepts/ttl.html"
+         * Sets the <a href="../../../../../../concepts/ttl/"
          * target="_top">TTL</a> of the table specified in {@code
          * result_table}.
          */
@@ -356,7 +356,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * @param tableName  Name of an existing table or view on which the
      *                   operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnName  Name of the column or an expression containing one or
      *                    more column names on which the unique function would
@@ -370,7 +370,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../../config/index.html#general"
+     *               href="../../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -413,9 +413,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 RESULT_TABLE}: The name of the table used to store the
      *                 results, in [schema_name.]table_name format, using
      *                 standard <a
-     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  If present, no
      *                 results are returned in the response.  Not available if
      *                 {@code columnName} is an unrestricted-length string.
@@ -475,8 +475,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#TTL
-     *                 TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 result_table}.
      *                         <li> {@link
@@ -508,7 +507,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * @param tableName  Name of an existing table or view on which the
      *                   operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnName  Name of the column or an expression containing one or
      *                    more column names on which the unique function would
@@ -522,7 +521,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../../config/index.html#general"
+     *               href="../../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -580,9 +579,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 RESULT_TABLE}: The name of the table used to store the
      *                 results, in [schema_name.]table_name format, using
      *                 standard <a
-     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  If present, no
      *                 results are returned in the response.  Not available if
      *                 {@code columnName} is an unrestricted-length string.
@@ -642,8 +641,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#TTL
-     *                 TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 result_table}.
      *                         <li> {@link
@@ -672,7 +670,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * 
      * @return Name of an existing table or view on which the operation will be
      *         performed, in [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.
      * 
      */
@@ -685,7 +683,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * @param tableName  Name of an existing table or view on which the
      *                   operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -753,7 +751,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         be returned. Or END_OF_SET (-9999) to indicate that the max
      *         number of results should be returned.  The number of records
      *         returned will never exceed the server's own limit, defined by
-     *         the <a href="../../../../../config/index.html#general"
+     *         the <a href="../../../../../../config/#general"
      *         target="_top">max_get_records_size</a> parameter in the server
      *         configuration.  Use {@code hasMoreRecords} to see if more
      *         records exist in the result to be fetched, and {@code offset} &
@@ -772,7 +770,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../../config/index.html#general"
+     *               href="../../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -870,9 +868,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#RESULT_TABLE
      *         RESULT_TABLE}: The name of the table used to store the results,
      *         in [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a> and meeting <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.  If present, no results
      *         are returned in the response.  Not available if {@code
      *         columnName} is an unrestricted-length string.
@@ -922,7 +920,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#TTL TTL}: Sets
-     *         the <a href="../../../../../concepts/ttl.html"
+     *         the <a href="../../../../../../concepts/ttl/"
      *         target="_top">TTL</a> of the table specified in {@code
      *         result_table}.
      *                 <li> {@link
@@ -981,9 +979,9 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 RESULT_TABLE}: The name of the table used to store the
      *                 results, in [schema_name.]table_name format, using
      *                 standard <a
-     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  If present, no
      *                 results are returned in the response.  Not available if
      *                 {@code columnName} is an unrestricted-length string.
@@ -1043,8 +1041,7 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#TTL
-     *                 TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 result_table}.
      *                         <li> {@link

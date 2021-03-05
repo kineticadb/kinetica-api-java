@@ -75,7 +75,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      * UPDATE_ON_EXISTING_PK}: Specifies the record collision policy for
      * inserting the source table records (specified by {@code
      * sourceTableName}) into the target table (specified by {@code tableName})
-     * table with a <a href="../../../../../concepts/tables.html#primary-keys"
+     * table with a <a href="../../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a>.  If set to {@code true}, any existing
      * target table record with primary key values that match those of a source
      * table record being inserted will be replaced by that new record.  If set
@@ -146,7 +146,7 @@ public class AppendRecordsRequest implements IndexedRecord {
          * Specifies the record collision policy for inserting the source table
          * records (specified by {@code sourceTableName}) into the target table
          * (specified by {@code tableName}) table with a <a
-         * href="../../../../../concepts/tables.html#primary-keys"
+         * href="../../../../../../concepts/tables/#primary-keys"
          * target="_top">primary key</a>.  If set to {@code true}, any existing
          * target table record with primary key values that match those of a
          * source table record being inserted will be replaced by that new
@@ -209,13 +209,13 @@ public class AppendRecordsRequest implements IndexedRecord {
      * 
      * @param tableName  The table name for the records to be appended, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * @param sourceTableName  The source table name to get records from, in
      *                         [schema_name.]table_name format, using standard
      *                         <a
-     *                         href="../../../../../concepts/tables.html#table-name-resolution"
+     *                         href="../../../../../../concepts/tables/#table-name-resolution"
      *                         target="_top">name resolution rules</a>.  Must
      *                         be an existing table name.
      * @param fieldMap  Contains the mapping of column names from the target
@@ -225,7 +225,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                  {@code sourceTableName}). Must be existing column names
      *                  in source table and target table, and their types must
      *                  be matched. For details on using expressions, see <a
-     *                  href="../../../../../concepts/expressions.html"
+     *                  href="../../../../../../concepts/expressions/"
      *                  target="_top">Expressions</a>.
      * @param options  Optional parameters.
      *                 <ul>
@@ -260,7 +260,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 policy for inserting the source table records (specified
      *                 by {@code sourceTableName}) into the target table
      *                 (specified by {@code tableName}) table with a <a
-     *                 href="../../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a>.  If set to {@code true},
      *                 any existing target table record with primary key values
      *                 that match those of a source table record being inserted
@@ -314,7 +314,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      * 
      * @return The table name for the records to be appended, in
      *         [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  Must be an existing
      *         table.
      * 
@@ -327,7 +327,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      * 
      * @param tableName  The table name for the records to be appended, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * 
@@ -343,7 +343,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      * 
      * @return The source table name to get records from, in
      *         [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  Must be an existing
      *         table name.
      * 
@@ -357,7 +357,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      * @param sourceTableName  The source table name to get records from, in
      *                         [schema_name.]table_name format, using standard
      *                         <a
-     *                         href="../../../../../concepts/tables.html#table-name-resolution"
+     *                         href="../../../../../../concepts/tables/#table-name-resolution"
      *                         target="_top">name resolution rules</a>.  Must
      *                         be an existing table name.
      * 
@@ -377,7 +377,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         table (specified by {@code sourceTableName}). Must be existing
      *         column names in source table and target table, and their types
      *         must be matched. For details on using expressions, see <a
-     *         href="../../../../../concepts/expressions.html"
+     *         href="../../../../../../concepts/expressions/"
      *         target="_top">Expressions</a>.
      * 
      */
@@ -394,7 +394,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                  {@code sourceTableName}). Must be existing column names
      *                  in source table and target table, and their types must
      *                  be matched. For details on using expressions, see <a
-     *                  href="../../../../../concepts/expressions.html"
+     *                  href="../../../../../../concepts/expressions/"
      *                  target="_top">Expressions</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -438,7 +438,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      *         for inserting the source table records (specified by {@code
      *         sourceTableName}) into the target table (specified by {@code
      *         tableName}) table with a <a
-     *         href="../../../../../concepts/tables.html#primary-keys"
+     *         href="../../../../../../concepts/tables/#primary-keys"
      *         target="_top">primary key</a>.  If set to {@code true}, any
      *         existing target table record with primary key values that match
      *         those of a source table record being inserted will be replaced
@@ -513,7 +513,7 @@ public class AppendRecordsRequest implements IndexedRecord {
      *                 policy for inserting the source table records (specified
      *                 by {@code sourceTableName}) into the target table
      *                 (specified by {@code tableName}) table with a <a
-     *                 href="../../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a>.  If set to {@code true},
      *                 any existing target table record with primary key values
      *                 that match those of a source table record being inserted

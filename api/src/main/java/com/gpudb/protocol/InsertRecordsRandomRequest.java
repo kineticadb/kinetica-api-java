@@ -488,7 +488,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      * 
      * @param tableName  Table to which random records will be added, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table, not a view.
      * @param count  Number of records to generate.
@@ -708,7 +708,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      * 
      * @return Table to which random records will be added, in
      *         [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  Must be an existing
      *         table, not a view.
      * 
@@ -721,7 +721,7 @@ public class InsertRecordsRandomRequest implements IndexedRecord {
      * 
      * @param tableName  Table to which random records will be added, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table, not a view.
      * 

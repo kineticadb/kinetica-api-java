@@ -182,13 +182,13 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String SCHEMA_NAME = "schema_name";
 
         /**
-         * The value of the <a href="../../../../../concepts/ttl.html"
+         * The value of the <a href="../../../../../../concepts/ttl/"
          * target="_top">time-to-live</a> setting.  Not present for schemas.
          */
         public static final String TABLE_TTL = "table_ttl";
 
         /**
-         * The remaining <a href="../../../../../concepts/ttl.html"
+         * The remaining <a href="../../../../../../concepts/ttl/"
          * target="_top">time-to-live</a>, in minutes, before the respective
          * table expires (-1 if it will never expire).  Not present for
          * schemas.
@@ -197,7 +197,7 @@ public class ShowTableResponse implements IndexedRecord {
 
         /**
          * Semicolon-separated list of <a
-         * href="../../../../../concepts/tables.html#foreign-key"
+         * href="../../../../../../concepts/tables/#foreign-key"
          * target="_top">foreign keys</a>, of the format 'source_column
          * references target_table(primary_key_column)'. Not present for
          * schemas.  The default value is ''.
@@ -212,24 +212,24 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String FOREIGN_SHARD_KEY = "foreign_shard_key";
 
         /**
-         * <a href="../../../../../concepts/tables.html#partitioning"
+         * <a href="../../../../../../concepts/tables/#partitioning"
          * target="_top">Partitioning</a> scheme used for this table
          * Supported values:
          * <ul>
          *         <li> {@link
          * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#RANGE RANGE}:
          * Using <a
-         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * href="../../../../../../concepts/tables/#partitioning-by-range"
          * target="_top">range partitioning</a>
          *         <li> {@link
          * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#INTERVAL
          * INTERVAL}: Using <a
-         * href="../../../../../concepts/tables.html#partitioning-by-interval"
+         * href="../../../../../../concepts/tables/#partitioning-by-interval"
          * target="_top">interval partitioning</a>
          *         <li> {@link
          * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#LIST LIST}:
          * Using <a
-         * href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+         * href="../../../../../../concepts/tables/#partitioning-by-list-manual"
          * target="_top">manual list partitioning</a>
          *         <li> {@link
          * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#NONE NONE}:
@@ -242,21 +242,21 @@ public class ShowTableResponse implements IndexedRecord {
 
         /**
          * Using <a
-         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * href="../../../../../../concepts/tables/#partitioning-by-range"
          * target="_top">range partitioning</a>
          */
         public static final String RANGE = "RANGE";
 
         /**
          * Using <a
-         * href="../../../../../concepts/tables.html#partitioning-by-interval"
+         * href="../../../../../../concepts/tables/#partitioning-by-interval"
          * target="_top">interval partitioning</a>
          */
         public static final String INTERVAL = "INTERVAL";
 
         /**
          * Using <a
-         * href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+         * href="../../../../../../concepts/tables/#partitioning-by-list-manual"
          * target="_top">manual list partitioning</a>
          */
         public static final String LIST = "LIST";
@@ -274,7 +274,7 @@ public class ShowTableResponse implements IndexedRecord {
         /**
          * Comma-separated list of partition definitions, whose format depends
          * on the partition_type.  See <a
-         * href="../../../../../concepts/tables.html#partitioning"
+         * href="../../../../../../concepts/tables/#partitioning"
          * target="_top">partitioning</a> documentation for details.  The
          * default value is ''.
          */
@@ -288,7 +288,7 @@ public class ShowTableResponse implements IndexedRecord {
 
         /**
          * Semicolon-separated list of columns that have <a
-         * href="../../../../../concepts/indexes.html#column-index"
+         * href="../../../../../../concepts/indexes/#column-index"
          * target="_top">indexes</a>. Not present for schemas.  The default
          * value is ''.
          */
@@ -296,7 +296,7 @@ public class ShowTableResponse implements IndexedRecord {
 
         /**
          * Semicolon-separated list of <a
-         * href="../../../../../concepts/compression.html"
+         * href="../../../../../../concepts/compression/"
          * target="_top">compressed</a> columns with the corresponding
          * compression type for each; e.g.:
          * {first_name,snappy};{last_name,lz4hc}. Not present for schemas.  The

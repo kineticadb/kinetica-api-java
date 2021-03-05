@@ -17,7 +17,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)}.
  * <p>
- * Creates a SQL-style <a href="../../../../../concepts/schemas.html"
+ * Creates a SQL-style <a href="../../../../../../concepts/schemas/"
  * target="_top">schema</a>. Schemas are containers for tables and views.
  * Multiple tables and views can be defined with the same name in different
  * schemas.
@@ -103,7 +103,7 @@ public class CreateSchemaRequest implements IndexedRecord {
      * 
      * @param schemaName  Name of the schema to be created.  Has the same
      *                    naming restrictions as <a
-     *                    href="../../../../../concepts/tables.html"
+     *                    href="../../../../../../concepts/tables/"
      *                    target="_top">tables</a>.
      * @param options  Optional parameters.
      *                 <ul>
@@ -135,7 +135,7 @@ public class CreateSchemaRequest implements IndexedRecord {
     /**
      * 
      * @return Name of the schema to be created.  Has the same naming
-     *         restrictions as <a href="../../../../../concepts/tables.html"
+     *         restrictions as <a href="../../../../../../concepts/tables/"
      *         target="_top">tables</a>.
      * 
      */
@@ -147,7 +147,7 @@ public class CreateSchemaRequest implements IndexedRecord {
      * 
      * @param schemaName  Name of the schema to be created.  Has the same
      *                    naming restrictions as <a
-     *                    href="../../../../../concepts/tables.html"
+     *                    href="../../../../../../concepts/tables/"
      *                    target="_top">tables</a>.
      * 
      * @return {@code this} to mimic the builder pattern.

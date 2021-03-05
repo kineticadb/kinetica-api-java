@@ -31,7 +31,7 @@ import org.apache.avro.generic.IndexedRecord;
  * {@link com.gpudb.GPUdb#clearTableMonitor(ClearTableMonitorRequest)}.
  * <p>
  * For more information on table monitors, see
- * <a href="../../../../../concepts/table_monitors.html" target="_top">Table
+ * <a href="../../../../../../concepts/table_monitors/" target="_top">Table
  * Monitors</a>.
  */
 public class CreateTableMonitorRequest implements IndexedRecord {
@@ -148,7 +148,7 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table to monitor, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param options  Optional parameters.
      *                 <ul>
@@ -189,7 +189,7 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      * 
      * @return Name of the table to monitor, in [schema_name.]table_name
      *         format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.
      * 
      */
@@ -201,7 +201,7 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table to monitor, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.

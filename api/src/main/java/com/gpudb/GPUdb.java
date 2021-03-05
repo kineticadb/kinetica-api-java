@@ -185,9 +185,8 @@ public class GPUdb extends GPUdbBase {
      *                 ACCEPTS_FAILOVER}: If set to {@code true}, the host will
      *                 accept processes (ranks, graph server, etc.) in the
      *                 event of a failover on another node in the cluster. See
-     *                 <a href="../../../../n_plus_1/index.html"
-     *                 target="_top">Cluster Resilience</a> for more
-     *                 information.
+     *                 <a href="../../../../../n_plus_1/" target="_top">Cluster
+     *                 Resilience</a> for more information.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -213,7 +212,7 @@ public class GPUdb extends GPUdbBase {
      *                 path URL to the host manager on the host being added,
      *                 e.g., 'http://172.123.45.67:9300'. The default host
      *                 manager port can be found in the <a
-     *                 href="../../../../install/shared/ports.html"
+     *                 href="../../../../../install/shared/ports/"
      *                 target="_top">list of ports</a> used by Kinetica.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminAddHostRequest.Options#RAM_LIMIT
@@ -347,13 +346,13 @@ public class GPUdb extends GPUdbBase {
      *                      "tier.ram.rank.limit":"10000000000"}'. Currently,
      *                      the available parameters are rank-specific
      *                      parameters in the <a
-     *                      href="../../../../config/index.html#network"
+     *                      href="../../../../../config/#network"
      *                      target="_top">Network</a>, <a
-     *                      href="../../../../config/index.html#hardware"
+     *                      href="../../../../../config/#hardware"
      *                      target="_top">Hardware</a>, <a
-     *                      href="../../../../config/index.html#text-search"
+     *                      href="../../../../../config/#text-search"
      *                      target="_top">Text Search</a>, and <a
-     *                      href="../../../../config/index.html#ram-tier"
+     *                      href="../../../../../config/#ram-tier"
      *                      target="_top">RAM Tiered Storage</a> sections in
      *                      the gpudb.conf file, with the key exception of the
      *                      'rankN.host' settings in the Network section that
@@ -445,9 +444,8 @@ public class GPUdb extends GPUdbBase {
      *                 ACCEPTS_FAILOVER}: If set to {@code true}, the host will
      *                 accept processes (ranks, graph server, etc.) in the
      *                 event of a failover on another node in the cluster. See
-     *                 <a href="../../../../n_plus_1/index.html"
-     *                 target="_top">Cluster Resilience</a> for more
-     *                 information.
+     *                 <a href="../../../../../n_plus_1/" target="_top">Cluster
+     *                 Resilience</a> for more information.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -484,7 +482,7 @@ public class GPUdb extends GPUdbBase {
      * the type of job and the current state of execution, the action may not
      * be successfully executed. The final result of the attempted actions for
      * each specified job is returned in the status array of the response. See
-     * <a href="../../../../admin/job_manager.html" target="_top">Job
+     * <a href="../../../../../admin/job_manager/" target="_top">Job
      * Manager</a> for more information.
      * 
      * @param request  Request object containing the parameters for the
@@ -510,7 +508,7 @@ public class GPUdb extends GPUdbBase {
      * the type of job and the current state of execution, the action may not
      * be successfully executed. The final result of the attempted actions for
      * each specified job is returned in the status array of the response. See
-     * <a href="../../../../admin/job_manager.html" target="_top">Job
+     * <a href="../../../../../admin/job_manager/" target="_top">Job
      * Manager</a> for more information.
      * 
      * @param jobIds  Jobs to be modified.
@@ -625,7 +623,7 @@ public class GPUdb extends GPUdbBase {
      * * If {@link GPUdb#adminRebalance(AdminRebalanceRequest)} is invoked
      * after a change is made to the
      *   cluster, e.g., a host was added or removed,
-     *   <a href="../../../../concepts/tables.html#sharding"
+     *   <a href="../../../../../concepts/tables/#sharding"
      * target="_top">sharded data</a> will be
      *   evenly redistributed across the cluster by number of shards per rank
      *   while unsharded data will be redistributed across the cluster by data
@@ -633,7 +631,7 @@ public class GPUdb extends GPUdbBase {
      * * If {@link GPUdb#adminRebalance(AdminRebalanceRequest)} is invoked at
      * some point when unsharded
      *   data (a.k.a.
-     *   <a href="../../../../concepts/tables.html#random-sharding"
+     *   <a href="../../../../../concepts/tables/#random-sharding"
      * target="_top">randomly-sharded</a>)
      *   in the cluster is unevenly distributed over time, sharded data will
      *   not move while unsharded data will be redistributed across the
@@ -675,7 +673,7 @@ public class GPUdb extends GPUdbBase {
      * * If {@link GPUdb#adminRebalance(Map)} is invoked after a change is made
      * to the
      *   cluster, e.g., a host was added or removed,
-     *   <a href="../../../../concepts/tables.html#sharding"
+     *   <a href="../../../../../concepts/tables/#sharding"
      * target="_top">sharded data</a> will be
      *   evenly redistributed across the cluster by number of shards per rank
      *   while unsharded data will be redistributed across the cluster by data
@@ -683,7 +681,7 @@ public class GPUdb extends GPUdbBase {
      * * If {@link GPUdb#adminRebalance(Map)} is invoked at some point when
      * unsharded
      *   data (a.k.a.
-     *   <a href="../../../../concepts/tables.html#random-sharding"
+     *   <a href="../../../../../concepts/tables/#random-sharding"
      * target="_top">randomly-sharded</a>)
      *   in the cluster is unevenly distributed over time, sharded data will
      *   not move while unsharded data will be redistributed across the
@@ -701,7 +699,7 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_SHARDED_DATA
      *                 REBALANCE_SHARDED_DATA}: If {@code true}, <a
-     *                 href="../../../../concepts/tables.html#sharding"
+     *                 href="../../../../../concepts/tables/#sharding"
      *                 target="_top">sharded data</a> will be rebalanced
      *                 approximately equally across the cluster. Note that for
      *                 clusters with large amounts of sharded data, this data
@@ -723,7 +721,7 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.AdminRebalanceRequest.Options#REBALANCE_UNSHARDED_DATA
      *                 REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded
      *                 data (a.k.a. <a
-     *                 href="../../../../concepts/tables.html#random-sharding"
+     *                 href="../../../../../concepts/tables/#random-sharding"
      *                 target="_top">randomly-sharded</a>) will be rebalanced
      *                 approximately equally across the cluster. Note that for
      *                 clusters with large amounts of unsharded data, this data
@@ -930,9 +928,9 @@ public class GPUdb extends GPUdbBase {
      * the {@code rebalance_sharded_data} or {@code rebalance_unsharded_data}
      * parameters are set to {@code false} in the {@code options}, in which
      * case the corresponding <a
-     * href="../../../../concepts/tables.html#sharding" target="_top">sharded
+     * href="../../../../../concepts/tables/#sharding" target="_top">sharded
      * data</a> and/or unsharded data (a.k.a. <a
-     * href="../../../../concepts/tables.html#random-sharding"
+     * href="../../../../../concepts/tables/#random-sharding"
      * target="_top">randomly-sharded</a>) will be deleted.
      * <p>
      * The database must be offline for this operation, see {@link
@@ -967,9 +965,9 @@ public class GPUdb extends GPUdbBase {
      * the {@code rebalance_sharded_data} or {@code rebalance_unsharded_data}
      * parameters are set to {@code false} in the {@code options}, in which
      * case the corresponding <a
-     * href="../../../../concepts/tables.html#sharding" target="_top">sharded
+     * href="../../../../../concepts/tables/#sharding" target="_top">sharded
      * data</a> and/or unsharded data (a.k.a. <a
-     * href="../../../../concepts/tables.html#random-sharding"
+     * href="../../../../../concepts/tables/#random-sharding"
      * target="_top">randomly-sharded</a>) will be deleted.
      * <p>
      * The database must be offline for this operation, see {@link
@@ -995,7 +993,7 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_SHARDED_DATA
      *                 REBALANCE_SHARDED_DATA}: If {@code true}, <a
-     *                 href="../../../../concepts/tables.html#sharding"
+     *                 href="../../../../../concepts/tables/#sharding"
      *                 target="_top">sharded data</a> will be rebalanced
      *                 approximately equally across the cluster. Note that for
      *                 clusters with large amounts of sharded data, this data
@@ -1017,7 +1015,7 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.AdminRemoveRanksRequest.Options#REBALANCE_UNSHARDED_DATA
      *                 REBALANCE_UNSHARDED_DATA}: If {@code true}, unsharded
      *                 data (a.k.a. <a
-     *                 href="../../../../concepts/tables.html#random-sharding"
+     *                 href="../../../../../concepts/tables/#random-sharding"
      *                 target="_top">randomly-sharded</a>) will be rebalanced
      *                 approximately equally across the cluster. Note that for
      *                 clusters with large amounts of unsharded data, this data
@@ -1352,7 +1350,7 @@ public class GPUdb extends GPUdbBase {
      *                   another host. Options are 'hostN' and 'rankN' where
      *                   'N' corresponds to the number associated with a host
      *                   or rank in the <a
-     *                   href="../../../../config/index.html#network"
+     *                   href="../../../../../config/#network"
      *                   target="_top">Network</a> section of the gpudb.conf
      *                   file, e.g., 'host[N].address' or 'rank[N].host'. If
      *                   'hostN' is provided, all processes on that host will
@@ -1364,7 +1362,7 @@ public class GPUdb extends GPUdbBase {
      *                      Each index must be specified as 'hostN' where 'N'
      *                      corresponds to the number associated with a host or
      *                      rank in the <a
-     *                      href="../../../../config/index.html#network"
+     *                      href="../../../../../config/#network"
      *                      target="_top">Network</a> section of the gpudb.conf
      *                      file, e.g., 'host[N].address'. Each entry in this
      *                      array will receive the corresponding process entry
@@ -1563,7 +1561,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of table on which the operation will be
      *                   performed. Must be an existing table, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param xColumnName  Name of the column containing the x coordinates of
      *                     the points for the operation being performed.
@@ -1595,15 +1593,15 @@ public class GPUdb extends GPUdbBase {
      * BY.
      * <p>
      * For aggregation details and examples, see <a
-     * href="../../../../concepts/aggregation.html"
+     * href="../../../../../concepts/aggregation/"
      * target="_top">Aggregation</a>.  For limitations, see <a
-     * href="../../../../concepts/aggregation.html#limitations"
+     * href="../../../../../concepts/aggregation/#limitations"
      * target="_top">Aggregation Limitations</a>.
      * <p>
      * Any column(s) can be grouped on, and all column types except
      * unrestricted-length strings may be used for computing applicable
      * aggregates; columns marked as <a
-     * href="../../../../concepts/types.html#data-handling"
+     * href="../../../../../concepts/types/#data-handling"
      * target="_top">store-only</a> are unable to be used in grouping or
      * aggregation.
      * <p>
@@ -1622,36 +1620,36 @@ public class GPUdb extends GPUdbBase {
      * column_names=['x','y','count(*)','sum(z)'].
      * <p>
      * Available <a
-     * href="../../../../concepts/expressions.html#aggregate-expressions"
+     * href="../../../../../concepts/expressions/#aggregate-expressions"
      * target="_top">aggregation functions</a> are: count(*), sum, min, max,
      * avg, mean, stddev, stddev_pop, stddev_samp, var, var_pop, var_samp,
      * arg_min, arg_max and count_distinct.
      * <p>
      * Available grouping functions are <a
-     * href="../../../../concepts/rollup.html" target="_top">Rollup</a>, <a
-     * href="../../../../concepts/cube.html" target="_top">Cube</a>, and <a
-     * href="../../../../concepts/grouping_sets.html" target="_top">Grouping
+     * href="../../../../../concepts/rollup/" target="_top">Rollup</a>, <a
+     * href="../../../../../concepts/cube/" target="_top">Cube</a>, and <a
+     * href="../../../../../concepts/grouping_sets/" target="_top">Grouping
      * Sets</a>
      * <p>
      * This service also provides support for <a
-     * href="../../../../concepts/pivot.html" target="_top">Pivot</a>
+     * href="../../../../../concepts/pivot/" target="_top">Pivot</a>
      * operations.
      * <p>
      * Filtering on aggregates is supported via expressions using <a
-     * href="../../../../concepts/expressions.html#aggregate-expressions"
+     * href="../../../../../concepts/expressions/#aggregate-expressions"
      * target="_top">aggregation functions</a> supplied to {@code having}.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
-     * schemas documentation</a>.
+     * href="../../../../../api/#dynamic-schemas" target="_top">dynamic schemas
+     * documentation</a>.
      * <p>
      * If a {@code result_table} name is specified in the {@code options}, the
      * results are stored in a new table with that name--no results are
      * returned in the response.  Both the table name and resulting column
-     * names must adhere to <a href="../../../../concepts/tables.html#table"
+     * names must adhere to <a href="../../../../../concepts/tables/#table"
      * target="_top">standard naming conventions</a>; column/aggregation
      * expressions will need to be aliased.  If the source table's <a
-     * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
+     * href="../../../../../concepts/tables/#shard-keys" target="_top">shard
      * key</a> is used as the grouping column(s) and all result records are
      * selected ({@code offset} is 0 and {@code limit} is -9999), the result
      * table will be sharded, in all other cases it will be replicated.
@@ -1685,15 +1683,15 @@ public class GPUdb extends GPUdbBase {
      * BY.
      * <p>
      * For aggregation details and examples, see <a
-     * href="../../../../concepts/aggregation.html"
+     * href="../../../../../concepts/aggregation/"
      * target="_top">Aggregation</a>.  For limitations, see <a
-     * href="../../../../concepts/aggregation.html#limitations"
+     * href="../../../../../concepts/aggregation/#limitations"
      * target="_top">Aggregation Limitations</a>.
      * <p>
      * Any column(s) can be grouped on, and all column types except
      * unrestricted-length strings may be used for computing applicable
      * aggregates; columns marked as <a
-     * href="../../../../concepts/types.html#data-handling"
+     * href="../../../../../concepts/types/#data-handling"
      * target="_top">store-only</a> are unable to be used in grouping or
      * aggregation.
      * <p>
@@ -1712,36 +1710,36 @@ public class GPUdb extends GPUdbBase {
      * column_names=['x','y','count(*)','sum(z)'].
      * <p>
      * Available <a
-     * href="../../../../concepts/expressions.html#aggregate-expressions"
+     * href="../../../../../concepts/expressions/#aggregate-expressions"
      * target="_top">aggregation functions</a> are: count(*), sum, min, max,
      * avg, mean, stddev, stddev_pop, stddev_samp, var, var_pop, var_samp,
      * arg_min, arg_max and count_distinct.
      * <p>
      * Available grouping functions are <a
-     * href="../../../../concepts/rollup.html" target="_top">Rollup</a>, <a
-     * href="../../../../concepts/cube.html" target="_top">Cube</a>, and <a
-     * href="../../../../concepts/grouping_sets.html" target="_top">Grouping
+     * href="../../../../../concepts/rollup/" target="_top">Rollup</a>, <a
+     * href="../../../../../concepts/cube/" target="_top">Cube</a>, and <a
+     * href="../../../../../concepts/grouping_sets/" target="_top">Grouping
      * Sets</a>
      * <p>
      * This service also provides support for <a
-     * href="../../../../concepts/pivot.html" target="_top">Pivot</a>
+     * href="../../../../../concepts/pivot/" target="_top">Pivot</a>
      * operations.
      * <p>
      * Filtering on aggregates is supported via expressions using <a
-     * href="../../../../concepts/expressions.html#aggregate-expressions"
+     * href="../../../../../concepts/expressions/#aggregate-expressions"
      * target="_top">aggregation functions</a> supplied to {@code having}.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
-     * schemas documentation</a>.
+     * href="../../../../../api/#dynamic-schemas" target="_top">dynamic schemas
+     * documentation</a>.
      * <p>
      * If a {@code result_table} name is specified in the {@code options}, the
      * results are stored in a new table with that name--no results are
      * returned in the response.  Both the table name and resulting column
-     * names must adhere to <a href="../../../../concepts/tables.html#table"
+     * names must adhere to <a href="../../../../../concepts/tables/#table"
      * target="_top">standard naming conventions</a>; column/aggregation
      * expressions will need to be aliased.  If the source table's <a
-     * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
+     * href="../../../../../concepts/tables/#shard-keys" target="_top">shard
      * key</a> is used as the grouping column(s) and all result records are
      * selected ({@code offset} is 0 and {@code limit} is -9999), the result
      * table will be sharded, in all other cases it will be replicated.
@@ -1784,15 +1782,15 @@ public class GPUdb extends GPUdbBase {
      * BY.
      * <p>
      * For aggregation details and examples, see <a
-     * href="../../../../concepts/aggregation.html"
+     * href="../../../../../concepts/aggregation/"
      * target="_top">Aggregation</a>.  For limitations, see <a
-     * href="../../../../concepts/aggregation.html#limitations"
+     * href="../../../../../concepts/aggregation/#limitations"
      * target="_top">Aggregation Limitations</a>.
      * <p>
      * Any column(s) can be grouped on, and all column types except
      * unrestricted-length strings may be used for computing applicable
      * aggregates; columns marked as <a
-     * href="../../../../concepts/types.html#data-handling"
+     * href="../../../../../concepts/types/#data-handling"
      * target="_top">store-only</a> are unable to be used in grouping or
      * aggregation.
      * <p>
@@ -1811,36 +1809,36 @@ public class GPUdb extends GPUdbBase {
      * column_names=['x','y','count(*)','sum(z)'].
      * <p>
      * Available <a
-     * href="../../../../concepts/expressions.html#aggregate-expressions"
+     * href="../../../../../concepts/expressions/#aggregate-expressions"
      * target="_top">aggregation functions</a> are: count(*), sum, min, max,
      * avg, mean, stddev, stddev_pop, stddev_samp, var, var_pop, var_samp,
      * arg_min, arg_max and count_distinct.
      * <p>
      * Available grouping functions are <a
-     * href="../../../../concepts/rollup.html" target="_top">Rollup</a>, <a
-     * href="../../../../concepts/cube.html" target="_top">Cube</a>, and <a
-     * href="../../../../concepts/grouping_sets.html" target="_top">Grouping
+     * href="../../../../../concepts/rollup/" target="_top">Rollup</a>, <a
+     * href="../../../../../concepts/cube/" target="_top">Cube</a>, and <a
+     * href="../../../../../concepts/grouping_sets/" target="_top">Grouping
      * Sets</a>
      * <p>
      * This service also provides support for <a
-     * href="../../../../concepts/pivot.html" target="_top">Pivot</a>
+     * href="../../../../../concepts/pivot/" target="_top">Pivot</a>
      * operations.
      * <p>
      * Filtering on aggregates is supported via expressions using <a
-     * href="../../../../concepts/expressions.html#aggregate-expressions"
+     * href="../../../../../concepts/expressions/#aggregate-expressions"
      * target="_top">aggregation functions</a> supplied to {@code having}.
      * <p>
      * The response is returned as a dynamic schema. For details see: <a
-     * href="../../../../api/index.html#dynamic-schemas" target="_top">dynamic
-     * schemas documentation</a>.
+     * href="../../../../../api/#dynamic-schemas" target="_top">dynamic schemas
+     * documentation</a>.
      * <p>
      * If a {@code result_table} name is specified in the {@code options}, the
      * results are stored in a new table with that name--no results are
      * returned in the response.  Both the table name and resulting column
-     * names must adhere to <a href="../../../../concepts/tables.html#table"
+     * names must adhere to <a href="../../../../../concepts/tables/#table"
      * target="_top">standard naming conventions</a>; column/aggregation
      * expressions will need to be aliased.  If the source table's <a
-     * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
+     * href="../../../../../concepts/tables/#shard-keys" target="_top">shard
      * key</a> is used as the grouping column(s) and all result records are
      * selected ({@code offset} is 0 and {@code limit} is -9999), the result
      * table will be sharded, in all other cases it will be replicated.
@@ -1852,7 +1850,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of an existing table or view on which the
      *                   operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnNames  List of one or more column names, expressions, and
      *                     aggregate expressions.
@@ -1865,7 +1863,7 @@ public class GPUdb extends GPUdbBase {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../config/index.html#general"
+     *               href="../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -1936,9 +1934,9 @@ public class GPUdb extends GPUdbBase {
      *                 RESULT_TABLE}: The name of a table used to store the
      *                 results, in [schema_name.]table_name format, using
      *                 standard <a
-     *                 href="../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  Column names
      *                 (group-by and aggregate fields) need to be given aliases
      *                 e.g. ["FChar256 as fchar256", "sum(FDouble) as sfd"].
@@ -2002,7 +2000,7 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TTL
-     *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 result_table}.
      *                         <li> {@link
@@ -2023,13 +2021,13 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../rm/concepts.html"
+     *                 href="../../../../../rm/concepts/"
      *                 target="_top">Resource Management Concepts</a> for
      *                 information about how resources are managed, <a
-     *                 href="../../../../rm/concepts.html" target="_top">Tier
+     *                 href="../../../../../rm/concepts/" target="_top">Tier
      *                 Strategy Concepts</a> for how resources are targeted for
      *                 VRAM, and <a
-     *                 href="../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../rm/usage/#tier-strategies"
      *                 target="_top">Tier Strategy Usage</a> for how to specify
      *                 a table's priority in VRAM.
      *                 Supported values:
@@ -2154,7 +2152,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnName  Name of a column or an expression of one or more
      *                    column names over which the histogram will be
@@ -2251,7 +2249,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnNames  List of column names on which the operation would be
      *                     performed. If n columns are provided then each of
@@ -2323,7 +2321,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnName  Name of a column or an expression of one or more
      *                    column on which the min-max will be calculated.
@@ -2375,7 +2373,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnName  Name of a geospatial geometry column on which the
      *                    min-max will be calculated.
@@ -2541,7 +2539,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table on which the statistics operation
      *                   will be performed, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnName  Name of the primary column for which the statistics
      *                    are to be calculated.
@@ -2737,7 +2735,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table on which the ranged-statistics
      *                   operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param selectExpression  For a non-empty expression statistics are
      *                          calculated for those records for which the
@@ -2804,8 +2802,7 @@ public class GPUdb extends GPUdbBase {
      * offset}
      * and {@code limit} parameters.
      * <p>
-     * Columns marked as <a
-     * href="../../../../concepts/types.html#data-handling"
+     * Columns marked as <a href="../../../../../concepts/types/#data-handling"
      * target="_top">store-only</a>
      * are unable to be used with this function.
      * <p>
@@ -2816,8 +2813,8 @@ public class GPUdb extends GPUdbBase {
      * {"limit":"10","sort_order":"descending"}.
      * <p>
      * The response is returned as a dynamic schema. For details see:
-     * <a href="../../../../api/index.html#dynamic-schemas"
-     * target="_top">dynamic schemas documentation</a>.
+     * <a href="../../../../../api/#dynamic-schemas" target="_top">dynamic
+     * schemas documentation</a>.
      * <p>
      * If a {@code result_table} name is specified in the
      * {@code options}, the results are stored in a new table with that
@@ -2825,11 +2822,11 @@ public class GPUdb extends GPUdbBase {
      * results are returned in the response.  Both the table name and resulting
      * column
      * name must adhere to
-     * <a href="../../../../concepts/tables.html#table" target="_top">standard
+     * <a href="../../../../../concepts/tables/#table" target="_top">standard
      * naming conventions</a>;
      * any column expression will need to be aliased.  If the source table's
-     * <a href="../../../../concepts/tables.html#shard-keys"
-     * target="_top">shard key</a> is used as the
+     * <a href="../../../../../concepts/tables/#shard-keys" target="_top">shard
+     * key</a> is used as the
      * {@code columnName}, the result table will be sharded, in all other cases
      * it
      * will be replicated.  Sorting will properly function only if the result
@@ -2868,8 +2865,7 @@ public class GPUdb extends GPUdbBase {
      * offset}
      * and {@code limit} parameters.
      * <p>
-     * Columns marked as <a
-     * href="../../../../concepts/types.html#data-handling"
+     * Columns marked as <a href="../../../../../concepts/types/#data-handling"
      * target="_top">store-only</a>
      * are unable to be used with this function.
      * <p>
@@ -2880,8 +2876,8 @@ public class GPUdb extends GPUdbBase {
      * {"limit":"10","sort_order":"descending"}.
      * <p>
      * The response is returned as a dynamic schema. For details see:
-     * <a href="../../../../api/index.html#dynamic-schemas"
-     * target="_top">dynamic schemas documentation</a>.
+     * <a href="../../../../../api/#dynamic-schemas" target="_top">dynamic
+     * schemas documentation</a>.
      * <p>
      * If a {@code result_table} name is specified in the
      * {@code options}, the results are stored in a new table with that
@@ -2889,11 +2885,11 @@ public class GPUdb extends GPUdbBase {
      * results are returned in the response.  Both the table name and resulting
      * column
      * name must adhere to
-     * <a href="../../../../concepts/tables.html#table" target="_top">standard
+     * <a href="../../../../../concepts/tables/#table" target="_top">standard
      * naming conventions</a>;
      * any column expression will need to be aliased.  If the source table's
-     * <a href="../../../../concepts/tables.html#shard-keys"
-     * target="_top">shard key</a> is used as the
+     * <a href="../../../../../concepts/tables/#shard-keys" target="_top">shard
+     * key</a> is used as the
      * {@code columnName}, the result table will be sharded, in all other cases
      * it
      * will be replicated.  Sorting will properly function only if the result
@@ -2941,8 +2937,7 @@ public class GPUdb extends GPUdbBase {
      * offset}
      * and {@code limit} parameters.
      * <p>
-     * Columns marked as <a
-     * href="../../../../concepts/types.html#data-handling"
+     * Columns marked as <a href="../../../../../concepts/types/#data-handling"
      * target="_top">store-only</a>
      * are unable to be used with this function.
      * <p>
@@ -2953,8 +2948,8 @@ public class GPUdb extends GPUdbBase {
      * {"limit":"10","sort_order":"descending"}.
      * <p>
      * The response is returned as a dynamic schema. For details see:
-     * <a href="../../../../api/index.html#dynamic-schemas"
-     * target="_top">dynamic schemas documentation</a>.
+     * <a href="../../../../../api/#dynamic-schemas" target="_top">dynamic
+     * schemas documentation</a>.
      * <p>
      * If a {@code result_table} name is specified in the
      * {@code options}, the results are stored in a new table with that
@@ -2962,11 +2957,11 @@ public class GPUdb extends GPUdbBase {
      * results are returned in the response.  Both the table name and resulting
      * column
      * name must adhere to
-     * <a href="../../../../concepts/tables.html#table" target="_top">standard
+     * <a href="../../../../../concepts/tables/#table" target="_top">standard
      * naming conventions</a>;
      * any column expression will need to be aliased.  If the source table's
-     * <a href="../../../../concepts/tables.html#shard-keys"
-     * target="_top">shard key</a> is used as the
+     * <a href="../../../../../concepts/tables/#shard-keys" target="_top">shard
+     * key</a> is used as the
      * {@code columnName}, the result table will be sharded, in all other cases
      * it
      * will be replicated.  Sorting will properly function only if the result
@@ -2979,7 +2974,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of an existing table or view on which the
      *                   operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnName  Name of the column or an expression containing one or
      *                    more column names on which the unique function would
@@ -2993,7 +2988,7 @@ public class GPUdb extends GPUdbBase {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../config/index.html#general"
+     *               href="../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -3035,9 +3030,9 @@ public class GPUdb extends GPUdbBase {
      *                 RESULT_TABLE}: The name of the table used to store the
      *                 results, in [schema_name.]table_name format, using
      *                 standard <a
-     *                 href="../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  If present, no
      *                 results are returned in the response.  Not available if
      *                 {@code columnName} is an unrestricted-length string.
@@ -3097,7 +3092,7 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#TTL
-     *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 result_table}.
      *                         <li> {@link
@@ -3138,9 +3133,9 @@ public class GPUdb extends GPUdbBase {
      * Rotate the column values into rows values.
      * <p>
      * For unpivot details and examples, see
-     * <a href="../../../../concepts/unpivot.html" target="_top">Unpivot</a>.
+     * <a href="../../../../../concepts/unpivot/" target="_top">Unpivot</a>.
      * For limitations, see
-     * <a href="../../../../concepts/unpivot.html#limitations"
+     * <a href="../../../../../concepts/unpivot/#limitations"
      * target="_top">Unpivot Limitations</a>.
      * <p>
      * Unpivot is used to normalize tables that are built for cross tabular
@@ -3156,8 +3151,8 @@ public class GPUdb extends GPUdbBase {
      * and values respectively.
      * <p>
      * The response is returned as a dynamic schema. For details see:
-     * <a href="../../../../api/index.html#dynamic-schemas"
-     * target="_top">dynamic schemas documentation</a>.
+     * <a href="../../../../../api/#dynamic-schemas" target="_top">dynamic
+     * schemas documentation</a>.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -3181,9 +3176,9 @@ public class GPUdb extends GPUdbBase {
      * Rotate the column values into rows values.
      * <p>
      * For unpivot details and examples, see
-     * <a href="../../../../concepts/unpivot.html" target="_top">Unpivot</a>.
+     * <a href="../../../../../concepts/unpivot/" target="_top">Unpivot</a>.
      * For limitations, see
-     * <a href="../../../../concepts/unpivot.html#limitations"
+     * <a href="../../../../../concepts/unpivot/#limitations"
      * target="_top">Unpivot Limitations</a>.
      * <p>
      * Unpivot is used to normalize tables that are built for cross tabular
@@ -3199,8 +3194,8 @@ public class GPUdb extends GPUdbBase {
      * and values respectively.
      * <p>
      * The response is returned as a dynamic schema. For details see:
-     * <a href="../../../../api/index.html#dynamic-schemas"
-     * target="_top">dynamic schemas documentation</a>.
+     * <a href="../../../../../api/#dynamic-schemas" target="_top">dynamic
+     * schemas documentation</a>.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -3234,9 +3229,9 @@ public class GPUdb extends GPUdbBase {
      * Rotate the column values into rows values.
      * <p>
      * For unpivot details and examples, see
-     * <a href="../../../../concepts/unpivot.html" target="_top">Unpivot</a>.
+     * <a href="../../../../../concepts/unpivot/" target="_top">Unpivot</a>.
      * For limitations, see
-     * <a href="../../../../concepts/unpivot.html#limitations"
+     * <a href="../../../../../concepts/unpivot/#limitations"
      * target="_top">Unpivot Limitations</a>.
      * <p>
      * Unpivot is used to normalize tables that are built for cross tabular
@@ -3252,13 +3247,13 @@ public class GPUdb extends GPUdbBase {
      * and values respectively.
      * <p>
      * The response is returned as a dynamic schema. For details see:
-     * <a href="../../../../api/index.html#dynamic-schemas"
-     * target="_top">dynamic schemas documentation</a>.
+     * <a href="../../../../../api/#dynamic-schemas" target="_top">dynamic
+     * schemas documentation</a>.
      * 
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table/view, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnNames  List of column names or expressions. A wildcard '*'
      *                     can be used to include all the non-pivoted columns
@@ -3286,9 +3281,9 @@ public class GPUdb extends GPUdbBase {
      *                 RESULT_TABLE}: The name of a table used to store the
      *                 results, in [schema_name.]table_name format, using
      *                 standard <a
-     *                 href="../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>. If present, no
      *                 results are returned in the response.
      *                         <li> {@link
@@ -3334,7 +3329,7 @@ public class GPUdb extends GPUdbBase {
      *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL
-     *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 result_table}.
      *                         <li> {@link
@@ -3344,13 +3339,13 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../rm/concepts.html"
+     *                 href="../../../../../rm/concepts/"
      *                 target="_top">Resource Management Concepts</a> for
      *                 information about how resources are managed, <a
-     *                 href="../../../../rm/concepts.html" target="_top">Tier
+     *                 href="../../../../../rm/concepts/" target="_top">Tier
      *                 Strategy Concepts</a> for how resources are targeted for
      *                 VRAM, and <a
-     *                 href="../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../rm/usage/#tier-strategies"
      *                 target="_top">Tier Strategy Usage</a> for how to specify
      *                 a table's priority in VRAM.
      *                 Supported values:
@@ -3417,8 +3412,99 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Alter the properties of an existing <a
+     * href="../../../../../concepts/credentials/"
+     * target="_top">credential</a>.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AlterCredentialResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AlterCredentialResponse alterCredential(AlterCredentialRequest request) throws GPUdbException {
+        AlterCredentialResponse actualResponse_ = new AlterCredentialResponse();
+        submitRequest("/alter/credential", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Alter the properties of an existing <a
+     * href="../../../../../concepts/credentials/"
+     * target="_top">credential</a>.
+     * 
+     * @param credentialName  Name of the credential to be altered. Must be an
+     *                        existing credential.
+     * @param credentialUpdatesMap  Map containing the properties of the
+     *                              credential to be updated. Error if empty.
+     *                              <ul>
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#TYPE
+     *                              TYPE}: New type for the credential.
+     *                              Supported values:
+     *                              <ul>
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#AWS_ACCESS_KEY
+     *                              AWS_ACCESS_KEY}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#AWS_IAM_ROLE
+     *                              AWS_IAM_ROLE}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#AZURE_AD
+     *                              AZURE_AD}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#AZURE_OAUTH
+     *                              AZURE_OAUTH}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#AZURE_SAS
+     *                              AZURE_SAS}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#AZURE_STORAGE_KEY
+     *                              AZURE_STORAGE_KEY}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#DOCKER
+     *                              DOCKER}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#HDFS
+     *                              HDFS}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#KAFKA
+     *                              KAFKA}
+     *                              </ul>
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#IDENTITY
+     *                              IDENTITY}: New user for the credential
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterCredentialRequest.CredentialUpdatesMap#SECRET
+     *                              SECRET}: New password for the credential
+     *                              </ul>
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AlterCredentialResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AlterCredentialResponse alterCredential(String credentialName, Map<String, String> credentialUpdatesMap, Map<String, String> options) throws GPUdbException {
+        AlterCredentialRequest actualRequest_ = new AlterCredentialRequest(credentialName, credentialUpdatesMap, options);
+        AlterCredentialResponse actualResponse_ = new AlterCredentialResponse();
+        submitRequest("/alter/credential", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Alters the properties of an existing <a
-     * href="../../../../concepts/data_sources.html" target="_top">data
+     * href="../../../../../concepts/data_sources/" target="_top">data
      * source</a>
      * 
      * @param request  Request object containing the parameters for the
@@ -3441,7 +3527,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Alters the properties of an existing <a
-     * href="../../../../concepts/data_sources.html" target="_top">data
+     * href="../../../../../concepts/data_sources/" target="_top">data
      * source</a>
      * 
      * @param name  Name of the data source to be altered. Must be an existing
@@ -3489,6 +3575,10 @@ public class GPUdb extends GPUdbBase {
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#WAIT_TIMEOUT
      *                              WAIT_TIMEOUT}: Timeout in seconds for
      *                              reading from this storage provider
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#CREDENTIAL
+     *                              CREDENTIAL}: Name of the Credential object
+     *                              to be used in data source
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_BUCKET_NAME
      *                              S3_BUCKET_NAME}: Name of the Amazon S3
@@ -3558,6 +3648,23 @@ public class GPUdb extends GPUdbBase {
         AlterDatasourceRequest actualRequest_ = new AlterDatasourceRequest(name, datasourceUpdatesMap, options);
         AlterDatasourceResponse actualResponse_ = new AlterDatasourceResponse();
         submitRequest("/alter/datasource", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public AlterModelResponse alterModel(AlterModelRequest request) throws GPUdbException {
+        AlterModelResponse actualResponse_ = new AlterModelResponse();
+        submitRequest("/alter/model", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public AlterModelResponse alterModel(String modelName, String action, String value, Map<String, String> options) throws GPUdbException {
+        AlterModelRequest actualRequest_ = new AlterModelRequest(modelName, action, value, options);
+        AlterModelResponse actualResponse_ = new AlterModelResponse();
+        submitRequest("/alter/model", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -3749,7 +3856,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Used to change the name of a SQL-style <a
-     * href="../../../../concepts/schemas.html" target="_top">schema</a>,
+     * href="../../../../../concepts/schemas/" target="_top">schema</a>,
      * specified in {@code schemaName}.
      * 
      * @param request  Request object containing the parameters for the
@@ -3772,7 +3879,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Used to change the name of a SQL-style <a
-     * href="../../../../concepts/schemas.html" target="_top">schema</a>,
+     * href="../../../../../concepts/schemas/" target="_top">schema</a>,
      * specified in {@code schemaName}.
      * 
      * @param schemaName  Name of the schema to be altered.
@@ -3783,7 +3890,7 @@ public class GPUdb extends GPUdbBase {
      *                com.gpudb.protocol.AlterSchemaRequest.Action#RENAME_SCHEMA
      *                RENAME_SCHEMA}: Renames a schema to {@code value}. Has
      *                the same naming restrictions as <a
-     *                href="../../../../concepts/tables.html"
+     *                href="../../../../../concepts/tables/"
      *                target="_top">tables</a>.
      *                </ul>
      * @param value  The value of the modification, depending on {@code
@@ -4040,15 +4147,15 @@ public class GPUdb extends GPUdbBase {
      * available modifications include the following:
      * <p>
      * Manage a table's columns--a column can be added, removed, or have its
-     * <a href="../../../../concepts/types.html" target="_top">type and
+     * <a href="../../../../../concepts/types/" target="_top">type and
      * properties</a> modified, including
-     * whether it is <a href="../../../../concepts/compression.html"
+     * whether it is <a href="../../../../../concepts/compression/"
      * target="_top">compressed</a> or not.
      * <p>
      * External tables cannot be modified except for their refresh method.
      * <p>
      * Create or delete an <a
-     * href="../../../../concepts/indexes.html#column-index"
+     * href="../../../../../concepts/indexes/#column-index"
      * target="_top">index</a> on a
      * particular column. This can speed up certain operations when using
      * expressions
@@ -4056,30 +4163,28 @@ public class GPUdb extends GPUdbBase {
      * only
      * applies to tables.
      * <p>
-     * Create or delete a <a
-     * href="../../../../concepts/tables.html#foreign-key"
+     * Create or delete a <a href="../../../../../concepts/tables/#foreign-key"
      * target="_top">foreign key</a>
      * on a particular column.
      * <p>
      * Manage a
-     * <a href="../../../../concepts/tables.html#partitioning-by-range"
+     * <a href="../../../../../concepts/tables/#partitioning-by-range"
      * target="_top">range-partitioned</a> or a
-     * <a href="../../../../concepts/tables.html#partitioning-by-list-manual"
+     * <a href="../../../../../concepts/tables/#partitioning-by-list-manual"
      * target="_top">manual list-partitioned</a>
      * table's partitions.
      * <p>
-     * Set (or reset) the <a
-     * href="../../../../rm/concepts.html#tier-strategies" target="_top">tier
-     * strategy</a>
+     * Set (or reset) the <a href="../../../../../rm/concepts/#tier-strategies"
+     * target="_top">tier strategy</a>
      * of a table or view.
      * <p>
      * Refresh and manage the refresh mode of a
-     * <a href="../../../../concepts/materialized_views.html"
+     * <a href="../../../../../concepts/materialized_views/"
      * target="_top">materialized view</a> or an
-     * <a href="../../../../concepts/external_tables.html"
+     * <a href="../../../../../concepts/external_tables/"
      * target="_top">external table</a>.
      * <p>
-     * Set the <a href="../../../../concepts/ttl.html"
+     * Set the <a href="../../../../../concepts/ttl/"
      * target="_top">time-to-live (TTL)</a>. This can be applied
      * to tables or views.
      * <p>
@@ -4114,15 +4219,15 @@ public class GPUdb extends GPUdbBase {
      * available modifications include the following:
      * <p>
      * Manage a table's columns--a column can be added, removed, or have its
-     * <a href="../../../../concepts/types.html" target="_top">type and
+     * <a href="../../../../../concepts/types/" target="_top">type and
      * properties</a> modified, including
-     * whether it is <a href="../../../../concepts/compression.html"
+     * whether it is <a href="../../../../../concepts/compression/"
      * target="_top">compressed</a> or not.
      * <p>
      * External tables cannot be modified except for their refresh method.
      * <p>
      * Create or delete an <a
-     * href="../../../../concepts/indexes.html#column-index"
+     * href="../../../../../concepts/indexes/#column-index"
      * target="_top">index</a> on a
      * particular column. This can speed up certain operations when using
      * expressions
@@ -4130,30 +4235,28 @@ public class GPUdb extends GPUdbBase {
      * only
      * applies to tables.
      * <p>
-     * Create or delete a <a
-     * href="../../../../concepts/tables.html#foreign-key"
+     * Create or delete a <a href="../../../../../concepts/tables/#foreign-key"
      * target="_top">foreign key</a>
      * on a particular column.
      * <p>
      * Manage a
-     * <a href="../../../../concepts/tables.html#partitioning-by-range"
+     * <a href="../../../../../concepts/tables/#partitioning-by-range"
      * target="_top">range-partitioned</a> or a
-     * <a href="../../../../concepts/tables.html#partitioning-by-list-manual"
+     * <a href="../../../../../concepts/tables/#partitioning-by-list-manual"
      * target="_top">manual list-partitioned</a>
      * table's partitions.
      * <p>
-     * Set (or reset) the <a
-     * href="../../../../rm/concepts.html#tier-strategies" target="_top">tier
-     * strategy</a>
+     * Set (or reset) the <a href="../../../../../rm/concepts/#tier-strategies"
+     * target="_top">tier strategy</a>
      * of a table or view.
      * <p>
      * Refresh and manage the refresh mode of a
-     * <a href="../../../../concepts/materialized_views.html"
+     * <a href="../../../../../concepts/materialized_views/"
      * target="_top">materialized view</a> or an
-     * <a href="../../../../concepts/external_tables.html"
+     * <a href="../../../../../concepts/external_tables/"
      * target="_top">external table</a>.
      * <p>
-     * Set the <a href="../../../../concepts/ttl.html"
+     * Set the <a href="../../../../../concepts/ttl/"
      * target="_top">time-to-live (TTL)</a>. This can be applied
      * to tables or views.
      * <p>
@@ -4167,7 +4270,7 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Table on which the operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table or view.
      * @param action  Modification operation to be applied
@@ -4180,9 +4283,9 @@ public class GPUdb extends GPUdbBase {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
      *                CREATE_INDEX}: Creates either a <a
-     *                href="../../../../concepts/indexes.html#column-index"
+     *                href="../../../../../concepts/indexes/#column-index"
      *                target="_top">column (attribute) index</a> or <a
-     *                href="../../../../concepts/indexes.html#chunk-skip-index"
+     *                href="../../../../../concepts/indexes/#chunk-skip-index"
      *                target="_top">chunk skip index</a>, depending on the
      *                specified {@code index_type}, on the column name
      *                specified in {@code value}. If this column already has
@@ -4190,9 +4293,9 @@ public class GPUdb extends GPUdbBase {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
      *                DELETE_INDEX}: Deletes either a <a
-     *                href="../../../../concepts/indexes.html#column-index"
+     *                href="../../../../../concepts/indexes/#column-index"
      *                target="_top">column (attribute) index</a> or <a
-     *                href="../../../../concepts/indexes.html#chunk-skip-index"
+     *                href="../../../../../concepts/indexes/#chunk-skip-index"
      *                target="_top">chunk skip index</a>, depending on the
      *                specified {@code index_type}, on the column name
      *                specified in {@code value}. If this column does not have
@@ -4221,11 +4324,11 @@ public class GPUdb extends GPUdbBase {
      *                com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE
      *                RENAME_TABLE}: Renames a table or view within its current
      *                schema to {@code value}. Has the same naming restrictions
-     *                as <a href="../../../../concepts/tables.html"
+     *                as <a href="../../../../../concepts/tables/"
      *                target="_top">tables</a>.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}:
-     *                Sets the <a href="../../../../concepts/ttl.html"
+     *                Sets the <a href="../../../../../concepts/ttl/"
      *                target="_top">time-to-live</a> in minutes of the table or
      *                view specified in {@code tableName}.
      *                        <li> {@link
@@ -4249,7 +4352,7 @@ public class GPUdb extends GPUdbBase {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
      *                SET_COLUMN_COMPRESSION}: Modifies the <a
-     *                href="../../../../concepts/compression.html"
+     *                href="../../../../../concepts/compression/"
      *                target="_top">compression</a> setting on the column
      *                specified in {@code value} to the compression type
      *                specified in {@code compression_type}.
@@ -4260,7 +4363,7 @@ public class GPUdb extends GPUdbBase {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
      *                CREATE_FOREIGN_KEY}: Creates a <a
-     *                href="../../../../concepts/tables.html#foreign-key"
+     *                href="../../../../../concepts/tables/#foreign-key"
      *                target="_top">foreign key</a> specified in {@code value}
      *                using the format '(source_column_name [, ...]) references
      *                target_table_name(primary_key_column_name [, ...]) [as
@@ -4268,7 +4371,7 @@ public class GPUdb extends GPUdbBase {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
      *                DELETE_FOREIGN_KEY}: Deletes a <a
-     *                href="../../../../concepts/tables.html#foreign-key"
+     *                href="../../../../../concepts/tables/#foreign-key"
      *                target="_top">foreign key</a>.  The {@code value} should
      *                be the foreign_key_name specified when creating the key
      *                or the complete string used to define it.
@@ -4276,26 +4379,26 @@ public class GPUdb extends GPUdbBase {
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
      *                ADD_PARTITION}: Adds the partition specified in {@code
      *                value}, to either a <a
-     *                href="../../../../concepts/tables.html#partitioning-by-range"
+     *                href="../../../../../concepts/tables/#partitioning-by-range"
      *                target="_top">range-partitioned</a> or <a
-     *                href="../../../../concepts/tables.html#partitioning-by-list-manual"
+     *                href="../../../../../concepts/tables/#partitioning-by-list-manual"
      *                target="_top">manual list-partitioned</a> table.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
      *                REMOVE_PARTITION}: Removes the partition specified in
      *                {@code value} (and relocates all of its data to the
      *                default partition) from either a <a
-     *                href="../../../../concepts/tables.html#partitioning-by-range"
+     *                href="../../../../../concepts/tables/#partitioning-by-range"
      *                target="_top">range-partitioned</a> or <a
-     *                href="../../../../concepts/tables.html#partitioning-by-list-manual"
+     *                href="../../../../../concepts/tables/#partitioning-by-list-manual"
      *                target="_top">manual list-partitioned</a> table.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
      *                DELETE_PARTITION}: Deletes the partition specified in
      *                {@code value} (and all of its data) from either a <a
-     *                href="../../../../concepts/tables.html#partitioning-by-range"
+     *                href="../../../../../concepts/tables/#partitioning-by-range"
      *                target="_top">range-partitioned</a> or <a
-     *                href="../../../../concepts/tables.html#partitioning-by-list-manual"
+     *                href="../../../../../concepts/tables/#partitioning-by-list-manual"
      *                target="_top">manual list-partitioned</a> table.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
@@ -4307,23 +4410,23 @@ public class GPUdb extends GPUdbBase {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REFRESH
      *                REFRESH}: For a <a
-     *                href="../../../../concepts/materialized_views.html"
+     *                href="../../../../../concepts/materialized_views/"
      *                target="_top">materialized view</a>, replays all the
      *                table creation commands required to create the view.  For
-     *                an <a href="../../../../concepts/external_tables.html"
+     *                an <a href="../../../../../concepts/external_tables/"
      *                target="_top">external table</a>, reloads all data in the
      *                table from its associated source files or <a
-     *                href="../../../../concepts/data_sources.html"
+     *                href="../../../../../concepts/data_sources/"
      *                target="_top">data source</a>.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
      *                SET_REFRESH_METHOD}: For a <a
-     *                href="../../../../concepts/materialized_views.html"
+     *                href="../../../../../concepts/materialized_views/"
      *                target="_top">materialized view</a>, sets the method by
      *                which the view is refreshed to the method specified in
      *                {@code value} - one of 'manual', 'periodic', or
      *                'on_change'.  For an <a
-     *                href="../../../../concepts/external_tables.html"
+     *                href="../../../../../concepts/external_tables/"
      *                target="_top">external table</a>, sets the method by
      *                which the table is refreshed to the method specified in
      *                {@code value} - either 'manual' or 'on_start'.
@@ -4331,7 +4434,7 @@ public class GPUdb extends GPUdbBase {
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
      *                SET_REFRESH_START_TIME}: Sets the time to start periodic
      *                refreshes of this <a
-     *                href="../../../../concepts/materialized_views.html"
+     *                href="../../../../../concepts/materialized_views/"
      *                target="_top">materialized view</a> to the datetime
      *                string specified in {@code value} with format 'YYYY-MM-DD
      *                HH:MM:SS'.  Subsequent refreshes occur at the specified
@@ -4340,7 +4443,7 @@ public class GPUdb extends GPUdbBase {
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
      *                SET_REFRESH_PERIOD}: Sets the time interval in seconds at
      *                which to refresh this <a
-     *                href="../../../../concepts/materialized_views.html"
+     *                href="../../../../../concepts/materialized_views/"
      *                target="_top">materialized view</a> to the value
      *                specified in {@code value}.  Also, sets the refresh
      *                method to periodic if not already set.
@@ -4348,24 +4451,24 @@ public class GPUdb extends GPUdbBase {
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_EXECUTE_AS
      *                SET_REFRESH_EXECUTE_AS}: Sets the user name to refresh
      *                this <a
-     *                href="../../../../concepts/materialized_views.html"
+     *                href="../../../../../concepts/materialized_views/"
      *                target="_top">materialized view</a> to the value
      *                specified in {@code value}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_TEXT_SEARCH_ATTRIBUTES
      *                REMOVE_TEXT_SEARCH_ATTRIBUTES}: Removes <a
-     *                href="../../../../concepts/full_text_search.html"
+     *                href="../../../../../concepts/full_text_search/"
      *                target="_top">text search</a> attribute from all columns.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_STRATEGY_DEFINITION
      *                SET_STRATEGY_DEFINITION}: Sets the <a
-     *                href="../../../../rm/concepts.html#tier-strategies"
+     *                href="../../../../../rm/concepts/#tier-strategies"
      *                target="_top">tier strategy</a> for the table and its
      *                columns to the one specified in {@code value}, replacing
      *                the existing tier strategy in its entirety. See <a
-     *                href="../../../../rm/concepts.html#tier-strategies"
+     *                href="../../../../../rm/concepts/#tier-strategies"
      *                target="_top">tier strategy usage</a> for format and <a
-     *                href="../../../../rm/usage.html#tier-strategies"
+     *                href="../../../../../rm/usage/#tier-strategies"
      *                target="_top">tier strategy examples</a> for examples.
      *                </ul>
      * @param value  The value of the modification, depending on {@code
@@ -4454,7 +4557,7 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#UPDATE_LAST_ACCESS_TIME
      *                 UPDATE_LAST_ACCESS_TIME}: Indicates whether the <a
-     *                 href="../../../../concepts/ttl.html"
+     *                 href="../../../../../concepts/ttl/"
      *                 target="_top">time-to-live</a> (TTL) expiration
      *                 countdown timer should be reset to the table's TTL.
      *                 Supported values:
@@ -4482,14 +4585,14 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.AlterTableRequest.Options#STRATEGY_DEFINITION
      *                 STRATEGY_DEFINITION}: Optional parameter for specifying
      *                 the <a
-     *                 href="../../../../rm/concepts.html#tier-strategies"
+     *                 href="../../../../../rm/concepts/#tier-strategies"
      *                 target="_top">tier strategy</a> for the table and its
      *                 columns when {@code action} is {@code
      *                 set_strategy_definition}, replacing the existing tier
      *                 strategy in its entirety. See <a
-     *                 href="../../../../rm/concepts.html#tier-strategies"
+     *                 href="../../../../../rm/concepts/#tier-strategies"
      *                 target="_top">tier strategy usage</a> for format and <a
-     *                 href="../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../rm/usage/#tier-strategies"
      *                 target="_top">tier strategy examples</a> for examples.
      *                 This option will be ignored if {@code value} is also
      *                 specified.
@@ -4503,12 +4606,12 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN
      *                 COLUMN}: Create or delete a <a
-     *                 href="../../../../concepts/indexes.html#column-index"
+     *                 href="../../../../../concepts/indexes/#column-index"
      *                 target="_top">column (attribute) index</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP
      *                 CHUNK_SKIP}: Create or delete a <a
-     *                 href="../../../../concepts/indexes.html#chunk-skip-index"
+     *                 href="../../../../../concepts/indexes/#chunk-skip-index"
      *                 target="_top">chunk skip index</a>.
      *                 </ul>
      *                 The default value is {@link
@@ -4538,7 +4641,7 @@ public class GPUdb extends GPUdbBase {
      * modifications include the following:
      * <p>
      * Create or delete an <a
-     * href="../../../../concepts/indexes.html#column-index"
+     * href="../../../../../concepts/indexes/#column-index"
      * target="_top">index</a> on a
      * particular column. This can speed up certain operations when using
      * expressions
@@ -4547,10 +4650,10 @@ public class GPUdb extends GPUdbBase {
      * applies to tables.
      * <p>
      * Manage a table's columns--a column can be added, removed, or have its
-     * <a href="../../../../concepts/types.html" target="_top">type and
+     * <a href="../../../../../concepts/types/" target="_top">type and
      * properties</a> modified.
      * <p>
-     * Set or unset <a href="../../../../concepts/compression.html"
+     * Set or unset <a href="../../../../../concepts/compression/"
      * target="_top">compression</a> for a column.
      * 
      * @param request  Request object containing the parameters for the
@@ -4576,7 +4679,7 @@ public class GPUdb extends GPUdbBase {
      * modifications include the following:
      * <p>
      * Create or delete an <a
-     * href="../../../../concepts/indexes.html#column-index"
+     * href="../../../../../concepts/indexes/#column-index"
      * target="_top">index</a> on a
      * particular column. This can speed up certain operations when using
      * expressions
@@ -4585,16 +4688,16 @@ public class GPUdb extends GPUdbBase {
      * applies to tables.
      * <p>
      * Manage a table's columns--a column can be added, removed, or have its
-     * <a href="../../../../concepts/types.html" target="_top">type and
+     * <a href="../../../../../concepts/types/" target="_top">type and
      * properties</a> modified.
      * <p>
-     * Set or unset <a href="../../../../concepts/compression.html"
+     * Set or unset <a href="../../../../../concepts/compression/"
      * target="_top">compression</a> for a column.
      * 
      * @param tableName  Table on which the operation will be performed. Must
      *                   be an existing table or view, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnAlterations  List of alter table add/delete/change column
      *                           requests - all for the same table. Each
@@ -4659,7 +4762,7 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableNames  Names of the tables whose metadata will be updated,
      *                    in [schema_name.]table_name format, using standard <a
-     *                    href="../../../../concepts/tables.html#table-name-resolution"
+     *                    href="../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.  All
      *                    specified tables must exist, or an error will be
      *                    returned.
@@ -4690,13 +4793,13 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Alters properties of an exisiting
-     * <a href="../../../../rm/concepts.html#storage-tiers"
+     * <a href="../../../../../rm/concepts/#storage-tiers"
      * target="_top">tier</a> to facilitate
-     * <a href="../../../../rm/concepts.html" target="_top">resource
+     * <a href="../../../../../rm/concepts/" target="_top">resource
      * management</a>.
      * <p>
      * To disable
-     * <a href="../../../../rm/concepts.html#watermark-based-eviction"
+     * <a href="../../../../../rm/concepts/#watermark-based-eviction"
      * target="_top">watermark-based eviction</a>,
      * set both {@code high_watermark} and
      * {@code low_watermark} to 100.
@@ -4721,13 +4824,13 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Alters properties of an exisiting
-     * <a href="../../../../rm/concepts.html#storage-tiers"
+     * <a href="../../../../../rm/concepts/#storage-tiers"
      * target="_top">tier</a> to facilitate
-     * <a href="../../../../rm/concepts.html" target="_top">resource
+     * <a href="../../../../../rm/concepts/" target="_top">resource
      * management</a>.
      * <p>
      * To disable
-     * <a href="../../../../rm/concepts.html#watermark-based-eviction"
+     * <a href="../../../../../rm/concepts/#watermark-based-eviction"
      * target="_top">watermark-based eviction</a>,
      * set both {@code high_watermark} and
      * {@code low_watermark} to 100.
@@ -4870,13 +4973,13 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  The table name for the records to be appended, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * @param sourceTableName  The source table name to get records from, in
      *                         [schema_name.]table_name format, using standard
      *                         <a
-     *                         href="../../../../concepts/tables.html#table-name-resolution"
+     *                         href="../../../../../concepts/tables/#table-name-resolution"
      *                         target="_top">name resolution rules</a>.  Must
      *                         be an existing table name.
      * @param fieldMap  Contains the mapping of column names from the target
@@ -4886,7 +4989,7 @@ public class GPUdb extends GPUdbBase {
      *                  {@code sourceTableName}). Must be existing column names
      *                  in source table and target table, and their types must
      *                  be matched. For details on using expressions, see <a
-     *                  href="../../../../concepts/expressions.html"
+     *                  href="../../../../../concepts/expressions/"
      *                  target="_top">Expressions</a>.
      * @param options  Optional parameters.
      *                 <ul>
@@ -4921,7 +5024,7 @@ public class GPUdb extends GPUdbBase {
      *                 policy for inserting the source table records (specified
      *                 by {@code sourceTableName}) into the target table
      *                 (specified by {@code tableName}) table with a <a
-     *                 href="../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a>.  If set to {@code true},
      *                 any existing target table record with primary key values
      *                 that match those of a source table record being inserted
@@ -5007,7 +5110,7 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of a table, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>. Must be an
      *                   existing table.  The default value is ''.
      * @param columnName  Name of the column in {@code tableName} for which to
@@ -5069,7 +5172,7 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of the table to be cleared, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>. Must be an
      *                   existing table. Empty string clears all available
      *                   tables, though this behavior is be prevented by
@@ -5237,7 +5340,7 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of a table, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * @param columnNames  List of one or more column names in {@code
@@ -5262,8 +5365,106 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    public CreateContainerRegistryResponse createContainerRegistry(CreateContainerRegistryRequest request) throws GPUdbException {
+        CreateContainerRegistryResponse actualResponse_ = new CreateContainerRegistryResponse();
+        submitRequest("/create/container/registry", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public CreateContainerRegistryResponse createContainerRegistry(String registryName, String uri, String credential, Map<String, String> options) throws GPUdbException {
+        CreateContainerRegistryRequest actualRequest_ = new CreateContainerRegistryRequest(registryName, uri, credential, options);
+        CreateContainerRegistryResponse actualResponse_ = new CreateContainerRegistryResponse();
+        submitRequest("/create/container/registry", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
     /**
-     * Creates a <a href="../../../../concepts/data_sources.html"
+     * Create a new <a href="../../../../../concepts/credentials/"
+     * target="_top">credential</a>.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateCredentialResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateCredentialResponse createCredential(CreateCredentialRequest request) throws GPUdbException {
+        CreateCredentialResponse actualResponse_ = new CreateCredentialResponse();
+        submitRequest("/create/credential", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Create a new <a href="../../../../../concepts/credentials/"
+     * target="_top">credential</a>.
+     * 
+     * @param credentialName  Name of the credential to be created. Must
+     *                        contain only letters, digits, and underscores,
+     *                        and cannot begin with a digit. Must not match an
+     *                        existing credential name.
+     * @param type  Type of the credential to be created.
+     *              Supported values:
+     *              <ul>
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#AWS_ACCESS_KEY
+     *              AWS_ACCESS_KEY}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#AWS_IAM_ROLE
+     *              AWS_IAM_ROLE}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#AZURE_AD
+     *              AZURE_AD}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#AZURE_OAUTH
+     *              AZURE_OAUTH}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#AZURE_SAS
+     *              AZURE_SAS}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#AZURE_STORAGE_KEY
+     *              AZURE_STORAGE_KEY}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#DOCKER
+     *              DOCKER}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#HDFS HDFS}
+     *                      <li> {@link
+     *              com.gpudb.protocol.CreateCredentialRequest.Type#KAFKA
+     *              KAFKA}
+     *              </ul>
+     * @param identity  User of the credential to be created.
+     * @param secret  Password of the credential to be created.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateCredentialResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateCredentialResponse createCredential(String credentialName, String type, String identity, String secret, Map<String, String> options) throws GPUdbException {
+        CreateCredentialRequest actualRequest_ = new CreateCredentialRequest(credentialName, type, identity, secret, options);
+        CreateCredentialResponse actualResponse_ = new CreateCredentialResponse();
+        submitRequest("/create/credential", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Creates a <a href="../../../../../concepts/data_sources/"
      * target="_top">data source</a>, which contains the
      * location and connection information for a data store that is external to
      * the database.
@@ -5287,7 +5488,7 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a <a href="../../../../concepts/data_sources.html"
+     * Creates a <a href="../../../../../concepts/data_sources/"
      * target="_top">data source</a>, which contains the
      * location and connection information for a data store that is external to
      * the database.
@@ -5326,6 +5527,10 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#WAIT_TIMEOUT
      *                 WAIT_TIMEOUT}: Timeout in seconds for reading from this
      *                 storage provider
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#CREDENTIAL
+     *                 CREDENTIAL}: Name of the Credential object to be used in
+     *                 data source
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_BUCKET_NAME
      *                 S3_BUCKET_NAME}: Name of the Amazon S3 bucket to use as
@@ -5403,12 +5608,12 @@ public class GPUdb extends GPUdbBase {
      * restrictions.
 
      * IMPORTANT: It's highly recommended that you review the
-     * <a href="../../../../graph_solver/network_graph_solver.html"
+     * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
      * target="_top">Graph REST Tutorial</a>,
-     * and/or some <a href="../../../../graph_solver/examples.html"
+     * and/or some <a href="../../../../../graph_solver/examples/"
      * target="_top">graph examples</a> before
      * using this endpoint.
      * 
@@ -5435,12 +5640,12 @@ public class GPUdb extends GPUdbBase {
      * restrictions.
 
      * IMPORTANT: It's highly recommended that you review the
-     * <a href="../../../../graph_solver/network_graph_solver.html"
+     * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
      * target="_top">Graph REST Tutorial</a>,
-     * and/or some <a href="../../../../graph_solver/examples.html"
+     * and/or some <a href="../../../../../graph_solver/examples/"
      * target="_top">graph examples</a> before
      * using this endpoint.
      * 
@@ -5448,7 +5653,7 @@ public class GPUdb extends GPUdbBase {
      * @param directedGraph  If set to {@code true}, the graph will be
      *                       directed. If set to {@code false}, the graph will
      *                       not be directed. Consult <a
-     *                       href="../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     *                       href="../../../../../graph_solver/network_graph_solver/#directed-graphs"
      *                       target="_top">Directed Graphs</a> for more
      *                       details.
      *                       Supported values:
@@ -5466,11 +5671,11 @@ public class GPUdb extends GPUdbBase {
      * @param nodes  Nodes represent fundamental topological units of a graph.
      *               Nodes must be specified using
      *               <a
-     *               href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *               href="../../../../../graph_solver/network_graph_solver/#identifiers"
      *               target="_top">identifiers</a>;
      *               identifiers are grouped as
      *               <a
-     *               href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *               href="../../../../../graph_solver/network_graph_solver/#id-combos"
      *               target="_top">combinations</a>.
      *               Identifiers can be used with existing column names, e.g.,
      *               'table.column AS NODE_ID', expressions, e.g.,
@@ -5485,11 +5690,11 @@ public class GPUdb extends GPUdbBase {
      *               a graph that typically connect nodes. Edges must be
      *               specified using
      *               <a
-     *               href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *               href="../../../../../graph_solver/network_graph_solver/#identifiers"
      *               target="_top">identifiers</a>;
      *               identifiers are grouped as
      *               <a
-     *               href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *               href="../../../../../graph_solver/network_graph_solver/#id-combos"
      *               target="_top">combinations</a>.
      *               Identifiers can be used with existing column names, e.g.,
      *               'table.column AS EDGE_ID', expressions, e.g.,
@@ -5505,11 +5710,11 @@ public class GPUdb extends GPUdbBase {
      *                 Weights must be specified
      *                 using
      *                 <a
-     *                 href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                 href="../../../../../graph_solver/network_graph_solver/#identifiers"
      *                 target="_top">identifiers</a>;
      *                 identifiers are grouped as
      *                 <a
-     *                 href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                 href="../../../../../graph_solver/network_graph_solver/#id-combos"
      *                 target="_top">combinations</a>.
      *                 Identifiers can be used with existing column names,
      *                 e.g.,
@@ -5526,11 +5731,11 @@ public class GPUdb extends GPUdbBase {
      *                      for the solution. Restrictions
      *                      must be specified using
      *                      <a
-     *                      href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      href="../../../../../graph_solver/network_graph_solver/#identifiers"
      *                      target="_top">identifiers</a>;
      *                      identifiers are grouped as
      *                      <a
-     *                      href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      href="../../../../../graph_solver/network_graph_solver/#id-combos"
      *                      target="_top">combinations</a>.
      *                      Identifiers can be used with existing column names,
      *                      e.g.,
@@ -5646,10 +5851,10 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateGraphRequest.Options#SAVE_PERSIST
      *                 SAVE_PERSIST}: If set to {@code true}, the graph will be
      *                 saved in the persist directory (see the <a
-     *                 href="../../../../config/index.html"
-     *                 target="_top">config reference</a> for more
-     *                 information). If set to {@code false}, the graph will be
-     *                 removed when the graph server is shutdown.
+     *                 href="../../../../../config/" target="_top">config
+     *                 reference</a> for more information). If set to {@code
+     *                 false}, the graph will be removed when the graph server
+     *                 is shutdown.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -5708,9 +5913,9 @@ public class GPUdb extends GPUdbBase {
      *                 GRAPH_TABLE}: If specified, the created graph is also
      *                 created as a table with the given name, in
      *                 [schema_name.]table_name format, using standard <a
-     *                 href="../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  The table will
      *                 have the following identifier columns: 'EDGE_ID',
      *                 'EDGE_NODE1_ID', 'EDGE_NODE2_ID'. If left blank, no
@@ -5796,6 +6001,9 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#SQL_REQUEST_AVRO_JSON
+     *                 SQL_REQUEST_AVRO_JSON}:   The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -5917,9 +6125,9 @@ public class GPUdb extends GPUdbBase {
      * Creates a table that is the result of a SQL JOIN.
      * <p>
      * For join details and examples see: <a
-     * href="../../../../concepts/joins.html" target="_top">Joins</a>.  For
+     * href="../../../../../concepts/joins/" target="_top">Joins</a>.  For
      * limitations, see <a
-     * href="../../../../concepts/joins.html#limitations-cautions"
+     * href="../../../../../concepts/joins/#limitations-cautions"
      * target="_top">Join Limitations and Cautions</a>.
      * 
      * @param request  Request object containing the parameters for the
@@ -5944,21 +6152,21 @@ public class GPUdb extends GPUdbBase {
      * Creates a table that is the result of a SQL JOIN.
      * <p>
      * For join details and examples see: <a
-     * href="../../../../concepts/joins.html" target="_top">Joins</a>.  For
+     * href="../../../../../concepts/joins/" target="_top">Joins</a>.  For
      * limitations, see <a
-     * href="../../../../concepts/joins.html#limitations-cautions"
+     * href="../../../../../concepts/joins/#limitations-cautions"
      * target="_top">Join Limitations and Cautions</a>.
      * 
      * @param joinTableName  Name of the join table to be created, in
      *                       [schema_name.]table_name format, using standard <a
-     *                       href="../../../../concepts/tables.html#table-name-resolution"
+     *                       href="../../../../../concepts/tables/#table-name-resolution"
      *                       target="_top">name resolution rules</a> and
      *                       meeting <a
-     *                       href="../../../../concepts/tables.html#table-naming-criteria"
+     *                       href="../../../../../concepts/tables/#table-naming-criteria"
      *                       target="_top">table naming criteria</a>.
      * @param tableNames  The list of table names composing the join, each in
      *                    [schema_name.]table_name format, using standard <a
-     *                    href="../../../../concepts/tables.html#table-name-resolution"
+     *                    href="../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.  Corresponds
      *                    to a SQL statement FROM clause.
      * @param columnNames  List of member table columns or column expressions
@@ -5975,7 +6183,7 @@ public class GPUdb extends GPUdbBase {
      * @param expressions  An optional list of expressions to combine and
      *                     filter the joined tables.  Corresponds to a SQL
      *                     statement WHERE clause. For details see: <a
-     *                     href="../../../../concepts/expressions.html"
+     *                     href="../../../../../concepts/expressions/"
      *                     target="_top">expressions</a>.  The default value is
      *                     an empty {@link List}.
      * @param options  Optional parameters.
@@ -6009,7 +6217,7 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#TTL
-     *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the join table specified in
      *                 {@code joinTableName}.
      *                         <li> {@link
@@ -6052,7 +6260,7 @@ public class GPUdb extends GPUdbBase {
      * that name.
      * <p>
      * For materialized view details and examples, see
-     * <a href="../../../../concepts/materialized_views.html"
+     * <a href="../../../../../concepts/materialized_views/"
      * target="_top">Materialized Views</a>.
      * <p>
      * The response contains {@code viewId}, which is used to tag each
@@ -6085,7 +6293,7 @@ public class GPUdb extends GPUdbBase {
      * that name.
      * <p>
      * For materialized view details and examples, see
-     * <a href="../../../../concepts/materialized_views.html"
+     * <a href="../../../../../concepts/materialized_views/"
      * target="_top">Materialized Views</a>.
      * <p>
      * The response contains {@code viewId}, which is used to tag each
@@ -6097,9 +6305,9 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table to be created that is the top-level
      *                   table of the materialized view, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a> and meeting <a
-     *                   href="../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.
      * @param options  Optional parameters.
      *                 <ul>
@@ -6114,7 +6322,7 @@ public class GPUdb extends GPUdbBase {
      *                 non-existent, it will be automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL
-     *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 tableName}.
      *                         <li> {@link
@@ -6151,7 +6359,7 @@ public class GPUdb extends GPUdbBase {
      *                 Map)} with an 'action' of 'refresh'
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_QUERY
-     *                 ON_QUERY}: For future use.
+     *                 ON_QUERY}: Refresh any time the view is queried.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_CHANGE
      *                 ON_CHANGE}: If possible, incrementally refresh (refresh
@@ -6202,7 +6410,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Creates an instance (proc) of the
-     * <a href="../../../../concepts/udf.html" target="_top">user-defined
+     * <a href="../../../../../concepts/udf/" target="_top">user-defined
      * functions</a> (UDF) specified by the
      * given command, options, and files, and makes it available for execution.
      * 
@@ -6226,7 +6434,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Creates an instance (proc) of the
-     * <a href="../../../../concepts/udf.html" target="_top">user-defined
+     * <a href="../../../../../concepts/udf/" target="_top">user-defined
      * functions</a> (UDF) specified by the
      * given command, options, and files, and makes it available for execution.
      * 
@@ -6316,27 +6524,27 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a new <a href="../../../../concepts/projections.html"
+     * Creates a new <a href="../../../../../concepts/projections/"
      * target="_top">projection</a> of
      * an existing table. A projection represents a subset of the columns
      * (potentially
      * including derived columns) of a table.
      * <p>
      * For projection details and examples, see
-     * <a href="../../../../concepts/projections.html"
+     * <a href="../../../../../concepts/projections/"
      * target="_top">Projections</a>.  For limitations, see
-     * <a href="../../../../concepts/projections.html#limitations-and-cautions"
+     * <a href="../../../../../concepts/projections/#limitations-and-cautions"
      * target="_top">Projection Limitations and Cautions</a>.
      * <p>
-     * <a href="../../../../concepts/window.html" target="_top">Window
+     * <a href="../../../../../concepts/window/" target="_top">Window
      * functions</a>, which can perform
      * operations like moving averages, are available through this endpoint as
      * well as
      * {@link GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
      * <p>
      * A projection can be created with a different
-     * <a href="../../../../concepts/tables.html#shard-keys"
-     * target="_top">shard key</a> than the source table.
+     * <a href="../../../../../concepts/tables/#shard-keys" target="_top">shard
+     * key</a> than the source table.
      * By specifying {@code shard_key}, the projection will be sharded
      * according to the specified columns, regardless of how the source table
      * is
@@ -6345,12 +6553,12 @@ public class GPUdb extends GPUdbBase {
      * If {@code tableName} is empty, selection is performed against a
      * single-row
      * virtual table.  This can be useful in executing temporal
-     * (<a href="../../../../concepts/expressions.html#date-time-functions"
+     * (<a href="../../../../../concepts/expressions/#date-time-functions"
      * target="_top">NOW()</a>), identity
-     * (<a href="../../../../concepts/expressions.html#user-security-functions"
+     * (<a href="../../../../../concepts/expressions/#user-security-functions"
      * target="_top">USER()</a>), or
      * constant-based functions
-     * (<a href="../../../../concepts/expressions.html#scalar-functions"
+     * (<a href="../../../../../concepts/expressions/#scalar-functions"
      * target="_top">GEODIST(-77.11, 38.88, -71.06, 42.36)</a>).
      * 
      * @param request  Request object containing the parameters for the
@@ -6372,27 +6580,27 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a new <a href="../../../../concepts/projections.html"
+     * Creates a new <a href="../../../../../concepts/projections/"
      * target="_top">projection</a> of
      * an existing table. A projection represents a subset of the columns
      * (potentially
      * including derived columns) of a table.
      * <p>
      * For projection details and examples, see
-     * <a href="../../../../concepts/projections.html"
+     * <a href="../../../../../concepts/projections/"
      * target="_top">Projections</a>.  For limitations, see
-     * <a href="../../../../concepts/projections.html#limitations-and-cautions"
+     * <a href="../../../../../concepts/projections/#limitations-and-cautions"
      * target="_top">Projection Limitations and Cautions</a>.
      * <p>
-     * <a href="../../../../concepts/window.html" target="_top">Window
+     * <a href="../../../../../concepts/window/" target="_top">Window
      * functions</a>, which can perform
      * operations like moving averages, are available through this endpoint as
      * well as
      * {@link GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
      * <p>
      * A projection can be created with a different
-     * <a href="../../../../concepts/tables.html#shard-keys"
-     * target="_top">shard key</a> than the source table.
+     * <a href="../../../../../concepts/tables/#shard-keys" target="_top">shard
+     * key</a> than the source table.
      * By specifying {@code shard_key}, the projection will be sharded
      * according to the specified columns, regardless of how the source table
      * is
@@ -6401,18 +6609,18 @@ public class GPUdb extends GPUdbBase {
      * If {@code tableName} is empty, selection is performed against a
      * single-row
      * virtual table.  This can be useful in executing temporal
-     * (<a href="../../../../concepts/expressions.html#date-time-functions"
+     * (<a href="../../../../../concepts/expressions/#date-time-functions"
      * target="_top">NOW()</a>), identity
-     * (<a href="../../../../concepts/expressions.html#user-security-functions"
+     * (<a href="../../../../../concepts/expressions/#user-security-functions"
      * target="_top">USER()</a>), or
      * constant-based functions
-     * (<a href="../../../../concepts/expressions.html#scalar-functions"
+     * (<a href="../../../../../concepts/expressions/#scalar-functions"
      * target="_top">GEODIST(-77.11, 38.88, -71.06, 42.36)</a>).
      * 
      * @param tableName  Name of the existing table on which the projection is
      *                   to be applied, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  An empty
      *                   table name creates a projection from a single-row
      *                   virtual table, where columns specified should be
@@ -6420,10 +6628,10 @@ public class GPUdb extends GPUdbBase {
      * @param projectionName  Name of the projection to be created, in
      *                        [schema_name.]table_name format, using standard
      *                        <a
-     *                        href="../../../../concepts/tables.html#table-name-resolution"
+     *                        href="../../../../../concepts/tables/#table-name-resolution"
      *                        target="_top">name resolution rules</a> and
      *                        meeting <a
-     *                        href="../../../../concepts/tables.html#table-naming-criteria"
+     *                        href="../../../../../concepts/tables/#table-naming-criteria"
      *                        target="_top">table naming criteria</a>.
      * @param columnNames  List of columns from {@code tableName} to be
      *                     included in the projection. Can include derived
@@ -6443,7 +6651,7 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      *                 EXPRESSION}: An optional filter <a
-     *                 href="../../../../concepts/expressions.html"
+     *                 href="../../../../../concepts/expressions/"
      *                 target="_top">expression</a> to be applied to the source
      *                 table prior to the projection.  The default value is ''.
      *                         <li> {@link
@@ -6477,13 +6685,13 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../rm/concepts.html"
+     *                 href="../../../../../rm/concepts/"
      *                 target="_top">Resource Management Concepts</a> for
      *                 information about how resources are managed, <a
-     *                 href="../../../../rm/concepts.html" target="_top">Tier
+     *                 href="../../../../../rm/concepts/" target="_top">Tier
      *                 Strategy Concepts</a> for how resources are targeted for
      *                 VRAM, and <a
-     *                 href="../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../rm/usage/#tier-strategies"
      *                 target="_top">Tier Strategy Usage</a> for how to specify
      *                 a table's priority in VRAM.
      *                 Supported values:
@@ -6511,7 +6719,7 @@ public class GPUdb extends GPUdbBase {
      *                 be used, rather than the original column name.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#TTL
-     *                 TTL}: Sets the <a href="../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the projection specified in
      *                 {@code projectionName}.
      *                         <li> {@link
@@ -6754,7 +6962,7 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a SQL-style <a href="../../../../concepts/schemas.html"
+     * Creates a SQL-style <a href="../../../../../concepts/schemas/"
      * target="_top">schema</a>. Schemas are containers for tables and views.
      * Multiple tables and views can be defined with the same name in different
      * schemas.
@@ -6778,14 +6986,14 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a SQL-style <a href="../../../../concepts/schemas.html"
+     * Creates a SQL-style <a href="../../../../../concepts/schemas/"
      * target="_top">schema</a>. Schemas are containers for tables and views.
      * Multiple tables and views can be defined with the same name in different
      * schemas.
      * 
      * @param schemaName  Name of the schema to be created.  Has the same
      *                    naming restrictions as <a
-     *                    href="../../../../concepts/tables.html"
+     *                    href="../../../../../concepts/tables/"
      *                    target="_top">tables</a>.
      * @param options  Optional parameters.
      *                 <ul>
@@ -6832,13 +7040,13 @@ public class GPUdb extends GPUdbBase {
      * GPUdb#createType(CreateTypeRequest)}).
      * <p>
      * A table may optionally be designated to use a
-     * <a href="../../../../concepts/tables.html#replication"
+     * <a href="../../../../../concepts/tables/#replication"
      * target="_top">replicated</a> distribution scheme,
-     * or be assigned: <a href="../../../../concepts/tables.html#foreign-keys"
+     * or be assigned: <a href="../../../../../concepts/tables/#foreign-keys"
      * target="_top">foreign keys</a> to
-     * other tables, a <a href="../../../../concepts/tables.html#partitioning"
+     * other tables, a <a href="../../../../../concepts/tables/#partitioning"
      * target="_top">partitioning</a>
-     * scheme, and/or a <a href="../../../../rm/concepts.html#tier-strategies"
+     * scheme, and/or a <a href="../../../../../rm/concepts/#tier-strategies"
      * target="_top">tier strategy</a>.
      * 
      * @param request  Request object containing the parameters for the
@@ -6867,20 +7075,20 @@ public class GPUdb extends GPUdbBase {
      * GPUdb#createType(String, String, Map, Map)}).
      * <p>
      * A table may optionally be designated to use a
-     * <a href="../../../../concepts/tables.html#replication"
+     * <a href="../../../../../concepts/tables/#replication"
      * target="_top">replicated</a> distribution scheme,
-     * or be assigned: <a href="../../../../concepts/tables.html#foreign-keys"
+     * or be assigned: <a href="../../../../../concepts/tables/#foreign-keys"
      * target="_top">foreign keys</a> to
-     * other tables, a <a href="../../../../concepts/tables.html#partitioning"
+     * other tables, a <a href="../../../../../concepts/tables/#partitioning"
      * target="_top">partitioning</a>
-     * scheme, and/or a <a href="../../../../rm/concepts.html#tier-strategies"
+     * scheme, and/or a <a href="../../../../../rm/concepts/#tier-strategies"
      * target="_top">tier strategy</a>.
      * 
      * @param tableName  Name of the table to be created, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a> and meeting <a
-     *                   href="../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>. Error for
      *                   requests with existing table of the same name and type
      *                   ID may be suppressed by using the {@code
@@ -6949,19 +7157,19 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_REPLICATED
      *                 IS_REPLICATED}: Affects the <a
-     *                 href="../../../../concepts/tables.html#distribution"
+     *                 href="../../../../../concepts/tables/#distribution"
      *                 target="_top">distribution scheme</a> for the table's
      *                 data.  If {@code true} and the given type has no
      *                 explicit <a
-     *                 href="../../../../concepts/tables.html#shard-key"
+     *                 href="../../../../../concepts/tables/#shard-key"
      *                 target="_top">shard key</a> defined, the table will be
-     *                 <a href="../../../../concepts/tables.html#replication"
+     *                 <a href="../../../../../concepts/tables/#replication"
      *                 target="_top">replicated</a>.  If {@code false}, the
      *                 table will be <a
-     *                 href="../../../../concepts/tables.html#sharding"
+     *                 href="../../../../../concepts/tables/#sharding"
      *                 target="_top">sharded</a> according to the shard key
      *                 specified in the given {@code typeId}, or <a
-     *                 href="../../../../concepts/tables.html#random-sharding"
+     *                 href="../../../../../concepts/tables/#random-sharding"
      *                 target="_top">randomly sharded</a>, if no shard key is
      *                 specified.  Note that a type containing a shard key
      *                 cannot be used to create a replicated table.
@@ -6979,7 +7187,7 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#FOREIGN_KEYS
      *                 FOREIGN_KEYS}: Semicolon-separated list of <a
-     *                 href="../../../../concepts/tables.html#foreign-keys"
+     *                 href="../../../../../concepts/tables/#foreign-keys"
      *                 target="_top">foreign keys</a>, of the format
      *                 '(source_column_name [, ...]) references
      *                 target_table_name(primary_key_column_name [, ...]) [as
@@ -6992,34 +7200,34 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_TYPE
      *                 PARTITION_TYPE}: <a
-     *                 href="../../../../concepts/tables.html#partitioning"
+     *                 href="../../../../../concepts/tables/#partitioning"
      *                 target="_top">Partitioning</a> scheme to use.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#RANGE
      *                 RANGE}: Use <a
-     *                 href="../../../../concepts/tables.html#partitioning-by-range"
+     *                 href="../../../../../concepts/tables/#partitioning-by-range"
      *                 target="_top">range partitioning</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#INTERVAL
      *                 INTERVAL}: Use <a
-     *                 href="../../../../concepts/tables.html#partitioning-by-interval"
+     *                 href="../../../../../concepts/tables/#partitioning-by-interval"
      *                 target="_top">interval partitioning</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#LIST
      *                 LIST}: Use <a
-     *                 href="../../../../concepts/tables.html#partitioning-by-list"
+     *                 href="../../../../../concepts/tables/#partitioning-by-list"
      *                 target="_top">list partitioning</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#HASH
      *                 HASH}: Use <a
-     *                 href="../../../../concepts/tables.html#partitioning-by-hash"
+     *                 href="../../../../../concepts/tables/#partitioning-by-hash"
      *                 target="_top">hash partitioning</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#SERIES
      *                 SERIES}: Use <a
-     *                 href="../../../../concepts/tables.html#partitioning-by-series"
+     *                 href="../../../../../concepts/tables/#partitioning-by-series"
      *                 target="_top">series partitioning</a>.
      *                 </ul>
      *                         <li> {@link
@@ -7033,13 +7241,13 @@ public class GPUdb extends GPUdbBase {
      *                 PARTITION_DEFINITIONS}: Comma-separated list of
      *                 partition definitions, whose format depends on the
      *                 choice of {@code partition_type}.  See <a
-     *                 href="../../../../concepts/tables.html#partitioning-by-range"
+     *                 href="../../../../../concepts/tables/#partitioning-by-range"
      *                 target="_top">range partitioning</a>, <a
-     *                 href="../../../../concepts/tables.html#partitioning-by-interval"
+     *                 href="../../../../../concepts/tables/#partitioning-by-interval"
      *                 target="_top">interval partitioning</a>, <a
-     *                 href="../../../../concepts/tables.html#partitioning-by-list"
+     *                 href="../../../../../concepts/tables/#partitioning-by-list"
      *                 target="_top">list partitioning</a>, or <a
-     *                 href="../../../../concepts/tables.html#partitioning-by-hash"
+     *                 href="../../../../../concepts/tables/#partitioning-by-hash"
      *                 target="_top">hash partitioning</a> for example formats.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
@@ -7047,7 +7255,7 @@ public class GPUdb extends GPUdbBase {
      *                 partition will be created for values which don't fall
      *                 into an existing partition.  Currently only supported
      *                 for <a
-     *                 href="../../../../concepts/tables.html#partitioning-by-list"
+     *                 href="../../../../../concepts/tables/#partitioning-by-list"
      *                 target="_top">list partitions</a>.
      *                 Supported values:
      *                 <ul>
@@ -7062,7 +7270,7 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#TTL TTL}:
-     *                 Sets the <a href="../../../../concepts/ttl.html"
+     *                 Sets the <a href="../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 tableName}.
      *                         <li> {@link
@@ -7072,12 +7280,12 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_RESULT_TABLE
      *                 IS_RESULT_TABLE}: Indicates whether the table is a <a
-     *                 href="../../../../concepts/tables_memory_only.html"
+     *                 href="../../../../../concepts/tables_memory_only/"
      *                 target="_top">memory-only table</a>. A result table
      *                 cannot contain columns with store_only or text_search <a
-     *                 href="../../../../concepts/types.html#data-handling"
+     *                 href="../../../../../concepts/types/#data-handling"
      *                 target="_top">data-handling</a> or that are <a
-     *                 href="../../../../concepts/types.html#primitive-types"
+     *                 href="../../../../../concepts/types/#primitive-types"
      *                 target="_top">non-charN strings</a>, and it will not be
      *                 retained if the server is restarted.
      *                 Supported values:
@@ -7094,12 +7302,12 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#STRATEGY_DEFINITION
      *                 STRATEGY_DEFINITION}: The <a
-     *                 href="../../../../rm/concepts.html#tier-strategies"
+     *                 href="../../../../../rm/concepts/#tier-strategies"
      *                 target="_top">tier strategy</a> for the table and its
      *                 columns. See <a
-     *                 href="../../../../rm/concepts.html#tier-strategies"
+     *                 href="../../../../../rm/concepts/#tier-strategies"
      *                 target="_top">tier strategy usage</a> for format and <a
-     *                 href="../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../rm/usage/#tier-strategies"
      *                 target="_top">tier strategy examples</a> for examples.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
@@ -7121,13 +7329,13 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a new <a href="../../../../concepts/external_tables.html"
+     * Creates a new <a href="../../../../../concepts/external_tables/"
      * target="_top">external table</a>, which is a
      * local database object whose source data is located externally to the
      * database.  The source data can
      * be located either on the cluster, accessible to the database; or
      * remotely, accessible via a
-     * pre-defined external <a href="../../../../concepts/data_sources.html"
+     * pre-defined external <a href="../../../../../concepts/data_sources/"
      * target="_top">data source</a>.
      * <p>
      * The external table can have its structure defined explicitly, via {@code
@@ -7155,13 +7363,13 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates a new <a href="../../../../concepts/external_tables.html"
+     * Creates a new <a href="../../../../../concepts/external_tables/"
      * target="_top">external table</a>, which is a
      * local database object whose source data is located externally to the
      * database.  The source data can
      * be located either on the cluster, accessible to the database; or
      * remotely, accessible via a
-     * pre-defined external <a href="../../../../concepts/data_sources.html"
+     * pre-defined external <a href="../../../../../concepts/data_sources/"
      * target="_top">data source</a>.
      * <p>
      * The external table can have its structure defined explicitly, via {@code
@@ -7173,10 +7381,10 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table to be created, in
      *                   [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a> and meeting
      *                   <a
-     *                   href="../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.
      * @param filepaths  A list of file paths from which data will be sourced;
      *                   wildcards (*) can be used
@@ -7191,7 +7399,7 @@ public class GPUdb extends GPUdbBase {
      *                   accessible to the gpudb user, residing on the path (or
      *                   relative to the path) specified by the
      *                   external files directory in the Kinetica
-     *                   <a href="../../../../config/index.html#external-files"
+     *                   <a href="../../../../../config/#external-files"
      *                   target="_top">configuration file</a>.
      * @param modifyColumns  Not implemented yet.  The default value is an
      *                       empty {@link Map}.
@@ -7203,7 +7411,7 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#TYPE_ID
      *                            TYPE_ID}: ID of a currently registered <a
-     *                            href="../../../../concepts/types.html"
+     *                            href="../../../../../concepts/types/"
      *                            target="_top">type</a>.  The default value is
      *                            ''.
      *                                    <li> {@link
@@ -7229,24 +7437,24 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#IS_REPLICATED
      *                            IS_REPLICATED}: Affects the <a
-     *                            href="../../../../concepts/tables.html#distribution"
+     *                            href="../../../../../concepts/tables/#distribution"
      *                            target="_top">distribution scheme</a>
      *                            for the table's data.  If {@code true} and
      *                            the
      *                            given table has no explicit <a
-     *                            href="../../../../concepts/tables.html#shard-key"
+     *                            href="../../../../../concepts/tables/#shard-key"
      *                            target="_top">shard key</a> defined, the
      *                            table will be <a
-     *                            href="../../../../concepts/tables.html#replication"
+     *                            href="../../../../../concepts/tables/#replication"
      *                            target="_top">replicated</a>.  If
      *                            {@code false}, the table will be
      *                            <a
-     *                            href="../../../../concepts/tables.html#sharding"
+     *                            href="../../../../../concepts/tables/#sharding"
      *                            target="_top">sharded</a> according to the
      *                            shard key specified in the
      *                            given {@code type_id}, or
      *                            <a
-     *                            href="../../../../concepts/tables.html#random-sharding"
+     *                            href="../../../../../concepts/tables/#random-sharding"
      *                            target="_top">randomly sharded</a>, if no
      *                            shard key is specified.
      *                            Note that a type containing a shard key
@@ -7267,7 +7475,7 @@ public class GPUdb extends GPUdbBase {
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#FOREIGN_KEYS
      *                            FOREIGN_KEYS}: Semicolon-separated list of
      *                            <a
-     *                            href="../../../../concepts/tables.html#foreign-keys"
+     *                            href="../../../../../concepts/tables/#foreign-keys"
      *                            target="_top">foreign keys</a>, of the format
      *                            '(source_column_name [, ...]) references
      *                            target_table_name(primary_key_column_name [,
@@ -7281,29 +7489,29 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#PARTITION_TYPE
      *                            PARTITION_TYPE}: <a
-     *                            href="../../../../concepts/tables.html#partitioning"
+     *                            href="../../../../../concepts/tables/#partitioning"
      *                            target="_top">Partitioning</a> scheme to use.
      *                            Supported values:
      *                            <ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#RANGE
      *                            RANGE}: Use <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-range"
+     *                            href="../../../../../concepts/tables/#partitioning-by-range"
      *                            target="_top">range partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#INTERVAL
      *                            INTERVAL}: Use <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-interval"
+     *                            href="../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#LIST
      *                            LIST}: Use <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#HASH
      *                            HASH}: Use <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-hash"
+     *                            href="../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a>.
      *                            </ul>
      *                                    <li> {@link
@@ -7320,16 +7528,16 @@ public class GPUdb extends GPUdbBase {
      *                            depends
      *                            on the choice of {@code partition_type}.  See
      *                            <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-range"
+     *                            href="../../../../../concepts/tables/#partitioning-by-range"
      *                            target="_top">range partitioning</a>,
      *                            <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-interval"
+     *                            href="../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>,
      *                            <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitioning</a>, or
      *                            <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-hash"
+     *                            href="../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a> for
      *                            example formats.
      *                                    <li> {@link
@@ -7339,7 +7547,7 @@ public class GPUdb extends GPUdbBase {
      *                            which don't fall into an existing partition.
      *                            Currently
      *                            only supported for <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitions</a>.
      *                            Supported values:
      *                            <ul>
@@ -7356,7 +7564,7 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#TTL
      *                            TTL}: Sets the <a
-     *                            href="../../../../concepts/ttl.html"
+     *                            href="../../../../../concepts/ttl/"
      *                            target="_top">TTL</a> of the table specified
      *                            in {@code tableName}.
      *                                    <li> {@link
@@ -7368,15 +7576,15 @@ public class GPUdb extends GPUdbBase {
      *                            IS_RESULT_TABLE}: Indicates whether the table
      *                            is a
      *                            <a
-     *                            href="../../../../concepts/tables_memory_only.html"
+     *                            href="../../../../../concepts/tables_memory_only/"
      *                            target="_top">memory-only table</a>. A result
      *                            table cannot contain
      *                            columns with store_only or text_search
      *                            <a
-     *                            href="../../../../concepts/types.html#data-handling"
+     *                            href="../../../../../concepts/types/#data-handling"
      *                            target="_top">data-handling</a> or that are
      *                            <a
-     *                            href="../../../../concepts/types.html#primitive-types"
+     *                            href="../../../../../concepts/types/#primitive-types"
      *                            target="_top">non-charN strings</a>, and it
      *                            will not be retained if
      *                            the server is restarted.
@@ -7395,15 +7603,15 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#STRATEGY_DEFINITION
      *                            STRATEGY_DEFINITION}: The <a
-     *                            href="../../../../rm/concepts.html#tier-strategies"
+     *                            href="../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy</a>
      *                            for the table and its columns. See
      *                            <a
-     *                            href="../../../../rm/concepts.html#tier-strategies"
+     *                            href="../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy usage</a> for
      *                            format and
      *                            <a
-     *                            href="../../../../rm/usage.html#tier-strategies"
+     *                            href="../../../../../rm/usage/#tier-strategies"
      *                            target="_top">tier strategy examples</a> for
      *                            examples.
      *                            </ul>
@@ -7567,11 +7775,14 @@ public class GPUdb extends GPUdbBase {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
-     *                 DELIMITED_TEXT}: Delimited text format; e.g., CSV, TSV,
-     *                 PSV, etc.
+     *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
+     *                 TSV, PSV, etc.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#PARQUET
-     *                 PARQUET}: Apache Parquet format
+     *                 PARQUET}: Apache Parquet file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#JSON
+     *                 JSON}: Json file format
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
@@ -7740,7 +7951,7 @@ public class GPUdb extends GPUdbBase {
      *                 TEXT_HEADER_PROPERTY_DELIMITER}: Specifies the delimiter
      *                 for
      *                 <a
-     *                 href="../../../../concepts/types.html#column-properties"
+     *                 href="../../../../../concepts/types/#column-properties"
      *                 target="_top">column properties</a> in the header row
      *                 (if
      *                 present).  Cannot be set to same value as {@code
@@ -7830,7 +8041,7 @@ public class GPUdb extends GPUdbBase {
      * {@link GPUdb#clearTableMonitor(ClearTableMonitorRequest)}.
      * <p>
      * For more information on table monitors, see
-     * <a href="../../../../concepts/table_monitors.html" target="_top">Table
+     * <a href="../../../../../concepts/table_monitors/" target="_top">Table
      * Monitors</a>.
      * 
      * @param request  Request object containing the parameters for the
@@ -7872,12 +8083,12 @@ public class GPUdb extends GPUdbBase {
      * {@link GPUdb#clearTableMonitor(String, Map)}.
      * <p>
      * For more information on table monitors, see
-     * <a href="../../../../concepts/table_monitors.html" target="_top">Table
+     * <a href="../../../../../concepts/table_monitors/" target="_top">Table
      * Monitors</a>.
      * 
      * @param tableName  Name of the table to monitor, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param options  Optional parameters.
      *                 <ul>
@@ -7990,7 +8201,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableNames  Names of the tables on which the trigger will be
      *                    activated and maintained, each in
      *                    [schema_name.]table_name format, using standard <a
-     *                    href="../../../../concepts/tables.html#table-name-resolution"
+     *                    href="../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.
      * @param xColumnName  Name of a numeric column on which the trigger is
      *                     activated. Usually 'x' for geospatial data points.
@@ -8086,7 +8297,7 @@ public class GPUdb extends GPUdbBase {
      *                   least one character.
      * @param tableNames  Tables on which the trigger will be active, each in
      *                    [schema_name.]table_name format, using standard <a
-     *                    href="../../../../concepts/tables.html#table-name-resolution"
+     *                    href="../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.
      * @param columnName  Name of a numeric column_name on which the trigger is
      *                    activated.
@@ -8122,9 +8333,9 @@ public class GPUdb extends GPUdbBase {
      * column simultaneously.  One example of mutually exclusive properties are
      * {@code data} and {@code store_only}.
      * <p>
-     * A single <a href="../../../../concepts/tables.html#primary-keys"
+     * A single <a href="../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a> and/or single <a
-     * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
+     * href="../../../../../concepts/tables/#shard-keys" target="_top">shard
      * key</a> can be set across one or more columns. If a primary key is
      * specified, then a uniqueness constraint is enforced, in that only a
      * single object can exist with a given primary key column value (or set of
@@ -8184,9 +8395,9 @@ public class GPUdb extends GPUdbBase {
      * column simultaneously.  One example of mutually exclusive properties are
      * {@code data} and {@code store_only}.
      * <p>
-     * A single <a href="../../../../concepts/tables.html#primary-keys"
+     * A single <a href="../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a> and/or single <a
-     * href="../../../../concepts/tables.html#shard-keys" target="_top">shard
+     * href="../../../../../concepts/tables/#shard-keys" target="_top">shard
      * key</a> can be set across one or more columns. If a primary key is
      * specified, then a uniqueness constraint is enforced, in that only a
      * single object can exist with a given primary key column value (or set of
@@ -8401,13 +8612,13 @@ public class GPUdb extends GPUdbBase {
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#PRIMARY_KEY
      *                    PRIMARY_KEY}: This property indicates that this
      *                    column will be part of (or the entire) <a
-     *                    href="../../../../concepts/tables.html#primary-keys"
+     *                    href="../../../../../concepts/tables/#primary-keys"
      *                    target="_top">primary key</a>.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#SHARD_KEY
      *                    SHARD_KEY}: This property indicates that this column
      *                    will be part of (or the entire) <a
-     *                    href="../../../../concepts/tables.html#shard-keys"
+     *                    href="../../../../../concepts/tables/#shard-keys"
      *                    target="_top">shard key</a>.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#NULLABLE
@@ -8429,7 +8640,7 @@ public class GPUdb extends GPUdbBase {
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#DICT
      *                    DICT}: This property indicates that this column
      *                    should be <a
-     *                    href="../../../../concepts/dictionary_encoding.html"
+     *                    href="../../../../../concepts/dictionary_encoding/"
      *                    target="_top">dictionary encoded</a>. It can only be
      *                    used in conjunction with restricted string (charN),
      *                    int, long or date columns. Dictionary encoding is
@@ -8474,31 +8685,30 @@ public class GPUdb extends GPUdbBase {
      * The following merges are supported:
      * <p>
      * UNION (DISTINCT/ALL) - For data set union details and examples, see <a
-     * href="../../../../concepts/unions.html" target="_top">Union</a>.  For
+     * href="../../../../../concepts/unions/" target="_top">Union</a>.  For
      * limitations, see <a
-     * href="../../../../concepts/unions.html#limitations-and-cautions"
+     * href="../../../../../concepts/unions/#limitations-and-cautions"
      * target="_top">Union Limitations and Cautions</a>.
      * <p>
      * INTERSECT (DISTINCT/ALL) - For data set intersection details and
-     * examples, see <a href="../../../../concepts/intersect.html"
+     * examples, see <a href="../../../../../concepts/intersect/"
      * target="_top">Intersect</a>.  For limitations, see <a
-     * href="../../../../concepts/intersect.html#limitations"
+     * href="../../../../../concepts/intersect/#limitations"
      * target="_top">Intersect Limitations</a>.
      * <p>
      * EXCEPT (DISTINCT/ALL) - For data set subtraction details and examples,
-     * see <a href="../../../../concepts/except.html" target="_top">Except</a>.
+     * see <a href="../../../../../concepts/except/" target="_top">Except</a>.
      * For limitations, see <a
-     * href="../../../../concepts/except.html#limitations" target="_top">Except
+     * href="../../../../../concepts/except/#limitations" target="_top">Except
      * Limitations</a>.
      * <p>
      * MERGE VIEWS - For a given set of <a
-     * href="../../../../concepts/filtered_views.html" target="_top">filtered
+     * href="../../../../../concepts/filtered_views/" target="_top">filtered
      * views</a> on a single table, creates a single filtered view containing
      * all of the unique records across all of the given filtered data sets.
      * <p>
      * Non-charN 'string' and 'bytes' column types cannot be merged, nor can
-     * columns marked as <a
-     * href="../../../../concepts/types.html#data-handling"
+     * columns marked as <a href="../../../../../concepts/types/#data-handling"
      * target="_top">store-only</a>.
      * 
      * @param request  Request object containing the parameters for the
@@ -8526,42 +8736,41 @@ public class GPUdb extends GPUdbBase {
      * The following merges are supported:
      * <p>
      * UNION (DISTINCT/ALL) - For data set union details and examples, see <a
-     * href="../../../../concepts/unions.html" target="_top">Union</a>.  For
+     * href="../../../../../concepts/unions/" target="_top">Union</a>.  For
      * limitations, see <a
-     * href="../../../../concepts/unions.html#limitations-and-cautions"
+     * href="../../../../../concepts/unions/#limitations-and-cautions"
      * target="_top">Union Limitations and Cautions</a>.
      * <p>
      * INTERSECT (DISTINCT/ALL) - For data set intersection details and
-     * examples, see <a href="../../../../concepts/intersect.html"
+     * examples, see <a href="../../../../../concepts/intersect/"
      * target="_top">Intersect</a>.  For limitations, see <a
-     * href="../../../../concepts/intersect.html#limitations"
+     * href="../../../../../concepts/intersect/#limitations"
      * target="_top">Intersect Limitations</a>.
      * <p>
      * EXCEPT (DISTINCT/ALL) - For data set subtraction details and examples,
-     * see <a href="../../../../concepts/except.html" target="_top">Except</a>.
+     * see <a href="../../../../../concepts/except/" target="_top">Except</a>.
      * For limitations, see <a
-     * href="../../../../concepts/except.html#limitations" target="_top">Except
+     * href="../../../../../concepts/except/#limitations" target="_top">Except
      * Limitations</a>.
      * <p>
      * MERGE VIEWS - For a given set of <a
-     * href="../../../../concepts/filtered_views.html" target="_top">filtered
+     * href="../../../../../concepts/filtered_views/" target="_top">filtered
      * views</a> on a single table, creates a single filtered view containing
      * all of the unique records across all of the given filtered data sets.
      * <p>
      * Non-charN 'string' and 'bytes' column types cannot be merged, nor can
-     * columns marked as <a
-     * href="../../../../concepts/types.html#data-handling"
+     * columns marked as <a href="../../../../../concepts/types/#data-handling"
      * target="_top">store-only</a>.
      * 
      * @param tableName  Name of the table to be created, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a> and meeting <a
-     *                   href="../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.
      * @param tableNames  The list of table names to merge, in
      *                    [schema_name.]table_name format, using standard <a
-     *                    href="../../../../concepts/tables.html#table-name-resolution"
+     *                    href="../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.  Must
      *                    contain the names of one or more existing tables.
      * @param inputColumnNames  The list of columns from each of the
@@ -8582,13 +8791,13 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../rm/concepts.html"
+     *                 href="../../../../../rm/concepts/"
      *                 target="_top">Resource Management Concepts</a> for
      *                 information about how resources are managed, <a
-     *                 href="../../../../rm/concepts.html" target="_top">Tier
+     *                 href="../../../../../rm/concepts/" target="_top">Tier
      *                 Strategy Concepts</a> for how resources are targeted for
      *                 VRAM, and <a
-     *                 href="../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../rm/usage/#tier-strategies"
      *                 target="_top">Tier Strategy Usage</a> for how to specify
      *                 a table's priority in VRAM.
      *                 Supported values:
@@ -8666,7 +8875,7 @@ public class GPUdb extends GPUdbBase {
      *                 outputColumnNames}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}:
-     *                 Sets the <a href="../../../../concepts/ttl.html"
+     *                 Sets the <a href="../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the output table specified in
      *                 {@code tableName}.
      *                         <li> {@link
@@ -8993,13 +9202,13 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of the table from which to delete records, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>. Must contain
      *                   the name of an existing table; not applicable to
      *                   views.
      * @param expressions  A list of the actual predicates, one for each
      *                     select; format should follow the guidelines provided
-     *                     <a href="../../../../concepts/expressions.html"
+     *                     <a href="../../../../../concepts/expressions/"
      *                     target="_top">here</a>. Specifying one or more
      *                     {@code expressions} is mutually exclusive to
      *                     specifying {@code record_id} in the {@code options}.
@@ -9019,7 +9228,7 @@ public class GPUdb extends GPUdbBase {
      *                 GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
      *                 with the *return_record_ids* option. This option cannot
      *                 be used to delete records from <a
-     *                 href="../../../../concepts/tables.html#replication"
+     *                 href="../../../../../concepts/tables/#replication"
      *                 target="_top">replicated</a> tables.
      *                         <li> {@link
      *                 com.gpudb.protocol.DeleteRecordsRequest.Options#DELETE_ALL_RECORDS
@@ -9189,8 +9398,72 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    public DropContainerRegistryResponse dropContainerRegistry(DropContainerRegistryRequest request) throws GPUdbException {
+        DropContainerRegistryResponse actualResponse_ = new DropContainerRegistryResponse();
+        submitRequest("/drop/container/registry", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public DropContainerRegistryResponse dropContainerRegistry(String registryName, Map<String, String> options) throws GPUdbException {
+        DropContainerRegistryRequest actualRequest_ = new DropContainerRegistryRequest(registryName, options);
+        DropContainerRegistryResponse actualResponse_ = new DropContainerRegistryResponse();
+        submitRequest("/drop/container/registry", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
     /**
-     * Drops an existing <a href="../../../../concepts/data_sources.html"
+     * Drop an existing <a href="../../../../../concepts/credentials/"
+     * target="_top">credential</a>.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DropCredentialResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public DropCredentialResponse dropCredential(DropCredentialRequest request) throws GPUdbException {
+        DropCredentialResponse actualResponse_ = new DropCredentialResponse();
+        submitRequest("/drop/credential", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Drop an existing <a href="../../../../../concepts/credentials/"
+     * target="_top">credential</a>.
+     * 
+     * @param credentialName  Name of the credential to be dropped. Must be an
+     *                        existing credential.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DropCredentialResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public DropCredentialResponse dropCredential(String credentialName, Map<String, String> options) throws GPUdbException {
+        DropCredentialRequest actualRequest_ = new DropCredentialRequest(credentialName, options);
+        DropCredentialResponse actualResponse_ = new DropCredentialResponse();
+        submitRequest("/drop/credential", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Drops an existing <a href="../../../../../concepts/data_sources/"
      * target="_top">data source</a>.  Any external
      * tables that depend on the data source must be dropped before it can be
      * dropped.
@@ -9214,7 +9487,7 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Drops an existing <a href="../../../../concepts/data_sources.html"
+     * Drops an existing <a href="../../../../../concepts/data_sources/"
      * target="_top">data source</a>.  Any external
      * tables that depend on the data source must be dropped before it can be
      * dropped.
@@ -9240,8 +9513,25 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    public DropModelResponse dropModel(DropModelRequest request) throws GPUdbException {
+        DropModelResponse actualResponse_ = new DropModelResponse();
+        submitRequest("/drop/model", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public DropModelResponse dropModel(String modelName, Map<String, String> options) throws GPUdbException {
+        DropModelRequest actualRequest_ = new DropModelRequest(modelName, options);
+        DropModelResponse actualResponse_ = new DropModelResponse();
+        submitRequest("/drop/model", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
     /**
-     * Drops an existing SQL-style <a href="../../../../concepts/schemas.html"
+     * Drops an existing SQL-style <a href="../../../../../concepts/schemas/"
      * target="_top">schema</a>, specified in {@code schemaName}.
      * 
      * @param request  Request object containing the parameters for the
@@ -9263,7 +9553,7 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Drops an existing SQL-style <a href="../../../../concepts/schemas.html"
+     * Drops an existing SQL-style <a href="../../../../../concepts/schemas/"
      * target="_top">schema</a>, specified in {@code schemaName}.
      * 
      * @param schemaName  Name of the schema to be dropped. Must be an existing
@@ -9318,6 +9608,23 @@ public class GPUdb extends GPUdbBase {
         DropSchemaRequest actualRequest_ = new DropSchemaRequest(schemaName, options);
         DropSchemaResponse actualResponse_ = new DropSchemaResponse();
         submitRequest("/drop/schema", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public EvaluateModelResponse evaluateModel(EvaluateModelRequest request) throws GPUdbException {
+        EvaluateModelResponse actualResponse_ = new EvaluateModelResponse();
+        submitRequest("/evaluate/model", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public EvaluateModelResponse evaluateModel(String modelName, int replicas, String deploymentMode, String sourceTable, String destinationTable, Map<String, String> options) throws GPUdbException {
+        EvaluateModelRequest actualRequest_ = new EvaluateModelRequest(modelName, replicas, deploymentMode, sourceTable, destinationTable, options);
+        EvaluateModelResponse actualResponse_ = new EvaluateModelResponse();
+        submitRequest("/evaluate/model", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -9386,7 +9693,7 @@ public class GPUdb extends GPUdbBase {
      *                         currently existing table, in
      *                         [schema_name.]table_name format, using standard
      *                         <a
-     *                         href="../../../../concepts/tables.html#table-name-resolution"
+     *                         href="../../../../../concepts/tables/#table-name-resolution"
      *                         target="_top">name resolution rules</a>.
      *                         If no table names are specified, no data will be
      *                         passed to the proc.  This
@@ -9411,10 +9718,10 @@ public class GPUdb extends GPUdbBase {
      *                          be written, each in [schema_name.]table_name
      *                          format, using standard
      *                          <a
-     *                          href="../../../../concepts/tables.html#table-name-resolution"
+     *                          href="../../../../../concepts/tables/#table-name-resolution"
      *                          target="_top">name resolution rules</a>
      *                          and meeting <a
-     *                          href="../../../../concepts/tables.html#table-naming-criteria"
+     *                          href="../../../../../concepts/tables/#table-naming-criteria"
      *                          target="_top">table naming criteria</a>.
      *                          If a specified table does not exist, it will
      *                          automatically be created with the
@@ -9495,8 +9802,8 @@ public class GPUdb extends GPUdbBase {
     /**
      * Execute a SQL statement (query, DML, or DDL).
      * <p>
-     * See <a href="../../../../concepts/sql.html" target="_top">SQL
-     * Support</a> for the complete set of supported SQL commands.
+     * See <a href="../../../../../concepts/sql/" target="_top">SQL Support</a>
+     * for the complete set of supported SQL commands.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -9519,8 +9826,8 @@ public class GPUdb extends GPUdbBase {
     /**
      * Execute a SQL statement (query, DML, or DDL).
      * <p>
-     * See <a href="../../../../concepts/sql.html" target="_top">SQL
-     * Support</a> for the complete set of supported SQL commands.
+     * See <a href="../../../../../concepts/sql/" target="_top">SQL Support</a>
+     * for the complete set of supported SQL commands.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -9554,8 +9861,8 @@ public class GPUdb extends GPUdbBase {
     /**
      * Execute a SQL statement (query, DML, or DDL).
      * <p>
-     * See <a href="../../../../concepts/sql.html" target="_top">SQL
-     * Support</a> for the complete set of supported SQL commands.
+     * See <a href="../../../../../concepts/sql/" target="_top">SQL Support</a>
+     * for the complete set of supported SQL commands.
      * 
      * @param statement  SQL statement (query, DML, or DDL) to be executed
      * @param offset  A positive integer indicating the number of initial
@@ -9567,7 +9874,7 @@ public class GPUdb extends GPUdbBase {
      *               that the maximum number of results allowed by the server
      *               should be returned.  The number of records returned will
      *               never exceed the server's own limit, defined by the <a
-     *               href="../../../../config/index.html#general"
+     *               href="../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -9662,7 +9969,7 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
      *                 PAGING_TABLE_TTL}: Sets the <a
-     *                 href="../../../../concepts/ttl.html"
+     *                 href="../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the paging table.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
@@ -9734,7 +10041,7 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TTL TTL}:
-     *                 Sets the <a href="../../../../concepts/ttl.html"
+     *                 Sets the <a href="../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the intermediate result tables
      *                 used in query execution.
      *                         <li> {@link
@@ -9833,11 +10140,11 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Filters data based on the specified expression.  The results are
-     * stored in a <a href="../../../../concepts/filtered_views.html"
+     * stored in a <a href="../../../../../concepts/filtered_views/"
      * target="_top">result set</a> with the
      * given {@code viewName}.
      * <p>
-     * For details see <a href="../../../../concepts/expressions.html"
+     * For details see <a href="../../../../../concepts/expressions/"
      * target="_top">Expressions</a>.
      * <p>
      * The response message contains the number of points for which the
@@ -9865,11 +10172,11 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Filters data based on the specified expression.  The results are
-     * stored in a <a href="../../../../concepts/filtered_views.html"
+     * stored in a <a href="../../../../../concepts/filtered_views/"
      * target="_top">result set</a> with the
      * given {@code viewName}.
      * <p>
-     * For details see <a href="../../../../concepts/expressions.html"
+     * For details see <a href="../../../../../concepts/expressions/"
      * target="_top">Expressions</a>.
      * <p>
      * The response message contains the number of points for which the
@@ -9879,21 +10186,21 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of the table to filter, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  This may be
      *                   the name of a table or a view (when chaining queries).
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
      * @param expression  The select expression to filter the specified table.
      *                    For details see <a
-     *                    href="../../../../concepts/expressions.html"
+     *                    href="../../../../../concepts/expressions/"
      *                    target="_top">Expressions</a>.
      * @param options  Optional parameters.
      *                 <ul>
@@ -9911,7 +10218,7 @@ public class GPUdb extends GPUdbBase {
      *                 default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterRequest.Options#TTL TTL}: Sets
-     *                 the <a href="../../../../concepts/ttl.html"
+     *                 the <a href="../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the view specified in {@code
      *                 viewName}.
      *                 </ul>
@@ -9977,15 +10284,15 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of the table to filter, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  This may be
      *                   the name of a table or a view (when chaining queries).
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
@@ -10071,15 +10378,15 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of the table to filter, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  This may be
      *                   the name of a table or a view (when chaining queries).
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
@@ -10163,15 +10470,15 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table on which the bounding box operation
      *                   will be performed, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
@@ -10261,15 +10568,15 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table on which the bounding box operation
      *                   will be performed, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>. Must be an
      *                   existing table.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
@@ -10344,16 +10651,16 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table on which the filter by geometry will
      *                   be performed, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table or view containing a geospatial
      *                   geometry column.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
@@ -10494,15 +10801,15 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of the table to filter, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  This may be
      *                   the name of a table or a view (when chaining queries).
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
@@ -10615,15 +10922,15 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table on which the filter by radius
      *                   operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
@@ -10719,15 +11026,15 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table on which the filter by radius
      *                   operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
@@ -10827,15 +11134,15 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table on which the filter by range
      *                   operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
@@ -10937,17 +11244,17 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table on which the filter by track
      *                   operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>. Must be a
      *                   currently existing table with a <a
-     *                   href="../../../../geospatial/geo_objects.html"
+     *                   href="../../../../../geospatial/geo_objects/"
      *                   target="_top">track</a> present.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
@@ -11021,7 +11328,7 @@ public class GPUdb extends GPUdbBase {
      * {@code case_sensitive} can modify case sensitivity in matching
      * for all modes except {@code search}. For
      * {@code search} mode details and limitations, see
-     * <a href="../../../../concepts/full_text_search.html" target="_top">Full
+     * <a href="../../../../../concepts/full_text_search/" target="_top">Full
      * Text Search</a>.
      * 
      * @param request  Request object containing the parameters for the
@@ -11048,21 +11355,21 @@ public class GPUdb extends GPUdbBase {
      * {@code case_sensitive} can modify case sensitivity in matching
      * for all modes except {@code search}. For
      * {@code search} mode details and limitations, see
-     * <a href="../../../../concepts/full_text_search.html" target="_top">Full
+     * <a href="../../../../../concepts/full_text_search/" target="_top">Full
      * Text Search</a>.
      * 
      * @param tableName  Name of the table on which the filter operation will
      *                   be performed, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table or view.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
@@ -11193,15 +11500,15 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of the table whose data will be filtered, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
@@ -11212,7 +11519,7 @@ public class GPUdb extends GPUdbBase {
      *                         against in the table called {@code tableName},
      *                         in [schema_name.]table_name format, using
      *                         standard <a
-     *                         href="../../../../concepts/tables.html#table-name-resolution"
+     *                         href="../../../../../concepts/tables/#table-name-resolution"
      *                         target="_top">name resolution rules</a>.  Must
      *                         be an existing table.
      * @param sourceTableColumnName  Name of the column in the {@code
@@ -11377,14 +11684,14 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of an existing table on which to perform the
      *                   calculation, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
@@ -11590,7 +11897,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table or view from which the records will
      *                   be fetched, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
@@ -11601,7 +11908,7 @@ public class GPUdb extends GPUdbBase {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../config/index.html#general"
+     *               href="../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -11751,7 +12058,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table or view from which the records will
      *                   be fetched, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
@@ -11762,7 +12069,7 @@ public class GPUdb extends GPUdbBase {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../config/index.html#general"
+     *               href="../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -11848,7 +12155,7 @@ public class GPUdb extends GPUdbBase {
      * offset}
      * and {@code limit} parameters.
      * <p>
-     * <a href="../../../../concepts/window.html" target="_top">Window
+     * <a href="../../../../../concepts/window/" target="_top">Window
      * functions</a>, which can perform
      * operations like moving averages, are available through this endpoint as
      * well as
@@ -11866,17 +12173,17 @@ public class GPUdb extends GPUdbBase {
      * If {@code tableName} is empty, selection is performed against a
      * single-row
      * virtual table.  This can be useful in executing temporal
-     * (<a href="../../../../concepts/expressions.html#date-time-functions"
+     * (<a href="../../../../../concepts/expressions/#date-time-functions"
      * target="_top">NOW()</a>), identity
-     * (<a href="../../../../concepts/expressions.html#user-security-functions"
+     * (<a href="../../../../../concepts/expressions/#user-security-functions"
      * target="_top">USER()</a>), or
      * constant-based functions
-     * (<a href="../../../../concepts/expressions.html#scalar-functions"
+     * (<a href="../../../../../concepts/expressions/#scalar-functions"
      * target="_top">GEODIST(-77.11, 38.88, -71.06, 42.36)</a>).
      * <p>
      * The response is returned as a dynamic schema. For details see:
-     * <a href="../../../../api/index.html#dynamic-schemas"
-     * target="_top">dynamic schemas documentation</a>.
+     * <a href="../../../../../api/#dynamic-schemas" target="_top">dynamic
+     * schemas documentation</a>.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -11904,7 +12211,7 @@ public class GPUdb extends GPUdbBase {
      * offset}
      * and {@code limit} parameters.
      * <p>
-     * <a href="../../../../concepts/window.html" target="_top">Window
+     * <a href="../../../../../concepts/window/" target="_top">Window
      * functions</a>, which can perform
      * operations like moving averages, are available through this endpoint as
      * well as
@@ -11922,17 +12229,17 @@ public class GPUdb extends GPUdbBase {
      * If {@code tableName} is empty, selection is performed against a
      * single-row
      * virtual table.  This can be useful in executing temporal
-     * (<a href="../../../../concepts/expressions.html#date-time-functions"
+     * (<a href="../../../../../concepts/expressions/#date-time-functions"
      * target="_top">NOW()</a>), identity
-     * (<a href="../../../../concepts/expressions.html#user-security-functions"
+     * (<a href="../../../../../concepts/expressions/#user-security-functions"
      * target="_top">USER()</a>), or
      * constant-based functions
-     * (<a href="../../../../concepts/expressions.html#scalar-functions"
+     * (<a href="../../../../../concepts/expressions/#scalar-functions"
      * target="_top">GEODIST(-77.11, 38.88, -71.06, 42.36)</a>).
      * <p>
      * The response is returned as a dynamic schema. For details see:
-     * <a href="../../../../api/index.html#dynamic-schemas"
-     * target="_top">dynamic schemas documentation</a>.
+     * <a href="../../../../../api/#dynamic-schemas" target="_top">dynamic
+     * schemas documentation</a>.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -11970,7 +12277,7 @@ public class GPUdb extends GPUdbBase {
      * offset}
      * and {@code limit} parameters.
      * <p>
-     * <a href="../../../../concepts/window.html" target="_top">Window
+     * <a href="../../../../../concepts/window/" target="_top">Window
      * functions</a>, which can perform
      * operations like moving averages, are available through this endpoint as
      * well as
@@ -11988,22 +12295,22 @@ public class GPUdb extends GPUdbBase {
      * If {@code tableName} is empty, selection is performed against a
      * single-row
      * virtual table.  This can be useful in executing temporal
-     * (<a href="../../../../concepts/expressions.html#date-time-functions"
+     * (<a href="../../../../../concepts/expressions/#date-time-functions"
      * target="_top">NOW()</a>), identity
-     * (<a href="../../../../concepts/expressions.html#user-security-functions"
+     * (<a href="../../../../../concepts/expressions/#user-security-functions"
      * target="_top">USER()</a>), or
      * constant-based functions
-     * (<a href="../../../../concepts/expressions.html#scalar-functions"
+     * (<a href="../../../../../concepts/expressions/#scalar-functions"
      * target="_top">GEODIST(-77.11, 38.88, -71.06, 42.36)</a>).
      * <p>
      * The response is returned as a dynamic schema. For details see:
-     * <a href="../../../../api/index.html#dynamic-schemas"
-     * target="_top">dynamic schemas documentation</a>.
+     * <a href="../../../../../api/#dynamic-schemas" target="_top">dynamic
+     * schemas documentation</a>.
      * 
      * @param tableName  Name of the table or view on which this operation will
      *                   be performed, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  An empty
      *                   table name retrieves one record from a single-row
      *                   virtual table, where columns specified should be
@@ -12018,7 +12325,7 @@ public class GPUdb extends GPUdbBase {
      *               that the maximum number of results allowed by the server
      *               should be returned.  The number of records returned will
      *               never exceed the server's own limit, defined by the <a
-     *               href="../../../../config/index.html#general"
+     *               href="../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -12215,14 +12522,14 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table or view for which series/tracks will
      *                   be fetched, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param worldTableName  Name of the table containing the complete
      *                        series/track information to be returned for the
      *                        tracks present in the {@code tableName}, in
      *                        [schema_name.]table_name format, using standard
      *                        <a
-     *                        href="../../../../concepts/tables.html#table-name-resolution"
+     *                        href="../../../../../concepts/tables/#table-name-resolution"
      *                        target="_top">name resolution rules</a>.
      *                        Typically this is used when retrieving
      *                        series/tracks from a view (which contains partial
@@ -12335,14 +12642,14 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table or view for which series/tracks will
      *                   be fetched, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param worldTableName  Name of the table containing the complete
      *                        series/track information to be returned for the
      *                        tracks present in the {@code tableName}, in
      *                        [schema_name.]table_name format, using standard
      *                        <a
-     *                        href="../../../../concepts/tables.html#table-name-resolution"
+     *                        href="../../../../../concepts/tables/#table-name-resolution"
      *                        target="_top">name resolution rules</a>.
      *                        Typically this is used when retrieving
      *                        series/tracks from a view (which contains partial
@@ -12483,7 +12790,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the collection or table from which records are
      *                   to be retrieved, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing collection or table.
      * @param offset  A positive integer indicating the number of initial
@@ -12495,7 +12802,7 @@ public class GPUdb extends GPUdbBase {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../config/index.html#general"
+     *               href="../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code offset} & {@code limit}
      *               to request subsequent pages of results.  The default value
@@ -12609,7 +12916,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the collection or table from which records are
      *                   to be retrieved, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing collection or table.
      * @param offset  A positive integer indicating the number of initial
@@ -12621,7 +12928,7 @@ public class GPUdb extends GPUdbBase {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../config/index.html#general"
+     *               href="../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code offset} & {@code limit}
      *               to request subsequent pages of results.  The default value
@@ -12687,7 +12994,72 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Grants a <a href="../../../../concepts/data_sources.html"
+     * Grants a <a
+     * href="../../../../../security/sec_concepts/#security-concepts-permissions-credential"
+     * target="_top">credential-level permission</a> to a user or role.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  GrantPermissionCredentialResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public GrantPermissionCredentialResponse grantPermissionCredential(GrantPermissionCredentialRequest request) throws GPUdbException {
+        GrantPermissionCredentialResponse actualResponse_ = new GrantPermissionCredentialResponse();
+        submitRequest("/grant/permission/credential", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Grants a <a
+     * href="../../../../../security/sec_concepts/#security-concepts-permissions-credential"
+     * target="_top">credential-level permission</a> to a user or role.
+     * 
+     * @param name  Name of the user or role to which the permission will be
+     *              granted. Must be an existing user or role.
+     * @param permission  Permission to grant to the user or role.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionCredentialRequest.Permission#CREDENTIAL_ADMIN
+     *                    CREDENTIAL_ADMIN}: Full read/write and administrative
+     *                    access on the credential.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionCredentialRequest.Permission#CREDENTIAL_READ
+     *                    CREDENTIAL_READ}: Ability to read and use the
+     *                    credential.
+     *                    </ul>
+     * @param credentialName  Name of the credential on which the permission
+     *                        will be granted. Must be an existing credential,
+     *                        or an empty string to grant access on all
+     *                        credentials.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  GrantPermissionCredentialResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public GrantPermissionCredentialResponse grantPermissionCredential(String name, String permission, String credentialName, Map<String, String> options) throws GPUdbException {
+        GrantPermissionCredentialRequest actualRequest_ = new GrantPermissionCredentialRequest(name, permission, credentialName, options);
+        GrantPermissionCredentialResponse actualResponse_ = new GrantPermissionCredentialResponse();
+        submitRequest("/grant/permission/credential", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Grants a <a href="../../../../../concepts/data_sources/"
      * target="_top">data source</a> permission to a user or role.
      * 
      * @param request  Request object containing the parameters for the
@@ -12709,7 +13081,7 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Grants a <a href="../../../../concepts/data_sources.html"
+     * Grants a <a href="../../../../../concepts/data_sources/"
      * target="_top">data source</a> permission to a user or role.
      * 
      * @param name  Name of the user or role to which the permission will be
@@ -12911,7 +13283,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table to which the permission grants
      *                   access, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table, view, or schema. If a schema, the
      *                   permission also applies to tables and views in the
@@ -13061,7 +13433,7 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param schemaName  Name of the schema to check for existence, in root,
      *                    using standard <a
-     *                    href="../../../../concepts/tables.html#table-name-resolution"
+     *                    href="../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
@@ -13108,7 +13480,7 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of the table to check for existence, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
@@ -13174,6 +13546,23 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    public ImportModelResponse importModel(ImportModelRequest request) throws GPUdbException {
+        ImportModelResponse actualResponse_ = new ImportModelResponse();
+        submitRequest("/import/model", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public ImportModelResponse importModel(String modelName, String registryName, String container, String runFunction, String modelType, Map<String, String> options) throws GPUdbException {
+        ImportModelRequest actualRequest_ = new ImportModelRequest(modelName, registryName, container, runFunction, modelType, options);
+        ImportModelResponse actualResponse_ = new ImportModelResponse();
+        submitRequest("/import/model", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
     /**
      * Adds multiple records to the specified table. The operation is
      * synchronous, meaning that a response will not be returned until all the
@@ -13189,7 +13578,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The {@code update_on_existing_pk} option specifies the record
      * collision policy for inserting into a table with a
-     * <a href="../../../../concepts/tables.html#primary-keys"
+     * <a href="../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a>, but is ignored if
      * no primary key exists.
      * <p>
@@ -13229,7 +13618,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The {@code update_on_existing_pk} option specifies the record
      * collision policy for inserting into a table with a
-     * <a href="../../../../concepts/tables.html#primary-keys"
+     * <a href="../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a>, but is ignored if
      * no primary key exists.
      * <p>
@@ -13271,7 +13660,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The {@code update_on_existing_pk} option specifies the record
      * collision policy for inserting into a table with a
-     * <a href="../../../../concepts/tables.html#primary-keys"
+     * <a href="../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a>, but is ignored if
      * no primary key exists.
      * <p>
@@ -13320,7 +13709,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The {@code update_on_existing_pk} option specifies the record
      * collision policy for inserting into a table with a
-     * <a href="../../../../concepts/tables.html#primary-keys"
+     * <a href="../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a>, but is ignored if
      * no primary key exists.
      * <p>
@@ -13330,7 +13719,7 @@ public class GPUdb extends GPUdbBase {
      * @param <TRequest>  The type of object being added.
      * @param tableName  Name of table to which the records are to be added, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * @param data  An array of binary-encoded data for the records to be
@@ -13342,7 +13731,7 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
      *                 policy for inserting into a table with a <a
-     *                 href="../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a>.  If set to {@code true},
      *                 any existing table record with primary key values that
      *                 match those of a record being inserted will be replaced
@@ -13486,7 +13875,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The {@code update_on_existing_pk} option specifies the record
      * collision policy for inserting into a table with a
-     * <a href="../../../../concepts/tables.html#primary-keys"
+     * <a href="../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a>, but is ignored if
      * no primary key exists.
      * <p>
@@ -13497,7 +13886,7 @@ public class GPUdb extends GPUdbBase {
      * @param typeObjectMap  Type object map used for encoding input objects.
      * @param tableName  Name of table to which the records are to be added, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * @param data  An array of binary-encoded data for the records to be
@@ -13509,7 +13898,7 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
      *                 policy for inserting into a table with a <a
-     *                 href="../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a>.  If set to {@code true},
      *                 any existing table record with primary key values that
      *                 match those of a record being inserted will be replaced
@@ -13710,7 +14099,7 @@ public class GPUdb extends GPUdbBase {
      *                   inserted, in
      *                   [schema_name.]table_name format, using standard
      *                   <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      *                   If the table does not exist, the table will be created
      *                   using either an existing
@@ -13718,12 +14107,12 @@ public class GPUdb extends GPUdbBase {
      *                   file, and the new table name will have to meet
      *                   standard
      *                   <a
-     *                   href="../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.
      * @param filepaths  Absolute or relative filepath(s) from where files will
      *                   be loaded. Relative filepaths are relative to the
      *                   defined <a
-     *                   href="../../../../config/index.html#external-files"
+     *                   href="../../../../../config/#external-files"
      *                   target="_top">external_files_directory</a> parameter
      *                   in the server configuration. The filepaths may include
      *                   wildcards (*). If the first path ends in .tsv, the
@@ -13737,7 +14126,7 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TYPE_ID
      *                            TYPE_ID}: ID of a currently registered <a
-     *                            href="../../../../concepts/types.html"
+     *                            href="../../../../../concepts/types/"
      *                            target="_top">type</a>.  The default value is
      *                            ''.
      *                                    <li> {@link
@@ -13762,21 +14151,21 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_REPLICATED
      *                            IS_REPLICATED}: Affects the <a
-     *                            href="../../../../concepts/tables.html#distribution"
+     *                            href="../../../../../concepts/tables/#distribution"
      *                            target="_top">distribution scheme</a> for the
      *                            table's data.  If {@code true} and the given
      *                            type has no explicit <a
-     *                            href="../../../../concepts/tables.html#shard-key"
+     *                            href="../../../../../concepts/tables/#shard-key"
      *                            target="_top">shard key</a> defined, the
      *                            table will be <a
-     *                            href="../../../../concepts/tables.html#replication"
+     *                            href="../../../../../concepts/tables/#replication"
      *                            target="_top">replicated</a>.  If {@code
      *                            false}, the table will be <a
-     *                            href="../../../../concepts/tables.html#sharding"
+     *                            href="../../../../../concepts/tables/#sharding"
      *                            target="_top">sharded</a> according to the
      *                            shard key specified in the given {@code
      *                            type_id}, or <a
-     *                            href="../../../../concepts/tables.html#random-sharding"
+     *                            href="../../../../../concepts/tables/#random-sharding"
      *                            target="_top">randomly sharded</a>, if no
      *                            shard key is specified.  Note that a type
      *                            containing a shard key cannot be used to
@@ -13796,7 +14185,7 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FOREIGN_KEYS
      *                            FOREIGN_KEYS}: Semicolon-separated list of <a
-     *                            href="../../../../concepts/tables.html#foreign-keys"
+     *                            href="../../../../../concepts/tables/#foreign-keys"
      *                            target="_top">foreign keys</a>, of the format
      *                            '(source_column_name [, ...]) references
      *                            target_table_name(primary_key_column_name [,
@@ -13810,29 +14199,29 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#PARTITION_TYPE
      *                            PARTITION_TYPE}: <a
-     *                            href="../../../../concepts/tables.html#partitioning"
+     *                            href="../../../../../concepts/tables/#partitioning"
      *                            target="_top">Partitioning</a> scheme to use.
      *                            Supported values:
      *                            <ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#RANGE
      *                            RANGE}: Use <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-range"
+     *                            href="../../../../../concepts/tables/#partitioning-by-range"
      *                            target="_top">range partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#INTERVAL
      *                            INTERVAL}: Use <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-interval"
+     *                            href="../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#LIST
      *                            LIST}: Use <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#HASH
      *                            HASH}: Use <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-hash"
+     *                            href="../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a>.
      *                            </ul>
      *                                    <li> {@link
@@ -13848,13 +14237,13 @@ public class GPUdb extends GPUdbBase {
      *                            of partition definitions, whose format
      *                            depends on the choice of {@code
      *                            partition_type}.  See <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-range"
+     *                            href="../../../../../concepts/tables/#partitioning-by-range"
      *                            target="_top">range partitioning</a>, <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-interval"
+     *                            href="../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>, <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitioning</a>, or <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-hash"
+     *                            href="../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a> for
      *                            example formats.
      *                                    <li> {@link
@@ -13863,7 +14252,7 @@ public class GPUdb extends GPUdbBase {
      *                            new partition will be created for values
      *                            which don't fall into an existing partition.
      *                            Currently only supported for <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitions</a>.
      *                            Supported values:
      *                            <ul>
@@ -13880,7 +14269,7 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TTL
      *                            TTL}: Sets the <a
-     *                            href="../../../../concepts/ttl.html"
+     *                            href="../../../../../concepts/ttl/"
      *                            target="_top">TTL</a> of the table specified
      *                            in {@code tableName}.
      *                                    <li> {@link
@@ -13891,14 +14280,14 @@ public class GPUdb extends GPUdbBase {
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_RESULT_TABLE
      *                            IS_RESULT_TABLE}: Indicates whether the table
      *                            is a <a
-     *                            href="../../../../concepts/tables_memory_only.html"
+     *                            href="../../../../../concepts/tables_memory_only/"
      *                            target="_top">memory-only table</a>. A result
      *                            table cannot contain columns with store_only
      *                            or text_search <a
-     *                            href="../../../../concepts/types.html#data-handling"
+     *                            href="../../../../../concepts/types/#data-handling"
      *                            target="_top">data-handling</a> or that are
      *                            <a
-     *                            href="../../../../concepts/types.html#primitive-types"
+     *                            href="../../../../../concepts/types/#primitive-types"
      *                            target="_top">non-charN strings</a>, and it
      *                            will not be retained if the server is
      *                            restarted.
@@ -13917,13 +14306,13 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#STRATEGY_DEFINITION
      *                            STRATEGY_DEFINITION}: The <a
-     *                            href="../../../../rm/concepts.html#tier-strategies"
+     *                            href="../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy</a> for the table
      *                            and its columns. See <a
-     *                            href="../../../../rm/concepts.html#tier-strategies"
+     *                            href="../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy usage</a> for
      *                            format and <a
-     *                            href="../../../../rm/usage.html#tier-strategies"
+     *                            href="../../../../../rm/usage/#tier-strategies"
      *                            target="_top">tier strategy examples</a> for
      *                            examples.
      *                            </ul>
@@ -14067,11 +14456,14 @@ public class GPUdb extends GPUdbBase {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
-     *                 DELIMITED_TEXT}: Indicates the file(s) are in delimited
-     *                 text format; e.g., CSV, TSV, PSV, etc.
+     *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
+     *                 TSV, PSV, etc.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
-     *                 PARQUET}: Indicates the file(s) are in Parquet format.
+     *                 PARQUET}: Apache Parquet file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON
+     *                 JSON}: Json file format
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -14217,7 +14609,7 @@ public class GPUdb extends GPUdbBase {
      *                 TEXT_HEADER_PROPERTY_DELIMITER}: Specifies the delimiter
      *                 for
      *                 <a
-     *                 href="../../../../concepts/types.html#column-properties"
+     *                 href="../../../../../concepts/types/#column-properties"
      *                 target="_top">column properties</a> in the header row
      *                 (if
      *                 present).  Cannot be set to same value as {@code
@@ -14341,7 +14733,7 @@ public class GPUdb extends GPUdbBase {
      *                   inserted, in
      *                   [schema_name.]table_name format, using standard
      *                   <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      *                   If the table does not exist, the table will be created
      *                   using either an existing
@@ -14349,7 +14741,7 @@ public class GPUdb extends GPUdbBase {
      *                   payload, and the new table name will have to meet
      *                   standard
      *                   <a
-     *                   href="../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.
      * @param dataText  Records formatted as delimited text
      * @param dataBytes  Records formatted as binary data
@@ -14363,7 +14755,7 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#TYPE_ID
      *                            TYPE_ID}: ID of a currently registered <a
-     *                            href="../../../../concepts/types.html"
+     *                            href="../../../../../concepts/types/"
      *                            target="_top">type</a>.  The default value is
      *                            ''.
      *                                    <li> {@link
@@ -14388,21 +14780,21 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#IS_REPLICATED
      *                            IS_REPLICATED}: Affects the <a
-     *                            href="../../../../concepts/tables.html#distribution"
+     *                            href="../../../../../concepts/tables/#distribution"
      *                            target="_top">distribution scheme</a> for the
      *                            table's data.  If {@code true} and the given
      *                            type has no explicit <a
-     *                            href="../../../../concepts/tables.html#shard-key"
+     *                            href="../../../../../concepts/tables/#shard-key"
      *                            target="_top">shard key</a> defined, the
      *                            table will be <a
-     *                            href="../../../../concepts/tables.html#replication"
+     *                            href="../../../../../concepts/tables/#replication"
      *                            target="_top">replicated</a>.  If {@code
      *                            false}, the table will be <a
-     *                            href="../../../../concepts/tables.html#sharding"
+     *                            href="../../../../../concepts/tables/#sharding"
      *                            target="_top">sharded</a> according to the
      *                            shard key specified in the given {@code
      *                            type_id}, or <a
-     *                            href="../../../../concepts/tables.html#random-sharding"
+     *                            href="../../../../../concepts/tables/#random-sharding"
      *                            target="_top">randomly sharded</a>, if no
      *                            shard key is specified.  Note that a type
      *                            containing a shard key cannot be used to
@@ -14422,7 +14814,7 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#FOREIGN_KEYS
      *                            FOREIGN_KEYS}: Semicolon-separated list of <a
-     *                            href="../../../../concepts/tables.html#foreign-keys"
+     *                            href="../../../../../concepts/tables/#foreign-keys"
      *                            target="_top">foreign keys</a>, of the format
      *                            '(source_column_name [, ...]) references
      *                            target_table_name(primary_key_column_name [,
@@ -14436,29 +14828,29 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#PARTITION_TYPE
      *                            PARTITION_TYPE}: <a
-     *                            href="../../../../concepts/tables.html#partitioning"
+     *                            href="../../../../../concepts/tables/#partitioning"
      *                            target="_top">Partitioning</a> scheme to use.
      *                            Supported values:
      *                            <ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#RANGE
      *                            RANGE}: Use <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-range"
+     *                            href="../../../../../concepts/tables/#partitioning-by-range"
      *                            target="_top">range partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#INTERVAL
      *                            INTERVAL}: Use <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-interval"
+     *                            href="../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#LIST
      *                            LIST}: Use <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#HASH
      *                            HASH}: Use <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-hash"
+     *                            href="../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a>.
      *                            </ul>
      *                                    <li> {@link
@@ -14474,13 +14866,13 @@ public class GPUdb extends GPUdbBase {
      *                            of partition definitions, whose format
      *                            depends on the choice of {@code
      *                            partition_type}.  See <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-range"
+     *                            href="../../../../../concepts/tables/#partitioning-by-range"
      *                            target="_top">range partitioning</a>, <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-interval"
+     *                            href="../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>, <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitioning</a>, or <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-hash"
+     *                            href="../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a> for
      *                            example formats.
      *                                    <li> {@link
@@ -14489,7 +14881,7 @@ public class GPUdb extends GPUdbBase {
      *                            new partition will be created for values
      *                            which don't fall into an existing partition.
      *                            Currently only supported for <a
-     *                            href="../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitions</a>.
      *                            Supported values:
      *                            <ul>
@@ -14506,7 +14898,7 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#TTL
      *                            TTL}: Sets the <a
-     *                            href="../../../../concepts/ttl.html"
+     *                            href="../../../../../concepts/ttl/"
      *                            target="_top">TTL</a> of the table specified
      *                            in {@code tableName}.
      *                                    <li> {@link
@@ -14517,14 +14909,14 @@ public class GPUdb extends GPUdbBase {
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#IS_RESULT_TABLE
      *                            IS_RESULT_TABLE}: Indicates whether the table
      *                            is a <a
-     *                            href="../../../../concepts/tables_memory_only.html"
+     *                            href="../../../../../concepts/tables_memory_only/"
      *                            target="_top">memory-only table</a>. A result
      *                            table cannot contain columns with store_only
      *                            or text_search <a
-     *                            href="../../../../concepts/types.html#data-handling"
+     *                            href="../../../../../concepts/types/#data-handling"
      *                            target="_top">data-handling</a> or that are
      *                            <a
-     *                            href="../../../../concepts/types.html#primitive-types"
+     *                            href="../../../../../concepts/types/#primitive-types"
      *                            target="_top">non-charN strings</a>, and it
      *                            will not be retained if the server is
      *                            restarted.
@@ -14543,13 +14935,13 @@ public class GPUdb extends GPUdbBase {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#STRATEGY_DEFINITION
      *                            STRATEGY_DEFINITION}: The <a
-     *                            href="../../../../rm/concepts.html#tier-strategies"
+     *                            href="../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy</a> for the table
      *                            and its columns. See <a
-     *                            href="../../../../rm/concepts.html#tier-strategies"
+     *                            href="../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy usage</a> for
      *                            format and <a
-     *                            href="../../../../rm/usage.html#tier-strategies"
+     *                            href="../../../../../rm/usage/#tier-strategies"
      *                            target="_top">tier strategy examples</a> for
      *                            examples.
      *                            </ul>
@@ -14688,11 +15080,14 @@ public class GPUdb extends GPUdbBase {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT
-     *                 DELIMITED_TEXT}: Indicates the file(s) are in delimited
-     *                 text format; e.g., CSV, TSV, PSV, etc.
+     *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
+     *                 TSV, PSV, etc.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PARQUET
-     *                 PARQUET}: Indicates the file(s) are in Parquet format.
+     *                 PARQUET}: Apache Parquet file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON
+     *                 JSON}: Json file format
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT
@@ -14786,7 +15181,7 @@ public class GPUdb extends GPUdbBase {
      *                 TEXT_HEADER_PROPERTY_DELIMITER}: Specifies the delimiter
      *                 for
      *                 <a
-     *                 href="../../../../concepts/types.html#column-properties"
+     *                 href="../../../../../concepts/types/#column-properties"
      *                 target="_top">column properties</a> in the header row
      *                 (if
      *                 present).  Cannot be set to same value as {@code
@@ -14905,7 +15300,7 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Table to which random records will be added, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table, not a view.
      * @param count  Number of records to generate.
@@ -15137,7 +15532,7 @@ public class GPUdb extends GPUdbBase {
      * symbol, and any additional optional parameter (e.g. color). To have a
      * symbol used for rendering create a table with a string column named
      * 'SYMBOLCODE' (along with 'x' or 'y' for example). Then when the table is
-     * rendered (via <a href="../../../../api/rest/wms_rest.html"
+     * rendered (via <a href="../../../../../api/rest/wms_rest/"
      * target="_top">WMS</a>) if the 'dosymbology' parameter is 'true' then the
      * value of the 'SYMBOLCODE' column is used to pick the symbol displayed
      * for each point.
@@ -15167,7 +15562,7 @@ public class GPUdb extends GPUdbBase {
      * symbol, and any additional optional parameter (e.g. color). To have a
      * symbol used for rendering create a table with a string column named
      * 'SYMBOLCODE' (along with 'x' or 'y' for example). Then when the table is
-     * rendered (via <a href="../../../../api/rest/wms_rest.html"
+     * rendered (via <a href="../../../../../api/rest/wms_rest/"
      * target="_top">WMS</a>) if the 'dosymbology' parameter is 'true' then the
      * value of the 'SYMBOLCODE' column is used to pick the symbol displayed
      * for each point.
@@ -15337,7 +15732,7 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableName  Name of the table to be locked, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  It must be a
      *                   currently existing table or view.
      * @param lockType  The type of lock being applied to the table. Setting it
@@ -15390,13 +15785,13 @@ public class GPUdb extends GPUdbBase {
      * given solution type.
 
      * IMPORTANT: It's highly recommended that you review the
-     * <a href="../../../../graph_solver/network_graph_solver.html"
+     * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
      * target="_top">Graph REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../graph_solver/examples.html#match-graph"
+     * <a href="../../../../../graph_solver/examples/#match-graph"
      * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
@@ -15425,13 +15820,13 @@ public class GPUdb extends GPUdbBase {
      * given solution type.
 
      * IMPORTANT: It's highly recommended that you review the
-     * <a href="../../../../graph_solver/network_graph_solver.html"
+     * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
      * target="_top">Graph REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../graph_solver/examples.html#match-graph"
+     * <a href="../../../../../graph_solver/examples/#match-graph"
      * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
@@ -15441,11 +15836,11 @@ public class GPUdb extends GPUdbBase {
      *                      geospatial
      *                      graph. Sample points must be specified using
      *                      <a
-     *                      href="../../../../graph_solver/network_graph_solver.html#match-identifiers"
+     *                      href="../../../../../graph_solver/network_graph_solver/#match-identifiers"
      *                      target="_top">identifiers</a>;
      *                      identifiers are grouped as
      *                      <a
-     *                      href="../../../../graph_solver/network_graph_solver.html#match-combinations"
+     *                      href="../../../../../graph_solver/network_graph_solver/#match-combinations"
      *                      target="_top">combinations</a>.
      *                      Identifiers can be used with: existing column
      *                      names, e.g.,
@@ -15495,13 +15890,13 @@ public class GPUdb extends GPUdbBase {
      * @param solutionTable  The name of the table used to store the results,
      *                       in [schema_name.]table_name format, using standard
      *                       <a
-     *                       href="../../../../concepts/tables.html#table-name-resolution"
+     *                       href="../../../../../concepts/tables/#table-name-resolution"
      *                       target="_top">name resolution rules</a> and
      *                       meeting <a
-     *                       href="../../../../concepts/tables.html#table-naming-criteria"
+     *                       href="../../../../../concepts/tables/#table-naming-criteria"
      *                       target="_top">table naming criteria</a>.  This
      *                       table contains a <a
-     *                       href="../../../../geospatial/geo_objects.html#geospatial-tracks"
+     *                       href="../../../../../geospatial/geo_objects/#geospatial-tracks"
      *                       target="_top">track</a> of geospatial points for
      *                       the matched portion of the graph, a track ID, and
      *                       a score value. Also outputs a details table
@@ -15728,10 +16123,10 @@ public class GPUdb extends GPUdbBase {
      * information (specified by {@code fieldMaps}).
      * <p>
      * For merge records details and examples, see
-     * <a href="../../../../concepts/merge_records.html" target="_top">Merge
+     * <a href="../../../../../concepts/merge_records/" target="_top">Merge
      * Records</a>.  For limitations, see
      * <a
-     * href="../../../../concepts/merge_records.html#limitations-and-cautions"
+     * href="../../../../../concepts/merge_records/#limitations-and-cautions"
      * target="_top">Merge Records Limitations and Cautions</a>.
 
      * The field map (specified by {@code fieldMaps}) holds the user-specified
@@ -15768,10 +16163,10 @@ public class GPUdb extends GPUdbBase {
      * information (specified by {@code fieldMaps}).
      * <p>
      * For merge records details and examples, see
-     * <a href="../../../../concepts/merge_records.html" target="_top">Merge
+     * <a href="../../../../../concepts/merge_records/" target="_top">Merge
      * Records</a>.  For limitations, see
      * <a
-     * href="../../../../concepts/merge_records.html#limitations-and-cautions"
+     * href="../../../../../concepts/merge_records/#limitations-and-cautions"
      * target="_top">Merge Records Limitations and Cautions</a>.
 
      * The field map (specified by {@code fieldMaps}) holds the user-specified
@@ -15786,15 +16181,15 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  The name of the new result table for the records to be
      *                   merged into, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a> and meeting <a
-     *                   href="../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.  Must NOT be
      *                   an existing table.
      * @param sourceTableNames  The list of names of source tables to get the
      *                          records from, each in [schema_name.]table_name
      *                          format, using standard <a
-     *                          href="../../../../concepts/tables.html#table-name-resolution"
+     *                          href="../../../../../concepts/tables/#table-name-resolution"
      *                          target="_top">name resolution rules</a>.  Must
      *                          be existing table names.
      * @param fieldMaps  Contains a list of source/target column mappings, one
@@ -15803,7 +16198,7 @@ public class GPUdb extends GPUdbBase {
      *                   specified by {@code tableName}.  Each mapping contains
      *                   the target column names (as keys) that the data in the
      *                   mapped source columns or column <a
-     *                   href="../../../../concepts/expressions.html"
+     *                   href="../../../../../concepts/expressions/"
      *                   target="_top">expressions</a> (as values) will be
      *                   merged into.  All of the source columns being merged
      *                   into a given target column must match in type, as that
@@ -15821,14 +16216,14 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#IS_REPLICATED
      *                 IS_REPLICATED}: Indicates the <a
-     *                 href="../../../../concepts/tables.html#distribution"
+     *                 href="../../../../../concepts/tables/#distribution"
      *                 target="_top">distribution scheme</a> for the data of
      *                 the merged table specified in {@code tableName}.  If
      *                 true, the table will be <a
-     *                 href="../../../../concepts/tables.html#replication"
+     *                 href="../../../../../concepts/tables/#replication"
      *                 target="_top">replicated</a>.  If false, the table will
      *                 be <a
-     *                 href="../../../../concepts/tables.html#random-sharding"
+     *                 href="../../../../../concepts/tables/#random-sharding"
      *                 target="_top">randomly sharded</a>.
      *                 Supported values:
      *                 <ul>
@@ -15844,7 +16239,7 @@ public class GPUdb extends GPUdbBase {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#TTL TTL}:
-     *                 Sets the <a href="../../../../concepts/ttl.html"
+     *                 Sets the <a href="../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the merged table specified in
      *                 {@code tableName}.
      *                         <li> {@link
@@ -15899,13 +16294,13 @@ public class GPUdb extends GPUdbBase {
      * restrictions, and options.
 
      * IMPORTANT: It's highly recommended that you review the
-     * <a href="../../../../graph_solver/network_graph_solver.html"
+     * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
      * target="_top">Graph REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../graph_solver/examples.html#match-graph"
+     * <a href="../../../../../graph_solver/examples/#match-graph"
      * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
@@ -15932,26 +16327,26 @@ public class GPUdb extends GPUdbBase {
      * restrictions, and options.
 
      * IMPORTANT: It's highly recommended that you review the
-     * <a href="../../../../graph_solver/network_graph_solver.html"
+     * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
      * target="_top">Graph REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../graph_solver/examples.html#match-graph"
+     * <a href="../../../../../graph_solver/examples/#match-graph"
      * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
      * @param graphName  Name of the graph resource to modify.
      * @param nodes  Nodes with which to update existing {@code nodes} in graph
      *               specified by {@code graphName}. Review <a
-     *               href="../../../../graph_solver/network_graph_solver.html#nodes"
+     *               href="../../../../../graph_solver/network_graph_solver/#nodes"
      *               target="_top">Nodes</a> for more information. Nodes must
      *               be specified using <a
-     *               href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *               href="../../../../../graph_solver/network_graph_solver/#identifiers"
      *               target="_top">identifiers</a>; identifiers are grouped as
      *               <a
-     *               href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *               href="../../../../../graph_solver/network_graph_solver/#id-combos"
      *               target="_top">combinations</a>. Identifiers can be used
      *               with existing column names, e.g., 'table.column AS
      *               NODE_ID', expressions, e.g., 'ST_MAKEPOINT(column1,
@@ -15965,13 +16360,13 @@ public class GPUdb extends GPUdbBase {
      *               graph.
      * @param edges  Edges with which to update existing {@code edges} in graph
      *               specified by {@code graphName}. Review <a
-     *               href="../../../../graph_solver/network_graph_solver.html#edges"
+     *               href="../../../../../graph_solver/network_graph_solver/#edges"
      *               target="_top">Edges</a> for more information. Edges must
      *               be specified using <a
-     *               href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *               href="../../../../../graph_solver/network_graph_solver/#identifiers"
      *               target="_top">identifiers</a>; identifiers are grouped as
      *               <a
-     *               href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *               href="../../../../../graph_solver/network_graph_solver/#id-combos"
      *               target="_top">combinations</a>. Identifiers can be used
      *               with existing column names, e.g., 'table.column AS
      *               EDGE_ID', expressions, e.g., 'SUBSTR(column, 1, 6) AS
@@ -15985,13 +16380,13 @@ public class GPUdb extends GPUdbBase {
      *               used to modify the graph.
      * @param weights  Weights with which to update existing {@code weights} in
      *                 graph specified by {@code graphName}. Review <a
-     *                 href="../../../../graph_solver/network_graph_solver.html#graph-weights"
+     *                 href="../../../../../graph_solver/network_graph_solver/#graph-weights"
      *                 target="_top">Weights</a> for more information. Weights
      *                 must be specified using <a
-     *                 href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                 href="../../../../../graph_solver/network_graph_solver/#identifiers"
      *                 target="_top">identifiers</a>; identifiers are grouped
      *                 as <a
-     *                 href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                 href="../../../../../graph_solver/network_graph_solver/#id-combos"
      *                 target="_top">combinations</a>. Identifiers can be used
      *                 with existing column names, e.g., 'table.column AS
      *                 WEIGHTS_EDGE_ID', expressions, e.g., 'ST_LENGTH(wkt) AS
@@ -16006,14 +16401,14 @@ public class GPUdb extends GPUdbBase {
      * @param restrictions  Restrictions with which to update existing {@code
      *                      restrictions} in graph specified by {@code
      *                      graphName}. Review <a
-     *                      href="../../../../graph_solver/network_graph_solver.html#graph-restrictions"
+     *                      href="../../../../../graph_solver/network_graph_solver/#graph-restrictions"
      *                      target="_top">Restrictions</a> for more
      *                      information. Restrictions must be specified using
      *                      <a
-     *                      href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      href="../../../../../graph_solver/network_graph_solver/#identifiers"
      *                      target="_top">identifiers</a>; identifiers are
      *                      grouped as <a
-     *                      href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      href="../../../../../graph_solver/network_graph_solver/#id-combos"
      *                      target="_top">combinations</a>. Identifiers can be
      *                      used with existing column names, e.g.,
      *                      'table.column AS RESTRICTIONS_EDGE_ID',
@@ -16075,10 +16470,10 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.ModifyGraphRequest.Options#SAVE_PERSIST
      *                 SAVE_PERSIST}: If set to {@code true}, the graph will be
      *                 saved in the persist directory (see the <a
-     *                 href="../../../../config/index.html"
-     *                 target="_top">config reference</a> for more
-     *                 information). If set to {@code false}, the graph will be
-     *                 removed when the graph server is shutdown.
+     *                 href="../../../../../config/" target="_top">config
+     *                 reference</a> for more information). If set to {@code
+     *                 false}, the graph will be removed when the graph server
+     *                 is shutdown.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -16117,9 +16512,9 @@ public class GPUdb extends GPUdbBase {
      *                 GRAPH_TABLE}: If specified, the created graph is also
      *                 created as a table with the given name, in
      *                 [schema_name.]table_name format, using standard <a
-     *                 href="../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  This table
      *                 will have the following identifier columns: 'EDGE_ID',
      *                 'EDGE_NODE1_ID', 'EDGE_NODE2_ID'. If left blank, no
@@ -16207,7 +16602,7 @@ public class GPUdb extends GPUdbBase {
      * given
      * identifier. See
      * <a
-     * href="../../../../graph_solver/network_graph_solver.html#query-identifiers"
+     * href="../../../../../graph_solver/network_graph_solver/#query-identifiers"
      * target="_top">Query Identifiers</a>
      * for more information.
      * <p>
@@ -16223,13 +16618,13 @@ public class GPUdb extends GPUdbBase {
      * to {@code true}.
      * <p>
      * IMPORTANT: It's highly recommended that you review the
-     * <a href="../../../../graph_solver/network_graph_solver.html"
+     * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
      * target="_top">Graph REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../graph_solver/examples.html#match-graph"
+     * <a href="../../../../../graph_solver/examples/#match-graph"
      * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
@@ -16269,7 +16664,7 @@ public class GPUdb extends GPUdbBase {
      * given
      * identifier. See
      * <a
-     * href="../../../../graph_solver/network_graph_solver.html#query-identifiers"
+     * href="../../../../../graph_solver/network_graph_solver/#query-identifiers"
      * target="_top">Query Identifiers</a>
      * for more information.
      * <p>
@@ -16285,19 +16680,19 @@ public class GPUdb extends GPUdbBase {
      * to {@code true}.
      * <p>
      * IMPORTANT: It's highly recommended that you review the
-     * <a href="../../../../graph_solver/network_graph_solver.html"
+     * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
      * target="_top">Graph REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../graph_solver/examples.html#match-graph"
+     * <a href="../../../../../graph_solver/examples/#match-graph"
      * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
      * @param graphName  Name of the graph resource to query.
      * @param queries  Nodes or edges to be queried specified using <a
-     *                 href="../../../../graph_solver/network_graph_solver.html#query-identifiers"
+     *                 href="../../../../../graph_solver/network_graph_solver/#query-identifiers"
      *                 target="_top">query identifiers</a>. Identifiers can be
      *                 used with existing column names, e.g., 'table.column AS
      *                 QUERY_NODE_ID', raw values, e.g., '{0, 2} AS
@@ -16310,10 +16705,10 @@ public class GPUdb extends GPUdbBase {
      * @param restrictions  Additional restrictions to apply to the nodes/edges
      *                      of an existing graph. Restrictions must be
      *                      specified using <a
-     *                      href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      href="../../../../../graph_solver/network_graph_solver/#identifiers"
      *                      target="_top">identifiers</a>; identifiers are
      *                      grouped as <a
-     *                      href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      href="../../../../../graph_solver/network_graph_solver/#id-combos"
      *                      target="_top">combinations</a>. Identifiers can be
      *                      used with existing column names, e.g.,
      *                      'table.column AS RESTRICTIONS_EDGE_ID',
@@ -16327,20 +16722,20 @@ public class GPUdb extends GPUdbBase {
      * @param adjacencyTable  Name of the table to store the resulting
      *                        adjacencies, in [schema_name.]table_name format,
      *                        using standard <a
-     *                        href="../../../../concepts/tables.html#table-name-resolution"
+     *                        href="../../../../../concepts/tables/#table-name-resolution"
      *                        target="_top">name resolution rules</a> and
      *                        meeting <a
-     *                        href="../../../../concepts/tables.html#table-naming-criteria"
+     *                        href="../../../../../concepts/tables/#table-naming-criteria"
      *                        target="_top">table naming criteria</a>.  If left
      *                        blank, the query results are instead returned in
      *                        the response even if {@code export_query_results}
      *                        is set to {@code false}. If the
      *                        'QUERY_TARGET_NODE_LABEL' <a
-     *                        href="../../../../graph_solver/network_graph_solver.html#query-identifiers"
+     *                        href="../../../../../graph_solver/network_graph_solver/#query-identifiers"
      *                        target="_top">query identifier</a> is used in
      *                        {@code queries}, then two additional columns will
      *                        be available: 'PATH_ID' and 'RING_ID'. See <a
-     *                        href="../../../../graph_solver/network_graph_solver.html#using-labels"
+     *                        href="../../../../../graph_solver/network_graph_solver/#using-labels"
      *                        target="_top">Using Labels</a> for more
      *                        information.  The default value is ''.
      * @param rings  Sets the number of rings around the node to query for
@@ -16364,7 +16759,7 @@ public class GPUdb extends GPUdbBase {
      *                 relative to the node will be returned. This parameter is
      *                 only applicable if the queried graph {@code graphName}
      *                 is directed and when querying nodes. Consult <a
-     *                 href="../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     *                 href="../../../../../graph_solver/network_graph_solver/#directed-graphs"
      *                 target="_top">Directed Graphs</a> for more details.
      *                 Supported values:
      *                 <ul>
@@ -16389,9 +16784,9 @@ public class GPUdb extends GPUdbBase {
      *                 TARGET_NODES_TABLE}: Name of the table to store the list
      *                 of the final nodes reached during the traversal, in
      *                 [schema_name.]table_name format, using standard <a
-     *                 href="../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  If this value
      *                 is left as the default, the table name will default to
      *                 the {@code adjacencyTable} value plus a '_nodes' suffix,
@@ -16433,7 +16828,7 @@ public class GPUdb extends GPUdbBase {
      *                 source graph (if available) or auto-generated WKT values
      *                 (if there are no WKT values in the source graph). A
      *                 subsequent call to the <a
-     *                 href="../../../../api/rest/wms_rest.html"
+     *                 href="../../../../../api/rest/wms_rest/"
      *                 target="_top">/wms</a> endpoint can then be made to
      *                 display the query results on a map.
      *                 Supported values:
@@ -16505,7 +16900,72 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Revokes a <a href="../../../../concepts/data_sources.html"
+     * Revokes a <a
+     * href="../../../../../security/sec_concepts/#security-concepts-permissions-credential"
+     * target="_top">credential-level permission</a> from a user or role.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  RevokePermissionCredentialResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public RevokePermissionCredentialResponse revokePermissionCredential(RevokePermissionCredentialRequest request) throws GPUdbException {
+        RevokePermissionCredentialResponse actualResponse_ = new RevokePermissionCredentialResponse();
+        submitRequest("/revoke/permission/credential", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Revokes a <a
+     * href="../../../../../security/sec_concepts/#security-concepts-permissions-credential"
+     * target="_top">credential-level permission</a> from a user or role.
+     * 
+     * @param name  Name of the user or role from which the permission will be
+     *              revoked. Must be an existing user or role.
+     * @param permission  Permission to revoke from the user or role.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionCredentialRequest.Permission#CREDENTIAL_ADMIN
+     *                    CREDENTIAL_ADMIN}: Full read/write and administrative
+     *                    access on the credential.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionCredentialRequest.Permission#CREDENTIAL_READ
+     *                    CREDENTIAL_READ}: Ability to read and use the
+     *                    credential.
+     *                    </ul>
+     * @param credentialName  Name of the credential on which the permission
+     *                        will be revoked. Must be an existing credential,
+     *                        or an empty string to revoke access on all
+     *                        credentials.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  RevokePermissionCredentialResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public RevokePermissionCredentialResponse revokePermissionCredential(String name, String permission, String credentialName, Map<String, String> options) throws GPUdbException {
+        RevokePermissionCredentialRequest actualRequest_ = new RevokePermissionCredentialRequest(name, permission, credentialName, options);
+        RevokePermissionCredentialResponse actualResponse_ = new RevokePermissionCredentialResponse();
+        submitRequest("/revoke/permission/credential", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Revokes a <a href="../../../../../concepts/data_sources/"
      * target="_top">data source</a> permission from a user or role.
      * 
      * @param request  Request object containing the parameters for the
@@ -16527,7 +16987,7 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Revokes a <a href="../../../../concepts/data_sources.html"
+     * Revokes a <a href="../../../../../concepts/data_sources/"
      * target="_top">data source</a> permission from a user or role.
      * 
      * @param name  Name of the user or role from which the permission will be
@@ -16729,7 +17189,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table to which the permission grants
      *                   access, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table, view or schema.
      * @param options  Optional parameters.
@@ -16804,9 +17264,78 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    public ShowContainerRegistryResponse showContainerRegistry(ShowContainerRegistryRequest request) throws GPUdbException {
+        ShowContainerRegistryResponse actualResponse_ = new ShowContainerRegistryResponse();
+        submitRequest("/show/container/registry", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public ShowContainerRegistryResponse showContainerRegistry(String registryName, Map<String, String> options) throws GPUdbException {
+        ShowContainerRegistryRequest actualRequest_ = new ShowContainerRegistryRequest(registryName, options);
+        ShowContainerRegistryResponse actualResponse_ = new ShowContainerRegistryResponse();
+        submitRequest("/show/container/registry", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
     /**
      * Shows information about a specified <a
-     * href="../../../../concepts/data_sources.html" target="_top">data
+     * href="../../../../../concepts/credentials/" target="_top">credential</a>
+     * or all credentials.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowCredentialResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowCredentialResponse showCredential(ShowCredentialRequest request) throws GPUdbException {
+        ShowCredentialResponse actualResponse_ = new ShowCredentialResponse();
+        submitRequest("/show/credential", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Shows information about a specified <a
+     * href="../../../../../concepts/credentials/" target="_top">credential</a>
+     * or all credentials.
+     * 
+     * @param credentialName  Name of the credential on which to retrieve
+     *                        information. The name must refer to a currently
+     *                        existing credential. If '*' is specified,
+     *                        information about all credentials will be
+     *                        returned.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowCredentialResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowCredentialResponse showCredential(String credentialName, Map<String, String> options) throws GPUdbException {
+        ShowCredentialRequest actualRequest_ = new ShowCredentialRequest(credentialName, options);
+        ShowCredentialResponse actualResponse_ = new ShowCredentialResponse();
+        submitRequest("/show/credential", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Shows information about a specified <a
+     * href="../../../../../concepts/data_sources/" target="_top">data
      * source</a> or all data sources.
      * 
      * @param request  Request object containing the parameters for the
@@ -16829,7 +17358,7 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Shows information about a specified <a
-     * href="../../../../concepts/data_sources.html" target="_top">data
+     * href="../../../../../concepts/data_sources/" target="_top">data
      * source</a> or all data sources.
      * 
      * @param name  Name of the data source for which to retrieve information.
@@ -16863,8 +17392,8 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    public ShowFunctionsResponse showFunctions(Map<String, String> options) throws GPUdbException {
-        ShowFunctionsRequest actualRequest_ = new ShowFunctionsRequest(options);
+    public ShowFunctionsResponse showFunctions(List<String> names, Map<String, String> options) throws GPUdbException {
+        ShowFunctionsRequest actualRequest_ = new ShowFunctionsRequest(names, options);
         ShowFunctionsResponse actualResponse_ = new ShowFunctionsResponse();
         submitRequest("/show/functions", actualRequest_, actualResponse_, false);
         return actualResponse_;
@@ -16953,6 +17482,23 @@ public class GPUdb extends GPUdbBase {
         ShowGraphGrammarRequest actualRequest_ = new ShowGraphGrammarRequest(options);
         ShowGraphGrammarResponse actualResponse_ = new ShowGraphGrammarResponse();
         submitRequest("/show/graph/grammar", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public ShowModelResponse showModel(ShowModelRequest request) throws GPUdbException {
+        ShowModelResponse actualResponse_ = new ShowModelResponse();
+        submitRequest("/show/model", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public ShowModelResponse showModel(List<String> modelNames, Map<String, String> options) throws GPUdbException {
+        ShowModelRequest actualRequest_ = new ShowModelRequest(modelNames, options);
+        ShowModelResponse actualResponse_ = new ShowModelResponse();
+        submitRequest("/show/model", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -17235,9 +17781,9 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Retrieves information about a <a
-     * href="../../../../concepts/schemas.html" target="_top">schema</a> (or
-     * all schemas), as specified in {@code schemaName}.
+     * Retrieves information about a <a href="../../../../../concepts/schemas/"
+     * target="_top">schema</a> (or all schemas), as specified in {@code
+     * schemaName}.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -17258,9 +17804,9 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Retrieves information about a <a
-     * href="../../../../concepts/schemas.html" target="_top">schema</a> (or
-     * all schemas), as specified in {@code schemaName}.
+     * Retrieves information about a <a href="../../../../../concepts/schemas/"
+     * target="_top">schema</a> (or all schemas), as specified in {@code
+     * schemaName}.
      * 
      * @param schemaName  Name of the schema for which to retrieve the
      *                    information. If blank, then info for all schemas is
@@ -17446,7 +17992,7 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableNames  Names of tables whose metadata will be fetched, each
      *                    in [schema_name.]table_name format, using standard <a
-     *                    href="../../../../concepts/tables.html#table-name-resolution"
+     *                    href="../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.  All
      *                    provided tables must exist, or an error is returned.
      * @param options  Optional parameters.  The default value is an empty
@@ -17702,7 +18248,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table for which to retrieve the
      *                   information, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  If blank,
      *                   then returns information about all tables and views.
      * @param options  Optional parameters.
@@ -17836,7 +18382,7 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param tableNames  Names of tables whose metadata will be fetched, in
      *                    [schema_name.]table_name format, using standard <a
-     *                    href="../../../../concepts/tables.html#table-name-resolution"
+     *                    href="../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.  All
      *                    provided tables must exist, or an error is returned.
      * @param options  Optional parameters.  The default value is an empty
@@ -18055,13 +18601,13 @@ public class GPUdb extends GPUdbBase {
      * additional, optional weights and restrictions.
      * <p>
      * IMPORTANT: It's highly recommended that you review the
-     * <a href="../../../../graph_solver/network_graph_solver.html"
+     * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
      * target="_top">Graph REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../graph_solver/examples.html#match-graph"
+     * <a href="../../../../../graph_solver/examples/#match-graph"
      * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
@@ -18090,13 +18636,13 @@ public class GPUdb extends GPUdbBase {
      * additional, optional weights and restrictions.
      * <p>
      * IMPORTANT: It's highly recommended that you review the
-     * <a href="../../../../graph_solver/network_graph_solver.html"
+     * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../graph_solver/examples/graph_rest_guide.html"
+     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
      * target="_top">Graph REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../graph_solver/examples.html#match-graph"
+     * <a href="../../../../../graph_solver/examples/#match-graph"
      * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
@@ -18105,11 +18651,11 @@ public class GPUdb extends GPUdbBase {
      *                        existing
      *                        graph. Weights must be specified using
      *                        <a
-     *                        href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                        href="../../../../../graph_solver/network_graph_solver/#identifiers"
      *                        target="_top">identifiers</a>;
      *                        identifiers are grouped as
      *                        <a
-     *                        href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                        href="../../../../../graph_solver/network_graph_solver/#id-combos"
      *                        target="_top">combinations</a>.
      *                        Identifiers can be used with existing column
      *                        names, e.g.,
@@ -18132,11 +18678,11 @@ public class GPUdb extends GPUdbBase {
      *                      existing graph. Restrictions must be specified
      *                      using
      *                      <a
-     *                      href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      href="../../../../../graph_solver/network_graph_solver/#identifiers"
      *                      target="_top">identifiers</a>;
      *                      identifiers are grouped as
      *                      <a
-     *                      href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      href="../../../../../graph_solver/network_graph_solver/#id-combos"
      *                      target="_top">combinations</a>.
      *                      Identifiers can be used with existing column names,
      *                      e.g.,
@@ -18225,7 +18771,7 @@ public class GPUdb extends GPUdbBase {
      *                          empty {@link List}.
      * @param solutionTable  Name of the table to store the solution, in
      *                       [schema_name.]table_name format, using standard <a
-     *                       href="../../../../concepts/tables.html#table-name-resolution"
+     *                       href="../../../../../concepts/tables/#table-name-resolution"
      *                       target="_top">name resolution rules</a>.  The
      *                       default value is 'graph_solutions'.
      * @param options  Additional parameters
@@ -18471,7 +19017,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The {@code update_on_existing_pk} option specifies the record
      * collision policy for tables with a <a
-     * href="../../../../concepts/tables.html#primary-keys"
+     * href="../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a>, and
      * is ignored on tables with no primary key.
      * 
@@ -18528,7 +19074,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The {@code update_on_existing_pk} option specifies the record
      * collision policy for tables with a <a
-     * href="../../../../concepts/tables.html#primary-keys"
+     * href="../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a>, and
      * is ignored on tables with no primary key.
      * 
@@ -18587,7 +19133,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The {@code update_on_existing_pk} option specifies the record
      * collision policy for tables with a <a
-     * href="../../../../concepts/tables.html#primary-keys"
+     * href="../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a>, and
      * is ignored on tables with no primary key.
      * 
@@ -18653,14 +19199,14 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The {@code update_on_existing_pk} option specifies the record
      * collision policy for tables with a <a
-     * href="../../../../concepts/tables.html#primary-keys"
+     * href="../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a>, and
      * is ignored on tables with no primary key.
      * 
      * @param <TRequest>  The type of object being added.
      * @param tableName  Name of table to be updated, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be a
      *                   currently existing table and not a view.
      * @param expressions  A list of the actual predicates, one for each
@@ -18711,10 +19257,10 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
      *                 policy for tables with a <a
-     *                 href="../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a> when updating columns of
      *                 the <a
-     *                 href="../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a> or inserting new records.
      *                 If {@code true}, existing records with primary key
      *                 values that match those of a record being updated or
@@ -18855,7 +19401,7 @@ public class GPUdb extends GPUdbBase {
      * <p>
      * The {@code update_on_existing_pk} option specifies the record
      * collision policy for tables with a <a
-     * href="../../../../concepts/tables.html#primary-keys"
+     * href="../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a>, and
      * is ignored on tables with no primary key.
      * 
@@ -18863,7 +19409,7 @@ public class GPUdb extends GPUdbBase {
      * @param typeObjectMap  Type object map used for encoding input objects.
      * @param tableName  Name of table to be updated, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be a
      *                   currently existing table and not a view.
      * @param expressions  A list of the actual predicates, one for each
@@ -18914,10 +19460,10 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
      *                 policy for tables with a <a
-     *                 href="../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a> when updating columns of
      *                 the <a
-     *                 href="../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a> or inserting new records.
      *                 If {@code true}, existing records with primary key
      *                 values that match those of a record being updated or
@@ -19062,18 +19608,18 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the view on which the update operation will be
      *                   performed, in [schema_name.]view_name format, using
      *                   standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing view.
      * @param worldTableName  Name of the table containing the complete series
      *                        (track) information, in [schema_name.]table_name
      *                        format, using standard <a
-     *                        href="../../../../concepts/tables.html#table-name-resolution"
+     *                        href="../../../../../concepts/tables/#table-name-resolution"
      *                        target="_top">name resolution rules</a>.
      * @param viewName  Name of the view containing the series (tracks) which
      *                  have to be updated, in [schema_name.]view_name format,
      *                  using standard <a
-     *                  href="../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a>.  The default
      *                  value is ''.
      * @param reserved  The default value is an empty {@link List}.
@@ -19148,7 +19694,7 @@ public class GPUdb extends GPUdbBase {
      * @param tableName  Name of the table containing the data to be drawn as a
      *                   chart, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param xColumnNames  Names of the columns containing the data mapped to
      *                      the x axis of a chart.
@@ -19431,7 +19977,7 @@ public class GPUdb extends GPUdbBase {
      * referring to the time or distance assigned as the weights of the
      * underlying
      * graph. See
-     * <a href="../../../../graph_solver/network_graph_solver.html"
+     * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * for more information on graphs.
      * .
@@ -19461,7 +20007,7 @@ public class GPUdb extends GPUdbBase {
      * referring to the time or distance assigned as the weights of the
      * underlying
      * graph. See
-     * <a href="../../../../graph_solver/network_graph_solver.html"
+     * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * for more information on graphs.
      * .
@@ -19476,10 +20022,10 @@ public class GPUdb extends GPUdbBase {
      * @param weightsOnEdges  Additional weights to apply to the edges of an
      *                        existing graph. Weights must be specified using
      *                        <a
-     *                        href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                        href="../../../../../graph_solver/network_graph_solver/#identifiers"
      *                        target="_top">identifiers</a>; identifiers are
      *                        grouped as <a
-     *                        href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                        href="../../../../../graph_solver/network_graph_solver/#id-combos"
      *                        target="_top">combinations</a>. Identifiers can
      *                        be used with existing column names, e.g.,
      *                        'table.column AS WEIGHTS_EDGE_ID', or
@@ -19493,10 +20039,10 @@ public class GPUdb extends GPUdbBase {
      * @param restrictions  Additional restrictions to apply to the nodes/edges
      *                      of an existing graph. Restrictions must be
      *                      specified using <a
-     *                      href="../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      href="../../../../../graph_solver/network_graph_solver/#identifiers"
      *                      target="_top">identifiers</a>; identifiers are
      *                      grouped as <a
-     *                      href="../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      href="../../../../../graph_solver/network_graph_solver/#id-combos"
      *                      target="_top">combinations</a>. Identifiers can be
      *                      used with existing column names, e.g.,
      *                      'table.column AS RESTRICTIONS_EDGE_ID', or
@@ -19529,10 +20075,10 @@ public class GPUdb extends GPUdbBase {
      *                       TRUE}.
      * @param levelsTable  Name of the table to output the isochrones to, in
      *                     [schema_name.]table_name format, using standard <a
-     *                     href="../../../../concepts/tables.html#table-name-resolution"
+     *                     href="../../../../../concepts/tables/#table-name-resolution"
      *                     target="_top">name resolution rules</a> and meeting
      *                     <a
-     *                     href="../../../../concepts/tables.html#table-naming-criteria"
+     *                     href="../../../../../concepts/tables/#table-naming-criteria"
      *                     target="_top">table naming criteria</a>.  The table
      *                     will contain levels and their corresponding WKT
      *                     geometry. If no value is provided, the table is not
@@ -19987,9 +20533,9 @@ public class GPUdb extends GPUdbBase {
      *                 SOLVE_TABLE}: Name of the table to host intermediate
      *                 solve results, in [schema_name.]table_name format, using
      *                 standard <a
-     *                 href="../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  This table
      *                 will contain the position and cost for each vertex in
      *                 the graph. If the default value is used, a temporary

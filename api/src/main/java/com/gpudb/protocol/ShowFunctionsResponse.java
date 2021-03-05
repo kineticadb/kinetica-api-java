@@ -28,6 +28,8 @@ public class ShowFunctionsResponse implements IndexedRecord {
                 .name("parameters").type().array().items().array().items().stringType().noDefault()
                 .name("optionalParameterCount").type().array().items().intType().noDefault()
                 .name("flags").type().array().items().intType().noDefault()
+                .name("typeSchemas").type().array().items().stringType().noDefault()
+                .name("properties").type().array().items().map().values().array().items().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -61,6 +63,8 @@ public class ShowFunctionsResponse implements IndexedRecord {
     private List<List<String>> parameters;
     private List<Integer> optionalParameterCount;
     private List<Integer> flags;
+    private List<String> typeSchemas;
+    private List<Map<String, List<String>>> properties;
     private Map<String, String> info;
 
 
@@ -112,6 +116,24 @@ public class ShowFunctionsResponse implements IndexedRecord {
         return this;
     }
 
+    public List<String> getTypeSchemas() {
+        return typeSchemas;
+    }
+
+    public ShowFunctionsResponse setTypeSchemas(List<String> typeSchemas) {
+        this.typeSchemas = (typeSchemas == null) ? new ArrayList<String>() : typeSchemas;
+        return this;
+    }
+
+    public List<Map<String, List<String>>> getProperties() {
+        return properties;
+    }
+
+    public ShowFunctionsResponse setProperties(List<Map<String, List<String>>> properties) {
+        this.properties = (properties == null) ? new ArrayList<Map<String, List<String>>>() : properties;
+        return this;
+    }
+
     public Map<String, String> getInfo() {
         return info;
     }
@@ -145,6 +167,12 @@ public class ShowFunctionsResponse implements IndexedRecord {
                 return this.flags;
 
             case 5:
+                return this.typeSchemas;
+
+            case 6:
+                return this.properties;
+
+            case 7:
                 return this.info;
 
             default:
@@ -177,6 +205,14 @@ public class ShowFunctionsResponse implements IndexedRecord {
                 break;
 
             case 5:
+                this.typeSchemas = (List<String>)value;
+                break;
+
+            case 6:
+                this.properties = (List<Map<String, List<String>>>)value;
+                break;
+
+            case 7:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -203,6 +239,8 @@ public class ShowFunctionsResponse implements IndexedRecord {
                  && this.parameters.equals( that.parameters )
                  && this.optionalParameterCount.equals( that.optionalParameterCount )
                  && this.flags.equals( that.flags )
+                 && this.typeSchemas.equals( that.typeSchemas )
+                 && this.properties.equals( that.properties )
                  && this.info.equals( that.info ) );
     }
 
@@ -232,6 +270,14 @@ public class ShowFunctionsResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.flags ) );
         builder.append( ", " );
+        builder.append( gd.toString( "typeSchemas" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.typeSchemas ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "properties" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.properties ) );
+        builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.info ) );
@@ -249,6 +295,8 @@ public class ShowFunctionsResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.parameters.hashCode();
         hashCode = (31 * hashCode) + this.optionalParameterCount.hashCode();
         hashCode = (31 * hashCode) + this.flags.hashCode();
+        hashCode = (31 * hashCode) + this.typeSchemas.hashCode();
+        hashCode = (31 * hashCode) + this.properties.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

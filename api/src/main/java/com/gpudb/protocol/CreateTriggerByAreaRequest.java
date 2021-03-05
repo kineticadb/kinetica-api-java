@@ -97,7 +97,7 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
      * @param tableNames  Names of the tables on which the trigger will be
      *                    activated and maintained, each in
      *                    [schema_name.]table_name format, using standard <a
-     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    href="../../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.
      * @param xColumnName  Name of a numeric column on which the trigger is
      *                     activated. Usually 'x' for geospatial data points.
@@ -154,7 +154,7 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
      * @return Names of the tables on which the trigger will be activated and
      *         maintained, each in [schema_name.]table_name format, using
      *         standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.
      * 
      */
@@ -167,7 +167,7 @@ public class CreateTriggerByAreaRequest implements IndexedRecord {
      * @param tableNames  Names of the tables on which the trigger will be
      *                    activated and maintained, each in
      *                    [schema_name.]table_name format, using standard <a
-     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    href="../../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -17,7 +17,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#grantPermissionDatasource(GrantPermissionDatasourceRequest)}.
  * <p>
- * Grants a <a href="../../../../../concepts/data_sources.html"
+ * Grants a <a href="../../../../../../concepts/data_sources/"
  * target="_top">data source</a> permission to a user or role.
  */
 public class GrantPermissionDatasourceRequest implements IndexedRecord {

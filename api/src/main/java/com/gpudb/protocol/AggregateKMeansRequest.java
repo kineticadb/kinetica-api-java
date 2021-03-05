@@ -129,7 +129,7 @@ public class AggregateKMeansRequest implements IndexedRecord {
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnNames  List of column names on which the operation would be
      *                     performed. If n columns are provided then each of
@@ -170,7 +170,7 @@ public class AggregateKMeansRequest implements IndexedRecord {
      * @return Name of the table on which the operation will be performed. Must
      *         be an existing table, in [schema_name.]table_name format, using
      *         standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.
      * 
      */
@@ -183,7 +183,7 @@ public class AggregateKMeansRequest implements IndexedRecord {
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -61,9 +61,8 @@ public class AdminAddHostRequest implements IndexedRecord {
      * com.gpudb.protocol.AdminAddHostRequest.Options#ACCEPTS_FAILOVER
      * ACCEPTS_FAILOVER}: If set to {@code true}, the host will accept
      * processes (ranks, graph server, etc.) in the event of a failover on
-     * another node in the cluster. See <a
-     * href="../../../../../n_plus_1/index.html" target="_top">Cluster
-     * Resilience</a> for more information.
+     * another node in the cluster. See <a href="../../../../../../n_plus_1/"
+     * target="_top">Cluster Resilience</a> for more information.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.AdminAddHostRequest.Options#TRUE
@@ -84,7 +83,7 @@ public class AdminAddHostRequest implements IndexedRecord {
      * HOST_MANAGER_PUBLIC_URL}: The publicly-accessible full path URL to the
      * host manager on the host being added, e.g., 'http://172.123.45.67:9300'.
      * The default host manager port can be found in the <a
-     * href="../../../../../install/shared/ports.html" target="_top">list of
+     * href="../../../../../../install/shared/ports/" target="_top">list of
      * ports</a> used by Kinetica.
      *         <li> {@link
      * com.gpudb.protocol.AdminAddHostRequest.Options#RAM_LIMIT RAM_LIMIT}: The
@@ -125,7 +124,7 @@ public class AdminAddHostRequest implements IndexedRecord {
         /**
          * If set to {@code true}, the host will accept processes (ranks, graph
          * server, etc.) in the event of a failover on another node in the
-         * cluster. See <a href="../../../../../n_plus_1/index.html"
+         * cluster. See <a href="../../../../../../n_plus_1/"
          * target="_top">Cluster Resilience</a> for more information.
          * Supported values:
          * <ul>
@@ -151,8 +150,8 @@ public class AdminAddHostRequest implements IndexedRecord {
          * The publicly-accessible full path URL to the host manager on the
          * host being added, e.g., 'http://172.123.45.67:9300'. The default
          * host manager port can be found in the <a
-         * href="../../../../../install/shared/ports.html" target="_top">list
-         * of ports</a> used by Kinetica.
+         * href="../../../../../../install/shared/ports/" target="_top">list of
+         * ports</a> used by Kinetica.
          */
         public static final String HOST_MANAGER_PUBLIC_URL = "host_manager_public_url";
 
@@ -219,7 +218,7 @@ public class AdminAddHostRequest implements IndexedRecord {
      *                 ACCEPTS_FAILOVER}: If set to {@code true}, the host will
      *                 accept processes (ranks, graph server, etc.) in the
      *                 event of a failover on another node in the cluster. See
-     *                 <a href="../../../../../n_plus_1/index.html"
+     *                 <a href="../../../../../../n_plus_1/"
      *                 target="_top">Cluster Resilience</a> for more
      *                 information.
      *                 Supported values:
@@ -247,7 +246,7 @@ public class AdminAddHostRequest implements IndexedRecord {
      *                 path URL to the host manager on the host being added,
      *                 e.g., 'http://172.123.45.67:9300'. The default host
      *                 manager port can be found in the <a
-     *                 href="../../../../../install/shared/ports.html"
+     *                 href="../../../../../../install/shared/ports/"
      *                 target="_top">list of ports</a> used by Kinetica.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminAddHostRequest.Options#RAM_LIMIT
@@ -323,7 +322,7 @@ public class AdminAddHostRequest implements IndexedRecord {
      *         ACCEPTS_FAILOVER}: If set to {@code true}, the host will accept
      *         processes (ranks, graph server, etc.) in the event of a failover
      *         on another node in the cluster. See <a
-     *         href="../../../../../n_plus_1/index.html" target="_top">Cluster
+     *         href="../../../../../../n_plus_1/" target="_top">Cluster
      *         Resilience</a> for more information.
      *         Supported values:
      *         <ul>
@@ -346,7 +345,7 @@ public class AdminAddHostRequest implements IndexedRecord {
      *         to the host manager on the host being added, e.g.,
      *         'http://172.123.45.67:9300'. The default host manager port can
      *         be found in the <a
-     *         href="../../../../../install/shared/ports.html"
+     *         href="../../../../../../install/shared/ports/"
      *         target="_top">list of ports</a> used by Kinetica.
      *                 <li> {@link
      *         com.gpudb.protocol.AdminAddHostRequest.Options#RAM_LIMIT
@@ -396,7 +395,7 @@ public class AdminAddHostRequest implements IndexedRecord {
      *                 ACCEPTS_FAILOVER}: If set to {@code true}, the host will
      *                 accept processes (ranks, graph server, etc.) in the
      *                 event of a failover on another node in the cluster. See
-     *                 <a href="../../../../../n_plus_1/index.html"
+     *                 <a href="../../../../../../n_plus_1/"
      *                 target="_top">Cluster Resilience</a> for more
      *                 information.
      *                 Supported values:
@@ -424,7 +423,7 @@ public class AdminAddHostRequest implements IndexedRecord {
      *                 path URL to the host manager on the host being added,
      *                 e.g., 'http://172.123.45.67:9300'. The default host
      *                 manager port can be found in the <a
-     *                 href="../../../../../install/shared/ports.html"
+     *                 href="../../../../../../install/shared/ports/"
      *                 target="_top">list of ports</a> used by Kinetica.
      *                         <li> {@link
      *                 com.gpudb.protocol.AdminAddHostRequest.Options#RAM_LIMIT

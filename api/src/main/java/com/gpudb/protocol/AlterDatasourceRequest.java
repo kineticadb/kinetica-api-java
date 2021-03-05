@@ -18,7 +18,7 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#alterDatasource(AlterDatasourceRequest)}.
  * <p>
  * Alters the properties of an existing <a
- * href="../../../../../concepts/data_sources.html" target="_top">data
+ * href="../../../../../../concepts/data_sources/" target="_top">data
  * source</a>
  */
 public class AlterDatasourceRequest implements IndexedRecord {
@@ -82,6 +82,9 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#WAIT_TIMEOUT
      * WAIT_TIMEOUT}: Timeout in seconds for reading from this storage provider
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#CREDENTIAL
+     * CREDENTIAL}: Name of the Credential object to be used in data source
      *         <li> {@link
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_BUCKET_NAME
      * S3_BUCKET_NAME}: Name of the Amazon S3 bucket to use as the data source
@@ -182,6 +185,11 @@ public class AlterDatasourceRequest implements IndexedRecord {
          * Timeout in seconds for reading from this storage provider
          */
         public static final String WAIT_TIMEOUT = "wait_timeout";
+
+        /**
+         * Name of the Credential object to be used in data source
+         */
+        public static final String CREDENTIAL = "credential";
 
         /**
          * Name of the Amazon S3 bucket to use as the data source
@@ -314,6 +322,10 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              WAIT_TIMEOUT}: Timeout in seconds for
      *                              reading from this storage provider
      *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#CREDENTIAL
+     *                              CREDENTIAL}: Name of the Credential object
+     *                              to be used in data source
+     *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_BUCKET_NAME
      *                              S3_BUCKET_NAME}: Name of the Amazon S3
      *                              bucket to use as the data source
@@ -444,6 +456,10 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         WAIT_TIMEOUT}: Timeout in seconds for reading from this storage
      *         provider
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#CREDENTIAL
+     *         CREDENTIAL}: Name of the Credential object to be used in data
+     *         source
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_BUCKET_NAME
      *         S3_BUCKET_NAME}: Name of the Amazon S3 bucket to use as the data
      *         source
@@ -546,6 +562,10 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#WAIT_TIMEOUT
      *                              WAIT_TIMEOUT}: Timeout in seconds for
      *                              reading from this storage provider
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#CREDENTIAL
+     *                              CREDENTIAL}: Name of the Credential object
+     *                              to be used in data source
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_BUCKET_NAME
      *                              S3_BUCKET_NAME}: Name of the Amazon S3

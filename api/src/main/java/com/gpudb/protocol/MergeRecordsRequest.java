@@ -25,10 +25,9 @@ import org.apache.avro.generic.IndexedRecord;
  * information (specified by {@code fieldMaps}).
  * <p>
  * For merge records details and examples, see
- * <a href="../../../../../concepts/merge_records.html" target="_top">Merge
+ * <a href="../../../../../../concepts/merge_records/" target="_top">Merge
  * Records</a>.  For limitations, see
- * <a
- * href="../../../../../concepts/merge_records.html#limitations-and-cautions"
+ * <a href="../../../../../../concepts/merge_records/#limitations-and-cautions"
  * target="_top">Merge Records Limitations and Cautions</a>.
 
  * The field map (specified by {@code fieldMaps}) holds the user-specified maps
@@ -74,12 +73,12 @@ public class MergeRecordsRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.MergeRecordsRequest.Options#IS_REPLICATED
      * IS_REPLICATED}: Indicates the <a
-     * href="../../../../../concepts/tables.html#distribution"
+     * href="../../../../../../concepts/tables/#distribution"
      * target="_top">distribution scheme</a> for the data of the merged table
      * specified in {@code tableName}.  If true, the table will be <a
-     * href="../../../../../concepts/tables.html#replication"
+     * href="../../../../../../concepts/tables/#replication"
      * target="_top">replicated</a>.  If false, the table will be <a
-     * href="../../../../../concepts/tables.html#random-sharding"
+     * href="../../../../../../concepts/tables/#random-sharding"
      * target="_top">randomly sharded</a>.
      * Supported values:
      * <ul>
@@ -91,7 +90,7 @@ public class MergeRecordsRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.MergeRecordsRequest.Options#FALSE FALSE}.
      *         <li> {@link com.gpudb.protocol.MergeRecordsRequest.Options#TTL
-     * TTL}: Sets the <a href="../../../../../concepts/ttl.html"
+     * TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      * target="_top">TTL</a> of the merged table specified in {@code
      * tableName}.
      *         <li> {@link
@@ -133,12 +132,12 @@ public class MergeRecordsRequest implements IndexedRecord {
 
         /**
          * Indicates the <a
-         * href="../../../../../concepts/tables.html#distribution"
+         * href="../../../../../../concepts/tables/#distribution"
          * target="_top">distribution scheme</a> for the data of the merged
          * table specified in {@code tableName}.  If true, the table will be <a
-         * href="../../../../../concepts/tables.html#replication"
+         * href="../../../../../../concepts/tables/#replication"
          * target="_top">replicated</a>.  If false, the table will be <a
-         * href="../../../../../concepts/tables.html#random-sharding"
+         * href="../../../../../../concepts/tables/#random-sharding"
          * target="_top">randomly sharded</a>.
          * Supported values:
          * <ul>
@@ -155,7 +154,7 @@ public class MergeRecordsRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Sets the <a href="../../../../../concepts/ttl.html"
+         * Sets the <a href="../../../../../../concepts/ttl/"
          * target="_top">TTL</a> of the merged table specified in {@code
          * tableName}.
          */
@@ -214,15 +213,15 @@ public class MergeRecordsRequest implements IndexedRecord {
      * @param tableName  The name of the new result table for the records to be
      *                   merged into, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a> and meeting <a
-     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.  Must NOT be
      *                   an existing table.
      * @param sourceTableNames  The list of names of source tables to get the
      *                          records from, each in [schema_name.]table_name
      *                          format, using standard <a
-     *                          href="../../../../../concepts/tables.html#table-name-resolution"
+     *                          href="../../../../../../concepts/tables/#table-name-resolution"
      *                          target="_top">name resolution rules</a>.  Must
      *                          be existing table names.
      * @param fieldMaps  Contains a list of source/target column mappings, one
@@ -231,7 +230,7 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                   specified by {@code tableName}.  Each mapping contains
      *                   the target column names (as keys) that the data in the
      *                   mapped source columns or column <a
-     *                   href="../../../../../concepts/expressions.html"
+     *                   href="../../../../../../concepts/expressions/"
      *                   target="_top">expressions</a> (as values) will be
      *                   merged into.  All of the source columns being merged
      *                   into a given target column must match in type, as that
@@ -250,14 +249,14 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#IS_REPLICATED
      *                 IS_REPLICATED}: Indicates the <a
-     *                 href="../../../../../concepts/tables.html#distribution"
+     *                 href="../../../../../../concepts/tables/#distribution"
      *                 target="_top">distribution scheme</a> for the data of
      *                 the merged table specified in {@code tableName}.  If
      *                 true, the table will be <a
-     *                 href="../../../../../concepts/tables.html#replication"
+     *                 href="../../../../../../concepts/tables/#replication"
      *                 target="_top">replicated</a>.  If false, the table will
      *                 be <a
-     *                 href="../../../../../concepts/tables.html#random-sharding"
+     *                 href="../../../../../../concepts/tables/#random-sharding"
      *                 target="_top">randomly sharded</a>.
      *                 Supported values:
      *                 <ul>
@@ -273,7 +272,7 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#TTL TTL}:
-     *                 Sets the <a href="../../../../../concepts/ttl.html"
+     *                 Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the merged table specified in
      *                 {@code tableName}.
      *                         <li> {@link
@@ -319,9 +318,9 @@ public class MergeRecordsRequest implements IndexedRecord {
      * 
      * @return The name of the new result table for the records to be merged
      *         into, in [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a> and meeting <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.  Must NOT be an
      *         existing table.
      * 
@@ -335,9 +334,9 @@ public class MergeRecordsRequest implements IndexedRecord {
      * @param tableName  The name of the new result table for the records to be
      *                   merged into, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a> and meeting <a
-     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.  Must NOT be
      *                   an existing table.
      * 
@@ -353,7 +352,7 @@ public class MergeRecordsRequest implements IndexedRecord {
      * 
      * @return The list of names of source tables to get the records from, each
      *         in [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  Must be existing table
      *         names.
      * 
@@ -367,7 +366,7 @@ public class MergeRecordsRequest implements IndexedRecord {
      * @param sourceTableNames  The list of names of source tables to get the
      *                          records from, each in [schema_name.]table_name
      *                          format, using standard <a
-     *                          href="../../../../../concepts/tables.html#table-name-resolution"
+     *                          href="../../../../../../concepts/tables/#table-name-resolution"
      *                          target="_top">name resolution rules</a>.  Must
      *                          be existing table names.
      * 
@@ -386,7 +385,7 @@ public class MergeRecordsRequest implements IndexedRecord {
      *         merged into the target table specified by {@code tableName}.
      *         Each mapping contains the target column names (as keys) that the
      *         data in the mapped source columns or column <a
-     *         href="../../../../../concepts/expressions.html"
+     *         href="../../../../../../concepts/expressions/"
      *         target="_top">expressions</a> (as values) will be merged into.
      *         All of the source columns being merged into a given target
      *         column must match in type, as that type will determine the type
@@ -405,7 +404,7 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                   specified by {@code tableName}.  Each mapping contains
      *                   the target column names (as keys) that the data in the
      *                   mapped source columns or column <a
-     *                   href="../../../../../concepts/expressions.html"
+     *                   href="../../../../../../concepts/expressions/"
      *                   target="_top">expressions</a> (as values) will be
      *                   merged into.  All of the source columns being merged
      *                   into a given target column must match in type, as that
@@ -433,12 +432,12 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.MergeRecordsRequest.Options#IS_REPLICATED
      *         IS_REPLICATED}: Indicates the <a
-     *         href="../../../../../concepts/tables.html#distribution"
+     *         href="../../../../../../concepts/tables/#distribution"
      *         target="_top">distribution scheme</a> for the data of the merged
      *         table specified in {@code tableName}.  If true, the table will
-     *         be <a href="../../../../../concepts/tables.html#replication"
+     *         be <a href="../../../../../../concepts/tables/#replication"
      *         target="_top">replicated</a>.  If false, the table will be <a
-     *         href="../../../../../concepts/tables.html#random-sharding"
+     *         href="../../../../../../concepts/tables/#random-sharding"
      *         target="_top">randomly sharded</a>.
      *         Supported values:
      *         <ul>
@@ -451,7 +450,7 @@ public class MergeRecordsRequest implements IndexedRecord {
      *         com.gpudb.protocol.MergeRecordsRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.MergeRecordsRequest.Options#TTL TTL}: Sets
-     *         the <a href="../../../../../concepts/ttl.html"
+     *         the <a href="../../../../../../concepts/ttl/"
      *         target="_top">TTL</a> of the merged table specified in {@code
      *         tableName}.
      *                 <li> {@link
@@ -501,14 +500,14 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#IS_REPLICATED
      *                 IS_REPLICATED}: Indicates the <a
-     *                 href="../../../../../concepts/tables.html#distribution"
+     *                 href="../../../../../../concepts/tables/#distribution"
      *                 target="_top">distribution scheme</a> for the data of
      *                 the merged table specified in {@code tableName}.  If
      *                 true, the table will be <a
-     *                 href="../../../../../concepts/tables.html#replication"
+     *                 href="../../../../../../concepts/tables/#replication"
      *                 target="_top">replicated</a>.  If false, the table will
      *                 be <a
-     *                 href="../../../../../concepts/tables.html#random-sharding"
+     *                 href="../../../../../../concepts/tables/#random-sharding"
      *                 target="_top">randomly sharded</a>.
      *                 Supported values:
      *                 <ul>
@@ -524,7 +523,7 @@ public class MergeRecordsRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.MergeRecordsRequest.Options#TTL TTL}:
-     *                 Sets the <a href="../../../../../concepts/ttl.html"
+     *                 Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the merged table specified in
      *                 {@code tableName}.
      *                         <li> {@link

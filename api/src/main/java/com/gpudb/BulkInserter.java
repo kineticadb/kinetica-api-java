@@ -44,8 +44,7 @@ import org.apache.commons.lang3.mutable.MutableLong;
 public class BulkInserter<T> {
 
     // The default number of times insertions will be re-attempted
-    private static final int DEFAULT_INSERTION_RETRY_COUNT = 0;
-    // private static final int DEFAULT_INSERTION_RETRY_COUNT = 1;
+    private static final int DEFAULT_INSERTION_RETRY_COUNT = 1;
 
 
     /**

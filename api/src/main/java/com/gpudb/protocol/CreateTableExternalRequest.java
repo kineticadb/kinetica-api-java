@@ -19,13 +19,13 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createTableExternal(CreateTableExternalRequest)}.
  * <p>
- * Creates a new <a href="../../../../../concepts/external_tables.html"
+ * Creates a new <a href="../../../../../../concepts/external_tables/"
  * target="_top">external table</a>, which is a
  * local database object whose source data is located externally to the
  * database.  The source data can
  * be located either on the cluster, accessible to the database; or remotely,
  * accessible via a
- * pre-defined external <a href="../../../../../concepts/data_sources.html"
+ * pre-defined external <a href="../../../../../../concepts/data_sources/"
  * target="_top">data source</a>.
  * <p>
  * The external table can have its structure defined explicitly, via {@code
@@ -68,7 +68,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#TYPE_ID
      * TYPE_ID}: ID of a currently registered <a
-     * href="../../../../../concepts/types.html" target="_top">type</a>.  The
+     * href="../../../../../../concepts/types/" target="_top">type</a>.  The
      * default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#NO_ERROR_IF_EXISTS
@@ -91,19 +91,19 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#IS_REPLICATED
      * IS_REPLICATED}: Affects the <a
-     * href="../../../../../concepts/tables.html#distribution"
+     * href="../../../../../../concepts/tables/#distribution"
      * target="_top">distribution scheme</a>
      * for the table's data.  If {@code true} and the
      * given table has no explicit <a
-     * href="../../../../../concepts/tables.html#shard-key" target="_top">shard
+     * href="../../../../../../concepts/tables/#shard-key" target="_top">shard
      * key</a> defined, the
-     * table will be <a href="../../../../../concepts/tables.html#replication"
+     * table will be <a href="../../../../../../concepts/tables/#replication"
      * target="_top">replicated</a>.  If
      * {@code false}, the table will be
-     * <a href="../../../../../concepts/tables.html#sharding"
+     * <a href="../../../../../../concepts/tables/#sharding"
      * target="_top">sharded</a> according to the shard key specified in the
      * given {@code type_id}, or
-     * <a href="../../../../../concepts/tables.html#random-sharding"
+     * <a href="../../../../../../concepts/tables/#random-sharding"
      * target="_top">randomly sharded</a>, if no shard key is specified.
      * Note that a type containing a shard key cannot be used to create a
      * replicated table.
@@ -122,7 +122,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#FOREIGN_KEYS
      * FOREIGN_KEYS}: Semicolon-separated list of
-     * <a href="../../../../../concepts/tables.html#foreign-keys"
+     * <a href="../../../../../../concepts/tables/#foreign-keys"
      * target="_top">foreign keys</a>, of the format
      * '(source_column_name [, ...]) references
      * target_table_name(primary_key_column_name [, ...]) [as
@@ -135,29 +135,29 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#PARTITION_TYPE
      * PARTITION_TYPE}: <a
-     * href="../../../../../concepts/tables.html#partitioning"
+     * href="../../../../../../concepts/tables/#partitioning"
      * target="_top">Partitioning</a> scheme to use.
      * Supported values:
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#RANGE
      * RANGE}: Use <a
-     * href="../../../../../concepts/tables.html#partitioning-by-range"
+     * href="../../../../../../concepts/tables/#partitioning-by-range"
      * target="_top">range partitioning</a>.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#INTERVAL
      * INTERVAL}: Use <a
-     * href="../../../../../concepts/tables.html#partitioning-by-interval"
+     * href="../../../../../../concepts/tables/#partitioning-by-interval"
      * target="_top">interval partitioning</a>.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#LIST
      * LIST}: Use <a
-     * href="../../../../../concepts/tables.html#partitioning-by-list"
+     * href="../../../../../../concepts/tables/#partitioning-by-list"
      * target="_top">list partitioning</a>.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#HASH
      * HASH}: Use <a
-     * href="../../../../../concepts/tables.html#partitioning-by-hash"
+     * href="../../../../../../concepts/tables/#partitioning-by-hash"
      * target="_top">hash partitioning</a>.
      * </ul>
      *         <li> {@link
@@ -172,13 +172,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * PARTITION_DEFINITIONS}: Comma-separated list of partition definitions,
      * whose format depends
      * on the choice of {@code partition_type}.  See
-     * <a href="../../../../../concepts/tables.html#partitioning-by-range"
+     * <a href="../../../../../../concepts/tables/#partitioning-by-range"
      * target="_top">range partitioning</a>,
-     * <a href="../../../../../concepts/tables.html#partitioning-by-interval"
+     * <a href="../../../../../../concepts/tables/#partitioning-by-interval"
      * target="_top">interval partitioning</a>,
-     * <a href="../../../../../concepts/tables.html#partitioning-by-list"
+     * <a href="../../../../../../concepts/tables/#partitioning-by-list"
      * target="_top">list partitioning</a>, or
-     * <a href="../../../../../concepts/tables.html#partitioning-by-hash"
+     * <a href="../../../../../../concepts/tables/#partitioning-by-hash"
      * target="_top">hash partitioning</a> for example formats.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
@@ -186,7 +186,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * a new partition will be created for values which don't fall into an
      * existing partition.  Currently
      * only supported for <a
-     * href="../../../../../concepts/tables.html#partitioning-by-list"
+     * href="../../../../../../concepts/tables/#partitioning-by-list"
      * target="_top">list partitions</a>.
      * Supported values:
      * <ul>
@@ -202,7 +202,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#TTL
-     * TTL}: Sets the <a href="../../../../../concepts/ttl.html"
+     * TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      * target="_top">TTL</a> of the table specified in {@code tableName}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#CHUNK_SIZE
@@ -211,12 +211,12 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#IS_RESULT_TABLE
      * IS_RESULT_TABLE}: Indicates whether the table is a
-     * <a href="../../../../../concepts/tables_memory_only.html"
+     * <a href="../../../../../../concepts/tables_memory_only/"
      * target="_top">memory-only table</a>. A result table cannot contain
      * columns with store_only or text_search
-     * <a href="../../../../../concepts/types.html#data-handling"
+     * <a href="../../../../../../concepts/types/#data-handling"
      * target="_top">data-handling</a> or that are
-     * <a href="../../../../../concepts/types.html#primitive-types"
+     * <a href="../../../../../../concepts/types/#primitive-types"
      * target="_top">non-charN strings</a>, and it will not be retained if
      * the server is restarted.
      * Supported values:
@@ -234,13 +234,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#STRATEGY_DEFINITION
      * STRATEGY_DEFINITION}: The <a
-     * href="../../../../../rm/concepts.html#tier-strategies"
-     * target="_top">tier strategy</a>
+     * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
+     * strategy</a>
      * for the table and its columns. See
-     * <a href="../../../../../rm/concepts.html#tier-strategies"
+     * <a href="../../../../../../rm/concepts/#tier-strategies"
      * target="_top">tier strategy usage</a> for format and
-     * <a href="../../../../../rm/usage.html#tier-strategies"
-     * target="_top">tier strategy examples</a> for examples.
+     * <a href="../../../../../../rm/usage/#tier-strategies" target="_top">tier
+     * strategy examples</a> for examples.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code createTableOptions}.
@@ -249,7 +249,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
 
         /**
          * ID of a currently registered <a
-         * href="../../../../../concepts/types.html" target="_top">type</a>.
+         * href="../../../../../../concepts/types/" target="_top">type</a>.
          * The default value is ''.
          */
         public static final String TYPE_ID = "type_id";
@@ -278,21 +278,21 @@ public class CreateTableExternalRequest implements IndexedRecord {
 
         /**
          * Affects the <a
-         * href="../../../../../concepts/tables.html#distribution"
+         * href="../../../../../../concepts/tables/#distribution"
          * target="_top">distribution scheme</a>
          * for the table's data.  If {@code true} and the
          * given table has no explicit <a
-         * href="../../../../../concepts/tables.html#shard-key"
+         * href="../../../../../../concepts/tables/#shard-key"
          * target="_top">shard key</a> defined, the
          * table will be <a
-         * href="../../../../../concepts/tables.html#replication"
+         * href="../../../../../../concepts/tables/#replication"
          * target="_top">replicated</a>.  If
          * {@code false}, the table will be
-         * <a href="../../../../../concepts/tables.html#sharding"
+         * <a href="../../../../../../concepts/tables/#sharding"
          * target="_top">sharded</a> according to the shard key specified in
          * the
          * given {@code type_id}, or
-         * <a href="../../../../../concepts/tables.html#random-sharding"
+         * <a href="../../../../../../concepts/tables/#random-sharding"
          * target="_top">randomly sharded</a>, if no shard key is specified.
          * Note that a type containing a shard key cannot be used to create a
          * replicated table.
@@ -313,7 +313,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
 
         /**
          * Semicolon-separated list of
-         * <a href="../../../../../concepts/tables.html#foreign-keys"
+         * <a href="../../../../../../concepts/tables/#foreign-keys"
          * target="_top">foreign keys</a>, of the format
          * '(source_column_name [, ...]) references
          * target_table_name(primary_key_column_name [, ...]) [as
@@ -329,29 +329,29 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String FOREIGN_SHARD_KEY = "foreign_shard_key";
 
         /**
-         * <a href="../../../../../concepts/tables.html#partitioning"
+         * <a href="../../../../../../concepts/tables/#partitioning"
          * target="_top">Partitioning</a> scheme to use.
          * Supported values:
          * <ul>
          *         <li> {@link
          * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#RANGE
          * RANGE}: Use <a
-         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * href="../../../../../../concepts/tables/#partitioning-by-range"
          * target="_top">range partitioning</a>.
          *         <li> {@link
          * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#INTERVAL
          * INTERVAL}: Use <a
-         * href="../../../../../concepts/tables.html#partitioning-by-interval"
+         * href="../../../../../../concepts/tables/#partitioning-by-interval"
          * target="_top">interval partitioning</a>.
          *         <li> {@link
          * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#LIST
          * LIST}: Use <a
-         * href="../../../../../concepts/tables.html#partitioning-by-list"
+         * href="../../../../../../concepts/tables/#partitioning-by-list"
          * target="_top">list partitioning</a>.
          *         <li> {@link
          * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#HASH
          * HASH}: Use <a
-         * href="../../../../../concepts/tables.html#partitioning-by-hash"
+         * href="../../../../../../concepts/tables/#partitioning-by-hash"
          * target="_top">hash partitioning</a>.
          * </ul>
          */
@@ -359,28 +359,28 @@ public class CreateTableExternalRequest implements IndexedRecord {
 
         /**
          * Use <a
-         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * href="../../../../../../concepts/tables/#partitioning-by-range"
          * target="_top">range partitioning</a>.
          */
         public static final String RANGE = "RANGE";
 
         /**
          * Use <a
-         * href="../../../../../concepts/tables.html#partitioning-by-interval"
+         * href="../../../../../../concepts/tables/#partitioning-by-interval"
          * target="_top">interval partitioning</a>.
          */
         public static final String INTERVAL = "INTERVAL";
 
         /**
          * Use <a
-         * href="../../../../../concepts/tables.html#partitioning-by-list"
+         * href="../../../../../../concepts/tables/#partitioning-by-list"
          * target="_top">list partitioning</a>.
          */
         public static final String LIST = "LIST";
 
         /**
          * Use <a
-         * href="../../../../../concepts/tables.html#partitioning-by-hash"
+         * href="../../../../../../concepts/tables/#partitioning-by-hash"
          * target="_top">hash partitioning</a>.
          */
         public static final String HASH = "HASH";
@@ -396,14 +396,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
         /**
          * Comma-separated list of partition definitions, whose format depends
          * on the choice of {@code partition_type}.  See
-         * <a href="../../../../../concepts/tables.html#partitioning-by-range"
+         * <a href="../../../../../../concepts/tables/#partitioning-by-range"
          * target="_top">range partitioning</a>,
          * <a
-         * href="../../../../../concepts/tables.html#partitioning-by-interval"
+         * href="../../../../../../concepts/tables/#partitioning-by-interval"
          * target="_top">interval partitioning</a>,
-         * <a href="../../../../../concepts/tables.html#partitioning-by-list"
+         * <a href="../../../../../../concepts/tables/#partitioning-by-list"
          * target="_top">list partitioning</a>, or
-         * <a href="../../../../../concepts/tables.html#partitioning-by-hash"
+         * <a href="../../../../../../concepts/tables/#partitioning-by-hash"
          * target="_top">hash partitioning</a> for example formats.
          */
         public static final String PARTITION_DEFINITIONS = "partition_definitions";
@@ -413,7 +413,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * a new partition will be created for values which don't fall into an
          * existing partition.  Currently
          * only supported for <a
-         * href="../../../../../concepts/tables.html#partitioning-by-list"
+         * href="../../../../../../concepts/tables/#partitioning-by-list"
          * target="_top">list partitions</a>.
          * Supported values:
          * <ul>
@@ -431,7 +431,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String IS_AUTOMATIC_PARTITION = "is_automatic_partition";
 
         /**
-         * Sets the <a href="../../../../../concepts/ttl.html"
+         * Sets the <a href="../../../../../../concepts/ttl/"
          * target="_top">TTL</a> of the table specified in {@code tableName}.
          */
         public static final String TTL = "ttl";
@@ -443,12 +443,12 @@ public class CreateTableExternalRequest implements IndexedRecord {
 
         /**
          * Indicates whether the table is a
-         * <a href="../../../../../concepts/tables_memory_only.html"
+         * <a href="../../../../../../concepts/tables_memory_only/"
          * target="_top">memory-only table</a>. A result table cannot contain
          * columns with store_only or text_search
-         * <a href="../../../../../concepts/types.html#data-handling"
+         * <a href="../../../../../../concepts/types/#data-handling"
          * target="_top">data-handling</a> or that are
-         * <a href="../../../../../concepts/types.html#primitive-types"
+         * <a href="../../../../../../concepts/types/#primitive-types"
          * target="_top">non-charN strings</a>, and it will not be retained if
          * the server is restarted.
          * Supported values:
@@ -467,12 +467,12 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String IS_RESULT_TABLE = "is_result_table";
 
         /**
-         * The <a href="../../../../../rm/concepts.html#tier-strategies"
+         * The <a href="../../../../../../rm/concepts/#tier-strategies"
          * target="_top">tier strategy</a>
          * for the table and its columns. See
-         * <a href="../../../../../rm/concepts.html#tier-strategies"
+         * <a href="../../../../../../rm/concepts/#tier-strategies"
          * target="_top">tier strategy usage</a> for format and
-         * <a href="../../../../../rm/usage.html#tier-strategies"
+         * <a href="../../../../../../rm/usage/#tier-strategies"
          * target="_top">tier strategy examples</a> for examples.
          */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
@@ -640,10 +640,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
-     * DELIMITED_TEXT}: Delimited text format; e.g., CSV, TSV, PSV, etc.
+     * DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV, PSV, etc.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#PARQUET PARQUET}:
-     * Apache Parquet format
+     * Apache Parquet file format
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#JSON JSON}: Json
+     * file format
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
@@ -803,7 +806,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_HEADER_PROPERTY_DELIMITER
      * TEXT_HEADER_PROPERTY_DELIMITER}: Specifies the delimiter for
-     * <a href="../../../../../concepts/types.html#column-properties"
+     * <a href="../../../../../../concepts/types/#column-properties"
      * target="_top">column properties</a> in the header row (if
      * present).  Cannot be set to same value as {@code text_delimiter}.
      * <p>
@@ -1059,10 +1062,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * <ul>
          *         <li> {@link
          * com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
-         * DELIMITED_TEXT}: Delimited text format; e.g., CSV, TSV, PSV, etc.
+         * DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV, PSV,
+         * etc.
          *         <li> {@link
          * com.gpudb.protocol.CreateTableExternalRequest.Options#PARQUET
-         * PARQUET}: Apache Parquet format
+         * PARQUET}: Apache Parquet file format
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#JSON JSON}:
+         * Json file format
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
@@ -1071,14 +1078,19 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String FILE_TYPE = "file_type";
 
         /**
-         * Delimited text format; e.g., CSV, TSV, PSV, etc.
+         * Delimited text file format; e.g., CSV, TSV, PSV, etc.
          */
         public static final String DELIMITED_TEXT = "delimited_text";
 
         /**
-         * Apache Parquet format
+         * Apache Parquet file format
          */
         public static final String PARQUET = "parquet";
+
+        /**
+         * Json file format
+         */
+        public static final String JSON = "json";
 
         /**
          * For {@code materialized} external tables, whether to do a full load,
@@ -1339,7 +1351,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
 
         /**
          * Specifies the delimiter for
-         * <a href="../../../../../concepts/types.html#column-properties"
+         * <a href="../../../../../../concepts/types/#column-properties"
          * target="_top">column properties</a> in the header row (if
          * present).  Cannot be set to same value as {@code text_delimiter}.
          * <p>
@@ -1438,10 +1450,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * @param tableName  Name of the table to be created, in
      *                   [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a> and meeting
      *                   <a
-     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.
      * @param filepaths  A list of file paths from which data will be sourced;
      *                   wildcards (*) can be used
@@ -1456,8 +1468,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                   accessible to the gpudb user, residing on the path (or
      *                   relative to the path) specified by the
      *                   external files directory in the Kinetica
-     *                   <a
-     *                   href="../../../../../config/index.html#external-files"
+     *                   <a href="../../../../../../config/#external-files"
      *                   target="_top">configuration file</a>.
      * @param modifyColumns  Not implemented yet.  The default value is an
      *                       empty {@link Map}.
@@ -1469,7 +1480,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#TYPE_ID
      *                            TYPE_ID}: ID of a currently registered <a
-     *                            href="../../../../../concepts/types.html"
+     *                            href="../../../../../../concepts/types/"
      *                            target="_top">type</a>.  The default value is
      *                            ''.
      *                                    <li> {@link
@@ -1495,24 +1506,24 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#IS_REPLICATED
      *                            IS_REPLICATED}: Affects the <a
-     *                            href="../../../../../concepts/tables.html#distribution"
+     *                            href="../../../../../../concepts/tables/#distribution"
      *                            target="_top">distribution scheme</a>
      *                            for the table's data.  If {@code true} and
      *                            the
      *                            given table has no explicit <a
-     *                            href="../../../../../concepts/tables.html#shard-key"
+     *                            href="../../../../../../concepts/tables/#shard-key"
      *                            target="_top">shard key</a> defined, the
      *                            table will be <a
-     *                            href="../../../../../concepts/tables.html#replication"
+     *                            href="../../../../../../concepts/tables/#replication"
      *                            target="_top">replicated</a>.  If
      *                            {@code false}, the table will be
      *                            <a
-     *                            href="../../../../../concepts/tables.html#sharding"
+     *                            href="../../../../../../concepts/tables/#sharding"
      *                            target="_top">sharded</a> according to the
      *                            shard key specified in the
      *                            given {@code type_id}, or
      *                            <a
-     *                            href="../../../../../concepts/tables.html#random-sharding"
+     *                            href="../../../../../../concepts/tables/#random-sharding"
      *                            target="_top">randomly sharded</a>, if no
      *                            shard key is specified.
      *                            Note that a type containing a shard key
@@ -1533,7 +1544,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#FOREIGN_KEYS
      *                            FOREIGN_KEYS}: Semicolon-separated list of
      *                            <a
-     *                            href="../../../../../concepts/tables.html#foreign-keys"
+     *                            href="../../../../../../concepts/tables/#foreign-keys"
      *                            target="_top">foreign keys</a>, of the format
      *                            '(source_column_name [, ...]) references
      *                            target_table_name(primary_key_column_name [,
@@ -1547,29 +1558,29 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#PARTITION_TYPE
      *                            PARTITION_TYPE}: <a
-     *                            href="../../../../../concepts/tables.html#partitioning"
+     *                            href="../../../../../../concepts/tables/#partitioning"
      *                            target="_top">Partitioning</a> scheme to use.
      *                            Supported values:
      *                            <ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#RANGE
      *                            RANGE}: Use <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-range"
      *                            target="_top">range partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#INTERVAL
      *                            INTERVAL}: Use <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#LIST
      *                            LIST}: Use <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#HASH
      *                            HASH}: Use <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a>.
      *                            </ul>
      *                                    <li> {@link
@@ -1586,16 +1597,16 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            depends
      *                            on the choice of {@code partition_type}.  See
      *                            <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-range"
      *                            target="_top">range partitioning</a>,
      *                            <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>,
      *                            <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitioning</a>, or
      *                            <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a> for
      *                            example formats.
      *                                    <li> {@link
@@ -1605,7 +1616,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            which don't fall into an existing partition.
      *                            Currently
      *                            only supported for <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitions</a>.
      *                            Supported values:
      *                            <ul>
@@ -1622,7 +1633,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#TTL
      *                            TTL}: Sets the <a
-     *                            href="../../../../../concepts/ttl.html"
+     *                            href="../../../../../../concepts/ttl/"
      *                            target="_top">TTL</a> of the table specified
      *                            in {@code tableName}.
      *                                    <li> {@link
@@ -1634,15 +1645,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            IS_RESULT_TABLE}: Indicates whether the table
      *                            is a
      *                            <a
-     *                            href="../../../../../concepts/tables_memory_only.html"
+     *                            href="../../../../../../concepts/tables_memory_only/"
      *                            target="_top">memory-only table</a>. A result
      *                            table cannot contain
      *                            columns with store_only or text_search
      *                            <a
-     *                            href="../../../../../concepts/types.html#data-handling"
+     *                            href="../../../../../../concepts/types/#data-handling"
      *                            target="_top">data-handling</a> or that are
      *                            <a
-     *                            href="../../../../../concepts/types.html#primitive-types"
+     *                            href="../../../../../../concepts/types/#primitive-types"
      *                            target="_top">non-charN strings</a>, and it
      *                            will not be retained if
      *                            the server is restarted.
@@ -1661,15 +1672,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#STRATEGY_DEFINITION
      *                            STRATEGY_DEFINITION}: The <a
-     *                            href="../../../../../rm/concepts.html#tier-strategies"
+     *                            href="../../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy</a>
      *                            for the table and its columns. See
      *                            <a
-     *                            href="../../../../../rm/concepts.html#tier-strategies"
+     *                            href="../../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy usage</a> for
      *                            format and
      *                            <a
-     *                            href="../../../../../rm/usage.html#tier-strategies"
+     *                            href="../../../../../../rm/usage/#tier-strategies"
      *                            target="_top">tier strategy examples</a> for
      *                            examples.
      *                            </ul>
@@ -1833,11 +1844,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
-     *                 DELIMITED_TEXT}: Delimited text format; e.g., CSV, TSV,
-     *                 PSV, etc.
+     *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
+     *                 TSV, PSV, etc.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#PARQUET
-     *                 PARQUET}: Apache Parquet format
+     *                 PARQUET}: Apache Parquet file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#JSON
+     *                 JSON}: Json file format
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
@@ -2006,7 +2020,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 TEXT_HEADER_PROPERTY_DELIMITER}: Specifies the delimiter
      *                 for
      *                 <a
-     *                 href="../../../../../concepts/types.html#column-properties"
+     *                 href="../../../../../../concepts/types/#column-properties"
      *                 target="_top">column properties</a> in the header row
      *                 (if
      *                 present).  Cannot be set to same value as {@code
@@ -2073,10 +2087,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * @return Name of the table to be created, in [schema_name.]table_name
      *         format, using
      *         standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a> and meeting
      *         <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.
      * 
      */
@@ -2089,10 +2103,10 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * @param tableName  Name of the table to be created, in
      *                   [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a> and meeting
      *                   <a
-     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -2118,7 +2132,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         accessible to the gpudb user, residing on the path (or relative
      *         to the path) specified by the
      *         external files directory in the Kinetica
-     *         <a href="../../../../../config/index.html#external-files"
+     *         <a href="../../../../../../config/#external-files"
      *         target="_top">configuration file</a>.
      * 
      */
@@ -2141,8 +2155,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                   accessible to the gpudb user, residing on the path (or
      *                   relative to the path) specified by the
      *                   external files directory in the Kinetica
-     *                   <a
-     *                   href="../../../../../config/index.html#external-files"
+     *                   <a href="../../../../../../config/#external-files"
      *                   target="_top">configuration file</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -2185,8 +2198,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#TYPE_ID
      *         TYPE_ID}: ID of a currently registered <a
-     *         href="../../../../../concepts/types.html"
-     *         target="_top">type</a>.  The default value is ''.
+     *         href="../../../../../../concepts/types/" target="_top">type</a>.
+     *         The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#NO_ERROR_IF_EXISTS
      *         NO_ERROR_IF_EXISTS}: If {@code true},
@@ -2208,21 +2221,21 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#IS_REPLICATED
      *         IS_REPLICATED}: Affects the <a
-     *         href="../../../../../concepts/tables.html#distribution"
+     *         href="../../../../../../concepts/tables/#distribution"
      *         target="_top">distribution scheme</a>
      *         for the table's data.  If {@code true} and the
      *         given table has no explicit <a
-     *         href="../../../../../concepts/tables.html#shard-key"
+     *         href="../../../../../../concepts/tables/#shard-key"
      *         target="_top">shard key</a> defined, the
      *         table will be <a
-     *         href="../../../../../concepts/tables.html#replication"
+     *         href="../../../../../../concepts/tables/#replication"
      *         target="_top">replicated</a>.  If
      *         {@code false}, the table will be
-     *         <a href="../../../../../concepts/tables.html#sharding"
+     *         <a href="../../../../../../concepts/tables/#sharding"
      *         target="_top">sharded</a> according to the shard key specified
      *         in the
      *         given {@code type_id}, or
-     *         <a href="../../../../../concepts/tables.html#random-sharding"
+     *         <a href="../../../../../../concepts/tables/#random-sharding"
      *         target="_top">randomly sharded</a>, if no shard key is
      *         specified.
      *         Note that a type containing a shard key cannot be used to create
@@ -2242,7 +2255,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#FOREIGN_KEYS
      *         FOREIGN_KEYS}: Semicolon-separated list of
-     *         <a href="../../../../../concepts/tables.html#foreign-keys"
+     *         <a href="../../../../../../concepts/tables/#foreign-keys"
      *         target="_top">foreign keys</a>, of the format
      *         '(source_column_name [, ...]) references
      *         target_table_name(primary_key_column_name [, ...]) [as
@@ -2255,29 +2268,29 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#PARTITION_TYPE
      *         PARTITION_TYPE}: <a
-     *         href="../../../../../concepts/tables.html#partitioning"
+     *         href="../../../../../../concepts/tables/#partitioning"
      *         target="_top">Partitioning</a> scheme to use.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#RANGE
      *         RANGE}: Use <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-range"
+     *         href="../../../../../../concepts/tables/#partitioning-by-range"
      *         target="_top">range partitioning</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#INTERVAL
      *         INTERVAL}: Use <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *         href="../../../../../../concepts/tables/#partitioning-by-interval"
      *         target="_top">interval partitioning</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#LIST
      *         LIST}: Use <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-list"
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
      *         target="_top">list partitioning</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#HASH
      *         HASH}: Use <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *         href="../../../../../../concepts/tables/#partitioning-by-hash"
      *         target="_top">hash partitioning</a>.
      *         </ul>
      *                 <li> {@link
@@ -2293,16 +2306,16 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         definitions, whose format depends
      *         on the choice of {@code partition_type}.  See
      *         <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-range"
+     *         href="../../../../../../concepts/tables/#partitioning-by-range"
      *         target="_top">range partitioning</a>,
      *         <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *         href="../../../../../../concepts/tables/#partitioning-by-interval"
      *         target="_top">interval partitioning</a>,
      *         <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-list"
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
      *         target="_top">list partitioning</a>, or
      *         <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *         href="../../../../../../concepts/tables/#partitioning-by-hash"
      *         target="_top">hash partitioning</a> for example formats.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
@@ -2310,7 +2323,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         a new partition will be created for values which don't fall into
      *         an existing partition.  Currently
      *         only supported for <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-list"
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
      *         target="_top">list partitions</a>.
      *         Supported values:
      *         <ul>
@@ -2326,7 +2339,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#TTL
-     *         TTL}: Sets the <a href="../../../../../concepts/ttl.html"
+     *         TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *         target="_top">TTL</a> of the table specified in {@code
      *         tableName}.
      *                 <li> {@link
@@ -2336,13 +2349,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#IS_RESULT_TABLE
      *         IS_RESULT_TABLE}: Indicates whether the table is a
-     *         <a href="../../../../../concepts/tables_memory_only.html"
+     *         <a href="../../../../../../concepts/tables_memory_only/"
      *         target="_top">memory-only table</a>. A result table cannot
      *         contain
      *         columns with store_only or text_search
-     *         <a href="../../../../../concepts/types.html#data-handling"
+     *         <a href="../../../../../../concepts/types/#data-handling"
      *         target="_top">data-handling</a> or that are
-     *         <a href="../../../../../concepts/types.html#primitive-types"
+     *         <a href="../../../../../../concepts/types/#primitive-types"
      *         target="_top">non-charN strings</a>, and it will not be retained
      *         if
      *         the server is restarted.
@@ -2361,12 +2374,12 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#STRATEGY_DEFINITION
      *         STRATEGY_DEFINITION}: The <a
-     *         href="../../../../../rm/concepts.html#tier-strategies"
+     *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a>
      *         for the table and its columns. See
-     *         <a href="../../../../../rm/concepts.html#tier-strategies"
+     *         <a href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy usage</a> for format and
-     *         <a href="../../../../../rm/usage.html#tier-strategies"
+     *         <a href="../../../../../../rm/usage/#tier-strategies"
      *         target="_top">tier strategy examples</a> for examples.
      *         </ul>
      *         The default value is an empty {@link Map}.
@@ -2386,7 +2399,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#TYPE_ID
      *                            TYPE_ID}: ID of a currently registered <a
-     *                            href="../../../../../concepts/types.html"
+     *                            href="../../../../../../concepts/types/"
      *                            target="_top">type</a>.  The default value is
      *                            ''.
      *                                    <li> {@link
@@ -2412,24 +2425,24 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#IS_REPLICATED
      *                            IS_REPLICATED}: Affects the <a
-     *                            href="../../../../../concepts/tables.html#distribution"
+     *                            href="../../../../../../concepts/tables/#distribution"
      *                            target="_top">distribution scheme</a>
      *                            for the table's data.  If {@code true} and
      *                            the
      *                            given table has no explicit <a
-     *                            href="../../../../../concepts/tables.html#shard-key"
+     *                            href="../../../../../../concepts/tables/#shard-key"
      *                            target="_top">shard key</a> defined, the
      *                            table will be <a
-     *                            href="../../../../../concepts/tables.html#replication"
+     *                            href="../../../../../../concepts/tables/#replication"
      *                            target="_top">replicated</a>.  If
      *                            {@code false}, the table will be
      *                            <a
-     *                            href="../../../../../concepts/tables.html#sharding"
+     *                            href="../../../../../../concepts/tables/#sharding"
      *                            target="_top">sharded</a> according to the
      *                            shard key specified in the
      *                            given {@code type_id}, or
      *                            <a
-     *                            href="../../../../../concepts/tables.html#random-sharding"
+     *                            href="../../../../../../concepts/tables/#random-sharding"
      *                            target="_top">randomly sharded</a>, if no
      *                            shard key is specified.
      *                            Note that a type containing a shard key
@@ -2450,7 +2463,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#FOREIGN_KEYS
      *                            FOREIGN_KEYS}: Semicolon-separated list of
      *                            <a
-     *                            href="../../../../../concepts/tables.html#foreign-keys"
+     *                            href="../../../../../../concepts/tables/#foreign-keys"
      *                            target="_top">foreign keys</a>, of the format
      *                            '(source_column_name [, ...]) references
      *                            target_table_name(primary_key_column_name [,
@@ -2464,29 +2477,29 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#PARTITION_TYPE
      *                            PARTITION_TYPE}: <a
-     *                            href="../../../../../concepts/tables.html#partitioning"
+     *                            href="../../../../../../concepts/tables/#partitioning"
      *                            target="_top">Partitioning</a> scheme to use.
      *                            Supported values:
      *                            <ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#RANGE
      *                            RANGE}: Use <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-range"
      *                            target="_top">range partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#INTERVAL
      *                            INTERVAL}: Use <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#LIST
      *                            LIST}: Use <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#HASH
      *                            HASH}: Use <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a>.
      *                            </ul>
      *                                    <li> {@link
@@ -2503,16 +2516,16 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            depends
      *                            on the choice of {@code partition_type}.  See
      *                            <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-range"
      *                            target="_top">range partitioning</a>,
      *                            <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>,
      *                            <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitioning</a>, or
      *                            <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a> for
      *                            example formats.
      *                                    <li> {@link
@@ -2522,7 +2535,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            which don't fall into an existing partition.
      *                            Currently
      *                            only supported for <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitions</a>.
      *                            Supported values:
      *                            <ul>
@@ -2539,7 +2552,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#TTL
      *                            TTL}: Sets the <a
-     *                            href="../../../../../concepts/ttl.html"
+     *                            href="../../../../../../concepts/ttl/"
      *                            target="_top">TTL</a> of the table specified
      *                            in {@code tableName}.
      *                                    <li> {@link
@@ -2551,15 +2564,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            IS_RESULT_TABLE}: Indicates whether the table
      *                            is a
      *                            <a
-     *                            href="../../../../../concepts/tables_memory_only.html"
+     *                            href="../../../../../../concepts/tables_memory_only/"
      *                            target="_top">memory-only table</a>. A result
      *                            table cannot contain
      *                            columns with store_only or text_search
      *                            <a
-     *                            href="../../../../../concepts/types.html#data-handling"
+     *                            href="../../../../../../concepts/types/#data-handling"
      *                            target="_top">data-handling</a> or that are
      *                            <a
-     *                            href="../../../../../concepts/types.html#primitive-types"
+     *                            href="../../../../../../concepts/types/#primitive-types"
      *                            target="_top">non-charN strings</a>, and it
      *                            will not be retained if
      *                            the server is restarted.
@@ -2578,15 +2591,15 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#STRATEGY_DEFINITION
      *                            STRATEGY_DEFINITION}: The <a
-     *                            href="../../../../../rm/concepts.html#tier-strategies"
+     *                            href="../../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy</a>
      *                            for the table and its columns. See
      *                            <a
-     *                            href="../../../../../rm/concepts.html#tier-strategies"
+     *                            href="../../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy usage</a> for
      *                            format and
      *                            <a
-     *                            href="../../../../../rm/usage.html#tier-strategies"
+     *                            href="../../../../../../rm/usage/#tier-strategies"
      *                            target="_top">tier strategy examples</a> for
      *                            examples.
      *                            </ul>
@@ -2756,11 +2769,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
-     *         DELIMITED_TEXT}: Delimited text format; e.g., CSV, TSV, PSV,
-     *         etc.
+     *         DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV,
+     *         PSV, etc.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#PARQUET
-     *         PARQUET}: Apache Parquet format
+     *         PARQUET}: Apache Parquet file format
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#JSON
+     *         JSON}: Json file format
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
@@ -2922,7 +2938,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_HEADER_PROPERTY_DELIMITER
      *         TEXT_HEADER_PROPERTY_DELIMITER}: Specifies the delimiter for
-     *         <a href="../../../../../concepts/types.html#column-properties"
+     *         <a href="../../../../../../concepts/types/#column-properties"
      *         target="_top">column properties</a> in the header row (if
      *         present).  Cannot be set to same value as {@code
      *         text_delimiter}.
@@ -3139,11 +3155,14 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
-     *                 DELIMITED_TEXT}: Delimited text format; e.g., CSV, TSV,
-     *                 PSV, etc.
+     *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
+     *                 TSV, PSV, etc.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#PARQUET
-     *                 PARQUET}: Apache Parquet format
+     *                 PARQUET}: Apache Parquet file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#JSON
+     *                 JSON}: Json file format
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
@@ -3312,7 +3331,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 TEXT_HEADER_PROPERTY_DELIMITER}: Specifies the delimiter
      *                 for
      *                 <a
-     *                 href="../../../../../concepts/types.html#column-properties"
+     *                 href="../../../../../../concepts/types/#column-properties"
      *                 target="_top">column properties</a> in the header row
      *                 (if
      *                 present).  Cannot be set to same value as {@code

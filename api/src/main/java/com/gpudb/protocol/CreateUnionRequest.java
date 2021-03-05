@@ -25,29 +25,29 @@ import org.apache.avro.generic.IndexedRecord;
  * The following merges are supported:
  * <p>
  * UNION (DISTINCT/ALL) - For data set union details and examples, see <a
- * href="../../../../../concepts/unions.html" target="_top">Union</a>.  For
+ * href="../../../../../../concepts/unions/" target="_top">Union</a>.  For
  * limitations, see <a
- * href="../../../../../concepts/unions.html#limitations-and-cautions"
+ * href="../../../../../../concepts/unions/#limitations-and-cautions"
  * target="_top">Union Limitations and Cautions</a>.
  * <p>
  * INTERSECT (DISTINCT/ALL) - For data set intersection details and examples,
- * see <a href="../../../../../concepts/intersect.html"
+ * see <a href="../../../../../../concepts/intersect/"
  * target="_top">Intersect</a>.  For limitations, see <a
- * href="../../../../../concepts/intersect.html#limitations"
+ * href="../../../../../../concepts/intersect/#limitations"
  * target="_top">Intersect Limitations</a>.
  * <p>
  * EXCEPT (DISTINCT/ALL) - For data set subtraction details and examples, see
- * <a href="../../../../../concepts/except.html" target="_top">Except</a>.  For
- * limitations, see <a href="../../../../../concepts/except.html#limitations"
+ * <a href="../../../../../../concepts/except/" target="_top">Except</a>.  For
+ * limitations, see <a href="../../../../../../concepts/except/#limitations"
  * target="_top">Except Limitations</a>.
  * <p>
  * MERGE VIEWS - For a given set of <a
- * href="../../../../../concepts/filtered_views.html" target="_top">filtered
+ * href="../../../../../../concepts/filtered_views/" target="_top">filtered
  * views</a> on a single table, creates a single filtered view containing all
  * of the unique records across all of the given filtered data sets.
  * <p>
  * Non-charN 'string' and 'bytes' column types cannot be merged, nor can
- * columns marked as <a href="../../../../../concepts/types.html#data-handling"
+ * columns marked as <a href="../../../../../../concepts/types/#data-handling"
  * target="_top">store-only</a>.
  */
 public class CreateUnionRequest implements IndexedRecord {
@@ -89,11 +89,11 @@ public class CreateUnionRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
      * MATERIALIZE_ON_GPU}: No longer used.  See <a
-     * href="../../../../../rm/concepts.html" target="_top">Resource Management
+     * href="../../../../../../rm/concepts/" target="_top">Resource Management
      * Concepts</a> for information about how resources are managed, <a
-     * href="../../../../../rm/concepts.html" target="_top">Tier Strategy
+     * href="../../../../../../rm/concepts/" target="_top">Tier Strategy
      * Concepts</a> for how resources are targeted for VRAM, and <a
-     * href="../../../../../rm/usage.html#tier-strategies" target="_top">Tier
+     * href="../../../../../../rm/usage/#tier-strategies" target="_top">Tier
      * Strategy Usage</a> for how to specify a table's priority in VRAM.
      * Supported values:
      * <ul>
@@ -156,7 +156,7 @@ public class CreateUnionRequest implements IndexedRecord {
      * indexes on the output table.  The columns specified must be present in
      * {@code outputColumnNames}.
      *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#TTL
-     * TTL}: Sets the <a href="../../../../../concepts/ttl.html"
+     * TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      * target="_top">TTL</a> of the output table specified in {@code
      * tableName}.
      *         <li> {@link
@@ -207,12 +207,12 @@ public class CreateUnionRequest implements IndexedRecord {
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * No longer used.  See <a href="../../../../../rm/concepts.html"
+         * No longer used.  See <a href="../../../../../../rm/concepts/"
          * target="_top">Resource Management Concepts</a> for information about
-         * how resources are managed, <a href="../../../../../rm/concepts.html"
+         * how resources are managed, <a href="../../../../../../rm/concepts/"
          * target="_top">Tier Strategy Concepts</a> for how resources are
          * targeted for VRAM, and <a
-         * href="../../../../../rm/usage.html#tier-strategies"
+         * href="../../../../../../rm/usage/#tier-strategies"
          * target="_top">Tier Strategy Usage</a> for how to specify a table's
          * priority in VRAM.
          * Supported values:
@@ -344,7 +344,7 @@ public class CreateUnionRequest implements IndexedRecord {
         public static final String CREATE_INDEXES = "create_indexes";
 
         /**
-         * Sets the <a href="../../../../../concepts/ttl.html"
+         * Sets the <a href="../../../../../../concepts/ttl/"
          * target="_top">TTL</a> of the output table specified in {@code
          * tableName}.
          */
@@ -415,13 +415,13 @@ public class CreateUnionRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table to be created, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a> and meeting <a
-     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.
      * @param tableNames  The list of table names to merge, in
      *                    [schema_name.]table_name format, using standard <a
-     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    href="../../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.  Must
      *                    contain the names of one or more existing tables.
      * @param inputColumnNames  The list of columns from each of the
@@ -443,13 +443,13 @@ public class CreateUnionRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../rm/concepts.html"
+     *                 href="../../../../../../rm/concepts/"
      *                 target="_top">Resource Management Concepts</a> for
      *                 information about how resources are managed, <a
-     *                 href="../../../../../rm/concepts.html"
-     *                 target="_top">Tier Strategy Concepts</a> for how
-     *                 resources are targeted for VRAM, and <a
-     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../../rm/concepts/" target="_top">Tier
+     *                 Strategy Concepts</a> for how resources are targeted for
+     *                 VRAM, and <a
+     *                 href="../../../../../../rm/usage/#tier-strategies"
      *                 target="_top">Tier Strategy Usage</a> for how to specify
      *                 a table's priority in VRAM.
      *                 Supported values:
@@ -527,7 +527,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 outputColumnNames}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}:
-     *                 Sets the <a href="../../../../../concepts/ttl.html"
+     *                 Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the output table specified in
      *                 {@code tableName}.
      *                         <li> {@link
@@ -585,9 +585,9 @@ public class CreateUnionRequest implements IndexedRecord {
      * 
      * @return Name of the table to be created, in [schema_name.]table_name
      *         format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a> and meeting <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.
      * 
      */
@@ -599,9 +599,9 @@ public class CreateUnionRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table to be created, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a> and meeting <a
-     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -616,7 +616,7 @@ public class CreateUnionRequest implements IndexedRecord {
      * 
      * @return The list of table names to merge, in [schema_name.]table_name
      *         format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  Must contain the names
      *         of one or more existing tables.
      * 
@@ -629,7 +629,7 @@ public class CreateUnionRequest implements IndexedRecord {
      * 
      * @param tableNames  The list of table names to merge, in
      *                    [schema_name.]table_name format, using standard <a
-     *                    href="../../../../../concepts/tables.html#table-name-resolution"
+     *                    href="../../../../../../concepts/tables/#table-name-resolution"
      *                    target="_top">name resolution rules</a>.  Must
      *                    contain the names of one or more existing tables.
      * 
@@ -701,12 +701,12 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
      *         MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *         href="../../../../../rm/concepts.html" target="_top">Resource
+     *         href="../../../../../../rm/concepts/" target="_top">Resource
      *         Management Concepts</a> for information about how resources are
-     *         managed, <a href="../../../../../rm/concepts.html"
+     *         managed, <a href="../../../../../../rm/concepts/"
      *         target="_top">Tier Strategy Concepts</a> for how resources are
      *         targeted for VRAM, and <a
-     *         href="../../../../../rm/usage.html#tier-strategies"
+     *         href="../../../../../../rm/usage/#tier-strategies"
      *         target="_top">Tier Strategy Usage</a> for how to specify a
      *         table's priority in VRAM.
      *         Supported values:
@@ -778,7 +778,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *         be present in {@code outputColumnNames}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}: Sets the
-     *         <a href="../../../../../concepts/ttl.html" target="_top">TTL</a>
+     *         <a href="../../../../../../concepts/ttl/" target="_top">TTL</a>
      *         of the output table specified in {@code tableName}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#PERSIST PERSIST}:
@@ -839,13 +839,13 @@ public class CreateUnionRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../rm/concepts.html"
+     *                 href="../../../../../../rm/concepts/"
      *                 target="_top">Resource Management Concepts</a> for
      *                 information about how resources are managed, <a
-     *                 href="../../../../../rm/concepts.html"
-     *                 target="_top">Tier Strategy Concepts</a> for how
-     *                 resources are targeted for VRAM, and <a
-     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../../rm/concepts/" target="_top">Tier
+     *                 Strategy Concepts</a> for how resources are targeted for
+     *                 VRAM, and <a
+     *                 href="../../../../../../rm/usage/#tier-strategies"
      *                 target="_top">Tier Strategy Usage</a> for how to specify
      *                 a table's priority in VRAM.
      *                 Supported values:
@@ -923,7 +923,7 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 outputColumnNames}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#TTL TTL}:
-     *                 Sets the <a href="../../../../../concepts/ttl.html"
+     *                 Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the output table specified in
      *                 {@code tableName}.
      *                         <li> {@link

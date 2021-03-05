@@ -17,7 +17,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#dropSchema(DropSchemaRequest)}.
  * <p>
- * Drops an existing SQL-style <a href="../../../../../concepts/schemas.html"
+ * Drops an existing SQL-style <a href="../../../../../../concepts/schemas/"
  * target="_top">schema</a>, specified in {@code schemaName}.
  */
 public class DropSchemaRequest implements IndexedRecord {

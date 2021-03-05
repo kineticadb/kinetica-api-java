@@ -186,7 +186,7 @@ public class ShowGraphResponse implements IndexedRecord {
      * @return Whether or not the edges of the graph have directions
      *         (bi-directional edges can still exist in directed graphs).
      *         Consult <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     *         href="../../../../../../graph_solver/network_graph_solver/#directed-graphs"
      *         target="_top">Directed Graphs</a> for more details.
      * 
      */
@@ -199,7 +199,7 @@ public class ShowGraphResponse implements IndexedRecord {
      * @param directed  Whether or not the edges of the graph have directions
      *                  (bi-directional edges can still exist in directed
      *                  graphs). Consult <a
-     *                  href="../../../../../graph_solver/network_graph_solver.html#directed-graphs"
+     *                  href="../../../../../../graph_solver/network_graph_solver/#directed-graphs"
      *                  target="_top">Directed Graphs</a> for more details.
      * 
      * @return {@code this} to mimic the builder pattern.

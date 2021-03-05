@@ -22,7 +22,7 @@ import org.apache.avro.generic.IndexedRecord;
  * name.
  * <p>
  * For materialized view details and examples, see
- * <a href="../../../../../concepts/materialized_views.html"
+ * <a href="../../../../../../concepts/materialized_views/"
  * target="_top">Materialized Views</a>.
  * <p>
  * The response contains {@code viewId}, which is used to tag each subsequent
@@ -65,7 +65,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      * created.
      *         <li> {@link
      * com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL TTL}: Sets
-     * the <a href="../../../../../concepts/ttl.html" target="_top">TTL</a> of
+     * the <a href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
      * the table specified in {@code tableName}.
      *         <li> {@link
      * com.gpudb.protocol.CreateMaterializedViewRequest.Options#PERSIST
@@ -96,7 +96,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      * 'refresh'
      *         <li> {@link
      * com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_QUERY
-     * ON_QUERY}: For future use.
+     * ON_QUERY}: Refresh any time the view is queried.
      *         <li> {@link
      * com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_CHANGE
      * ON_CHANGE}: If possible, incrementally refresh (refresh just those
@@ -139,7 +139,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * Sets the <a href="../../../../../concepts/ttl.html"
+         * Sets the <a href="../../../../../../concepts/ttl/"
          * target="_top">TTL</a> of the table specified in {@code tableName}.
          */
         public static final String TTL = "ttl";
@@ -178,7 +178,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
          * 'action' of 'refresh'
          *         <li> {@link
          * com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_QUERY
-         * ON_QUERY}: For future use.
+         * ON_QUERY}: Refresh any time the view is queried.
          *         <li> {@link
          * com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_CHANGE
          * ON_CHANGE}: If possible, incrementally refresh (refresh just those
@@ -204,7 +204,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
         public static final String MANUAL = "manual";
 
         /**
-         * For future use.
+         * Refresh any time the view is queried.
          */
         public static final String ON_QUERY = "on_query";
 
@@ -263,9 +263,9 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      * @param tableName  Name of the table to be created that is the top-level
      *                   table of the materialized view, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a> and meeting <a
-     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.
      * @param options  Optional parameters.
      *                 <ul>
@@ -281,8 +281,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL
-     *                 TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 tableName}.
      *                         <li> {@link
@@ -320,7 +319,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 'action' of 'refresh'
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_QUERY
-     *                 ON_QUERY}: For future use.
+     *                 ON_QUERY}: Refresh any time the view is queried.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_CHANGE
      *                 ON_CHANGE}: If possible, incrementally refresh (refresh
@@ -364,9 +363,9 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      * @return Name of the table to be created that is the top-level table of
      *         the materialized view, in [schema_name.]table_name format, using
      *         standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a> and meeting <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.
      * 
      */
@@ -379,9 +378,9 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      * @param tableName  Name of the table to be created that is the top-level
      *                   table of the materialized view, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a> and meeting <a
-     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -407,7 +406,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *         it will be automatically created.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL
-     *         TTL}: Sets the <a href="../../../../../concepts/ttl.html"
+     *         TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *         target="_top">TTL</a> of the table specified in {@code
      *         tableName}.
      *                 <li> {@link
@@ -442,7 +441,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *         'action' of 'refresh'
      *                 <li> {@link
      *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_QUERY
-     *         ON_QUERY}: For future use.
+     *         ON_QUERY}: Refresh any time the view is queried.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_CHANGE
      *         ON_CHANGE}: If possible, incrementally refresh (refresh just
@@ -495,8 +494,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 automatically created.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#TTL
-     *                 TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 tableName}.
      *                         <li> {@link
@@ -534,7 +532,7 @@ public class CreateMaterializedViewRequest implements IndexedRecord {
      *                 'action' of 'refresh'
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_QUERY
-     *                 ON_QUERY}: For future use.
+     *                 ON_QUERY}: Refresh any time the view is queried.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateMaterializedViewRequest.Options#ON_CHANGE
      *                 ON_CHANGE}: If possible, incrementally refresh (refresh

@@ -22,9 +22,9 @@ import org.apache.avro.generic.IndexedRecord;
  * Rotate the column values into rows values.
  * <p>
  * For unpivot details and examples, see
- * <a href="../../../../../concepts/unpivot.html" target="_top">Unpivot</a>.
+ * <a href="../../../../../../concepts/unpivot/" target="_top">Unpivot</a>.
  * For limitations, see
- * <a href="../../../../../concepts/unpivot.html#limitations"
+ * <a href="../../../../../../concepts/unpivot/#limitations"
  * target="_top">Unpivot Limitations</a>.
  * <p>
  * Unpivot is used to normalize tables that are built for cross tabular
@@ -38,8 +38,8 @@ import org.apache.avro.generic.IndexedRecord;
  * and values respectively.
  * <p>
  * The response is returned as a dynamic schema. For details see:
- * <a href="../../../../../api/index.html#dynamic-schemas"
- * target="_top">dynamic schemas documentation</a>.
+ * <a href="../../../../../../api/#dynamic-schemas" target="_top">dynamic
+ * schemas documentation</a>.
  */
 public class AggregateUnpivotRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -114,9 +114,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE
      * RESULT_TABLE}: The name of a table used to store the results, in
      * [schema_name.]table_name format, using standard <a
-     * href="../../../../../concepts/tables.html#table-name-resolution"
+     * href="../../../../../../concepts/tables/#table-name-resolution"
      * target="_top">name resolution rules</a> and meeting <a
-     * href="../../../../../concepts/tables.html#table-naming-criteria"
+     * href="../../../../../../concepts/tables/#table-naming-criteria"
      * target="_top">table naming criteria</a>. If present, no results are
      * returned in the response.
      *         <li> {@link
@@ -155,7 +155,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * number of records to keep.  The default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL TTL}: Sets the <a
-     * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
+     * href="../../../../../../concepts/ttl/" target="_top">TTL</a> of the
      * table specified in {@code result_table}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#VIEW_ID VIEW_ID}:
@@ -163,11 +163,11 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
      * MATERIALIZE_ON_GPU}: No longer used.  See <a
-     * href="../../../../../rm/concepts.html" target="_top">Resource Management
+     * href="../../../../../../rm/concepts/" target="_top">Resource Management
      * Concepts</a> for information about how resources are managed, <a
-     * href="../../../../../rm/concepts.html" target="_top">Tier Strategy
+     * href="../../../../../../rm/concepts/" target="_top">Tier Strategy
      * Concepts</a> for how resources are targeted for VRAM, and <a
-     * href="../../../../../rm/usage.html#tier-strategies" target="_top">Tier
+     * href="../../../../../../rm/usage/#tier-strategies" target="_top">Tier
      * Strategy Usage</a> for how to specify a table's priority in VRAM.
      * Supported values:
      * <ul>
@@ -218,9 +218,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
         /**
          * The name of a table used to store the results, in
          * [schema_name.]table_name format, using standard <a
-         * href="../../../../../concepts/tables.html#table-name-resolution"
+         * href="../../../../../../concepts/tables/#table-name-resolution"
          * target="_top">name resolution rules</a> and meeting <a
-         * href="../../../../../concepts/tables.html#table-naming-criteria"
+         * href="../../../../../../concepts/tables/#table-naming-criteria"
          * target="_top">table naming criteria</a>. If present, no results are
          * returned in the response.
          */
@@ -272,7 +272,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
         public static final String LIMIT = "limit";
 
         /**
-         * Sets the <a href="../../../../../concepts/ttl.html"
+         * Sets the <a href="../../../../../../concepts/ttl/"
          * target="_top">TTL</a> of the table specified in {@code
          * result_table}.
          */
@@ -284,12 +284,12 @@ public class AggregateUnpivotRequest implements IndexedRecord {
         public static final String VIEW_ID = "view_id";
 
         /**
-         * No longer used.  See <a href="../../../../../rm/concepts.html"
+         * No longer used.  See <a href="../../../../../../rm/concepts/"
          * target="_top">Resource Management Concepts</a> for information about
-         * how resources are managed, <a href="../../../../../rm/concepts.html"
+         * how resources are managed, <a href="../../../../../../rm/concepts/"
          * target="_top">Tier Strategy Concepts</a> for how resources are
          * targeted for VRAM, and <a
-         * href="../../../../../rm/usage.html#tier-strategies"
+         * href="../../../../../../rm/usage/#tier-strategies"
          * target="_top">Tier Strategy Usage</a> for how to specify a table's
          * priority in VRAM.
          * Supported values:
@@ -360,7 +360,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table/view, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnNames  List of column names or expressions. A wildcard '*'
      *                     can be used to include all the non-pivoted columns
@@ -389,9 +389,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 RESULT_TABLE}: The name of a table used to store the
      *                 results, in [schema_name.]table_name format, using
      *                 standard <a
-     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>. If present, no
      *                 results are returned in the response.
      *                         <li> {@link
@@ -437,8 +437,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL
-     *                 TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 result_table}.
      *                         <li> {@link
@@ -448,13 +447,13 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../rm/concepts.html"
+     *                 href="../../../../../../rm/concepts/"
      *                 target="_top">Resource Management Concepts</a> for
      *                 information about how resources are managed, <a
-     *                 href="../../../../../rm/concepts.html"
-     *                 target="_top">Tier Strategy Concepts</a> for how
-     *                 resources are targeted for VRAM, and <a
-     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../../rm/concepts/" target="_top">Tier
+     *                 Strategy Concepts</a> for how resources are targeted for
+     *                 VRAM, and <a
+     *                 href="../../../../../../rm/usage/#tier-strategies"
      *                 target="_top">Tier Strategy Usage</a> for how to specify
      *                 a table's priority in VRAM.
      *                 Supported values:
@@ -515,7 +514,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table/view, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnNames  List of column names or expressions. A wildcard '*'
      *                     can be used to include all the non-pivoted columns
@@ -559,9 +558,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 RESULT_TABLE}: The name of a table used to store the
      *                 results, in [schema_name.]table_name format, using
      *                 standard <a
-     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>. If present, no
      *                 results are returned in the response.
      *                         <li> {@link
@@ -607,8 +606,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL
-     *                 TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 result_table}.
      *                         <li> {@link
@@ -618,13 +616,13 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../rm/concepts.html"
+     *                 href="../../../../../../rm/concepts/"
      *                 target="_top">Resource Management Concepts</a> for
      *                 information about how resources are managed, <a
-     *                 href="../../../../../rm/concepts.html"
-     *                 target="_top">Tier Strategy Concepts</a> for how
-     *                 resources are targeted for VRAM, and <a
-     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../../rm/concepts/" target="_top">Tier
+     *                 Strategy Concepts</a> for how resources are targeted for
+     *                 VRAM, and <a
+     *                 href="../../../../../../rm/usage/#tier-strategies"
      *                 target="_top">Tier Strategy Usage</a> for how to specify
      *                 a table's priority in VRAM.
      *                 Supported values:
@@ -683,7 +681,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * @return Name of the table on which the operation will be performed. Must
      *         be an existing table/view, in [schema_name.]table_name format,
      *         using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.
      * 
      */
@@ -696,7 +694,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table/view, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -865,9 +863,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#RESULT_TABLE
      *         RESULT_TABLE}: The name of a table used to store the results, in
      *         [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a> and meeting <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>. If present, no results
      *         are returned in the response.
      *                 <li> {@link
@@ -907,7 +905,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         The number of records to keep.  The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL TTL}:
-     *         Sets the <a href="../../../../../concepts/ttl.html"
+     *         Sets the <a href="../../../../../../concepts/ttl/"
      *         target="_top">TTL</a> of the table specified in {@code
      *         result_table}.
      *                 <li> {@link
@@ -917,12 +915,12 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
      *         MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *         href="../../../../../rm/concepts.html" target="_top">Resource
+     *         href="../../../../../../rm/concepts/" target="_top">Resource
      *         Management Concepts</a> for information about how resources are
-     *         managed, <a href="../../../../../rm/concepts.html"
+     *         managed, <a href="../../../../../../rm/concepts/"
      *         target="_top">Tier Strategy Concepts</a> for how resources are
      *         targeted for VRAM, and <a
-     *         href="../../../../../rm/usage.html#tier-strategies"
+     *         href="../../../../../../rm/usage/#tier-strategies"
      *         target="_top">Tier Strategy Usage</a> for how to specify a
      *         table's priority in VRAM.
      *         Supported values:
@@ -982,9 +980,9 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 RESULT_TABLE}: The name of a table used to store the
      *                 results, in [schema_name.]table_name format, using
      *                 standard <a
-     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>. If present, no
      *                 results are returned in the response.
      *                         <li> {@link
@@ -1030,8 +1028,7 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TTL
-     *                 TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the table specified in {@code
      *                 result_table}.
      *                         <li> {@link
@@ -1041,13 +1038,13 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../rm/concepts.html"
+     *                 href="../../../../../../rm/concepts/"
      *                 target="_top">Resource Management Concepts</a> for
      *                 information about how resources are managed, <a
-     *                 href="../../../../../rm/concepts.html"
-     *                 target="_top">Tier Strategy Concepts</a> for how
-     *                 resources are targeted for VRAM, and <a
-     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../../rm/concepts/" target="_top">Tier
+     *                 Strategy Concepts</a> for how resources are targeted for
+     *                 VRAM, and <a
+     *                 href="../../../../../../rm/usage/#tier-strategies"
      *                 target="_top">Tier Strategy Usage</a> for how to specify
      *                 a table's priority in VRAM.
      *                 Supported values:

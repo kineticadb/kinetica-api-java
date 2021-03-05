@@ -63,7 +63,7 @@ public class CollectStatisticsRequest implements IndexedRecord {
      * 
      * @param tableName  Name of a table, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * @param columnNames  List of one or more column names in {@code
@@ -83,7 +83,7 @@ public class CollectStatisticsRequest implements IndexedRecord {
      * 
      * @return Name of a table, in [schema_name.]table_name format, using
      *         standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  Must be an existing
      *         table.
      * 
@@ -96,7 +96,7 @@ public class CollectStatisticsRequest implements IndexedRecord {
      * 
      * @param tableName  Name of a table, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * 

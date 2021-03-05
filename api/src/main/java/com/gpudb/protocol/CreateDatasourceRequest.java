@@ -17,7 +17,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createDatasource(CreateDatasourceRequest)}.
  * <p>
- * Creates a <a href="../../../../../concepts/data_sources.html"
+ * Creates a <a href="../../../../../../concepts/data_sources/"
  * target="_top">data source</a>, which contains the
  * location and connection information for a data store that is external to the
  * database.
@@ -69,6 +69,9 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#WAIT_TIMEOUT
      * WAIT_TIMEOUT}: Timeout in seconds for reading from this storage provider
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#CREDENTIAL
+     * CREDENTIAL}: Name of the Credential object to be used in data source
      *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#S3_BUCKET_NAME
      * S3_BUCKET_NAME}: Name of the Amazon S3 bucket to use as the data source
@@ -144,6 +147,11 @@ public class CreateDatasourceRequest implements IndexedRecord {
          * Timeout in seconds for reading from this storage provider
          */
         public static final String WAIT_TIMEOUT = "wait_timeout";
+
+        /**
+         * Name of the Credential object to be used in data source
+         */
+        public static final String CREDENTIAL = "credential";
 
         /**
          * Name of the Amazon S3 bucket to use as the data source
@@ -265,6 +273,10 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#WAIT_TIMEOUT
      *                 WAIT_TIMEOUT}: Timeout in seconds for reading from this
      *                 storage provider
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#CREDENTIAL
+     *                 CREDENTIAL}: Name of the Credential object to be used in
+     *                 data source
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_BUCKET_NAME
      *                 S3_BUCKET_NAME}: Name of the Amazon S3 bucket to use as
@@ -446,6 +458,10 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         WAIT_TIMEOUT}: Timeout in seconds for reading from this storage
      *         provider
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#CREDENTIAL
+     *         CREDENTIAL}: Name of the Credential object to be used in data
+     *         source
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#S3_BUCKET_NAME
      *         S3_BUCKET_NAME}: Name of the Amazon S3 bucket to use as the data
      *         source
@@ -529,6 +545,10 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#WAIT_TIMEOUT
      *                 WAIT_TIMEOUT}: Timeout in seconds for reading from this
      *                 storage provider
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#CREDENTIAL
+     *                 CREDENTIAL}: Name of the Credential object to be used in
+     *                 data source
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_BUCKET_NAME
      *                 S3_BUCKET_NAME}: Name of the Amazon S3 bucket to use as

@@ -48,8 +48,8 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * The {@code update_on_existing_pk} option specifies the record
  * collision policy for tables with a <a
- * href="../../../../../concepts/tables.html#primary-keys"
- * target="_top">primary key</a>, and
+ * href="../../../../../../concepts/tables/#primary-keys" target="_top">primary
+ * key</a>, and
  * is ignored on tables with no primary key.
  */
 public class RawUpdateRecordsRequest implements IndexedRecord {
@@ -131,9 +131,9 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      * UPDATE_ON_EXISTING_PK}: Specifies the record collision policy for tables
-     * with a <a href="../../../../../concepts/tables.html#primary-keys"
+     * with a <a href="../../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a> when updating columns of the <a
-     * href="../../../../../concepts/tables.html#primary-keys"
+     * href="../../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a> or inserting new records.  If {@code
      * true}, existing records with primary key values that match those of a
      * record being updated or inserted will be replaced by the updated and new
@@ -237,9 +237,9 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
 
         /**
          * Specifies the record collision policy for tables with a <a
-         * href="../../../../../concepts/tables.html#primary-keys"
+         * href="../../../../../../concepts/tables/#primary-keys"
          * target="_top">primary key</a> when updating columns of the <a
-         * href="../../../../../concepts/tables.html#primary-keys"
+         * href="../../../../../../concepts/tables/#primary-keys"
          * target="_top">primary key</a> or inserting new records.  If {@code
          * true}, existing records with primary key values that match those of
          * a record being updated or inserted will be replaced by the updated
@@ -350,7 +350,7 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      * 
      * @param tableName  Name of table to be updated, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be a
      *                   currently existing table and not a view.
      * @param expressions  A list of the actual predicates, one for each
@@ -403,10 +403,10 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
      *                 policy for tables with a <a
-     *                 href="../../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a> when updating columns of
      *                 the <a
-     *                 href="../../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a> or inserting new records.
      *                 If {@code true}, existing records with primary key
      *                 values that match those of a record being updated or
@@ -513,7 +513,7 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      * 
      * @param tableName  Name of table to be updated, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be a
      *                   currently existing table and not a view.
      * @param expressions  A list of the actual predicates, one for each
@@ -585,10 +585,10 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
      *                 policy for tables with a <a
-     *                 href="../../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a> when updating columns of
      *                 the <a
-     *                 href="../../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a> or inserting new records.
      *                 If {@code true}, existing records with primary key
      *                 values that match those of a record being updated or
@@ -693,7 +693,7 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      * 
      * @return Name of table to be updated, in [schema_name.]table_name format,
      *         using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  Must be a currently
      *         existing table and not a view.
      * 
@@ -706,7 +706,7 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      * 
      * @param tableName  Name of table to be updated, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be a
      *                   currently existing table and not a view.
      * 
@@ -909,9 +909,9 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *         com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *         UPDATE_ON_EXISTING_PK}: Specifies the record collision policy
      *         for tables with a <a
-     *         href="../../../../../concepts/tables.html#primary-keys"
+     *         href="../../../../../../concepts/tables/#primary-keys"
      *         target="_top">primary key</a> when updating columns of the <a
-     *         href="../../../../../concepts/tables.html#primary-keys"
+     *         href="../../../../../../concepts/tables/#primary-keys"
      *         target="_top">primary key</a> or inserting new records.  If
      *         {@code true}, existing records with primary key values that
      *         match those of a record being updated or inserted will be
@@ -1028,10 +1028,10 @@ public class RawUpdateRecordsRequest implements IndexedRecord {
      *                 com.gpudb.protocol.RawUpdateRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
      *                 policy for tables with a <a
-     *                 href="../../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a> when updating columns of
      *                 the <a
-     *                 href="../../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a> or inserting new records.
      *                 If {@code true}, existing records with primary key
      *                 values that match those of a record being updated or

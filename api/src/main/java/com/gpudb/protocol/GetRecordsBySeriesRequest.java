@@ -104,14 +104,14 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      * @param tableName  Name of the table or view for which series/tracks will
      *                   be fetched, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param worldTableName  Name of the table containing the complete
      *                        series/track information to be returned for the
      *                        tracks present in the {@code tableName}, in
      *                        [schema_name.]table_name format, using standard
      *                        <a
-     *                        href="../../../../../concepts/tables.html#table-name-resolution"
+     *                        href="../../../../../../concepts/tables/#table-name-resolution"
      *                        target="_top">name resolution rules</a>.
      *                        Typically this is used when retrieving
      *                        series/tracks from a view (which contains partial
@@ -145,14 +145,14 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      * @param tableName  Name of the table or view for which series/tracks will
      *                   be fetched, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param worldTableName  Name of the table containing the complete
      *                        series/track information to be returned for the
      *                        tracks present in the {@code tableName}, in
      *                        [schema_name.]table_name format, using standard
      *                        <a
-     *                        href="../../../../../concepts/tables.html#table-name-resolution"
+     *                        href="../../../../../../concepts/tables/#table-name-resolution"
      *                        target="_top">name resolution rules</a>.
      *                        Typically this is used when retrieving
      *                        series/tracks from a view (which contains partial
@@ -197,7 +197,7 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      * 
      * @return Name of the table or view for which series/tracks will be
      *         fetched, in [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.
      * 
      */
@@ -210,7 +210,7 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      * @param tableName  Name of the table or view for which series/tracks will
      *                   be fetched, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -227,7 +227,7 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      *         information to be returned for the tracks present in the {@code
      *         tableName}, in [schema_name.]table_name format, using standard
      *         <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  Typically this is used
      *         when retrieving series/tracks from a view (which contains
      *         partial series/tracks) but the user wants to retrieve the entire
@@ -245,7 +245,7 @@ public class GetRecordsBySeriesRequest implements IndexedRecord {
      *                        tracks present in the {@code tableName}, in
      *                        [schema_name.]table_name format, using standard
      *                        <a
-     *                        href="../../../../../concepts/tables.html#table-name-resolution"
+     *                        href="../../../../../../concepts/tables/#table-name-resolution"
      *                        target="_top">name resolution rules</a>.
      *                        Typically this is used when retrieving
      *                        series/tracks from a view (which contains partial

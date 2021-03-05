@@ -181,16 +181,16 @@ public class FilterByGeometryRequest implements IndexedRecord {
      * @param tableName  Name of the table on which the filter by geometry will
      *                   be performed, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table or view containing a geospatial
      *                   geometry column.
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.
@@ -261,7 +261,7 @@ public class FilterByGeometryRequest implements IndexedRecord {
      * 
      * @return Name of the table on which the filter by geometry will be
      *         performed, in [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  Must be an existing
      *         table or view containing a geospatial geometry column.
      * 
@@ -275,7 +275,7 @@ public class FilterByGeometryRequest implements IndexedRecord {
      * @param tableName  Name of the table on which the filter by geometry will
      *                   be performed, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table or view containing a geospatial
      *                   geometry column.
@@ -293,9 +293,9 @@ public class FilterByGeometryRequest implements IndexedRecord {
      * @return If provided, then this will be the name of the view containing
      *         the results, in [schema_name.]view_name format, using standard
      *         <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a> and meeting <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.  Must not be an already
      *         existing table or view.  The default value is ''.
      * 
@@ -309,9 +309,9 @@ public class FilterByGeometryRequest implements IndexedRecord {
      * @param viewName  If provided, then this will be the name of the view
      *                  containing the results, in [schema_name.]view_name
      *                  format, using standard <a
-     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a> and meeting <a
-     *                  href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                  href="../../../../../../concepts/tables/#table-naming-criteria"
      *                  target="_top">table naming criteria</a>.  Must not be
      *                  an already existing table or view.  The default value
      *                  is ''.

@@ -66,7 +66,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
      * com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
      * with the *return_record_ids* option. This option cannot be used to
      * delete records from <a
-     * href="../../../../../concepts/tables.html#replication"
+     * href="../../../../../../concepts/tables/#replication"
      * target="_top">replicated</a> tables.
      *         <li> {@link
      * com.gpudb.protocol.DeleteRecordsRequest.Options#DELETE_ALL_RECORDS
@@ -101,7 +101,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
          * com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
          * with the *return_record_ids* option. This option cannot be used to
          * delete records from <a
-         * href="../../../../../concepts/tables.html#replication"
+         * href="../../../../../../concepts/tables/#replication"
          * target="_top">replicated</a> tables.
          */
         public static final String RECORD_ID = "record_id";
@@ -145,13 +145,13 @@ public class DeleteRecordsRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table from which to delete records, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>. Must contain
      *                   the name of an existing table; not applicable to
      *                   views.
      * @param expressions  A list of the actual predicates, one for each
      *                     select; format should follow the guidelines provided
-     *                     <a href="../../../../../concepts/expressions.html"
+     *                     <a href="../../../../../../concepts/expressions/"
      *                     target="_top">here</a>. Specifying one or more
      *                     {@code expressions} is mutually exclusive to
      *                     specifying {@code record_id} in the {@code options}.
@@ -171,7 +171,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *                 com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
      *                 with the *return_record_ids* option. This option cannot
      *                 be used to delete records from <a
-     *                 href="../../../../../concepts/tables.html#replication"
+     *                 href="../../../../../../concepts/tables/#replication"
      *                 target="_top">replicated</a> tables.
      *                         <li> {@link
      *                 com.gpudb.protocol.DeleteRecordsRequest.Options#DELETE_ALL_RECORDS
@@ -204,7 +204,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
      * 
      * @return Name of the table from which to delete records, in
      *         [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>. Must contain the name
      *         of an existing table; not applicable to views.
      * 
@@ -217,7 +217,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
      * 
      * @param tableName  Name of the table from which to delete records, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>. Must contain
      *                   the name of an existing table; not applicable to
      *                   views.
@@ -234,7 +234,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
      * 
      * @return A list of the actual predicates, one for each select; format
      *         should follow the guidelines provided <a
-     *         href="../../../../../concepts/expressions.html"
+     *         href="../../../../../../concepts/expressions/"
      *         target="_top">here</a>. Specifying one or more {@code
      *         expressions} is mutually exclusive to specifying {@code
      *         record_id} in the {@code options}.
@@ -248,7 +248,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
      * 
      * @param expressions  A list of the actual predicates, one for each
      *                     select; format should follow the guidelines provided
-     *                     <a href="../../../../../concepts/expressions.html"
+     *                     <a href="../../../../../../concepts/expressions/"
      *                     target="_top">here</a>. Specifying one or more
      *                     {@code expressions} is mutually exclusive to
      *                     specifying {@code record_id} in the {@code options}.
@@ -279,7 +279,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *         com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
      *         with the *return_record_ids* option. This option cannot be used
      *         to delete records from <a
-     *         href="../../../../../concepts/tables.html#replication"
+     *         href="../../../../../../concepts/tables/#replication"
      *         target="_top">replicated</a> tables.
      *                 <li> {@link
      *         com.gpudb.protocol.DeleteRecordsRequest.Options#DELETE_ALL_RECORDS
@@ -321,7 +321,7 @@ public class DeleteRecordsRequest implements IndexedRecord {
      *                 com.gpudb.GPUdb#getRecordsFromCollectionRaw(GetRecordsFromCollectionRequest)}
      *                 with the *return_record_ids* option. This option cannot
      *                 be used to delete records from <a
-     *                 href="../../../../../concepts/tables.html#replication"
+     *                 href="../../../../../../concepts/tables/#replication"
      *                 target="_top">replicated</a> tables.
      *                         <li> {@link
      *                 com.gpudb.protocol.DeleteRecordsRequest.Options#DELETE_ALL_RECORDS

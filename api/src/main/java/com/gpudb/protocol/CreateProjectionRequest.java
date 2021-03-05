@@ -19,26 +19,26 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#createProjection(CreateProjectionRequest)}.
  * <p>
- * Creates a new <a href="../../../../../concepts/projections.html"
+ * Creates a new <a href="../../../../../../concepts/projections/"
  * target="_top">projection</a> of
  * an existing table. A projection represents a subset of the columns
  * (potentially
  * including derived columns) of a table.
  * <p>
  * For projection details and examples, see
- * <a href="../../../../../concepts/projections.html"
+ * <a href="../../../../../../concepts/projections/"
  * target="_top">Projections</a>.  For limitations, see
- * <a href="../../../../../concepts/projections.html#limitations-and-cautions"
+ * <a href="../../../../../../concepts/projections/#limitations-and-cautions"
  * target="_top">Projection Limitations and Cautions</a>.
  * <p>
- * <a href="../../../../../concepts/window.html" target="_top">Window
+ * <a href="../../../../../../concepts/window/" target="_top">Window
  * functions</a>, which can perform
  * operations like moving averages, are available through this endpoint as well
  * as
  * {@link com.gpudb.GPUdb#getRecordsByColumnRaw(GetRecordsByColumnRequest)}.
  * <p>
  * A projection can be created with a different
- * <a href="../../../../../concepts/tables.html#shard-keys" target="_top">shard
+ * <a href="../../../../../../concepts/tables/#shard-keys" target="_top">shard
  * key</a> than the source table.
  * By specifying {@code shard_key}, the projection will be sharded
  * according to the specified columns, regardless of how the source table is
@@ -46,12 +46,12 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * If {@code tableName} is empty, selection is performed against a single-row
  * virtual table.  This can be useful in executing temporal
- * (<a href="../../../../../concepts/expressions.html#date-time-functions"
+ * (<a href="../../../../../../concepts/expressions/#date-time-functions"
  * target="_top">NOW()</a>), identity
- * (<a href="../../../../../concepts/expressions.html#user-security-functions"
+ * (<a href="../../../../../../concepts/expressions/#user-security-functions"
  * target="_top">USER()</a>), or
  * constant-based functions
- * (<a href="../../../../../concepts/expressions.html#scalar-functions"
+ * (<a href="../../../../../../concepts/expressions/#scalar-functions"
  * target="_top">GEODIST(-77.11, 38.88, -71.06, 42.36)</a>).
  */
 public class CreateProjectionRequest implements IndexedRecord {
@@ -92,7 +92,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      * EXPRESSION}: An optional filter <a
-     * href="../../../../../concepts/expressions.html"
+     * href="../../../../../../concepts/expressions/"
      * target="_top">expression</a> to be applied to the source table prior to
      * the projection.  The default value is ''.
      *         <li> {@link
@@ -120,11 +120,11 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
      * MATERIALIZE_ON_GPU}: No longer used.  See <a
-     * href="../../../../../rm/concepts.html" target="_top">Resource Management
+     * href="../../../../../../rm/concepts/" target="_top">Resource Management
      * Concepts</a> for information about how resources are managed, <a
-     * href="../../../../../rm/concepts.html" target="_top">Tier Strategy
+     * href="../../../../../../rm/concepts/" target="_top">Tier Strategy
      * Concepts</a> for how resources are targeted for VRAM, and <a
-     * href="../../../../../rm/usage.html#tier-strategies" target="_top">Tier
+     * href="../../../../../../rm/usage/#tier-strategies" target="_top">Tier
      * Strategy Usage</a> for how to specify a table's priority in VRAM.
      * Supported values:
      * <ul>
@@ -147,7 +147,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      * alias must be used, rather than the original column name.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#TTL TTL}: Sets the <a
-     * href="../../../../../concepts/ttl.html" target="_top">TTL</a> of the
+     * href="../../../../../../concepts/ttl/" target="_top">TTL</a> of the
      * projection specified in {@code projectionName}.
      *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#SHARD_KEY SHARD_KEY}:
@@ -216,8 +216,7 @@ public class CreateProjectionRequest implements IndexedRecord {
         public static final String COLLECTION_NAME = "collection_name";
 
         /**
-         * An optional filter <a
-         * href="../../../../../concepts/expressions.html"
+         * An optional filter <a href="../../../../../../concepts/expressions/"
          * target="_top">expression</a> to be applied to the source table prior
          * to the projection.  The default value is ''.
          */
@@ -255,12 +254,12 @@ public class CreateProjectionRequest implements IndexedRecord {
         public static final String ORDER_BY = "order_by";
 
         /**
-         * No longer used.  See <a href="../../../../../rm/concepts.html"
+         * No longer used.  See <a href="../../../../../../rm/concepts/"
          * target="_top">Resource Management Concepts</a> for information about
-         * how resources are managed, <a href="../../../../../rm/concepts.html"
+         * how resources are managed, <a href="../../../../../../rm/concepts/"
          * target="_top">Tier Strategy Concepts</a> for how resources are
          * targeted for VRAM, and <a
-         * href="../../../../../rm/usage.html#tier-strategies"
+         * href="../../../../../../rm/usage/#tier-strategies"
          * target="_top">Tier Strategy Usage</a> for how to specify a table's
          * priority in VRAM.
          * Supported values:
@@ -290,7 +289,7 @@ public class CreateProjectionRequest implements IndexedRecord {
         public static final String CREATE_INDEXES = "create_indexes";
 
         /**
-         * Sets the <a href="../../../../../concepts/ttl.html"
+         * Sets the <a href="../../../../../../concepts/ttl/"
          * target="_top">TTL</a> of the projection specified in {@code
          * projectionName}.
          */
@@ -385,7 +384,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      * @param tableName  Name of the existing table on which the projection is
      *                   to be applied, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  An empty
      *                   table name creates a projection from a single-row
      *                   virtual table, where columns specified should be
@@ -393,10 +392,10 @@ public class CreateProjectionRequest implements IndexedRecord {
      * @param projectionName  Name of the projection to be created, in
      *                        [schema_name.]table_name format, using standard
      *                        <a
-     *                        href="../../../../../concepts/tables.html#table-name-resolution"
+     *                        href="../../../../../../concepts/tables/#table-name-resolution"
      *                        target="_top">name resolution rules</a> and
      *                        meeting <a
-     *                        href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                        href="../../../../../../concepts/tables/#table-naming-criteria"
      *                        target="_top">table naming criteria</a>.
      * @param columnNames  List of columns from {@code tableName} to be
      *                     included in the projection. Can include derived
@@ -416,7 +415,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      *                 EXPRESSION}: An optional filter <a
-     *                 href="../../../../../concepts/expressions.html"
+     *                 href="../../../../../../concepts/expressions/"
      *                 target="_top">expression</a> to be applied to the source
      *                 table prior to the projection.  The default value is ''.
      *                         <li> {@link
@@ -450,13 +449,13 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../rm/concepts.html"
+     *                 href="../../../../../../rm/concepts/"
      *                 target="_top">Resource Management Concepts</a> for
      *                 information about how resources are managed, <a
-     *                 href="../../../../../rm/concepts.html"
-     *                 target="_top">Tier Strategy Concepts</a> for how
-     *                 resources are targeted for VRAM, and <a
-     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../../rm/concepts/" target="_top">Tier
+     *                 Strategy Concepts</a> for how resources are targeted for
+     *                 VRAM, and <a
+     *                 href="../../../../../../rm/usage/#tier-strategies"
      *                 target="_top">Tier Strategy Usage</a> for how to specify
      *                 a table's priority in VRAM.
      *                 Supported values:
@@ -484,8 +483,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 be used, rather than the original column name.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#TTL
-     *                 TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the projection specified in
      *                 {@code projectionName}.
      *                         <li> {@link
@@ -569,7 +567,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      * 
      * @return Name of the existing table on which the projection is to be
      *         applied, in [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  An empty table name
      *         creates a projection from a single-row virtual table, where
      *         columns specified should be constants or constant expressions.
@@ -584,7 +582,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      * @param tableName  Name of the existing table on which the projection is
      *                   to be applied, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  An empty
      *                   table name creates a projection from a single-row
      *                   virtual table, where columns specified should be
@@ -602,9 +600,9 @@ public class CreateProjectionRequest implements IndexedRecord {
      * 
      * @return Name of the projection to be created, in
      *         [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a> and meeting <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.
      * 
      */
@@ -617,10 +615,10 @@ public class CreateProjectionRequest implements IndexedRecord {
      * @param projectionName  Name of the projection to be created, in
      *                        [schema_name.]table_name format, using standard
      *                        <a
-     *                        href="../../../../../concepts/tables.html#table-name-resolution"
+     *                        href="../../../../../../concepts/tables/#table-name-resolution"
      *                        target="_top">name resolution rules</a> and
      *                        meeting <a
-     *                        href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                        href="../../../../../../concepts/tables/#table-naming-criteria"
      *                        target="_top">table naming criteria</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -672,7 +670,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      *         EXPRESSION}: An optional filter <a
-     *         href="../../../../../concepts/expressions.html"
+     *         href="../../../../../../concepts/expressions/"
      *         target="_top">expression</a> to be applied to the source table
      *         prior to the projection.  The default value is ''.
      *                 <li> {@link
@@ -701,12 +699,12 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
      *         MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *         href="../../../../../rm/concepts.html" target="_top">Resource
+     *         href="../../../../../../rm/concepts/" target="_top">Resource
      *         Management Concepts</a> for information about how resources are
-     *         managed, <a href="../../../../../rm/concepts.html"
+     *         managed, <a href="../../../../../../rm/concepts/"
      *         target="_top">Tier Strategy Concepts</a> for how resources are
      *         targeted for VRAM, and <a
-     *         href="../../../../../rm/usage.html#tier-strategies"
+     *         href="../../../../../../rm/usage/#tier-strategies"
      *         target="_top">Tier Strategy Usage</a> for how to specify a
      *         table's priority in VRAM.
      *         Supported values:
@@ -731,7 +729,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         column name.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#TTL TTL}:
-     *         Sets the <a href="../../../../../concepts/ttl.html"
+     *         Sets the <a href="../../../../../../concepts/ttl/"
      *         target="_top">TTL</a> of the projection specified in {@code
      *         projectionName}.
      *                 <li> {@link
@@ -812,7 +810,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#EXPRESSION
      *                 EXPRESSION}: An optional filter <a
-     *                 href="../../../../../concepts/expressions.html"
+     *                 href="../../../../../../concepts/expressions/"
      *                 target="_top">expression</a> to be applied to the source
      *                 table prior to the projection.  The default value is ''.
      *                         <li> {@link
@@ -846,13 +844,13 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
      *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../rm/concepts.html"
+     *                 href="../../../../../../rm/concepts/"
      *                 target="_top">Resource Management Concepts</a> for
      *                 information about how resources are managed, <a
-     *                 href="../../../../../rm/concepts.html"
-     *                 target="_top">Tier Strategy Concepts</a> for how
-     *                 resources are targeted for VRAM, and <a
-     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../../rm/concepts/" target="_top">Tier
+     *                 Strategy Concepts</a> for how resources are targeted for
+     *                 VRAM, and <a
+     *                 href="../../../../../../rm/usage/#tier-strategies"
      *                 target="_top">Tier Strategy Usage</a> for how to specify
      *                 a table's priority in VRAM.
      *                 Supported values:
@@ -880,8 +878,7 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 be used, rather than the original column name.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#TTL
-     *                 TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the projection specified in
      *                 {@code projectionName}.
      *                         <li> {@link

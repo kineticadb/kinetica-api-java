@@ -23,7 +23,7 @@ import org.apache.avro.generic.IndexedRecord;
  * existing graph. Isolines represent curves of equal cost, with cost typically
  * referring to the time or distance assigned as the weights of the underlying
  * graph. See
- * <a href="../../../../../graph_solver/network_graph_solver.html"
+ * <a href="../../../../../../graph_solver/network_graph_solver/"
  * target="_top">Network Graphs & Solvers</a>
  * for more information on graphs.
  * .
@@ -972,9 +972,9 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      * com.gpudb.protocol.VisualizeIsochroneRequest.Options#SOLVE_TABLE
      * SOLVE_TABLE}: Name of the table to host intermediate solve results, in
      * [schema_name.]table_name format, using standard <a
-     * href="../../../../../concepts/tables.html#table-name-resolution"
+     * href="../../../../../../concepts/tables/#table-name-resolution"
      * target="_top">name resolution rules</a> and meeting <a
-     * href="../../../../../concepts/tables.html#table-naming-criteria"
+     * href="../../../../../../concepts/tables/#table-naming-criteria"
      * target="_top">table naming criteria</a>.  This table will contain the
      * position and cost for each vertex in the graph. If the default value is
      * used, a temporary table is created and deleted once the solution is
@@ -1054,9 +1054,9 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
         /**
          * Name of the table to host intermediate solve results, in
          * [schema_name.]table_name format, using standard <a
-         * href="../../../../../concepts/tables.html#table-name-resolution"
+         * href="../../../../../../concepts/tables/#table-name-resolution"
          * target="_top">name resolution rules</a> and meeting <a
-         * href="../../../../../concepts/tables.html#table-naming-criteria"
+         * href="../../../../../../concepts/tables/#table-naming-criteria"
          * target="_top">table naming criteria</a>.  This table will contain
          * the position and cost for each vertex in the graph. If the default
          * value is used, a temporary table is created and deleted once the
@@ -1213,10 +1213,10 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      * @param weightsOnEdges  Additional weights to apply to the edges of an
      *                        existing graph. Weights must be specified using
      *                        <a
-     *                        href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                        href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *                        target="_top">identifiers</a>; identifiers are
      *                        grouped as <a
-     *                        href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                        href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *                        target="_top">combinations</a>. Identifiers can
      *                        be used with existing column names, e.g.,
      *                        'table.column AS WEIGHTS_EDGE_ID', or
@@ -1230,10 +1230,10 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      * @param restrictions  Additional restrictions to apply to the nodes/edges
      *                      of an existing graph. Restrictions must be
      *                      specified using <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *                      target="_top">identifiers</a>; identifiers are
      *                      grouped as <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *                      target="_top">combinations</a>. Identifiers can be
      *                      used with existing column names, e.g.,
      *                      'table.column AS RESTRICTIONS_EDGE_ID', or
@@ -1266,10 +1266,10 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      *                       TRUE}.
      * @param levelsTable  Name of the table to output the isochrones to, in
      *                     [schema_name.]table_name format, using standard <a
-     *                     href="../../../../../concepts/tables.html#table-name-resolution"
+     *                     href="../../../../../../concepts/tables/#table-name-resolution"
      *                     target="_top">name resolution rules</a> and meeting
      *                     <a
-     *                     href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                     href="../../../../../../concepts/tables/#table-naming-criteria"
      *                     target="_top">table naming criteria</a>.  The table
      *                     will contain levels and their corresponding WKT
      *                     geometry. If no value is provided, the table is not
@@ -1724,9 +1724,9 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      *                 SOLVE_TABLE}: Name of the table to host intermediate
      *                 solve results, in [schema_name.]table_name format, using
      *                 standard <a
-     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  This table
      *                 will contain the position and cost for each vertex in
      *                 the graph. If the default value is used, a temporary
@@ -1902,9 +1902,9 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      * 
      * @return Additional weights to apply to the edges of an existing graph.
      *         Weights must be specified using <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *         href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *         target="_top">identifiers</a>; identifiers are grouped as <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *         href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *         target="_top">combinations</a>. Identifiers can be used with
      *         existing column names, e.g., 'table.column AS WEIGHTS_EDGE_ID',
      *         or expressions, e.g., 'ST_LENGTH(wkt) AS
@@ -1923,10 +1923,10 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      * @param weightsOnEdges  Additional weights to apply to the edges of an
      *                        existing graph. Weights must be specified using
      *                        <a
-     *                        href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                        href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *                        target="_top">identifiers</a>; identifiers are
      *                        grouped as <a
-     *                        href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                        href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *                        target="_top">combinations</a>. Identifiers can
      *                        be used with existing column names, e.g.,
      *                        'table.column AS WEIGHTS_EDGE_ID', or
@@ -1950,9 +1950,9 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      * 
      * @return Additional restrictions to apply to the nodes/edges of an
      *         existing graph. Restrictions must be specified using <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *         href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *         target="_top">identifiers</a>; identifiers are grouped as <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *         href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *         target="_top">combinations</a>. Identifiers can be used with
      *         existing column names, e.g., 'table.column AS
      *         RESTRICTIONS_EDGE_ID', or expressions, e.g., 'column/2 AS
@@ -1975,10 +1975,10 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      * @param restrictions  Additional restrictions to apply to the nodes/edges
      *                      of an existing graph. Restrictions must be
      *                      specified using <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *                      target="_top">identifiers</a>; identifiers are
      *                      grouped as <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *                      target="_top">combinations</a>. Identifiers can be
      *                      used with existing column names, e.g.,
      *                      'table.column AS RESTRICTIONS_EDGE_ID', or
@@ -2076,9 +2076,9 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      * 
      * @return Name of the table to output the isochrones to, in
      *         [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a> and meeting <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.  The table will contain
      *         levels and their corresponding WKT geometry. If no value is
      *         provided, the table is not generated.  The default value is ''.
@@ -2092,10 +2092,10 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      * 
      * @param levelsTable  Name of the table to output the isochrones to, in
      *                     [schema_name.]table_name format, using standard <a
-     *                     href="../../../../../concepts/tables.html#table-name-resolution"
+     *                     href="../../../../../../concepts/tables/#table-name-resolution"
      *                     target="_top">name resolution rules</a> and meeting
      *                     <a
-     *                     href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                     href="../../../../../../concepts/tables/#table-naming-criteria"
      *                     target="_top">table naming criteria</a>.  The table
      *                     will contain levels and their corresponding WKT
      *                     geometry. If no value is provided, the table is not
@@ -3039,9 +3039,9 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      *         com.gpudb.protocol.VisualizeIsochroneRequest.Options#SOLVE_TABLE
      *         SOLVE_TABLE}: Name of the table to host intermediate solve
      *         results, in [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a> and meeting <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.  This table will
      *         contain the position and cost for each vertex in the graph. If
      *         the default value is used, a temporary table is created and
@@ -3135,9 +3135,9 @@ public class VisualizeIsochroneRequest implements IndexedRecord {
      *                 SOLVE_TABLE}: Name of the table to host intermediate
      *                 solve results, in [schema_name.]table_name format, using
      *                 standard <a
-     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  This table
      *                 will contain the position and cost for each vertex in
      *                 the graph. If the default value is used, a temporary

@@ -21,44 +21,44 @@ import org.apache.avro.generic.IndexedRecord;
  * available modifications include the following:
  * <p>
  * Manage a table's columns--a column can be added, removed, or have its
- * <a href="../../../../../concepts/types.html" target="_top">type and
+ * <a href="../../../../../../concepts/types/" target="_top">type and
  * properties</a> modified, including
- * whether it is <a href="../../../../../concepts/compression.html"
+ * whether it is <a href="../../../../../../concepts/compression/"
  * target="_top">compressed</a> or not.
  * <p>
  * External tables cannot be modified except for their refresh method.
  * <p>
  * Create or delete an <a
- * href="../../../../../concepts/indexes.html#column-index"
+ * href="../../../../../../concepts/indexes/#column-index"
  * target="_top">index</a> on a
  * particular column. This can speed up certain operations when using
  * expressions
  * containing equality or relational operators on indexed columns. This only
  * applies to tables.
  * <p>
- * Create or delete a <a href="../../../../../concepts/tables.html#foreign-key"
+ * Create or delete a <a href="../../../../../../concepts/tables/#foreign-key"
  * target="_top">foreign key</a>
  * on a particular column.
  * <p>
  * Manage a
- * <a href="../../../../../concepts/tables.html#partitioning-by-range"
+ * <a href="../../../../../../concepts/tables/#partitioning-by-range"
  * target="_top">range-partitioned</a> or a
- * <a href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+ * <a href="../../../../../../concepts/tables/#partitioning-by-list-manual"
  * target="_top">manual list-partitioned</a>
  * table's partitions.
  * <p>
- * Set (or reset) the <a href="../../../../../rm/concepts.html#tier-strategies"
+ * Set (or reset) the <a href="../../../../../../rm/concepts/#tier-strategies"
  * target="_top">tier strategy</a>
  * of a table or view.
  * <p>
  * Refresh and manage the refresh mode of a
- * <a href="../../../../../concepts/materialized_views.html"
+ * <a href="../../../../../../concepts/materialized_views/"
  * target="_top">materialized view</a> or an
- * <a href="../../../../../concepts/external_tables.html"
- * target="_top">external table</a>.
+ * <a href="../../../../../../concepts/external_tables/" target="_top">external
+ * table</a>.
  * <p>
- * Set the <a href="../../../../../concepts/ttl.html"
- * target="_top">time-to-live (TTL)</a>. This can be applied
+ * Set the <a href="../../../../../../concepts/ttl/" target="_top">time-to-live
+ * (TTL)</a>. This can be applied
  * to tables or views.
  * <p>
  * Set the global access mode (i.e. locking) for a table. This setting trumps
@@ -103,18 +103,18 @@ public class AlterTableRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX CREATE_INDEX}:
      * Creates either a <a
-     * href="../../../../../concepts/indexes.html#column-index"
+     * href="../../../../../../concepts/indexes/#column-index"
      * target="_top">column (attribute) index</a> or <a
-     * href="../../../../../concepts/indexes.html#chunk-skip-index"
+     * href="../../../../../../concepts/indexes/#chunk-skip-index"
      * target="_top">chunk skip index</a>, depending on the specified {@code
      * index_type}, on the column name specified in {@code value}. If this
      * column already has the specified index, an error will be returned.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX DELETE_INDEX}:
      * Deletes either a <a
-     * href="../../../../../concepts/indexes.html#column-index"
+     * href="../../../../../../concepts/indexes/#column-index"
      * target="_top">column (attribute) index</a> or <a
-     * href="../../../../../concepts/indexes.html#chunk-skip-index"
+     * href="../../../../../../concepts/indexes/#chunk-skip-index"
      * target="_top">chunk skip index</a>, depending on the specified {@code
      * index_type}, on the column name specified in {@code value}. If this
      * column does not have the specified index, an error will be returned.
@@ -140,9 +140,9 @@ public class AlterTableRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE RENAME_TABLE}:
      * Renames a table or view within its current schema to {@code value}. Has
      * the same naming restrictions as <a
-     * href="../../../../../concepts/tables.html" target="_top">tables</a>.
+     * href="../../../../../../concepts/tables/" target="_top">tables</a>.
      *         <li> {@link com.gpudb.protocol.AlterTableRequest.Action#TTL
-     * TTL}: Sets the <a href="../../../../../concepts/ttl.html"
+     * TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      * target="_top">time-to-live</a> in minutes of the table or view specified
      * in {@code tableName}.
      *         <li> {@link
@@ -162,7 +162,7 @@ public class AlterTableRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
      * SET_COLUMN_COMPRESSION}: Modifies the <a
-     * href="../../../../../concepts/compression.html"
+     * href="../../../../../../concepts/compression/"
      * target="_top">compression</a> setting on the column specified in {@code
      * value} to the compression type specified in {@code compression_type}.
      *         <li> {@link
@@ -172,7 +172,7 @@ public class AlterTableRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
      * CREATE_FOREIGN_KEY}: Creates a <a
-     * href="../../../../../concepts/tables.html#foreign-key"
+     * href="../../../../../../concepts/tables/#foreign-key"
      * target="_top">foreign key</a> specified in {@code value} using the
      * format '(source_column_name [, ...]) references
      * target_table_name(primary_key_column_name [, ...]) [as
@@ -180,32 +180,32 @@ public class AlterTableRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
      * DELETE_FOREIGN_KEY}: Deletes a <a
-     * href="../../../../../concepts/tables.html#foreign-key"
+     * href="../../../../../../concepts/tables/#foreign-key"
      * target="_top">foreign key</a>.  The {@code value} should be the
      * foreign_key_name specified when creating the key or the complete string
      * used to define it.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
      * ADD_PARTITION}: Adds the partition specified in {@code value}, to either
-     * a <a href="../../../../../concepts/tables.html#partitioning-by-range"
+     * a <a href="../../../../../../concepts/tables/#partitioning-by-range"
      * target="_top">range-partitioned</a> or <a
-     * href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     * href="../../../../../../concepts/tables/#partitioning-by-list-manual"
      * target="_top">manual list-partitioned</a> table.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
      * REMOVE_PARTITION}: Removes the partition specified in {@code value} (and
      * relocates all of its data to the default partition) from either a <a
-     * href="../../../../../concepts/tables.html#partitioning-by-range"
+     * href="../../../../../../concepts/tables/#partitioning-by-range"
      * target="_top">range-partitioned</a> or <a
-     * href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     * href="../../../../../../concepts/tables/#partitioning-by-list-manual"
      * target="_top">manual list-partitioned</a> table.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
      * DELETE_PARTITION}: Deletes the partition specified in {@code value} (and
      * all of its data) from either a <a
-     * href="../../../../../concepts/tables.html#partitioning-by-range"
+     * href="../../../../../../concepts/tables/#partitioning-by-range"
      * target="_top">range-partitioned</a> or <a
-     * href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     * href="../../../../../../concepts/tables/#partitioning-by-list-manual"
      * target="_top">manual list-partitioned</a> table.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
@@ -214,59 +214,58 @@ public class AlterTableRequest implements IndexedRecord {
      * {@code value}. Valid modes are 'no_access', 'read_only', 'write_only'
      * and 'read_write'.
      *         <li> {@link com.gpudb.protocol.AlterTableRequest.Action#REFRESH
-     * REFRESH}: For a <a
-     * href="../../../../../concepts/materialized_views.html"
+     * REFRESH}: For a <a href="../../../../../../concepts/materialized_views/"
      * target="_top">materialized view</a>, replays all the table creation
      * commands required to create the view.  For an <a
-     * href="../../../../../concepts/external_tables.html"
+     * href="../../../../../../concepts/external_tables/"
      * target="_top">external table</a>, reloads all data in the table from its
      * associated source files or <a
-     * href="../../../../../concepts/data_sources.html" target="_top">data
+     * href="../../../../../../concepts/data_sources/" target="_top">data
      * source</a>.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
      * SET_REFRESH_METHOD}: For a <a
-     * href="../../../../../concepts/materialized_views.html"
+     * href="../../../../../../concepts/materialized_views/"
      * target="_top">materialized view</a>, sets the method by which the view
      * is refreshed to the method specified in {@code value} - one of 'manual',
      * 'periodic', or 'on_change'.  For an <a
-     * href="../../../../../concepts/external_tables.html"
+     * href="../../../../../../concepts/external_tables/"
      * target="_top">external table</a>, sets the method by which the table is
      * refreshed to the method specified in {@code value} - either 'manual' or
      * 'on_start'.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
      * SET_REFRESH_START_TIME}: Sets the time to start periodic refreshes of
-     * this <a href="../../../../../concepts/materialized_views.html"
+     * this <a href="../../../../../../concepts/materialized_views/"
      * target="_top">materialized view</a> to the datetime string specified in
      * {@code value} with format 'YYYY-MM-DD HH:MM:SS'.  Subsequent refreshes
      * occur at the specified time + N * the refresh period.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
      * SET_REFRESH_PERIOD}: Sets the time interval in seconds at which to
-     * refresh this <a href="../../../../../concepts/materialized_views.html"
+     * refresh this <a href="../../../../../../concepts/materialized_views/"
      * target="_top">materialized view</a> to the value specified in {@code
      * value}.  Also, sets the refresh method to periodic if not already set.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_EXECUTE_AS
      * SET_REFRESH_EXECUTE_AS}: Sets the user name to refresh this <a
-     * href="../../../../../concepts/materialized_views.html"
+     * href="../../../../../../concepts/materialized_views/"
      * target="_top">materialized view</a> to the value specified in {@code
      * value}.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#REMOVE_TEXT_SEARCH_ATTRIBUTES
      * REMOVE_TEXT_SEARCH_ATTRIBUTES}: Removes <a
-     * href="../../../../../concepts/full_text_search.html" target="_top">text
+     * href="../../../../../../concepts/full_text_search/" target="_top">text
      * search</a> attribute from all columns.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Action#SET_STRATEGY_DEFINITION
      * SET_STRATEGY_DEFINITION}: Sets the <a
-     * href="../../../../../rm/concepts.html#tier-strategies"
-     * target="_top">tier strategy</a> for the table and its columns to the one
-     * specified in {@code value}, replacing the existing tier strategy in its
-     * entirety. See <a href="../../../../../rm/concepts.html#tier-strategies"
+     * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
+     * strategy</a> for the table and its columns to the one specified in
+     * {@code value}, replacing the existing tier strategy in its entirety. See
+     * <a href="../../../../../../rm/concepts/#tier-strategies"
      * target="_top">tier strategy usage</a> for format and <a
-     * href="../../../../../rm/usage.html#tier-strategies" target="_top">tier
+     * href="../../../../../../rm/usage/#tier-strategies" target="_top">tier
      * strategy examples</a> for examples.
      * </ul>
      * A set of string constants for the parameter {@code action}.
@@ -280,9 +279,9 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Creates either a <a
-         * href="../../../../../concepts/indexes.html#column-index"
+         * href="../../../../../../concepts/indexes/#column-index"
          * target="_top">column (attribute) index</a> or <a
-         * href="../../../../../concepts/indexes.html#chunk-skip-index"
+         * href="../../../../../../concepts/indexes/#chunk-skip-index"
          * target="_top">chunk skip index</a>, depending on the specified
          * {@code index_type}, on the column name specified in {@code value}.
          * If this column already has the specified index, an error will be
@@ -292,9 +291,9 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Deletes either a <a
-         * href="../../../../../concepts/indexes.html#column-index"
+         * href="../../../../../../concepts/indexes/#column-index"
          * target="_top">column (attribute) index</a> or <a
-         * href="../../../../../concepts/indexes.html#chunk-skip-index"
+         * href="../../../../../../concepts/indexes/#chunk-skip-index"
          * target="_top">chunk skip index</a>, depending on the specified
          * {@code index_type}, on the column name specified in {@code value}.
          * If this column does not have the specified index, an error will be
@@ -329,12 +328,12 @@ public class AlterTableRequest implements IndexedRecord {
         /**
          * Renames a table or view within its current schema to {@code value}.
          * Has the same naming restrictions as <a
-         * href="../../../../../concepts/tables.html" target="_top">tables</a>.
+         * href="../../../../../../concepts/tables/" target="_top">tables</a>.
          */
         public static final String RENAME_TABLE = "rename_table";
 
         /**
-         * Sets the <a href="../../../../../concepts/ttl.html"
+         * Sets the <a href="../../../../../../concepts/ttl/"
          * target="_top">time-to-live</a> in minutes of the table or view
          * specified in {@code tableName}.
          */
@@ -361,7 +360,7 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String CHANGE_COLUMN = "change_column";
 
         /**
-         * Modifies the <a href="../../../../../concepts/compression.html"
+         * Modifies the <a href="../../../../../../concepts/compression/"
          * target="_top">compression</a> setting on the column specified in
          * {@code value} to the compression type specified in {@code
          * compression_type}.
@@ -375,7 +374,7 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String DELETE_COLUMN = "delete_column";
 
         /**
-         * Creates a <a href="../../../../../concepts/tables.html#foreign-key"
+         * Creates a <a href="../../../../../../concepts/tables/#foreign-key"
          * target="_top">foreign key</a> specified in {@code value} using the
          * format '(source_column_name [, ...]) references
          * target_table_name(primary_key_column_name [, ...]) [as
@@ -384,7 +383,7 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String CREATE_FOREIGN_KEY = "create_foreign_key";
 
         /**
-         * Deletes a <a href="../../../../../concepts/tables.html#foreign-key"
+         * Deletes a <a href="../../../../../../concepts/tables/#foreign-key"
          * target="_top">foreign key</a>.  The {@code value} should be the
          * foreign_key_name specified when creating the key or the complete
          * string used to define it.
@@ -393,9 +392,9 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Adds the partition specified in {@code value}, to either a <a
-         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * href="../../../../../../concepts/tables/#partitioning-by-range"
          * target="_top">range-partitioned</a> or <a
-         * href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+         * href="../../../../../../concepts/tables/#partitioning-by-list-manual"
          * target="_top">manual list-partitioned</a> table.
          */
         public static final String ADD_PARTITION = "add_partition";
@@ -403,9 +402,9 @@ public class AlterTableRequest implements IndexedRecord {
         /**
          * Removes the partition specified in {@code value} (and relocates all
          * of its data to the default partition) from either a <a
-         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * href="../../../../../../concepts/tables/#partitioning-by-range"
          * target="_top">range-partitioned</a> or <a
-         * href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+         * href="../../../../../../concepts/tables/#partitioning-by-list-manual"
          * target="_top">manual list-partitioned</a> table.
          */
         public static final String REMOVE_PARTITION = "remove_partition";
@@ -413,9 +412,9 @@ public class AlterTableRequest implements IndexedRecord {
         /**
          * Deletes the partition specified in {@code value} (and all of its
          * data) from either a <a
-         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * href="../../../../../../concepts/tables/#partitioning-by-range"
          * target="_top">range-partitioned</a> or <a
-         * href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+         * href="../../../../../../concepts/tables/#partitioning-by-list-manual"
          * target="_top">manual list-partitioned</a> table.
          */
         public static final String DELETE_PARTITION = "delete_partition";
@@ -429,23 +428,23 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String SET_GLOBAL_ACCESS_MODE = "set_global_access_mode";
 
         /**
-         * For a <a href="../../../../../concepts/materialized_views.html"
+         * For a <a href="../../../../../../concepts/materialized_views/"
          * target="_top">materialized view</a>, replays all the table creation
          * commands required to create the view.  For an <a
-         * href="../../../../../concepts/external_tables.html"
+         * href="../../../../../../concepts/external_tables/"
          * target="_top">external table</a>, reloads all data in the table from
          * its associated source files or <a
-         * href="../../../../../concepts/data_sources.html" target="_top">data
+         * href="../../../../../../concepts/data_sources/" target="_top">data
          * source</a>.
          */
         public static final String REFRESH = "refresh";
 
         /**
-         * For a <a href="../../../../../concepts/materialized_views.html"
+         * For a <a href="../../../../../../concepts/materialized_views/"
          * target="_top">materialized view</a>, sets the method by which the
          * view is refreshed to the method specified in {@code value} - one of
          * 'manual', 'periodic', or 'on_change'.  For an <a
-         * href="../../../../../concepts/external_tables.html"
+         * href="../../../../../../concepts/external_tables/"
          * target="_top">external table</a>, sets the method by which the table
          * is refreshed to the method specified in {@code value} - either
          * 'manual' or 'on_start'.
@@ -454,7 +453,7 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Sets the time to start periodic refreshes of this <a
-         * href="../../../../../concepts/materialized_views.html"
+         * href="../../../../../../concepts/materialized_views/"
          * target="_top">materialized view</a> to the datetime string specified
          * in {@code value} with format 'YYYY-MM-DD HH:MM:SS'.  Subsequent
          * refreshes occur at the specified time + N * the refresh period.
@@ -463,7 +462,7 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Sets the time interval in seconds at which to refresh this <a
-         * href="../../../../../concepts/materialized_views.html"
+         * href="../../../../../../concepts/materialized_views/"
          * target="_top">materialized view</a> to the value specified in {@code
          * value}.  Also, sets the refresh method to periodic if not already
          * set.
@@ -472,26 +471,26 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Sets the user name to refresh this <a
-         * href="../../../../../concepts/materialized_views.html"
+         * href="../../../../../../concepts/materialized_views/"
          * target="_top">materialized view</a> to the value specified in {@code
          * value}.
          */
         public static final String SET_REFRESH_EXECUTE_AS = "set_refresh_execute_as";
 
         /**
-         * Removes <a href="../../../../../concepts/full_text_search.html"
+         * Removes <a href="../../../../../../concepts/full_text_search/"
          * target="_top">text search</a> attribute from all columns.
          */
         public static final String REMOVE_TEXT_SEARCH_ATTRIBUTES = "remove_text_search_attributes";
 
         /**
-         * Sets the <a href="../../../../../rm/concepts.html#tier-strategies"
+         * Sets the <a href="../../../../../../rm/concepts/#tier-strategies"
          * target="_top">tier strategy</a> for the table and its columns to the
          * one specified in {@code value}, replacing the existing tier strategy
          * in its entirety. See <a
-         * href="../../../../../rm/concepts.html#tier-strategies"
+         * href="../../../../../../rm/concepts/#tier-strategies"
          * target="_top">tier strategy usage</a> for format and <a
-         * href="../../../../../rm/usage.html#tier-strategies"
+         * href="../../../../../../rm/usage/#tier-strategies"
          * target="_top">tier strategy examples</a> for examples.
          */
         public static final String SET_STRATEGY_DEFINITION = "set_strategy_definition";
@@ -565,7 +564,7 @@ public class AlterTableRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Options#UPDATE_LAST_ACCESS_TIME
      * UPDATE_LAST_ACCESS_TIME}: Indicates whether the <a
-     * href="../../../../../concepts/ttl.html" target="_top">time-to-live</a>
+     * href="../../../../../../concepts/ttl/" target="_top">time-to-live</a>
      * (TTL) expiration countdown timer should be reset to the table's TTL.
      * Supported values:
      * <ul>
@@ -587,13 +586,12 @@ public class AlterTableRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Options#STRATEGY_DEFINITION
      * STRATEGY_DEFINITION}: Optional parameter for specifying the <a
-     * href="../../../../../rm/concepts.html#tier-strategies"
-     * target="_top">tier strategy</a> for the table and its columns when
-     * {@code action} is {@code set_strategy_definition}, replacing the
-     * existing tier strategy in its entirety. See <a
-     * href="../../../../../rm/concepts.html#tier-strategies"
+     * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
+     * strategy</a> for the table and its columns when {@code action} is {@code
+     * set_strategy_definition}, replacing the existing tier strategy in its
+     * entirety. See <a href="../../../../../../rm/concepts/#tier-strategies"
      * target="_top">tier strategy usage</a> for format and <a
-     * href="../../../../../rm/usage.html#tier-strategies" target="_top">tier
+     * href="../../../../../../rm/usage/#tier-strategies" target="_top">tier
      * strategy examples</a> for examples.  This option will be ignored if
      * {@code value} is also specified.
      *         <li> {@link
@@ -604,12 +602,12 @@ public class AlterTableRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link com.gpudb.protocol.AlterTableRequest.Options#COLUMN
      * COLUMN}: Create or delete a <a
-     * href="../../../../../concepts/indexes.html#column-index"
+     * href="../../../../../../concepts/indexes/#column-index"
      * target="_top">column (attribute) index</a>.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP CHUNK_SKIP}:
      * Create or delete a <a
-     * href="../../../../../concepts/indexes.html#chunk-skip-index"
+     * href="../../../../../../concepts/indexes/#chunk-skip-index"
      * target="_top">chunk skip index</a>.
      * </ul>
      * The default value is {@link
@@ -707,7 +705,7 @@ public class AlterTableRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * Indicates whether the <a href="../../../../../concepts/ttl.html"
+         * Indicates whether the <a href="../../../../../../concepts/ttl/"
          * target="_top">time-to-live</a> (TTL) expiration countdown timer
          * should be reset to the table's TTL.
          * Supported values:
@@ -734,13 +732,13 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Optional parameter for specifying the <a
-         * href="../../../../../rm/concepts.html#tier-strategies"
+         * href="../../../../../../rm/concepts/#tier-strategies"
          * target="_top">tier strategy</a> for the table and its columns when
          * {@code action} is {@code set_strategy_definition}, replacing the
          * existing tier strategy in its entirety. See <a
-         * href="../../../../../rm/concepts.html#tier-strategies"
+         * href="../../../../../../rm/concepts/#tier-strategies"
          * target="_top">tier strategy usage</a> for format and <a
-         * href="../../../../../rm/usage.html#tier-strategies"
+         * href="../../../../../../rm/usage/#tier-strategies"
          * target="_top">tier strategy examples</a> for examples.  This option
          * will be ignored if {@code value} is also specified.
          */
@@ -755,12 +753,12 @@ public class AlterTableRequest implements IndexedRecord {
          *         <li> {@link
          * com.gpudb.protocol.AlterTableRequest.Options#COLUMN COLUMN}: Create
          * or delete a <a
-         * href="../../../../../concepts/indexes.html#column-index"
+         * href="../../../../../../concepts/indexes/#column-index"
          * target="_top">column (attribute) index</a>.
          *         <li> {@link
          * com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP CHUNK_SKIP}:
          * Create or delete a <a
-         * href="../../../../../concepts/indexes.html#chunk-skip-index"
+         * href="../../../../../../concepts/indexes/#chunk-skip-index"
          * target="_top">chunk skip index</a>.
          * </ul>
          * The default value is {@link
@@ -770,14 +768,14 @@ public class AlterTableRequest implements IndexedRecord {
 
         /**
          * Create or delete a <a
-         * href="../../../../../concepts/indexes.html#column-index"
+         * href="../../../../../../concepts/indexes/#column-index"
          * target="_top">column (attribute) index</a>.
          */
         public static final String COLUMN = "column";
 
         /**
          * Create or delete a <a
-         * href="../../../../../concepts/indexes.html#chunk-skip-index"
+         * href="../../../../../../concepts/indexes/#chunk-skip-index"
          * target="_top">chunk skip index</a>.
          */
         public static final String CHUNK_SKIP = "chunk_skip";
@@ -806,7 +804,7 @@ public class AlterTableRequest implements IndexedRecord {
      * 
      * @param tableName  Table on which the operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table or view.
      * @param action  Modification operation to be applied
@@ -819,9 +817,9 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
      *                CREATE_INDEX}: Creates either a <a
-     *                href="../../../../../concepts/indexes.html#column-index"
+     *                href="../../../../../../concepts/indexes/#column-index"
      *                target="_top">column (attribute) index</a> or <a
-     *                href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *                href="../../../../../../concepts/indexes/#chunk-skip-index"
      *                target="_top">chunk skip index</a>, depending on the
      *                specified {@code index_type}, on the column name
      *                specified in {@code value}. If this column already has
@@ -829,9 +827,9 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
      *                DELETE_INDEX}: Deletes either a <a
-     *                href="../../../../../concepts/indexes.html#column-index"
+     *                href="../../../../../../concepts/indexes/#column-index"
      *                target="_top">column (attribute) index</a> or <a
-     *                href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *                href="../../../../../../concepts/indexes/#chunk-skip-index"
      *                target="_top">chunk skip index</a>, depending on the
      *                specified {@code index_type}, on the column name
      *                specified in {@code value}. If this column does not have
@@ -861,11 +859,11 @@ public class AlterTableRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE
      *                RENAME_TABLE}: Renames a table or view within its current
      *                schema to {@code value}. Has the same naming restrictions
-     *                as <a href="../../../../../concepts/tables.html"
+     *                as <a href="../../../../../../concepts/tables/"
      *                target="_top">tables</a>.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}:
-     *                Sets the <a href="../../../../../concepts/ttl.html"
+     *                Sets the <a href="../../../../../../concepts/ttl/"
      *                target="_top">time-to-live</a> in minutes of the table or
      *                view specified in {@code tableName}.
      *                        <li> {@link
@@ -889,7 +887,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
      *                SET_COLUMN_COMPRESSION}: Modifies the <a
-     *                href="../../../../../concepts/compression.html"
+     *                href="../../../../../../concepts/compression/"
      *                target="_top">compression</a> setting on the column
      *                specified in {@code value} to the compression type
      *                specified in {@code compression_type}.
@@ -900,7 +898,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
      *                CREATE_FOREIGN_KEY}: Creates a <a
-     *                href="../../../../../concepts/tables.html#foreign-key"
+     *                href="../../../../../../concepts/tables/#foreign-key"
      *                target="_top">foreign key</a> specified in {@code value}
      *                using the format '(source_column_name [, ...]) references
      *                target_table_name(primary_key_column_name [, ...]) [as
@@ -908,7 +906,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
      *                DELETE_FOREIGN_KEY}: Deletes a <a
-     *                href="../../../../../concepts/tables.html#foreign-key"
+     *                href="../../../../../../concepts/tables/#foreign-key"
      *                target="_top">foreign key</a>.  The {@code value} should
      *                be the foreign_key_name specified when creating the key
      *                or the complete string used to define it.
@@ -916,26 +914,26 @@ public class AlterTableRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
      *                ADD_PARTITION}: Adds the partition specified in {@code
      *                value}, to either a <a
-     *                href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                href="../../../../../../concepts/tables/#partitioning-by-range"
      *                target="_top">range-partitioned</a> or <a
-     *                href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *                href="../../../../../../concepts/tables/#partitioning-by-list-manual"
      *                target="_top">manual list-partitioned</a> table.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
      *                REMOVE_PARTITION}: Removes the partition specified in
      *                {@code value} (and relocates all of its data to the
      *                default partition) from either a <a
-     *                href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                href="../../../../../../concepts/tables/#partitioning-by-range"
      *                target="_top">range-partitioned</a> or <a
-     *                href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *                href="../../../../../../concepts/tables/#partitioning-by-list-manual"
      *                target="_top">manual list-partitioned</a> table.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
      *                DELETE_PARTITION}: Deletes the partition specified in
      *                {@code value} (and all of its data) from either a <a
-     *                href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                href="../../../../../../concepts/tables/#partitioning-by-range"
      *                target="_top">range-partitioned</a> or <a
-     *                href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *                href="../../../../../../concepts/tables/#partitioning-by-list-manual"
      *                target="_top">manual list-partitioned</a> table.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
@@ -947,23 +945,23 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REFRESH
      *                REFRESH}: For a <a
-     *                href="../../../../../concepts/materialized_views.html"
+     *                href="../../../../../../concepts/materialized_views/"
      *                target="_top">materialized view</a>, replays all the
      *                table creation commands required to create the view.  For
-     *                an <a href="../../../../../concepts/external_tables.html"
+     *                an <a href="../../../../../../concepts/external_tables/"
      *                target="_top">external table</a>, reloads all data in the
      *                table from its associated source files or <a
-     *                href="../../../../../concepts/data_sources.html"
+     *                href="../../../../../../concepts/data_sources/"
      *                target="_top">data source</a>.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
      *                SET_REFRESH_METHOD}: For a <a
-     *                href="../../../../../concepts/materialized_views.html"
+     *                href="../../../../../../concepts/materialized_views/"
      *                target="_top">materialized view</a>, sets the method by
      *                which the view is refreshed to the method specified in
      *                {@code value} - one of 'manual', 'periodic', or
      *                'on_change'.  For an <a
-     *                href="../../../../../concepts/external_tables.html"
+     *                href="../../../../../../concepts/external_tables/"
      *                target="_top">external table</a>, sets the method by
      *                which the table is refreshed to the method specified in
      *                {@code value} - either 'manual' or 'on_start'.
@@ -971,7 +969,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
      *                SET_REFRESH_START_TIME}: Sets the time to start periodic
      *                refreshes of this <a
-     *                href="../../../../../concepts/materialized_views.html"
+     *                href="../../../../../../concepts/materialized_views/"
      *                target="_top">materialized view</a> to the datetime
      *                string specified in {@code value} with format 'YYYY-MM-DD
      *                HH:MM:SS'.  Subsequent refreshes occur at the specified
@@ -980,7 +978,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
      *                SET_REFRESH_PERIOD}: Sets the time interval in seconds at
      *                which to refresh this <a
-     *                href="../../../../../concepts/materialized_views.html"
+     *                href="../../../../../../concepts/materialized_views/"
      *                target="_top">materialized view</a> to the value
      *                specified in {@code value}.  Also, sets the refresh
      *                method to periodic if not already set.
@@ -988,24 +986,24 @@ public class AlterTableRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_EXECUTE_AS
      *                SET_REFRESH_EXECUTE_AS}: Sets the user name to refresh
      *                this <a
-     *                href="../../../../../concepts/materialized_views.html"
+     *                href="../../../../../../concepts/materialized_views/"
      *                target="_top">materialized view</a> to the value
      *                specified in {@code value}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_TEXT_SEARCH_ATTRIBUTES
      *                REMOVE_TEXT_SEARCH_ATTRIBUTES}: Removes <a
-     *                href="../../../../../concepts/full_text_search.html"
+     *                href="../../../../../../concepts/full_text_search/"
      *                target="_top">text search</a> attribute from all columns.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_STRATEGY_DEFINITION
      *                SET_STRATEGY_DEFINITION}: Sets the <a
-     *                href="../../../../../rm/concepts.html#tier-strategies"
+     *                href="../../../../../../rm/concepts/#tier-strategies"
      *                target="_top">tier strategy</a> for the table and its
      *                columns to the one specified in {@code value}, replacing
      *                the existing tier strategy in its entirety. See <a
-     *                href="../../../../../rm/concepts.html#tier-strategies"
+     *                href="../../../../../../rm/concepts/#tier-strategies"
      *                target="_top">tier strategy usage</a> for format and <a
-     *                href="../../../../../rm/usage.html#tier-strategies"
+     *                href="../../../../../../rm/usage/#tier-strategies"
      *                target="_top">tier strategy examples</a> for examples.
      *                </ul>
      * @param value  The value of the modification, depending on {@code
@@ -1094,7 +1092,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#UPDATE_LAST_ACCESS_TIME
      *                 UPDATE_LAST_ACCESS_TIME}: Indicates whether the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 href="../../../../../../concepts/ttl/"
      *                 target="_top">time-to-live</a> (TTL) expiration
      *                 countdown timer should be reset to the table's TTL.
      *                 Supported values:
@@ -1122,14 +1120,14 @@ public class AlterTableRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AlterTableRequest.Options#STRATEGY_DEFINITION
      *                 STRATEGY_DEFINITION}: Optional parameter for specifying
      *                 the <a
-     *                 href="../../../../../rm/concepts.html#tier-strategies"
+     *                 href="../../../../../../rm/concepts/#tier-strategies"
      *                 target="_top">tier strategy</a> for the table and its
      *                 columns when {@code action} is {@code
      *                 set_strategy_definition}, replacing the existing tier
      *                 strategy in its entirety. See <a
-     *                 href="../../../../../rm/concepts.html#tier-strategies"
+     *                 href="../../../../../../rm/concepts/#tier-strategies"
      *                 target="_top">tier strategy usage</a> for format and <a
-     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../../rm/usage/#tier-strategies"
      *                 target="_top">tier strategy examples</a> for examples.
      *                 This option will be ignored if {@code value} is also
      *                 specified.
@@ -1143,12 +1141,12 @@ public class AlterTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN
      *                 COLUMN}: Create or delete a <a
-     *                 href="../../../../../concepts/indexes.html#column-index"
+     *                 href="../../../../../../concepts/indexes/#column-index"
      *                 target="_top">column (attribute) index</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP
      *                 CHUNK_SKIP}: Create or delete a <a
-     *                 href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *                 href="../../../../../../concepts/indexes/#chunk-skip-index"
      *                 target="_top">chunk skip index</a>.
      *                 </ul>
      *                 The default value is {@link
@@ -1169,7 +1167,7 @@ public class AlterTableRequest implements IndexedRecord {
      * 
      * @return Table on which the operation will be performed, in
      *         [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  Must be an existing
      *         table or view.
      * 
@@ -1182,7 +1180,7 @@ public class AlterTableRequest implements IndexedRecord {
      * 
      * @param tableName  Table on which the operation will be performed, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table or view.
      * 
@@ -1206,9 +1204,9 @@ public class AlterTableRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
      *         CREATE_INDEX}: Creates either a <a
-     *         href="../../../../../concepts/indexes.html#column-index"
+     *         href="../../../../../../concepts/indexes/#column-index"
      *         target="_top">column (attribute) index</a> or <a
-     *         href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *         href="../../../../../../concepts/indexes/#chunk-skip-index"
      *         target="_top">chunk skip index</a>, depending on the specified
      *         {@code index_type}, on the column name specified in {@code
      *         value}. If this column already has the specified index, an error
@@ -1216,9 +1214,9 @@ public class AlterTableRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
      *         DELETE_INDEX}: Deletes either a <a
-     *         href="../../../../../concepts/indexes.html#column-index"
+     *         href="../../../../../../concepts/indexes/#column-index"
      *         target="_top">column (attribute) index</a> or <a
-     *         href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *         href="../../../../../../concepts/indexes/#chunk-skip-index"
      *         target="_top">chunk skip index</a>, depending on the specified
      *         {@code index_type}, on the column name specified in {@code
      *         value}. If this column does not have the specified index, an
@@ -1246,11 +1244,11 @@ public class AlterTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE
      *         RENAME_TABLE}: Renames a table or view within its current schema
      *         to {@code value}. Has the same naming restrictions as <a
-     *         href="../../../../../concepts/tables.html"
+     *         href="../../../../../../concepts/tables/"
      *         target="_top">tables</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}: Sets the
-     *         <a href="../../../../../concepts/ttl.html"
+     *         <a href="../../../../../../concepts/ttl/"
      *         target="_top">time-to-live</a> in minutes of the table or view
      *         specified in {@code tableName}.
      *                 <li> {@link
@@ -1272,7 +1270,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
      *         SET_COLUMN_COMPRESSION}: Modifies the <a
-     *         href="../../../../../concepts/compression.html"
+     *         href="../../../../../../concepts/compression/"
      *         target="_top">compression</a> setting on the column specified in
      *         {@code value} to the compression type specified in {@code
      *         compression_type}.
@@ -1283,7 +1281,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
      *         CREATE_FOREIGN_KEY}: Creates a <a
-     *         href="../../../../../concepts/tables.html#foreign-key"
+     *         href="../../../../../../concepts/tables/#foreign-key"
      *         target="_top">foreign key</a> specified in {@code value} using
      *         the format '(source_column_name [, ...]) references
      *         target_table_name(primary_key_column_name [, ...]) [as
@@ -1291,7 +1289,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
      *         DELETE_FOREIGN_KEY}: Deletes a <a
-     *         href="../../../../../concepts/tables.html#foreign-key"
+     *         href="../../../../../../concepts/tables/#foreign-key"
      *         target="_top">foreign key</a>.  The {@code value} should be the
      *         foreign_key_name specified when creating the key or the complete
      *         string used to define it.
@@ -1299,26 +1297,26 @@ public class AlterTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
      *         ADD_PARTITION}: Adds the partition specified in {@code value},
      *         to either a <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-range"
+     *         href="../../../../../../concepts/tables/#partitioning-by-range"
      *         target="_top">range-partitioned</a> or <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *         href="../../../../../../concepts/tables/#partitioning-by-list-manual"
      *         target="_top">manual list-partitioned</a> table.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
      *         REMOVE_PARTITION}: Removes the partition specified in {@code
      *         value} (and relocates all of its data to the default partition)
      *         from either a <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-range"
+     *         href="../../../../../../concepts/tables/#partitioning-by-range"
      *         target="_top">range-partitioned</a> or <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *         href="../../../../../../concepts/tables/#partitioning-by-list-manual"
      *         target="_top">manual list-partitioned</a> table.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
      *         DELETE_PARTITION}: Deletes the partition specified in {@code
      *         value} (and all of its data) from either a <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-range"
+     *         href="../../../../../../concepts/tables/#partitioning-by-range"
      *         target="_top">range-partitioned</a> or <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *         href="../../../../../../concepts/tables/#partitioning-by-list-manual"
      *         target="_top">manual list-partitioned</a> table.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
@@ -1328,22 +1326,22 @@ public class AlterTableRequest implements IndexedRecord {
      *         'read_only', 'write_only' and 'read_write'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#REFRESH REFRESH}:
-     *         For a <a href="../../../../../concepts/materialized_views.html"
+     *         For a <a href="../../../../../../concepts/materialized_views/"
      *         target="_top">materialized view</a>, replays all the table
      *         creation commands required to create the view.  For an <a
-     *         href="../../../../../concepts/external_tables.html"
+     *         href="../../../../../../concepts/external_tables/"
      *         target="_top">external table</a>, reloads all data in the table
      *         from its associated source files or <a
-     *         href="../../../../../concepts/data_sources.html"
+     *         href="../../../../../../concepts/data_sources/"
      *         target="_top">data source</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
      *         SET_REFRESH_METHOD}: For a <a
-     *         href="../../../../../concepts/materialized_views.html"
+     *         href="../../../../../../concepts/materialized_views/"
      *         target="_top">materialized view</a>, sets the method by which
      *         the view is refreshed to the method specified in {@code value} -
      *         one of 'manual', 'periodic', or 'on_change'.  For an <a
-     *         href="../../../../../concepts/external_tables.html"
+     *         href="../../../../../../concepts/external_tables/"
      *         target="_top">external table</a>, sets the method by which the
      *         table is refreshed to the method specified in {@code value} -
      *         either 'manual' or 'on_start'.
@@ -1351,7 +1349,7 @@ public class AlterTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
      *         SET_REFRESH_START_TIME}: Sets the time to start periodic
      *         refreshes of this <a
-     *         href="../../../../../concepts/materialized_views.html"
+     *         href="../../../../../../concepts/materialized_views/"
      *         target="_top">materialized view</a> to the datetime string
      *         specified in {@code value} with format 'YYYY-MM-DD HH:MM:SS'.
      *         Subsequent refreshes occur at the specified time + N * the
@@ -1360,31 +1358,31 @@ public class AlterTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
      *         SET_REFRESH_PERIOD}: Sets the time interval in seconds at which
      *         to refresh this <a
-     *         href="../../../../../concepts/materialized_views.html"
+     *         href="../../../../../../concepts/materialized_views/"
      *         target="_top">materialized view</a> to the value specified in
      *         {@code value}.  Also, sets the refresh method to periodic if not
      *         already set.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_EXECUTE_AS
      *         SET_REFRESH_EXECUTE_AS}: Sets the user name to refresh this <a
-     *         href="../../../../../concepts/materialized_views.html"
+     *         href="../../../../../../concepts/materialized_views/"
      *         target="_top">materialized view</a> to the value specified in
      *         {@code value}.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#REMOVE_TEXT_SEARCH_ATTRIBUTES
      *         REMOVE_TEXT_SEARCH_ATTRIBUTES}: Removes <a
-     *         href="../../../../../concepts/full_text_search.html"
+     *         href="../../../../../../concepts/full_text_search/"
      *         target="_top">text search</a> attribute from all columns.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Action#SET_STRATEGY_DEFINITION
      *         SET_STRATEGY_DEFINITION}: Sets the <a
-     *         href="../../../../../rm/concepts.html#tier-strategies"
+     *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns to
      *         the one specified in {@code value}, replacing the existing tier
      *         strategy in its entirety. See <a
-     *         href="../../../../../rm/concepts.html#tier-strategies"
+     *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy usage</a> for format and <a
-     *         href="../../../../../rm/usage.html#tier-strategies"
+     *         href="../../../../../../rm/usage/#tier-strategies"
      *         target="_top">tier strategy examples</a> for examples.
      *         </ul>
      * 
@@ -1405,9 +1403,9 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_INDEX
      *                CREATE_INDEX}: Creates either a <a
-     *                href="../../../../../concepts/indexes.html#column-index"
+     *                href="../../../../../../concepts/indexes/#column-index"
      *                target="_top">column (attribute) index</a> or <a
-     *                href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *                href="../../../../../../concepts/indexes/#chunk-skip-index"
      *                target="_top">chunk skip index</a>, depending on the
      *                specified {@code index_type}, on the column name
      *                specified in {@code value}. If this column already has
@@ -1415,9 +1413,9 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_INDEX
      *                DELETE_INDEX}: Deletes either a <a
-     *                href="../../../../../concepts/indexes.html#column-index"
+     *                href="../../../../../../concepts/indexes/#column-index"
      *                target="_top">column (attribute) index</a> or <a
-     *                href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *                href="../../../../../../concepts/indexes/#chunk-skip-index"
      *                target="_top">chunk skip index</a>, depending on the
      *                specified {@code index_type}, on the column name
      *                specified in {@code value}. If this column does not have
@@ -1447,11 +1445,11 @@ public class AlterTableRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterTableRequest.Action#RENAME_TABLE
      *                RENAME_TABLE}: Renames a table or view within its current
      *                schema to {@code value}. Has the same naming restrictions
-     *                as <a href="../../../../../concepts/tables.html"
+     *                as <a href="../../../../../../concepts/tables/"
      *                target="_top">tables</a>.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#TTL TTL}:
-     *                Sets the <a href="../../../../../concepts/ttl.html"
+     *                Sets the <a href="../../../../../../concepts/ttl/"
      *                target="_top">time-to-live</a> in minutes of the table or
      *                view specified in {@code tableName}.
      *                        <li> {@link
@@ -1475,7 +1473,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_COLUMN_COMPRESSION
      *                SET_COLUMN_COMPRESSION}: Modifies the <a
-     *                href="../../../../../concepts/compression.html"
+     *                href="../../../../../../concepts/compression/"
      *                target="_top">compression</a> setting on the column
      *                specified in {@code value} to the compression type
      *                specified in {@code compression_type}.
@@ -1486,7 +1484,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#CREATE_FOREIGN_KEY
      *                CREATE_FOREIGN_KEY}: Creates a <a
-     *                href="../../../../../concepts/tables.html#foreign-key"
+     *                href="../../../../../../concepts/tables/#foreign-key"
      *                target="_top">foreign key</a> specified in {@code value}
      *                using the format '(source_column_name [, ...]) references
      *                target_table_name(primary_key_column_name [, ...]) [as
@@ -1494,7 +1492,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_FOREIGN_KEY
      *                DELETE_FOREIGN_KEY}: Deletes a <a
-     *                href="../../../../../concepts/tables.html#foreign-key"
+     *                href="../../../../../../concepts/tables/#foreign-key"
      *                target="_top">foreign key</a>.  The {@code value} should
      *                be the foreign_key_name specified when creating the key
      *                or the complete string used to define it.
@@ -1502,26 +1500,26 @@ public class AlterTableRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterTableRequest.Action#ADD_PARTITION
      *                ADD_PARTITION}: Adds the partition specified in {@code
      *                value}, to either a <a
-     *                href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                href="../../../../../../concepts/tables/#partitioning-by-range"
      *                target="_top">range-partitioned</a> or <a
-     *                href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *                href="../../../../../../concepts/tables/#partitioning-by-list-manual"
      *                target="_top">manual list-partitioned</a> table.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_PARTITION
      *                REMOVE_PARTITION}: Removes the partition specified in
      *                {@code value} (and relocates all of its data to the
      *                default partition) from either a <a
-     *                href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                href="../../../../../../concepts/tables/#partitioning-by-range"
      *                target="_top">range-partitioned</a> or <a
-     *                href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *                href="../../../../../../concepts/tables/#partitioning-by-list-manual"
      *                target="_top">manual list-partitioned</a> table.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#DELETE_PARTITION
      *                DELETE_PARTITION}: Deletes the partition specified in
      *                {@code value} (and all of its data) from either a <a
-     *                href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                href="../../../../../../concepts/tables/#partitioning-by-range"
      *                target="_top">range-partitioned</a> or <a
-     *                href="../../../../../concepts/tables.html#partitioning-by-list-manual"
+     *                href="../../../../../../concepts/tables/#partitioning-by-list-manual"
      *                target="_top">manual list-partitioned</a> table.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_GLOBAL_ACCESS_MODE
@@ -1533,23 +1531,23 @@ public class AlterTableRequest implements IndexedRecord {
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REFRESH
      *                REFRESH}: For a <a
-     *                href="../../../../../concepts/materialized_views.html"
+     *                href="../../../../../../concepts/materialized_views/"
      *                target="_top">materialized view</a>, replays all the
      *                table creation commands required to create the view.  For
-     *                an <a href="../../../../../concepts/external_tables.html"
+     *                an <a href="../../../../../../concepts/external_tables/"
      *                target="_top">external table</a>, reloads all data in the
      *                table from its associated source files or <a
-     *                href="../../../../../concepts/data_sources.html"
+     *                href="../../../../../../concepts/data_sources/"
      *                target="_top">data source</a>.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_METHOD
      *                SET_REFRESH_METHOD}: For a <a
-     *                href="../../../../../concepts/materialized_views.html"
+     *                href="../../../../../../concepts/materialized_views/"
      *                target="_top">materialized view</a>, sets the method by
      *                which the view is refreshed to the method specified in
      *                {@code value} - one of 'manual', 'periodic', or
      *                'on_change'.  For an <a
-     *                href="../../../../../concepts/external_tables.html"
+     *                href="../../../../../../concepts/external_tables/"
      *                target="_top">external table</a>, sets the method by
      *                which the table is refreshed to the method specified in
      *                {@code value} - either 'manual' or 'on_start'.
@@ -1557,7 +1555,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_START_TIME
      *                SET_REFRESH_START_TIME}: Sets the time to start periodic
      *                refreshes of this <a
-     *                href="../../../../../concepts/materialized_views.html"
+     *                href="../../../../../../concepts/materialized_views/"
      *                target="_top">materialized view</a> to the datetime
      *                string specified in {@code value} with format 'YYYY-MM-DD
      *                HH:MM:SS'.  Subsequent refreshes occur at the specified
@@ -1566,7 +1564,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_PERIOD
      *                SET_REFRESH_PERIOD}: Sets the time interval in seconds at
      *                which to refresh this <a
-     *                href="../../../../../concepts/materialized_views.html"
+     *                href="../../../../../../concepts/materialized_views/"
      *                target="_top">materialized view</a> to the value
      *                specified in {@code value}.  Also, sets the refresh
      *                method to periodic if not already set.
@@ -1574,24 +1572,24 @@ public class AlterTableRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_REFRESH_EXECUTE_AS
      *                SET_REFRESH_EXECUTE_AS}: Sets the user name to refresh
      *                this <a
-     *                href="../../../../../concepts/materialized_views.html"
+     *                href="../../../../../../concepts/materialized_views/"
      *                target="_top">materialized view</a> to the value
      *                specified in {@code value}.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#REMOVE_TEXT_SEARCH_ATTRIBUTES
      *                REMOVE_TEXT_SEARCH_ATTRIBUTES}: Removes <a
-     *                href="../../../../../concepts/full_text_search.html"
+     *                href="../../../../../../concepts/full_text_search/"
      *                target="_top">text search</a> attribute from all columns.
      *                        <li> {@link
      *                com.gpudb.protocol.AlterTableRequest.Action#SET_STRATEGY_DEFINITION
      *                SET_STRATEGY_DEFINITION}: Sets the <a
-     *                href="../../../../../rm/concepts.html#tier-strategies"
+     *                href="../../../../../../rm/concepts/#tier-strategies"
      *                target="_top">tier strategy</a> for the table and its
      *                columns to the one specified in {@code value}, replacing
      *                the existing tier strategy in its entirety. See <a
-     *                href="../../../../../rm/concepts.html#tier-strategies"
+     *                href="../../../../../../rm/concepts/#tier-strategies"
      *                target="_top">tier strategy usage</a> for format and <a
-     *                href="../../../../../rm/usage.html#tier-strategies"
+     *                href="../../../../../../rm/usage/#tier-strategies"
      *                target="_top">tier strategy examples</a> for examples.
      *                </ul>
      * 
@@ -1711,7 +1709,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#UPDATE_LAST_ACCESS_TIME
      *         UPDATE_LAST_ACCESS_TIME}: Indicates whether the <a
-     *         href="../../../../../concepts/ttl.html"
+     *         href="../../../../../../concepts/ttl/"
      *         target="_top">time-to-live</a> (TTL) expiration countdown timer
      *         should be reset to the table's TTL.
      *         Supported values:
@@ -1735,13 +1733,13 @@ public class AlterTableRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#STRATEGY_DEFINITION
      *         STRATEGY_DEFINITION}: Optional parameter for specifying the <a
-     *         href="../../../../../rm/concepts.html#tier-strategies"
+     *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns
      *         when {@code action} is {@code set_strategy_definition},
      *         replacing the existing tier strategy in its entirety. See <a
-     *         href="../../../../../rm/concepts.html#tier-strategies"
+     *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy usage</a> for format and <a
-     *         href="../../../../../rm/usage.html#tier-strategies"
+     *         href="../../../../../../rm/usage/#tier-strategies"
      *         target="_top">tier strategy examples</a> for examples.  This
      *         option will be ignored if {@code value} is also specified.
      *                 <li> {@link
@@ -1754,12 +1752,12 @@ public class AlterTableRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#COLUMN COLUMN}:
      *         Create or delete a <a
-     *         href="../../../../../concepts/indexes.html#column-index"
+     *         href="../../../../../../concepts/indexes/#column-index"
      *         target="_top">column (attribute) index</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP
      *         CHUNK_SKIP}: Create or delete a <a
-     *         href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *         href="../../../../../../concepts/indexes/#chunk-skip-index"
      *         target="_top">chunk skip index</a>.
      *         </ul>
      *         The default value is {@link
@@ -1851,7 +1849,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#UPDATE_LAST_ACCESS_TIME
      *                 UPDATE_LAST_ACCESS_TIME}: Indicates whether the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 href="../../../../../../concepts/ttl/"
      *                 target="_top">time-to-live</a> (TTL) expiration
      *                 countdown timer should be reset to the table's TTL.
      *                 Supported values:
@@ -1879,14 +1877,14 @@ public class AlterTableRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AlterTableRequest.Options#STRATEGY_DEFINITION
      *                 STRATEGY_DEFINITION}: Optional parameter for specifying
      *                 the <a
-     *                 href="../../../../../rm/concepts.html#tier-strategies"
+     *                 href="../../../../../../rm/concepts/#tier-strategies"
      *                 target="_top">tier strategy</a> for the table and its
      *                 columns when {@code action} is {@code
      *                 set_strategy_definition}, replacing the existing tier
      *                 strategy in its entirety. See <a
-     *                 href="../../../../../rm/concepts.html#tier-strategies"
+     *                 href="../../../../../../rm/concepts/#tier-strategies"
      *                 target="_top">tier strategy usage</a> for format and <a
-     *                 href="../../../../../rm/usage.html#tier-strategies"
+     *                 href="../../../../../../rm/usage/#tier-strategies"
      *                 target="_top">tier strategy examples</a> for examples.
      *                 This option will be ignored if {@code value} is also
      *                 specified.
@@ -1900,12 +1898,12 @@ public class AlterTableRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#COLUMN
      *                 COLUMN}: Create or delete a <a
-     *                 href="../../../../../concepts/indexes.html#column-index"
+     *                 href="../../../../../../concepts/indexes/#column-index"
      *                 target="_top">column (attribute) index</a>.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#CHUNK_SKIP
      *                 CHUNK_SKIP}: Create or delete a <a
-     *                 href="../../../../../concepts/indexes.html#chunk-skip-index"
+     *                 href="../../../../../../concepts/indexes/#chunk-skip-index"
      *                 target="_top">chunk skip index</a>.
      *                 </ul>
      *                 The default value is {@link

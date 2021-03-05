@@ -146,7 +146,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * @param tableName  Name of the collection or table from which records are
      *                   to be retrieved, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing collection or table.
      * @param offset  A positive integer indicating the number of initial
@@ -158,7 +158,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../../config/index.html#general"
+     *               href="../../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code offset} & {@code limit}
      *               to request subsequent pages of results.  The default value
@@ -200,7 +200,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * @param tableName  Name of the collection or table from which records are
      *                   to be retrieved, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing collection or table.
      * @param offset  A positive integer indicating the number of initial
@@ -212,7 +212,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../../config/index.html#general"
+     *               href="../../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code offset} & {@code limit}
      *               to request subsequent pages of results.  The default value
@@ -265,7 +265,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * 
      * @return Name of the collection or table from which records are to be
      *         retrieved, in [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  Must be an existing
      *         collection or table.
      * 
@@ -279,7 +279,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      * @param tableName  Name of the collection or table from which records are
      *                   to be retrieved, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing collection or table.
      * 
@@ -324,7 +324,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *         be returned, or END_OF_SET (-9999) to indicate that the max
      *         number of results should be returned.  The number of records
      *         returned will never exceed the server's own limit, defined by
-     *         the <a href="../../../../../config/index.html#general"
+     *         the <a href="../../../../../../config/#general"
      *         target="_top">max_get_records_size</a> parameter in the server
      *         configuration.  Use {@code offset} & {@code limit} to request
      *         subsequent pages of results.  The default value is -9999.
@@ -341,7 +341,7 @@ public class GetRecordsFromCollectionRequest implements IndexedRecord {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../../config/index.html#general"
+     *               href="../../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code offset} & {@code limit}
      *               to request subsequent pages of results.  The default value

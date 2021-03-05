@@ -88,7 +88,7 @@ public class InsertRecordsFromPayloadResponse implements IndexedRecord {
     /**
      * 
      * @return ID of the currently registered table structure <a
-     *         href="../../../../../concepts/types.html" target="_top">type</a>
+     *         href="../../../../../../concepts/types/" target="_top">type</a>
      *         for the target table
      * 
      */
@@ -99,7 +99,7 @@ public class InsertRecordsFromPayloadResponse implements IndexedRecord {
     /**
      * 
      * @param typeId  ID of the currently registered table structure <a
-     *                href="../../../../../concepts/types.html"
+     *                href="../../../../../../concepts/types/"
      *                target="_top">type</a> for the target table
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -21,7 +21,7 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#createProc(CreateProcRequest)}.
  * <p>
  * Creates an instance (proc) of the
- * <a href="../../../../../concepts/udf.html" target="_top">user-defined
+ * <a href="../../../../../../concepts/udf/" target="_top">user-defined
  * functions</a> (UDF) specified by the
  * given command, options, and files, and makes it available for execution.
  */

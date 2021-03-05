@@ -194,15 +194,15 @@ public final class ColumnProperty {
 
     /**
      * This property indicates that this column will be part of (or the entire)
-     * <a href="../../../../concepts/tables.html#primary-keys"
+     * <a href="../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a>.
      */
     public static final String PRIMARY_KEY = "primary_key";
 
     /**
      * This property indicates that this column will be part of (or the entire)
-     * <a href="../../../../concepts/tables.html#shard-keys"
-     * target="_top">shard key</a>.
+     * <a href="../../../../../concepts/tables/#shard-keys" target="_top">shard
+     * key</a>.
      */
     public static final String SHARD_KEY = "shard_key";
 
@@ -224,7 +224,7 @@ public final class ColumnProperty {
 
     /**
      * This property indicates that this column should be <a
-     * href="../../../../concepts/dictionary_encoding.html"
+     * href="../../../../../concepts/dictionary_encoding/"
      * target="_top">dictionary encoded</a>. It can only be used in conjunction
      * with restricted string (charN), int, long or date columns. Dictionary
      * encoding is best for columns where the cardinality (the number of unique

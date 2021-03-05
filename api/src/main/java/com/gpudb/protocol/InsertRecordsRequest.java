@@ -29,7 +29,7 @@ import org.apache.avro.generic.GenericData;
  * <p>
  * The {@code update_on_existing_pk} option specifies the record
  * collision policy for inserting into a table with a
- * <a href="../../../../../concepts/tables.html#primary-keys"
+ * <a href="../../../../../../concepts/tables/#primary-keys"
  * target="_top">primary key</a>, but is ignored if
  * no primary key exists.
  * <p>
@@ -48,7 +48,7 @@ public class InsertRecordsRequest<T> {
      * com.gpudb.protocol.RawInsertRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      * UPDATE_ON_EXISTING_PK}: Specifies the record collision policy for
      * inserting into a table with a <a
-     * href="../../../../../concepts/tables.html#primary-keys"
+     * href="../../../../../../concepts/tables/#primary-keys"
      * target="_top">primary key</a>.  If set to {@code true}, any existing
      * table record with primary key values that match those of a record being
      * inserted will be replaced by that new record.  If set to {@code false},
@@ -143,7 +143,7 @@ public class InsertRecordsRequest<T> {
 
         /**
          * Specifies the record collision policy for inserting into a table
-         * with a <a href="../../../../../concepts/tables.html#primary-keys"
+         * with a <a href="../../../../../../concepts/tables/#primary-keys"
          * target="_top">primary key</a>.  If set to {@code true}, any existing
          * table record with primary key values that match those of a record
          * being inserted will be replaced by that new record.  If set to
@@ -266,7 +266,7 @@ public class InsertRecordsRequest<T> {
      * 
      * @param tableName  Name of table to which the records are to be added, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * @param data  An array of binary-encoded data for the records to be
@@ -278,7 +278,7 @@ public class InsertRecordsRequest<T> {
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
      *                 policy for inserting into a table with a <a
-     *                 href="../../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a>.  If set to {@code true},
      *                 any existing table record with primary key values that
      *                 match those of a record being inserted will be replaced
@@ -402,7 +402,7 @@ public class InsertRecordsRequest<T> {
      * 
      * @return Name of table to which the records are to be added, in
      *         [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  Must be an existing
      *         table.
      * 
@@ -415,7 +415,7 @@ public class InsertRecordsRequest<T> {
      * 
      * @param tableName  Name of table to which the records are to be added, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing table.
      * 
@@ -460,7 +460,7 @@ public class InsertRecordsRequest<T> {
      *         com.gpudb.protocol.RawInsertRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *         UPDATE_ON_EXISTING_PK}: Specifies the record collision policy
      *         for inserting into a table with a <a
-     *         href="../../../../../concepts/tables.html#primary-keys"
+     *         href="../../../../../../concepts/tables/#primary-keys"
      *         target="_top">primary key</a>.  If set to {@code true}, any
      *         existing table record with primary key values that match those
      *         of a record being inserted will be replaced by that new record.
@@ -565,7 +565,7 @@ public class InsertRecordsRequest<T> {
      *                 com.gpudb.protocol.RawInsertRecordsRequest.Options#UPDATE_ON_EXISTING_PK
      *                 UPDATE_ON_EXISTING_PK}: Specifies the record collision
      *                 policy for inserting into a table with a <a
-     *                 href="../../../../../concepts/tables.html#primary-keys"
+     *                 href="../../../../../../concepts/tables/#primary-keys"
      *                 target="_top">primary key</a>.  If set to {@code true},
      *                 any existing table record with primary key values that
      *                 match those of a record being inserted will be replaced

@@ -18,7 +18,7 @@ import org.apache.avro.generic.IndexedRecord;
  * com.gpudb.GPUdb#alterSchema(AlterSchemaRequest)}.
  * <p>
  * Used to change the name of a SQL-style <a
- * href="../../../../../concepts/schemas.html" target="_top">schema</a>,
+ * href="../../../../../../concepts/schemas/" target="_top">schema</a>,
  * specified in {@code schemaName}.
  */
 public class AlterSchemaRequest implements IndexedRecord {
@@ -52,7 +52,7 @@ public class AlterSchemaRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterSchemaRequest.Action#RENAME_SCHEMA
      * RENAME_SCHEMA}: Renames a schema to {@code value}. Has the same naming
-     * restrictions as <a href="../../../../../concepts/tables.html"
+     * restrictions as <a href="../../../../../../concepts/tables/"
      * target="_top">tables</a>.
      * </ul>
      * A set of string constants for the parameter {@code action}.
@@ -61,7 +61,7 @@ public class AlterSchemaRequest implements IndexedRecord {
 
         /**
          * Renames a schema to {@code value}. Has the same naming restrictions
-         * as <a href="../../../../../concepts/tables.html"
+         * as <a href="../../../../../../concepts/tables/"
          * target="_top">tables</a>.
          */
         public static final String RENAME_SCHEMA = "rename_schema";
@@ -96,7 +96,7 @@ public class AlterSchemaRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterSchemaRequest.Action#RENAME_SCHEMA
      *                RENAME_SCHEMA}: Renames a schema to {@code value}. Has
      *                the same naming restrictions as <a
-     *                href="../../../../../concepts/tables.html"
+     *                href="../../../../../../concepts/tables/"
      *                target="_top">tables</a>.
      *                </ul>
      * @param value  The value of the modification, depending on {@code
@@ -144,7 +144,7 @@ public class AlterSchemaRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterSchemaRequest.Action#RENAME_SCHEMA
      *         RENAME_SCHEMA}: Renames a schema to {@code value}. Has the same
      *         naming restrictions as <a
-     *         href="../../../../../concepts/tables.html"
+     *         href="../../../../../../concepts/tables/"
      *         target="_top">tables</a>.
      *         </ul>
      * 
@@ -162,7 +162,7 @@ public class AlterSchemaRequest implements IndexedRecord {
      *                com.gpudb.protocol.AlterSchemaRequest.Action#RENAME_SCHEMA
      *                RENAME_SCHEMA}: Renames a schema to {@code value}. Has
      *                the same naming restrictions as <a
-     *                href="../../../../../concepts/tables.html"
+     *                href="../../../../../../concepts/tables/"
      *                target="_top">tables</a>.
      *                </ul>
      * 

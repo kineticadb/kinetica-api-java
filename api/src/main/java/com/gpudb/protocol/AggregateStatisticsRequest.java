@@ -299,7 +299,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      * @param tableName  Name of the table on which the statistics operation
      *                   will be performed, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnName  Name of the primary column for which the statistics
      *                    are to be calculated.
@@ -392,7 +392,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      * 
      * @return Name of the table on which the statistics operation will be
      *         performed, in [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.
      * 
      */
@@ -405,7 +405,7 @@ public class AggregateStatisticsRequest implements IndexedRecord {
      * @param tableName  Name of the table on which the statistics operation
      *                   will be performed, in [schema_name.]table_name format,
      *                   using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.

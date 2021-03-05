@@ -71,7 +71,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TYPE_ID
      * TYPE_ID}: ID of a currently registered <a
-     * href="../../../../../concepts/types.html" target="_top">type</a>.  The
+     * href="../../../../../../concepts/types/" target="_top">type</a>.  The
      * default value is ''.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#NO_ERROR_IF_EXISTS
@@ -93,17 +93,17 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_REPLICATED
      * IS_REPLICATED}: Affects the <a
-     * href="../../../../../concepts/tables.html#distribution"
+     * href="../../../../../../concepts/tables/#distribution"
      * target="_top">distribution scheme</a> for the table's data.  If {@code
      * true} and the given type has no explicit <a
-     * href="../../../../../concepts/tables.html#shard-key" target="_top">shard
+     * href="../../../../../../concepts/tables/#shard-key" target="_top">shard
      * key</a> defined, the table will be <a
-     * href="../../../../../concepts/tables.html#replication"
+     * href="../../../../../../concepts/tables/#replication"
      * target="_top">replicated</a>.  If {@code false}, the table will be <a
-     * href="../../../../../concepts/tables.html#sharding"
+     * href="../../../../../../concepts/tables/#sharding"
      * target="_top">sharded</a> according to the shard key specified in the
      * given {@code type_id}, or <a
-     * href="../../../../../concepts/tables.html#random-sharding"
+     * href="../../../../../../concepts/tables/#random-sharding"
      * target="_top">randomly sharded</a>, if no shard key is specified.  Note
      * that a type containing a shard key cannot be used to create a replicated
      * table.
@@ -122,7 +122,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FOREIGN_KEYS
      * FOREIGN_KEYS}: Semicolon-separated list of <a
-     * href="../../../../../concepts/tables.html#foreign-keys"
+     * href="../../../../../../concepts/tables/#foreign-keys"
      * target="_top">foreign keys</a>, of the format '(source_column_name [,
      * ...]) references target_table_name(primary_key_column_name [, ...]) [as
      * foreign_key_name]'.
@@ -133,29 +133,29 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#PARTITION_TYPE
      * PARTITION_TYPE}: <a
-     * href="../../../../../concepts/tables.html#partitioning"
+     * href="../../../../../../concepts/tables/#partitioning"
      * target="_top">Partitioning</a> scheme to use.
      * Supported values:
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#RANGE
      * RANGE}: Use <a
-     * href="../../../../../concepts/tables.html#partitioning-by-range"
+     * href="../../../../../../concepts/tables/#partitioning-by-range"
      * target="_top">range partitioning</a>.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#INTERVAL
      * INTERVAL}: Use <a
-     * href="../../../../../concepts/tables.html#partitioning-by-interval"
+     * href="../../../../../../concepts/tables/#partitioning-by-interval"
      * target="_top">interval partitioning</a>.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#LIST
      * LIST}: Use <a
-     * href="../../../../../concepts/tables.html#partitioning-by-list"
+     * href="../../../../../../concepts/tables/#partitioning-by-list"
      * target="_top">list partitioning</a>.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#HASH
      * HASH}: Use <a
-     * href="../../../../../concepts/tables.html#partitioning-by-hash"
+     * href="../../../../../../concepts/tables/#partitioning-by-hash"
      * target="_top">hash partitioning</a>.
      * </ul>
      *         <li> {@link
@@ -167,20 +167,20 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#PARTITION_DEFINITIONS
      * PARTITION_DEFINITIONS}: Comma-separated list of partition definitions,
      * whose format depends on the choice of {@code partition_type}.  See <a
-     * href="../../../../../concepts/tables.html#partitioning-by-range"
+     * href="../../../../../../concepts/tables/#partitioning-by-range"
      * target="_top">range partitioning</a>, <a
-     * href="../../../../../concepts/tables.html#partitioning-by-interval"
+     * href="../../../../../../concepts/tables/#partitioning-by-interval"
      * target="_top">interval partitioning</a>, <a
-     * href="../../../../../concepts/tables.html#partitioning-by-list"
+     * href="../../../../../../concepts/tables/#partitioning-by-list"
      * target="_top">list partitioning</a>, or <a
-     * href="../../../../../concepts/tables.html#partitioning-by-hash"
+     * href="../../../../../../concepts/tables/#partitioning-by-hash"
      * target="_top">hash partitioning</a> for example formats.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
      * IS_AUTOMATIC_PARTITION}: If {@code true}, a new partition will be
      * created for values which don't fall into an existing partition.
      * Currently only supported for <a
-     * href="../../../../../concepts/tables.html#partitioning-by-list"
+     * href="../../../../../../concepts/tables/#partitioning-by-list"
      * target="_top">list partitions</a>.
      * Supported values:
      * <ul>
@@ -196,7 +196,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TTL
-     * TTL}: Sets the <a href="../../../../../concepts/ttl.html"
+     * TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      * target="_top">TTL</a> of the table specified in {@code tableName}.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#CHUNK_SIZE
@@ -205,12 +205,12 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_RESULT_TABLE
      * IS_RESULT_TABLE}: Indicates whether the table is a <a
-     * href="../../../../../concepts/tables_memory_only.html"
+     * href="../../../../../../concepts/tables_memory_only/"
      * target="_top">memory-only table</a>. A result table cannot contain
      * columns with store_only or text_search <a
-     * href="../../../../../concepts/types.html#data-handling"
+     * href="../../../../../../concepts/types/#data-handling"
      * target="_top">data-handling</a> or that are <a
-     * href="../../../../../concepts/types.html#primitive-types"
+     * href="../../../../../../concepts/types/#primitive-types"
      * target="_top">non-charN strings</a>, and it will not be retained if the
      * server is restarted.
      * Supported values:
@@ -228,11 +228,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#STRATEGY_DEFINITION
      * STRATEGY_DEFINITION}: The <a
-     * href="../../../../../rm/concepts.html#tier-strategies"
-     * target="_top">tier strategy</a> for the table and its columns. See <a
-     * href="../../../../../rm/concepts.html#tier-strategies"
-     * target="_top">tier strategy usage</a> for format and <a
-     * href="../../../../../rm/usage.html#tier-strategies" target="_top">tier
+     * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
+     * strategy</a> for the table and its columns. See <a
+     * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
+     * strategy usage</a> for format and <a
+     * href="../../../../../../rm/usage/#tier-strategies" target="_top">tier
      * strategy examples</a> for examples.
      * </ul>
      * The default value is an empty {@link Map}.
@@ -242,7 +242,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
         /**
          * ID of a currently registered <a
-         * href="../../../../../concepts/types.html" target="_top">type</a>.
+         * href="../../../../../../concepts/types/" target="_top">type</a>.
          * The default value is ''.
          */
         public static final String TYPE_ID = "type_id";
@@ -270,17 +270,17 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
         /**
          * Affects the <a
-         * href="../../../../../concepts/tables.html#distribution"
+         * href="../../../../../../concepts/tables/#distribution"
          * target="_top">distribution scheme</a> for the table's data.  If
          * {@code true} and the given type has no explicit <a
-         * href="../../../../../concepts/tables.html#shard-key"
+         * href="../../../../../../concepts/tables/#shard-key"
          * target="_top">shard key</a> defined, the table will be <a
-         * href="../../../../../concepts/tables.html#replication"
+         * href="../../../../../../concepts/tables/#replication"
          * target="_top">replicated</a>.  If {@code false}, the table will be
-         * <a href="../../../../../concepts/tables.html#sharding"
+         * <a href="../../../../../../concepts/tables/#sharding"
          * target="_top">sharded</a> according to the shard key specified in
          * the given {@code type_id}, or <a
-         * href="../../../../../concepts/tables.html#random-sharding"
+         * href="../../../../../../concepts/tables/#random-sharding"
          * target="_top">randomly sharded</a>, if no shard key is specified.
          * Note that a type containing a shard key cannot be used to create a
          * replicated table.
@@ -301,7 +301,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
         /**
          * Semicolon-separated list of <a
-         * href="../../../../../concepts/tables.html#foreign-keys"
+         * href="../../../../../../concepts/tables/#foreign-keys"
          * target="_top">foreign keys</a>, of the format '(source_column_name
          * [, ...]) references target_table_name(primary_key_column_name [,
          * ...]) [as foreign_key_name]'.
@@ -315,29 +315,29 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String FOREIGN_SHARD_KEY = "foreign_shard_key";
 
         /**
-         * <a href="../../../../../concepts/tables.html#partitioning"
+         * <a href="../../../../../../concepts/tables/#partitioning"
          * target="_top">Partitioning</a> scheme to use.
          * Supported values:
          * <ul>
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#RANGE
          * RANGE}: Use <a
-         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * href="../../../../../../concepts/tables/#partitioning-by-range"
          * target="_top">range partitioning</a>.
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#INTERVAL
          * INTERVAL}: Use <a
-         * href="../../../../../concepts/tables.html#partitioning-by-interval"
+         * href="../../../../../../concepts/tables/#partitioning-by-interval"
          * target="_top">interval partitioning</a>.
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#LIST
          * LIST}: Use <a
-         * href="../../../../../concepts/tables.html#partitioning-by-list"
+         * href="../../../../../../concepts/tables/#partitioning-by-list"
          * target="_top">list partitioning</a>.
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#HASH
          * HASH}: Use <a
-         * href="../../../../../concepts/tables.html#partitioning-by-hash"
+         * href="../../../../../../concepts/tables/#partitioning-by-hash"
          * target="_top">hash partitioning</a>.
          * </ul>
          */
@@ -345,28 +345,28 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
         /**
          * Use <a
-         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * href="../../../../../../concepts/tables/#partitioning-by-range"
          * target="_top">range partitioning</a>.
          */
         public static final String RANGE = "RANGE";
 
         /**
          * Use <a
-         * href="../../../../../concepts/tables.html#partitioning-by-interval"
+         * href="../../../../../../concepts/tables/#partitioning-by-interval"
          * target="_top">interval partitioning</a>.
          */
         public static final String INTERVAL = "INTERVAL";
 
         /**
          * Use <a
-         * href="../../../../../concepts/tables.html#partitioning-by-list"
+         * href="../../../../../../concepts/tables/#partitioning-by-list"
          * target="_top">list partitioning</a>.
          */
         public static final String LIST = "LIST";
 
         /**
          * Use <a
-         * href="../../../../../concepts/tables.html#partitioning-by-hash"
+         * href="../../../../../../concepts/tables/#partitioning-by-hash"
          * target="_top">hash partitioning</a>.
          */
         public static final String HASH = "HASH";
@@ -381,13 +381,13 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         /**
          * Comma-separated list of partition definitions, whose format depends
          * on the choice of {@code partition_type}.  See <a
-         * href="../../../../../concepts/tables.html#partitioning-by-range"
+         * href="../../../../../../concepts/tables/#partitioning-by-range"
          * target="_top">range partitioning</a>, <a
-         * href="../../../../../concepts/tables.html#partitioning-by-interval"
+         * href="../../../../../../concepts/tables/#partitioning-by-interval"
          * target="_top">interval partitioning</a>, <a
-         * href="../../../../../concepts/tables.html#partitioning-by-list"
+         * href="../../../../../../concepts/tables/#partitioning-by-list"
          * target="_top">list partitioning</a>, or <a
-         * href="../../../../../concepts/tables.html#partitioning-by-hash"
+         * href="../../../../../../concepts/tables/#partitioning-by-hash"
          * target="_top">hash partitioning</a> for example formats.
          */
         public static final String PARTITION_DEFINITIONS = "partition_definitions";
@@ -395,7 +395,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         /**
          * If {@code true}, a new partition will be created for values which
          * don't fall into an existing partition.  Currently only supported for
-         * <a href="../../../../../concepts/tables.html#partitioning-by-list"
+         * <a href="../../../../../../concepts/tables/#partitioning-by-list"
          * target="_top">list partitions</a>.
          * Supported values:
          * <ul>
@@ -413,7 +413,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String IS_AUTOMATIC_PARTITION = "is_automatic_partition";
 
         /**
-         * Sets the <a href="../../../../../concepts/ttl.html"
+         * Sets the <a href="../../../../../../concepts/ttl/"
          * target="_top">TTL</a> of the table specified in {@code tableName}.
          */
         public static final String TTL = "ttl";
@@ -425,12 +425,12 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
         /**
          * Indicates whether the table is a <a
-         * href="../../../../../concepts/tables_memory_only.html"
+         * href="../../../../../../concepts/tables_memory_only/"
          * target="_top">memory-only table</a>. A result table cannot contain
          * columns with store_only or text_search <a
-         * href="../../../../../concepts/types.html#data-handling"
+         * href="../../../../../../concepts/types/#data-handling"
          * target="_top">data-handling</a> or that are <a
-         * href="../../../../../concepts/types.html#primitive-types"
+         * href="../../../../../../concepts/types/#primitive-types"
          * target="_top">non-charN strings</a>, and it will not be retained if
          * the server is restarted.
          * Supported values:
@@ -449,11 +449,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String IS_RESULT_TABLE = "is_result_table";
 
         /**
-         * The <a href="../../../../../rm/concepts.html#tier-strategies"
+         * The <a href="../../../../../../rm/concepts/#tier-strategies"
          * target="_top">tier strategy</a> for the table and its columns. See
-         * <a href="../../../../../rm/concepts.html#tier-strategies"
+         * <a href="../../../../../../rm/concepts/#tier-strategies"
          * target="_top">tier strategy usage</a> for format and <a
-         * href="../../../../../rm/usage.html#tier-strategies"
+         * href="../../../../../../rm/usage/#tier-strategies"
          * target="_top">tier strategy examples</a> for examples.
          */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
@@ -601,11 +601,13 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
-     * DELIMITED_TEXT}: Indicates the file(s) are in delimited text format;
-     * e.g., CSV, TSV, PSV, etc.
+     * DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV, PSV, etc.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
-     * PARQUET}: Indicates the file(s) are in Parquet format.
+     * PARQUET}: Apache Parquet file format
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON JSON}:
+     * Json file format
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -746,7 +748,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_HEADER_PROPERTY_DELIMITER
      * TEXT_HEADER_PROPERTY_DELIMITER}: Specifies the delimiter for
-     * <a href="../../../../../concepts/types.html#column-properties"
+     * <a href="../../../../../../concepts/types/#column-properties"
      * target="_top">column properties</a> in the header row (if
      * present).  Cannot be set to same value as {@code text_delimiter}.
      * <p>
@@ -980,11 +982,14 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * <ul>
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
-         * DELIMITED_TEXT}: Indicates the file(s) are in delimited text format;
-         * e.g., CSV, TSV, PSV, etc.
+         * DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV, PSV,
+         * etc.
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
-         * PARQUET}: Indicates the file(s) are in Parquet format.
+         * PARQUET}: Apache Parquet file format
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON JSON}:
+         * Json file format
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -993,15 +998,19 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String FILE_TYPE = "file_type";
 
         /**
-         * Indicates the file(s) are in delimited text format; e.g., CSV, TSV,
-         * PSV, etc.
+         * Delimited text file format; e.g., CSV, TSV, PSV, etc.
          */
         public static final String DELIMITED_TEXT = "delimited_text";
 
         /**
-         * Indicates the file(s) are in Parquet format.
+         * Apache Parquet file format
          */
         public static final String PARQUET = "parquet";
+
+        /**
+         * Json file format
+         */
+        public static final String JSON = "json";
 
         /**
          * Whether to do a full load, dry run, or perform a type inference on
@@ -1227,7 +1236,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
         /**
          * Specifies the delimiter for
-         * <a href="../../../../../concepts/types.html#column-properties"
+         * <a href="../../../../../../concepts/types/#column-properties"
          * target="_top">column properties</a> in the header row (if
          * present).  Cannot be set to same value as {@code text_delimiter}.
          * <p>
@@ -1345,7 +1354,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                   inserted, in
      *                   [schema_name.]table_name format, using standard
      *                   <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      *                   If the table does not exist, the table will be created
      *                   using either an existing
@@ -1353,12 +1362,12 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                   file, and the new table name will have to meet
      *                   standard
      *                   <a
-     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.
      * @param filepaths  Absolute or relative filepath(s) from where files will
      *                   be loaded. Relative filepaths are relative to the
      *                   defined <a
-     *                   href="../../../../../config/index.html#external-files"
+     *                   href="../../../../../../config/#external-files"
      *                   target="_top">external_files_directory</a> parameter
      *                   in the server configuration. The filepaths may include
      *                   wildcards (*). If the first path ends in .tsv, the
@@ -1372,7 +1381,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TYPE_ID
      *                            TYPE_ID}: ID of a currently registered <a
-     *                            href="../../../../../concepts/types.html"
+     *                            href="../../../../../../concepts/types/"
      *                            target="_top">type</a>.  The default value is
      *                            ''.
      *                                    <li> {@link
@@ -1397,21 +1406,21 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_REPLICATED
      *                            IS_REPLICATED}: Affects the <a
-     *                            href="../../../../../concepts/tables.html#distribution"
+     *                            href="../../../../../../concepts/tables/#distribution"
      *                            target="_top">distribution scheme</a> for the
      *                            table's data.  If {@code true} and the given
      *                            type has no explicit <a
-     *                            href="../../../../../concepts/tables.html#shard-key"
+     *                            href="../../../../../../concepts/tables/#shard-key"
      *                            target="_top">shard key</a> defined, the
      *                            table will be <a
-     *                            href="../../../../../concepts/tables.html#replication"
+     *                            href="../../../../../../concepts/tables/#replication"
      *                            target="_top">replicated</a>.  If {@code
      *                            false}, the table will be <a
-     *                            href="../../../../../concepts/tables.html#sharding"
+     *                            href="../../../../../../concepts/tables/#sharding"
      *                            target="_top">sharded</a> according to the
      *                            shard key specified in the given {@code
      *                            type_id}, or <a
-     *                            href="../../../../../concepts/tables.html#random-sharding"
+     *                            href="../../../../../../concepts/tables/#random-sharding"
      *                            target="_top">randomly sharded</a>, if no
      *                            shard key is specified.  Note that a type
      *                            containing a shard key cannot be used to
@@ -1431,7 +1440,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FOREIGN_KEYS
      *                            FOREIGN_KEYS}: Semicolon-separated list of <a
-     *                            href="../../../../../concepts/tables.html#foreign-keys"
+     *                            href="../../../../../../concepts/tables/#foreign-keys"
      *                            target="_top">foreign keys</a>, of the format
      *                            '(source_column_name [, ...]) references
      *                            target_table_name(primary_key_column_name [,
@@ -1445,29 +1454,29 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#PARTITION_TYPE
      *                            PARTITION_TYPE}: <a
-     *                            href="../../../../../concepts/tables.html#partitioning"
+     *                            href="../../../../../../concepts/tables/#partitioning"
      *                            target="_top">Partitioning</a> scheme to use.
      *                            Supported values:
      *                            <ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#RANGE
      *                            RANGE}: Use <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-range"
      *                            target="_top">range partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#INTERVAL
      *                            INTERVAL}: Use <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#LIST
      *                            LIST}: Use <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#HASH
      *                            HASH}: Use <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a>.
      *                            </ul>
      *                                    <li> {@link
@@ -1483,13 +1492,13 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            of partition definitions, whose format
      *                            depends on the choice of {@code
      *                            partition_type}.  See <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-range"
      *                            target="_top">range partitioning</a>, <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>, <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitioning</a>, or <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a> for
      *                            example formats.
      *                                    <li> {@link
@@ -1498,7 +1507,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            new partition will be created for values
      *                            which don't fall into an existing partition.
      *                            Currently only supported for <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitions</a>.
      *                            Supported values:
      *                            <ul>
@@ -1515,7 +1524,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TTL
      *                            TTL}: Sets the <a
-     *                            href="../../../../../concepts/ttl.html"
+     *                            href="../../../../../../concepts/ttl/"
      *                            target="_top">TTL</a> of the table specified
      *                            in {@code tableName}.
      *                                    <li> {@link
@@ -1526,14 +1535,14 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_RESULT_TABLE
      *                            IS_RESULT_TABLE}: Indicates whether the table
      *                            is a <a
-     *                            href="../../../../../concepts/tables_memory_only.html"
+     *                            href="../../../../../../concepts/tables_memory_only/"
      *                            target="_top">memory-only table</a>. A result
      *                            table cannot contain columns with store_only
      *                            or text_search <a
-     *                            href="../../../../../concepts/types.html#data-handling"
+     *                            href="../../../../../../concepts/types/#data-handling"
      *                            target="_top">data-handling</a> or that are
      *                            <a
-     *                            href="../../../../../concepts/types.html#primitive-types"
+     *                            href="../../../../../../concepts/types/#primitive-types"
      *                            target="_top">non-charN strings</a>, and it
      *                            will not be retained if the server is
      *                            restarted.
@@ -1552,13 +1561,13 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#STRATEGY_DEFINITION
      *                            STRATEGY_DEFINITION}: The <a
-     *                            href="../../../../../rm/concepts.html#tier-strategies"
+     *                            href="../../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy</a> for the table
      *                            and its columns. See <a
-     *                            href="../../../../../rm/concepts.html#tier-strategies"
+     *                            href="../../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy usage</a> for
      *                            format and <a
-     *                            href="../../../../../rm/usage.html#tier-strategies"
+     *                            href="../../../../../../rm/usage/#tier-strategies"
      *                            target="_top">tier strategy examples</a> for
      *                            examples.
      *                            </ul>
@@ -1702,11 +1711,14 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
-     *                 DELIMITED_TEXT}: Indicates the file(s) are in delimited
-     *                 text format; e.g., CSV, TSV, PSV, etc.
+     *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
+     *                 TSV, PSV, etc.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
-     *                 PARQUET}: Indicates the file(s) are in Parquet format.
+     *                 PARQUET}: Apache Parquet file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON
+     *                 JSON}: Json file format
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -1852,7 +1864,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 TEXT_HEADER_PROPERTY_DELIMITER}: Specifies the delimiter
      *                 for
      *                 <a
-     *                 href="../../../../../concepts/types.html#column-properties"
+     *                 href="../../../../../../concepts/types/#column-properties"
      *                 target="_top">column properties</a> in the header row
      *                 (if
      *                 present).  Cannot be set to same value as {@code
@@ -1936,14 +1948,14 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * @return Name of the table into which the data will be inserted, in
      *         [schema_name.]table_name format, using standard
      *         <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.
      *         If the table does not exist, the table will be created using
      *         either an existing
      *         {@code type_id} or the type inferred from the
      *         file, and the new table name will have to meet standard
      *         <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.
      * 
      */
@@ -1957,7 +1969,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                   inserted, in
      *                   [schema_name.]table_name format, using standard
      *                   <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      *                   If the table does not exist, the table will be created
      *                   using either an existing
@@ -1965,7 +1977,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                   file, and the new table name will have to meet
      *                   standard
      *                   <a
-     *                   href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                   href="../../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -1980,7 +1992,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * 
      * @return Absolute or relative filepath(s) from where files will be
      *         loaded. Relative filepaths are relative to the defined <a
-     *         href="../../../../../config/index.html#external-files"
+     *         href="../../../../../../config/#external-files"
      *         target="_top">external_files_directory</a> parameter in the
      *         server configuration. The filepaths may include wildcards (*).
      *         If the first path ends in .tsv, the text delimiter will be
@@ -1997,7 +2009,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * @param filepaths  Absolute or relative filepath(s) from where files will
      *                   be loaded. Relative filepaths are relative to the
      *                   defined <a
-     *                   href="../../../../../config/index.html#external-files"
+     *                   href="../../../../../../config/#external-files"
      *                   target="_top">external_files_directory</a> parameter
      *                   in the server configuration. The filepaths may include
      *                   wildcards (*). If the first path ends in .tsv, the
@@ -2042,8 +2054,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TYPE_ID
      *         TYPE_ID}: ID of a currently registered <a
-     *         href="../../../../../concepts/types.html"
-     *         target="_top">type</a>.  The default value is ''.
+     *         href="../../../../../../concepts/types/" target="_top">type</a>.
+     *         The default value is ''.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#NO_ERROR_IF_EXISTS
      *         NO_ERROR_IF_EXISTS}: If {@code true}, prevents an error from
@@ -2065,17 +2077,17 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_REPLICATED
      *         IS_REPLICATED}: Affects the <a
-     *         href="../../../../../concepts/tables.html#distribution"
+     *         href="../../../../../../concepts/tables/#distribution"
      *         target="_top">distribution scheme</a> for the table's data.  If
      *         {@code true} and the given type has no explicit <a
-     *         href="../../../../../concepts/tables.html#shard-key"
+     *         href="../../../../../../concepts/tables/#shard-key"
      *         target="_top">shard key</a> defined, the table will be <a
-     *         href="../../../../../concepts/tables.html#replication"
+     *         href="../../../../../../concepts/tables/#replication"
      *         target="_top">replicated</a>.  If {@code false}, the table will
-     *         be <a href="../../../../../concepts/tables.html#sharding"
+     *         be <a href="../../../../../../concepts/tables/#sharding"
      *         target="_top">sharded</a> according to the shard key specified
      *         in the given {@code type_id}, or <a
-     *         href="../../../../../concepts/tables.html#random-sharding"
+     *         href="../../../../../../concepts/tables/#random-sharding"
      *         target="_top">randomly sharded</a>, if no shard key is
      *         specified.  Note that a type containing a shard key cannot be
      *         used to create a replicated table.
@@ -2094,7 +2106,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FOREIGN_KEYS
      *         FOREIGN_KEYS}: Semicolon-separated list of <a
-     *         href="../../../../../concepts/tables.html#foreign-keys"
+     *         href="../../../../../../concepts/tables/#foreign-keys"
      *         target="_top">foreign keys</a>, of the format
      *         '(source_column_name [, ...]) references
      *         target_table_name(primary_key_column_name [, ...]) [as
@@ -2107,29 +2119,29 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#PARTITION_TYPE
      *         PARTITION_TYPE}: <a
-     *         href="../../../../../concepts/tables.html#partitioning"
+     *         href="../../../../../../concepts/tables/#partitioning"
      *         target="_top">Partitioning</a> scheme to use.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#RANGE
      *         RANGE}: Use <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-range"
+     *         href="../../../../../../concepts/tables/#partitioning-by-range"
      *         target="_top">range partitioning</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#INTERVAL
      *         INTERVAL}: Use <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *         href="../../../../../../concepts/tables/#partitioning-by-interval"
      *         target="_top">interval partitioning</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#LIST
      *         LIST}: Use <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-list"
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
      *         target="_top">list partitioning</a>.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#HASH
      *         HASH}: Use <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *         href="../../../../../../concepts/tables/#partitioning-by-hash"
      *         target="_top">hash partitioning</a>.
      *         </ul>
      *                 <li> {@link
@@ -2142,20 +2154,20 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         PARTITION_DEFINITIONS}: Comma-separated list of partition
      *         definitions, whose format depends on the choice of {@code
      *         partition_type}.  See <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-range"
+     *         href="../../../../../../concepts/tables/#partitioning-by-range"
      *         target="_top">range partitioning</a>, <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *         href="../../../../../../concepts/tables/#partitioning-by-interval"
      *         target="_top">interval partitioning</a>, <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-list"
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
      *         target="_top">list partitioning</a>, or <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *         href="../../../../../../concepts/tables/#partitioning-by-hash"
      *         target="_top">hash partitioning</a> for example formats.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
      *         IS_AUTOMATIC_PARTITION}: If {@code true}, a new partition will
      *         be created for values which don't fall into an existing
      *         partition.  Currently only supported for <a
-     *         href="../../../../../concepts/tables.html#partitioning-by-list"
+     *         href="../../../../../../concepts/tables/#partitioning-by-list"
      *         target="_top">list partitions</a>.
      *         Supported values:
      *         <ul>
@@ -2171,7 +2183,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TTL
-     *         TTL}: Sets the <a href="../../../../../concepts/ttl.html"
+     *         TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      *         target="_top">TTL</a> of the table specified in {@code
      *         tableName}.
      *                 <li> {@link
@@ -2181,12 +2193,12 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_RESULT_TABLE
      *         IS_RESULT_TABLE}: Indicates whether the table is a <a
-     *         href="../../../../../concepts/tables_memory_only.html"
+     *         href="../../../../../../concepts/tables_memory_only/"
      *         target="_top">memory-only table</a>. A result table cannot
      *         contain columns with store_only or text_search <a
-     *         href="../../../../../concepts/types.html#data-handling"
+     *         href="../../../../../../concepts/types/#data-handling"
      *         target="_top">data-handling</a> or that are <a
-     *         href="../../../../../concepts/types.html#primitive-types"
+     *         href="../../../../../../concepts/types/#primitive-types"
      *         target="_top">non-charN strings</a>, and it will not be retained
      *         if the server is restarted.
      *         Supported values:
@@ -2204,11 +2216,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#STRATEGY_DEFINITION
      *         STRATEGY_DEFINITION}: The <a
-     *         href="../../../../../rm/concepts.html#tier-strategies"
+     *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
-     *         See <a href="../../../../../rm/concepts.html#tier-strategies"
+     *         See <a href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy usage</a> for format and <a
-     *         href="../../../../../rm/usage.html#tier-strategies"
+     *         href="../../../../../../rm/usage/#tier-strategies"
      *         target="_top">tier strategy examples</a> for examples.
      *         </ul>
      *         The default value is an empty {@link Map}.
@@ -2225,7 +2237,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TYPE_ID
      *                            TYPE_ID}: ID of a currently registered <a
-     *                            href="../../../../../concepts/types.html"
+     *                            href="../../../../../../concepts/types/"
      *                            target="_top">type</a>.  The default value is
      *                            ''.
      *                                    <li> {@link
@@ -2250,21 +2262,21 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_REPLICATED
      *                            IS_REPLICATED}: Affects the <a
-     *                            href="../../../../../concepts/tables.html#distribution"
+     *                            href="../../../../../../concepts/tables/#distribution"
      *                            target="_top">distribution scheme</a> for the
      *                            table's data.  If {@code true} and the given
      *                            type has no explicit <a
-     *                            href="../../../../../concepts/tables.html#shard-key"
+     *                            href="../../../../../../concepts/tables/#shard-key"
      *                            target="_top">shard key</a> defined, the
      *                            table will be <a
-     *                            href="../../../../../concepts/tables.html#replication"
+     *                            href="../../../../../../concepts/tables/#replication"
      *                            target="_top">replicated</a>.  If {@code
      *                            false}, the table will be <a
-     *                            href="../../../../../concepts/tables.html#sharding"
+     *                            href="../../../../../../concepts/tables/#sharding"
      *                            target="_top">sharded</a> according to the
      *                            shard key specified in the given {@code
      *                            type_id}, or <a
-     *                            href="../../../../../concepts/tables.html#random-sharding"
+     *                            href="../../../../../../concepts/tables/#random-sharding"
      *                            target="_top">randomly sharded</a>, if no
      *                            shard key is specified.  Note that a type
      *                            containing a shard key cannot be used to
@@ -2284,7 +2296,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#FOREIGN_KEYS
      *                            FOREIGN_KEYS}: Semicolon-separated list of <a
-     *                            href="../../../../../concepts/tables.html#foreign-keys"
+     *                            href="../../../../../../concepts/tables/#foreign-keys"
      *                            target="_top">foreign keys</a>, of the format
      *                            '(source_column_name [, ...]) references
      *                            target_table_name(primary_key_column_name [,
@@ -2298,29 +2310,29 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#PARTITION_TYPE
      *                            PARTITION_TYPE}: <a
-     *                            href="../../../../../concepts/tables.html#partitioning"
+     *                            href="../../../../../../concepts/tables/#partitioning"
      *                            target="_top">Partitioning</a> scheme to use.
      *                            Supported values:
      *                            <ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#RANGE
      *                            RANGE}: Use <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-range"
      *                            target="_top">range partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#INTERVAL
      *                            INTERVAL}: Use <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#LIST
      *                            LIST}: Use <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitioning</a>.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#HASH
      *                            HASH}: Use <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a>.
      *                            </ul>
      *                                    <li> {@link
@@ -2336,13 +2348,13 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            of partition definitions, whose format
      *                            depends on the choice of {@code
      *                            partition_type}.  See <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-range"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-range"
      *                            target="_top">range partitioning</a>, <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-interval"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>, <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitioning</a>, or <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-hash"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a> for
      *                            example formats.
      *                                    <li> {@link
@@ -2351,7 +2363,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            new partition will be created for values
      *                            which don't fall into an existing partition.
      *                            Currently only supported for <a
-     *                            href="../../../../../concepts/tables.html#partitioning-by-list"
+     *                            href="../../../../../../concepts/tables/#partitioning-by-list"
      *                            target="_top">list partitions</a>.
      *                            Supported values:
      *                            <ul>
@@ -2368,7 +2380,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#TTL
      *                            TTL}: Sets the <a
-     *                            href="../../../../../concepts/ttl.html"
+     *                            href="../../../../../../concepts/ttl/"
      *                            target="_top">TTL</a> of the table specified
      *                            in {@code tableName}.
      *                                    <li> {@link
@@ -2379,14 +2391,14 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_RESULT_TABLE
      *                            IS_RESULT_TABLE}: Indicates whether the table
      *                            is a <a
-     *                            href="../../../../../concepts/tables_memory_only.html"
+     *                            href="../../../../../../concepts/tables_memory_only/"
      *                            target="_top">memory-only table</a>. A result
      *                            table cannot contain columns with store_only
      *                            or text_search <a
-     *                            href="../../../../../concepts/types.html#data-handling"
+     *                            href="../../../../../../concepts/types/#data-handling"
      *                            target="_top">data-handling</a> or that are
      *                            <a
-     *                            href="../../../../../concepts/types.html#primitive-types"
+     *                            href="../../../../../../concepts/types/#primitive-types"
      *                            target="_top">non-charN strings</a>, and it
      *                            will not be retained if the server is
      *                            restarted.
@@ -2405,13 +2417,13 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#STRATEGY_DEFINITION
      *                            STRATEGY_DEFINITION}: The <a
-     *                            href="../../../../../rm/concepts.html#tier-strategies"
+     *                            href="../../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy</a> for the table
      *                            and its columns. See <a
-     *                            href="../../../../../rm/concepts.html#tier-strategies"
+     *                            href="../../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy usage</a> for
      *                            format and <a
-     *                            href="../../../../../rm/usage.html#tier-strategies"
+     *                            href="../../../../../../rm/usage/#tier-strategies"
      *                            target="_top">tier strategy examples</a> for
      *                            examples.
      *                            </ul>
@@ -2561,11 +2573,14 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
-     *         DELIMITED_TEXT}: Indicates the file(s) are in delimited text
-     *         format; e.g., CSV, TSV, PSV, etc.
+     *         DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV,
+     *         PSV, etc.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
-     *         PARQUET}: Indicates the file(s) are in Parquet format.
+     *         PARQUET}: Apache Parquet file format
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON
+     *         JSON}: Json file format
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -2707,7 +2722,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_HEADER_PROPERTY_DELIMITER
      *         TEXT_HEADER_PROPERTY_DELIMITER}: Specifies the delimiter for
-     *         <a href="../../../../../concepts/types.html#column-properties"
+     *         <a href="../../../../../../concepts/types/#column-properties"
      *         target="_top">column properties</a> in the header row (if
      *         present).  Cannot be set to same value as {@code
      *         text_delimiter}.
@@ -2920,11 +2935,14 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
-     *                 DELIMITED_TEXT}: Indicates the file(s) are in delimited
-     *                 text format; e.g., CSV, TSV, PSV, etc.
+     *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
+     *                 TSV, PSV, etc.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
-     *                 PARQUET}: Indicates the file(s) are in Parquet format.
+     *                 PARQUET}: Apache Parquet file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON
+     *                 JSON}: Json file format
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -3070,7 +3088,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 TEXT_HEADER_PROPERTY_DELIMITER}: Specifies the delimiter
      *                 for
      *                 <a
-     *                 href="../../../../../concepts/types.html#column-properties"
+     *                 href="../../../../../../concepts/types/#column-properties"
      *                 target="_top">column properties</a> in the header row
      *                 (if
      *                 present).  Cannot be set to same value as {@code

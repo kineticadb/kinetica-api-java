@@ -7,7 +7,9 @@
 package com.gpudb.protocol;
 
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -21,6 +23,7 @@ public class ShowFunctionsRequest implements IndexedRecord {
             .record("ShowFunctionsRequest")
             .namespace("com.gpudb")
             .fields()
+                .name("names").type().array().items().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -34,20 +37,46 @@ public class ShowFunctionsRequest implements IndexedRecord {
 
         public static final String PROPERTIES = "properties";
 
+        public static final String SHOW_SCALAR_FUNCTIONS = "show_scalar_functions";
+
+        public static final String TRUE = "true";
+
+        public static final String FALSE = "false";
+
+        public static final String SHOW_AGGREGATE_FUNCTIONS = "show_aggregate_functions";
+
+        public static final String SHOW_SQL_PROCEDURES = "show_sql_procedures";
+
+        public static final String SHOW_USER_DEFINED_FUNCTIONS = "show_user_defined_functions";
+
+        public static final String SHOW_CAST_FUNCTIONS = "show_cast_functions";
+
 
         private Options() {  }
     }
 
 
+    private List<String> names;
     private Map<String, String> options;
 
 
     public ShowFunctionsRequest() {
+        names = new ArrayList<>();
         options = new LinkedHashMap<>();
     }
 
-    public ShowFunctionsRequest(Map<String, String> options) {
+    public ShowFunctionsRequest(List<String> names, Map<String, String> options) {
+        this.names = (names == null) ? new ArrayList<String>() : names;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
+    }
+
+    public List<String> getNames() {
+        return names;
+    }
+
+    public ShowFunctionsRequest setNames(List<String> names) {
+        this.names = (names == null) ? new ArrayList<String>() : names;
+        return this;
     }
 
     public Map<String, String> getOptions() {
@@ -68,6 +97,9 @@ public class ShowFunctionsRequest implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
+                return this.names;
+
+            case 1:
                 return this.options;
 
             default:
@@ -80,6 +112,10 @@ public class ShowFunctionsRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
+                this.names = (List<String>)value;
+                break;
+
+            case 1:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -101,7 +137,8 @@ public class ShowFunctionsRequest implements IndexedRecord {
 
         ShowFunctionsRequest that = (ShowFunctionsRequest)obj;
 
-        return ( this.options.equals( that.options ) );
+        return ( this.names.equals( that.names )
+                 && this.options.equals( that.options ) );
     }
 
 
@@ -110,6 +147,10 @@ public class ShowFunctionsRequest implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
+        builder.append( gd.toString( "names" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.names ) );
+        builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.options ) );
@@ -122,6 +163,7 @@ public class ShowFunctionsRequest implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
+        hashCode = (31 * hashCode) + this.names.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

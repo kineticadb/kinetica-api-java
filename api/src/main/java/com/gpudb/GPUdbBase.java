@@ -145,6 +145,7 @@ public abstract class GPUdbBase {
         private Pattern hostnameRegex        = null;
         private boolean useSnappy            = true;
         private boolean bypassSslCertCheck   = false;
+        private SSLConnectionSocketFactory customSslConnSocketFactory;
         private boolean disableFailover      = false;
         private boolean disableAutoDiscovery = false;
         private HAFailoverOrder haFailoverOrder = HAFailoverOrder.RANDOM;
@@ -180,6 +181,7 @@ public abstract class GPUdbBase {
             this.hostnameRegex        = other.hostnameRegex;
             this.useSnappy            = other.useSnappy;
             this.bypassSslCertCheck   = other.bypassSslCertCheck;
+            this.customSslConnSocketFactory = other.customSslConnSocketFactory;
             this.disableFailover      = other.disableFailover;
             this.disableAutoDiscovery = other.disableAutoDiscovery;
             this.haFailoverOrder      = other.haFailoverOrder;
@@ -268,6 +270,17 @@ public abstract class GPUdbBase {
          */
         public boolean getBypassSslCertCheck() {
             return this.bypassSslCertCheck;
+        }
+
+        /** Gets the value of the custom SSLConnectionSocketFactory used for
+         * the SSL connection.
+         *
+         * @return the value of the custom SSLConnectionSocketFactory
+         *
+         * @see #setCustomSslConnSocketFactory(SSLConnectionSocketFactory)
+         */
+        public SSLConnectionSocketFactory getCustomSslConnSocketFactory() {
+            return this.customSslConnSocketFactory;
         }
 
         /**
@@ -650,6 +663,40 @@ public abstract class GPUdbBase {
          */
         public Options setBypassSslCertCheck(boolean value) {
             this.bypassSslCertCheck = value;
+            return this;
+        }
+
+        /** Sets a custom SSLConnectionSocketFactory value which can be used
+         * to pass in a custom SSLContext and a custom HostNameVerifier
+         *
+         * Example code to create a custom SSLContext and subsequently a
+         * custom SSLConnectionSocketFactory using the custom context.
+         *
+         * <pre>
+         * {@code
+         * SSLContext sslContext = SSLContexts.custom()
+         *     .loadTrustMaterial(
+         *     new File("/opt/gpudb/truststore.jks"),
+         *     "password".toCharArray(), new TrustSelfSignedStrategy()
+         *     ).build();
+         *
+         *
+         * SSLConnectionSocketFactory = new SSLConnectionSocketFactory( sslContext,
+         *          new HostnameVerifier() {
+         *             public boolean verify(String hostName, SSLSession session) {
+         *                 return true;
+         *             }
+         *         } );
+         * }
+         * </pre>
+         *
+         * @param value     the value of the custom SSLConnectionSocketFactory
+         * @return          the current {@link Options} instance
+         *
+         * @see #getCustomSslConnSocketFactory()
+         */
+        public Options setCustomSslConnSocketFactory(SSLConnectionSocketFactory value) {
+            this.customSslConnSocketFactory = value;
             return this;
         }
 
@@ -2013,6 +2060,7 @@ public abstract class GPUdbBase {
     private boolean       useHttpd = false;
     private boolean       useSnappy;
     private boolean       bypassSslCertCheck;
+    private SSLConnectionSocketFactory customSslConnectionSocketFactory;
     private boolean       disableFailover;
     private boolean       disableAutoDiscovery;
     private int           threadCount;
@@ -2154,8 +2202,20 @@ public abstract class GPUdbBase {
                                      + this.intraClusterFailoverTimeoutNS
                                      + " (0 means infinite waiting)");
 
+        this.customSslConnectionSocketFactory = options.getCustomSslConnSocketFactory();
+
         // Handle SSL certificate verification bypass for HTTPS connections
         this.bypassSslCertCheck = options.getBypassSslCertCheck();
+
+        //Cannot have both 'bypassSslCertCheck' and 'customSslConnectionSocketFactory'
+        //set at the same time; conflicting options. If both are set check
+        //and throw 'GPUdbException'.
+        if( bypassSslCertCheck && customSslConnectionSocketFactory != null ) {
+            throw new GPUdbException("Both 'bypassSslCertCheck' and " +
+                    "'customSslConnectionSocketFactory' cannot be set " +
+                    "together; conflicting options.");
+        }
+
         if ( this.bypassSslCertCheck ) {
             // This bypass works only for HTTPS connections
             try {
@@ -2211,6 +2271,12 @@ public abstract class GPUdbBase {
             if ( sslContext != null ) {
                 secureSocketFactory = new SSLConnectionSocketFactory( sslContext, allowAllHosts );
             }
+        }
+
+        // If 'customSslConnectionSocketFactory' is set, use that to set the
+        // 'secureSocketFactory' variable
+        if ( this.customSslConnectionSocketFactory != null ) {
+            secureSocketFactory = customSslConnectionSocketFactory;
         }
 
         // And a plain http socket factory

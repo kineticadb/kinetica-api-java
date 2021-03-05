@@ -17,7 +17,7 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#dropDatasource(DropDatasourceRequest)}.
  * <p>
- * Drops an existing <a href="../../../../../concepts/data_sources.html"
+ * Drops an existing <a href="../../../../../../concepts/data_sources/"
  * target="_top">data source</a>.  Any external
  * tables that depend on the data source must be dropped before it can be
  * dropped.

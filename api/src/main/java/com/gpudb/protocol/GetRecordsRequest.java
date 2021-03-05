@@ -198,7 +198,7 @@ public class GetRecordsRequest implements IndexedRecord {
      * @param tableName  Name of the table or view from which the records will
      *                   be fetched, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
@@ -209,7 +209,7 @@ public class GetRecordsRequest implements IndexedRecord {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../../config/index.html#general"
+     *               href="../../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -278,7 +278,7 @@ public class GetRecordsRequest implements IndexedRecord {
      * @param tableName  Name of the table or view from which the records will
      *                   be fetched, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param offset  A positive integer indicating the number of initial
      *                results to skip (this can be useful for paging through
@@ -289,7 +289,7 @@ public class GetRecordsRequest implements IndexedRecord {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../../config/index.html#general"
+     *               href="../../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -373,7 +373,7 @@ public class GetRecordsRequest implements IndexedRecord {
      * 
      * @return Name of the table or view from which the records will be
      *         fetched, in [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.
      * 
      */
@@ -386,7 +386,7 @@ public class GetRecordsRequest implements IndexedRecord {
      * @param tableName  Name of the table or view from which the records will
      *                   be fetched, in [schema_name.]table_name format, using
      *                   standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -430,7 +430,7 @@ public class GetRecordsRequest implements IndexedRecord {
      *         be returned. Or END_OF_SET (-9999) to indicate that the max
      *         number of results should be returned.  The number of records
      *         returned will never exceed the server's own limit, defined by
-     *         the <a href="../../../../../config/index.html#general"
+     *         the <a href="../../../../../../config/#general"
      *         target="_top">max_get_records_size</a> parameter in the server
      *         configuration.  Use {@code hasMoreRecords} to see if more
      *         records exist in the result to be fetched, and {@code offset} &
@@ -449,7 +449,7 @@ public class GetRecordsRequest implements IndexedRecord {
      *               that the max number of results should be returned.  The
      *               number of records returned will never exceed the server's
      *               own limit, defined by the <a
-     *               href="../../../../../config/index.html#general"
+     *               href="../../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and

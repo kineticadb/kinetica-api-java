@@ -25,13 +25,13 @@ import org.apache.avro.generic.IndexedRecord;
  * given solution type.
 
  * IMPORTANT: It's highly recommended that you review the
- * <a href="../../../../../graph_solver/network_graph_solver.html"
+ * <a href="../../../../../../graph_solver/network_graph_solver/"
  * target="_top">Network Graphs & Solvers</a>
  * concepts documentation, the
- * <a href="../../../../../graph_solver/examples/graph_rest_guide.html"
+ * <a href="../../../../../../graph_solver/examples/graph_rest_guide/"
  * target="_top">Graph REST Tutorial</a>,
  * and/or some
- * <a href="../../../../../graph_solver/examples.html#match-graph"
+ * <a href="../../../../../../graph_solver/examples/#match-graph"
  * target="_top">/match/graph examples</a>
  * before using this endpoint.
  */
@@ -538,11 +538,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *                      geospatial
      *                      graph. Sample points must be specified using
      *                      <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#match-identifiers"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#match-identifiers"
      *                      target="_top">identifiers</a>;
      *                      identifiers are grouped as
      *                      <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#match-combinations"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#match-combinations"
      *                      target="_top">combinations</a>.
      *                      Identifiers can be used with: existing column
      *                      names, e.g.,
@@ -592,13 +592,13 @@ public class MatchGraphRequest implements IndexedRecord {
      * @param solutionTable  The name of the table used to store the results,
      *                       in [schema_name.]table_name format, using standard
      *                       <a
-     *                       href="../../../../../concepts/tables.html#table-name-resolution"
+     *                       href="../../../../../../concepts/tables/#table-name-resolution"
      *                       target="_top">name resolution rules</a> and
      *                       meeting <a
-     *                       href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                       href="../../../../../../concepts/tables/#table-naming-criteria"
      *                       target="_top">table naming criteria</a>.  This
      *                       table contains a <a
-     *                       href="../../../../../geospatial/geo_objects.html#geospatial-tracks"
+     *                       href="../../../../../../geospatial/geo_objects/#geospatial-tracks"
      *                       target="_top">track</a> of geospatial points for
      *                       the matched portion of the graph, a track ID, and
      *                       a score value. Also outputs a details table
@@ -836,11 +836,11 @@ public class MatchGraphRequest implements IndexedRecord {
      * @return Sample points used to match to an underlying geospatial
      *         graph. Sample points must be specified using
      *         <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#match-identifiers"
+     *         href="../../../../../../graph_solver/network_graph_solver/#match-identifiers"
      *         target="_top">identifiers</a>;
      *         identifiers are grouped as
      *         <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#match-combinations"
+     *         href="../../../../../../graph_solver/network_graph_solver/#match-combinations"
      *         target="_top">combinations</a>.
      *         Identifiers can be used with: existing column names, e.g.,
      *         'table.column AS SAMPLE_X'; expressions, e.g.,
@@ -859,11 +859,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *                      geospatial
      *                      graph. Sample points must be specified using
      *                      <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#match-identifiers"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#match-identifiers"
      *                      target="_top">identifiers</a>;
      *                      identifiers are grouped as
      *                      <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#match-combinations"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#match-combinations"
      *                      target="_top">combinations</a>.
      *                      Identifiers can be used with: existing column
      *                      names, e.g.,
@@ -976,12 +976,12 @@ public class MatchGraphRequest implements IndexedRecord {
      * 
      * @return The name of the table used to store the results, in
      *         [schema_name.]table_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a> and meeting <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.  This table contains a
      *         <a
-     *         href="../../../../../geospatial/geo_objects.html#geospatial-tracks"
+     *         href="../../../../../../geospatial/geo_objects/#geospatial-tracks"
      *         target="_top">track</a> of geospatial points for the matched
      *         portion of the graph, a track ID, and a score value. Also
      *         outputs a details table containing a trip ID (that matches the
@@ -1000,13 +1000,13 @@ public class MatchGraphRequest implements IndexedRecord {
      * @param solutionTable  The name of the table used to store the results,
      *                       in [schema_name.]table_name format, using standard
      *                       <a
-     *                       href="../../../../../concepts/tables.html#table-name-resolution"
+     *                       href="../../../../../../concepts/tables/#table-name-resolution"
      *                       target="_top">name resolution rules</a> and
      *                       meeting <a
-     *                       href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                       href="../../../../../../concepts/tables/#table-naming-criteria"
      *                       target="_top">table naming criteria</a>.  This
      *                       table contains a <a
-     *                       href="../../../../../geospatial/geo_objects.html#geospatial-tracks"
+     *                       href="../../../../../../geospatial/geo_objects/#geospatial-tracks"
      *                       target="_top">track</a> of geospatial points for
      *                       the matched portion of the graph, a track ID, and
      *                       a score value. Also outputs a details table

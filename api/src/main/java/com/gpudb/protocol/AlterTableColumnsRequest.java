@@ -23,7 +23,7 @@ import org.apache.avro.generic.IndexedRecord;
  * modifications include the following:
  * <p>
  * Create or delete an <a
- * href="../../../../../concepts/indexes.html#column-index"
+ * href="../../../../../../concepts/indexes/#column-index"
  * target="_top">index</a> on a
  * particular column. This can speed up certain operations when using
  * expressions
@@ -31,10 +31,10 @@ import org.apache.avro.generic.IndexedRecord;
  * applies to tables.
  * <p>
  * Manage a table's columns--a column can be added, removed, or have its
- * <a href="../../../../../concepts/types.html" target="_top">type and
+ * <a href="../../../../../../concepts/types/" target="_top">type and
  * properties</a> modified.
  * <p>
- * Set or unset <a href="../../../../../concepts/compression.html"
+ * Set or unset <a href="../../../../../../concepts/compression/"
  * target="_top">compression</a> for a column.
  */
 public class AlterTableColumnsRequest implements IndexedRecord {
@@ -80,7 +80,7 @@ public class AlterTableColumnsRequest implements IndexedRecord {
      * @param tableName  Table on which the operation will be performed. Must
      *                   be an existing table or view, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnAlterations  List of alter table add/delete/change column
      *                           requests - all for the same table. Each
@@ -105,7 +105,7 @@ public class AlterTableColumnsRequest implements IndexedRecord {
      * @return Table on which the operation will be performed. Must be an
      *         existing table or view, in [schema_name.]table_name format,
      *         using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.
      * 
      */
@@ -118,7 +118,7 @@ public class AlterTableColumnsRequest implements IndexedRecord {
      * @param tableName  Table on which the operation will be performed. Must
      *                   be an existing table or view, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.

@@ -107,7 +107,7 @@ public class AggregateHistogramRequest implements IndexedRecord {
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * @param columnName  Name of a column or an expression of one or more
      *                    column names over which the histogram will be
@@ -142,7 +142,7 @@ public class AggregateHistogramRequest implements IndexedRecord {
      * @return Name of the table on which the operation will be performed. Must
      *         be an existing table, in [schema_name.]table_name format, using
      *         standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.
      * 
      */
@@ -155,7 +155,7 @@ public class AggregateHistogramRequest implements IndexedRecord {
      * @param tableName  Name of the table on which the operation will be
      *                   performed. Must be an existing table, in
      *                   [schema_name.]table_name format, using standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.

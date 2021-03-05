@@ -73,18 +73,18 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
      * @param tableName  Name of the view on which the update operation will be
      *                   performed, in [schema_name.]view_name format, using
      *                   standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing view.
      * @param worldTableName  Name of the table containing the complete series
      *                        (track) information, in [schema_name.]table_name
      *                        format, using standard <a
-     *                        href="../../../../../concepts/tables.html#table-name-resolution"
+     *                        href="../../../../../../concepts/tables/#table-name-resolution"
      *                        target="_top">name resolution rules</a>.
      * @param viewName  Name of the view containing the series (tracks) which
      *                  have to be updated, in [schema_name.]view_name format,
      *                  using standard <a
-     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a>.  The default
      *                  value is ''.
      * @param reserved  The default value is an empty {@link List}.
@@ -104,7 +104,7 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
      * 
      * @return Name of the view on which the update operation will be
      *         performed, in [schema_name.]view_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  Must be an existing
      *         view.
      * 
@@ -118,7 +118,7 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
      * @param tableName  Name of the view on which the update operation will be
      *                   performed, in [schema_name.]view_name format, using
      *                   standard <a
-     *                   href="../../../../../concepts/tables.html#table-name-resolution"
+     *                   href="../../../../../../concepts/tables/#table-name-resolution"
      *                   target="_top">name resolution rules</a>.  Must be an
      *                   existing view.
      * 
@@ -135,7 +135,7 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
      * @return Name of the table containing the complete series (track)
      *         information, in [schema_name.]table_name format, using standard
      *         <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.
      * 
      */
@@ -148,7 +148,7 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
      * @param worldTableName  Name of the table containing the complete series
      *                        (track) information, in [schema_name.]table_name
      *                        format, using standard <a
-     *                        href="../../../../../concepts/tables.html#table-name-resolution"
+     *                        href="../../../../../../concepts/tables/#table-name-resolution"
      *                        target="_top">name resolution rules</a>.
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -163,7 +163,7 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
      * 
      * @return Name of the view containing the series (tracks) which have to be
      *         updated, in [schema_name.]view_name format, using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a>.  The default value is
      *         ''.
      * 
@@ -177,7 +177,7 @@ public class UpdateRecordsBySeriesRequest implements IndexedRecord {
      * @param viewName  Name of the view containing the series (tracks) which
      *                  have to be updated, in [schema_name.]view_name format,
      *                  using standard <a
-     *                  href="../../../../../concepts/tables.html#table-name-resolution"
+     *                  href="../../../../../../concepts/tables/#table-name-resolution"
      *                  target="_top">name resolution rules</a>.  The default
      *                  value is ''.
      * 

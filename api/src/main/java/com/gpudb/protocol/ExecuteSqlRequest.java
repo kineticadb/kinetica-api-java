@@ -22,7 +22,7 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * Execute a SQL statement (query, DML, or DDL).
  * <p>
- * See <a href="../../../../../concepts/sql.html" target="_top">SQL Support</a>
+ * See <a href="../../../../../../concepts/sql/" target="_top">SQL Support</a>
  * for the complete set of supported SQL commands.
  */
 public class ExecuteSqlRequest implements IndexedRecord {
@@ -148,7 +148,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * from the paging table are returned without evaluating the query.
      *         <li> {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
-     * PAGING_TABLE_TTL}: Sets the <a href="../../../../../concepts/ttl.html"
+     * PAGING_TABLE_TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      * target="_top">TTL</a> of the paging table.
      *         <li> {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
@@ -208,7 +208,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      *         <li> {@link com.gpudb.protocol.ExecuteSqlRequest.Options#TTL
-     * TTL}: Sets the <a href="../../../../../concepts/ttl.html"
+     * TTL}: Sets the <a href="../../../../../../concepts/ttl/"
      * target="_top">TTL</a> of the intermediate result tables used in query
      * execution.
      *         <li> {@link
@@ -360,7 +360,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
         public static final String PAGING_TABLE = "paging_table";
 
         /**
-         * Sets the <a href="../../../../../concepts/ttl.html"
+         * Sets the <a href="../../../../../../concepts/ttl/"
          * target="_top">TTL</a> of the paging table.
          */
         public static final String PAGING_TABLE_TTL = "paging_table_ttl";
@@ -429,7 +429,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
         public static final String LATE_MATERIALIZATION = "late_materialization";
 
         /**
-         * Sets the <a href="../../../../../concepts/ttl.html"
+         * Sets the <a href="../../../../../../concepts/ttl/"
          * target="_top">TTL</a> of the intermediate result tables used in
          * query execution.
          */
@@ -536,7 +536,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *               that the maximum number of results allowed by the server
      *               should be returned.  The number of records returned will
      *               never exceed the server's own limit, defined by the <a
-     *               href="../../../../../config/index.html#general"
+     *               href="../../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -631,7 +631,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
      *                 PAGING_TABLE_TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the paging table.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
@@ -703,7 +703,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TTL TTL}:
-     *                 Sets the <a href="../../../../../concepts/ttl.html"
+     *                 Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the intermediate result tables
      *                 used in query execution.
      *                         <li> {@link
@@ -800,7 +800,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *               that the maximum number of results allowed by the server
      *               should be returned.  The number of records returned will
      *               never exceed the server's own limit, defined by the <a
-     *               href="../../../../../config/index.html#general"
+     *               href="../../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -909,7 +909,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
      *                 PAGING_TABLE_TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the paging table.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
@@ -981,7 +981,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TTL TTL}:
-     *                 Sets the <a href="../../../../../concepts/ttl.html"
+     *                 Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the intermediate result tables
      *                 used in query execution.
      *                         <li> {@link
@@ -1120,7 +1120,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         number of results allowed by the server should be returned.  The
      *         number of records returned will never exceed the server's own
      *         limit, defined by the <a
-     *         href="../../../../../config/index.html#general"
+     *         href="../../../../../../config/#general"
      *         target="_top">max_get_records_size</a> parameter in the server
      *         configuration.  Use {@code hasMoreRecords} to see if more
      *         records exist in the result to be fetched, and {@code offset} &
@@ -1139,7 +1139,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *               that the maximum number of results allowed by the server
      *               should be returned.  The number of records returned will
      *               never exceed the server's own limit, defined by the <a
-     *               href="../../../../../config/index.html#general"
+     *               href="../../../../../../config/#general"
      *               target="_top">max_get_records_size</a> parameter in the
      *               server configuration.  Use {@code hasMoreRecords} to see
      *               if more records exist in the result to be fetched, and
@@ -1323,7 +1323,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
      *         PAGING_TABLE_TTL}: Sets the <a
-     *         href="../../../../../concepts/ttl.html" target="_top">TTL</a> of
+     *         href="../../../../../../concepts/ttl/" target="_top">TTL</a> of
      *         the paging table.
      *                 <li> {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
@@ -1385,7 +1385,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#FALSE FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#TTL TTL}: Sets the
-     *         <a href="../../../../../concepts/ttl.html" target="_top">TTL</a>
+     *         <a href="../../../../../../concepts/ttl/" target="_top">TTL</a>
      *         of the intermediate result tables used in query execution.
      *                 <li> {@link
      *         com.gpudb.protocol.ExecuteSqlRequest.Options#UPDATE_ON_EXISTING_PK
@@ -1540,7 +1540,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#PAGING_TABLE_TTL
      *                 PAGING_TABLE_TTL}: Sets the <a
-     *                 href="../../../../../concepts/ttl.html"
+     *                 href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the paging table.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#DISTRIBUTED_JOINS
@@ -1612,7 +1612,7 @@ public class ExecuteSqlRequest implements IndexedRecord {
      *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteSqlRequest.Options#TTL TTL}:
-     *                 Sets the <a href="../../../../../concepts/ttl.html"
+     *                 Sets the <a href="../../../../../../concepts/ttl/"
      *                 target="_top">TTL</a> of the intermediate result tables
      *                 used in query execution.
      *                         <li> {@link

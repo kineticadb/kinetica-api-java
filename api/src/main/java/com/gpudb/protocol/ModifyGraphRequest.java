@@ -23,13 +23,13 @@ import org.apache.avro.generic.IndexedRecord;
  * restrictions, and options.
 
  * IMPORTANT: It's highly recommended that you review the
- * <a href="../../../../../graph_solver/network_graph_solver.html"
+ * <a href="../../../../../../graph_solver/network_graph_solver/"
  * target="_top">Network Graphs & Solvers</a>
  * concepts documentation, the
- * <a href="../../../../../graph_solver/examples/graph_rest_guide.html"
+ * <a href="../../../../../../graph_solver/examples/graph_rest_guide/"
  * target="_top">Graph REST Tutorial</a>,
  * and/or some
- * <a href="../../../../../graph_solver/examples.html#match-graph"
+ * <a href="../../../../../../graph_solver/examples/#match-graph"
  * target="_top">/match/graph examples</a>
  * before using this endpoint.
  */
@@ -99,7 +99,7 @@ public class ModifyGraphRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.ModifyGraphRequest.Options#SAVE_PERSIST
      * SAVE_PERSIST}: If set to {@code true}, the graph will be saved in the
-     * persist directory (see the <a href="../../../../../config/index.html"
+     * persist directory (see the <a href="../../../../../../config/"
      * target="_top">config reference</a> for more information). If set to
      * {@code false}, the graph will be removed when the graph server is
      * shutdown.
@@ -134,9 +134,9 @@ public class ModifyGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.ModifyGraphRequest.Options#GRAPH_TABLE GRAPH_TABLE}:
      * If specified, the created graph is also created as a table with the
      * given name, in [schema_name.]table_name format, using standard <a
-     * href="../../../../../concepts/tables.html#table-name-resolution"
+     * href="../../../../../../concepts/tables/#table-name-resolution"
      * target="_top">name resolution rules</a> and meeting <a
-     * href="../../../../../concepts/tables.html#table-naming-criteria"
+     * href="../../../../../../concepts/tables/#table-naming-criteria"
      * target="_top">table naming criteria</a>.  This table will have the
      * following identifier columns: 'EDGE_ID', 'EDGE_NODE1_ID',
      * 'EDGE_NODE2_ID'. If left blank, no table is created.  The default value
@@ -228,7 +228,7 @@ public class ModifyGraphRequest implements IndexedRecord {
 
         /**
          * If set to {@code true}, the graph will be saved in the persist
-         * directory (see the <a href="../../../../../config/index.html"
+         * directory (see the <a href="../../../../../../config/"
          * target="_top">config reference</a> for more information). If set to
          * {@code false}, the graph will be removed when the graph server is
          * shutdown.
@@ -267,9 +267,9 @@ public class ModifyGraphRequest implements IndexedRecord {
         /**
          * If specified, the created graph is also created as a table with the
          * given name, in [schema_name.]table_name format, using standard <a
-         * href="../../../../../concepts/tables.html#table-name-resolution"
+         * href="../../../../../../concepts/tables/#table-name-resolution"
          * target="_top">name resolution rules</a> and meeting <a
-         * href="../../../../../concepts/tables.html#table-naming-criteria"
+         * href="../../../../../../concepts/tables/#table-naming-criteria"
          * target="_top">table naming criteria</a>.  This table will have the
          * following identifier columns: 'EDGE_ID', 'EDGE_NODE1_ID',
          * 'EDGE_NODE2_ID'. If left blank, no table is created.  The default
@@ -350,13 +350,13 @@ public class ModifyGraphRequest implements IndexedRecord {
      * @param graphName  Name of the graph resource to modify.
      * @param nodes  Nodes with which to update existing {@code nodes} in graph
      *               specified by {@code graphName}. Review <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#nodes"
+     *               href="../../../../../../graph_solver/network_graph_solver/#nodes"
      *               target="_top">Nodes</a> for more information. Nodes must
      *               be specified using <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *               href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *               target="_top">identifiers</a>; identifiers are grouped as
      *               <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *               href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *               target="_top">combinations</a>. Identifiers can be used
      *               with existing column names, e.g., 'table.column AS
      *               NODE_ID', expressions, e.g., 'ST_MAKEPOINT(column1,
@@ -370,13 +370,13 @@ public class ModifyGraphRequest implements IndexedRecord {
      *               graph.
      * @param edges  Edges with which to update existing {@code edges} in graph
      *               specified by {@code graphName}. Review <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#edges"
+     *               href="../../../../../../graph_solver/network_graph_solver/#edges"
      *               target="_top">Edges</a> for more information. Edges must
      *               be specified using <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *               href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *               target="_top">identifiers</a>; identifiers are grouped as
      *               <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *               href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *               target="_top">combinations</a>. Identifiers can be used
      *               with existing column names, e.g., 'table.column AS
      *               EDGE_ID', expressions, e.g., 'SUBSTR(column, 1, 6) AS
@@ -390,13 +390,13 @@ public class ModifyGraphRequest implements IndexedRecord {
      *               used to modify the graph.
      * @param weights  Weights with which to update existing {@code weights} in
      *                 graph specified by {@code graphName}. Review <a
-     *                 href="../../../../../graph_solver/network_graph_solver.html#graph-weights"
+     *                 href="../../../../../../graph_solver/network_graph_solver/#graph-weights"
      *                 target="_top">Weights</a> for more information. Weights
      *                 must be specified using <a
-     *                 href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                 href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *                 target="_top">identifiers</a>; identifiers are grouped
      *                 as <a
-     *                 href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                 href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *                 target="_top">combinations</a>. Identifiers can be used
      *                 with existing column names, e.g., 'table.column AS
      *                 WEIGHTS_EDGE_ID', expressions, e.g., 'ST_LENGTH(wkt) AS
@@ -411,14 +411,14 @@ public class ModifyGraphRequest implements IndexedRecord {
      * @param restrictions  Restrictions with which to update existing {@code
      *                      restrictions} in graph specified by {@code
      *                      graphName}. Review <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#graph-restrictions"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#graph-restrictions"
      *                      target="_top">Restrictions</a> for more
      *                      information. Restrictions must be specified using
      *                      <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *                      target="_top">identifiers</a>; identifiers are
      *                      grouped as <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *                      target="_top">combinations</a>. Identifiers can be
      *                      used with existing column names, e.g.,
      *                      'table.column AS RESTRICTIONS_EDGE_ID',
@@ -480,10 +480,10 @@ public class ModifyGraphRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ModifyGraphRequest.Options#SAVE_PERSIST
      *                 SAVE_PERSIST}: If set to {@code true}, the graph will be
      *                 saved in the persist directory (see the <a
-     *                 href="../../../../../config/index.html"
-     *                 target="_top">config reference</a> for more
-     *                 information). If set to {@code false}, the graph will be
-     *                 removed when the graph server is shutdown.
+     *                 href="../../../../../../config/" target="_top">config
+     *                 reference</a> for more information). If set to {@code
+     *                 false}, the graph will be removed when the graph server
+     *                 is shutdown.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -522,9 +522,9 @@ public class ModifyGraphRequest implements IndexedRecord {
      *                 GRAPH_TABLE}: If specified, the created graph is also
      *                 created as a table with the given name, in
      *                 [schema_name.]table_name format, using standard <a
-     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  This table
      *                 will have the following identifier columns: 'EDGE_ID',
      *                 'EDGE_NODE1_ID', 'EDGE_NODE2_ID'. If left blank, no
@@ -613,12 +613,12 @@ public class ModifyGraphRequest implements IndexedRecord {
      * 
      * @return Nodes with which to update existing {@code nodes} in graph
      *         specified by {@code graphName}. Review <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#nodes"
+     *         href="../../../../../../graph_solver/network_graph_solver/#nodes"
      *         target="_top">Nodes</a> for more information. Nodes must be
      *         specified using <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *         href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *         target="_top">identifiers</a>; identifiers are grouped as <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *         href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *         target="_top">combinations</a>. Identifiers can be used with
      *         existing column names, e.g., 'table.column AS NODE_ID',
      *         expressions, e.g., 'ST_MAKEPOINT(column1, column2) AS
@@ -639,13 +639,13 @@ public class ModifyGraphRequest implements IndexedRecord {
      * 
      * @param nodes  Nodes with which to update existing {@code nodes} in graph
      *               specified by {@code graphName}. Review <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#nodes"
+     *               href="../../../../../../graph_solver/network_graph_solver/#nodes"
      *               target="_top">Nodes</a> for more information. Nodes must
      *               be specified using <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *               href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *               target="_top">identifiers</a>; identifiers are grouped as
      *               <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *               href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *               target="_top">combinations</a>. Identifiers can be used
      *               with existing column names, e.g., 'table.column AS
      *               NODE_ID', expressions, e.g., 'ST_MAKEPOINT(column1,
@@ -670,12 +670,12 @@ public class ModifyGraphRequest implements IndexedRecord {
      * 
      * @return Edges with which to update existing {@code edges} in graph
      *         specified by {@code graphName}. Review <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#edges"
+     *         href="../../../../../../graph_solver/network_graph_solver/#edges"
      *         target="_top">Edges</a> for more information. Edges must be
      *         specified using <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *         href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *         target="_top">identifiers</a>; identifiers are grouped as <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *         href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *         target="_top">combinations</a>. Identifiers can be used with
      *         existing column names, e.g., 'table.column AS EDGE_ID',
      *         expressions, e.g., 'SUBSTR(column, 1, 6) AS EDGE_NODE1_NAME', or
@@ -696,13 +696,13 @@ public class ModifyGraphRequest implements IndexedRecord {
      * 
      * @param edges  Edges with which to update existing {@code edges} in graph
      *               specified by {@code graphName}. Review <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#edges"
+     *               href="../../../../../../graph_solver/network_graph_solver/#edges"
      *               target="_top">Edges</a> for more information. Edges must
      *               be specified using <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *               href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *               target="_top">identifiers</a>; identifiers are grouped as
      *               <a
-     *               href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *               href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *               target="_top">combinations</a>. Identifiers can be used
      *               with existing column names, e.g., 'table.column AS
      *               EDGE_ID', expressions, e.g., 'SUBSTR(column, 1, 6) AS
@@ -727,12 +727,12 @@ public class ModifyGraphRequest implements IndexedRecord {
      * 
      * @return Weights with which to update existing {@code weights} in graph
      *         specified by {@code graphName}. Review <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#graph-weights"
+     *         href="../../../../../../graph_solver/network_graph_solver/#graph-weights"
      *         target="_top">Weights</a> for more information. Weights must be
      *         specified using <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *         href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *         target="_top">identifiers</a>; identifiers are grouped as <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *         href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *         target="_top">combinations</a>. Identifiers can be used with
      *         existing column names, e.g., 'table.column AS WEIGHTS_EDGE_ID',
      *         expressions, e.g., 'ST_LENGTH(wkt) AS WEIGHTS_VALUESPECIFIED',
@@ -753,13 +753,13 @@ public class ModifyGraphRequest implements IndexedRecord {
      * 
      * @param weights  Weights with which to update existing {@code weights} in
      *                 graph specified by {@code graphName}. Review <a
-     *                 href="../../../../../graph_solver/network_graph_solver.html#graph-weights"
+     *                 href="../../../../../../graph_solver/network_graph_solver/#graph-weights"
      *                 target="_top">Weights</a> for more information. Weights
      *                 must be specified using <a
-     *                 href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                 href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *                 target="_top">identifiers</a>; identifiers are grouped
      *                 as <a
-     *                 href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                 href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *                 target="_top">combinations</a>. Identifiers can be used
      *                 with existing column names, e.g., 'table.column AS
      *                 WEIGHTS_EDGE_ID', expressions, e.g., 'ST_LENGTH(wkt) AS
@@ -784,12 +784,12 @@ public class ModifyGraphRequest implements IndexedRecord {
      * 
      * @return Restrictions with which to update existing {@code restrictions}
      *         in graph specified by {@code graphName}. Review <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#graph-restrictions"
+     *         href="../../../../../../graph_solver/network_graph_solver/#graph-restrictions"
      *         target="_top">Restrictions</a> for more information.
      *         Restrictions must be specified using <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *         href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *         target="_top">identifiers</a>; identifiers are grouped as <a
-     *         href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *         href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *         target="_top">combinations</a>. Identifiers can be used with
      *         existing column names, e.g., 'table.column AS
      *         RESTRICTIONS_EDGE_ID', expressions, e.g., 'column/2 AS
@@ -811,14 +811,14 @@ public class ModifyGraphRequest implements IndexedRecord {
      * @param restrictions  Restrictions with which to update existing {@code
      *                      restrictions} in graph specified by {@code
      *                      graphName}. Review <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#graph-restrictions"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#graph-restrictions"
      *                      target="_top">Restrictions</a> for more
      *                      information. Restrictions must be specified using
      *                      <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#identifiers"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#identifiers"
      *                      target="_top">identifiers</a>; identifiers are
      *                      grouped as <a
-     *                      href="../../../../../graph_solver/network_graph_solver.html#id-combos"
+     *                      href="../../../../../../graph_solver/network_graph_solver/#id-combos"
      *                      target="_top">combinations</a>. Identifiers can be
      *                      used with existing column names, e.g.,
      *                      'table.column AS RESTRICTIONS_EDGE_ID',
@@ -885,7 +885,7 @@ public class ModifyGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.ModifyGraphRequest.Options#SAVE_PERSIST
      *         SAVE_PERSIST}: If set to {@code true}, the graph will be saved
      *         in the persist directory (see the <a
-     *         href="../../../../../config/index.html" target="_top">config
+     *         href="../../../../../../config/" target="_top">config
      *         reference</a> for more information). If set to {@code false},
      *         the graph will be removed when the graph server is shutdown.
      *         Supported values:
@@ -921,9 +921,9 @@ public class ModifyGraphRequest implements IndexedRecord {
      *         GRAPH_TABLE}: If specified, the created graph is also created as
      *         a table with the given name, in [schema_name.]table_name format,
      *         using standard <a
-     *         href="../../../../../concepts/tables.html#table-name-resolution"
+     *         href="../../../../../../concepts/tables/#table-name-resolution"
      *         target="_top">name resolution rules</a> and meeting <a
-     *         href="../../../../../concepts/tables.html#table-naming-criteria"
+     *         href="../../../../../../concepts/tables/#table-naming-criteria"
      *         target="_top">table naming criteria</a>.  This table will have
      *         the following identifier columns: 'EDGE_ID', 'EDGE_NODE1_ID',
      *         'EDGE_NODE2_ID'. If left blank, no table is created.  The
@@ -1025,10 +1025,10 @@ public class ModifyGraphRequest implements IndexedRecord {
      *                 com.gpudb.protocol.ModifyGraphRequest.Options#SAVE_PERSIST
      *                 SAVE_PERSIST}: If set to {@code true}, the graph will be
      *                 saved in the persist directory (see the <a
-     *                 href="../../../../../config/index.html"
-     *                 target="_top">config reference</a> for more
-     *                 information). If set to {@code false}, the graph will be
-     *                 removed when the graph server is shutdown.
+     *                 href="../../../../../../config/" target="_top">config
+     *                 reference</a> for more information). If set to {@code
+     *                 false}, the graph will be removed when the graph server
+     *                 is shutdown.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1067,9 +1067,9 @@ public class ModifyGraphRequest implements IndexedRecord {
      *                 GRAPH_TABLE}: If specified, the created graph is also
      *                 created as a table with the given name, in
      *                 [schema_name.]table_name format, using standard <a
-     *                 href="../../../../../concepts/tables.html#table-name-resolution"
+     *                 href="../../../../../../concepts/tables/#table-name-resolution"
      *                 target="_top">name resolution rules</a> and meeting <a
-     *                 href="../../../../../concepts/tables.html#table-naming-criteria"
+     *                 href="../../../../../../concepts/tables/#table-naming-criteria"
      *                 target="_top">table naming criteria</a>.  This table
      *                 will have the following identifier columns: 'EDGE_ID',
      *                 'EDGE_NODE1_ID', 'EDGE_NODE2_ID'. If left blank, no
