@@ -32,19 +32,6 @@ The Java specific documentation can be found at:
 For changes to the client-side API, please see CHANGELOG.md.  For changes
 to GPUdb functions, please see CHANGELOG-FUNCTIONS.md.
 
-```
-log4j.appender.com.gpudb=INFO, stdout # or whatever appender you wish to use
-```
-
-Alternatively, the logging can be enabled and the log level set programmatically
-by using the appropriate GPUdb.Options method:
-
-```
-    GPUdb.Options options = new GPUdb.Options();
-    options.setLoggingLevel( logLevel ); // For example, "info" or "debug"
-    GPUdb gpudb = new GPUdb( url, options );
-```
-
 
 
 ### API Logging
@@ -54,7 +41,31 @@ log4j.properties, in the classpath of the application with the following
 logger in it:
 
 ```
+log4j.appender.com.gpudb=INFO, stdout # or whatever appender you wish to use
 ```
+
+Alternatively, the logging can be enabled and the log level set programmatically
+by using the appropriate GPUdb.Options method:
+
+```
+GPUdb.Options options = new GPUdb.Options();
+options.setLoggingLevel( logLevel ); // For example, "info" or "debug"
+GPUdb gpudb = new GPUdb( url, options );
+```
+
+For the official manual on Log4j, please visit:
+
+```
+https://logging.apache.org/log4j/1.2/manual.html
+```
+
+For a tutorial on log4j.properties file, including where to place it, please
+see:
+
+```
+https://www.javatpoint.com/log4j-properties
+```
+
 
 ### SSL Configuration
 
@@ -78,8 +89,8 @@ The environment variables can also be programmatically set from applications
 that use the Java API:
 
 ```
-    System.setProperty( "javax.net.ssl.trustStore", trustStorePath );
-    System.setProperty( "javax.net.ssl.trustStorePassword", trustStorePassword );
+System.setProperty( "javax.net.ssl.trustStore", trustStorePath );
+System.setProperty( "javax.net.ssl.trustStorePassword", trustStorePassword );
 ```
 
 
