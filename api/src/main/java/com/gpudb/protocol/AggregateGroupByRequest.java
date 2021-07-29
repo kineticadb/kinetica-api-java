@@ -272,24 +272,6 @@ public class AggregateGroupByRequest implements IndexedRecord {
      * of view of which the result table will be a member.  The default value
      * is ''.
      *         <li> {@link
-     * com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
-     * MATERIALIZE_ON_GPU}: No longer used.  See <a
-     * href="../../../../../../rm/concepts/" target="_top">Resource Management
-     * Concepts</a> for information about how resources are managed, <a
-     * href="../../../../../../rm/concepts/" target="_top">Tier Strategy
-     * Concepts</a> for how resources are targeted for VRAM, and <a
-     * href="../../../../../../rm/usage/#tier-strategies" target="_top">Tier
-     * Strategy Usage</a> for how to specify a table's priority in VRAM.
-     * Supported values:
-     * <ul>
-     *         <li> {@link
-     * com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE TRUE}
-     *         <li> {@link
-     * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
-     *         <li> {@link
      * com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT PIVOT}: pivot
      * column
      *         <li> {@link
@@ -497,27 +479,6 @@ public class AggregateGroupByRequest implements IndexedRecord {
          * value is ''.
          */
         public static final String VIEW_ID = "view_id";
-
-        /**
-         * No longer used.  See <a href="../../../../../../rm/concepts/"
-         * target="_top">Resource Management Concepts</a> for information about
-         * how resources are managed, <a href="../../../../../../rm/concepts/"
-         * target="_top">Tier Strategy Concepts</a> for how resources are
-         * targeted for VRAM, and <a
-         * href="../../../../../../rm/usage/#tier-strategies"
-         * target="_top">Tier Strategy Usage</a> for how to specify a table's
-         * priority in VRAM.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
-         */
-        public static final String MATERIALIZE_ON_GPU = "materialize_on_gpu";
 
         /**
          * pivot column
@@ -747,30 +708,6 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 VIEW_ID}: ID of view of which the result table will be a
      *                 member.  The default value is ''.
      *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../../rm/concepts/"
-     *                 target="_top">Resource Management Concepts</a> for
-     *                 information about how resources are managed, <a
-     *                 href="../../../../../../rm/concepts/" target="_top">Tier
-     *                 Strategy Concepts</a> for how resources are targeted for
-     *                 VRAM, and <a
-     *                 href="../../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">Tier Strategy Usage</a> for how to specify
-     *                 a table's priority in VRAM.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT
      *                 PIVOT}: pivot column
      *                         <li> {@link
@@ -998,30 +935,6 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
      *                 VIEW_ID}: ID of view of which the result table will be a
      *                 member.  The default value is ''.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../../rm/concepts/"
-     *                 target="_top">Resource Management Concepts</a> for
-     *                 information about how resources are managed, <a
-     *                 href="../../../../../../rm/concepts/" target="_top">Tier
-     *                 Strategy Concepts</a> for how resources are targeted for
-     *                 VRAM, and <a
-     *                 href="../../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">Tier Strategy Usage</a> for how to specify
-     *                 a table's priority in VRAM.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
-     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT
      *                 PIVOT}: pivot column
@@ -1359,26 +1272,6 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *         VIEW_ID}: ID of view of which the result table will be a member.
      *         The default value is ''.
      *                 <li> {@link
-     *         com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
-     *         MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *         href="../../../../../../rm/concepts/" target="_top">Resource
-     *         Management Concepts</a> for information about how resources are
-     *         managed, <a href="../../../../../../rm/concepts/"
-     *         target="_top">Tier Strategy Concepts</a> for how resources are
-     *         targeted for VRAM, and <a
-     *         href="../../../../../../rm/usage/#tier-strategies"
-     *         target="_top">Tier Strategy Usage</a> for how to specify a
-     *         table's priority in VRAM.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE FALSE}.
-     *                 <li> {@link
      *         com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT PIVOT}:
      *         pivot column
      *                 <li> {@link
@@ -1560,30 +1453,6 @@ public class AggregateGroupByRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
      *                 VIEW_ID}: ID of view of which the result table will be a
      *                 member.  The default value is ''.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../../rm/concepts/"
-     *                 target="_top">Resource Management Concepts</a> for
-     *                 information about how resources are managed, <a
-     *                 href="../../../../../../rm/concepts/" target="_top">Tier
-     *                 Strategy Concepts</a> for how resources are targeted for
-     *                 VRAM, and <a
-     *                 href="../../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">Tier Strategy Usage</a> for how to specify
-     *                 a table's priority in VRAM.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
-     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT
      *                 PIVOT}: pivot column

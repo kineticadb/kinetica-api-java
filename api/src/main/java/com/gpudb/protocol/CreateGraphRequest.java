@@ -26,9 +26,9 @@ import org.apache.avro.generic.IndexedRecord;
  * <a href="../../../../../../graph_solver/network_graph_solver/"
  * target="_top">Network Graphs & Solvers</a>
  * concepts documentation, the
- * <a href="../../../../../../graph_solver/examples/graph_rest_guide/"
- * target="_top">Graph REST Tutorial</a>,
- * and/or some <a href="../../../../../../graph_solver/examples/"
+ * <a href="../../../../../../guides/graph_rest_guide/" target="_top">Graph
+ * REST Tutorial</a>,
+ * and/or some <a href="../../../../../../guide-tags/graph/"
  * target="_top">graph examples</a> before
  * using this endpoint.
  */
@@ -167,7 +167,8 @@ public class CreateGraphRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateGraphRequest.Options#SAVE_PERSIST
      * SAVE_PERSIST}: If set to {@code true}, the graph will be saved in the
-     * persist directory (see the <a href="../../../../../../config/"
+     * persist directory (see the <a
+     * href="../../../../../../config/#config-main-persistence"
      * target="_top">config reference</a> for more information). If set to
      * {@code false}, the graph will be removed when the graph server is
      * shutdown.
@@ -407,7 +408,8 @@ public class CreateGraphRequest implements IndexedRecord {
 
         /**
          * If set to {@code true}, the graph will be saved in the persist
-         * directory (see the <a href="../../../../../../config/"
+         * directory (see the <a
+         * href="../../../../../../config/#config-main-persistence"
          * target="_top">config reference</a> for more information). If set to
          * {@code false}, the graph will be removed when the graph server is
          * shutdown.
@@ -786,10 +788,10 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateGraphRequest.Options#SAVE_PERSIST
      *                 SAVE_PERSIST}: If set to {@code true}, the graph will be
      *                 saved in the persist directory (see the <a
-     *                 href="../../../../../../config/" target="_top">config
-     *                 reference</a> for more information). If set to {@code
-     *                 false}, the graph will be removed when the graph server
-     *                 is shutdown.
+     *                 href="../../../../../../config/#config-main-persistence"
+     *                 target="_top">config reference</a> for more
+     *                 information). If set to {@code false}, the graph will be
+     *                 removed when the graph server is shutdown.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1346,9 +1348,10 @@ public class CreateGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateGraphRequest.Options#SAVE_PERSIST
      *         SAVE_PERSIST}: If set to {@code true}, the graph will be saved
      *         in the persist directory (see the <a
-     *         href="../../../../../../config/" target="_top">config
-     *         reference</a> for more information). If set to {@code false},
-     *         the graph will be removed when the graph server is shutdown.
+     *         href="../../../../../../config/#config-main-persistence"
+     *         target="_top">config reference</a> for more information). If set
+     *         to {@code false}, the graph will be removed when the graph
+     *         server is shutdown.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -1592,10 +1595,10 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateGraphRequest.Options#SAVE_PERSIST
      *                 SAVE_PERSIST}: If set to {@code true}, the graph will be
      *                 saved in the persist directory (see the <a
-     *                 href="../../../../../../config/" target="_top">config
-     *                 reference</a> for more information). If set to {@code
-     *                 false}, the graph will be removed when the graph server
-     *                 is shutdown.
+     *                 href="../../../../../../config/#config-main-persistence"
+     *                 target="_top">config reference</a> for more
+     *                 information). If set to {@code false}, the graph will be
+     *                 removed when the graph server is shutdown.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

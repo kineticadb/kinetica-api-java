@@ -36,6 +36,7 @@ public class ShowProcStatusResponse implements IndexedRecord {
                 .name("messages").type().map().values().map().values().stringType().noDefault()
                 .name("results").type().map().values().map().values().map().values().stringType().noDefault()
                 .name("binResults").type().map().values().map().values().map().values().bytesType().noDefault()
+                .name("output").type().map().values().map().values().map().values().array().items().stringType().noDefault()
                 .name("timings").type().map().values().map().values().map().values().longType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
@@ -133,6 +134,29 @@ public class ShowProcStatusResponse implements IndexedRecord {
         private Statuses() {  }
     }
 
+
+    /**
+     * Output lines for the returned run IDs, grouped by data segment ID.
+     * Valid values are:
+     * <ul>
+     * </ul>
+     * A set of string constants for the parameter {@code output}.
+     */
+    public static final class Output {
+
+        /**
+         * Output lines from stdout.
+         */
+        public static final String STDOUT = "stdout";
+
+        /**
+         * Output lines from stderr.
+         */
+        public static final String STDERR = "stderr";
+
+        private Output() {  }
+    }
+
     private Map<String, String> procNames;
     private Map<String, Map<String, String>> params;
     private Map<String, Map<String, ByteBuffer>> binParams;
@@ -145,6 +169,7 @@ public class ShowProcStatusResponse implements IndexedRecord {
     private Map<String, Map<String, String>> messages;
     private Map<String, Map<String, Map<String, String>>> results;
     private Map<String, Map<String, Map<String, ByteBuffer>>> binResults;
+    private Map<String, Map<String, Map<String, List<String>>>> output;
     private Map<String, Map<String, Map<String, Long>>> timings;
     private Map<String, String> info;
 
@@ -490,6 +515,35 @@ public class ShowProcStatusResponse implements IndexedRecord {
 
     /**
      * 
+     * @return Output lines for the returned run IDs, grouped by data segment
+     *         ID.
+     *         Valid values are:
+     *         <ul>
+     *         </ul>
+     * 
+     */
+    public Map<String, Map<String, Map<String, List<String>>>> getOutput() {
+        return output;
+    }
+
+    /**
+     * 
+     * @param output  Output lines for the returned run IDs, grouped by data
+     *                segment ID.
+     *                Valid values are:
+     *                <ul>
+     *                </ul>
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowProcStatusResponse setOutput(Map<String, Map<String, Map<String, List<String>>>> output) {
+        this.output = (output == null) ? new LinkedHashMap<String, Map<String, Map<String, List<String>>>>() : output;
+        return this;
+    }
+
+    /**
+     * 
      * @return Timing information for the returned run IDs, grouped by data
      *         segment ID.
      * 
@@ -595,9 +649,12 @@ public class ShowProcStatusResponse implements IndexedRecord {
                 return this.binResults;
 
             case 12:
-                return this.timings;
+                return this.output;
 
             case 13:
+                return this.timings;
+
+            case 14:
                 return this.info;
 
             default:
@@ -668,10 +725,14 @@ public class ShowProcStatusResponse implements IndexedRecord {
                 break;
 
             case 12:
-                this.timings = (Map<String, Map<String, Map<String, Long>>>)value;
+                this.output = (Map<String, Map<String, Map<String, List<String>>>>)value;
                 break;
 
             case 13:
+                this.timings = (Map<String, Map<String, Map<String, Long>>>)value;
+                break;
+
+            case 14:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -704,6 +765,7 @@ public class ShowProcStatusResponse implements IndexedRecord {
                  && this.messages.equals( that.messages )
                  && this.results.equals( that.results )
                  && this.binResults.equals( that.binResults )
+                 && this.output.equals( that.output )
                  && this.timings.equals( that.timings )
                  && this.info.equals( that.info ) );
     }
@@ -761,6 +823,10 @@ public class ShowProcStatusResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.binResults ) );
         builder.append( ", " );
+        builder.append( gd.toString( "output" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.output ) );
+        builder.append( ", " );
         builder.append( gd.toString( "timings" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.timings ) );
@@ -788,6 +854,7 @@ public class ShowProcStatusResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.messages.hashCode();
         hashCode = (31 * hashCode) + this.results.hashCode();
         hashCode = (31 * hashCode) + this.binResults.hashCode();
+        hashCode = (31 * hashCode) + this.output.hashCode();
         hashCode = (31 * hashCode) + this.timings.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;

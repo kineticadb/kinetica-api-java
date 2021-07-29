@@ -181,6 +181,18 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
      * ENABLE_OVERLAPPED_EQUI_JOIN}: Enable overlapped-equi-join filter.  The
      * default value is 'true'.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_BATCH_SIZE
+     * KAFKA_BATCH_SIZE}: Maximum number of records to be read in a single
+     * kafka batched request.  The default value is '1000'.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_WAIT_TIME
+     * KAFKA_WAIT_TIME}: Maximum number of seconds to wait in a single kafka
+     * batched request.  The default value is '30'.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_TIMEOUT
+     * KAFKA_TIMEOUT}: Number of seconds after which kakfa poll will timeout if
+     * datasource has no records.  The default value is '5'.
      * </ul>
      * A set of string constants for the parameter {@code propertyUpdatesMap}.
      */
@@ -361,6 +373,24 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
          * Enable overlapped-equi-join filter.  The default value is 'true'.
          */
         public static final String ENABLE_OVERLAPPED_EQUI_JOIN = "enable_overlapped_equi_join";
+
+        /**
+         * Maximum number of records to be read in a single kafka batched
+         * request.  The default value is '1000'.
+         */
+        public static final String KAFKA_BATCH_SIZE = "kafka_batch_size";
+
+        /**
+         * Maximum number of seconds to wait in a single kafka batched request.
+         * The default value is '30'.
+         */
+        public static final String KAFKA_WAIT_TIME = "kafka_wait_time";
+
+        /**
+         * Number of seconds after which kakfa poll will timeout if datasource
+         * has no records.  The default value is '5'.
+         */
+        public static final String KAFKA_TIMEOUT = "kafka_timeout";
 
         private PropertyUpdatesMap() {  }
     }
@@ -554,6 +584,21 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            ENABLE_OVERLAPPED_EQUI_JOIN}: Enable
      *                            overlapped-equi-join filter.  The default
      *                            value is 'true'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_BATCH_SIZE
+     *                            KAFKA_BATCH_SIZE}: Maximum number of records
+     *                            to be read in a single kafka batched request.
+     *                            The default value is '1000'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_WAIT_TIME
+     *                            KAFKA_WAIT_TIME}: Maximum number of seconds
+     *                            to wait in a single kafka batched request.
+     *                            The default value is '30'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_TIMEOUT
+     *                            KAFKA_TIMEOUT}: Number of seconds after which
+     *                            kakfa poll will timeout if datasource has no
+     *                            records.  The default value is '5'.
      *                            </ul>
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
@@ -710,6 +755,18 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#ENABLE_OVERLAPPED_EQUI_JOIN
      *         ENABLE_OVERLAPPED_EQUI_JOIN}: Enable overlapped-equi-join
      *         filter.  The default value is 'true'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_BATCH_SIZE
+     *         KAFKA_BATCH_SIZE}: Maximum number of records to be read in a
+     *         single kafka batched request.  The default value is '1000'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_WAIT_TIME
+     *         KAFKA_WAIT_TIME}: Maximum number of seconds to wait in a single
+     *         kafka batched request.  The default value is '30'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_TIMEOUT
+     *         KAFKA_TIMEOUT}: Number of seconds after which kakfa poll will
+     *         timeout if datasource has no records.  The default value is '5'.
      *         </ul>
      * 
      */
@@ -891,6 +948,21 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            ENABLE_OVERLAPPED_EQUI_JOIN}: Enable
      *                            overlapped-equi-join filter.  The default
      *                            value is 'true'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_BATCH_SIZE
+     *                            KAFKA_BATCH_SIZE}: Maximum number of records
+     *                            to be read in a single kafka batched request.
+     *                            The default value is '1000'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_WAIT_TIME
+     *                            KAFKA_WAIT_TIME}: Maximum number of seconds
+     *                            to wait in a single kafka batched request.
+     *                            The default value is '30'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_TIMEOUT
+     *                            KAFKA_TIMEOUT}: Number of seconds after which
+     *                            kakfa poll will timeout if datasource has no
+     *                            records.  The default value is '5'.
      *                            </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

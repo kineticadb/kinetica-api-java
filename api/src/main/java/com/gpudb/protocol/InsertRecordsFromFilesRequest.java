@@ -37,7 +37,7 @@ import org.apache.avro.generic.IndexedRecord;
  * the file header's names may be provided to {@code columns_to_load} instead
  * of
  * numbers, but ranges are not supported.
-
+ * <p>
  * Returns once all files are processed.
  */
 public class InsertRecordsFromFilesRequest implements IndexedRecord {
@@ -157,6 +157,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * HASH}: Use <a
      * href="../../../../../../concepts/tables/#partitioning-by-hash"
      * target="_top">hash partitioning</a>.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#SERIES
+     * SERIES}: Use <a
+     * href="../../../../../../concepts/tables/#partitioning-by-series"
+     * target="_top">series partitioning</a>.
      * </ul>
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#PARTITION_KEYS
@@ -172,9 +177,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * href="../../../../../../concepts/tables/#partitioning-by-interval"
      * target="_top">interval partitioning</a>, <a
      * href="../../../../../../concepts/tables/#partitioning-by-list"
-     * target="_top">list partitioning</a>, or <a
+     * target="_top">list partitioning</a>, <a
      * href="../../../../../../concepts/tables/#partitioning-by-hash"
-     * target="_top">hash partitioning</a> for example formats.
+     * target="_top">hash partitioning</a>, or <a
+     * href="../../../../../../concepts/tables/#partitioning-by-series"
+     * target="_top">series partitioning</a> for example formats.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
      * IS_AUTOMATIC_PARTITION}: If {@code true}, a new partition will be
@@ -229,11 +236,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#STRATEGY_DEFINITION
      * STRATEGY_DEFINITION}: The <a
      * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
-     * strategy</a> for the table and its columns. See <a
-     * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
-     * strategy usage</a> for format and <a
-     * href="../../../../../../rm/usage/#tier-strategies" target="_top">tier
-     * strategy examples</a> for examples.
+     * strategy</a> for the table and its columns.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code createTableOptions}.
@@ -339,6 +342,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * HASH}: Use <a
          * href="../../../../../../concepts/tables/#partitioning-by-hash"
          * target="_top">hash partitioning</a>.
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#SERIES
+         * SERIES}: Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a>.
          * </ul>
          */
         public static final String PARTITION_TYPE = "partition_type";
@@ -372,6 +380,13 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String HASH = "HASH";
 
         /**
+         * Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a>.
+         */
+        public static final String SERIES = "SERIES";
+
+        /**
          * Comma-separated list of partition keys, which are the columns or
          * column expressions by which records will be assigned to partitions
          * defined by {@code partition_definitions}.
@@ -386,9 +401,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * href="../../../../../../concepts/tables/#partitioning-by-interval"
          * target="_top">interval partitioning</a>, <a
          * href="../../../../../../concepts/tables/#partitioning-by-list"
-         * target="_top">list partitioning</a>, or <a
+         * target="_top">list partitioning</a>, <a
          * href="../../../../../../concepts/tables/#partitioning-by-hash"
-         * target="_top">hash partitioning</a> for example formats.
+         * target="_top">hash partitioning</a>, or <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a> for example formats.
          */
         public static final String PARTITION_DEFINITIONS = "partition_definitions";
 
@@ -450,11 +467,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
         /**
          * The <a href="../../../../../../rm/concepts/#tier-strategies"
-         * target="_top">tier strategy</a> for the table and its columns. See
-         * <a href="../../../../../../rm/concepts/#tier-strategies"
-         * target="_top">tier strategy usage</a> for format and <a
-         * href="../../../../../../rm/usage/#tier-strategies"
-         * target="_top">tier strategy examples</a> for examples.
+         * target="_top">tier strategy</a> for the table and its columns.
          */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
 
@@ -608,6 +621,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON JSON}:
      * Json file format
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHAPEFILE
+     * SHAPEFILE}: ShapeFile file format
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -694,6 +710,25 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHARD_KEYS
      * SHARD_KEYS}: Optional: comma separated list of column names, to set as
      * primary keys, when not specified in the type.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SUBSCRIBE
+     * SUBSCRIBE}: Continuously poll the data source to check for new data and
+     * load it into the table.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#POLL_INTERVAL
+     * POLL_INTERVAL}: If {@code true}, the number of seconds between attempts
+     * to load external files into the table.  If zero, polling will be
+     * continuous as long as data is found.  If no data is found, the interval
+     * will steadily increase to a maximum of 60 seconds.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_COMMENT_STRING
      * TEXT_COMMENT_STRING}: Specifies the character string that should be
@@ -809,8 +844,36 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * with minimum data scanned
      * </ul>
      * The default value is {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
-     * ACCURACY}.
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED SPEED}.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_INSERT_MODE
+     * TABLE_INSERT_MODE}: Optional: table_insert_mode. When inserting records
+     * from multiple files: if table_per_file then insert from each file into a
+     * new table. Currently supported only for shapefiles.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE SINGLE}
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
+     * TABLE_PER_FILE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE SINGLE}.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_GROUP_ID
+     * KAFKA_GROUP_ID}: The group id to be used consuming data from a kakfa
+     * topic (valid only for kafka datasource subscriptions).
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_COLUMNS
+     * TEXT_SEARCH_COLUMNS}: Add 'text_search' property to internally
+     * inferenced string columns. Comma seperated list of column names or '*'
+     * for all columns. To add text_search property only to string columns of
+     * minimum size, set also the option 'text_search_min_column_length'
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     * TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used only when
+     * 'text_search_columns' has a value.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -990,6 +1053,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON JSON}:
          * Json file format
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHAPEFILE
+         * SHAPEFILE}: ShapeFile file format
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -1011,6 +1077,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * Json file format
          */
         public static final String JSON = "json";
+
+        /**
+         * ShapeFile file format
+         */
+        public static final String SHAPEFILE = "shapefile";
 
         /**
          * Whether to do a full load, dry run, or perform a type inference on
@@ -1176,6 +1247,33 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String SHARD_KEYS = "shard_keys";
 
         /**
+         * Continuously poll the data source to check for new data and load it
+         * into the table.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+         * FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+         * FALSE}.
+         */
+        public static final String SUBSCRIBE = "subscribe";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
+         * If {@code true}, the number of seconds between attempts to load
+         * external files into the table.  If zero, polling will be continuous
+         * as long as data is found.  If no data is found, the interval will
+         * steadily increase to a maximum of 60 seconds.
+         */
+        public static final String POLL_INTERVAL = "poll_interval";
+
+        /**
          * Specifies the character string that should be interpreted as a
          * comment line
          * prefix in the source data.  All lines in the data starting with the
@@ -1231,8 +1329,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE TRUE}.
          */
         public static final String TEXT_HAS_HEADER = "text_has_header";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * Specifies the delimiter for
@@ -1307,8 +1403,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * will fit with minimum data scanned
          * </ul>
          * The default value is {@link
-         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
-         * ACCURACY}.
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
+         * SPEED}.
          */
         public static final String TYPE_INFERENCE_MODE = "type_inference_mode";
 
@@ -1323,6 +1419,47 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * with minimum data scanned
          */
         public static final String SPEED = "speed";
+
+        /**
+         * Optional: table_insert_mode. When inserting records from multiple
+         * files: if table_per_file then insert from each file into a new
+         * table. Currently supported only for shapefiles.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+         * SINGLE}
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
+         * TABLE_PER_FILE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+         * SINGLE}.
+         */
+        public static final String TABLE_INSERT_MODE = "table_insert_mode";
+        public static final String SINGLE = "single";
+        public static final String TABLE_PER_FILE = "table_per_file";
+
+        /**
+         * The group id to be used consuming data from a kakfa topic (valid
+         * only for kafka datasource subscriptions).
+         */
+        public static final String KAFKA_GROUP_ID = "kafka_group_id";
+
+        /**
+         * Add 'text_search' property to internally inferenced string columns.
+         * Comma seperated list of column names or '*' for all columns. To add
+         * text_search property only to string columns of minimum size, set
+         * also the option 'text_search_min_column_length'
+         */
+        public static final String TEXT_SEARCH_COLUMNS = "text_search_columns";
+
+        /**
+         * Set minimum column size. Used only when 'text_search_columns' has a
+         * value.
+         */
+        public static final String TEXT_SEARCH_MIN_COLUMN_LENGTH = "text_search_min_column_length";
 
         private Options() {  }
     }
@@ -1374,6 +1511,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                   text delimiter will be defaulted to a tab character.
      *                   If the first path ends in .psv, the text delimiter
      *                   will be defaulted to a pipe character (|).
+     *                   For paths in <a href="../../../../../../tools/kifs/"
+     *                   target="_top">KiFS</a>, use the uri prefix of kifs://
+     *                   followed by the full path to a file or directory
      * @param modifyColumns  Not implemented yet.  The default value is an
      *                       empty {@link Map}.
      * @param createTableOptions  Options used when creating the target table.
@@ -1478,6 +1618,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            HASH}: Use <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a>.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#SERIES
+     *                            SERIES}: Use <a
+     *                            href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a>.
      *                            </ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#PARTITION_KEYS
@@ -1497,9 +1642,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            href="../../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>, <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-list"
-     *                            target="_top">list partitioning</a>, or <a
+     *                            target="_top">list partitioning</a>, <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
-     *                            target="_top">hash partitioning</a> for
+     *                            target="_top">hash partitioning</a>, or <a
+     *                            href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a> for
      *                            example formats.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
@@ -1563,13 +1710,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            STRATEGY_DEFINITION}: The <a
      *                            href="../../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy</a> for the table
-     *                            and its columns. See <a
-     *                            href="../../../../../../rm/concepts/#tier-strategies"
-     *                            target="_top">tier strategy usage</a> for
-     *                            format and <a
-     *                            href="../../../../../../rm/usage/#tier-strategies"
-     *                            target="_top">tier strategy examples</a> for
-     *                            examples.
+     *                            and its columns.
      *                            </ul>
      *                            The default value is an empty {@link Map}.
      * @param options  Optional parameters.
@@ -1719,6 +1860,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON
      *                 JSON}: Json file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHAPEFILE
+     *                 SHAPEFILE}: ShapeFile file format
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -1810,6 +1954,29 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 SHARD_KEYS}: Optional: comma separated list of column
      *                 names, to set as primary keys, when not specified in the
      *                 type.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SUBSCRIBE
+     *                 SUBSCRIBE}: Continuously poll the data source to check
+     *                 for new data and load it into the table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#POLL_INTERVAL
+     *                 POLL_INTERVAL}: If {@code true}, the number of seconds
+     *                 between attempts to load external files into the table.
+     *                 If zero, polling will be continuous as long as data is
+     *                 found.  If no data is found, the interval will steadily
+     *                 increase to a maximum of 60 seconds.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_COMMENT_STRING
      *                 TEXT_COMMENT_STRING}: Specifies the character string
@@ -1929,8 +2096,43 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 'all' values will fit with minimum data scanned
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
-     *                 ACCURACY}.
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
+     *                 SPEED}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_INSERT_MODE
+     *                 TABLE_INSERT_MODE}: Optional: table_insert_mode. When
+     *                 inserting records from multiple files: if table_per_file
+     *                 then insert from each file into a new table. Currently
+     *                 supported only for shapefiles.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+     *                 SINGLE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
+     *                 TABLE_PER_FILE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+     *                 SINGLE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_GROUP_ID
+     *                 KAFKA_GROUP_ID}: The group id to be used consuming data
+     *                 from a kakfa topic (valid only for kafka datasource
+     *                 subscriptions).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_COLUMNS
+     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
+     *                 internally inferenced string columns. Comma seperated
+     *                 list of column names or '*' for all columns. To add
+     *                 text_search property only to string columns of minimum
+     *                 size, set also the option
+     *                 'text_search_min_column_length'
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
+     *                 Used only when 'text_search_columns' has a value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1998,6 +2200,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         If the first path ends in .tsv, the text delimiter will be
      *         defaulted to a tab character. If the first path ends in .psv,
      *         the text delimiter will be defaulted to a pipe character (|).
+     *         For paths in <a href="../../../../../../tools/kifs/"
+     *         target="_top">KiFS</a>, use the uri prefix of kifs:// followed
+     *         by the full path to a file or directory
      * 
      */
     public List<String> getFilepaths() {
@@ -2016,6 +2221,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                   text delimiter will be defaulted to a tab character.
      *                   If the first path ends in .psv, the text delimiter
      *                   will be defaulted to a pipe character (|).
+     *                   For paths in <a href="../../../../../../tools/kifs/"
+     *                   target="_top">KiFS</a>, use the uri prefix of kifs://
+     *                   followed by the full path to a file or directory
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -2143,6 +2351,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         HASH}: Use <a
      *         href="../../../../../../concepts/tables/#partitioning-by-hash"
      *         target="_top">hash partitioning</a>.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#SERIES
+     *         SERIES}: Use <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-series"
+     *         target="_top">series partitioning</a>.
      *         </ul>
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#PARTITION_KEYS
@@ -2159,9 +2372,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         href="../../../../../../concepts/tables/#partitioning-by-interval"
      *         target="_top">interval partitioning</a>, <a
      *         href="../../../../../../concepts/tables/#partitioning-by-list"
-     *         target="_top">list partitioning</a>, or <a
+     *         target="_top">list partitioning</a>, <a
      *         href="../../../../../../concepts/tables/#partitioning-by-hash"
-     *         target="_top">hash partitioning</a> for example formats.
+     *         target="_top">hash partitioning</a>, or <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-series"
+     *         target="_top">series partitioning</a> for example formats.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
      *         IS_AUTOMATIC_PARTITION}: If {@code true}, a new partition will
@@ -2218,10 +2433,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
-     *         See <a href="../../../../../../rm/concepts/#tier-strategies"
-     *         target="_top">tier strategy usage</a> for format and <a
-     *         href="../../../../../../rm/usage/#tier-strategies"
-     *         target="_top">tier strategy examples</a> for examples.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -2334,6 +2545,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            HASH}: Use <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a>.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#SERIES
+     *                            SERIES}: Use <a
+     *                            href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a>.
      *                            </ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#PARTITION_KEYS
@@ -2353,9 +2569,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            href="../../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>, <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-list"
-     *                            target="_top">list partitioning</a>, or <a
+     *                            target="_top">list partitioning</a>, <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
-     *                            target="_top">hash partitioning</a> for
+     *                            target="_top">hash partitioning</a>, or <a
+     *                            href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a> for
      *                            example formats.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
@@ -2419,13 +2637,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                            STRATEGY_DEFINITION}: The <a
      *                            href="../../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy</a> for the table
-     *                            and its columns. See <a
-     *                            href="../../../../../../rm/concepts/#tier-strategies"
-     *                            target="_top">tier strategy usage</a> for
-     *                            format and <a
-     *                            href="../../../../../../rm/usage/#tier-strategies"
-     *                            target="_top">tier strategy examples</a> for
-     *                            examples.
+     *                            and its columns.
      *                            </ul>
      *                            The default value is an empty {@link Map}.
      * 
@@ -2581,6 +2793,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON
      *         JSON}: Json file format
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHAPEFILE
+     *         SHAPEFILE}: ShapeFile file format
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -2670,6 +2885,29 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         SHARD_KEYS}: Optional: comma separated list of column names, to
      *         set as primary keys, when not specified in the type.  The
      *         default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SUBSCRIBE
+     *         SUBSCRIBE}: Continuously poll the data source to check for new
+     *         data and load it into the table.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *         FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#POLL_INTERVAL
+     *         POLL_INTERVAL}: If {@code true}, the number of seconds between
+     *         attempts to load external files into the table.  If zero,
+     *         polling will be continuous as long as data is found.  If no data
+     *         is found, the interval will steadily increase to a maximum of 60
+     *         seconds.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_COMMENT_STRING
      *         TEXT_COMMENT_STRING}: Specifies the character string that should
@@ -2784,8 +3022,41 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         values will fit with minimum data scanned
      *         </ul>
      *         The default value is {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
-     *         ACCURACY}.
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
+     *         SPEED}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_INSERT_MODE
+     *         TABLE_INSERT_MODE}: Optional: table_insert_mode. When inserting
+     *         records from multiple files: if table_per_file then insert from
+     *         each file into a new table. Currently supported only for
+     *         shapefiles.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+     *         SINGLE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
+     *         TABLE_PER_FILE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+     *         SINGLE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_GROUP_ID
+     *         KAFKA_GROUP_ID}: The group id to be used consuming data from a
+     *         kakfa topic (valid only for kafka datasource subscriptions).
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_COLUMNS
+     *         TEXT_SEARCH_COLUMNS}: Add 'text_search' property to internally
+     *         inferenced string columns. Comma seperated list of column names
+     *         or '*' for all columns. To add text_search property only to
+     *         string columns of minimum size, set also the option
+     *         'text_search_min_column_length'
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used
+     *         only when 'text_search_columns' has a value.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -2943,6 +3214,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON
      *                 JSON}: Json file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHAPEFILE
+     *                 SHAPEFILE}: ShapeFile file format
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -3034,6 +3308,29 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 SHARD_KEYS}: Optional: comma separated list of column
      *                 names, to set as primary keys, when not specified in the
      *                 type.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SUBSCRIBE
+     *                 SUBSCRIBE}: Continuously poll the data source to check
+     *                 for new data and load it into the table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#POLL_INTERVAL
+     *                 POLL_INTERVAL}: If {@code true}, the number of seconds
+     *                 between attempts to load external files into the table.
+     *                 If zero, polling will be continuous as long as data is
+     *                 found.  If no data is found, the interval will steadily
+     *                 increase to a maximum of 60 seconds.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_COMMENT_STRING
      *                 TEXT_COMMENT_STRING}: Specifies the character string
@@ -3153,8 +3450,43 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 'all' values will fit with minimum data scanned
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
-     *                 ACCURACY}.
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
+     *                 SPEED}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_INSERT_MODE
+     *                 TABLE_INSERT_MODE}: Optional: table_insert_mode. When
+     *                 inserting records from multiple files: if table_per_file
+     *                 then insert from each file into a new table. Currently
+     *                 supported only for shapefiles.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+     *                 SINGLE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
+     *                 TABLE_PER_FILE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+     *                 SINGLE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_GROUP_ID
+     *                 KAFKA_GROUP_ID}: The group id to be used consuming data
+     *                 from a kakfa topic (valid only for kafka datasource
+     *                 subscriptions).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_COLUMNS
+     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
+     *                 internally inferenced string columns. Comma seperated
+     *                 list of column names or '*' for all columns. To add
+     *                 text_search property only to string columns of minimum
+     *                 size, set also the option
+     *                 'text_search_min_column_length'
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
+     *                 Used only when 'text_search_columns' has a value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

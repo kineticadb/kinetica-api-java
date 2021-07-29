@@ -85,18 +85,18 @@ public class ExecuteProcRequest implements IndexedRecord {
      * run IDs, the cached data from the first run ID specified in the list
      * that includes that table will be used.  The default value is ''.
      *         <li> {@link
-     * com.gpudb.protocol.ExecuteProcRequest.Options#KIFS_INPUT_DIRS
-     * KIFS_INPUT_DIRS}: A comma-delimited list of KiFS directories whose local
-     * files will be made directly accessible to the proc through the API. (All
-     * KiFS files, local or not, are also accessible through the file system
-     * below the KiFS mount point.) Each name specified must the name of an
-     * existing KiFS directory.  The default value is ''.
-     *         <li> {@link
      * com.gpudb.protocol.ExecuteProcRequest.Options#RUN_TAG RUN_TAG}: A string
      * that, if not empty, can be used in subsequent calls to {@link
      * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} or {@link
      * com.gpudb.GPUdb#killProc(KillProcRequest)} to identify the proc
      * instance.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.ExecuteProcRequest.Options#MAX_OUTPUT_LINES
+     * MAX_OUTPUT_LINES}: The maximum number of lines of output from stdout and
+     * stderr to return via {@link
+     * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}. If the number of
+     * lines output exceeds the maximum, earlier lines are discarded.  The
+     * default value is '100'.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -132,21 +132,21 @@ public class ExecuteProcRequest implements IndexedRecord {
         public static final String USE_CACHED_INPUT = "use_cached_input";
 
         /**
-         * A comma-delimited list of KiFS directories whose local files will be
-         * made directly accessible to the proc through the API. (All KiFS
-         * files, local or not, are also accessible through the file system
-         * below the KiFS mount point.) Each name specified must the name of an
-         * existing KiFS directory.  The default value is ''.
-         */
-        public static final String KIFS_INPUT_DIRS = "kifs_input_dirs";
-
-        /**
          * A string that, if not empty, can be used in subsequent calls to
          * {@link com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} or
          * {@link com.gpudb.GPUdb#killProc(KillProcRequest)} to identify the
          * proc instance.  The default value is ''.
          */
         public static final String RUN_TAG = "run_tag";
+
+        /**
+         * The maximum number of lines of output from stdout and stderr to
+         * return via {@link
+         * com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}. If the
+         * number of lines output exceeds the maximum, earlier lines are
+         * discarded.  The default value is '100'.
+         */
+        public static final String MAX_OUTPUT_LINES = "max_output_lines";
 
         private Options() {  }
     }
@@ -265,21 +265,20 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                 first run ID specified in the list that includes that
      *                 table will be used.  The default value is ''.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteProcRequest.Options#KIFS_INPUT_DIRS
-     *                 KIFS_INPUT_DIRS}: A comma-delimited list of KiFS
-     *                 directories whose local files will be made directly
-     *                 accessible to the proc through the API. (All KiFS files,
-     *                 local or not, are also accessible through the file
-     *                 system below the KiFS mount point.) Each name specified
-     *                 must the name of an existing KiFS directory.  The
-     *                 default value is ''.
-     *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteProcRequest.Options#RUN_TAG
      *                 RUN_TAG}: A string that, if not empty, can be used in
      *                 subsequent calls to {@link
      *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}
      *                 or {@link com.gpudb.GPUdb#killProc(KillProcRequest)} to
      *                 identify the proc instance.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#MAX_OUTPUT_LINES
+     *                 MAX_OUTPUT_LINES}: The maximum number of lines of output
+     *                 from stdout and stderr to return via {@link
+     *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}.
+     *                 If the number of lines output exceeds the maximum,
+     *                 earlier lines are discarded.  The default value is
+     *                 '100'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -547,19 +546,18 @@ public class ExecuteProcRequest implements IndexedRecord {
      *         ID specified in the list that includes that table will be used.
      *         The default value is ''.
      *                 <li> {@link
-     *         com.gpudb.protocol.ExecuteProcRequest.Options#KIFS_INPUT_DIRS
-     *         KIFS_INPUT_DIRS}: A comma-delimited list of KiFS directories
-     *         whose local files will be made directly accessible to the proc
-     *         through the API. (All KiFS files, local or not, are also
-     *         accessible through the file system below the KiFS mount point.)
-     *         Each name specified must the name of an existing KiFS directory.
-     *         The default value is ''.
-     *                 <li> {@link
      *         com.gpudb.protocol.ExecuteProcRequest.Options#RUN_TAG RUN_TAG}:
      *         A string that, if not empty, can be used in subsequent calls to
      *         {@link com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)} or
      *         {@link com.gpudb.GPUdb#killProc(KillProcRequest)} to identify
      *         the proc instance.  The default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ExecuteProcRequest.Options#MAX_OUTPUT_LINES
+     *         MAX_OUTPUT_LINES}: The maximum number of lines of output from
+     *         stdout and stderr to return via {@link
+     *         com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}. If the
+     *         number of lines output exceeds the maximum, earlier lines are
+     *         discarded.  The default value is '100'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -601,21 +599,20 @@ public class ExecuteProcRequest implements IndexedRecord {
      *                 first run ID specified in the list that includes that
      *                 table will be used.  The default value is ''.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteProcRequest.Options#KIFS_INPUT_DIRS
-     *                 KIFS_INPUT_DIRS}: A comma-delimited list of KiFS
-     *                 directories whose local files will be made directly
-     *                 accessible to the proc through the API. (All KiFS files,
-     *                 local or not, are also accessible through the file
-     *                 system below the KiFS mount point.) Each name specified
-     *                 must the name of an existing KiFS directory.  The
-     *                 default value is ''.
-     *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteProcRequest.Options#RUN_TAG
      *                 RUN_TAG}: A string that, if not empty, can be used in
      *                 subsequent calls to {@link
      *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}
      *                 or {@link com.gpudb.GPUdb#killProc(KillProcRequest)} to
      *                 identify the proc instance.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#MAX_OUTPUT_LINES
+     *                 MAX_OUTPUT_LINES}: The maximum number of lines of output
+     *                 from stdout and stderr to return via {@link
+     *                 com.gpudb.GPUdb#showProcStatus(ShowProcStatusRequest)}.
+     *                 If the number of lines output exceeds the maximum,
+     *                 earlier lines are discarded.  The default value is
+     *                 '100'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

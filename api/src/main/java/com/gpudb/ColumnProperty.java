@@ -18,9 +18,10 @@ public final class ColumnProperty {
     public static final String DATA = "data";
 
     /**
-     * Valid only for 'string' columns. Enables full text search for string
-     * columns. Can be set independently of {@code data} and {@code
-     * store_only}.
+     * Valid only for select 'string' columns. Enables full text search--see <a
+     * href="../../../../../concepts/full_text_search/" target="_top">Full Text
+     * Search</a> for details and applicable string column types. Can be set
+     * independently of {@code data} and {@code store_only}.
      */
     public static final String TEXT_SEARCH = "text_search";
 

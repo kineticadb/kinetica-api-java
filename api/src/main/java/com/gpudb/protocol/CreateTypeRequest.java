@@ -97,8 +97,10 @@ public class CreateTypeRequest implements IndexedRecord {
      * the column available for GPU queries.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#TEXT_SEARCH
-     * TEXT_SEARCH}: Valid only for 'string' columns. Enables full text search
-     * for string columns. Can be set independently of {@code data} and {@code
+     * TEXT_SEARCH}: Valid only for select 'string' columns. Enables full text
+     * search--see <a href="../../../../../../concepts/full_text_search/"
+     * target="_top">Full Text Search</a> for details and applicable string
+     * column types. Can be set independently of {@code data} and {@code
      * store_only}.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#STORE_ONLY STORE_ONLY}:
@@ -273,8 +275,10 @@ public class CreateTypeRequest implements IndexedRecord {
         public static final String DATA = "data";
 
         /**
-         * Valid only for 'string' columns. Enables full text search for string
-         * columns. Can be set independently of {@code data} and {@code
+         * Valid only for select 'string' columns. Enables full text
+         * search--see <a href="../../../../../../concepts/full_text_search/"
+         * target="_top">Full Text Search</a> for details and applicable string
+         * column types. Can be set independently of {@code data} and {@code
          * store_only}.
          */
         public static final String TEXT_SEARCH = "text_search";
@@ -547,10 +551,12 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    queries.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#TEXT_SEARCH
-     *                    TEXT_SEARCH}: Valid only for 'string' columns.
-     *                    Enables full text search for string columns. Can be
-     *                    set independently of {@code data} and {@code
-     *                    store_only}.
+     *                    TEXT_SEARCH}: Valid only for select 'string' columns.
+     *                    Enables full text search--see <a
+     *                    href="../../../../../../concepts/full_text_search/"
+     *                    target="_top">Full Text Search</a> for details and
+     *                    applicable string column types. Can be set
+     *                    independently of {@code data} and {@code store_only}.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#STORE_ONLY
      *                    STORE_ONLY}: Persist the column value but do not make
@@ -831,9 +837,12 @@ public class CreateTypeRequest implements IndexedRecord {
      *         the column available for GPU queries.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#TEXT_SEARCH
-     *         TEXT_SEARCH}: Valid only for 'string' columns. Enables full text
-     *         search for string columns. Can be set independently of {@code
-     *         data} and {@code store_only}.
+     *         TEXT_SEARCH}: Valid only for select 'string' columns. Enables
+     *         full text search--see <a
+     *         href="../../../../../../concepts/full_text_search/"
+     *         target="_top">Full Text Search</a> for details and applicable
+     *         string column types. Can be set independently of {@code data}
+     *         and {@code store_only}.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#STORE_ONLY
      *         STORE_ONLY}: Persist the column value but do not make it
@@ -1035,10 +1044,12 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    queries.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#TEXT_SEARCH
-     *                    TEXT_SEARCH}: Valid only for 'string' columns.
-     *                    Enables full text search for string columns. Can be
-     *                    set independently of {@code data} and {@code
-     *                    store_only}.
+     *                    TEXT_SEARCH}: Valid only for select 'string' columns.
+     *                    Enables full text search--see <a
+     *                    href="../../../../../../concepts/full_text_search/"
+     *                    target="_top">Full Text Search</a> for details and
+     *                    applicable string column types. Can be set
+     *                    independently of {@code data} and {@code store_only}.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#STORE_ONLY
      *                    STORE_ONLY}: Persist the column value but do not make

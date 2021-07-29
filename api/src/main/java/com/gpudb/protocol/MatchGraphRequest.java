@@ -28,10 +28,10 @@ import org.apache.avro.generic.IndexedRecord;
  * <a href="../../../../../../graph_solver/network_graph_solver/"
  * target="_top">Network Graphs & Solvers</a>
  * concepts documentation, the
- * <a href="../../../../../../graph_solver/examples/graph_rest_guide/"
- * target="_top">Graph REST Tutorial</a>,
+ * <a href="../../../../../../guides/graph_rest_guide/" target="_top">Graph
+ * REST Tutorial</a>,
  * and/or some
- * <a href="../../../../../../graph_solver/examples/#match-graph"
+ * <a href="../../../../../../guide-tags/graph-match/"
  * target="_top">/match/graph examples</a>
  * before using this endpoint.
  */
@@ -89,6 +89,10 @@ public class MatchGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_BATCH_SOLVES
      * MATCH_BATCH_SOLVES}: Matches {@code samplePoints} source and destination
      * pairs for the shortest path solves in batch mode.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_LOOPS
+     * MATCH_LOOPS}: Matches closed loops (Eulerian paths) originating and
+     * ending at each graph node within min and max hops (levels).
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -129,6 +133,12 @@ public class MatchGraphRequest implements IndexedRecord {
          * shortest path solves in batch mode.
          */
         public static final String MATCH_BATCH_SOLVES = "match_batch_solves";
+
+        /**
+         * Matches closed loops (Eulerian paths) originating and ending at each
+         * graph node within min and max hops (levels).
+         */
+        public static final String MATCH_LOOPS = "match_loops";
 
         private SolveMethod() {  }
     }
@@ -285,10 +295,50 @@ public class MatchGraphRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
      *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRUCK_STOPS
+     * MAX_TRUCK_STOPS}: For the {@code match_supply_demand} solver only. If
+     * specified (greater than zero), a truck can at most have this many stops
+     * (demand locations) in one round trip. Otherwise, it is unlimited. If
+     * 'enable_truck_reuse' is on, this condition will be applied separately at
+     * each round trip use of the same truck.  The default value is '0'.
+     *         <li> {@link
      * com.gpudb.protocol.MatchGraphRequest.Options#SERVER_ID SERVER_ID}:
      * Indicates which graph server(s) to send the request to. Default is to
      * send to the server, amongst those containing the corresponding graph,
      * that has the most computational bandwidth.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#INVERSE_SOLVE
+     * INVERSE_SOLVE}: For the {@code match_batch_solves} solver only. Solves
+     * source-destination pairs using inverse shortest path solver.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#TRUE
+     * TRUE}: Solves using inverse shortest path solver.
+     *         <li> {@link com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     * FALSE}: Solves using direct shortest path solver.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#MIN_LOOP_LEVEL
+     * MIN_LOOP_LEVEL}: For the {@code match_loops} solver only. Finds closed
+     * loops around each node deducible not less than this minimal hop (level)
+     * deep.  The default value is '0'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#MAX_LOOP_LEVEL
+     * MAX_LOOP_LEVEL}: For the {@code match_loops} solver only. Finds closed
+     * loops around each node deducible not more than this maximal hop (level)
+     * deep.  The default value is '5'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#SEARCH_LIMIT SEARCH_LIMIT}:
+     * For the {@code match_loops} solver only. Searches within this limit of
+     * nodes per vertex to detect loops. The value zero means there is no
+     * limit.  The default value is '10000'.
+     *         <li> {@link
+     * com.gpudb.protocol.MatchGraphRequest.Options#OUTPUT_BATCH_SIZE
+     * OUTPUT_BATCH_SIZE}: For the {@code match_loops} solver only. Uses this
+     * value as the batch size of the number of loops in flushing(inserting) to
+     * the output table.  The default value is '1000'.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -358,12 +408,12 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String PARTIAL_LOADING = "partial_loading";
 
         /**
-         * Allows reusing trucks for scheduling again.
+         * Solves using inverse shortest path solver.
          */
         public static final String TRUE = "true";
 
         /**
-         * Trucks are scheduled only once from their depots.
+         * Solves using direct shortest path solver.
          */
         public static final String FALSE = "false";
 
@@ -501,12 +551,67 @@ public class MatchGraphRequest implements IndexedRecord {
         public static final String ENABLE_TRUCK_REUSE = "enable_truck_reuse";
 
         /**
+         * For the {@code match_supply_demand} solver only. If specified
+         * (greater than zero), a truck can at most have this many stops
+         * (demand locations) in one round trip. Otherwise, it is unlimited. If
+         * 'enable_truck_reuse' is on, this condition will be applied
+         * separately at each round trip use of the same truck.  The default
+         * value is '0'.
+         */
+        public static final String MAX_TRUCK_STOPS = "max_truck_stops";
+
+        /**
          * Indicates which graph server(s) to send the request to. Default is
          * to send to the server, amongst those containing the corresponding
          * graph, that has the most computational bandwidth.  The default value
          * is ''.
          */
         public static final String SERVER_ID = "server_id";
+
+        /**
+         * For the {@code match_batch_solves} solver only. Solves
+         * source-destination pairs using inverse shortest path solver.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}: Solves
+         * using inverse shortest path solver.
+         *         <li> {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}: Solves
+         * using direct shortest path solver.
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
+         */
+        public static final String INVERSE_SOLVE = "inverse_solve";
+
+        /**
+         * For the {@code match_loops} solver only. Finds closed loops around
+         * each node deducible not less than this minimal hop (level) deep.
+         * The default value is '0'.
+         */
+        public static final String MIN_LOOP_LEVEL = "min_loop_level";
+
+        /**
+         * For the {@code match_loops} solver only. Finds closed loops around
+         * each node deducible not more than this maximal hop (level) deep.
+         * The default value is '5'.
+         */
+        public static final String MAX_LOOP_LEVEL = "max_loop_level";
+
+        /**
+         * For the {@code match_loops} solver only. Searches within this limit
+         * of nodes per vertex to detect loops. The value zero means there is
+         * no limit.  The default value is '10000'.
+         */
+        public static final String SEARCH_LIMIT = "search_limit";
+
+        /**
+         * For the {@code match_loops} solver only. Uses this value as the
+         * batch size of the number of loops in flushing(inserting) to the
+         * output table.  The default value is '1000'.
+         */
+        public static final String OUTPUT_BATCH_SIZE = "output_batch_size";
 
         private Options() {  }
     }
@@ -585,6 +690,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     MATCH_BATCH_SOLVES}: Matches {@code samplePoints}
      *                     source and destination pairs for the shortest path
      *                     solves in batch mode.
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_LOOPS
+     *                     MATCH_LOOPS}: Matches closed loops (Eulerian paths)
+     *                     originating and ending at each graph node within min
+     *                     and max hops (levels).
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -791,11 +901,61 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRUCK_STOPS
+     *                 MAX_TRUCK_STOPS}: For the {@code match_supply_demand}
+     *                 solver only. If specified (greater than zero), a truck
+     *                 can at most have this many stops (demand locations) in
+     *                 one round trip. Otherwise, it is unlimited. If
+     *                 'enable_truck_reuse' is on, this condition will be
+     *                 applied separately at each round trip use of the same
+     *                 truck.  The default value is '0'.
+     *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SERVER_ID
      *                 SERVER_ID}: Indicates which graph server(s) to send the
      *                 request to. Default is to send to the server, amongst
      *                 those containing the corresponding graph, that has the
      *                 most computational bandwidth.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#INVERSE_SOLVE
+     *                 INVERSE_SOLVE}: For the {@code match_batch_solves}
+     *                 solver only. Solves source-destination pairs using
+     *                 inverse shortest path solver.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 Solves using inverse shortest path solver.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: Solves using direct shortest path solver.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MIN_LOOP_LEVEL
+     *                 MIN_LOOP_LEVEL}: For the {@code match_loops} solver
+     *                 only. Finds closed loops around each node deducible not
+     *                 less than this minimal hop (level) deep.  The default
+     *                 value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_LOOP_LEVEL
+     *                 MAX_LOOP_LEVEL}: For the {@code match_loops} solver
+     *                 only. Finds closed loops around each node deducible not
+     *                 more than this maximal hop (level) deep.  The default
+     *                 value is '5'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#SEARCH_LIMIT
+     *                 SEARCH_LIMIT}: For the {@code match_loops} solver only.
+     *                 Searches within this limit of nodes per vertex to detect
+     *                 loops. The value zero means there is no limit.  The
+     *                 default value is '10000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#OUTPUT_BATCH_SIZE
+     *                 OUTPUT_BATCH_SIZE}: For the {@code match_loops} solver
+     *                 only. Uses this value as the batch size of the number of
+     *                 loops in flushing(inserting) to the output table.  The
+     *                 default value is '1000'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -912,6 +1072,10 @@ public class MatchGraphRequest implements IndexedRecord {
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_BATCH_SOLVES
      *         MATCH_BATCH_SOLVES}: Matches {@code samplePoints} source and
      *         destination pairs for the shortest path solves in batch mode.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_LOOPS
+     *         MATCH_LOOPS}: Matches closed loops (Eulerian paths) originating
+     *         and ending at each graph node within min and max hops (levels).
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -959,6 +1123,11 @@ public class MatchGraphRequest implements IndexedRecord {
      *                     MATCH_BATCH_SOLVES}: Matches {@code samplePoints}
      *                     source and destination pairs for the shortest path
      *                     solves in batch mode.
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_LOOPS
+     *                     MATCH_LOOPS}: Matches closed loops (Eulerian paths)
+     *                     originating and ending at each graph node within min
+     *                     and max hops (levels).
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -1197,11 +1366,56 @@ public class MatchGraphRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRUCK_STOPS
+     *         MAX_TRUCK_STOPS}: For the {@code match_supply_demand} solver
+     *         only. If specified (greater than zero), a truck can at most have
+     *         this many stops (demand locations) in one round trip. Otherwise,
+     *         it is unlimited. If 'enable_truck_reuse' is on, this condition
+     *         will be applied separately at each round trip use of the same
+     *         truck.  The default value is '0'.
+     *                 <li> {@link
      *         com.gpudb.protocol.MatchGraphRequest.Options#SERVER_ID
      *         SERVER_ID}: Indicates which graph server(s) to send the request
      *         to. Default is to send to the server, amongst those containing
      *         the corresponding graph, that has the most computational
      *         bandwidth.  The default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#INVERSE_SOLVE
+     *         INVERSE_SOLVE}: For the {@code match_batch_solves} solver only.
+     *         Solves source-destination pairs using inverse shortest path
+     *         solver.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}: Solves
+     *         using inverse shortest path solver.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}:
+     *         Solves using direct shortest path solver.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#MIN_LOOP_LEVEL
+     *         MIN_LOOP_LEVEL}: For the {@code match_loops} solver only. Finds
+     *         closed loops around each node deducible not less than this
+     *         minimal hop (level) deep.  The default value is '0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#MAX_LOOP_LEVEL
+     *         MAX_LOOP_LEVEL}: For the {@code match_loops} solver only. Finds
+     *         closed loops around each node deducible not more than this
+     *         maximal hop (level) deep.  The default value is '5'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#SEARCH_LIMIT
+     *         SEARCH_LIMIT}: For the {@code match_loops} solver only. Searches
+     *         within this limit of nodes per vertex to detect loops. The value
+     *         zero means there is no limit.  The default value is '10000'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.MatchGraphRequest.Options#OUTPUT_BATCH_SIZE
+     *         OUTPUT_BATCH_SIZE}: For the {@code match_loops} solver only.
+     *         Uses this value as the batch size of the number of loops in
+     *         flushing(inserting) to the output table.  The default value is
+     *         '1000'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1395,11 +1609,61 @@ public class MatchGraphRequest implements IndexedRecord {
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRUCK_STOPS
+     *                 MAX_TRUCK_STOPS}: For the {@code match_supply_demand}
+     *                 solver only. If specified (greater than zero), a truck
+     *                 can at most have this many stops (demand locations) in
+     *                 one round trip. Otherwise, it is unlimited. If
+     *                 'enable_truck_reuse' is on, this condition will be
+     *                 applied separately at each round trip use of the same
+     *                 truck.  The default value is '0'.
+     *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SERVER_ID
      *                 SERVER_ID}: Indicates which graph server(s) to send the
      *                 request to. Default is to send to the server, amongst
      *                 those containing the corresponding graph, that has the
      *                 most computational bandwidth.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#INVERSE_SOLVE
+     *                 INVERSE_SOLVE}: For the {@code match_batch_solves}
+     *                 solver only. Solves source-destination pairs using
+     *                 inverse shortest path solver.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 Solves using inverse shortest path solver.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: Solves using direct shortest path solver.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MIN_LOOP_LEVEL
+     *                 MIN_LOOP_LEVEL}: For the {@code match_loops} solver
+     *                 only. Finds closed loops around each node deducible not
+     *                 less than this minimal hop (level) deep.  The default
+     *                 value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_LOOP_LEVEL
+     *                 MAX_LOOP_LEVEL}: For the {@code match_loops} solver
+     *                 only. Finds closed loops around each node deducible not
+     *                 more than this maximal hop (level) deep.  The default
+     *                 value is '5'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#SEARCH_LIMIT
+     *                 SEARCH_LIMIT}: For the {@code match_loops} solver only.
+     *                 Searches within this limit of nodes per vertex to detect
+     *                 loops. The value zero means there is no limit.  The
+     *                 default value is '10000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#OUTPUT_BATCH_SIZE
+     *                 OUTPUT_BATCH_SIZE}: For the {@code match_loops} solver
+     *                 only. Uses this value as the batch size of the number of
+     *                 loops in flushing(inserting) to the output table.  The
+     *                 default value is '1000'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

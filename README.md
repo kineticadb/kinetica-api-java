@@ -33,6 +33,24 @@ For changes to the client-side API, please see CHANGELOG.md.  For changes
 to GPUdb functions, please see CHANGELOG-FUNCTIONS.md.
 
 
+### KIFS File upload and download facility
+
+The purpose of this API is to facilitate uploading of files into KIFS from a
+local directory and downloading from the KIFS into a local directory. There
+are multiple methods available for uploading and downloading files. This new
+facility is available for Kinetica version `7.1.4.0` onwards.
+
+#### GPUdbFileHandler API
+
+The `upload` and the `download` methods of the class `GPUdbFileHandler` are
+overloaded to accommodate either a single file name, or a list of file names to
+upload to or download from KIFS.
+
+The following methods are available -
+-    `upload` - Has multiple overloads for uploading single/multiple files.
+-    `download` - Has similar overloads as uploads for downloading files.
+
+
 
 ### API Logging
 
@@ -65,7 +83,6 @@ see:
 ```
 https://www.javatpoint.com/log4j-properties
 ```
-
 
 ### SSL Configuration
 
@@ -120,6 +137,16 @@ Please make sure that Kinetica is running at the URL and port specified in
 line 4 of example/src/main/java/com/gpudb/example/Example.java (the default
 is "http://localhost:9191").
 
+### GPUdbFileHandler Example
+An example usage of the API can be found in the `gpudb-api-example` project
+in the file `GPUdbFileHandlerExample.java`. The example can be run using the
+command -
+
+> java -Durl="http://10.0.0.10:9191" -DlogLevel="INFO" \
+-cp ./target/gpudb-api-example-1.0-jar-with-dependencies.jar \
+com.gpudb.example.GPUdbFileHandlerExample
+
+The URL VM argument needs to be changed suitably to match the exact environment.
 
 ## Notes
 

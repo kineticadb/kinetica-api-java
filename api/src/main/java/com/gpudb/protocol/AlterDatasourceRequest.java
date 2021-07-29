@@ -93,6 +93,10 @@ public class AlterDatasourceRequest implements IndexedRecord {
      * S3_REGION}: Name of the Amazon S3 region where the given bucket is
      * located
      *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_AWS_ROLE_ARN
+     * S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required S3 permissions
+     * that can be assumed for the given S3 IAM user
+     *         <li> {@link
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      * HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the given HDFS
      * user
@@ -133,6 +137,13 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
      * AZURE_OAUTH_TOKEN}: Oauth token to access given storage container
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_URL
+     * KAFKA_URL}: The publicly-accessible full path URL to the kafka broker,
+     * e.g., 'http://172.123.45.67:9300'.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_TOPIC_NAME
+     * KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the data source
      * </ul>
      * A set of string constants for the parameter {@code
      * datasourceUpdatesMap}.
@@ -202,6 +213,12 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String S3_REGION = "s3_region";
 
         /**
+         * Amazon IAM Role ARN which has required S3 permissions that can be
+         * assumed for the given S3 IAM user
+         */
+        public static final String S3_AWS_ROLE_ARN = "s3_aws_role_arn";
+
+        /**
          * Kerberos keytab file location for the given HDFS user
          */
         public static final String HDFS_KERBEROS_KEYTAB = "hdfs_kerberos_keytab";
@@ -254,6 +271,17 @@ public class AlterDatasourceRequest implements IndexedRecord {
          * Oauth token to access given storage container
          */
         public static final String AZURE_OAUTH_TOKEN = "azure_oauth_token";
+
+        /**
+         * The publicly-accessible full path URL to the kafka broker, e.g.,
+         * 'http://172.123.45.67:9300'.
+         */
+        public static final String KAFKA_URL = "kafka_url";
+
+        /**
+         * Name of the Kafka topic to use as the data source
+         */
+        public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
 
         private DatasourceUpdatesMap() {  }
     }
@@ -334,6 +362,11 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              S3_REGION}: Name of the Amazon S3 region
      *                              where the given bucket is located
      *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_AWS_ROLE_ARN
+     *                              S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which
+     *                              has required S3 permissions that can be
+     *                              assumed for the given S3 IAM user
+     *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      *                              HDFS_KERBEROS_KEYTAB}: Kerberos keytab file
      *                              location for the given HDFS user
@@ -380,6 +413,15 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
      *                              AZURE_OAUTH_TOKEN}: Oauth token to access
      *                              given storage container
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_URL
+     *                              KAFKA_URL}: The publicly-accessible full
+     *                              path URL to the kafka broker, e.g.,
+     *                              'http://172.123.45.67:9300'.
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_TOPIC_NAME
+     *                              KAFKA_TOPIC_NAME}: Name of the Kafka topic
+     *                              to use as the data source
      *                              </ul>
      * @param options  Optional parameters.
      * 
@@ -468,6 +510,10 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         S3_REGION}: Name of the Amazon S3 region where the given bucket
      *         is located
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_AWS_ROLE_ARN
+     *         S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required S3
+     *         permissions that can be assumed for the given S3 IAM user
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      *         HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the
      *         given HDFS user
@@ -510,6 +556,14 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
      *         AZURE_OAUTH_TOKEN}: Oauth token to access given storage
      *         container
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_URL
+     *         KAFKA_URL}: The publicly-accessible full path URL to the kafka
+     *         broker, e.g., 'http://172.123.45.67:9300'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_TOPIC_NAME
+     *         KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the data
+     *         source
      *         </ul>
      * 
      */
@@ -575,6 +629,11 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              S3_REGION}: Name of the Amazon S3 region
      *                              where the given bucket is located
      *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_AWS_ROLE_ARN
+     *                              S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which
+     *                              has required S3 permissions that can be
+     *                              assumed for the given S3 IAM user
+     *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      *                              HDFS_KERBEROS_KEYTAB}: Kerberos keytab file
      *                              location for the given HDFS user
@@ -621,6 +680,15 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
      *                              AZURE_OAUTH_TOKEN}: Oauth token to access
      *                              given storage container
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_URL
+     *                              KAFKA_URL}: The publicly-accessible full
+     *                              path URL to the kafka broker, e.g.,
+     *                              'http://172.123.45.67:9300'.
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_TOPIC_NAME
+     *                              KAFKA_TOPIC_NAME}: Name of the Kafka topic
+     *                              to use as the data source
      *                              </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

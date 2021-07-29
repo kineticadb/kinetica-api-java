@@ -2,14 +2,35 @@
 
 ## Version 7.1
 
+### Version 7.1.4.0 - TBD
+
+#### Added
+-   Introduced a new API for facilitating uploading and downloading of files
+    to and from the KIFS. The class encapsulating the API is `GPUdbFileHandler`.
+    A complete example has been given in the `gpudb-api-example` project in the
+    class `GPUdbFileHandlerExample`.
+-   Introduced the capability to upload Parquet files.
+
+#### Changed
+-   xxx
+
+#### Fixed
+-   xxx
+
+#### Notes
+-   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
+
+
+
 ### Version 7.1.3.0 - 2021-03-05
 
 #### Added
+
 -   Added option in `GPUdbBase` class to pass in custom
     `SSLConnectionSocketFactory` to facilitate passing in
     a user supplied truststore file along with the password
 
-#### Notes
+#### Note
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 
@@ -58,7 +79,7 @@
 -   Converted the BulkInserter flushing mechanism from single-threaded
     to parallel-threaded.
 
-#### Notes
+#### Note
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
 
 

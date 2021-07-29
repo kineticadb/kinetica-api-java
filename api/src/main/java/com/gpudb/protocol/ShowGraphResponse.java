@@ -32,7 +32,9 @@ public class ShowGraphResponse implements IndexedRecord {
                 .name("directed").type().array().items().booleanType().noDefault()
                 .name("numNodes").type().array().items().longType().noDefault()
                 .name("numEdges").type().array().items().longType().noDefault()
+                .name("numBytes").type().array().items().longType().noDefault()
                 .name("isPersisted").type().array().items().booleanType().noDefault()
+                .name("isPartitioned").type().array().items().booleanType().noDefault()
                 .name("isSyncDb").type().array().items().booleanType().noDefault()
                 .name("hasInsertTableMonitor").type().array().items().booleanType().noDefault()
                 .name("originalRequest").type().array().items().stringType().noDefault()
@@ -59,7 +61,9 @@ public class ShowGraphResponse implements IndexedRecord {
     private List<Boolean> directed;
     private List<Long> numNodes;
     private List<Long> numEdges;
+    private List<Long> numBytes;
     private List<Boolean> isPersisted;
+    private List<Boolean> isPartitioned;
     private List<Boolean> isSyncDb;
     private List<Boolean> hasInsertTableMonitor;
     private List<String> originalRequest;
@@ -254,6 +258,27 @@ public class ShowGraphResponse implements IndexedRecord {
 
     /**
      * 
+     * @return Memory this graph uses in bytes.
+     * 
+     */
+    public List<Long> getNumBytes() {
+        return numBytes;
+    }
+
+    /**
+     * 
+     * @param numBytes  Memory this graph uses in bytes.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowGraphResponse setNumBytes(List<Long> numBytes) {
+        this.numBytes = (numBytes == null) ? new ArrayList<Long>() : numBytes;
+        return this;
+    }
+
+    /**
+     * 
      * @return Shows whether or not the graph is persisted (saved and loaded on
      *         launch).
      * 
@@ -272,6 +297,29 @@ public class ShowGraphResponse implements IndexedRecord {
      */
     public ShowGraphResponse setIsPersisted(List<Boolean> isPersisted) {
         this.isPersisted = (isPersisted == null) ? new ArrayList<Boolean>() : isPersisted;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Indicated if the graph data data is distributed across all
+     *         available servers.
+     * 
+     */
+    public List<Boolean> getIsPartitioned() {
+        return isPartitioned;
+    }
+
+    /**
+     * 
+     * @param isPartitioned  Indicated if the graph data data is distributed
+     *                       across all available servers.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowGraphResponse setIsPartitioned(List<Boolean> isPartitioned) {
+        this.isPartitioned = (isPartitioned == null) ? new ArrayList<Boolean>() : isPartitioned;
         return this;
     }
 
@@ -325,7 +373,7 @@ public class ShowGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @return The orignal client request used to create the graph (before any
+     * @return The original client request used to create the graph (before any
      *         expression evaluation or separator processing).
      * 
      */
@@ -335,7 +383,7 @@ public class ShowGraphResponse implements IndexedRecord {
 
     /**
      * 
-     * @param originalRequest  The orignal client request used to create the
+     * @param originalRequest  The original client request used to create the
      *                         graph (before any expression evaluation or
      *                         separator processing).
      * 
@@ -419,18 +467,24 @@ public class ShowGraphResponse implements IndexedRecord {
                 return this.numEdges;
 
             case 8:
-                return this.isPersisted;
+                return this.numBytes;
 
             case 9:
-                return this.isSyncDb;
+                return this.isPersisted;
 
             case 10:
-                return this.hasInsertTableMonitor;
+                return this.isPartitioned;
 
             case 11:
-                return this.originalRequest;
+                return this.isSyncDb;
 
             case 12:
+                return this.hasInsertTableMonitor;
+
+            case 13:
+                return this.originalRequest;
+
+            case 14:
                 return this.info;
 
             default:
@@ -485,22 +539,30 @@ public class ShowGraphResponse implements IndexedRecord {
                 break;
 
             case 8:
-                this.isPersisted = (List<Boolean>)value;
+                this.numBytes = (List<Long>)value;
                 break;
 
             case 9:
-                this.isSyncDb = (List<Boolean>)value;
+                this.isPersisted = (List<Boolean>)value;
                 break;
 
             case 10:
-                this.hasInsertTableMonitor = (List<Boolean>)value;
+                this.isPartitioned = (List<Boolean>)value;
                 break;
 
             case 11:
-                this.originalRequest = (List<String>)value;
+                this.isSyncDb = (List<Boolean>)value;
                 break;
 
             case 12:
+                this.hasInsertTableMonitor = (List<Boolean>)value;
+                break;
+
+            case 13:
+                this.originalRequest = (List<String>)value;
+                break;
+
+            case 14:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -529,7 +591,9 @@ public class ShowGraphResponse implements IndexedRecord {
                  && this.directed.equals( that.directed )
                  && this.numNodes.equals( that.numNodes )
                  && this.numEdges.equals( that.numEdges )
+                 && this.numBytes.equals( that.numBytes )
                  && this.isPersisted.equals( that.isPersisted )
+                 && this.isPartitioned.equals( that.isPartitioned )
                  && this.isSyncDb.equals( that.isSyncDb )
                  && this.hasInsertTableMonitor.equals( that.hasInsertTableMonitor )
                  && this.originalRequest.equals( that.originalRequest )
@@ -573,9 +637,17 @@ public class ShowGraphResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.numEdges ) );
         builder.append( ", " );
+        builder.append( gd.toString( "numBytes" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.numBytes ) );
+        builder.append( ", " );
         builder.append( gd.toString( "isPersisted" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.isPersisted ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "isPartitioned" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.isPartitioned ) );
         builder.append( ", " );
         builder.append( gd.toString( "isSyncDb" ) );
         builder.append( ": " );
@@ -608,7 +680,9 @@ public class ShowGraphResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.directed.hashCode();
         hashCode = (31 * hashCode) + this.numNodes.hashCode();
         hashCode = (31 * hashCode) + this.numEdges.hashCode();
+        hashCode = (31 * hashCode) + this.numBytes.hashCode();
         hashCode = (31 * hashCode) + this.isPersisted.hashCode();
+        hashCode = (31 * hashCode) + this.isPartitioned.hashCode();
         hashCode = (31 * hashCode) + this.isSyncDb.hashCode();
         hashCode = (31 * hashCode) + this.hasInsertTableMonitor.hashCode();
         hashCode = (31 * hashCode) + this.originalRequest.hashCode();

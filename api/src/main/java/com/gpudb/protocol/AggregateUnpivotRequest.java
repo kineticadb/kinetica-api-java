@@ -161,24 +161,6 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#VIEW_ID VIEW_ID}:
      * view this result table is part of.  The default value is ''.
      *         <li> {@link
-     * com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
-     * MATERIALIZE_ON_GPU}: No longer used.  See <a
-     * href="../../../../../../rm/concepts/" target="_top">Resource Management
-     * Concepts</a> for information about how resources are managed, <a
-     * href="../../../../../../rm/concepts/" target="_top">Tier Strategy
-     * Concepts</a> for how resources are targeted for VRAM, and <a
-     * href="../../../../../../rm/usage/#tier-strategies" target="_top">Tier
-     * Strategy Usage</a> for how to specify a table's priority in VRAM.
-     * Supported values:
-     * <ul>
-     *         <li> {@link
-     * com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE TRUE}
-     *         <li> {@link
-     * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
-     *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_INDEXES
      * CREATE_INDEXES}: Comma-separated list of columns on which to create
      * indexes on the table specified in {@code result_table}. The columns
@@ -282,27 +264,6 @@ public class AggregateUnpivotRequest implements IndexedRecord {
          * view this result table is part of.  The default value is ''.
          */
         public static final String VIEW_ID = "view_id";
-
-        /**
-         * No longer used.  See <a href="../../../../../../rm/concepts/"
-         * target="_top">Resource Management Concepts</a> for information about
-         * how resources are managed, <a href="../../../../../../rm/concepts/"
-         * target="_top">Tier Strategy Concepts</a> for how resources are
-         * targeted for VRAM, and <a
-         * href="../../../../../../rm/usage/#tier-strategies"
-         * target="_top">Tier Strategy Usage</a> for how to specify a table's
-         * priority in VRAM.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
-         */
-        public static final String MATERIALIZE_ON_GPU = "materialize_on_gpu";
 
         /**
          * Comma-separated list of columns on which to create indexes on the
@@ -444,30 +405,6 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this result table is part of.  The
      *                 default value is ''.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../../rm/concepts/"
-     *                 target="_top">Resource Management Concepts</a> for
-     *                 information about how resources are managed, <a
-     *                 href="../../../../../../rm/concepts/" target="_top">Tier
-     *                 Strategy Concepts</a> for how resources are targeted for
-     *                 VRAM, and <a
-     *                 href="../../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">Tier Strategy Usage</a> for how to specify
-     *                 a table's priority in VRAM.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
-     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_INDEXES
      *                 CREATE_INDEXES}: Comma-separated list of columns on
@@ -613,30 +550,6 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this result table is part of.  The
      *                 default value is ''.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../../rm/concepts/"
-     *                 target="_top">Resource Management Concepts</a> for
-     *                 information about how resources are managed, <a
-     *                 href="../../../../../../rm/concepts/" target="_top">Tier
-     *                 Strategy Concepts</a> for how resources are targeted for
-     *                 VRAM, and <a
-     *                 href="../../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">Tier Strategy Usage</a> for how to specify
-     *                 a table's priority in VRAM.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
-     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_INDEXES
      *                 CREATE_INDEXES}: Comma-separated list of columns on
@@ -913,26 +826,6 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *         VIEW_ID}: view this result table is part of.  The default value
      *         is ''.
      *                 <li> {@link
-     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
-     *         MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *         href="../../../../../../rm/concepts/" target="_top">Resource
-     *         Management Concepts</a> for information about how resources are
-     *         managed, <a href="../../../../../../rm/concepts/"
-     *         target="_top">Tier Strategy Concepts</a> for how resources are
-     *         targeted for VRAM, and <a
-     *         href="../../../../../../rm/usage/#tier-strategies"
-     *         target="_top">Tier Strategy Usage</a> for how to specify a
-     *         table's priority in VRAM.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
-     *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_INDEXES
      *         CREATE_INDEXES}: Comma-separated list of columns on which to
      *         create indexes on the table specified in {@code result_table}.
@@ -1035,30 +928,6 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#VIEW_ID
      *                 VIEW_ID}: view this result table is part of.  The
      *                 default value is ''.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../../rm/concepts/"
-     *                 target="_top">Resource Management Concepts</a> for
-     *                 information about how resources are managed, <a
-     *                 href="../../../../../../rm/concepts/" target="_top">Tier
-     *                 Strategy Concepts</a> for how resources are targeted for
-     *                 VRAM, and <a
-     *                 href="../../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">Tier Strategy Usage</a> for how to specify
-     *                 a table's priority in VRAM.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
-     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_INDEXES
      *                 CREATE_INDEXES}: Comma-separated list of columns on

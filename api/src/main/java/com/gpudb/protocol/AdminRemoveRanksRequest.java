@@ -19,13 +19,15 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#adminRemoveRanks(AdminRemoveRanksRequest)}.
  * <p>
- * Remove one or more ranks from an existing Kinetica cluster. All data will be
- * rebalanced to other ranks before the rank(s) is removed unless the {@code
- * rebalance_sharded_data} or {@code rebalance_unsharded_data} parameters are
- * set to {@code false} in the {@code options}, in which case the corresponding
+ * Remove one or more ranks from an existing Kinetica cluster. All data
+ * will be rebalanced to other ranks before the rank(s) is removed unless the
+ * {@code rebalance_sharded_data} or
+ * {@code rebalance_unsharded_data} parameters are set to
+ * {@code false} in the
+ * {@code options}, in which case the corresponding
  * <a href="../../../../../../concepts/tables/#sharding" target="_top">sharded
- * data</a> and/or unsharded data (a.k.a. <a
- * href="../../../../../../concepts/tables/#random-sharding"
+ * data</a> and/or unsharded data (a.k.a.
+ * <a href="../../../../../../concepts/tables/#random-sharding"
  * target="_top">randomly-sharded</a>) will be deleted.
  * <p>
  * The database must be offline for this operation, see {@link
@@ -33,7 +35,8 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * This endpoint's processing time depends on the amount of data in the system,
  * thus the API call may time out if run directly.  It is recommended to run
- * this endpoint asynchronously via {@link
+ * this
+ * endpoint asynchronously via {@link
  * com.gpudb.GPUdb#createJob(CreateJobRequest)}.
  */
 public class AdminRemoveRanksRequest implements IndexedRecord {

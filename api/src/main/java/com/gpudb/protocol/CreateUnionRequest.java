@@ -86,24 +86,6 @@ public class CreateUnionRequest implements IndexedRecord {
      * if non-existent]  Name of the schema for the output table. If the schema
      * provided is non-existent, it will be automatically created.  The default
      * value is ''.
-     *         <li> {@link
-     * com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
-     * MATERIALIZE_ON_GPU}: No longer used.  See <a
-     * href="../../../../../../rm/concepts/" target="_top">Resource Management
-     * Concepts</a> for information about how resources are managed, <a
-     * href="../../../../../../rm/concepts/" target="_top">Tier Strategy
-     * Concepts</a> for how resources are targeted for VRAM, and <a
-     * href="../../../../../../rm/usage/#tier-strategies" target="_top">Tier
-     * Strategy Usage</a> for how to specify a table's priority in VRAM.
-     * Supported values:
-     * <ul>
-     *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#TRUE
-     * TRUE}
-     *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#FALSE
-     * FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
      *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#MODE
      * MODE}: If {@code merge_views}, then this operation will merge the
      * provided views. All {@code tableNames} must be views from the same
@@ -205,29 +187,6 @@ public class CreateUnionRequest implements IndexedRecord {
          * created.  The default value is ''.
          */
         public static final String COLLECTION_NAME = "collection_name";
-
-        /**
-         * No longer used.  See <a href="../../../../../../rm/concepts/"
-         * target="_top">Resource Management Concepts</a> for information about
-         * how resources are managed, <a href="../../../../../../rm/concepts/"
-         * target="_top">Tier Strategy Concepts</a> for how resources are
-         * targeted for VRAM, and <a
-         * href="../../../../../../rm/usage/#tier-strategies"
-         * target="_top">Tier Strategy Usage</a> for how to specify a table's
-         * priority in VRAM.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
-         */
-        public static final String MATERIALIZE_ON_GPU = "materialize_on_gpu";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * If {@code merge_views}, then this operation will merge the provided
@@ -367,6 +326,8 @@ public class CreateUnionRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
          */
         public static final String PERSIST = "persist";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         /**
          * ID of view of which this output table is a member.  The default
@@ -440,29 +401,6 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 for the output table. If the schema provided is
      *                 non-existent, it will be automatically created.  The
      *                 default value is ''.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../../rm/concepts/"
-     *                 target="_top">Resource Management Concepts</a> for
-     *                 information about how resources are managed, <a
-     *                 href="../../../../../../rm/concepts/" target="_top">Tier
-     *                 Strategy Concepts</a> for how resources are targeted for
-     *                 VRAM, and <a
-     *                 href="../../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">Tier Strategy Usage</a> for how to specify
-     *                 a table's priority in VRAM.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
-     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MODE
      *                 MODE}: If {@code merge_views}, then this operation will
@@ -699,26 +637,6 @@ public class CreateUnionRequest implements IndexedRecord {
      *         output table. If the schema provided is non-existent, it will be
      *         automatically created.  The default value is ''.
      *                 <li> {@link
-     *         com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
-     *         MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *         href="../../../../../../rm/concepts/" target="_top">Resource
-     *         Management Concepts</a> for information about how resources are
-     *         managed, <a href="../../../../../../rm/concepts/"
-     *         target="_top">Tier Strategy Concepts</a> for how resources are
-     *         targeted for VRAM, and <a
-     *         href="../../../../../../rm/usage/#tier-strategies"
-     *         target="_top">Tier Strategy Usage</a> for how to specify a
-     *         table's priority in VRAM.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
-     *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#MODE MODE}: If
      *         {@code merge_views}, then this operation will merge the provided
      *         views. All {@code tableNames} must be views from the same
@@ -836,29 +754,6 @@ public class CreateUnionRequest implements IndexedRecord {
      *                 for the output table. If the schema provided is
      *                 non-existent, it will be automatically created.  The
      *                 default value is ''.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../../rm/concepts/"
-     *                 target="_top">Resource Management Concepts</a> for
-     *                 information about how resources are managed, <a
-     *                 href="../../../../../../rm/concepts/" target="_top">Tier
-     *                 Strategy Concepts</a> for how resources are targeted for
-     *                 VRAM, and <a
-     *                 href="../../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">Tier Strategy Usage</a> for how to specify
-     *                 a table's priority in VRAM.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
-     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MODE
      *                 MODE}: If {@code merge_views}, then this operation will

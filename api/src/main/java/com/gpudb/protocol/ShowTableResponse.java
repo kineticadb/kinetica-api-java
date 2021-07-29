@@ -232,6 +232,16 @@ public class ShowTableResponse implements IndexedRecord {
          * href="../../../../../../concepts/tables/#partitioning-by-list-manual"
          * target="_top">manual list partitioning</a>
          *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#HASH HASH}:
+         * Using <a
+         * href="../../../../../../concepts/tables/#partitioning-by-hash"
+         * target="_top">hash partitioning</a>.
+         *         <li> {@link
+         * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#SERIES SERIES}:
+         * Using <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a>.
+         *         <li> {@link
          * com.gpudb.protocol.ShowTableResponse.AdditionalInfo#NONE NONE}:
          * Using no partitioning
          * </ul>
@@ -260,6 +270,20 @@ public class ShowTableResponse implements IndexedRecord {
          * target="_top">manual list partitioning</a>
          */
         public static final String LIST = "LIST";
+
+        /**
+         * Using <a
+         * href="../../../../../../concepts/tables/#partitioning-by-hash"
+         * target="_top">hash partitioning</a>.
+         */
+        public static final String HASH = "HASH";
+
+        /**
+         * Using <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a>.
+         */
+        public static final String SERIES = "SERIES";
 
         /**
          * Using no partitioning
@@ -415,6 +439,12 @@ public class ShowTableResponse implements IndexedRecord {
          * (applicable for join tables).  The default value is ''.
          */
         public static final String ALTERNATE_SHARD_KEYS = "alternate_shard_keys";
+
+        /**
+         * Semicolon-separated list of datasource names the table has
+         * subscribed to.  The default value is ''.
+         */
+        public static final String DATASOURCE_SUBSCRIPTIONS = "datasource_subscriptions";
 
         private AdditionalInfo() {  }
     }

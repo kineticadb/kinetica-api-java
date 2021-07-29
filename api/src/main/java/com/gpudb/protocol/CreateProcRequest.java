@@ -190,8 +190,12 @@ public class CreateProcRequest implements IndexedRecord {
      *               of the files. The
      *               file names may include subdirectory names (e.g.
      *               'subdir/file') but must not
-     *               resolve to a directory above the root for the proc.  The
-     *               default value is an empty {@link Map}.
+     *               resolve to a directory above the root for the proc.
+     *               Files may be loaded from existing files in KiFS. Those
+     *               file names should be
+     *               prefixed with the uri kifs:// and the values in the map
+     *               should be empty.  The default value is an empty {@link
+     *               Map}.
      * @param command  The command (excluding arguments) that will be invoked
      *                 when
      *                 the proc is executed. It will be invoked from the
@@ -336,8 +340,11 @@ public class CreateProcRequest implements IndexedRecord {
      *         the files. The
      *         file names may include subdirectory names (e.g. 'subdir/file')
      *         but must not
-     *         resolve to a directory above the root for the proc.  The default
-     *         value is an empty {@link Map}.
+     *         resolve to a directory above the root for the proc.
+     *         Files may be loaded from existing files in KiFS. Those file
+     *         names should be
+     *         prefixed with the uri kifs:// and the values in the map should
+     *         be empty.  The default value is an empty {@link Map}.
      * 
      */
     public Map<String, ByteBuffer> getFiles() {
@@ -351,8 +358,12 @@ public class CreateProcRequest implements IndexedRecord {
      *               of the files. The
      *               file names may include subdirectory names (e.g.
      *               'subdir/file') but must not
-     *               resolve to a directory above the root for the proc.  The
-     *               default value is an empty {@link Map}.
+     *               resolve to a directory above the root for the proc.
+     *               Files may be loaded from existing files in KiFS. Those
+     *               file names should be
+     *               prefixed with the uri kifs:// and the values in the map
+     *               should be empty.  The default value is an empty {@link
+     *               Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

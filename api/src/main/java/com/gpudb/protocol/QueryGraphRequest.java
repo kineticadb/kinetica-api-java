@@ -50,10 +50,10 @@ import org.apache.avro.generic.IndexedRecord;
  * <a href="../../../../../../graph_solver/network_graph_solver/"
  * target="_top">Network Graphs & Solvers</a>
  * concepts documentation, the
- * <a href="../../../../../../graph_solver/examples/graph_rest_guide/"
- * target="_top">Graph REST Tutorial</a>,
+ * <a href="../../../../../../guides/graph_rest_guide/" target="_top">Graph
+ * REST Tutorial</a>,
  * and/or some
- * <a href="../../../../../../graph_solver/examples/#match-graph"
+ * <a href="../../../../../../guide-tags/graph-query"
  * target="_top">/match/graph examples</a>
  * before using this endpoint.
  */
@@ -166,19 +166,6 @@ public class QueryGraphRequest implements IndexedRecord {
      * com.gpudb.protocol.QueryGraphRequest.Options#AND_LABELS AND_LABELS}: If
      * set to {@code true}, the result of the query has entities that satisfy
      * all of the target labels, instead of any.
-     * Supported values:
-     * <ul>
-     *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#TRUE
-     * TRUE}
-     *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     * FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
-     *         <li> {@link
-     * com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_SOLVE_RESULTS
-     * EXPORT_SOLVE_RESULTS}: Returns solution results inside the {@code
-     * adjacencyListIntArray} array in the response if set to {@code true}.
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.QueryGraphRequest.Options#TRUE
@@ -303,21 +290,6 @@ public class QueryGraphRequest implements IndexedRecord {
          * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
          */
         public static final String AND_LABELS = "and_labels";
-
-        /**
-         * Returns solution results inside the {@code adjacencyListIntArray}
-         * array in the response if set to {@code true}.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
-         */
-        public static final String EXPORT_SOLVE_RESULTS = "export_solve_results";
 
         /**
          * Indicates which graph server(s) to send the request to. Default is
@@ -508,22 +480,6 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 AND_LABELS}: If set to {@code true}, the result of the
      *                 query has entities that satisfy all of the target
      *                 labels, instead of any.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_SOLVE_RESULTS
-     *                 EXPORT_SOLVE_RESULTS}: Returns solution results inside
-     *                 the {@code adjacencyListIntArray} array in the response
-     *                 if set to {@code true}.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -856,20 +812,6 @@ public class QueryGraphRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
      *                 <li> {@link
-     *         com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_SOLVE_RESULTS
-     *         EXPORT_SOLVE_RESULTS}: Returns solution results inside the
-     *         {@code adjacencyListIntArray} array in the response if set to
-     *         {@code true}.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.QueryGraphRequest.Options#FALSE FALSE}.
-     *                 <li> {@link
      *         com.gpudb.protocol.QueryGraphRequest.Options#SERVER_ID
      *         SERVER_ID}: Indicates which graph server(s) to send the request
      *         to. Default is to send to the server, amongst those containing
@@ -983,22 +925,6 @@ public class QueryGraphRequest implements IndexedRecord {
      *                 AND_LABELS}: If set to {@code true}, the result of the
      *                 query has entities that satisfy all of the target
      *                 labels, instead of any.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_SOLVE_RESULTS
-     *                 EXPORT_SOLVE_RESULTS}: Returns solution results inside
-     *                 the {@code adjacencyListIntArray} array in the response
-     *                 if set to {@code true}.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

@@ -19,11 +19,11 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#adminAlterJobs(AdminAlterJobsRequest)}.
  * <p>
- * Perform the requested action on a list of one or more job(s). Based on the
- * type of job and the current state of execution, the action may not be
+ * Perform the requested action on a list of one or more job(s). Based
+ * on the type of job and the current state of execution, the action may not be
  * successfully executed. The final result of the attempted actions for each
- * specified job is returned in the status array of the response. See <a
- * href="../../../../../../admin/job_manager/" target="_top">Job Manager</a>
+ * specified job is returned in the status array of the response. See
+ * <a href="../../../../../../admin/job_manager/" target="_top">Job Manager</a>
  * for more information.
  */
 public class AdminAlterJobsRequest implements IndexedRecord {

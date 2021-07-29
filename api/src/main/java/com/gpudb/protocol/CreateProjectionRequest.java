@@ -118,24 +118,6 @@ public class CreateProjectionRequest implements IndexedRecord {
      * columnNames}.  If any alias is given for any column name, the alias must
      * be used, rather than the original column name.  The default value is ''.
      *         <li> {@link
-     * com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
-     * MATERIALIZE_ON_GPU}: No longer used.  See <a
-     * href="../../../../../../rm/concepts/" target="_top">Resource Management
-     * Concepts</a> for information about how resources are managed, <a
-     * href="../../../../../../rm/concepts/" target="_top">Tier Strategy
-     * Concepts</a> for how resources are targeted for VRAM, and <a
-     * href="../../../../../../rm/usage/#tier-strategies" target="_top">Tier
-     * Strategy Usage</a> for how to specify a table's priority in VRAM.
-     * Supported values:
-     * <ul>
-     *         <li> {@link
-     * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
-     *         <li> {@link
-     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
-     *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
      * CHUNK_SIZE}: Indicates the number of records per chunk to be used for
      * this projection.
@@ -252,27 +234,6 @@ public class CreateProjectionRequest implements IndexedRecord {
          * value is ''.
          */
         public static final String ORDER_BY = "order_by";
-
-        /**
-         * No longer used.  See <a href="../../../../../../rm/concepts/"
-         * target="_top">Resource Management Concepts</a> for information about
-         * how resources are managed, <a href="../../../../../../rm/concepts/"
-         * target="_top">Tier Strategy Concepts</a> for how resources are
-         * targeted for VRAM, and <a
-         * href="../../../../../../rm/usage/#tier-strategies"
-         * target="_top">Tier Strategy Usage</a> for how to specify a table's
-         * priority in VRAM.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
-         */
-        public static final String MATERIALIZE_ON_GPU = "materialize_on_gpu";
 
         /**
          * Indicates the number of records per chunk to be used for this
@@ -446,30 +407,6 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 any alias is given for any column name, the alias must
      *                 be used, rather than the original column name.  The
      *                 default value is ''.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../../rm/concepts/"
-     *                 target="_top">Resource Management Concepts</a> for
-     *                 information about how resources are managed, <a
-     *                 href="../../../../../../rm/concepts/" target="_top">Tier
-     *                 Strategy Concepts</a> for how resources are targeted for
-     *                 VRAM, and <a
-     *                 href="../../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">Tier Strategy Usage</a> for how to specify
-     *                 a table's priority in VRAM.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
-     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Indicates the number of records per chunk
@@ -697,26 +634,6 @@ public class CreateProjectionRequest implements IndexedRecord {
      *         column name, the alias must be used, rather than the original
      *         column name.  The default value is ''.
      *                 <li> {@link
-     *         com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
-     *         MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *         href="../../../../../../rm/concepts/" target="_top">Resource
-     *         Management Concepts</a> for information about how resources are
-     *         managed, <a href="../../../../../../rm/concepts/"
-     *         target="_top">Tier Strategy Concepts</a> for how resources are
-     *         targeted for VRAM, and <a
-     *         href="../../../../../../rm/usage/#tier-strategies"
-     *         target="_top">Tier Strategy Usage</a> for how to specify a
-     *         table's priority in VRAM.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
-     *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
      *         CHUNK_SIZE}: Indicates the number of records per chunk to be
      *         used for this projection.
@@ -841,30 +758,6 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                 any alias is given for any column name, the alias must
      *                 be used, rather than the original column name.  The
      *                 default value is ''.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../../rm/concepts/"
-     *                 target="_top">Resource Management Concepts</a> for
-     *                 information about how resources are managed, <a
-     *                 href="../../../../../../rm/concepts/" target="_top">Tier
-     *                 Strategy Concepts</a> for how resources are targeted for
-     *                 VRAM, and <a
-     *                 href="../../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">Tier Strategy Usage</a> for how to specify
-     *                 a table's priority in VRAM.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
-     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Indicates the number of records per chunk

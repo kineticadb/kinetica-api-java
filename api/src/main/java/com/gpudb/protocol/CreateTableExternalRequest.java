@@ -159,6 +159,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * HASH}: Use <a
      * href="../../../../../../concepts/tables/#partitioning-by-hash"
      * target="_top">hash partitioning</a>.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#SERIES
+     * SERIES}: Use <a
+     * href="../../../../../../concepts/tables/#partitioning-by-series"
+     * target="_top">series partitioning</a>.
      * </ul>
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#PARTITION_KEYS
@@ -236,11 +241,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * STRATEGY_DEFINITION}: The <a
      * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
      * strategy</a>
-     * for the table and its columns. See
-     * <a href="../../../../../../rm/concepts/#tier-strategies"
-     * target="_top">tier strategy usage</a> for format and
-     * <a href="../../../../../../rm/usage/#tier-strategies" target="_top">tier
-     * strategy examples</a> for examples.
+     * for the table and its columns.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code createTableOptions}.
@@ -353,6 +354,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * HASH}: Use <a
          * href="../../../../../../concepts/tables/#partitioning-by-hash"
          * target="_top">hash partitioning</a>.
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#SERIES
+         * SERIES}: Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a>.
          * </ul>
          */
         public static final String PARTITION_TYPE = "partition_type";
@@ -384,6 +390,13 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * target="_top">hash partitioning</a>.
          */
         public static final String HASH = "HASH";
+
+        /**
+         * Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a>.
+         */
+        public static final String SERIES = "SERIES";
 
         /**
          * Comma-separated list of partition keys, which are the columns or
@@ -469,11 +482,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
         /**
          * The <a href="../../../../../../rm/concepts/#tier-strategies"
          * target="_top">tier strategy</a>
-         * for the table and its columns. See
-         * <a href="../../../../../../rm/concepts/#tier-strategies"
-         * target="_top">tier strategy usage</a> for format and
-         * <a href="../../../../../../rm/usage/#tier-strategies"
-         * target="_top">tier strategy examples</a> for examples.
+         * for the table and its columns.
          */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
 
@@ -647,6 +656,9 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#JSON JSON}: Json
      * file format
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#SHAPEFILE
+     * SHAPEFILE}: ShapeFile file format
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
@@ -753,6 +765,24 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#MANUAL MANUAL}.
      *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#SUBSCRIBE
+     * SUBSCRIBE}: Continuously poll the data source to check for new data and
+     * load it into the table.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#POLL_INTERVAL
+     * POLL_INTERVAL}: If {@code true}, the number of seconds between attempts
+     * to load external files into the table. If zero, polling will be
+     * continuous.
+     *         <li> {@link
      * com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_COMMENT_STRING
      * TEXT_COMMENT_STRING}: Specifies the character string that should be
      * interpreted as a comment line
@@ -854,8 +884,36 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * with minimum data scanned
      * </ul>
      * The default value is {@link
-     * com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
-     * ACCURACY}.
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED SPEED}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_INSERT_MODE
+     * TABLE_INSERT_MODE}: Optional: table_insert_mode. When inserting records
+     * from multiple files: if table_per_file then insert from each file into a
+     * new table. Currently supported only for shapefiles.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE SINGLE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_PER_FILE
+     * TABLE_PER_FILE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE SINGLE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_GROUP_ID
+     * KAFKA_GROUP_ID}: The group id to be used consuming data from a kakfa
+     * topic (valid only for kafka datasource subscriptions).
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_COLUMNS
+     * TEXT_SEARCH_COLUMNS}: Add 'text_search' property to internally
+     * inferenced string columns. Comma seperated list of column names or '*'
+     * for all columns. To add text_search property only to string columns of
+     * minimum size, set also the option 'text_search_min_column_length'
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     * TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used only when
+     * 'text_search_columns' has a value.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -1070,6 +1128,9 @@ public class CreateTableExternalRequest implements IndexedRecord {
          *         <li> {@link
          * com.gpudb.protocol.CreateTableExternalRequest.Options#JSON JSON}:
          * Json file format
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#SHAPEFILE
+         * SHAPEFILE}: ShapeFile file format
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
@@ -1091,6 +1152,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * Json file format
          */
         public static final String JSON = "json";
+
+        /**
+         * ShapeFile file format
+         */
+        public static final String SHAPEFILE = "shapefile";
 
         /**
          * For {@code materialized} external tables, whether to do a full load,
@@ -1292,6 +1358,29 @@ public class CreateTableExternalRequest implements IndexedRecord {
         public static final String ON_START = "on_start";
 
         /**
+         * Continuously poll the data source to check for new data and load it
+         * into the table.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE FALSE}.
+         */
+        public static final String SUBSCRIBE = "subscribe";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
+         * If {@code true}, the number of seconds between attempts to load
+         * external files into the table. If zero, polling will be continuous.
+         */
+        public static final String POLL_INTERVAL = "poll_interval";
+
+        /**
          * Specifies the character string that should be interpreted as a
          * comment line
          * prefix in the source data.  All lines in the data starting with the
@@ -1346,8 +1435,6 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}.
          */
         public static final String TEXT_HAS_HEADER = "text_has_header";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * Specifies the delimiter for
@@ -1405,8 +1492,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * with minimum data scanned
          * </ul>
          * The default value is {@link
-         * com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
-         * ACCURACY}.
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED SPEED}.
          */
         public static final String TYPE_INFERENCE_MODE = "type_inference_mode";
 
@@ -1421,6 +1507,46 @@ public class CreateTableExternalRequest implements IndexedRecord {
          * with minimum data scanned
          */
         public static final String SPEED = "speed";
+
+        /**
+         * Optional: table_insert_mode. When inserting records from multiple
+         * files: if table_per_file then insert from each file into a new
+         * table. Currently supported only for shapefiles.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE SINGLE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_PER_FILE
+         * TABLE_PER_FILE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
+         * SINGLE}.
+         */
+        public static final String TABLE_INSERT_MODE = "table_insert_mode";
+        public static final String SINGLE = "single";
+        public static final String TABLE_PER_FILE = "table_per_file";
+
+        /**
+         * The group id to be used consuming data from a kakfa topic (valid
+         * only for kafka datasource subscriptions).
+         */
+        public static final String KAFKA_GROUP_ID = "kafka_group_id";
+
+        /**
+         * Add 'text_search' property to internally inferenced string columns.
+         * Comma seperated list of column names or '*' for all columns. To add
+         * text_search property only to string columns of minimum size, set
+         * also the option 'text_search_min_column_length'
+         */
+        public static final String TEXT_SEARCH_COLUMNS = "text_search_columns";
+
+        /**
+         * Set minimum column size. Used only when 'text_search_columns' has a
+         * value.
+         */
+        public static final String TEXT_SEARCH_MIN_COLUMN_LENGTH = "text_search_min_column_length";
 
         private Options() {  }
     }
@@ -1458,6 +1584,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * @param filepaths  A list of file paths from which data will be sourced;
      *                   wildcards (*) can be used
      *                   to specify a group of files.
+     *                   For paths in KiFS, use the uri prefix of kifs://
+     *                   followed by the full path to a file or directory.
      *                   If an external data source is specified in {@code
      *                   datasource_name}, these file
      *                   paths must resolve to accessible files at that data
@@ -1582,6 +1710,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            HASH}: Use <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a>.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#SERIES
+     *                            SERIES}: Use <a
+     *                            href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a>.
      *                            </ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#PARTITION_KEYS
@@ -1674,15 +1807,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            STRATEGY_DEFINITION}: The <a
      *                            href="../../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy</a>
-     *                            for the table and its columns. See
-     *                            <a
-     *                            href="../../../../../../rm/concepts/#tier-strategies"
-     *                            target="_top">tier strategy usage</a> for
-     *                            format and
-     *                            <a
-     *                            href="../../../../../../rm/usage/#tier-strategies"
-     *                            target="_top">tier strategy examples</a> for
-     *                            examples.
+     *                            for the table and its columns.
      *                            </ul>
      *                            The default value is an empty {@link Map}.
      * @param options  Optional parameters.
@@ -1852,6 +1977,9 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#JSON
      *                 JSON}: Json file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SHAPEFILE
+     *                 SHAPEFILE}: ShapeFile file format
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
@@ -1967,6 +2095,27 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#MANUAL
      *                 MANUAL}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SUBSCRIBE
+     *                 SUBSCRIBE}: Continuously poll the data source to check
+     *                 for new data and load it into the table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#POLL_INTERVAL
+     *                 POLL_INTERVAL}: If {@code true}, the number of seconds
+     *                 between attempts to load external files into the table.
+     *                 If zero, polling will be continuous.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_COMMENT_STRING
      *                 TEXT_COMMENT_STRING}: Specifies the character string
      *                 that should be interpreted as a comment line
@@ -2068,8 +2217,43 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 'all' values will fit with minimum data scanned
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
-     *                 ACCURACY}.
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED
+     *                 SPEED}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_INSERT_MODE
+     *                 TABLE_INSERT_MODE}: Optional: table_insert_mode. When
+     *                 inserting records from multiple files: if table_per_file
+     *                 then insert from each file into a new table. Currently
+     *                 supported only for shapefiles.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
+     *                 SINGLE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_PER_FILE
+     *                 TABLE_PER_FILE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
+     *                 SINGLE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_GROUP_ID
+     *                 KAFKA_GROUP_ID}: The group id to be used consuming data
+     *                 from a kakfa topic (valid only for kafka datasource
+     *                 subscriptions).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_COLUMNS
+     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
+     *                 internally inferenced string columns. Comma seperated
+     *                 list of column names or '*' for all columns. To add
+     *                 text_search property only to string columns of minimum
+     *                 size, set also the option
+     *                 'text_search_min_column_length'
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
+     *                 Used only when 'text_search_columns' has a value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -2122,6 +2306,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * @return A list of file paths from which data will be sourced; wildcards
      *         (*) can be used
      *         to specify a group of files.
+     *         For paths in KiFS, use the uri prefix of kifs:// followed by the
+     *         full path to a file or directory.
      *         If an external data source is specified in {@code
      *         datasource_name}, these file
      *         paths must resolve to accessible files at that data source
@@ -2145,6 +2331,8 @@ public class CreateTableExternalRequest implements IndexedRecord {
      * @param filepaths  A list of file paths from which data will be sourced;
      *                   wildcards (*) can be used
      *                   to specify a group of files.
+     *                   For paths in KiFS, use the uri prefix of kifs://
+     *                   followed by the full path to a file or directory.
      *                   If an external data source is specified in {@code
      *                   datasource_name}, these file
      *                   paths must resolve to accessible files at that data
@@ -2292,6 +2480,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         HASH}: Use <a
      *         href="../../../../../../concepts/tables/#partitioning-by-hash"
      *         target="_top">hash partitioning</a>.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#SERIES
+     *         SERIES}: Use <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-series"
+     *         target="_top">series partitioning</a>.
      *         </ul>
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#PARTITION_KEYS
@@ -2376,11 +2569,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a>
-     *         for the table and its columns. See
-     *         <a href="../../../../../../rm/concepts/#tier-strategies"
-     *         target="_top">tier strategy usage</a> for format and
-     *         <a href="../../../../../../rm/usage/#tier-strategies"
-     *         target="_top">tier strategy examples</a> for examples.
+     *         for the table and its columns.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -2501,6 +2690,11 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            HASH}: Use <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a>.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#SERIES
+     *                            SERIES}: Use <a
+     *                            href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a>.
      *                            </ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#PARTITION_KEYS
@@ -2593,15 +2787,7 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                            STRATEGY_DEFINITION}: The <a
      *                            href="../../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy</a>
-     *                            for the table and its columns. See
-     *                            <a
-     *                            href="../../../../../../rm/concepts/#tier-strategies"
-     *                            target="_top">tier strategy usage</a> for
-     *                            format and
-     *                            <a
-     *                            href="../../../../../../rm/usage/#tier-strategies"
-     *                            target="_top">tier strategy examples</a> for
-     *                            examples.
+     *                            for the table and its columns.
      *                            </ul>
      *                            The default value is an empty {@link Map}.
      * 
@@ -2777,6 +2963,9 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#JSON
      *         JSON}: Json file format
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#SHAPEFILE
+     *         SHAPEFILE}: ShapeFile file format
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
@@ -2888,6 +3077,26 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#MANUAL
      *         MANUAL}.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#SUBSCRIBE
+     *         SUBSCRIBE}: Continuously poll the data source to check for new
+     *         data and load it into the table.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *         FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#POLL_INTERVAL
+     *         POLL_INTERVAL}: If {@code true}, the number of seconds between
+     *         attempts to load external files into the table. If zero, polling
+     *         will be continuous.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_COMMENT_STRING
      *         TEXT_COMMENT_STRING}: Specifies the character string that should
      *         be interpreted as a comment line
@@ -2984,8 +3193,41 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *         values will fit with minimum data scanned
      *         </ul>
      *         The default value is {@link
-     *         com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
-     *         ACCURACY}.
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED
+     *         SPEED}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_INSERT_MODE
+     *         TABLE_INSERT_MODE}: Optional: table_insert_mode. When inserting
+     *         records from multiple files: if table_per_file then insert from
+     *         each file into a new table. Currently supported only for
+     *         shapefiles.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
+     *         SINGLE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_PER_FILE
+     *         TABLE_PER_FILE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
+     *         SINGLE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_GROUP_ID
+     *         KAFKA_GROUP_ID}: The group id to be used consuming data from a
+     *         kakfa topic (valid only for kafka datasource subscriptions).
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_COLUMNS
+     *         TEXT_SEARCH_COLUMNS}: Add 'text_search' property to internally
+     *         inferenced string columns. Comma seperated list of column names
+     *         or '*' for all columns. To add text_search property only to
+     *         string columns of minimum size, set also the option
+     *         'text_search_min_column_length'
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used
+     *         only when 'text_search_columns' has a value.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -3163,6 +3405,9 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#JSON
      *                 JSON}: Json file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SHAPEFILE
+     *                 SHAPEFILE}: ShapeFile file format
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
@@ -3278,6 +3523,27 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#MANUAL
      *                 MANUAL}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SUBSCRIBE
+     *                 SUBSCRIBE}: Continuously poll the data source to check
+     *                 for new data and load it into the table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#POLL_INTERVAL
+     *                 POLL_INTERVAL}: If {@code true}, the number of seconds
+     *                 between attempts to load external files into the table.
+     *                 If zero, polling will be continuous.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_COMMENT_STRING
      *                 TEXT_COMMENT_STRING}: Specifies the character string
      *                 that should be interpreted as a comment line
@@ -3379,8 +3645,43 @@ public class CreateTableExternalRequest implements IndexedRecord {
      *                 'all' values will fit with minimum data scanned
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
-     *                 ACCURACY}.
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED
+     *                 SPEED}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_INSERT_MODE
+     *                 TABLE_INSERT_MODE}: Optional: table_insert_mode. When
+     *                 inserting records from multiple files: if table_per_file
+     *                 then insert from each file into a new table. Currently
+     *                 supported only for shapefiles.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
+     *                 SINGLE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_PER_FILE
+     *                 TABLE_PER_FILE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
+     *                 SINGLE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_GROUP_ID
+     *                 KAFKA_GROUP_ID}: The group id to be used consuming data
+     *                 from a kakfa topic (valid only for kafka datasource
+     *                 subscriptions).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_COLUMNS
+     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
+     *                 internally inferenced string columns. Comma seperated
+     *                 list of column names or '*' for all columns. To add
+     *                 text_search property only to string columns of minimum
+     *                 size, set also the option
+     *                 'text_search_min_column_length'
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
+     *                 Used only when 'text_search_columns' has a value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

@@ -144,6 +144,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * HASH}: Use <a
      * href="../../../../../../concepts/tables/#partitioning-by-hash"
      * target="_top">hash partitioning</a>.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#SERIES
+     * SERIES}: Use <a
+     * href="../../../../../../concepts/tables/#partitioning-by-series"
+     * target="_top">series partitioning</a>.
      * </ul>
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#PARTITION_KEYS
@@ -159,9 +164,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * href="../../../../../../concepts/tables/#partitioning-by-interval"
      * target="_top">interval partitioning</a>, <a
      * href="../../../../../../concepts/tables/#partitioning-by-list"
-     * target="_top">list partitioning</a>, or <a
+     * target="_top">list partitioning</a>, <a
      * href="../../../../../../concepts/tables/#partitioning-by-hash"
-     * target="_top">hash partitioning</a> for example formats.
+     * target="_top">hash partitioning</a>, or <a
+     * href="../../../../../../concepts/tables/#partitioning-by-series"
+     * target="_top">series partitioning</a> for example formats.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
      * IS_AUTOMATIC_PARTITION}: If {@code true}, a new partition will be
@@ -216,11 +223,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#STRATEGY_DEFINITION
      * STRATEGY_DEFINITION}: The <a
      * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
-     * strategy</a> for the table and its columns. See <a
-     * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
-     * strategy usage</a> for format and <a
-     * href="../../../../../../rm/usage/#tier-strategies" target="_top">tier
-     * strategy examples</a> for examples.
+     * strategy</a> for the table and its columns.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code createTableOptions}.
@@ -326,6 +329,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * HASH}: Use <a
          * href="../../../../../../concepts/tables/#partitioning-by-hash"
          * target="_top">hash partitioning</a>.
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#SERIES
+         * SERIES}: Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a>.
          * </ul>
          */
         public static final String PARTITION_TYPE = "partition_type";
@@ -359,6 +367,13 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String HASH = "HASH";
 
         /**
+         * Use <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a>.
+         */
+        public static final String SERIES = "SERIES";
+
+        /**
          * Comma-separated list of partition keys, which are the columns or
          * column expressions by which records will be assigned to partitions
          * defined by {@code partition_definitions}.
@@ -373,9 +388,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * href="../../../../../../concepts/tables/#partitioning-by-interval"
          * target="_top">interval partitioning</a>, <a
          * href="../../../../../../concepts/tables/#partitioning-by-list"
-         * target="_top">list partitioning</a>, or <a
+         * target="_top">list partitioning</a>, <a
          * href="../../../../../../concepts/tables/#partitioning-by-hash"
-         * target="_top">hash partitioning</a> for example formats.
+         * target="_top">hash partitioning</a>, or <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a> for example formats.
          */
         public static final String PARTITION_DEFINITIONS = "partition_definitions";
 
@@ -437,11 +454,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
 
         /**
          * The <a href="../../../../../../rm/concepts/#tier-strategies"
-         * target="_top">tier strategy</a> for the table and its columns. See
-         * <a href="../../../../../../rm/concepts/#tier-strategies"
-         * target="_top">tier strategy usage</a> for format and <a
-         * href="../../../../../../rm/usage/#tier-strategies"
-         * target="_top">tier strategy examples</a> for examples.
+         * target="_top">tier strategy</a> for the table and its columns.
          */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
 
@@ -591,6 +604,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON JSON}:
      * Json file format
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHAPEFILE
+     * SHAPEFILE}: ShapeFile file format
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT
@@ -727,8 +743,17 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * with minimum data scanned
      * </ul>
      * The default value is {@link
-     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ACCURACY
-     * ACCURACY}.
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SPEED SPEED}.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_COLUMNS
+     * TEXT_SEARCH_COLUMNS}: Add 'text_search' property to internally
+     * inferenced string columns. Comma seperated list of column names or '*'
+     * for all columns. To add text_search property only to string columns of
+     * minimum size, set also the option 'text_search_min_column_length'
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     * TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used only when
+     * 'text_search_columns' has a value.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -902,6 +927,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON
          * JSON}: Json file format
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHAPEFILE
+         * SHAPEFILE}: ShapeFile file format
          * </ul>
          * The default value is {@link
          * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT
@@ -923,6 +951,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * Json file format
          */
         public static final String JSON = "json";
+
+        /**
+         * ShapeFile file format
+         */
+        public static final String SHAPEFILE = "shapefile";
 
         /**
          * Whether to do a full load, dry run, or perform a type inference on
@@ -1097,8 +1130,8 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * will fit with minimum data scanned
          * </ul>
          * The default value is {@link
-         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ACCURACY
-         * ACCURACY}.
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SPEED
+         * SPEED}.
          */
         public static final String TYPE_INFERENCE_MODE = "type_inference_mode";
 
@@ -1113,6 +1146,20 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * with minimum data scanned
          */
         public static final String SPEED = "speed";
+
+        /**
+         * Add 'text_search' property to internally inferenced string columns.
+         * Comma seperated list of column names or '*' for all columns. To add
+         * text_search property only to string columns of minimum size, set
+         * also the option 'text_search_min_column_length'
+         */
+        public static final String TEXT_SEARCH_COLUMNS = "text_search_columns";
+
+        /**
+         * Set minimum column size. Used only when 'text_search_columns' has a
+         * value.
+         */
+        public static final String TEXT_SEARCH_MIN_COLUMN_LENGTH = "text_search_min_column_length";
 
         private Options() {  }
     }
@@ -1265,6 +1312,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                            HASH}: Use <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a>.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#SERIES
+     *                            SERIES}: Use <a
+     *                            href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a>.
      *                            </ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#PARTITION_KEYS
@@ -1284,9 +1336,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                            href="../../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>, <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-list"
-     *                            target="_top">list partitioning</a>, or <a
+     *                            target="_top">list partitioning</a>, <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
-     *                            target="_top">hash partitioning</a> for
+     *                            target="_top">hash partitioning</a>, or <a
+     *                            href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a> for
      *                            example formats.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
@@ -1350,13 +1404,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                            STRATEGY_DEFINITION}: The <a
      *                            href="../../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy</a> for the table
-     *                            and its columns. See <a
-     *                            href="../../../../../../rm/concepts/#tier-strategies"
-     *                            target="_top">tier strategy usage</a> for
-     *                            format and <a
-     *                            href="../../../../../../rm/usage/#tier-strategies"
-     *                            target="_top">tier strategy examples</a> for
-     *                            examples.
+     *                            and its columns.
      *                            </ul>
      *                            The default value is an empty {@link Map}.
      * @param options  Optional parameters.
@@ -1501,6 +1549,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON
      *                 JSON}: Json file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHAPEFILE
+     *                 SHAPEFILE}: ShapeFile file format
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT
@@ -1642,8 +1693,20 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 'all' values will fit with minimum data scanned
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ACCURACY
-     *                 ACCURACY}.
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SPEED
+     *                 SPEED}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_COLUMNS
+     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
+     *                 internally inferenced string columns. Comma seperated
+     *                 list of column names or '*' for all columns. To add
+     *                 text_search property only to string columns of minimum
+     *                 size, set also the option
+     *                 'text_search_min_column_length'
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
+     *                 Used only when 'text_search_columns' has a value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1864,6 +1927,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         HASH}: Use <a
      *         href="../../../../../../concepts/tables/#partitioning-by-hash"
      *         target="_top">hash partitioning</a>.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#SERIES
+     *         SERIES}: Use <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-series"
+     *         target="_top">series partitioning</a>.
      *         </ul>
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#PARTITION_KEYS
@@ -1880,9 +1948,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         href="../../../../../../concepts/tables/#partitioning-by-interval"
      *         target="_top">interval partitioning</a>, <a
      *         href="../../../../../../concepts/tables/#partitioning-by-list"
-     *         target="_top">list partitioning</a>, or <a
+     *         target="_top">list partitioning</a>, <a
      *         href="../../../../../../concepts/tables/#partitioning-by-hash"
-     *         target="_top">hash partitioning</a> for example formats.
+     *         target="_top">hash partitioning</a>, or <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-series"
+     *         target="_top">series partitioning</a> for example formats.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
      *         IS_AUTOMATIC_PARTITION}: If {@code true}, a new partition will
@@ -1939,10 +2009,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
-     *         See <a href="../../../../../../rm/concepts/#tier-strategies"
-     *         target="_top">tier strategy usage</a> for format and <a
-     *         href="../../../../../../rm/usage/#tier-strategies"
-     *         target="_top">tier strategy examples</a> for examples.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -2058,6 +2124,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                            HASH}: Use <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a>.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#SERIES
+     *                            SERIES}: Use <a
+     *                            href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a>.
      *                            </ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#PARTITION_KEYS
@@ -2077,9 +2148,11 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                            href="../../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>, <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-list"
-     *                            target="_top">list partitioning</a>, or <a
+     *                            target="_top">list partitioning</a>, <a
      *                            href="../../../../../../concepts/tables/#partitioning-by-hash"
-     *                            target="_top">hash partitioning</a> for
+     *                            target="_top">hash partitioning</a>, or <a
+     *                            href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a> for
      *                            example formats.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
@@ -2143,13 +2216,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                            STRATEGY_DEFINITION}: The <a
      *                            href="../../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy</a> for the table
-     *                            and its columns. See <a
-     *                            href="../../../../../../rm/concepts/#tier-strategies"
-     *                            target="_top">tier strategy usage</a> for
-     *                            format and <a
-     *                            href="../../../../../../rm/usage/#tier-strategies"
-     *                            target="_top">tier strategy examples</a> for
-     *                            examples.
+     *                            and its columns.
      *                            </ul>
      *                            The default value is an empty {@link Map}.
      * 
@@ -2301,6 +2368,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON
      *         JSON}: Json file format
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHAPEFILE
+     *         SHAPEFILE}: ShapeFile file format
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT
@@ -2437,8 +2507,19 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         values will fit with minimum data scanned
      *         </ul>
      *         The default value is {@link
-     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ACCURACY
-     *         ACCURACY}.
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SPEED
+     *         SPEED}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_COLUMNS
+     *         TEXT_SEARCH_COLUMNS}: Add 'text_search' property to internally
+     *         inferenced string columns. Comma seperated list of column names
+     *         or '*' for all columns. To add text_search property only to
+     *         string columns of minimum size, set also the option
+     *         'text_search_min_column_length'
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used
+     *         only when 'text_search_columns' has a value.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -2591,6 +2672,9 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON
      *                 JSON}: Json file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHAPEFILE
+     *                 SHAPEFILE}: ShapeFile file format
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT
@@ -2732,8 +2816,20 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 'all' values will fit with minimum data scanned
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ACCURACY
-     *                 ACCURACY}.
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SPEED
+     *                 SPEED}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_COLUMNS
+     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
+     *                 internally inferenced string columns. Comma seperated
+     *                 list of column names or '*' for all columns. To add
+     *                 text_search property only to string columns of minimum
+     *                 size, set also the option
+     *                 'text_search_min_column_length'
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
+     *                 Used only when 'text_search_columns' has a value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

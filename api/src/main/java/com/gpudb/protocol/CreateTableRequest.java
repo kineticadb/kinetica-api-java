@@ -185,9 +185,11 @@ public class CreateTableRequest implements IndexedRecord {
      * href="../../../../../../concepts/tables/#partitioning-by-interval"
      * target="_top">interval partitioning</a>, <a
      * href="../../../../../../concepts/tables/#partitioning-by-list"
-     * target="_top">list partitioning</a>, or <a
+     * target="_top">list partitioning</a>, <a
      * href="../../../../../../concepts/tables/#partitioning-by-hash"
-     * target="_top">hash partitioning</a> for example formats.
+     * target="_top">hash partitioning</a>, or <a
+     * href="../../../../../../concepts/tables/#partitioning-by-series"
+     * target="_top">series partitioning</a> for example formats.
      *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
      * IS_AUTOMATIC_PARTITION}: If {@code true}, a new partition will be
@@ -234,11 +236,10 @@ public class CreateTableRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateTableRequest.Options#STRATEGY_DEFINITION
      * STRATEGY_DEFINITION}: The <a
      * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
-     * strategy</a> for the table and its columns. See <a
-     * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
-     * strategy usage</a> for format and <a
-     * href="../../../../../../rm/usage/#tier-strategies" target="_top">tier
-     * strategy examples</a> for examples.
+     * strategy</a> for the table and its columns.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#IS_VIRTUAL_UNION
+     * IS_VIRTUAL_UNION}: <DEVELOPER>
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -427,9 +428,11 @@ public class CreateTableRequest implements IndexedRecord {
          * href="../../../../../../concepts/tables/#partitioning-by-interval"
          * target="_top">interval partitioning</a>, <a
          * href="../../../../../../concepts/tables/#partitioning-by-list"
-         * target="_top">list partitioning</a>, or <a
+         * target="_top">list partitioning</a>, <a
          * href="../../../../../../concepts/tables/#partitioning-by-hash"
-         * target="_top">hash partitioning</a> for example formats.
+         * target="_top">hash partitioning</a>, or <a
+         * href="../../../../../../concepts/tables/#partitioning-by-series"
+         * target="_top">series partitioning</a> for example formats.
          */
         public static final String PARTITION_DEFINITIONS = "partition_definitions";
 
@@ -485,13 +488,14 @@ public class CreateTableRequest implements IndexedRecord {
 
         /**
          * The <a href="../../../../../../rm/concepts/#tier-strategies"
-         * target="_top">tier strategy</a> for the table and its columns. See
-         * <a href="../../../../../../rm/concepts/#tier-strategies"
-         * target="_top">tier strategy usage</a> for format and <a
-         * href="../../../../../../rm/usage/#tier-strategies"
-         * target="_top">tier strategy examples</a> for examples.
+         * target="_top">tier strategy</a> for the table and its columns.
          */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
+
+        /**
+         * <DEVELOPER>
+         */
+        public static final String IS_VIRTUAL_UNION = "is_virtual_union";
 
         private Options() {  }
     }
@@ -677,9 +681,12 @@ public class CreateTableRequest implements IndexedRecord {
      *                 href="../../../../../../concepts/tables/#partitioning-by-interval"
      *                 target="_top">interval partitioning</a>, <a
      *                 href="../../../../../../concepts/tables/#partitioning-by-list"
-     *                 target="_top">list partitioning</a>, or <a
+     *                 target="_top">list partitioning</a>, <a
      *                 href="../../../../../../concepts/tables/#partitioning-by-hash"
-     *                 target="_top">hash partitioning</a> for example formats.
+     *                 target="_top">hash partitioning</a>, or <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                 target="_top">series partitioning</a> for example
+     *                 formats.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
      *                 IS_AUTOMATIC_PARTITION}: If {@code true}, a new
@@ -735,11 +742,10 @@ public class CreateTableRequest implements IndexedRecord {
      *                 STRATEGY_DEFINITION}: The <a
      *                 href="../../../../../../rm/concepts/#tier-strategies"
      *                 target="_top">tier strategy</a> for the table and its
-     *                 columns. See <a
-     *                 href="../../../../../../rm/concepts/#tier-strategies"
-     *                 target="_top">tier strategy usage</a> for format and <a
-     *                 href="../../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">tier strategy examples</a> for examples.
+     *                 columns.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#IS_VIRTUAL_UNION
+     *                 IS_VIRTUAL_UNION}: <DEVELOPER>
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -949,9 +955,11 @@ public class CreateTableRequest implements IndexedRecord {
      *         href="../../../../../../concepts/tables/#partitioning-by-interval"
      *         target="_top">interval partitioning</a>, <a
      *         href="../../../../../../concepts/tables/#partitioning-by-list"
-     *         target="_top">list partitioning</a>, or <a
+     *         target="_top">list partitioning</a>, <a
      *         href="../../../../../../concepts/tables/#partitioning-by-hash"
-     *         target="_top">hash partitioning</a> for example formats.
+     *         target="_top">hash partitioning</a>, or <a
+     *         href="../../../../../../concepts/tables/#partitioning-by-series"
+     *         target="_top">series partitioning</a> for example formats.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
      *         IS_AUTOMATIC_PARTITION}: If {@code true}, a new partition will
@@ -1001,10 +1009,9 @@ public class CreateTableRequest implements IndexedRecord {
      *         STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
-     *         See <a href="../../../../../../rm/concepts/#tier-strategies"
-     *         target="_top">tier strategy usage</a> for format and <a
-     *         href="../../../../../../rm/usage/#tier-strategies"
-     *         target="_top">tier strategy examples</a> for examples.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#IS_VIRTUAL_UNION
+     *         IS_VIRTUAL_UNION}: <DEVELOPER>
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1168,9 +1175,12 @@ public class CreateTableRequest implements IndexedRecord {
      *                 href="../../../../../../concepts/tables/#partitioning-by-interval"
      *                 target="_top">interval partitioning</a>, <a
      *                 href="../../../../../../concepts/tables/#partitioning-by-list"
-     *                 target="_top">list partitioning</a>, or <a
+     *                 target="_top">list partitioning</a>, <a
      *                 href="../../../../../../concepts/tables/#partitioning-by-hash"
-     *                 target="_top">hash partitioning</a> for example formats.
+     *                 target="_top">hash partitioning</a>, or <a
+     *                 href="../../../../../../concepts/tables/#partitioning-by-series"
+     *                 target="_top">series partitioning</a> for example
+     *                 formats.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
      *                 IS_AUTOMATIC_PARTITION}: If {@code true}, a new
@@ -1226,11 +1236,10 @@ public class CreateTableRequest implements IndexedRecord {
      *                 STRATEGY_DEFINITION}: The <a
      *                 href="../../../../../../rm/concepts/#tier-strategies"
      *                 target="_top">tier strategy</a> for the table and its
-     *                 columns. See <a
-     *                 href="../../../../../../rm/concepts/#tier-strategies"
-     *                 target="_top">tier strategy usage</a> for format and <a
-     *                 href="../../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">tier strategy examples</a> for examples.
+     *                 columns.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#IS_VIRTUAL_UNION
+     *                 IS_VIRTUAL_UNION}: <DEVELOPER>
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

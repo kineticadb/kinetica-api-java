@@ -262,11 +262,21 @@ public class AlterTableRequest implements IndexedRecord {
      * SET_STRATEGY_DEFINITION}: Sets the <a
      * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
      * strategy</a> for the table and its columns to the one specified in
-     * {@code value}, replacing the existing tier strategy in its entirety. See
-     * <a href="../../../../../../rm/concepts/#tier-strategies"
-     * target="_top">tier strategy usage</a> for format and <a
-     * href="../../../../../../rm/usage/#tier-strategies" target="_top">tier
-     * strategy examples</a> for examples.
+     * {@code value}, replacing the existing tier strategy in its entirety.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#CANCEL_DATASOURCE_SUBSCRIPTION
+     * CANCEL_DATASOURCE_SUBSCRIPTION}: Permanently unsubscribe a data source
+     * that is loading continuously as a stream. The data source can be kafka /
+     * S3 / Azure.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#PAUSE_DATASOURCE_SUBSCRIPTION
+     * PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily unsubscribe a data source
+     * that is loading continuously as a stream. The data source can be kafka /
+     * S3 / Azure.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#RESUME_DATASOURCE_SUBSCRIPTION
+     * RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a paused data source
+     * subscription. The data source can be kafka / S3 / Azure.
      * </ul>
      * A set of string constants for the parameter {@code action}.
      */
@@ -487,13 +497,27 @@ public class AlterTableRequest implements IndexedRecord {
          * Sets the <a href="../../../../../../rm/concepts/#tier-strategies"
          * target="_top">tier strategy</a> for the table and its columns to the
          * one specified in {@code value}, replacing the existing tier strategy
-         * in its entirety. See <a
-         * href="../../../../../../rm/concepts/#tier-strategies"
-         * target="_top">tier strategy usage</a> for format and <a
-         * href="../../../../../../rm/usage/#tier-strategies"
-         * target="_top">tier strategy examples</a> for examples.
+         * in its entirety.
          */
         public static final String SET_STRATEGY_DEFINITION = "set_strategy_definition";
+
+        /**
+         * Permanently unsubscribe a data source that is loading continuously
+         * as a stream. The data source can be kafka / S3 / Azure.
+         */
+        public static final String CANCEL_DATASOURCE_SUBSCRIPTION = "cancel_datasource_subscription";
+
+        /**
+         * Temporarily unsubscribe a data source that is loading continuously
+         * as a stream. The data source can be kafka / S3 / Azure.
+         */
+        public static final String PAUSE_DATASOURCE_SUBSCRIPTION = "pause_datasource_subscription";
+
+        /**
+         * Resubscribe to a paused data source subscription. The data source
+         * can be kafka / S3 / Azure.
+         */
+        public static final String RESUME_DATASOURCE_SUBSCRIPTION = "resume_datasource_subscription";
 
         private Action() {  }
     }
@@ -589,11 +613,7 @@ public class AlterTableRequest implements IndexedRecord {
      * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
      * strategy</a> for the table and its columns when {@code action} is {@code
      * set_strategy_definition}, replacing the existing tier strategy in its
-     * entirety. See <a href="../../../../../../rm/concepts/#tier-strategies"
-     * target="_top">tier strategy usage</a> for format and <a
-     * href="../../../../../../rm/usage/#tier-strategies" target="_top">tier
-     * strategy examples</a> for examples.  This option will be ignored if
-     * {@code value} is also specified.
+     * entirety.
      *         <li> {@link
      * com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE INDEX_TYPE}:
      * Type of index to create, when {@code action} is {@code create_index}, or
@@ -735,12 +755,7 @@ public class AlterTableRequest implements IndexedRecord {
          * href="../../../../../../rm/concepts/#tier-strategies"
          * target="_top">tier strategy</a> for the table and its columns when
          * {@code action} is {@code set_strategy_definition}, replacing the
-         * existing tier strategy in its entirety. See <a
-         * href="../../../../../../rm/concepts/#tier-strategies"
-         * target="_top">tier strategy usage</a> for format and <a
-         * href="../../../../../../rm/usage/#tier-strategies"
-         * target="_top">tier strategy examples</a> for examples.  This option
-         * will be ignored if {@code value} is also specified.
+         * existing tier strategy in its entirety.
          */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
 
@@ -1000,11 +1015,22 @@ public class AlterTableRequest implements IndexedRecord {
      *                href="../../../../../../rm/concepts/#tier-strategies"
      *                target="_top">tier strategy</a> for the table and its
      *                columns to the one specified in {@code value}, replacing
-     *                the existing tier strategy in its entirety. See <a
-     *                href="../../../../../../rm/concepts/#tier-strategies"
-     *                target="_top">tier strategy usage</a> for format and <a
-     *                href="../../../../../../rm/usage/#tier-strategies"
-     *                target="_top">tier strategy examples</a> for examples.
+     *                the existing tier strategy in its entirety.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#CANCEL_DATASOURCE_SUBSCRIPTION
+     *                CANCEL_DATASOURCE_SUBSCRIPTION}: Permanently unsubscribe
+     *                a data source that is loading continuously as a stream.
+     *                The data source can be kafka / S3 / Azure.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#PAUSE_DATASOURCE_SUBSCRIPTION
+     *                PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily unsubscribe a
+     *                data source that is loading continuously as a stream. The
+     *                data source can be kafka / S3 / Azure.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#RESUME_DATASOURCE_SUBSCRIPTION
+     *                RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a paused
+     *                data source subscription. The data source can be kafka /
+     *                S3 / Azure.
      *                </ul>
      * @param value  The value of the modification, depending on {@code
      *               action}.  For example, if {@code action} is {@code
@@ -1124,13 +1150,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                 target="_top">tier strategy</a> for the table and its
      *                 columns when {@code action} is {@code
      *                 set_strategy_definition}, replacing the existing tier
-     *                 strategy in its entirety. See <a
-     *                 href="../../../../../../rm/concepts/#tier-strategies"
-     *                 target="_top">tier strategy usage</a> for format and <a
-     *                 href="../../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">tier strategy examples</a> for examples.
-     *                 This option will be ignored if {@code value} is also
-     *                 specified.
+     *                 strategy in its entirety.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE
      *                 INDEX_TYPE}: Type of index to create, when {@code
@@ -1379,11 +1399,21 @@ public class AlterTableRequest implements IndexedRecord {
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns to
      *         the one specified in {@code value}, replacing the existing tier
-     *         strategy in its entirety. See <a
-     *         href="../../../../../../rm/concepts/#tier-strategies"
-     *         target="_top">tier strategy usage</a> for format and <a
-     *         href="../../../../../../rm/usage/#tier-strategies"
-     *         target="_top">tier strategy examples</a> for examples.
+     *         strategy in its entirety.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#CANCEL_DATASOURCE_SUBSCRIPTION
+     *         CANCEL_DATASOURCE_SUBSCRIPTION}: Permanently unsubscribe a data
+     *         source that is loading continuously as a stream. The data source
+     *         can be kafka / S3 / Azure.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#PAUSE_DATASOURCE_SUBSCRIPTION
+     *         PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily unsubscribe a data
+     *         source that is loading continuously as a stream. The data source
+     *         can be kafka / S3 / Azure.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#RESUME_DATASOURCE_SUBSCRIPTION
+     *         RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a paused data
+     *         source subscription. The data source can be kafka / S3 / Azure.
      *         </ul>
      * 
      */
@@ -1586,11 +1616,22 @@ public class AlterTableRequest implements IndexedRecord {
      *                href="../../../../../../rm/concepts/#tier-strategies"
      *                target="_top">tier strategy</a> for the table and its
      *                columns to the one specified in {@code value}, replacing
-     *                the existing tier strategy in its entirety. See <a
-     *                href="../../../../../../rm/concepts/#tier-strategies"
-     *                target="_top">tier strategy usage</a> for format and <a
-     *                href="../../../../../../rm/usage/#tier-strategies"
-     *                target="_top">tier strategy examples</a> for examples.
+     *                the existing tier strategy in its entirety.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#CANCEL_DATASOURCE_SUBSCRIPTION
+     *                CANCEL_DATASOURCE_SUBSCRIPTION}: Permanently unsubscribe
+     *                a data source that is loading continuously as a stream.
+     *                The data source can be kafka / S3 / Azure.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#PAUSE_DATASOURCE_SUBSCRIPTION
+     *                PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily unsubscribe a
+     *                data source that is loading continuously as a stream. The
+     *                data source can be kafka / S3 / Azure.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#RESUME_DATASOURCE_SUBSCRIPTION
+     *                RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a paused
+     *                data source subscription. The data source can be kafka /
+     *                S3 / Azure.
      *                </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
@@ -1736,12 +1777,7 @@ public class AlterTableRequest implements IndexedRecord {
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns
      *         when {@code action} is {@code set_strategy_definition},
-     *         replacing the existing tier strategy in its entirety. See <a
-     *         href="../../../../../../rm/concepts/#tier-strategies"
-     *         target="_top">tier strategy usage</a> for format and <a
-     *         href="../../../../../../rm/usage/#tier-strategies"
-     *         target="_top">tier strategy examples</a> for examples.  This
-     *         option will be ignored if {@code value} is also specified.
+     *         replacing the existing tier strategy in its entirety.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE
      *         INDEX_TYPE}: Type of index to create, when {@code action} is
@@ -1881,13 +1917,7 @@ public class AlterTableRequest implements IndexedRecord {
      *                 target="_top">tier strategy</a> for the table and its
      *                 columns when {@code action} is {@code
      *                 set_strategy_definition}, replacing the existing tier
-     *                 strategy in its entirety. See <a
-     *                 href="../../../../../../rm/concepts/#tier-strategies"
-     *                 target="_top">tier strategy usage</a> for format and <a
-     *                 href="../../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">tier strategy examples</a> for examples.
-     *                 This option will be ignored if {@code value} is also
-     *                 specified.
+     *                 strategy in its entirety.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE
      *                 INDEX_TYPE}: Type of index to create, when {@code

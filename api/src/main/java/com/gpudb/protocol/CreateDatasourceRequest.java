@@ -79,6 +79,10 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * com.gpudb.protocol.CreateDatasourceRequest.Options#S3_REGION S3_REGION}:
      * Name of the Amazon S3 region where the given bucket is located
      *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#S3_AWS_ROLE_ARN
+     * S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required S3 permissions
+     * that can be assumed for the given S3 IAM user
+     *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_KERBEROS_KEYTAB
      * HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the given HDFS
      * user
@@ -116,6 +120,21 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_OAUTH_TOKEN
      * AZURE_OAUTH_TOKEN}: Oauth token to access given storage container
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#IS_STREAM IS_STREAM}:
+     * To load from S3/Azure as a stream continuously.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#KAFKA_TOPIC_NAME
+     * KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the data source
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -162,6 +181,12 @@ public class CreateDatasourceRequest implements IndexedRecord {
          * Name of the Amazon S3 region where the given bucket is located
          */
         public static final String S3_REGION = "s3_region";
+
+        /**
+         * Amazon IAM Role ARN which has required S3 permissions that can be
+         * assumed for the given S3 IAM user
+         */
+        public static final String S3_AWS_ROLE_ARN = "s3_aws_role_arn";
 
         /**
          * Kerberos keytab file location for the given HDFS user
@@ -213,6 +238,25 @@ public class CreateDatasourceRequest implements IndexedRecord {
          * Oauth token to access given storage container
          */
         public static final String AZURE_OAUTH_TOKEN = "azure_oauth_token";
+
+        /**
+         * To load from S3/Azure as a stream continuously.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}.
+         */
+        public static final String IS_STREAM = "is_stream";
+
+        /**
+         * Name of the Kafka topic to use as the data source
+         */
+        public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
 
         private Options() {  }
     }
@@ -286,6 +330,11 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 S3_REGION}: Name of the Amazon S3 region where the given
      *                 bucket is located
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_AWS_ROLE_ARN
+     *                 S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required
+     *                 S3 permissions that can be assumed for the given S3 IAM
+     *                 user
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_KERBEROS_KEYTAB
      *                 HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for
      *                 the given HDFS user
@@ -330,6 +379,26 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_OAUTH_TOKEN
      *                 AZURE_OAUTH_TOKEN}: Oauth token to access given storage
      *                 container
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#IS_STREAM
+     *                 IS_STREAM}: To load from S3/Azure as a stream
+     *                 continuously.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#KAFKA_TOPIC_NAME
+     *                 KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the
+     *                 data source
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -470,6 +539,10 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         S3_REGION}: Name of the Amazon S3 region where the given bucket
      *         is located
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#S3_AWS_ROLE_ARN
+     *         S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required S3
+     *         permissions that can be assumed for the given S3 IAM user
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_KERBEROS_KEYTAB
      *         HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for the
      *         given HDFS user
@@ -509,6 +582,22 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_OAUTH_TOKEN
      *         AZURE_OAUTH_TOKEN}: Oauth token to access given storage
      *         container
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#IS_STREAM
+     *         IS_STREAM}: To load from S3/Azure as a stream continuously.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#KAFKA_TOPIC_NAME
+     *         KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the data
+     *         source
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -558,6 +647,11 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 S3_REGION}: Name of the Amazon S3 region where the given
      *                 bucket is located
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_AWS_ROLE_ARN
+     *                 S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required
+     *                 S3 permissions that can be assumed for the given S3 IAM
+     *                 user
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_KERBEROS_KEYTAB
      *                 HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for
      *                 the given HDFS user
@@ -602,6 +696,26 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_OAUTH_TOKEN
      *                 AZURE_OAUTH_TOKEN}: Oauth token to access given storage
      *                 container
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#IS_STREAM
+     *                 IS_STREAM}: To load from S3/Azure as a stream
+     *                 continuously.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#KAFKA_TOPIC_NAME
+     *                 KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the
+     *                 data source
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

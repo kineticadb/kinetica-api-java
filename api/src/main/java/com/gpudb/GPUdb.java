@@ -136,6 +136,8 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Adds a host to an existing cluster.
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -157,6 +159,8 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Adds a host to an existing cluster.
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param hostAddress  IP address of the host that will be added to the
      *                     cluster. This host must have installed the same
@@ -273,11 +277,13 @@ public class GPUdb extends GPUdbBase {
      *   being added in {@code hosts}. The key of each map would be
      *   the configuration parameter name and the value would be the
      *   parameter's value, e.g. '{"rank.gpu":"1"}'
-
+     * <p>
      * This endpoint's processing includes copying all replicated table data to
      * the new rank(s) and therefore could take a long time. The API call may
      * time out if run directly.  It is recommended to run this endpoint
      * asynchronously via {@link GPUdb#createJob(CreateJobRequest)}.
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -320,12 +326,14 @@ public class GPUdb extends GPUdbBase {
      *   being added in {@code hosts}. The key of each map would be
      *   the configuration parameter name and the value would be the
      *   parameter's value, e.g. '{"rank.gpu":"1"}'
-
+     * <p>
      * This endpoint's processing includes copying all replicated table data to
      * the new rank(s) and therefore could take a long time. The API call may
      * time out if run directly.  It is recommended to run this endpoint
      * asynchronously via {@link GPUdb#createJob(String, String, ByteBuffer,
      * String, Map)}.
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param hosts  Array of host IP addresses (matching a hostN.address from
      *               the gpudb.conf file), or host identifiers (e.g. 'host0'
@@ -478,10 +486,12 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Perform the requested action on a list of one or more job(s). Based on
-     * the type of job and the current state of execution, the action may not
-     * be successfully executed. The final result of the attempted actions for
-     * each specified job is returned in the status array of the response. See
+     * Perform the requested action on a list of one or more job(s). Based
+     * on the type of job and the current state of execution, the action may
+     * not be
+     * successfully executed. The final result of the attempted actions for
+     * each
+     * specified job is returned in the status array of the response. See
      * <a href="../../../../../admin/job_manager/" target="_top">Job
      * Manager</a> for more information.
      * 
@@ -504,10 +514,12 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Perform the requested action on a list of one or more job(s). Based on
-     * the type of job and the current state of execution, the action may not
-     * be successfully executed. The final result of the attempted actions for
-     * each specified job is returned in the status array of the response. See
+     * Perform the requested action on a list of one or more job(s). Based
+     * on the type of job and the current state of execution, the action may
+     * not be
+     * successfully executed. The final result of the attempted actions for
+     * each
+     * specified job is returned in the status array of the response. See
      * <a href="../../../../../admin/job_manager/" target="_top">Job
      * Manager</a> for more information.
      * 
@@ -538,6 +550,102 @@ public class GPUdb extends GPUdbBase {
         AdminAlterJobsRequest actualRequest_ = new AdminAlterJobsRequest(jobIds, action, options);
         AdminAlterJobsResponse actualResponse_ = new AdminAlterJobsResponse();
         submitRequest("/admin/alter/jobs", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Prepares the system for a backup by closing all open file handles after
+     * allowing current active jobs to complete. When the database is in backup
+     * mode, queries that result in a disk write operation will be blocked
+     * until backup mode has been completed by using {@link
+     * GPUdb#adminBackupEnd(AdminBackupEndRequest)}.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminBackupBeginResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminBackupBeginResponse adminBackupBegin(AdminBackupBeginRequest request) throws GPUdbException {
+        AdminBackupBeginResponse actualResponse_ = new AdminBackupBeginResponse();
+        submitRequest("/admin/backup/begin", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Prepares the system for a backup by closing all open file handles after
+     * allowing current active jobs to complete. When the database is in backup
+     * mode, queries that result in a disk write operation will be blocked
+     * until backup mode has been completed by using {@link
+     * GPUdb#adminBackupEnd(Map)}.
+     * 
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminBackupBeginResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminBackupBeginResponse adminBackupBegin(Map<String, String> options) throws GPUdbException {
+        AdminBackupBeginRequest actualRequest_ = new AdminBackupBeginRequest(options);
+        AdminBackupBeginResponse actualResponse_ = new AdminBackupBeginResponse();
+        submitRequest("/admin/backup/begin", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Restores the system to normal operating mode after a backup has
+     * completed, allowing any queries that were blocked to complete.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminBackupEndResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminBackupEndResponse adminBackupEnd(AdminBackupEndRequest request) throws GPUdbException {
+        AdminBackupEndResponse actualResponse_ = new AdminBackupEndResponse();
+        submitRequest("/admin/backup/end", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Restores the system to normal operating mode after a backup has
+     * completed, allowing any queries that were blocked to complete.
+     * 
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AdminBackupEndResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AdminBackupEndResponse adminBackupEnd(Map<String, String> options) throws GPUdbException {
+        AdminBackupEndRequest actualRequest_ = new AdminBackupEndRequest(options);
+        AdminBackupEndResponse actualResponse_ = new AdminBackupEndResponse();
+        submitRequest("/admin/backup/end", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -615,7 +723,8 @@ public class GPUdb extends GPUdbBase {
     /**
      * Rebalance the data in the cluster so that all nodes contain an equal
      * number of records approximately and/or rebalance the shards to be
-     * equally distributed (as much as possible) across all the ranks.
+     * equally
+     * distributed (as much as possible) across all the ranks.
      * <p>
      * The database must be offline for this operation, see {@link
      * GPUdb#adminOffline(AdminOfflineRequest)}
@@ -640,9 +749,10 @@ public class GPUdb extends GPUdbBase {
      * NOTE: Replicated data will not move as a result of this call
      * <p>
      * This endpoint's processing time depends on the amount of data in the
-     * system, thus the API call may time out if run directly.  It is
-     * recommended to run this endpoint asynchronously via {@link
-     * GPUdb#createJob(CreateJobRequest)}.
+     * system,
+     * thus the API call may time out if run directly.  It is recommended to
+     * run this
+     * endpoint asynchronously via {@link GPUdb#createJob(CreateJobRequest)}.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -665,7 +775,8 @@ public class GPUdb extends GPUdbBase {
     /**
      * Rebalance the data in the cluster so that all nodes contain an equal
      * number of records approximately and/or rebalance the shards to be
-     * equally distributed (as much as possible) across all the ranks.
+     * equally
+     * distributed (as much as possible) across all the ranks.
      * <p>
      * The database must be offline for this operation, see {@link
      * GPUdb#adminOffline(boolean, Map)}
@@ -690,9 +801,11 @@ public class GPUdb extends GPUdbBase {
      * NOTE: Replicated data will not move as a result of this call
      * <p>
      * This endpoint's processing time depends on the amount of data in the
-     * system, thus the API call may time out if run directly.  It is
-     * recommended to run this endpoint asynchronously via {@link
-     * GPUdb#createJob(String, String, ByteBuffer, String, Map)}.
+     * system,
+     * thus the API call may time out if run directly.  It is recommended to
+     * run this
+     * endpoint asynchronously via {@link GPUdb#createJob(String, String,
+     * ByteBuffer, String, Map)}.
      * 
      * @param options  Optional parameters.
      *                 <ul>
@@ -854,6 +967,8 @@ public class GPUdb extends GPUdbBase {
      * the host to be removed has the graph server or SQL planner running on
      * it, these must be manually switched over to a new host using {@link
      * GPUdb#adminSwitchover(AdminSwitchoverRequest)}.
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -881,6 +996,8 @@ public class GPUdb extends GPUdbBase {
      * removal. If the host to be removed has the graph server or SQL planner
      * running on it, these must be manually switched over to a new host using
      * {@link GPUdb#adminSwitchover(List, List, Map)}.
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param host  Identifies the host this applies to. Can be the host
      *              address, or formatted as 'hostN' where N is the host number
@@ -925,21 +1042,26 @@ public class GPUdb extends GPUdbBase {
     /**
      * Remove one or more ranks from an existing Kinetica cluster. All data
      * will be rebalanced to other ranks before the rank(s) is removed unless
-     * the {@code rebalance_sharded_data} or {@code rebalance_unsharded_data}
-     * parameters are set to {@code false} in the {@code options}, in which
-     * case the corresponding <a
-     * href="../../../../../concepts/tables/#sharding" target="_top">sharded
-     * data</a> and/or unsharded data (a.k.a. <a
-     * href="../../../../../concepts/tables/#random-sharding"
+     * the
+     * {@code rebalance_sharded_data} or
+     * {@code rebalance_unsharded_data} parameters are set to
+     * {@code false} in the
+     * {@code options}, in which case the corresponding
+     * <a href="../../../../../concepts/tables/#sharding" target="_top">sharded
+     * data</a> and/or unsharded data (a.k.a.
+     * <a href="../../../../../concepts/tables/#random-sharding"
      * target="_top">randomly-sharded</a>) will be deleted.
      * <p>
      * The database must be offline for this operation, see {@link
      * GPUdb#adminOffline(AdminOfflineRequest)}
      * <p>
      * This endpoint's processing time depends on the amount of data in the
-     * system, thus the API call may time out if run directly.  It is
-     * recommended to run this endpoint asynchronously via {@link
-     * GPUdb#createJob(CreateJobRequest)}.
+     * system,
+     * thus the API call may time out if run directly.  It is recommended to
+     * run this
+     * endpoint asynchronously via {@link GPUdb#createJob(CreateJobRequest)}.
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -962,21 +1084,27 @@ public class GPUdb extends GPUdbBase {
     /**
      * Remove one or more ranks from an existing Kinetica cluster. All data
      * will be rebalanced to other ranks before the rank(s) is removed unless
-     * the {@code rebalance_sharded_data} or {@code rebalance_unsharded_data}
-     * parameters are set to {@code false} in the {@code options}, in which
-     * case the corresponding <a
-     * href="../../../../../concepts/tables/#sharding" target="_top">sharded
-     * data</a> and/or unsharded data (a.k.a. <a
-     * href="../../../../../concepts/tables/#random-sharding"
+     * the
+     * {@code rebalance_sharded_data} or
+     * {@code rebalance_unsharded_data} parameters are set to
+     * {@code false} in the
+     * {@code options}, in which case the corresponding
+     * <a href="../../../../../concepts/tables/#sharding" target="_top">sharded
+     * data</a> and/or unsharded data (a.k.a.
+     * <a href="../../../../../concepts/tables/#random-sharding"
      * target="_top">randomly-sharded</a>) will be deleted.
      * <p>
      * The database must be offline for this operation, see {@link
      * GPUdb#adminOffline(boolean, Map)}
      * <p>
      * This endpoint's processing time depends on the amount of data in the
-     * system, thus the API call may time out if run directly.  It is
-     * recommended to run this endpoint asynchronously via {@link
-     * GPUdb#createJob(String, String, ByteBuffer, String, Map)}.
+     * system,
+     * thus the API call may time out if run directly.  It is recommended to
+     * run this
+     * endpoint asynchronously via {@link GPUdb#createJob(String, String,
+     * ByteBuffer, String, Map)}.
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param ranks  Each array value designates one or more ranks to remove
      *               from the cluster. Values can be formatted as 'rankN' for a
@@ -1323,6 +1451,8 @@ public class GPUdb extends GPUdbBase {
     /**
      * Manually switchover one or more processes to another host. Individual
      * ranks or entire hosts may be moved to another host.
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -1345,6 +1475,8 @@ public class GPUdb extends GPUdbBase {
     /**
      * Manually switchover one or more processes to another host. Individual
      * ranks or entire hosts may be moved to another host.
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param processes  Indicates the process identifier to switchover to
      *                   another host. Options are 'hostN' and 'rankN' where
@@ -2018,30 +2150,6 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#VIEW_ID
      *                 VIEW_ID}: ID of view of which the result table will be a
      *                 member.  The default value is ''.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../rm/concepts/"
-     *                 target="_top">Resource Management Concepts</a> for
-     *                 information about how resources are managed, <a
-     *                 href="../../../../../rm/concepts/" target="_top">Tier
-     *                 Strategy Concepts</a> for how resources are targeted for
-     *                 VRAM, and <a
-     *                 href="../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">Tier Strategy Usage</a> for how to specify
-     *                 a table's priority in VRAM.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AggregateGroupByRequest.Options#FALSE
-     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateGroupByRequest.Options#PIVOT
      *                 PIVOT}: pivot column
@@ -3337,30 +3445,6 @@ public class GPUdb extends GPUdbBase {
      *                 VIEW_ID}: view this result table is part of.  The
      *                 default value is ''.
      *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../rm/concepts/"
-     *                 target="_top">Resource Management Concepts</a> for
-     *                 information about how resources are managed, <a
-     *                 href="../../../../../rm/concepts/" target="_top">Tier
-     *                 Strategy Concepts</a> for how resources are targeted for
-     *                 VRAM, and <a
-     *                 href="../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">Tier Strategy Usage</a> for how to specify
-     *                 a table's priority in VRAM.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_INDEXES
      *                 CREATE_INDEXES}: Comma-separated list of columns on
      *                 which to create indexes on the table specified in {@code
@@ -3588,6 +3672,11 @@ public class GPUdb extends GPUdbBase {
      *                              S3_REGION}: Name of the Amazon S3 region
      *                              where the given bucket is located
      *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#S3_AWS_ROLE_ARN
+     *                              S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which
+     *                              has required S3 permissions that can be
+     *                              assumed for the given S3 IAM user
+     *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#HDFS_KERBEROS_KEYTAB
      *                              HDFS_KERBEROS_KEYTAB}: Kerberos keytab file
      *                              location for the given HDFS user
@@ -3634,6 +3723,15 @@ public class GPUdb extends GPUdbBase {
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#AZURE_OAUTH_TOKEN
      *                              AZURE_OAUTH_TOKEN}: Oauth token to access
      *                              given storage container
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_URL
+     *                              KAFKA_URL}: The publicly-accessible full
+     *                              path URL to the kafka broker, e.g.,
+     *                              'http://172.123.45.67:9300'.
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_TOPIC_NAME
+     *                              KAFKA_TOPIC_NAME}: Name of the Kafka topic
+     *                              to use as the data source
      *                              </ul>
      * @param options  Optional parameters.
      * 
@@ -4122,6 +4220,21 @@ public class GPUdb extends GPUdbBase {
      *                            ENABLE_OVERLAPPED_EQUI_JOIN}: Enable
      *                            overlapped-equi-join filter.  The default
      *                            value is 'true'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_BATCH_SIZE
+     *                            KAFKA_BATCH_SIZE}: Maximum number of records
+     *                            to be read in a single kafka batched request.
+     *                            The default value is '1000'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_WAIT_TIME
+     *                            KAFKA_WAIT_TIME}: Maximum number of seconds
+     *                            to wait in a single kafka batched request.
+     *                            The default value is '30'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#KAFKA_TIMEOUT
+     *                            KAFKA_TIMEOUT}: Number of seconds after which
+     *                            kakfa poll will timeout if datasource has no
+     *                            records.  The default value is '5'.
      *                            </ul>
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
@@ -4465,11 +4578,22 @@ public class GPUdb extends GPUdbBase {
      *                href="../../../../../rm/concepts/#tier-strategies"
      *                target="_top">tier strategy</a> for the table and its
      *                columns to the one specified in {@code value}, replacing
-     *                the existing tier strategy in its entirety. See <a
-     *                href="../../../../../rm/concepts/#tier-strategies"
-     *                target="_top">tier strategy usage</a> for format and <a
-     *                href="../../../../../rm/usage/#tier-strategies"
-     *                target="_top">tier strategy examples</a> for examples.
+     *                the existing tier strategy in its entirety.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#CANCEL_DATASOURCE_SUBSCRIPTION
+     *                CANCEL_DATASOURCE_SUBSCRIPTION}: Permanently unsubscribe
+     *                a data source that is loading continuously as a stream.
+     *                The data source can be kafka / S3 / Azure.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#PAUSE_DATASOURCE_SUBSCRIPTION
+     *                PAUSE_DATASOURCE_SUBSCRIPTION}: Temporarily unsubscribe a
+     *                data source that is loading continuously as a stream. The
+     *                data source can be kafka / S3 / Azure.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#RESUME_DATASOURCE_SUBSCRIPTION
+     *                RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a paused
+     *                data source subscription. The data source can be kafka /
+     *                S3 / Azure.
      *                </ul>
      * @param value  The value of the modification, depending on {@code
      *               action}.  For example, if {@code action} is {@code
@@ -4589,13 +4713,7 @@ public class GPUdb extends GPUdbBase {
      *                 target="_top">tier strategy</a> for the table and its
      *                 columns when {@code action} is {@code
      *                 set_strategy_definition}, replacing the existing tier
-     *                 strategy in its entirety. See <a
-     *                 href="../../../../../rm/concepts/#tier-strategies"
-     *                 target="_top">tier strategy usage</a> for format and <a
-     *                 href="../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">tier strategy examples</a> for examples.
-     *                 This option will be ignored if {@code value} is also
-     *                 specified.
+     *                 strategy in its entirety.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterTableRequest.Options#INDEX_TYPE
      *                 INDEX_TYPE}: Type of index to create, when {@code
@@ -4932,6 +5050,57 @@ public class GPUdb extends GPUdbBase {
         AlterUserRequest actualRequest_ = new AlterUserRequest(name, action, value, options);
         AlterUserResponse actualResponse_ = new AlterUserResponse();
         submitRequest("/alter/user", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Alters a video.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AlterVideoResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AlterVideoResponse alterVideo(AlterVideoRequest request) throws GPUdbException {
+        AlterVideoResponse actualResponse_ = new AlterVideoResponse();
+        submitRequest("/alter/video", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Alters a video.
+     * 
+     * @param path  Fully-qualified <a href="../../../../../tools/kifs/"
+     *              target="_top">KiFS</a> path to the video to be altered.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterVideoRequest.Options#TTL TTL}:
+     *                 Sets the <a href="../../../../../concepts/ttl/"
+     *                 target="_top">TTL</a> of the video.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AlterVideoResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AlterVideoResponse alterVideo(String path, Map<String, String> options) throws GPUdbException {
+        AlterVideoRequest actualRequest_ = new AlterVideoRequest(path, options);
+        AlterVideoResponse actualResponse_ = new AlterVideoResponse();
+        submitRequest("/alter/video", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -5540,6 +5709,11 @@ public class GPUdb extends GPUdbBase {
      *                 S3_REGION}: Name of the Amazon S3 region where the given
      *                 bucket is located
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#S3_AWS_ROLE_ARN
+     *                 S3_AWS_ROLE_ARN}: Amazon IAM Role ARN which has required
+     *                 S3 permissions that can be assumed for the given S3 IAM
+     *                 user
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#HDFS_KERBEROS_KEYTAB
      *                 HDFS_KERBEROS_KEYTAB}: Kerberos keytab file location for
      *                 the given HDFS user
@@ -5584,6 +5758,26 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#AZURE_OAUTH_TOKEN
      *                 AZURE_OAUTH_TOKEN}: Oauth token to access given storage
      *                 container
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#IS_STREAM
+     *                 IS_STREAM}: To load from S3/Azure as a stream
+     *                 continuously.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#KAFKA_TOPIC_NAME
+     *                 KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the
+     *                 data source
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -5604,6 +5798,74 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Creates a new directory in <a href="../../../../../tools/kifs/"
+     * target="_top">KiFS</a>. The new
+     * directory serves as a location in which the user can upload files using
+     * {@link GPUdb#uploadFiles(UploadFilesRequest)}.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateDirectoryResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateDirectoryResponse createDirectory(CreateDirectoryRequest request) throws GPUdbException {
+        CreateDirectoryResponse actualResponse_ = new CreateDirectoryResponse();
+        submitRequest("/create/directory", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Creates a new directory in <a href="../../../../../tools/kifs/"
+     * target="_top">KiFS</a>. The new
+     * directory serves as a location in which the user can upload files using
+     * {@link GPUdb#uploadFiles(List, List, Map)}.
+     * 
+     * @param directoryName  Name of the directory in KiFS to be created.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDirectoryRequest.Options#NO_ERROR_IF_EXISTS
+     *                 NO_ERROR_IF_EXISTS}: If {@code true}, does not return an
+     *                 error if the directory already exists
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDirectoryRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDirectoryRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDirectoryRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateDirectoryResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateDirectoryResponse createDirectory(String directoryName, Map<String, String> options) throws GPUdbException {
+        CreateDirectoryRequest actualRequest_ = new CreateDirectoryRequest(directoryName, options);
+        CreateDirectoryResponse actualResponse_ = new CreateDirectoryResponse();
+        submitRequest("/create/directory", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Creates a new graph network using given nodes, edges, weights, and
      * restrictions.
 
@@ -5611,9 +5873,9 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
-     * target="_top">Graph REST Tutorial</a>,
-     * and/or some <a href="../../../../../graph_solver/examples/"
+     * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
+     * REST Tutorial</a>,
+     * and/or some <a href="../../../../../guide-tags/graph/"
      * target="_top">graph examples</a> before
      * using this endpoint.
      * 
@@ -5643,9 +5905,9 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
-     * target="_top">Graph REST Tutorial</a>,
-     * and/or some <a href="../../../../../graph_solver/examples/"
+     * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
+     * REST Tutorial</a>,
+     * and/or some <a href="../../../../../guide-tags/graph/"
      * target="_top">graph examples</a> before
      * using this endpoint.
      * 
@@ -5851,10 +6113,10 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateGraphRequest.Options#SAVE_PERSIST
      *                 SAVE_PERSIST}: If set to {@code true}, the graph will be
      *                 saved in the persist directory (see the <a
-     *                 href="../../../../../config/" target="_top">config
-     *                 reference</a> for more information). If set to {@code
-     *                 false}, the graph will be removed when the graph server
-     *                 is shutdown.
+     *                 href="../../../../../config/#config-main-persistence"
+     *                 target="_top">config reference</a> for more
+     *                 information). If set to {@code false}, the graph will be
+     *                 removed when the graph server is shutdown.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -6408,6 +6670,23 @@ public class GPUdb extends GPUdbBase {
 
 
 
+    public CreateMonitorTableResponse createMonitorTable(CreateMonitorTableRequest request) throws GPUdbException {
+        CreateMonitorTableResponse actualResponse_ = new CreateMonitorTableResponse();
+        submitRequest("/create/monitortable", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public CreateMonitorTableResponse createMonitorTable(String monitorTableName, String tableName, Map<String, String> options) throws GPUdbException {
+        CreateMonitorTableRequest actualRequest_ = new CreateMonitorTableRequest(monitorTableName, tableName, options);
+        CreateMonitorTableResponse actualResponse_ = new CreateMonitorTableResponse();
+        submitRequest("/create/monitortable", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
     /**
      * Creates an instance (proc) of the
      * <a href="../../../../../concepts/udf/" target="_top">user-defined
@@ -6474,8 +6753,12 @@ public class GPUdb extends GPUdbBase {
      *               of the files. The
      *               file names may include subdirectory names (e.g.
      *               'subdir/file') but must not
-     *               resolve to a directory above the root for the proc.  The
-     *               default value is an empty {@link Map}.
+     *               resolve to a directory above the root for the proc.
+     *               Files may be loaded from existing files in KiFS. Those
+     *               file names should be
+     *               prefixed with the uri kifs:// and the values in the map
+     *               should be empty.  The default value is an empty {@link
+     *               Map}.
      * @param command  The command (excluding arguments) that will be invoked
      *                 when
      *                 the proc is executed. It will be invoked from the
@@ -6683,30 +6966,6 @@ public class GPUdb extends GPUdbBase {
      *                 be used, rather than the original column name.  The
      *                 default value is ''.
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../rm/concepts/"
-     *                 target="_top">Resource Management Concepts</a> for
-     *                 information about how resources are managed, <a
-     *                 href="../../../../../rm/concepts/" target="_top">Tier
-     *                 Strategy Concepts</a> for how resources are targeted for
-     *                 VRAM, and <a
-     *                 href="../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">Tier Strategy Usage</a> for how to specify
-     *                 a table's priority in VRAM.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#CHUNK_SIZE
      *                 CHUNK_SIZE}: Indicates the number of records per chunk
      *                 to be used for this projection.
@@ -6910,6 +7169,8 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Creates a new role.
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -6931,6 +7192,8 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Creates a new role.
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param name  Name of the role to be created. Must contain only lowercase
      *              letters, digits, and underscores, and cannot begin with a
@@ -7027,6 +7290,23 @@ public class GPUdb extends GPUdbBase {
         CreateSchemaRequest actualRequest_ = new CreateSchemaRequest(schemaName, options);
         CreateSchemaResponse actualResponse_ = new CreateSchemaResponse();
         submitRequest("/create/schema", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public CreateStateTableResponse createStateTable(CreateStateTableRequest request) throws GPUdbException {
+        CreateStateTableResponse actualResponse_ = new CreateStateTableResponse();
+        submitRequest("/create/statetable", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public CreateStateTableResponse createStateTable(String tableName, String inputTableName, String initTableName, Map<String, String> options) throws GPUdbException {
+        CreateStateTableRequest actualRequest_ = new CreateStateTableRequest(tableName, inputTableName, initTableName, options);
+        CreateStateTableResponse actualResponse_ = new CreateStateTableResponse();
+        submitRequest("/create/statetable", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -7246,9 +7526,12 @@ public class GPUdb extends GPUdbBase {
      *                 href="../../../../../concepts/tables/#partitioning-by-interval"
      *                 target="_top">interval partitioning</a>, <a
      *                 href="../../../../../concepts/tables/#partitioning-by-list"
-     *                 target="_top">list partitioning</a>, or <a
+     *                 target="_top">list partitioning</a>, <a
      *                 href="../../../../../concepts/tables/#partitioning-by-hash"
-     *                 target="_top">hash partitioning</a> for example formats.
+     *                 target="_top">hash partitioning</a>, or <a
+     *                 href="../../../../../concepts/tables/#partitioning-by-series"
+     *                 target="_top">series partitioning</a> for example
+     *                 formats.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#IS_AUTOMATIC_PARTITION
      *                 IS_AUTOMATIC_PARTITION}: If {@code true}, a new
@@ -7304,11 +7587,10 @@ public class GPUdb extends GPUdbBase {
      *                 STRATEGY_DEFINITION}: The <a
      *                 href="../../../../../rm/concepts/#tier-strategies"
      *                 target="_top">tier strategy</a> for the table and its
-     *                 columns. See <a
-     *                 href="../../../../../rm/concepts/#tier-strategies"
-     *                 target="_top">tier strategy usage</a> for format and <a
-     *                 href="../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">tier strategy examples</a> for examples.
+     *                 columns.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#IS_VIRTUAL_UNION
+     *                 IS_VIRTUAL_UNION}: <DEVELOPER>
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -7389,6 +7671,8 @@ public class GPUdb extends GPUdbBase {
      * @param filepaths  A list of file paths from which data will be sourced;
      *                   wildcards (*) can be used
      *                   to specify a group of files.
+     *                   For paths in KiFS, use the uri prefix of kifs://
+     *                   followed by the full path to a file or directory.
      *                   If an external data source is specified in {@code
      *                   datasource_name}, these file
      *                   paths must resolve to accessible files at that data
@@ -7513,6 +7797,11 @@ public class GPUdb extends GPUdbBase {
      *                            HASH}: Use <a
      *                            href="../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a>.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#SERIES
+     *                            SERIES}: Use <a
+     *                            href="../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a>.
      *                            </ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.CreateTableExternalRequest.CreateTableOptions#PARTITION_KEYS
@@ -7605,15 +7894,7 @@ public class GPUdb extends GPUdbBase {
      *                            STRATEGY_DEFINITION}: The <a
      *                            href="../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy</a>
-     *                            for the table and its columns. See
-     *                            <a
-     *                            href="../../../../../rm/concepts/#tier-strategies"
-     *                            target="_top">tier strategy usage</a> for
-     *                            format and
-     *                            <a
-     *                            href="../../../../../rm/usage/#tier-strategies"
-     *                            target="_top">tier strategy examples</a> for
-     *                            examples.
+     *                            for the table and its columns.
      *                            </ul>
      *                            The default value is an empty {@link Map}.
      * @param options  Optional parameters.
@@ -7783,6 +8064,9 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#JSON
      *                 JSON}: Json file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SHAPEFILE
+     *                 SHAPEFILE}: ShapeFile file format
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#DELIMITED_TEXT
@@ -7898,6 +8182,27 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#MANUAL
      *                 MANUAL}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SUBSCRIBE
+     *                 SUBSCRIBE}: Continuously poll the data source to check
+     *                 for new data and load it into the table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#POLL_INTERVAL
+     *                 POLL_INTERVAL}: If {@code true}, the number of seconds
+     *                 between attempts to load external files into the table.
+     *                 If zero, polling will be continuous.
+     *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_COMMENT_STRING
      *                 TEXT_COMMENT_STRING}: Specifies the character string
      *                 that should be interpreted as a comment line
@@ -7999,8 +8304,43 @@ public class GPUdb extends GPUdbBase {
      *                 'all' values will fit with minimum data scanned
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#ACCURACY
-     *                 ACCURACY}.
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SPEED
+     *                 SPEED}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_INSERT_MODE
+     *                 TABLE_INSERT_MODE}: Optional: table_insert_mode. When
+     *                 inserting records from multiple files: if table_per_file
+     *                 then insert from each file into a new table. Currently
+     *                 supported only for shapefiles.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
+     *                 SINGLE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TABLE_PER_FILE
+     *                 TABLE_PER_FILE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#SINGLE
+     *                 SINGLE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#KAFKA_GROUP_ID
+     *                 KAFKA_GROUP_ID}: The group id to be used consuming data
+     *                 from a kakfa topic (valid only for kafka datasource
+     *                 subscriptions).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_COLUMNS
+     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
+     *                 internally inferenced string columns. Comma seperated
+     *                 list of column names or '*' for all columns. To add
+     *                 text_search property only to string columns of minimum
+     *                 size, set also the option
+     *                 'text_search_min_column_length'
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableExternalRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
+     *                 Used only when 'text_search_columns' has a value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -8447,10 +8787,12 @@ public class GPUdb extends GPUdbBase {
      *                    queries.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#TEXT_SEARCH
-     *                    TEXT_SEARCH}: Valid only for 'string' columns.
-     *                    Enables full text search for string columns. Can be
-     *                    set independently of {@code data} and {@code
-     *                    store_only}.
+     *                    TEXT_SEARCH}: Valid only for select 'string' columns.
+     *                    Enables full text search--see <a
+     *                    href="../../../../../concepts/full_text_search/"
+     *                    target="_top">Full Text Search</a> for details and
+     *                    applicable string column types. Can be set
+     *                    independently of {@code data} and {@code store_only}.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#STORE_ONLY
      *                    STORE_ONLY}: Persist the column value but do not make
@@ -8789,29 +9131,6 @@ public class GPUdb extends GPUdbBase {
      *                 non-existent, it will be automatically created.  The
      *                 default value is ''.
      *                         <li> {@link
-     *                 com.gpudb.protocol.CreateUnionRequest.Options#MATERIALIZE_ON_GPU
-     *                 MATERIALIZE_ON_GPU}: No longer used.  See <a
-     *                 href="../../../../../rm/concepts/"
-     *                 target="_top">Resource Management Concepts</a> for
-     *                 information about how resources are managed, <a
-     *                 href="../../../../../rm/concepts/" target="_top">Tier
-     *                 Strategy Concepts</a> for how resources are targeted for
-     *                 VRAM, and <a
-     *                 href="../../../../../rm/usage/#tier-strategies"
-     *                 target="_top">Tier Strategy Usage</a> for how to specify
-     *                 a table's priority in VRAM.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#MODE
      *                 MODE}: If {@code merge_views}, then this operation will
      *                 merge the provided views. All {@code tableNames} must be
@@ -8939,6 +9258,8 @@ public class GPUdb extends GPUdbBase {
     /**
      * Creates a new external user (a user whose credentials are managed by an
      * external LDAP).
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -8961,6 +9282,8 @@ public class GPUdb extends GPUdbBase {
     /**
      * Creates a new external user (a user whose credentials are managed by an
      * external LDAP).
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param name  Name of the user to be created. Must exactly match the
      *              user's name in the external LDAP, prefixed with a @. Must
@@ -9039,6 +9362,285 @@ public class GPUdb extends GPUdbBase {
         CreateUserInternalRequest actualRequest_ = new CreateUserInternalRequest(name, password, options);
         CreateUserInternalResponse actualResponse_ = new CreateUserInternalResponse();
         submitRequest("/create/user/internal", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Creates a job to generate a sequence of raster images that visualize
+     * data over a specified time.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateVideoResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateVideoResponse createVideo(CreateVideoRequest request) throws GPUdbException {
+        CreateVideoResponse actualResponse_ = new CreateVideoResponse();
+        submitRequest("/create/video", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Creates a job to generate a sequence of raster images that visualize
+     * data over a specified time.
+     * 
+     * @param attribute  The animated attribute to map to the video's frames.
+     *                   Must be present in the LAYERS specified for the
+     *                   visualization. This is often a time-related field but
+     *                   may be any numeric type.
+     * @param begin  The start point for the video. Accepts an expression
+     *               evaluable over the {@code attribute}.
+     * @param durationSeconds  Seconds of video to produce
+     * @param end  The end point for the video. Accepts an expression evaluable
+     *             over the {@code attribute}.
+     * @param framesPerSecond  The presentation frame rate of the encoded video
+     *                         in frames per second.
+     * @param style  The name of the visualize mode; should correspond to the
+     *               schema used for the {@code styleParameters} field.
+     *               Supported values:
+     *               <ul>
+     *                       <li> {@link
+     *               com.gpudb.protocol.CreateVideoRequest.Style#CHART CHART}
+     *                       <li> {@link
+     *               com.gpudb.protocol.CreateVideoRequest.Style#RASTER RASTER}
+     *                       <li> {@link
+     *               com.gpudb.protocol.CreateVideoRequest.Style#CLASSBREAK
+     *               CLASSBREAK}
+     *                       <li> {@link
+     *               com.gpudb.protocol.CreateVideoRequest.Style#CONTOUR
+     *               CONTOUR}
+     *                       <li> {@link
+     *               com.gpudb.protocol.CreateVideoRequest.Style#HEATMAP
+     *               HEATMAP}
+     *                       <li> {@link
+     *               com.gpudb.protocol.CreateVideoRequest.Style#LABELS LABELS}
+     *               </ul>
+     * @param path  Fully-qualified <a href="../../../../../tools/kifs/"
+     *              target="_top">KiFS</a> path.  Write access is required. A
+     *              file must not exist at that path, unless {@code
+     *              replace_if_exists} is {@code true}.
+     * @param styleParameters  A string containing the JSON-encoded visualize
+     *                         request.  Must correspond to the visualize mode
+     *                         specified in the {@code style} field.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateVideoRequest.Options#TTL TTL}:
+     *                 Sets the <a href="../../../../../concepts/ttl/"
+     *                 target="_top">TTL</a> of the video.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateVideoRequest.Options#WINDOW
+     *                 WINDOW}: Specified using the data-type corresponding to
+     *                 the {@code attribute}. For a window of size W, a video
+     *                 frame rendered for time t will visualize data in the
+     *                 interval [t-W,t]. The minimum window size is the
+     *                 interval between successive frames.  The minimum value
+     *                 is the default.  If a value less than the minimum value
+     *                 is specified, it is replaced with the minimum window
+     *                 size.  Larger values will make changes throughout the
+     *                 video appear more smooth while smaller values will
+     *                 capture fast variations in the data.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateVideoRequest.Options#NO_ERROR_IF_EXISTS
+     *                 NO_ERROR_IF_EXISTS}: If {@code true}, does not return an
+     *                 error if the video already exists.  Ignored if {@code
+     *                 replace_if_exists} is {@code true}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateVideoRequest.Options#FALSE
+     *                 FALSE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateVideoRequest.Options#TRUE TRUE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateVideoRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateVideoRequest.Options#REPLACE_IF_EXISTS
+     *                 REPLACE_IF_EXISTS}: If {@code true}, deletes any
+     *                 existing video with the same path before creating a new
+     *                 video.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateVideoRequest.Options#FALSE
+     *                 FALSE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateVideoRequest.Options#TRUE TRUE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateVideoRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateVideoResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateVideoResponse createVideo(String attribute, String begin, double durationSeconds, String end, double framesPerSecond, String style, String path, String styleParameters, Map<String, String> options) throws GPUdbException {
+        CreateVideoRequest actualRequest_ = new CreateVideoRequest(attribute, begin, durationSeconds, end, framesPerSecond, style, path, styleParameters, options);
+        CreateVideoResponse actualResponse_ = new CreateVideoResponse();
+        submitRequest("/create/video", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Deletes a directory from <a href="../../../../../tools/kifs/"
+     * target="_top">KiFS</a>.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DeleteDirectoryResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public DeleteDirectoryResponse deleteDirectory(DeleteDirectoryRequest request) throws GPUdbException {
+        DeleteDirectoryResponse actualResponse_ = new DeleteDirectoryResponse();
+        submitRequest("/delete/directory", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Deletes a directory from <a href="../../../../../tools/kifs/"
+     * target="_top">KiFS</a>.
+     * 
+     * @param directoryName  Name of the directory in KiFS to be deleted. The
+     *                       directory must contain no files, unless {@code
+     *                       recursive} is {@code true}
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteDirectoryRequest.Options#RECURSIVE
+     *                 RECURSIVE}: If {@code true}, will delete directory and
+     *                 all files residing in it. If false, directory must be
+     *                 empty for deletion.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteDirectoryRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteDirectoryRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.DeleteDirectoryRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteDirectoryRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code true}, no error is
+     *                 returned if specified directory does not exist
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteDirectoryRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteDirectoryRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.DeleteDirectoryRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DeleteDirectoryResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public DeleteDirectoryResponse deleteDirectory(String directoryName, Map<String, String> options) throws GPUdbException {
+        DeleteDirectoryRequest actualRequest_ = new DeleteDirectoryRequest(directoryName, options);
+        DeleteDirectoryResponse actualResponse_ = new DeleteDirectoryResponse();
+        submitRequest("/delete/directory", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Deletes one or more files from <a href="../../../../../tools/kifs/"
+     * target="_top">KiFS</a>.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DeleteFilesResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public DeleteFilesResponse deleteFiles(DeleteFilesRequest request) throws GPUdbException {
+        DeleteFilesResponse actualResponse_ = new DeleteFilesResponse();
+        submitRequest("/delete/files", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Deletes one or more files from <a href="../../../../../tools/kifs/"
+     * target="_top">KiFS</a>.
+     * 
+     * @param fileNames  An array of names of files to be deleted.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteFilesRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code true}, no error is
+     *                 returned if a specified file does not exist
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteFilesRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.DeleteFilesRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DeleteFilesResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public DeleteFilesResponse deleteFiles(List<String> fileNames, Map<String, String> options) throws GPUdbException {
+        DeleteFilesRequest actualRequest_ = new DeleteFilesRequest(fileNames, options);
+        DeleteFilesResponse actualResponse_ = new DeleteFilesResponse();
+        submitRequest("/delete/files", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -9312,6 +9914,8 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Deletes an existing role.
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -9333,6 +9937,8 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Deletes an existing role.
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param name  Name of the role to be deleted. Must be an existing role.
      * @param options  Optional parameters.  The default value is an empty
@@ -9356,6 +9962,8 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Deletes an existing user.
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -9377,6 +9985,8 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Deletes an existing user.
+     * <p>
+     * <b>Note:</b> This method should be used for on-premise deployments only.
      * 
      * @param name  Name of the user to be deleted. Must be an existing user.
      * @param options  Optional parameters.  The default value is an empty
@@ -9393,6 +10003,87 @@ public class GPUdb extends GPUdbBase {
         DeleteUserRequest actualRequest_ = new DeleteUserRequest(name, options);
         DeleteUserResponse actualResponse_ = new DeleteUserResponse();
         submitRequest("/delete/user", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Downloads one or more files from <a href="../../../../../tools/kifs/"
+     * target="_top">KiFS</a>.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DownloadFilesResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public DownloadFilesResponse downloadFiles(DownloadFilesRequest request) throws GPUdbException {
+        DownloadFilesResponse actualResponse_ = new DownloadFilesResponse();
+        submitRequest("/download/files", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Downloads one or more files from <a href="../../../../../tools/kifs/"
+     * target="_top">KiFS</a>.
+     * 
+     * @param fileNames  An array of the file names to download from KiFS. The
+     *                   full path must be provided.
+     * @param readOffsets  An array of starting byte offsets from which to read
+     *                     each
+     *                     respective file in {@code fileNames}. Must either be
+     *                     empty or the same length
+     *                     as {@code fileNames}. If empty, files are downloaded
+     *                     in their entirety. If not
+     *                     empty, {@code readLengths} must also not be empty.
+     * @param readLengths  Array of number of bytes to read from each
+     *                     respective file
+     *                     in {@code fileNames}. Must either be empty or the
+     *                     same length as
+     *                     {@code fileNames}. If empty, files are downloaded in
+     *                     their entirety. If not
+     *                     empty, {@code readOffsets} must also not be empty.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DownloadFilesRequest.Options#FILE_ENCODING
+     *                 FILE_ENCODING}: Encoding to be applied to the output
+     *                 file data. When using JSON serialization it is
+     *                 recommended to specify this as {@code base64}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DownloadFilesRequest.Options#BASE64
+     *                 BASE64}: Apply base64 encoding to the output file data.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DownloadFilesRequest.Options#NONE
+     *                 NONE}: Do not apply any encoding to the output file
+     *                 data.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.DownloadFilesRequest.Options#NONE
+     *                 NONE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DownloadFilesResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public DownloadFilesResponse downloadFiles(List<String> fileNames, List<Long> readOffsets, List<Long> readLengths, Map<String, String> options) throws GPUdbException {
+        DownloadFilesRequest actualRequest_ = new DownloadFilesRequest(fileNames, readOffsets, readLengths, options);
+        DownloadFilesResponse actualResponse_ = new DownloadFilesResponse();
+        submitRequest("/download/files", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -9766,20 +10457,18 @@ public class GPUdb extends GPUdbBase {
      *                 first run ID specified in the list that includes that
      *                 table will be used.  The default value is ''.
      *                         <li> {@link
-     *                 com.gpudb.protocol.ExecuteProcRequest.Options#KIFS_INPUT_DIRS
-     *                 KIFS_INPUT_DIRS}: A comma-delimited list of KiFS
-     *                 directories whose local files will be made directly
-     *                 accessible to the proc through the API. (All KiFS files,
-     *                 local or not, are also accessible through the file
-     *                 system below the KiFS mount point.) Each name specified
-     *                 must the name of an existing KiFS directory.  The
-     *                 default value is ''.
-     *                         <li> {@link
      *                 com.gpudb.protocol.ExecuteProcRequest.Options#RUN_TAG
      *                 RUN_TAG}: A string that, if not empty, can be used in
      *                 subsequent calls to {@link GPUdb#showProcStatus(String,
      *                 Map)} or {@link GPUdb#killProc(String, Map)} to identify
      *                 the proc instance.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ExecuteProcRequest.Options#MAX_OUTPUT_LINES
+     *                 MAX_OUTPUT_LINES}: The maximum number of lines of output
+     *                 from stdout and stderr to return via {@link
+     *                 GPUdb#showProcStatus(String, Map)}. If the number of
+     *                 lines output exceeds the maximum, earlier lines are
+     *                 discarded.  The default value is '100'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -13117,6 +13806,70 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Grants a <a href="../../../../../tools/kifs/" target="_top">KiFS</a>
+     * directory-level permission to a user or role.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  GrantPermissionDirectoryResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public GrantPermissionDirectoryResponse grantPermissionDirectory(GrantPermissionDirectoryRequest request) throws GPUdbException {
+        GrantPermissionDirectoryResponse actualResponse_ = new GrantPermissionDirectoryResponse();
+        submitRequest("/grant/permission/directory", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Grants a <a href="../../../../../tools/kifs/" target="_top">KiFS</a>
+     * directory-level permission to a user or role.
+     * 
+     * @param name  Name of the user or role to which the permission will be
+     *              granted. Must be an existing user or role.
+     * @param permission  Permission to grant to the user or role.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionDirectoryRequest.Permission#DIRECTORY_READ
+     *                    DIRECTORY_READ}: For files in the directory, access
+     *                    to list files, download files, or use files in server
+     *                    side functions
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionDirectoryRequest.Permission#DIRECTORY_WRITE
+     *                    DIRECTORY_WRITE}: Access to upload files to, or
+     *                    delete files from, the directory. A user or role with
+     *                    write access automatically has read access
+     *                    </ul>
+     * @param directoryName  Name of the KiFS directory to which the permission
+     *                       grants access. An empty directory name grants
+     *                       access to all KiFS directories
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  GrantPermissionDirectoryResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public GrantPermissionDirectoryResponse grantPermissionDirectory(String name, String permission, String directoryName, Map<String, String> options) throws GPUdbException {
+        GrantPermissionDirectoryRequest actualRequest_ = new GrantPermissionDirectoryRequest(name, permission, directoryName, options);
+        GrantPermissionDirectoryResponse actualResponse_ = new GrantPermissionDirectoryResponse();
+        submitRequest("/grant/permission/directory", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Grants a proc-level permission to a user or role.
      * 
      * @param request  Request object containing the parameters for the
@@ -13358,6 +14111,142 @@ public class GPUdb extends GPUdbBase {
         GrantRoleRequest actualRequest_ = new GrantRoleRequest(role, member, options);
         GrantRoleResponse actualResponse_ = new GrantRoleResponse();
         submitRequest("/grant/role", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Checks if the specified user has the specified permission on the
+     * specified object.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  HasPermissionResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public HasPermissionResponse hasPermission(HasPermissionRequest request) throws GPUdbException {
+        HasPermissionResponse actualResponse_ = new HasPermissionResponse();
+        submitRequest("/has/permission", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Checks if the specified user has the specified permission on the
+     * specified object.
+     * 
+     * @param name  Name of the user for which the permission is being checked.
+     *              Must be an existing user. If blank, will use the current
+     *              user.  The default value is ''.
+     * @param target  Name of object to check for the requested permission.  It
+     *                is recommended to use a fully-qualified name when
+     *                possible.
+     * @param permission  Permission to check for.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#CONNECT
+     *                    CONNECT}: Connect access on the given data source
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#CREDENTIAL_ADMIN
+     *                    CREDENTIAL_ADMIN}: Full read/write and administrative
+     *                    access on the credential.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#CREDENTIAL_READ
+     *                    CREDENTIAL_READ}: Ability to read and use the
+     *                    credential.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#DIRECTORY_READ
+     *                    DIRECTORY_READ}: For files in the directory, access
+     *                    to list files, download files, or use files in server
+     *                    side functions
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#DIRECTORY_WRITE
+     *                    DIRECTORY_WRITE}: Access to upload files to, or
+     *                    delete files from, the directory. A user with write
+     *                    access automatically has read access
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#PROC_EXECUTE
+     *                    PROC_EXECUTE}: Execute access to the UDF.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#ROLE
+     *                    ROLE}: User is a member of this role (including
+     *                    indirectly).
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#SQL_PROC_EXECUTE
+     *                    SQL_PROC_EXECUTE}: Execute access to the SQL proc.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#SYSTEM_ADMIN
+     *                    SYSTEM_ADMIN}: Full access to all data and system
+     *                    functions.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#SYSTEM_READ
+     *                    SYSTEM_READ}: Read-only access to all tables.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#SYSTEM_USER_ADMIN
+     *                    SYSTEM_USER_ADMIN}: Access to administer users and
+     *                    roles that do not have system_admin permission.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#SYSTEM_WRITE
+     *                    SYSTEM_WRITE}: Read and write access to all tables.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#TABLE_ADMIN
+     *                    TABLE_ADMIN}: Full read/write and administrative
+     *                    access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#TABLE_DELETE
+     *                    TABLE_DELETE}: Delete access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#TABLE_INSERT
+     *                    TABLE_INSERT}: Insert access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#TABLE_READ
+     *                    TABLE_READ}: Read access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#TABLE_UPDATE
+     *                    TABLE_UPDATE}: Update access to the table.
+     *                    </ul>
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.HasPermissionRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an
+     *                 error if the provided {@code target} does not exist or
+     *                 is blank. If {@code true} then it will return {@code
+     *                 false} for {@code hasPermission}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.HasPermissionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.HasPermissionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.HasPermissionRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  HasPermissionResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public HasPermissionResponse hasPermission(String name, String target, String permission, Map<String, String> options) throws GPUdbException {
+        HasPermissionRequest actualRequest_ = new HasPermissionRequest(name, target, permission, options);
+        HasPermissionResponse actualResponse_ = new HasPermissionResponse();
+        submitRequest("/has/permission", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -14052,7 +14941,7 @@ public class GPUdb extends GPUdbBase {
      * the file header's names may be provided to {@code columns_to_load}
      * instead of
      * numbers, but ranges are not supported.
-
+     * <p>
      * Returns once all files are processed.
      * 
      * @param request  Request object containing the parameters for the
@@ -14092,7 +14981,7 @@ public class GPUdb extends GPUdbBase {
      * the file header's names may be provided to {@code columns_to_load}
      * instead of
      * numbers, but ranges are not supported.
-
+     * <p>
      * Returns once all files are processed.
      * 
      * @param tableName  Name of the table into which the data will be
@@ -14119,6 +15008,9 @@ public class GPUdb extends GPUdbBase {
      *                   text delimiter will be defaulted to a tab character.
      *                   If the first path ends in .psv, the text delimiter
      *                   will be defaulted to a pipe character (|).
+     *                   For paths in <a href="../../../../../tools/kifs/"
+     *                   target="_top">KiFS</a>, use the uri prefix of kifs://
+     *                   followed by the full path to a file or directory
      * @param modifyColumns  Not implemented yet.  The default value is an
      *                       empty {@link Map}.
      * @param createTableOptions  Options used when creating the target table.
@@ -14223,6 +15115,11 @@ public class GPUdb extends GPUdbBase {
      *                            HASH}: Use <a
      *                            href="../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a>.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#SERIES
+     *                            SERIES}: Use <a
+     *                            href="../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a>.
      *                            </ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#PARTITION_KEYS
@@ -14242,9 +15139,11 @@ public class GPUdb extends GPUdbBase {
      *                            href="../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>, <a
      *                            href="../../../../../concepts/tables/#partitioning-by-list"
-     *                            target="_top">list partitioning</a>, or <a
+     *                            target="_top">list partitioning</a>, <a
      *                            href="../../../../../concepts/tables/#partitioning-by-hash"
-     *                            target="_top">hash partitioning</a> for
+     *                            target="_top">hash partitioning</a>, or <a
+     *                            href="../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a> for
      *                            example formats.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromFilesRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
@@ -14308,13 +15207,7 @@ public class GPUdb extends GPUdbBase {
      *                            STRATEGY_DEFINITION}: The <a
      *                            href="../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy</a> for the table
-     *                            and its columns. See <a
-     *                            href="../../../../../rm/concepts/#tier-strategies"
-     *                            target="_top">tier strategy usage</a> for
-     *                            format and <a
-     *                            href="../../../../../rm/usage/#tier-strategies"
-     *                            target="_top">tier strategy examples</a> for
-     *                            examples.
+     *                            and its columns.
      *                            </ul>
      *                            The default value is an empty {@link Map}.
      * @param options  Optional parameters.
@@ -14464,6 +15357,9 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON
      *                 JSON}: Json file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHAPEFILE
+     *                 SHAPEFILE}: ShapeFile file format
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
@@ -14555,6 +15451,29 @@ public class GPUdb extends GPUdbBase {
      *                 SHARD_KEYS}: Optional: comma separated list of column
      *                 names, to set as primary keys, when not specified in the
      *                 type.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SUBSCRIBE
+     *                 SUBSCRIBE}: Continuously poll the data source to check
+     *                 for new data and load it into the table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#POLL_INTERVAL
+     *                 POLL_INTERVAL}: If {@code true}, the number of seconds
+     *                 between attempts to load external files into the table.
+     *                 If zero, polling will be continuous as long as data is
+     *                 found.  If no data is found, the interval will steadily
+     *                 increase to a maximum of 60 seconds.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_COMMENT_STRING
      *                 TEXT_COMMENT_STRING}: Specifies the character string
@@ -14674,8 +15593,43 @@ public class GPUdb extends GPUdbBase {
      *                 'all' values will fit with minimum data scanned
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ACCURACY
-     *                 ACCURACY}.
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
+     *                 SPEED}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_INSERT_MODE
+     *                 TABLE_INSERT_MODE}: Optional: table_insert_mode. When
+     *                 inserting records from multiple files: if table_per_file
+     *                 then insert from each file into a new table. Currently
+     *                 supported only for shapefiles.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+     *                 SINGLE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
+     *                 TABLE_PER_FILE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+     *                 SINGLE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_GROUP_ID
+     *                 KAFKA_GROUP_ID}: The group id to be used consuming data
+     *                 from a kakfa topic (valid only for kafka datasource
+     *                 subscriptions).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_COLUMNS
+     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
+     *                 internally inferenced string columns. Comma seperated
+     *                 list of column names or '*' for all columns. To add
+     *                 text_search property only to string columns of minimum
+     *                 size, set also the option
+     *                 'text_search_min_column_length'
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
+     *                 Used only when 'text_search_columns' has a value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -14852,6 +15806,11 @@ public class GPUdb extends GPUdbBase {
      *                            HASH}: Use <a
      *                            href="../../../../../concepts/tables/#partitioning-by-hash"
      *                            target="_top">hash partitioning</a>.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#SERIES
+     *                            SERIES}: Use <a
+     *                            href="../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a>.
      *                            </ul>
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#PARTITION_KEYS
@@ -14871,9 +15830,11 @@ public class GPUdb extends GPUdbBase {
      *                            href="../../../../../concepts/tables/#partitioning-by-interval"
      *                            target="_top">interval partitioning</a>, <a
      *                            href="../../../../../concepts/tables/#partitioning-by-list"
-     *                            target="_top">list partitioning</a>, or <a
+     *                            target="_top">list partitioning</a>, <a
      *                            href="../../../../../concepts/tables/#partitioning-by-hash"
-     *                            target="_top">hash partitioning</a> for
+     *                            target="_top">hash partitioning</a>, or <a
+     *                            href="../../../../../concepts/tables/#partitioning-by-series"
+     *                            target="_top">series partitioning</a> for
      *                            example formats.
      *                                    <li> {@link
      *                            com.gpudb.protocol.InsertRecordsFromPayloadRequest.CreateTableOptions#IS_AUTOMATIC_PARTITION
@@ -14937,13 +15898,7 @@ public class GPUdb extends GPUdbBase {
      *                            STRATEGY_DEFINITION}: The <a
      *                            href="../../../../../rm/concepts/#tier-strategies"
      *                            target="_top">tier strategy</a> for the table
-     *                            and its columns. See <a
-     *                            href="../../../../../rm/concepts/#tier-strategies"
-     *                            target="_top">tier strategy usage</a> for
-     *                            format and <a
-     *                            href="../../../../../rm/usage/#tier-strategies"
-     *                            target="_top">tier strategy examples</a> for
-     *                            examples.
+     *                            and its columns.
      *                            </ul>
      *                            The default value is an empty {@link Map}.
      * @param options  Optional parameters.
@@ -15088,6 +16043,9 @@ public class GPUdb extends GPUdbBase {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON
      *                 JSON}: Json file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHAPEFILE
+     *                 SHAPEFILE}: ShapeFile file format
      *                 </ul>
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT
@@ -15229,8 +16187,20 @@ public class GPUdb extends GPUdbBase {
      *                 'all' values will fit with minimum data scanned
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ACCURACY
-     *                 ACCURACY}.
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SPEED
+     *                 SPEED}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_COLUMNS
+     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
+     *                 internally inferenced string columns. Comma seperated
+     *                 list of column names or '*' for all columns. To add
+     *                 text_search property only to string columns of minimum
+     *                 size, set also the option
+     *                 'text_search_min_column_length'
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
+     *                 Used only when 'text_search_columns' has a value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -15788,10 +16758,10 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
-     * target="_top">Graph REST Tutorial</a>,
+     * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
+     * REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../../graph_solver/examples/#match-graph"
+     * <a href="../../../../../guide-tags/graph-match/"
      * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
@@ -15823,10 +16793,10 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
-     * target="_top">Graph REST Tutorial</a>,
+     * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
+     * REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../../graph_solver/examples/#match-graph"
+     * <a href="../../../../../guide-tags/graph-match/"
      * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
@@ -15883,6 +16853,11 @@ public class GPUdb extends GPUdbBase {
      *                     MATCH_BATCH_SOLVES}: Matches {@code samplePoints}
      *                     source and destination pairs for the shortest path
      *                     solves in batch mode.
+     *                             <li> {@link
+     *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MATCH_LOOPS
+     *                     MATCH_LOOPS}: Matches closed loops (Eulerian paths)
+     *                     originating and ending at each graph node within min
+     *                     and max hops (levels).
      *                     </ul>
      *                     The default value is {@link
      *                     com.gpudb.protocol.MatchGraphRequest.SolveMethod#MARKOV_CHAIN
@@ -16092,11 +17067,61 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_TRUCK_STOPS
+     *                 MAX_TRUCK_STOPS}: For the {@code match_supply_demand}
+     *                 solver only. If specified (greater than zero), a truck
+     *                 can at most have this many stops (demand locations) in
+     *                 one round trip. Otherwise, it is unlimited. If
+     *                 'enable_truck_reuse' is on, this condition will be
+     *                 applied separately at each round trip use of the same
+     *                 truck.  The default value is '0'.
+     *                         <li> {@link
      *                 com.gpudb.protocol.MatchGraphRequest.Options#SERVER_ID
      *                 SERVER_ID}: Indicates which graph server(s) to send the
      *                 request to. Default is to send to the server, amongst
      *                 those containing the corresponding graph, that has the
      *                 most computational bandwidth.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#INVERSE_SOLVE
+     *                 INVERSE_SOLVE}: For the {@code match_batch_solves}
+     *                 solver only. Solves source-destination pairs using
+     *                 inverse shortest path solver.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#TRUE TRUE}:
+     *                 Solves using inverse shortest path solver.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}: Solves using direct shortest path solver.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MIN_LOOP_LEVEL
+     *                 MIN_LOOP_LEVEL}: For the {@code match_loops} solver
+     *                 only. Finds closed loops around each node deducible not
+     *                 less than this minimal hop (level) deep.  The default
+     *                 value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#MAX_LOOP_LEVEL
+     *                 MAX_LOOP_LEVEL}: For the {@code match_loops} solver
+     *                 only. Finds closed loops around each node deducible not
+     *                 more than this maximal hop (level) deep.  The default
+     *                 value is '5'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#SEARCH_LIMIT
+     *                 SEARCH_LIMIT}: For the {@code match_loops} solver only.
+     *                 Searches within this limit of nodes per vertex to detect
+     *                 loops. The value zero means there is no limit.  The
+     *                 default value is '10000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.MatchGraphRequest.Options#OUTPUT_BATCH_SIZE
+     *                 OUTPUT_BATCH_SIZE}: For the {@code match_loops} solver
+     *                 only. Uses this value as the batch size of the number of
+     *                 loops in flushing(inserting) to the output table.  The
+     *                 default value is '1000'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -16292,16 +17317,13 @@ public class GPUdb extends GPUdbBase {
     /**
      * Update an existing graph network using given nodes, edges, weights,
      * restrictions, and options.
-
+     * <p>
      * IMPORTANT: It's highly recommended that you review the
      * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
-     * concepts documentation, the
-     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
-     * target="_top">Graph REST Tutorial</a>,
-     * and/or some
-     * <a href="../../../../../graph_solver/examples/#match-graph"
-     * target="_top">/match/graph examples</a>
+     * concepts documentation and
+     * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
+     * REST Tutorial</a>
      * before using this endpoint.
      * 
      * @param request  Request object containing the parameters for the
@@ -16325,16 +17347,13 @@ public class GPUdb extends GPUdbBase {
     /**
      * Update an existing graph network using given nodes, edges, weights,
      * restrictions, and options.
-
+     * <p>
      * IMPORTANT: It's highly recommended that you review the
      * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
-     * concepts documentation, the
-     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
-     * target="_top">Graph REST Tutorial</a>,
-     * and/or some
-     * <a href="../../../../../graph_solver/examples/#match-graph"
-     * target="_top">/match/graph examples</a>
+     * concepts documentation and
+     * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
+     * REST Tutorial</a>
      * before using this endpoint.
      * 
      * @param graphName  Name of the graph resource to modify.
@@ -16621,10 +17640,10 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
-     * target="_top">Graph REST Tutorial</a>,
+     * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
+     * REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../../graph_solver/examples/#match-graph"
+     * <a href="../../../../../guide-tags/graph-query"
      * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
@@ -16683,10 +17702,10 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
-     * target="_top">Graph REST Tutorial</a>,
+     * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
+     * REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../../graph_solver/examples/#match-graph"
+     * <a href="../../../../../guide-tags/graph-query"
      * target="_top">/match/graph examples</a>
      * before using this endpoint.
      * 
@@ -16859,22 +17878,6 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#EXPORT_SOLVE_RESULTS
-     *                 EXPORT_SOLVE_RESULTS}: Returns solution results inside
-     *                 the {@code adjacencyListIntArray} array in the response
-     *                 if set to {@code true}.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#TRUE TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.QueryGraphRequest.Options#FALSE
-     *                 FALSE}.
-     *                         <li> {@link
      *                 com.gpudb.protocol.QueryGraphRequest.Options#SERVER_ID
      *                 SERVER_ID}: Indicates which graph server(s) to send the
      *                 request to. Default is to send to the server, amongst
@@ -16894,6 +17897,23 @@ public class GPUdb extends GPUdbBase {
         QueryGraphRequest actualRequest_ = new QueryGraphRequest(graphName, queries, restrictions, adjacencyTable, rings, options);
         QueryGraphResponse actualResponse_ = new QueryGraphResponse();
         submitRequest("/query/graph", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public ReserveResourceResponse reserveResource(ReserveResourceRequest request) throws GPUdbException {
+        ReserveResourceResponse actualResponse_ = new ReserveResourceResponse();
+        submitRequest("/reserve/resource", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public ReserveResourceResponse reserveResource(String component, long bytesRequested, Map<String, String> options) throws GPUdbException {
+        ReserveResourceRequest actualRequest_ = new ReserveResourceRequest(component, bytesRequested, options);
+        ReserveResourceResponse actualResponse_ = new ReserveResourceResponse();
+        submitRequest("/reserve/resource", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -17017,6 +18037,69 @@ public class GPUdb extends GPUdbBase {
         RevokePermissionDatasourceRequest actualRequest_ = new RevokePermissionDatasourceRequest(name, permission, datasourceName, options);
         RevokePermissionDatasourceResponse actualResponse_ = new RevokePermissionDatasourceResponse();
         submitRequest("/revoke/permission/datasource", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Revokes a <a href="../../../../../tools/kifs/" target="_top">KiFS</a>
+     * directory-level permission from a user or role.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  RevokePermissionDirectoryResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public RevokePermissionDirectoryResponse revokePermissionDirectory(RevokePermissionDirectoryRequest request) throws GPUdbException {
+        RevokePermissionDirectoryResponse actualResponse_ = new RevokePermissionDirectoryResponse();
+        submitRequest("/revoke/permission/directory", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Revokes a <a href="../../../../../tools/kifs/" target="_top">KiFS</a>
+     * directory-level permission from a user or role.
+     * 
+     * @param name  Name of the user or role from which the permission will be
+     *              revoked. Must be an existing user or role.
+     * @param permission  Permission to revoke from the user or role.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionDirectoryRequest.Permission#DIRECTORY_READ
+     *                    DIRECTORY_READ}: For files in the directory, access
+     *                    to list files, download files, or use files in server
+     *                    side functions
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionDirectoryRequest.Permission#DIRECTORY_WRITE
+     *                    DIRECTORY_WRITE}: Access to upload files to, or
+     *                    delete files from, the directory. A user or role with
+     *                    write access automatically has read acceess
+     *                    </ul>
+     * @param directoryName  Name of the KiFS directory to which the permission
+     *                       revokes access
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  RevokePermissionDirectoryResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public RevokePermissionDirectoryResponse revokePermissionDirectory(String name, String permission, String directoryName, Map<String, String> options) throws GPUdbException {
+        RevokePermissionDirectoryRequest actualRequest_ = new RevokePermissionDirectoryRequest(name, permission, directoryName, options);
+        RevokePermissionDirectoryResponse actualResponse_ = new RevokePermissionDirectoryResponse();
+        submitRequest("/revoke/permission/directory", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -17379,6 +18462,104 @@ public class GPUdb extends GPUdbBase {
         ShowDatasourceRequest actualRequest_ = new ShowDatasourceRequest(name, options);
         ShowDatasourceResponse actualResponse_ = new ShowDatasourceResponse();
         submitRequest("/show/datasource", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Shows information about directories in <a
+     * href="../../../../../tools/kifs/" target="_top">KiFS</a>. Can be used to
+     * show a single directory, or all directories.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowDirectoriesResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowDirectoriesResponse showDirectories(ShowDirectoriesRequest request) throws GPUdbException {
+        ShowDirectoriesResponse actualResponse_ = new ShowDirectoriesResponse();
+        submitRequest("/show/directories", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Shows information about directories in <a
+     * href="../../../../../tools/kifs/" target="_top">KiFS</a>. Can be used to
+     * show a single directory, or all directories.
+     * 
+     * @param directoryName  The KiFS directory name to show. If empty, shows
+     *                       all directories.  The default value is ''.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowDirectoriesResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowDirectoriesResponse showDirectories(String directoryName, Map<String, String> options) throws GPUdbException {
+        ShowDirectoriesRequest actualRequest_ = new ShowDirectoriesRequest(directoryName, options);
+        ShowDirectoriesResponse actualResponse_ = new ShowDirectoriesResponse();
+        submitRequest("/show/directories", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Shows information about files in <a href="../../../../../tools/kifs/"
+     * target="_top">KiFS</a>. Can be used for individual files, or to show all
+     * files in a given directory.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowFilesResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowFilesResponse showFiles(ShowFilesRequest request) throws GPUdbException {
+        ShowFilesResponse actualResponse_ = new ShowFilesResponse();
+        submitRequest("/show/files", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Shows information about files in <a href="../../../../../tools/kifs/"
+     * target="_top">KiFS</a>. Can be used for individual files, or to show all
+     * files in a given directory.
+     * 
+     * @param paths  File paths to show. Each path can be a KiFS directory
+     *               name, or a full path to a KiFS file.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowFilesResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowFilesResponse showFiles(List<String> paths, Map<String, String> options) throws GPUdbException {
+        ShowFilesRequest actualRequest_ = new ShowFilesRequest(paths, options);
+        ShowFilesResponse actualResponse_ = new ShowFilesResponse();
+        submitRequest("/show/files", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -18595,6 +19776,52 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Retrieves information about rendered videos.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowVideoResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowVideoResponse showVideo(ShowVideoRequest request) throws GPUdbException {
+        ShowVideoResponse actualResponse_ = new ShowVideoResponse();
+        submitRequest("/show/video", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Retrieves information about rendered videos.
+     * 
+     * @param paths  The fully-qualified <a href="../../../../../tools/kifs/"
+     *               target="_top">KiFS</a> paths for the videos to show. If
+     *               empty, shows all videos.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowVideoResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowVideoResponse showVideo(List<String> paths, Map<String, String> options) throws GPUdbException {
+        ShowVideoRequest actualRequest_ = new ShowVideoRequest(paths, options);
+        ShowVideoResponse actualResponse_ = new ShowVideoResponse();
+        submitRequest("/show/video", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Solves an existing graph for a type of problem (e.g., shortest path,
      * page rank, travelling salesman, etc.) using source nodes, destination
      * nodes, and
@@ -18604,11 +19831,11 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
-     * target="_top">Graph REST Tutorial</a>,
+     * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
+     * REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../../graph_solver/examples/#match-graph"
-     * target="_top">/match/graph examples</a>
+     * <a href="../../../../../guide-tags/graph-solve"
+     * target="_top">/solve/graph examples</a>
      * before using this endpoint.
      * 
      * @param request  Request object containing the parameters for the
@@ -18639,11 +19866,11 @@ public class GPUdb extends GPUdbBase {
      * <a href="../../../../../graph_solver/network_graph_solver/"
      * target="_top">Network Graphs & Solvers</a>
      * concepts documentation, the
-     * <a href="../../../../../graph_solver/examples/graph_rest_guide/"
-     * target="_top">Graph REST Tutorial</a>,
+     * <a href="../../../../../guides/graph_rest_guide/" target="_top">Graph
+     * REST Tutorial</a>,
      * and/or some
-     * <a href="../../../../../graph_solver/examples/#match-graph"
-     * target="_top">/match/graph examples</a>
+     * <a href="../../../../../guide-tags/graph-solve"
+     * target="_top">/solve/graph examples</a>
      * before using this endpoint.
      * 
      * @param graphName  Name of the graph resource to solve.
@@ -18756,6 +19983,16 @@ public class GPUdb extends GPUdbBase {
      *                    between max and min solution radia - Make sure to
      *                    limit by the 'max_solution_targets' option. Min cost
      *                    shoudl be >= shortest_path cost.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.SolveGraphRequest.SolverType#STATS_ALL
+     *                    STATS_ALL}: Solves for graph statistics such as graph
+     *                    diameter, longest pairs, vertex valences, topology
+     *                    numbers, average and max cluster sizes, etc.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.SolveGraphRequest.SolverType#CLOSENESS
+     *                    CLOSENESS}: Solves for the centrality closeness score
+     *                    per node as the sum of the inverse shortest path
+     *                    costs to all nodes in the graph.
      *                    </ul>
      *                    The default value is {@link
      *                    com.gpudb.protocol.SolveGraphRequest.SolverType#SHORTEST_PATH
@@ -18778,32 +20015,33 @@ public class GPUdb extends GPUdbBase {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_RADIUS
-     *                 MAX_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and
-     *                 {@code INVERSE_SHORTEST_PATH} solvers only. Sets the
-     *                 maximum solution cost radius, which ignores the {@code
-     *                 destinationNodes} list and instead outputs the nodes
-     *                 within the radius sorted by ascending cost. If set to
-     *                 '0.0', the setting is ignored.  The default value is
-     *                 '0.0'.
+     *                 MAX_SOLUTION_RADIUS}: For {@code ALLPATHS}, {@code
+     *                 SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
+     *                 only. Sets the maximum solution cost radius, which
+     *                 ignores the {@code destinationNodes} list and instead
+     *                 outputs the nodes within the radius sorted by ascending
+     *                 cost. If set to '0.0', the setting is ignored.  The
+     *                 default value is '0.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#MIN_SOLUTION_RADIUS
-     *                 MIN_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and
-     *                 {@code INVERSE_SHORTEST_PATH} solvers only. Applicable
-     *                 only when {@code max_solution_radius} is set. Sets the
-     *                 minimum solution cost radius, which ignores the {@code
-     *                 destinationNodes} list and instead outputs the nodes
-     *                 within the radius sorted by ascending cost. If set to
-     *                 '0.0', the setting is ignored.  The default value is
-     *                 '0.0'.
+     *                 MIN_SOLUTION_RADIUS}: For {@code ALLPATHS}, {@code
+     *                 SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
+     *                 only. Applicable only when {@code max_solution_radius}
+     *                 is set. Sets the minimum solution cost radius, which
+     *                 ignores the {@code destinationNodes} list and instead
+     *                 outputs the nodes within the radius sorted by ascending
+     *                 cost. If set to '0.0', the setting is ignored.  The
+     *                 default value is '0.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_TARGETS
-     *                 MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and
-     *                 {@code INVERSE_SHORTEST_PATH} solvers only. Sets the
-     *                 maximum number of solution targets, which ignores the
-     *                 {@code destinationNodes} list and instead outputs no
-     *                 more than n number of nodes sorted by ascending cost
-     *                 where n is equal to the setting value. If set to 0, the
-     *                 setting is ignored.  The default value is '0'.
+     *                 MAX_SOLUTION_TARGETS}: For {@code ALLPATHS}, {@code
+     *                 SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
+     *                 only. Sets the maximum number of solution targets, which
+     *                 ignores the {@code destinationNodes} list and instead
+     *                 outputs no more than n number of nodes sorted by
+     *                 ascending cost where n is equal to the setting value. If
+     *                 set to 0, the setting is ignored.  The default value is
+     *                 '1000'.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#EXPORT_SOLVE_RESULTS
      *                 EXPORT_SOLVE_RESULTS}: Returns solution results inside
@@ -18963,6 +20201,45 @@ public class GPUdb extends GPUdbBase {
      *                 most computational bandwidth. For SHORTEST_PATH solver
      *                 type, the input is split amongst the server containing
      *                 the corresponding graph.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#CONVERGENCE_LIMIT
+     *                 CONVERGENCE_LIMIT}: For {@code PAGE_RANK} solvers only;
+     *                 Maximum percent relative threshold on the pagerank
+     *                 scores of each node between consecutive iterations to
+     *                 satisfy convergence. Default value is 1 (one) percent.
+     *                 The default value is '1.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_ITERATIONS
+     *                 MAX_ITERATIONS}: For {@code PAGE_RANK} solvers only;
+     *                 Maximum number of pagerank iterations for satisfying
+     *                 convergence. Default value is 100.  The default value is
+     *                 '100'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_RUNS
+     *                 MAX_RUNS}: For all {@code CENTRALITY} solvers only; Sets
+     *                 the maximum number of shortest path runs; maximum
+     *                 possible value is the number of nodes in the graph.
+     *                 Default value of 0 enables this value to be auto
+     *                 computed by the solver.  The default value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_CLUSTERS
+     *                 OUTPUT_CLUSTERS}: For {@code STATS_ALL} solvers only;
+     *                 the cluster index for each node will be inserted as an
+     *                 additional column in the output.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}:
+     *                 An additional column 'CLUSTER' will be added for each
+     *                 node
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     *                 FALSE}: No extra cluster info per node will be available
+     *                 in the output
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -19637,6 +20914,251 @@ public class GPUdb extends GPUdbBase {
         UpdateRecordsBySeriesRequest actualRequest_ = new UpdateRecordsBySeriesRequest(tableName, worldTableName, viewName, reserved, options);
         UpdateRecordsBySeriesResponse actualResponse_ = new UpdateRecordsBySeriesResponse();
         submitRequest("/update/records/byseries", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Uploads one or more files to <a href="../../../../../tools/kifs/"
+     * target="_top">KiFS</a>. There are
+     * two methods for uploading files: load files in their entirety, or load
+     * files in
+     * parts. The latter is recommeded for files of approximately 60 MB or
+     * larger.
+     * <p>
+     * To upload files in their entirety, populate {@code fileNames} with the
+     * file
+     * names to upload into on KiFS, and their respective byte content in
+     * {@code fileData}.
+     * <p>
+     * Multiple steps are involved when uploading in multiple parts. Only one
+     * file at a
+     * time can be uploaded in this manner. A user-provided UUID is utilized to
+     * tie all
+     * the upload steps together for a given file.  To upload a file in
+     * multiple parts:
+     * <p>
+     * 1. Provide the file name in {@code fileNames}, the UUID in
+     *    the {@code multipart_upload_uuid} key in {@code options}, and
+     *    a {@code multipart_operation} value of
+     *    {@code init}.
+     * 2. Upload one or more parts by providing the file name, the part data
+     *    in {@code fileData}, the UUID, a {@code multipart_operation}
+     *    value of {@code upload_part}, and
+     *    the part number in the {@code multipart_upload_part_number}.
+     *    The part numbers must start at 1 and increase incrementally.
+     *    Parts may not be uploaded out of order.
+     * 3. Complete the upload by providing the file name, the UUID, and a
+     *    {@code multipart_operation} value of
+     *    {@code complete}.
+     * <p>
+     * Multipart uploads in progress may be canceled by providing the file
+     * name, the
+     * UUID, and a {@code multipart_operation} value of
+     * {@code cancel}.  If an new upload is
+     * initialized with a different UUID for an existing upload in progress,
+     * the
+     * pre-existing upload is automatically canceled in favor of the new
+     * upload.
+     * <p>
+     * The multipart upload must be completed for the file to be usable in
+     * KiFS.
+     * Information about multipart uploads in progress is available in
+     * {@link GPUdb#showFiles(ShowFilesRequest)}.
+     * <p>
+     * File data may be pre-encoded using base64 encoding. This should be
+     * indicated
+     * using the {@code file_encoding} option, and is recommended when
+     * using JSON serialization.
+     * <p>
+     * Each file path must reside in a top-level KiFS directory, i.e. one of
+     * the
+     * directories listed in {@link
+     * GPUdb#showDirectories(ShowDirectoriesRequest)}. The user must have write
+     * permission on the directory. Nested directories are permitted in file
+     * name
+     * paths. Directories are deliniated with the directory separator of '/'.
+     * For
+     * example, given the file path '/a/b/c/d.txt', 'a' must be a KiFS
+     * directory.
+     * <p>
+     * These characters are allowed in file name paths: letters, numbers,
+     * spaces, the
+     * path delimiter of '/', and the characters: '.' '-' ':' '[' ']' '(' ')'
+     * '#' '='.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  UploadFilesResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public UploadFilesResponse uploadFiles(UploadFilesRequest request) throws GPUdbException {
+        UploadFilesResponse actualResponse_ = new UploadFilesResponse();
+        submitRequest("/upload/files", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Uploads one or more files to <a href="../../../../../tools/kifs/"
+     * target="_top">KiFS</a>. There are
+     * two methods for uploading files: load files in their entirety, or load
+     * files in
+     * parts. The latter is recommeded for files of approximately 60 MB or
+     * larger.
+     * <p>
+     * To upload files in their entirety, populate {@code fileNames} with the
+     * file
+     * names to upload into on KiFS, and their respective byte content in
+     * {@code fileData}.
+     * <p>
+     * Multiple steps are involved when uploading in multiple parts. Only one
+     * file at a
+     * time can be uploaded in this manner. A user-provided UUID is utilized to
+     * tie all
+     * the upload steps together for a given file.  To upload a file in
+     * multiple parts:
+     * <p>
+     * 1. Provide the file name in {@code fileNames}, the UUID in
+     *    the {@code multipart_upload_uuid} key in {@code options}, and
+     *    a {@code multipart_operation} value of
+     *    {@code init}.
+     * 2. Upload one or more parts by providing the file name, the part data
+     *    in {@code fileData}, the UUID, a {@code multipart_operation}
+     *    value of {@code upload_part}, and
+     *    the part number in the {@code multipart_upload_part_number}.
+     *    The part numbers must start at 1 and increase incrementally.
+     *    Parts may not be uploaded out of order.
+     * 3. Complete the upload by providing the file name, the UUID, and a
+     *    {@code multipart_operation} value of
+     *    {@code complete}.
+     * <p>
+     * Multipart uploads in progress may be canceled by providing the file
+     * name, the
+     * UUID, and a {@code multipart_operation} value of
+     * {@code cancel}.  If an new upload is
+     * initialized with a different UUID for an existing upload in progress,
+     * the
+     * pre-existing upload is automatically canceled in favor of the new
+     * upload.
+     * <p>
+     * The multipart upload must be completed for the file to be usable in
+     * KiFS.
+     * Information about multipart uploads in progress is available in
+     * {@link GPUdb#showFiles(List, Map)}.
+     * <p>
+     * File data may be pre-encoded using base64 encoding. This should be
+     * indicated
+     * using the {@code file_encoding} option, and is recommended when
+     * using JSON serialization.
+     * <p>
+     * Each file path must reside in a top-level KiFS directory, i.e. one of
+     * the
+     * directories listed in {@link GPUdb#showDirectories(String, Map)}. The
+     * user must have write
+     * permission on the directory. Nested directories are permitted in file
+     * name
+     * paths. Directories are deliniated with the directory separator of '/'.
+     * For
+     * example, given the file path '/a/b/c/d.txt', 'a' must be a KiFS
+     * directory.
+     * <p>
+     * These characters are allowed in file name paths: letters, numbers,
+     * spaces, the
+     * path delimiter of '/', and the characters: '.' '-' ':' '[' ']' '(' ')'
+     * '#' '='.
+     * 
+     * @param fileNames  An array of full file name paths to be used for the
+     *                   files
+     *                   uploaded to KiFS. File names may have any number of
+     *                   nested directories in their
+     *                   paths, but the top-level directory must be an existing
+     *                   KiFS directory. Each file
+     *                   must reside in or under a top-level directory. A full
+     *                   file name path cannot be
+     *                   larger than 1024 characters.
+     * @param fileData  File data for the files being uploaded, for the
+     *                  respective files in {@code fileNames}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#FILE_ENCODING
+     *                 FILE_ENCODING}: Encoding that has been applied to the
+     *                 uploaded
+     *                 file data. When using JSON serialization it is
+     *                 recommended to utilize
+     *                 {@code base64}. The caller is responsible
+     *                 for encoding the data provided in this payload
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#BASE64
+     *                 BASE64}: Specifies that the file data being uploaded has
+     *                 been base64 encoded.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#NONE
+     *                 NONE}: The uploaded file data has not been encoded.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#NONE
+     *                 NONE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#MULTIPART_OPERATION
+     *                 MULTIPART_OPERATION}: Multipart upload operation to
+     *                 perform
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#NONE NONE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#INIT
+     *                 INIT}: Initialize a multipart file upload
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#UPLOAD_PART
+     *                 UPLOAD_PART}: Upload one or more parts of the specified
+     *                 multipart file upload
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#COMPLETE
+     *                 COMPLETE}: Complete the specified multipart file upload
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#CANCEL
+     *                 CANCEL}: Cancel the specified multipart file upload
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#NONE
+     *                 NONE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#MULTIPART_UPLOAD_UUID
+     *                 MULTIPART_UPLOAD_UUID}: UUID to uniquely identify a
+     *                 multipart upload
+     *                         <li> {@link
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#MULTIPART_UPLOAD_PART_NUMBER
+     *                 MULTIPART_UPLOAD_PART_NUMBER}: Incremental part number
+     *                 for each part in a
+     *                 multipart upload. Part numbers start at 1, increment by
+     *                 1, and must be uploaded
+     *                 sequentially
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  UploadFilesResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public UploadFilesResponse uploadFiles(List<String> fileNames, List<ByteBuffer> fileData, Map<String, String> options) throws GPUdbException {
+        UploadFilesRequest actualRequest_ = new UploadFilesRequest(fileNames, fileData, options);
+        UploadFilesResponse actualResponse_ = new UploadFilesResponse();
+        submitRequest("/upload/files", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -20632,40 +22154,6 @@ public class GPUdb extends GPUdbBase {
         VisualizeIsochroneRequest actualRequest_ = new VisualizeIsochroneRequest(graphName, sourceNode, maxSolutionRadius, weightsOnEdges, restrictions, numLevels, generateImage, levelsTable, styleOptions, solveOptions, contourOptions, options);
         VisualizeIsochroneResponse actualResponse_ = new VisualizeIsochroneResponse();
         submitRequest("/visualize/isochrone", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    public VisualizeVideoResponse visualizeVideo(VisualizeVideoRequest request) throws GPUdbException {
-        VisualizeVideoResponse actualResponse_ = new VisualizeVideoResponse();
-        submitRequest("/visualize/video", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    public VisualizeVideoResponse visualizeVideo(List<String> tableNames, List<String> worldTableNames, List<List<String>> trackIds, String xColumnName, String yColumnName, String geometryColumnName, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, List<List<Double>> timeIntervals, String videoStyle, String sessionKey, Map<String, List<String>> styleOptions, Map<String, String> options) throws GPUdbException {
-        VisualizeVideoRequest actualRequest_ = new VisualizeVideoRequest(tableNames, worldTableNames, trackIds, xColumnName, yColumnName, geometryColumnName, minX, maxX, minY, maxY, width, height, projection, bgColor, timeIntervals, videoStyle, sessionKey, styleOptions, options);
-        VisualizeVideoResponse actualResponse_ = new VisualizeVideoResponse();
-        submitRequest("/visualize/video", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    public VisualizeVideoHeatmapResponse visualizeVideoHeatmap(VisualizeVideoHeatmapRequest request) throws GPUdbException {
-        VisualizeVideoHeatmapResponse actualResponse_ = new VisualizeVideoHeatmapResponse();
-        submitRequest("/visualize/video/heatmap", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    public VisualizeVideoHeatmapResponse visualizeVideoHeatmap(List<String> tableNames, String xColumnName, String yColumnName, double minX, double maxX, double minY, double maxY, List<List<Double>> timeIntervals, int width, int height, String projection, String videoStyle, String sessionKey, Map<String, String> styleOptions, Map<String, String> options) throws GPUdbException {
-        VisualizeVideoHeatmapRequest actualRequest_ = new VisualizeVideoHeatmapRequest(tableNames, xColumnName, yColumnName, minX, maxX, minY, maxY, timeIntervals, width, height, projection, videoStyle, sessionKey, styleOptions, options);
-        VisualizeVideoHeatmapResponse actualResponse_ = new VisualizeVideoHeatmapResponse();
-        submitRequest("/visualize/video/heatmap", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 

@@ -17,8 +17,8 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#adminRebalance(AdminRebalanceRequest)}.
  * <p>
- * Rebalance the data in the cluster so that all nodes contain an equal number
- * of records approximately and/or rebalance the shards to be equally
+ * Rebalance the data in the cluster so that all nodes contain an equal
+ * number of records approximately and/or rebalance the shards to be equally
  * distributed (as much as possible) across all the ranks.
  * <p>
  * The database must be offline for this operation, see {@link
@@ -45,7 +45,8 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * This endpoint's processing time depends on the amount of data in the system,
  * thus the API call may time out if run directly.  It is recommended to run
- * this endpoint asynchronously via {@link
+ * this
+ * endpoint asynchronously via {@link
  * com.gpudb.GPUdb#createJob(CreateJobRequest)}.
  */
 public class AdminRebalanceRequest implements IndexedRecord {

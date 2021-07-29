@@ -31,6 +31,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
                 .name("authId").type().array().items().stringType().noDefault()
                 .name("sourceIp").type().array().items().stringType().noDefault()
                 .name("userData").type().array().items().stringType().noDefault()
+                .name("flags").type().array().items().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -76,6 +77,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
     private List<String> authId;
     private List<String> sourceIp;
     private List<String> userData;
+    private List<String> flags;
     private Map<String, String> info;
 
 
@@ -189,6 +191,21 @@ public class AdminShowJobsResponse implements IndexedRecord {
         this.userData = (userData == null) ? new ArrayList<String>() : userData;
         return this;
     }
+    public List<String> getFlags() {
+        return flags;
+    }
+
+    /**
+     * 
+     * @param flags
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public AdminShowJobsResponse setFlags(List<String> flags) {
+        this.flags = (flags == null) ? new ArrayList<String>() : flags;
+        return this;
+    }
 
     /**
      * 
@@ -275,6 +292,9 @@ public class AdminShowJobsResponse implements IndexedRecord {
                 return this.userData;
 
             case 7:
+                return this.flags;
+
+            case 8:
                 return this.info;
 
             default:
@@ -325,6 +345,10 @@ public class AdminShowJobsResponse implements IndexedRecord {
                 break;
 
             case 7:
+                this.flags = (List<String>)value;
+                break;
+
+            case 8:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -352,6 +376,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
                  && this.authId.equals( that.authId )
                  && this.sourceIp.equals( that.sourceIp )
                  && this.userData.equals( that.userData )
+                 && this.flags.equals( that.flags )
                  && this.info.equals( that.info ) );
     }
 
@@ -388,6 +413,10 @@ public class AdminShowJobsResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.userData ) );
         builder.append( ", " );
+        builder.append( gd.toString( "flags" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.flags ) );
+        builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.info ) );
@@ -406,6 +435,7 @@ public class AdminShowJobsResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.authId.hashCode();
         hashCode = (31 * hashCode) + this.sourceIp.hashCode();
         hashCode = (31 * hashCode) + this.userData.hashCode();
+        hashCode = (31 * hashCode) + this.flags.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

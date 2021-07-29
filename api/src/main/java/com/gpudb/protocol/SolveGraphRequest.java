@@ -28,11 +28,11 @@ import org.apache.avro.generic.IndexedRecord;
  * <a href="../../../../../../graph_solver/network_graph_solver/"
  * target="_top">Network Graphs & Solvers</a>
  * concepts documentation, the
- * <a href="../../../../../../graph_solver/examples/graph_rest_guide/"
- * target="_top">Graph REST Tutorial</a>,
+ * <a href="../../../../../../guides/graph_rest_guide/" target="_top">Graph
+ * REST Tutorial</a>,
  * and/or some
- * <a href="../../../../../../graph_solver/examples/#match-graph"
- * target="_top">/match/graph examples</a>
+ * <a href="../../../../../../guide-tags/graph-solve"
+ * target="_top">/solve/graph examples</a>
  * before using this endpoint.
  */
 public class SolveGraphRequest implements IndexedRecord {
@@ -107,6 +107,14 @@ public class SolveGraphRequest implements IndexedRecord {
      * Solves for paths that would give costs between max and min solution
      * radia - Make sure to limit by the 'max_solution_targets' option. Min
      * cost shoudl be >= shortest_path cost.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.SolverType#STATS_ALL STATS_ALL}:
+     * Solves for graph statistics such as graph diameter, longest pairs,
+     * vertex valences, topology numbers, average and max cluster sizes, etc.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.SolverType#CLOSENESS CLOSENESS}:
+     * Solves for the centrality closeness score per node as the sum of the
+     * inverse shortest path costs to all nodes in the graph.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.SolveGraphRequest.SolverType#SHORTEST_PATH
@@ -170,6 +178,19 @@ public class SolveGraphRequest implements IndexedRecord {
          */
         public static final String ALLPATHS = "ALLPATHS";
 
+        /**
+         * Solves for graph statistics such as graph diameter, longest pairs,
+         * vertex valences, topology numbers, average and max cluster sizes,
+         * etc.
+         */
+        public static final String STATS_ALL = "STATS_ALL";
+
+        /**
+         * Solves for the centrality closeness score per node as the sum of the
+         * inverse shortest path costs to all nodes in the graph.
+         */
+        public static final String CLOSENESS = "CLOSENESS";
+
         private SolverType() {  }
     }
 
@@ -179,27 +200,27 @@ public class SolveGraphRequest implements IndexedRecord {
      * <ul>
      *         <li> {@link
      * com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_RADIUS
-     * MAX_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and {@code
-     * INVERSE_SHORTEST_PATH} solvers only. Sets the maximum solution cost
-     * radius, which ignores the {@code destinationNodes} list and instead
+     * MAX_SOLUTION_RADIUS}: For {@code ALLPATHS}, {@code SHORTEST_PATH} and
+     * {@code INVERSE_SHORTEST_PATH} solvers only. Sets the maximum solution
+     * cost radius, which ignores the {@code destinationNodes} list and instead
      * outputs the nodes within the radius sorted by ascending cost. If set to
      * '0.0', the setting is ignored.  The default value is '0.0'.
      *         <li> {@link
      * com.gpudb.protocol.SolveGraphRequest.Options#MIN_SOLUTION_RADIUS
-     * MIN_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and {@code
-     * INVERSE_SHORTEST_PATH} solvers only. Applicable only when {@code
+     * MIN_SOLUTION_RADIUS}: For {@code ALLPATHS}, {@code SHORTEST_PATH} and
+     * {@code INVERSE_SHORTEST_PATH} solvers only. Applicable only when {@code
      * max_solution_radius} is set. Sets the minimum solution cost radius,
      * which ignores the {@code destinationNodes} list and instead outputs the
      * nodes within the radius sorted by ascending cost. If set to '0.0', the
      * setting is ignored.  The default value is '0.0'.
      *         <li> {@link
      * com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_TARGETS
-     * MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and {@code
-     * INVERSE_SHORTEST_PATH} solvers only. Sets the maximum number of solution
-     * targets, which ignores the {@code destinationNodes} list and instead
-     * outputs no more than n number of nodes sorted by ascending cost where n
-     * is equal to the setting value. If set to 0, the setting is ignored.  The
-     * default value is '0'.
+     * MAX_SOLUTION_TARGETS}: For {@code ALLPATHS}, {@code SHORTEST_PATH} and
+     * {@code INVERSE_SHORTEST_PATH} solvers only. Sets the maximum number of
+     * solution targets, which ignores the {@code destinationNodes} list and
+     * instead outputs no more than n number of nodes sorted by ascending cost
+     * where n is equal to the setting value. If set to 0, the setting is
+     * ignored.  The default value is '1000'.
      *         <li> {@link
      * com.gpudb.protocol.SolveGraphRequest.Options#EXPORT_SOLVE_RESULTS
      * EXPORT_SOLVE_RESULTS}: Returns solution results inside the {@code
@@ -330,6 +351,36 @@ public class SolveGraphRequest implements IndexedRecord {
      * that has the most computational bandwidth. For SHORTEST_PATH solver
      * type, the input is split amongst the server containing the corresponding
      * graph.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#CONVERGENCE_LIMIT
+     * CONVERGENCE_LIMIT}: For {@code PAGE_RANK} solvers only; Maximum percent
+     * relative threshold on the pagerank scores of each node between
+     * consecutive iterations to satisfy convergence. Default value is 1 (one)
+     * percent.  The default value is '1.0'.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#MAX_ITERATIONS
+     * MAX_ITERATIONS}: For {@code PAGE_RANK} solvers only; Maximum number of
+     * pagerank iterations for satisfying convergence. Default value is 100.
+     * The default value is '100'.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#MAX_RUNS MAX_RUNS}: For all
+     * {@code CENTRALITY} solvers only; Sets the maximum number of shortest
+     * path runs; maximum possible value is the number of nodes in the graph.
+     * Default value of 0 enables this value to be auto computed by the solver.
+     * The default value is '0'.
+     *         <li> {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_CLUSTERS
+     * OUTPUT_CLUSTERS}: For {@code STATS_ALL} solvers only; the cluster index
+     * for each node will be inserted as an additional column in the output.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.SolveGraphRequest.Options#TRUE
+     * TRUE}: An additional column 'CLUSTER' will be added for each node
+     *         <li> {@link com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     * FALSE}: No extra cluster info per node will be available in the output
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -337,31 +388,31 @@ public class SolveGraphRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * For {@code SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
-         * only. Sets the maximum solution cost radius, which ignores the
-         * {@code destinationNodes} list and instead outputs the nodes within
-         * the radius sorted by ascending cost. If set to '0.0', the setting is
-         * ignored.  The default value is '0.0'.
+         * For {@code ALLPATHS}, {@code SHORTEST_PATH} and {@code
+         * INVERSE_SHORTEST_PATH} solvers only. Sets the maximum solution cost
+         * radius, which ignores the {@code destinationNodes} list and instead
+         * outputs the nodes within the radius sorted by ascending cost. If set
+         * to '0.0', the setting is ignored.  The default value is '0.0'.
          */
         public static final String MAX_SOLUTION_RADIUS = "max_solution_radius";
 
         /**
-         * For {@code SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
-         * only. Applicable only when {@code max_solution_radius} is set. Sets
-         * the minimum solution cost radius, which ignores the {@code
-         * destinationNodes} list and instead outputs the nodes within the
-         * radius sorted by ascending cost. If set to '0.0', the setting is
-         * ignored.  The default value is '0.0'.
+         * For {@code ALLPATHS}, {@code SHORTEST_PATH} and {@code
+         * INVERSE_SHORTEST_PATH} solvers only. Applicable only when {@code
+         * max_solution_radius} is set. Sets the minimum solution cost radius,
+         * which ignores the {@code destinationNodes} list and instead outputs
+         * the nodes within the radius sorted by ascending cost. If set to
+         * '0.0', the setting is ignored.  The default value is '0.0'.
          */
         public static final String MIN_SOLUTION_RADIUS = "min_solution_radius";
 
         /**
-         * For {@code SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
-         * only. Sets the maximum number of solution targets, which ignores the
-         * {@code destinationNodes} list and instead outputs no more than n
-         * number of nodes sorted by ascending cost where n is equal to the
-         * setting value. If set to 0, the setting is ignored.  The default
-         * value is '0'.
+         * For {@code ALLPATHS}, {@code SHORTEST_PATH} and {@code
+         * INVERSE_SHORTEST_PATH} solvers only. Sets the maximum number of
+         * solution targets, which ignores the {@code destinationNodes} list
+         * and instead outputs no more than n number of nodes sorted by
+         * ascending cost where n is equal to the setting value. If set to 0,
+         * the setting is ignored.  The default value is '1000'.
          */
         public static final String MAX_SOLUTION_TARGETS = "max_solution_targets";
 
@@ -379,7 +430,15 @@ public class SolveGraphRequest implements IndexedRecord {
          * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
          */
         public static final String EXPORT_SOLVE_RESULTS = "export_solve_results";
+
+        /**
+         * An additional column 'CLUSTER' will be added for each node
+         */
         public static final String TRUE = "true";
+
+        /**
+         * No extra cluster info per node will be available in the output
+         */
         public static final String FALSE = "false";
 
         /**
@@ -525,6 +584,46 @@ public class SolveGraphRequest implements IndexedRecord {
          */
         public static final String SERVER_ID = "server_id";
 
+        /**
+         * For {@code PAGE_RANK} solvers only; Maximum percent relative
+         * threshold on the pagerank scores of each node between consecutive
+         * iterations to satisfy convergence. Default value is 1 (one) percent.
+         * The default value is '1.0'.
+         */
+        public static final String CONVERGENCE_LIMIT = "convergence_limit";
+
+        /**
+         * For {@code PAGE_RANK} solvers only; Maximum number of pagerank
+         * iterations for satisfying convergence. Default value is 100.  The
+         * default value is '100'.
+         */
+        public static final String MAX_ITERATIONS = "max_iterations";
+
+        /**
+         * For all {@code CENTRALITY} solvers only; Sets the maximum number of
+         * shortest path runs; maximum possible value is the number of nodes in
+         * the graph. Default value of 0 enables this value to be auto computed
+         * by the solver.  The default value is '0'.
+         */
+        public static final String MAX_RUNS = "max_runs";
+
+        /**
+         * For {@code STATS_ALL} solvers only; the cluster index for each node
+         * will be inserted as an additional column in the output.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}: An
+         * additional column 'CLUSTER' will be added for each node
+         *         <li> {@link
+         * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}: No extra
+         * cluster info per node will be available in the output
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
+         */
+        public static final String OUTPUT_CLUSTERS = "output_clusters";
+
         private Options() {  }
     }
 
@@ -665,6 +764,16 @@ public class SolveGraphRequest implements IndexedRecord {
      *                    between max and min solution radia - Make sure to
      *                    limit by the 'max_solution_targets' option. Min cost
      *                    shoudl be >= shortest_path cost.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.SolveGraphRequest.SolverType#STATS_ALL
+     *                    STATS_ALL}: Solves for graph statistics such as graph
+     *                    diameter, longest pairs, vertex valences, topology
+     *                    numbers, average and max cluster sizes, etc.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.SolveGraphRequest.SolverType#CLOSENESS
+     *                    CLOSENESS}: Solves for the centrality closeness score
+     *                    per node as the sum of the inverse shortest path
+     *                    costs to all nodes in the graph.
      *                    </ul>
      *                    The default value is {@link
      *                    com.gpudb.protocol.SolveGraphRequest.SolverType#SHORTEST_PATH
@@ -687,32 +796,33 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_RADIUS
-     *                 MAX_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and
-     *                 {@code INVERSE_SHORTEST_PATH} solvers only. Sets the
-     *                 maximum solution cost radius, which ignores the {@code
-     *                 destinationNodes} list and instead outputs the nodes
-     *                 within the radius sorted by ascending cost. If set to
-     *                 '0.0', the setting is ignored.  The default value is
-     *                 '0.0'.
+     *                 MAX_SOLUTION_RADIUS}: For {@code ALLPATHS}, {@code
+     *                 SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
+     *                 only. Sets the maximum solution cost radius, which
+     *                 ignores the {@code destinationNodes} list and instead
+     *                 outputs the nodes within the radius sorted by ascending
+     *                 cost. If set to '0.0', the setting is ignored.  The
+     *                 default value is '0.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#MIN_SOLUTION_RADIUS
-     *                 MIN_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and
-     *                 {@code INVERSE_SHORTEST_PATH} solvers only. Applicable
-     *                 only when {@code max_solution_radius} is set. Sets the
-     *                 minimum solution cost radius, which ignores the {@code
-     *                 destinationNodes} list and instead outputs the nodes
-     *                 within the radius sorted by ascending cost. If set to
-     *                 '0.0', the setting is ignored.  The default value is
-     *                 '0.0'.
+     *                 MIN_SOLUTION_RADIUS}: For {@code ALLPATHS}, {@code
+     *                 SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
+     *                 only. Applicable only when {@code max_solution_radius}
+     *                 is set. Sets the minimum solution cost radius, which
+     *                 ignores the {@code destinationNodes} list and instead
+     *                 outputs the nodes within the radius sorted by ascending
+     *                 cost. If set to '0.0', the setting is ignored.  The
+     *                 default value is '0.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_TARGETS
-     *                 MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and
-     *                 {@code INVERSE_SHORTEST_PATH} solvers only. Sets the
-     *                 maximum number of solution targets, which ignores the
-     *                 {@code destinationNodes} list and instead outputs no
-     *                 more than n number of nodes sorted by ascending cost
-     *                 where n is equal to the setting value. If set to 0, the
-     *                 setting is ignored.  The default value is '0'.
+     *                 MAX_SOLUTION_TARGETS}: For {@code ALLPATHS}, {@code
+     *                 SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
+     *                 only. Sets the maximum number of solution targets, which
+     *                 ignores the {@code destinationNodes} list and instead
+     *                 outputs no more than n number of nodes sorted by
+     *                 ascending cost where n is equal to the setting value. If
+     *                 set to 0, the setting is ignored.  The default value is
+     *                 '1000'.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#EXPORT_SOLVE_RESULTS
      *                 EXPORT_SOLVE_RESULTS}: Returns solution results inside
@@ -869,6 +979,45 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 most computational bandwidth. For SHORTEST_PATH solver
      *                 type, the input is split amongst the server containing
      *                 the corresponding graph.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#CONVERGENCE_LIMIT
+     *                 CONVERGENCE_LIMIT}: For {@code PAGE_RANK} solvers only;
+     *                 Maximum percent relative threshold on the pagerank
+     *                 scores of each node between consecutive iterations to
+     *                 satisfy convergence. Default value is 1 (one) percent.
+     *                 The default value is '1.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_ITERATIONS
+     *                 MAX_ITERATIONS}: For {@code PAGE_RANK} solvers only;
+     *                 Maximum number of pagerank iterations for satisfying
+     *                 convergence. Default value is 100.  The default value is
+     *                 '100'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_RUNS
+     *                 MAX_RUNS}: For all {@code CENTRALITY} solvers only; Sets
+     *                 the maximum number of shortest path runs; maximum
+     *                 possible value is the number of nodes in the graph.
+     *                 Default value of 0 enables this value to be auto
+     *                 computed by the solver.  The default value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_CLUSTERS
+     *                 OUTPUT_CLUSTERS}: For {@code STATS_ALL} solvers only;
+     *                 the cluster index for each node will be inserted as an
+     *                 additional column in the output.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}:
+     *                 An additional column 'CLUSTER' will be added for each
+     *                 node
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     *                 FALSE}: No extra cluster info per node will be available
+     *                 in the output
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -1097,6 +1246,16 @@ public class SolveGraphRequest implements IndexedRecord {
      *         and min solution radia - Make sure to limit by the
      *         'max_solution_targets' option. Min cost shoudl be >=
      *         shortest_path cost.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.SolverType#STATS_ALL
+     *         STATS_ALL}: Solves for graph statistics such as graph diameter,
+     *         longest pairs, vertex valences, topology numbers, average and
+     *         max cluster sizes, etc.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.SolverType#CLOSENESS
+     *         CLOSENESS}: Solves for the centrality closeness score per node
+     *         as the sum of the inverse shortest path costs to all nodes in
+     *         the graph.
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.SolveGraphRequest.SolverType#SHORTEST_PATH
@@ -1159,6 +1318,16 @@ public class SolveGraphRequest implements IndexedRecord {
      *                    between max and min solution radia - Make sure to
      *                    limit by the 'max_solution_targets' option. Min cost
      *                    shoudl be >= shortest_path cost.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.SolveGraphRequest.SolverType#STATS_ALL
+     *                    STATS_ALL}: Solves for graph statistics such as graph
+     *                    diameter, longest pairs, vertex valences, topology
+     *                    numbers, average and max cluster sizes, etc.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.SolveGraphRequest.SolverType#CLOSENESS
+     *                    CLOSENESS}: Solves for the centrality closeness score
+     *                    per node as the sum of the inverse shortest path
+     *                    costs to all nodes in the graph.
      *                    </ul>
      *                    The default value is {@link
      *                    com.gpudb.protocol.SolveGraphRequest.SolverType#SHORTEST_PATH
@@ -1262,29 +1431,30 @@ public class SolveGraphRequest implements IndexedRecord {
      *         <ul>
      *                 <li> {@link
      *         com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_RADIUS
-     *         MAX_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and {@code
-     *         INVERSE_SHORTEST_PATH} solvers only. Sets the maximum solution
-     *         cost radius, which ignores the {@code destinationNodes} list and
-     *         instead outputs the nodes within the radius sorted by ascending
-     *         cost. If set to '0.0', the setting is ignored.  The default
-     *         value is '0.0'.
+     *         MAX_SOLUTION_RADIUS}: For {@code ALLPATHS}, {@code
+     *         SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers only.
+     *         Sets the maximum solution cost radius, which ignores the {@code
+     *         destinationNodes} list and instead outputs the nodes within the
+     *         radius sorted by ascending cost. If set to '0.0', the setting is
+     *         ignored.  The default value is '0.0'.
      *                 <li> {@link
      *         com.gpudb.protocol.SolveGraphRequest.Options#MIN_SOLUTION_RADIUS
-     *         MIN_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and {@code
-     *         INVERSE_SHORTEST_PATH} solvers only. Applicable only when {@code
-     *         max_solution_radius} is set. Sets the minimum solution cost
-     *         radius, which ignores the {@code destinationNodes} list and
-     *         instead outputs the nodes within the radius sorted by ascending
-     *         cost. If set to '0.0', the setting is ignored.  The default
-     *         value is '0.0'.
+     *         MIN_SOLUTION_RADIUS}: For {@code ALLPATHS}, {@code
+     *         SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers only.
+     *         Applicable only when {@code max_solution_radius} is set. Sets
+     *         the minimum solution cost radius, which ignores the {@code
+     *         destinationNodes} list and instead outputs the nodes within the
+     *         radius sorted by ascending cost. If set to '0.0', the setting is
+     *         ignored.  The default value is '0.0'.
      *                 <li> {@link
      *         com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_TARGETS
-     *         MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and {@code
-     *         INVERSE_SHORTEST_PATH} solvers only. Sets the maximum number of
-     *         solution targets, which ignores the {@code destinationNodes}
-     *         list and instead outputs no more than n number of nodes sorted
-     *         by ascending cost where n is equal to the setting value. If set
-     *         to 0, the setting is ignored.  The default value is '0'.
+     *         MAX_SOLUTION_TARGETS}: For {@code ALLPATHS}, {@code
+     *         SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers only.
+     *         Sets the maximum number of solution targets, which ignores the
+     *         {@code destinationNodes} list and instead outputs no more than n
+     *         number of nodes sorted by ascending cost where n is equal to the
+     *         setting value. If set to 0, the setting is ignored.  The default
+     *         value is '1000'.
      *                 <li> {@link
      *         com.gpudb.protocol.SolveGraphRequest.Options#EXPORT_SOLVE_RESULTS
      *         EXPORT_SOLVE_RESULTS}: Returns solution results inside the
@@ -1422,6 +1592,39 @@ public class SolveGraphRequest implements IndexedRecord {
      *         the corresponding graph, that has the most computational
      *         bandwidth. For SHORTEST_PATH solver type, the input is split
      *         amongst the server containing the corresponding graph.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#CONVERGENCE_LIMIT
+     *         CONVERGENCE_LIMIT}: For {@code PAGE_RANK} solvers only; Maximum
+     *         percent relative threshold on the pagerank scores of each node
+     *         between consecutive iterations to satisfy convergence. Default
+     *         value is 1 (one) percent.  The default value is '1.0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#MAX_ITERATIONS
+     *         MAX_ITERATIONS}: For {@code PAGE_RANK} solvers only; Maximum
+     *         number of pagerank iterations for satisfying convergence.
+     *         Default value is 100.  The default value is '100'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#MAX_RUNS MAX_RUNS}:
+     *         For all {@code CENTRALITY} solvers only; Sets the maximum number
+     *         of shortest path runs; maximum possible value is the number of
+     *         nodes in the graph. Default value of 0 enables this value to be
+     *         auto computed by the solver.  The default value is '0'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_CLUSTERS
+     *         OUTPUT_CLUSTERS}: For {@code STATS_ALL} solvers only; the
+     *         cluster index for each node will be inserted as an additional
+     *         column in the output.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}: An
+     *         additional column 'CLUSTER' will be added for each node
+     *                 <li> {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}: No
+     *         extra cluster info per node will be available in the output
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.SolveGraphRequest.Options#FALSE FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1436,32 +1639,33 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_RADIUS
-     *                 MAX_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and
-     *                 {@code INVERSE_SHORTEST_PATH} solvers only. Sets the
-     *                 maximum solution cost radius, which ignores the {@code
-     *                 destinationNodes} list and instead outputs the nodes
-     *                 within the radius sorted by ascending cost. If set to
-     *                 '0.0', the setting is ignored.  The default value is
-     *                 '0.0'.
+     *                 MAX_SOLUTION_RADIUS}: For {@code ALLPATHS}, {@code
+     *                 SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
+     *                 only. Sets the maximum solution cost radius, which
+     *                 ignores the {@code destinationNodes} list and instead
+     *                 outputs the nodes within the radius sorted by ascending
+     *                 cost. If set to '0.0', the setting is ignored.  The
+     *                 default value is '0.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#MIN_SOLUTION_RADIUS
-     *                 MIN_SOLUTION_RADIUS}: For {@code SHORTEST_PATH} and
-     *                 {@code INVERSE_SHORTEST_PATH} solvers only. Applicable
-     *                 only when {@code max_solution_radius} is set. Sets the
-     *                 minimum solution cost radius, which ignores the {@code
-     *                 destinationNodes} list and instead outputs the nodes
-     *                 within the radius sorted by ascending cost. If set to
-     *                 '0.0', the setting is ignored.  The default value is
-     *                 '0.0'.
+     *                 MIN_SOLUTION_RADIUS}: For {@code ALLPATHS}, {@code
+     *                 SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
+     *                 only. Applicable only when {@code max_solution_radius}
+     *                 is set. Sets the minimum solution cost radius, which
+     *                 ignores the {@code destinationNodes} list and instead
+     *                 outputs the nodes within the radius sorted by ascending
+     *                 cost. If set to '0.0', the setting is ignored.  The
+     *                 default value is '0.0'.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_SOLUTION_TARGETS
-     *                 MAX_SOLUTION_TARGETS}: For {@code SHORTEST_PATH} and
-     *                 {@code INVERSE_SHORTEST_PATH} solvers only. Sets the
-     *                 maximum number of solution targets, which ignores the
-     *                 {@code destinationNodes} list and instead outputs no
-     *                 more than n number of nodes sorted by ascending cost
-     *                 where n is equal to the setting value. If set to 0, the
-     *                 setting is ignored.  The default value is '0'.
+     *                 MAX_SOLUTION_TARGETS}: For {@code ALLPATHS}, {@code
+     *                 SHORTEST_PATH} and {@code INVERSE_SHORTEST_PATH} solvers
+     *                 only. Sets the maximum number of solution targets, which
+     *                 ignores the {@code destinationNodes} list and instead
+     *                 outputs no more than n number of nodes sorted by
+     *                 ascending cost where n is equal to the setting value. If
+     *                 set to 0, the setting is ignored.  The default value is
+     *                 '1000'.
      *                         <li> {@link
      *                 com.gpudb.protocol.SolveGraphRequest.Options#EXPORT_SOLVE_RESULTS
      *                 EXPORT_SOLVE_RESULTS}: Returns solution results inside
@@ -1618,6 +1822,45 @@ public class SolveGraphRequest implements IndexedRecord {
      *                 most computational bandwidth. For SHORTEST_PATH solver
      *                 type, the input is split amongst the server containing
      *                 the corresponding graph.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#CONVERGENCE_LIMIT
+     *                 CONVERGENCE_LIMIT}: For {@code PAGE_RANK} solvers only;
+     *                 Maximum percent relative threshold on the pagerank
+     *                 scores of each node between consecutive iterations to
+     *                 satisfy convergence. Default value is 1 (one) percent.
+     *                 The default value is '1.0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_ITERATIONS
+     *                 MAX_ITERATIONS}: For {@code PAGE_RANK} solvers only;
+     *                 Maximum number of pagerank iterations for satisfying
+     *                 convergence. Default value is 100.  The default value is
+     *                 '100'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#MAX_RUNS
+     *                 MAX_RUNS}: For all {@code CENTRALITY} solvers only; Sets
+     *                 the maximum number of shortest path runs; maximum
+     *                 possible value is the number of nodes in the graph.
+     *                 Default value of 0 enables this value to be auto
+     *                 computed by the solver.  The default value is '0'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#OUTPUT_CLUSTERS
+     *                 OUTPUT_CLUSTERS}: For {@code STATS_ALL} solvers only;
+     *                 the cluster index for each node will be inserted as an
+     *                 additional column in the output.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#TRUE TRUE}:
+     *                 An additional column 'CLUSTER' will be added for each
+     *                 node
+     *                         <li> {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     *                 FALSE}: No extra cluster info per node will be available
+     *                 in the output
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.SolveGraphRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
