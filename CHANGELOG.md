@@ -2,7 +2,7 @@
 
 ## Version 7.1
 
-### Version 7.1.4.0 - TBD
+### Version 7.1.4.0 - 2021-07-29
 
 #### Added
 -   Introduced a new API for facilitating uploading and downloading of files
@@ -10,12 +10,6 @@
     A complete example has been given in the `gpudb-api-example` project in the
     class `GPUdbFileHandlerExample`.
 -   Introduced the capability to upload Parquet files.
-
-#### Changed
--   xxx
-
-#### Fixed
--   xxx
 
 #### Notes
 -   Check CHANGELOG-FUNCTIONS.md for endpoint related changes.
