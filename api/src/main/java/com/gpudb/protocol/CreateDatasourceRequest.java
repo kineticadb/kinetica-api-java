@@ -135,6 +135,30 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#KAFKA_TOPIC_NAME
      * KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the data source
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#ANONYMOUS ANONYMOUS}:
+     * Use anonymous connection to storage provider
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#USE_HTTPS USE_HTTPS}:
+     * Use https to connect to datasource if true, otherwise use http
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -257,6 +281,34 @@ public class CreateDatasourceRequest implements IndexedRecord {
          * Name of the Kafka topic to use as the data source
          */
         public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
+
+        /**
+         * Use anonymous connection to storage provider
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}.
+         */
+        public static final String ANONYMOUS = "anonymous";
+
+        /**
+         * Use https to connect to datasource if true, otherwise use http
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}.
+         */
+        public static final String USE_HTTPS = "use_https";
 
         private Options() {  }
     }
@@ -399,6 +451,37 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#KAFKA_TOPIC_NAME
      *                 KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the
      *                 data source
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#ANONYMOUS
+     *                 ANONYMOUS}: Use anonymous connection to storage provider
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#USE_HTTPS
+     *                 USE_HTTPS}: Use https to connect to datasource if true,
+     *                 otherwise use http
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -598,6 +681,31 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#KAFKA_TOPIC_NAME
      *         KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the data
      *         source
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#ANONYMOUS
+     *         ANONYMOUS}: Use anonymous connection to storage provider
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#USE_HTTPS
+     *         USE_HTTPS}: Use https to connect to datasource if true,
+     *         otherwise use http
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -716,6 +824,37 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#KAFKA_TOPIC_NAME
      *                 KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the
      *                 data source
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#ANONYMOUS
+     *                 ANONYMOUS}: Use anonymous connection to storage provider
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#USE_HTTPS
+     *                 USE_HTTPS}: Use https to connect to datasource if true,
+     *                 otherwise use http
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

@@ -144,6 +144,37 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_TOPIC_NAME
      * KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the data source
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#ANONYMOUS
+     * ANONYMOUS}: Create an anonymous connection to the storage provider
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     * FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#USE_HTTPS
+     * USE_HTTPS}: Use https to connect to datasource if true, otherwise use
+     * http
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     * TRUE}.
      * </ul>
      * A set of string constants for the parameter {@code
      * datasourceUpdatesMap}.
@@ -282,6 +313,40 @@ public class AlterDatasourceRequest implements IndexedRecord {
          * Name of the Kafka topic to use as the data source
          */
         public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
+
+        /**
+         * Create an anonymous connection to the storage provider
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+         * FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+         * FALSE}.
+         */
+        public static final String ANONYMOUS = "anonymous";
+
+        /**
+         * Use https to connect to datasource if true, otherwise use http
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+         * FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+         * TRUE}.
+         */
+        public static final String USE_HTTPS = "use_https";
 
         private DatasourceUpdatesMap() {  }
     }
@@ -422,6 +487,38 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_TOPIC_NAME
      *                              KAFKA_TOPIC_NAME}: Name of the Kafka topic
      *                              to use as the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#ANONYMOUS
+     *                              ANONYMOUS}: Create an anonymous connection
+     *                              to the storage provider
+     *                              Supported values:
+     *                              <ul>
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                              TRUE}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *                              FALSE}
+     *                              </ul>
+     *                              The default value is {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *                              FALSE}.
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#USE_HTTPS
+     *                              USE_HTTPS}: Use https to connect to
+     *                              datasource if true, otherwise use http
+     *                              Supported values:
+     *                              <ul>
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                              TRUE}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *                              FALSE}
+     *                              </ul>
+     *                              The default value is {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                              TRUE}.
      *                              </ul>
      * @param options  Optional parameters.
      * 
@@ -564,6 +661,38 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_TOPIC_NAME
      *         KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the data
      *         source
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#ANONYMOUS
+     *         ANONYMOUS}: Create an anonymous connection to the storage
+     *         provider
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *         FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#USE_HTTPS
+     *         USE_HTTPS}: Use https to connect to datasource if true,
+     *         otherwise use http
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *         TRUE}.
      *         </ul>
      * 
      */
@@ -689,6 +818,38 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_TOPIC_NAME
      *                              KAFKA_TOPIC_NAME}: Name of the Kafka topic
      *                              to use as the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#ANONYMOUS
+     *                              ANONYMOUS}: Create an anonymous connection
+     *                              to the storage provider
+     *                              Supported values:
+     *                              <ul>
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                              TRUE}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *                              FALSE}
+     *                              </ul>
+     *                              The default value is {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *                              FALSE}.
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#USE_HTTPS
+     *                              USE_HTTPS}: Use https to connect to
+     *                              datasource if true, otherwise use http
+     *                              Supported values:
+     *                              <ul>
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                              TRUE}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *                              FALSE}
+     *                              </ul>
+     *                              The default value is {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                              TRUE}.
      *                              </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

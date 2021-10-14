@@ -127,12 +127,12 @@ public class UploadFilesRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *         <li> {@link com.gpudb.protocol.UploadFilesRequest.Options#NONE
-     * NONE}
+     * NONE}: Default, indicates this is not a multipart upload
      *         <li> {@link com.gpudb.protocol.UploadFilesRequest.Options#INIT
      * INIT}: Initialize a multipart file upload
      *         <li> {@link
      * com.gpudb.protocol.UploadFilesRequest.Options#UPLOAD_PART UPLOAD_PART}:
-     * Upload one or more parts of the specified multipart file upload
+     * Uploads a part of the specified multipart file upload
      *         <li> {@link
      * com.gpudb.protocol.UploadFilesRequest.Options#COMPLETE COMPLETE}:
      * Complete the specified multipart file upload
@@ -181,6 +181,10 @@ public class UploadFilesRequest implements IndexedRecord {
          * Specifies that the file data being uploaded has been base64 encoded.
          */
         public static final String BASE64 = "base64";
+
+        /**
+         * Default, indicates this is not a multipart upload
+         */
         public static final String NONE = "none";
 
         /**
@@ -188,14 +192,14 @@ public class UploadFilesRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *         <li> {@link
-         * com.gpudb.protocol.UploadFilesRequest.Options#NONE NONE}
+         * com.gpudb.protocol.UploadFilesRequest.Options#NONE NONE}: Default,
+         * indicates this is not a multipart upload
          *         <li> {@link
          * com.gpudb.protocol.UploadFilesRequest.Options#INIT INIT}: Initialize
          * a multipart file upload
          *         <li> {@link
          * com.gpudb.protocol.UploadFilesRequest.Options#UPLOAD_PART
-         * UPLOAD_PART}: Upload one or more parts of the specified multipart
-         * file upload
+         * UPLOAD_PART}: Uploads a part of the specified multipart file upload
          *         <li> {@link
          * com.gpudb.protocol.UploadFilesRequest.Options#COMPLETE COMPLETE}:
          * Complete the specified multipart file upload
@@ -214,7 +218,7 @@ public class UploadFilesRequest implements IndexedRecord {
         public static final String INIT = "init";
 
         /**
-         * Upload one or more parts of the specified multipart file upload
+         * Uploads a part of the specified multipart file upload
          */
         public static final String UPLOAD_PART = "upload_part";
 
@@ -302,14 +306,15 @@ public class UploadFilesRequest implements IndexedRecord {
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.UploadFilesRequest.Options#NONE NONE}
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#NONE
+     *                 NONE}: Default, indicates this is not a multipart upload
      *                         <li> {@link
      *                 com.gpudb.protocol.UploadFilesRequest.Options#INIT
      *                 INIT}: Initialize a multipart file upload
      *                         <li> {@link
      *                 com.gpudb.protocol.UploadFilesRequest.Options#UPLOAD_PART
-     *                 UPLOAD_PART}: Upload one or more parts of the specified
-     *                 multipart file upload
+     *                 UPLOAD_PART}: Uploads a part of the specified multipart
+     *                 file upload
      *                         <li> {@link
      *                 com.gpudb.protocol.UploadFilesRequest.Options#COMPLETE
      *                 COMPLETE}: Complete the specified multipart file upload
@@ -429,14 +434,15 @@ public class UploadFilesRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.UploadFilesRequest.Options#NONE NONE}
+     *         com.gpudb.protocol.UploadFilesRequest.Options#NONE NONE}:
+     *         Default, indicates this is not a multipart upload
      *                 <li> {@link
      *         com.gpudb.protocol.UploadFilesRequest.Options#INIT INIT}:
      *         Initialize a multipart file upload
      *                 <li> {@link
      *         com.gpudb.protocol.UploadFilesRequest.Options#UPLOAD_PART
-     *         UPLOAD_PART}: Upload one or more parts of the specified
-     *         multipart file upload
+     *         UPLOAD_PART}: Uploads a part of the specified multipart file
+     *         upload
      *                 <li> {@link
      *         com.gpudb.protocol.UploadFilesRequest.Options#COMPLETE
      *         COMPLETE}: Complete the specified multipart file upload
@@ -497,14 +503,15 @@ public class UploadFilesRequest implements IndexedRecord {
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.UploadFilesRequest.Options#NONE NONE}
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#NONE
+     *                 NONE}: Default, indicates this is not a multipart upload
      *                         <li> {@link
      *                 com.gpudb.protocol.UploadFilesRequest.Options#INIT
      *                 INIT}: Initialize a multipart file upload
      *                         <li> {@link
      *                 com.gpudb.protocol.UploadFilesRequest.Options#UPLOAD_PART
-     *                 UPLOAD_PART}: Upload one or more parts of the specified
-     *                 multipart file upload
+     *                 UPLOAD_PART}: Uploads a part of the specified multipart
+     *                 file upload
      *                         <li> {@link
      *                 com.gpudb.protocol.UploadFilesRequest.Options#COMPLETE
      *                 COMPLETE}: Complete the specified multipart file upload

@@ -15,14 +15,13 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of parameters for {@link
- * com.gpudb.GPUdb#hasPermission(HasPermissionRequest)}.
+ * com.gpudb.GPUdb#grantPermission(GrantPermissionRequest)}.
  * <p>
- * Checks if the specified user has the specified permission on the specified
- * object.
+ * Grant user or role the specified permission on the specified object.
  */
-public class HasPermissionRequest implements IndexedRecord {
+public class GrantPermissionRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("HasPermissionRequest")
+            .record("GrantPermissionRequest")
             .namespace("com.gpudb")
             .fields()
                 .name("principal").type().stringType().noDefault()
@@ -46,38 +45,38 @@ public class HasPermissionRequest implements IndexedRecord {
 
 
     /**
-     * The type of object being checked
+     * The type of object being granted to
      * Supported values:
      * <ul>
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.ObjectType#CREDENTIAL
+     * com.gpudb.protocol.GrantPermissionRequest.ObjectType#CREDENTIAL
      * CREDENTIAL}: Credential
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.ObjectType#DATASINK DATASINK}:
+     * com.gpudb.protocol.GrantPermissionRequest.ObjectType#DATASINK DATASINK}:
      * Data Sink
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.ObjectType#DATASOURCE
+     * com.gpudb.protocol.GrantPermissionRequest.ObjectType#DATASOURCE
      * DATASOURCE}: Data Source
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.ObjectType#DIRECTORY DIRECTORY}:
-     * KiFS File Directory
+     * com.gpudb.protocol.GrantPermissionRequest.ObjectType#DIRECTORY
+     * DIRECTORY}: KIFS File Directory
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.ObjectType#GRAPH GRAPH}: A Graph
-     * object
+     * com.gpudb.protocol.GrantPermissionRequest.ObjectType#GRAPH GRAPH}: A
+     * Graph object
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.ObjectType#PROC PROC}: UDF
+     * com.gpudb.protocol.GrantPermissionRequest.ObjectType#PROC PROC}: UDF
      * Procedure
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.ObjectType#SCHEMA SCHEMA}:
+     * com.gpudb.protocol.GrantPermissionRequest.ObjectType#SCHEMA SCHEMA}:
      * Schema
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.ObjectType#SQL_PROC SQL_PROC}:
+     * com.gpudb.protocol.GrantPermissionRequest.ObjectType#SQL_PROC SQL_PROC}:
      * SQL Procedure
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.ObjectType#SYSTEM SYSTEM}:
+     * com.gpudb.protocol.GrantPermissionRequest.ObjectType#SYSTEM SYSTEM}:
      * System-level access
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.ObjectType#TABLE TABLE}:
+     * com.gpudb.protocol.GrantPermissionRequest.ObjectType#TABLE TABLE}:
      * Database Table
      * </ul>
      * A set of string constants for the parameter {@code objectType}.
@@ -100,7 +99,7 @@ public class HasPermissionRequest implements IndexedRecord {
         public static final String DATASOURCE = "datasource";
 
         /**
-         * KiFS File Directory
+         * KIFS File Directory
          */
         public static final String DIRECTORY = "directory";
 
@@ -139,37 +138,37 @@ public class HasPermissionRequest implements IndexedRecord {
 
 
     /**
-     * Permission to check for.
+     * Permission being granted.
      * Supported values:
      * <ul>
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.Permission#ADMIN ADMIN}: Full
+     * com.gpudb.protocol.GrantPermissionRequest.Permission#ADMIN ADMIN}: Full
      * read/write and administrative access on the object.
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.Permission#CONNECT CONNECT}:
+     * com.gpudb.protocol.GrantPermissionRequest.Permission#CONNECT CONNECT}:
      * Connect access on the given data source or data sink.
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.Permission#DELETE DELETE}:
+     * com.gpudb.protocol.GrantPermissionRequest.Permission#DELETE DELETE}:
      * Delete rows from tables.
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.Permission#EXECUTE EXECUTE}:
+     * com.gpudb.protocol.GrantPermissionRequest.Permission#EXECUTE EXECUTE}:
      * Ability to Execute the Procedure object.
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.Permission#INSERT INSERT}:
+     * com.gpudb.protocol.GrantPermissionRequest.Permission#INSERT INSERT}:
      * Insert access to tables.
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.Permission#READ READ}: Ability
+     * com.gpudb.protocol.GrantPermissionRequest.Permission#READ READ}: Ability
      * to read, list and use the object.
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.Permission#UPDATE UPDATE}:
+     * com.gpudb.protocol.GrantPermissionRequest.Permission#UPDATE UPDATE}:
      * Update access to the table.
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.Permission#USER_ADMIN
+     * com.gpudb.protocol.GrantPermissionRequest.Permission#USER_ADMIN
      * USER_ADMIN}: Access to administer users and roles that do not have
      * system_admin permission.
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.Permission#WRITE WRITE}: Access
-     * to write, change and delete objects.
+     * com.gpudb.protocol.GrantPermissionRequest.Permission#WRITE WRITE}:
+     * Access to write, change and delete objects.
      * </ul>
      * A set of string constants for the parameter {@code permission}.
      */
@@ -229,19 +228,14 @@ public class HasPermissionRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.Options#NO_ERROR_IF_NOT_EXISTS
-     * NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an error if the
-     * provided {@code object} does not exist or is blank. If {@code true} then
-     * it will return {@code false} for {@code hasPermission}.
-     * Supported values:
-     * <ul>
-     *         <li> {@link com.gpudb.protocol.HasPermissionRequest.Options#TRUE
-     * TRUE}
+     * com.gpudb.protocol.GrantPermissionRequest.Options#COLUMNS COLUMNS}:
+     * Apply table security to these columns, comma-separated.  The default
+     * value is ''.
      *         <li> {@link
-     * com.gpudb.protocol.HasPermissionRequest.Options#FALSE FALSE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.HasPermissionRequest.Options#FALSE FALSE}.
+     * com.gpudb.protocol.GrantPermissionRequest.Options#FILTER_EXPRESSION
+     * FILTER_EXPRESSION}: Optional filter expression to apply to this grant.
+     * Only rows that match the filter will be affected.  The default value is
+     * ''.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -249,22 +243,16 @@ public class HasPermissionRequest implements IndexedRecord {
     public static final class Options {
 
         /**
-         * If {@code false} will return an error if the provided {@code object}
-         * does not exist or is blank. If {@code true} then it will return
-         * {@code false} for {@code hasPermission}.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.HasPermissionRequest.Options#TRUE TRUE}
-         *         <li> {@link
-         * com.gpudb.protocol.HasPermissionRequest.Options#FALSE FALSE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.HasPermissionRequest.Options#FALSE FALSE}.
+         * Apply table security to these columns, comma-separated.  The default
+         * value is ''.
          */
-        public static final String NO_ERROR_IF_NOT_EXISTS = "no_error_if_not_exists";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
+        public static final String COLUMNS = "columns";
+
+        /**
+         * Optional filter expression to apply to this grant.  Only rows that
+         * match the filter will be affected.  The default value is ''.
+         */
+        public static final String FILTER_EXPRESSION = "filter_expression";
 
         private Options() {  }
     }
@@ -277,9 +265,9 @@ public class HasPermissionRequest implements IndexedRecord {
 
 
     /**
-     * Constructs a HasPermissionRequest object with default parameters.
+     * Constructs a GrantPermissionRequest object with default parameters.
      */
-    public HasPermissionRequest() {
+    public GrantPermissionRequest() {
         principal = "";
         object = "";
         objectType = "";
@@ -288,107 +276,98 @@ public class HasPermissionRequest implements IndexedRecord {
     }
 
     /**
-     * Constructs a HasPermissionRequest object with the specified parameters.
+     * Constructs a GrantPermissionRequest object with the specified
+     * parameters.
      * 
-     * @param principal  Name of the user for which the permission is being
-     *                   checked. Must be an existing user. If blank, will use
-     *                   the current user.  The default value is ''.
-     * @param object  Name of object to check for the requested permission.  It
-     *                is recommended to use a fully-qualified name when
-     *                possible.
-     * @param objectType  The type of object being checked
+     * @param principal  Name of the user or role for which the permission is
+     *                   being granted.  Must be an existing user or role.  The
+     *                   default value is ''.
+     * @param object  Name of object permission is being granted to.  It is
+     *                recommended to use a fully-qualified name when possible.
+     * @param objectType  The type of object being granted to
      *                    Supported values:
      *                    <ul>
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#CREDENTIAL
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#CREDENTIAL
      *                    CREDENTIAL}: Credential
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#DATASINK
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#DATASINK
      *                    DATASINK}: Data Sink
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#DATASOURCE
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#DATASOURCE
      *                    DATASOURCE}: Data Source
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#DIRECTORY
-     *                    DIRECTORY}: KiFS File Directory
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#DIRECTORY
+     *                    DIRECTORY}: KIFS File Directory
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#GRAPH
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#GRAPH
      *                    GRAPH}: A Graph object
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#PROC
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#PROC
      *                    PROC}: UDF Procedure
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#SCHEMA
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#SCHEMA
      *                    SCHEMA}: Schema
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#SQL_PROC
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#SQL_PROC
      *                    SQL_PROC}: SQL Procedure
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#SYSTEM
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#SYSTEM
      *                    SYSTEM}: System-level access
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#TABLE
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#TABLE
      *                    TABLE}: Database Table
      *                    </ul>
-     * @param permission  Permission to check for.
+     * @param permission  Permission being granted.
      *                    Supported values:
      *                    <ul>
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#ADMIN
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#ADMIN
      *                    ADMIN}: Full read/write and administrative access on
      *                    the object.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#CONNECT
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#CONNECT
      *                    CONNECT}: Connect access on the given data source or
      *                    data sink.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#DELETE
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#DELETE
      *                    DELETE}: Delete rows from tables.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#EXECUTE
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#EXECUTE
      *                    EXECUTE}: Ability to Execute the Procedure object.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#INSERT
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#INSERT
      *                    INSERT}: Insert access to tables.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#READ
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#READ
      *                    READ}: Ability to read, list and use the object.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#UPDATE
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#UPDATE
      *                    UPDATE}: Update access to the table.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#USER_ADMIN
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#USER_ADMIN
      *                    USER_ADMIN}: Access to administer users and roles
      *                    that do not have system_admin permission.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#WRITE
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#WRITE
      *                    WRITE}: Access to write, change and delete objects.
      *                    </ul>
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.HasPermissionRequest.Options#NO_ERROR_IF_NOT_EXISTS
-     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an
-     *                 error if the provided {@code object} does not exist or
-     *                 is blank. If {@code true} then it will return {@code
-     *                 false} for {@code hasPermission}.
-     *                 Supported values:
-     *                 <ul>
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#COLUMNS
+     *                 COLUMNS}: Apply table security to these columns,
+     *                 comma-separated.  The default value is ''.
      *                         <li> {@link
-     *                 com.gpudb.protocol.HasPermissionRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.HasPermissionRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.HasPermissionRequest.Options#FALSE
-     *                 FALSE}.
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#FILTER_EXPRESSION
+     *                 FILTER_EXPRESSION}: Optional filter expression to apply
+     *                 to this grant.  Only rows that match the filter will be
+     *                 affected.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
      */
-    public HasPermissionRequest(String principal, String object, String objectType, String permission, Map<String, String> options) {
+    public GrantPermissionRequest(String principal, String object, String objectType, String permission, Map<String, String> options) {
         this.principal = (principal == null) ? "" : principal;
         this.object = (object == null) ? "" : object;
         this.objectType = (objectType == null) ? "" : objectType;
@@ -398,9 +377,9 @@ public class HasPermissionRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Name of the user for which the permission is being checked. Must
-     *         be an existing user. If blank, will use the current user.  The
-     *         default value is ''.
+     * @return Name of the user or role for which the permission is being
+     *         granted.  Must be an existing user or role.  The default value
+     *         is ''.
      * 
      */
     public String getPrincipal() {
@@ -409,21 +388,21 @@ public class HasPermissionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param principal  Name of the user for which the permission is being
-     *                   checked. Must be an existing user. If blank, will use
-     *                   the current user.  The default value is ''.
+     * @param principal  Name of the user or role for which the permission is
+     *                   being granted.  Must be an existing user or role.  The
+     *                   default value is ''.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public HasPermissionRequest setPrincipal(String principal) {
+    public GrantPermissionRequest setPrincipal(String principal) {
         this.principal = (principal == null) ? "" : principal;
         return this;
     }
 
     /**
      * 
-     * @return Name of object to check for the requested permission.  It is
+     * @return Name of object permission is being granted to.  It is
      *         recommended to use a fully-qualified name when possible.
      * 
      */
@@ -433,53 +412,52 @@ public class HasPermissionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param object  Name of object to check for the requested permission.  It
-     *                is recommended to use a fully-qualified name when
-     *                possible.
+     * @param object  Name of object permission is being granted to.  It is
+     *                recommended to use a fully-qualified name when possible.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public HasPermissionRequest setObject(String object) {
+    public GrantPermissionRequest setObject(String object) {
         this.object = (object == null) ? "" : object;
         return this;
     }
 
     /**
      * 
-     * @return The type of object being checked
+     * @return The type of object being granted to
      *         Supported values:
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.ObjectType#CREDENTIAL
+     *         com.gpudb.protocol.GrantPermissionRequest.ObjectType#CREDENTIAL
      *         CREDENTIAL}: Credential
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.ObjectType#DATASINK
+     *         com.gpudb.protocol.GrantPermissionRequest.ObjectType#DATASINK
      *         DATASINK}: Data Sink
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.ObjectType#DATASOURCE
+     *         com.gpudb.protocol.GrantPermissionRequest.ObjectType#DATASOURCE
      *         DATASOURCE}: Data Source
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.ObjectType#DIRECTORY
-     *         DIRECTORY}: KiFS File Directory
+     *         com.gpudb.protocol.GrantPermissionRequest.ObjectType#DIRECTORY
+     *         DIRECTORY}: KIFS File Directory
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.ObjectType#GRAPH GRAPH}:
-     *         A Graph object
+     *         com.gpudb.protocol.GrantPermissionRequest.ObjectType#GRAPH
+     *         GRAPH}: A Graph object
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.ObjectType#PROC PROC}:
+     *         com.gpudb.protocol.GrantPermissionRequest.ObjectType#PROC PROC}:
      *         UDF Procedure
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.ObjectType#SCHEMA
+     *         com.gpudb.protocol.GrantPermissionRequest.ObjectType#SCHEMA
      *         SCHEMA}: Schema
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.ObjectType#SQL_PROC
+     *         com.gpudb.protocol.GrantPermissionRequest.ObjectType#SQL_PROC
      *         SQL_PROC}: SQL Procedure
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.ObjectType#SYSTEM
+     *         com.gpudb.protocol.GrantPermissionRequest.ObjectType#SYSTEM
      *         SYSTEM}: System-level access
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.ObjectType#TABLE TABLE}:
-     *         Database Table
+     *         com.gpudb.protocol.GrantPermissionRequest.ObjectType#TABLE
+     *         TABLE}: Database Table
      *         </ul>
      * 
      */
@@ -489,82 +467,82 @@ public class HasPermissionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param objectType  The type of object being checked
+     * @param objectType  The type of object being granted to
      *                    Supported values:
      *                    <ul>
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#CREDENTIAL
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#CREDENTIAL
      *                    CREDENTIAL}: Credential
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#DATASINK
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#DATASINK
      *                    DATASINK}: Data Sink
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#DATASOURCE
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#DATASOURCE
      *                    DATASOURCE}: Data Source
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#DIRECTORY
-     *                    DIRECTORY}: KiFS File Directory
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#DIRECTORY
+     *                    DIRECTORY}: KIFS File Directory
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#GRAPH
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#GRAPH
      *                    GRAPH}: A Graph object
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#PROC
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#PROC
      *                    PROC}: UDF Procedure
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#SCHEMA
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#SCHEMA
      *                    SCHEMA}: Schema
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#SQL_PROC
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#SQL_PROC
      *                    SQL_PROC}: SQL Procedure
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#SYSTEM
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#SYSTEM
      *                    SYSTEM}: System-level access
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#TABLE
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#TABLE
      *                    TABLE}: Database Table
      *                    </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public HasPermissionRequest setObjectType(String objectType) {
+    public GrantPermissionRequest setObjectType(String objectType) {
         this.objectType = (objectType == null) ? "" : objectType;
         return this;
     }
 
     /**
      * 
-     * @return Permission to check for.
+     * @return Permission being granted.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.Permission#ADMIN ADMIN}:
-     *         Full read/write and administrative access on the object.
+     *         com.gpudb.protocol.GrantPermissionRequest.Permission#ADMIN
+     *         ADMIN}: Full read/write and administrative access on the object.
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.Permission#CONNECT
+     *         com.gpudb.protocol.GrantPermissionRequest.Permission#CONNECT
      *         CONNECT}: Connect access on the given data source or data sink.
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.Permission#DELETE
+     *         com.gpudb.protocol.GrantPermissionRequest.Permission#DELETE
      *         DELETE}: Delete rows from tables.
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.Permission#EXECUTE
+     *         com.gpudb.protocol.GrantPermissionRequest.Permission#EXECUTE
      *         EXECUTE}: Ability to Execute the Procedure object.
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.Permission#INSERT
+     *         com.gpudb.protocol.GrantPermissionRequest.Permission#INSERT
      *         INSERT}: Insert access to tables.
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.Permission#READ READ}:
+     *         com.gpudb.protocol.GrantPermissionRequest.Permission#READ READ}:
      *         Ability to read, list and use the object.
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.Permission#UPDATE
+     *         com.gpudb.protocol.GrantPermissionRequest.Permission#UPDATE
      *         UPDATE}: Update access to the table.
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.Permission#USER_ADMIN
+     *         com.gpudb.protocol.GrantPermissionRequest.Permission#USER_ADMIN
      *         USER_ADMIN}: Access to administer users and roles that do not
      *         have system_admin permission.
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.Permission#WRITE WRITE}:
-     *         Access to write, change and delete objects.
+     *         com.gpudb.protocol.GrantPermissionRequest.Permission#WRITE
+     *         WRITE}: Access to write, change and delete objects.
      *         </ul>
      * 
      */
@@ -574,45 +552,45 @@ public class HasPermissionRequest implements IndexedRecord {
 
     /**
      * 
-     * @param permission  Permission to check for.
+     * @param permission  Permission being granted.
      *                    Supported values:
      *                    <ul>
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#ADMIN
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#ADMIN
      *                    ADMIN}: Full read/write and administrative access on
      *                    the object.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#CONNECT
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#CONNECT
      *                    CONNECT}: Connect access on the given data source or
      *                    data sink.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#DELETE
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#DELETE
      *                    DELETE}: Delete rows from tables.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#EXECUTE
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#EXECUTE
      *                    EXECUTE}: Ability to Execute the Procedure object.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#INSERT
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#INSERT
      *                    INSERT}: Insert access to tables.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#READ
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#READ
      *                    READ}: Ability to read, list and use the object.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#UPDATE
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#UPDATE
      *                    UPDATE}: Update access to the table.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#USER_ADMIN
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#USER_ADMIN
      *                    USER_ADMIN}: Access to administer users and roles
      *                    that do not have system_admin permission.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#WRITE
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#WRITE
      *                    WRITE}: Access to write, change and delete objects.
      *                    </ul>
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public HasPermissionRequest setPermission(String permission) {
+    public GrantPermissionRequest setPermission(String permission) {
         this.permission = (permission == null) ? "" : permission;
         return this;
     }
@@ -622,20 +600,14 @@ public class HasPermissionRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.Options#NO_ERROR_IF_NOT_EXISTS
-     *         NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an error
-     *         if the provided {@code object} does not exist or is blank. If
-     *         {@code true} then it will return {@code false} for {@code
-     *         hasPermission}.
-     *         Supported values:
-     *         <ul>
+     *         com.gpudb.protocol.GrantPermissionRequest.Options#COLUMNS
+     *         COLUMNS}: Apply table security to these columns,
+     *         comma-separated.  The default value is ''.
      *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.Options#TRUE TRUE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.HasPermissionRequest.Options#FALSE FALSE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.HasPermissionRequest.Options#FALSE FALSE}.
+     *         com.gpudb.protocol.GrantPermissionRequest.Options#FILTER_EXPRESSION
+     *         FILTER_EXPRESSION}: Optional filter expression to apply to this
+     *         grant.  Only rows that match the filter will be affected.  The
+     *         default value is ''.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -649,30 +621,21 @@ public class HasPermissionRequest implements IndexedRecord {
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.HasPermissionRequest.Options#NO_ERROR_IF_NOT_EXISTS
-     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an
-     *                 error if the provided {@code object} does not exist or
-     *                 is blank. If {@code true} then it will return {@code
-     *                 false} for {@code hasPermission}.
-     *                 Supported values:
-     *                 <ul>
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#COLUMNS
+     *                 COLUMNS}: Apply table security to these columns,
+     *                 comma-separated.  The default value is ''.
      *                         <li> {@link
-     *                 com.gpudb.protocol.HasPermissionRequest.Options#TRUE
-     *                 TRUE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.HasPermissionRequest.Options#FALSE
-     *                 FALSE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.HasPermissionRequest.Options#FALSE
-     *                 FALSE}.
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#FILTER_EXPRESSION
+     *                 FILTER_EXPRESSION}: Optional filter expression to apply
+     *                 to this grant.  Only rows that match the filter will be
+     *                 affected.  The default value is ''.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public HasPermissionRequest setOptions(Map<String, String> options) {
+    public GrantPermissionRequest setOptions(Map<String, String> options) {
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
@@ -772,7 +735,7 @@ public class HasPermissionRequest implements IndexedRecord {
             return false;
         }
 
-        HasPermissionRequest that = (HasPermissionRequest)obj;
+        GrantPermissionRequest that = (GrantPermissionRequest)obj;
 
         return ( this.principal.equals( that.principal )
                  && this.object.equals( that.object )

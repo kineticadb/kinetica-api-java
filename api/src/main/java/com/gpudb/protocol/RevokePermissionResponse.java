@@ -5,9 +5,7 @@
  */
 package com.gpudb.protocol;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -17,17 +15,17 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of results returned by {@link
- * com.gpudb.GPUdb#showDirectories(ShowDirectoriesRequest)}.
+ * com.gpudb.GPUdb#revokePermission(RevokePermissionRequest)}.
  */
-public class ShowDirectoriesResponse implements IndexedRecord {
+public class RevokePermissionResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("ShowDirectoriesResponse")
+            .record("RevokePermissionResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("directories").type().array().items().stringType().noDefault()
-                .name("users").type().array().items().stringType().noDefault()
-                .name("creationTimes").type().array().items().longType().noDefault()
-                .name("permissions").type().array().items().stringType().noDefault()
+                .name("principal").type().stringType().noDefault()
+                .name("object").type().stringType().noDefault()
+                .name("objectType").type().stringType().noDefault()
+                .name("permission").type().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -43,112 +41,100 @@ public class ShowDirectoriesResponse implements IndexedRecord {
         return schema$;
     }
 
-    private List<String> directories;
-    private List<String> users;
-    private List<Long> creationTimes;
-    private List<String> permissions;
+    private String principal;
+    private String object;
+    private String objectType;
+    private String permission;
     private Map<String, String> info;
 
 
     /**
-     * Constructs a ShowDirectoriesResponse object with default parameters.
+     * Constructs a RevokePermissionResponse object with default parameters.
      */
-    public ShowDirectoriesResponse() {
+    public RevokePermissionResponse() {
     }
 
     /**
      * 
-     * @return KiFS directory names
+     * @return Value of {@code principal}.
      * 
      */
-    public List<String> getDirectories() {
-        return directories;
+    public String getPrincipal() {
+        return principal;
     }
 
     /**
      * 
-     * @param directories  KiFS directory names
+     * @param principal  Value of {@code principal}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowDirectoriesResponse setDirectories(List<String> directories) {
-        this.directories = (directories == null) ? new ArrayList<String>() : directories;
+    public RevokePermissionResponse setPrincipal(String principal) {
+        this.principal = (principal == null) ? "" : principal;
         return this;
     }
 
     /**
      * 
-     * @return User that created each directory for the respective directories
-     *         in {@code directories}
+     * @return Value of {@code object}.
      * 
      */
-    public List<String> getUsers() {
-        return users;
+    public String getObject() {
+        return object;
     }
 
     /**
      * 
-     * @param users  User that created each directory for the respective
-     *               directories in {@code directories}
+     * @param object  Value of {@code object}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowDirectoriesResponse setUsers(List<String> users) {
-        this.users = (users == null) ? new ArrayList<String>() : users;
+    public RevokePermissionResponse setObject(String object) {
+        this.object = (object == null) ? "" : object;
         return this;
     }
 
     /**
      * 
-     * @return The creation time for each directory in milliseconds since
-     *         epoch, for the respective directories in {@code directories}
+     * @return Value of {@code objectType}.
      * 
      */
-    public List<Long> getCreationTimes() {
-        return creationTimes;
+    public String getObjectType() {
+        return objectType;
     }
 
     /**
      * 
-     * @param creationTimes  The creation time for each directory in
-     *                       milliseconds since epoch, for the respective
-     *                       directories in {@code directories}
+     * @param objectType  Value of {@code objectType}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowDirectoriesResponse setCreationTimes(List<Long> creationTimes) {
-        this.creationTimes = (creationTimes == null) ? new ArrayList<Long>() : creationTimes;
+    public RevokePermissionResponse setObjectType(String objectType) {
+        this.objectType = (objectType == null) ? "" : objectType;
         return this;
     }
 
     /**
      * 
-     * @return Highest level of permission the calling user has for the
-     *         respective directories in {@code directories}.
-     *         Will be empty if no permissions. If a user has been granted both
-     *         read and write permissions, 'directory_write' will be listed.
+     * @return Value of {@code permission}.
      * 
      */
-    public List<String> getPermissions() {
-        return permissions;
+    public String getPermission() {
+        return permission;
     }
 
     /**
      * 
-     * @param permissions  Highest level of permission the calling user has for
-     *                     the respective directories in {@code directories}.
-     *                     Will be empty if no permissions. If a user has been
-     *                     granted both read and write permissions,
-     *                     'directory_write' will be listed.
+     * @param permission  Value of {@code permission}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowDirectoriesResponse setPermissions(List<String> permissions) {
-        this.permissions = (permissions == null) ? new ArrayList<String>() : permissions;
+    public RevokePermissionResponse setPermission(String permission) {
+        this.permission = (permission == null) ? "" : permission;
         return this;
     }
 
@@ -168,7 +154,7 @@ public class ShowDirectoriesResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowDirectoriesResponse setInfo(Map<String, String> info) {
+    public RevokePermissionResponse setInfo(Map<String, String> info) {
         this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
@@ -200,16 +186,16 @@ public class ShowDirectoriesResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.directories;
+                return this.principal;
 
             case 1:
-                return this.users;
+                return this.object;
 
             case 2:
-                return this.creationTimes;
+                return this.objectType;
 
             case 3:
-                return this.permissions;
+                return this.permission;
 
             case 4:
                 return this.info;
@@ -234,19 +220,19 @@ public class ShowDirectoriesResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.directories = (List<String>)value;
+                this.principal = (String)value;
                 break;
 
             case 1:
-                this.users = (List<String>)value;
+                this.object = (String)value;
                 break;
 
             case 2:
-                this.creationTimes = (List<Long>)value;
+                this.objectType = (String)value;
                 break;
 
             case 3:
-                this.permissions = (List<String>)value;
+                this.permission = (String)value;
                 break;
 
             case 4:
@@ -268,12 +254,12 @@ public class ShowDirectoriesResponse implements IndexedRecord {
             return false;
         }
 
-        ShowDirectoriesResponse that = (ShowDirectoriesResponse)obj;
+        RevokePermissionResponse that = (RevokePermissionResponse)obj;
 
-        return ( this.directories.equals( that.directories )
-                 && this.users.equals( that.users )
-                 && this.creationTimes.equals( that.creationTimes )
-                 && this.permissions.equals( that.permissions )
+        return ( this.principal.equals( that.principal )
+                 && this.object.equals( that.object )
+                 && this.objectType.equals( that.objectType )
+                 && this.permission.equals( that.permission )
                  && this.info.equals( that.info ) );
     }
 
@@ -282,21 +268,21 @@ public class ShowDirectoriesResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "directories" ) );
+        builder.append( gd.toString( "principal" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.directories ) );
+        builder.append( gd.toString( this.principal ) );
         builder.append( ", " );
-        builder.append( gd.toString( "users" ) );
+        builder.append( gd.toString( "object" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.users ) );
+        builder.append( gd.toString( this.object ) );
         builder.append( ", " );
-        builder.append( gd.toString( "creationTimes" ) );
+        builder.append( gd.toString( "objectType" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.creationTimes ) );
+        builder.append( gd.toString( this.objectType ) );
         builder.append( ", " );
-        builder.append( gd.toString( "permissions" ) );
+        builder.append( gd.toString( "permission" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.permissions ) );
+        builder.append( gd.toString( this.permission ) );
         builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
@@ -309,10 +295,10 @@ public class ShowDirectoriesResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.directories.hashCode();
-        hashCode = (31 * hashCode) + this.users.hashCode();
-        hashCode = (31 * hashCode) + this.creationTimes.hashCode();
-        hashCode = (31 * hashCode) + this.permissions.hashCode();
+        hashCode = (31 * hashCode) + this.principal.hashCode();
+        hashCode = (31 * hashCode) + this.object.hashCode();
+        hashCode = (31 * hashCode) + this.objectType.hashCode();
+        hashCode = (31 * hashCode) + this.permission.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

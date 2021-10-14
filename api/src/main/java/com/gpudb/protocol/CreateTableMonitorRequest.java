@@ -80,6 +80,56 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.CreateTableMonitorRequest.Options#INSERT INSERT}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableMonitorRequest.Options#MONITOR_ID
+     * MONITOR_ID}: ID to to use for this monitor instead of a randomly
+     * generated one
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableMonitorRequest.Options#DATASINK_NAME
+     * DATASINK_NAME}: Name of an existing <a
+     * href="../../../../../../concepts/data_sinks/" target="_top">data
+     * sink</a> to send change data notifications to
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableMonitorRequest.Options#DESTINATION
+     * DESTINATION}: Destination for the output data in format
+     * 'destination_type://path[:port]'. Supported destination types are
+     * 'http', 'https' and 'kafka'.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableMonitorRequest.Options#KAFKA_TOPIC_NAME
+     * KAFKA_TOPIC_NAME}: Name of the Kafka topic to publish to if {@code
+     * destination} in {@code options} is specified and is a Kafka broker
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableMonitorRequest.Options#INCREASING_COLUMN
+     * INCREASING_COLUMN}: Column on subscribed table that will increase for
+     * new records (e.g., TIMESTAMP).
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableMonitorRequest.Options#EXPRESSION
+     * EXPRESSION}: Filter expression to limit records for notification
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableMonitorRequest.Options#REFRESH_METHOD
+     * REFRESH_METHOD}: Method controlling when the table monitor reports
+     * changes to the {@code tableName}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableMonitorRequest.Options#ON_CHANGE
+     * ON_CHANGE}: Report changes as they occur.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableMonitorRequest.Options#PERIODIC PERIODIC}:
+     * Report changes periodically at rate specified by {@code refresh_period}.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateTableMonitorRequest.Options#ON_CHANGE
+     * ON_CHANGE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableMonitorRequest.Options#REFRESH_PERIOD
+     * REFRESH_PERIOD}: When {@code refresh_method} is {@code periodic},
+     * specifies the period in seconds at which changes are reported.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateTableMonitorRequest.Options#REFRESH_START_TIME
+     * REFRESH_START_TIME}: When {@code refresh_method} is {@code periodic},
+     * specifies the first time at which changes are reported.  Value is a
+     * datetime string with format 'YYYY-MM-DD HH:MM:SS'.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -126,6 +176,84 @@ public class CreateTableMonitorRequest implements IndexedRecord {
          * information is forwarded to the subscribers.
          */
         public static final String DELETE = "delete";
+
+        /**
+         * ID to to use for this monitor instead of a randomly generated one
+         */
+        public static final String MONITOR_ID = "monitor_id";
+
+        /**
+         * Name of an existing <a href="../../../../../../concepts/data_sinks/"
+         * target="_top">data sink</a> to send change data notifications to
+         */
+        public static final String DATASINK_NAME = "datasink_name";
+
+        /**
+         * Destination for the output data in format
+         * 'destination_type://path[:port]'. Supported destination types are
+         * 'http', 'https' and 'kafka'.
+         */
+        public static final String DESTINATION = "destination";
+
+        /**
+         * Name of the Kafka topic to publish to if {@code destination} in
+         * {@code options} is specified and is a Kafka broker
+         */
+        public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
+
+        /**
+         * Column on subscribed table that will increase for new records (e.g.,
+         * TIMESTAMP).
+         */
+        public static final String INCREASING_COLUMN = "increasing_column";
+
+        /**
+         * Filter expression to limit records for notification
+         */
+        public static final String EXPRESSION = "expression";
+
+        /**
+         * Method controlling when the table monitor reports changes to the
+         * {@code tableName}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableMonitorRequest.Options#ON_CHANGE
+         * ON_CHANGE}: Report changes as they occur.
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableMonitorRequest.Options#PERIODIC
+         * PERIODIC}: Report changes periodically at rate specified by {@code
+         * refresh_period}.
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateTableMonitorRequest.Options#ON_CHANGE
+         * ON_CHANGE}.
+         */
+        public static final String REFRESH_METHOD = "refresh_method";
+
+        /**
+         * Report changes as they occur.
+         */
+        public static final String ON_CHANGE = "on_change";
+
+        /**
+         * Report changes periodically at rate specified by {@code
+         * refresh_period}.
+         */
+        public static final String PERIODIC = "periodic";
+
+        /**
+         * When {@code refresh_method} is {@code periodic}, specifies the
+         * period in seconds at which changes are reported.
+         */
+        public static final String REFRESH_PERIOD = "refresh_period";
+
+        /**
+         * When {@code refresh_method} is {@code periodic}, specifies the first
+         * time at which changes are reported.  Value is a datetime string with
+         * format 'YYYY-MM-DD HH:MM:SS'.
+         */
+        public static final String REFRESH_START_TIME = "refresh_start_time";
 
         private Options() {  }
     }
@@ -176,6 +304,62 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#INSERT
      *                 INSERT}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#MONITOR_ID
+     *                 MONITOR_ID}: ID to to use for this monitor instead of a
+     *                 randomly generated one
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#DATASINK_NAME
+     *                 DATASINK_NAME}: Name of an existing <a
+     *                 href="../../../../../../concepts/data_sinks/"
+     *                 target="_top">data sink</a> to send change data
+     *                 notifications to
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#DESTINATION
+     *                 DESTINATION}: Destination for the output data in format
+     *                 'destination_type://path[:port]'. Supported destination
+     *                 types are 'http', 'https' and 'kafka'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#KAFKA_TOPIC_NAME
+     *                 KAFKA_TOPIC_NAME}: Name of the Kafka topic to publish to
+     *                 if {@code destination} in {@code options} is specified
+     *                 and is a Kafka broker
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#INCREASING_COLUMN
+     *                 INCREASING_COLUMN}: Column on subscribed table that will
+     *                 increase for new records (e.g., TIMESTAMP).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Filter expression to limit records for
+     *                 notification
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#REFRESH_METHOD
+     *                 REFRESH_METHOD}: Method controlling when the table
+     *                 monitor reports changes to the {@code tableName}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#ON_CHANGE
+     *                 ON_CHANGE}: Report changes as they occur.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#PERIODIC
+     *                 PERIODIC}: Report changes periodically at rate specified
+     *                 by {@code refresh_period}.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#ON_CHANGE
+     *                 ON_CHANGE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#REFRESH_PERIOD
+     *                 REFRESH_PERIOD}: When {@code refresh_method} is {@code
+     *                 periodic}, specifies the period in seconds at which
+     *                 changes are reported.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#REFRESH_START_TIME
+     *                 REFRESH_START_TIME}: When {@code refresh_method} is
+     *                 {@code periodic}, specifies the first time at which
+     *                 changes are reported.  Value is a datetime string with
+     *                 format 'YYYY-MM-DD HH:MM:SS'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -238,6 +422,60 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateTableMonitorRequest.Options#INSERT
      *         INSERT}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableMonitorRequest.Options#MONITOR_ID
+     *         MONITOR_ID}: ID to to use for this monitor instead of a randomly
+     *         generated one
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableMonitorRequest.Options#DATASINK_NAME
+     *         DATASINK_NAME}: Name of an existing <a
+     *         href="../../../../../../concepts/data_sinks/" target="_top">data
+     *         sink</a> to send change data notifications to
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableMonitorRequest.Options#DESTINATION
+     *         DESTINATION}: Destination for the output data in format
+     *         'destination_type://path[:port]'. Supported destination types
+     *         are 'http', 'https' and 'kafka'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableMonitorRequest.Options#KAFKA_TOPIC_NAME
+     *         KAFKA_TOPIC_NAME}: Name of the Kafka topic to publish to if
+     *         {@code destination} in {@code options} is specified and is a
+     *         Kafka broker
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableMonitorRequest.Options#INCREASING_COLUMN
+     *         INCREASING_COLUMN}: Column on subscribed table that will
+     *         increase for new records (e.g., TIMESTAMP).
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableMonitorRequest.Options#EXPRESSION
+     *         EXPRESSION}: Filter expression to limit records for notification
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableMonitorRequest.Options#REFRESH_METHOD
+     *         REFRESH_METHOD}: Method controlling when the table monitor
+     *         reports changes to the {@code tableName}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableMonitorRequest.Options#ON_CHANGE
+     *         ON_CHANGE}: Report changes as they occur.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableMonitorRequest.Options#PERIODIC
+     *         PERIODIC}: Report changes periodically at rate specified by
+     *         {@code refresh_period}.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateTableMonitorRequest.Options#ON_CHANGE
+     *         ON_CHANGE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableMonitorRequest.Options#REFRESH_PERIOD
+     *         REFRESH_PERIOD}: When {@code refresh_method} is {@code
+     *         periodic}, specifies the period in seconds at which changes are
+     *         reported.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableMonitorRequest.Options#REFRESH_START_TIME
+     *         REFRESH_START_TIME}: When {@code refresh_method} is {@code
+     *         periodic}, specifies the first time at which changes are
+     *         reported.  Value is a datetime string with format 'YYYY-MM-DD
+     *         HH:MM:SS'.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -274,6 +512,62 @@ public class CreateTableMonitorRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#INSERT
      *                 INSERT}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#MONITOR_ID
+     *                 MONITOR_ID}: ID to to use for this monitor instead of a
+     *                 randomly generated one
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#DATASINK_NAME
+     *                 DATASINK_NAME}: Name of an existing <a
+     *                 href="../../../../../../concepts/data_sinks/"
+     *                 target="_top">data sink</a> to send change data
+     *                 notifications to
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#DESTINATION
+     *                 DESTINATION}: Destination for the output data in format
+     *                 'destination_type://path[:port]'. Supported destination
+     *                 types are 'http', 'https' and 'kafka'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#KAFKA_TOPIC_NAME
+     *                 KAFKA_TOPIC_NAME}: Name of the Kafka topic to publish to
+     *                 if {@code destination} in {@code options} is specified
+     *                 and is a Kafka broker
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#INCREASING_COLUMN
+     *                 INCREASING_COLUMN}: Column on subscribed table that will
+     *                 increase for new records (e.g., TIMESTAMP).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Filter expression to limit records for
+     *                 notification
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#REFRESH_METHOD
+     *                 REFRESH_METHOD}: Method controlling when the table
+     *                 monitor reports changes to the {@code tableName}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#ON_CHANGE
+     *                 ON_CHANGE}: Report changes as they occur.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#PERIODIC
+     *                 PERIODIC}: Report changes periodically at rate specified
+     *                 by {@code refresh_period}.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#ON_CHANGE
+     *                 ON_CHANGE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#REFRESH_PERIOD
+     *                 REFRESH_PERIOD}: When {@code refresh_method} is {@code
+     *                 periodic}, specifies the period in seconds at which
+     *                 changes are reported.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#REFRESH_START_TIME
+     *                 REFRESH_START_TIME}: When {@code refresh_method} is
+     *                 {@code periodic}, specifies the first time at which
+     *                 changes are reported.  Value is a datetime string with
+     *                 format 'YYYY-MM-DD HH:MM:SS'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

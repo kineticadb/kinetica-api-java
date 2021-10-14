@@ -5,26 +5,26 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gpudb</groupId>
     <artifactId>gpudb-api</artifactId>
-    <version>7.1.4.0</version>
+    <version>7.1.5.0</version>
     <packaging>jar</packaging>
     <name>Kinetica Java API</name>
     <repositories>
         <repository>
             <id>releases</id>
             <name>Releases</name>
-            <url>http://files.kinetica.com/nexus/content/repositories/releases</url>
+            <url>https://nexus.kinetica.com/repository/releases</url>
         </repository>
     </repositories>
     <distributionManagement>
          <repository>
             <id>releases</id>
             <name>Releases</name>
-            <url>http://files.kinetica.com/nexus/content/repositories/releases</url>
+            <url>https://nexus.kinetica.com/repository/releases</url>
          </repository>
          <snapshotRepository>
             <id>snapshots</id>
             <name>Snapshots</name>
-            <url>http://files.kinetica.com/nexus/content/repositories/snapshots</url>
+            <url>https://nexus.kinetica.com/repository/snapshots</url>
          </snapshotRepository>
     </distributionManagement>
     <dependencies>
@@ -74,7 +74,7 @@
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gpudb-api.version>7.1.4.0</gpudb-api.version>
+        <gpudb-api.version>7.1.5.0</gpudb-api.version>
     </properties>
     <profiles>
         <profile>
@@ -104,9 +104,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <excludes>
-                        <exclude>**/com/gpudb/filesystem/ingest/*</exclude>
-                    </excludes>
                 </configuration>
             </plugin>
             <plugin>

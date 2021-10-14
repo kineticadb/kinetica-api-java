@@ -3588,6 +3588,109 @@ public class GPUdb extends GPUdbBase {
 
     /**
      * Alters the properties of an existing <a
+     * href="../../../../../concepts/data_sinks/" target="_top">data sink</a>
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AlterDatasinkResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AlterDatasinkResponse alterDatasink(AlterDatasinkRequest request) throws GPUdbException {
+        AlterDatasinkResponse actualResponse_ = new AlterDatasinkResponse();
+        submitRequest("/alter/datasink", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Alters the properties of an existing <a
+     * href="../../../../../concepts/data_sinks/" target="_top">data sink</a>
+     * 
+     * @param name  Name of the data sink to be altered. Must be an existing
+     *              data sink.
+     * @param datasinkUpdatesMap  Map containing the properties of the data
+     *                            sink to be updated. Error if empty.
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#DESTINATION
+     *                            DESTINATION}: Destination for the output data
+     *                            in format 'destination_type://path[:port]'.
+     *                            Supported destination types are 'http',
+     *                            'https' and 'kafka'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#DESTINATION_TYPE
+     *                            DESTINATION_TYPE}: Destination type for the
+     *                            output data
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#USER_NAME
+     *                            USER_NAME}: Name of the remote system user;
+     *                            may be an empty string
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#PASSWORD
+     *                            PASSWORD}: Password for the remote system
+     *                            user; may be an empty string
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#CONNECTION_TIMEOUT
+     *                            CONNECTION_TIMEOUT}: Timeout in seconds for
+     *                            connecting to this sink
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#WAIT_TIMEOUT
+     *                            WAIT_TIMEOUT}: Timeout in seconds for waiting
+     *                            for a response from this sink
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#CREDENTIAL
+     *                            CREDENTIAL}: Name of the <a
+     *                            href="../../../../../concepts/credentials/"
+     *                            target="_top">credential</a> object to be
+     *                            used in this data sink
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#KAFKA_TOPIC_NAME
+     *                            KAFKA_TOPIC_NAME}: Name of the Kafka topic to
+     *                            use for this data sink, if it references a
+     *                            Kafka broker
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#SKIP_VALIDATION
+     *                            SKIP_VALIDATION}: Bypass validation of
+     *                            connection to this data sink.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#TRUE
+     *                            TRUE}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
+     *                            FALSE}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FALSE
+     *                            FALSE}.
+     *                            </ul>
+     * @param options  Optional parameters.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AlterDatasinkResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AlterDatasinkResponse alterDatasink(String name, Map<String, String> datasinkUpdatesMap, Map<String, String> options) throws GPUdbException {
+        AlterDatasinkRequest actualRequest_ = new AlterDatasinkRequest(name, datasinkUpdatesMap, options);
+        AlterDatasinkResponse actualResponse_ = new AlterDatasinkResponse();
+        submitRequest("/alter/datasink", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Alters the properties of an existing <a
      * href="../../../../../concepts/data_sources/" target="_top">data
      * source</a>
      * 
@@ -3732,6 +3835,38 @@ public class GPUdb extends GPUdbBase {
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#KAFKA_TOPIC_NAME
      *                              KAFKA_TOPIC_NAME}: Name of the Kafka topic
      *                              to use as the data source
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#ANONYMOUS
+     *                              ANONYMOUS}: Create an anonymous connection
+     *                              to the storage provider
+     *                              Supported values:
+     *                              <ul>
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                              TRUE}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *                              FALSE}
+     *                              </ul>
+     *                              The default value is {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *                              FALSE}.
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#USE_HTTPS
+     *                              USE_HTTPS}: Use https to connect to
+     *                              datasource if true, otherwise use http
+     *                              Supported values:
+     *                              <ul>
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                              TRUE}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *                              FALSE}
+     *                              </ul>
+     *                              The default value is {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                              TRUE}.
      *                              </ul>
      * @param options  Optional parameters.
      * 
@@ -3746,6 +3881,103 @@ public class GPUdb extends GPUdbBase {
         AlterDatasourceRequest actualRequest_ = new AlterDatasourceRequest(name, datasourceUpdatesMap, options);
         AlterDatasourceResponse actualResponse_ = new AlterDatasourceResponse();
         submitRequest("/alter/datasource", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * For internal use only: Graph server admin command.
+     * For internal use only: Graph server admin command.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AlterGraphResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AlterGraphResponse alterGraph(AlterGraphRequest request) throws GPUdbException {
+        AlterGraphResponse actualResponse_ = new AlterGraphResponse();
+        submitRequest("/alter/graph", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * For internal use only: Graph server admin command.
+     * For internal use only: Graph server admin command.
+     * 
+     * @param graphName  Graph on which the operation should be applied.
+     *                   If empty then it will apply to all graphs.
+     *                   This request can be sent from the graph server to the
+     *                   graph client, or from the client to the server
+     *                   depending on the type of operation.
+     * @param action  Operation to be applied
+     *                Supported values:
+     *                <ul>
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterGraphRequest.Action#ADD_TABLE_MONITOR
+     *                ADD_TABLE_MONITOR}: Add a table monitor to a graph. The
+     *                table name is specified as the action argment.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterGraphRequest.Action#RESET_CLIENT
+     *                RESET_CLIENT}: Reset all current operations on the client
+     *                side. Used when the graph server is restarted to recover
+     *                from a failure.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterGraphRequest.Action#RESET_SERVER
+     *                RESET_SERVER}: Reset all current operations on the server
+     *                side. This is also sent on (re)start.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterGraphRequest.Action#CANCEL_TASK
+     *                CANCEL_TASK}: Cancel a specific task on the graph server.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterGraphRequest.Action#ALTER_LOGGER
+     *                ALTER_LOGGER}: Change the server side log level; e.g.,
+     *                'GraphServer.GraphSolver=DEBUG'
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterGraphRequest.Action#DELETE_ALL
+     *                DELETE_ALL}: Delete all graphs, and remove any
+     *                persistence info.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterGraphRequest.Action#STATUS
+     *                STATUS}: Current status of the graph client (db side).
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterGraphRequest.Action#COLLECT_GRAPHS
+     *                COLLECT_GRAPHS}: Get the create command for all persisted
+     *                graphs.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterGraphRequest.Action#RESTORE_GRAPHS
+     *                RESTORE_GRAPHS}: Re-creates all graphs from persist info
+     *                on rank0.
+     *                </ul>
+     * @param actionArg  Action specific argument.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterGraphRequest.Options#SERVER_ID
+     *                 SERVER_ID}: Indicates which graph server(s) to send the
+     *                 request to. Default is to send to get information about
+     *                 all the servers.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  AlterGraphResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public AlterGraphResponse alterGraph(String graphName, String action, String actionArg, Map<String, String> options) throws GPUdbException {
+        AlterGraphRequest actualRequest_ = new AlterGraphRequest(graphName, action, actionArg, options);
+        AlterGraphResponse actualResponse_ = new AlterGraphResponse();
+        submitRequest("/alter/graph", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -5416,8 +5648,47 @@ public class GPUdb extends GPUdbBase {
      * 
      * @param topicId  The topic ID returned by {@link
      *                 GPUdb#createTableMonitor(String, Map)}.
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ClearTableMonitorRequest.Options#KEEP_AUTOGENERATED_SINK
+     *                 KEEP_AUTOGENERATED_SINK}: If {@code true}, the
+     *                 auto-generated <a
+     *                 href="../../../../../concepts/data_sinks/"
+     *                 target="_top">datasink</a> associated with this monitor,
+     *                 if there is one, will be retained for further use. If
+     *                 {@code false}, then the auto-generated sink will be
+     *                 dropped if there are no other monitors referencing it.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ClearTableMonitorRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ClearTableMonitorRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ClearTableMonitorRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ClearTableMonitorRequest.Options#CLEAR_ALL_REFERENCES
+     *                 CLEAR_ALL_REFERENCES}: If {@code true}, all references
+     *                 that share the same {@input topic_id} will be cleared.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ClearTableMonitorRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ClearTableMonitorRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ClearTableMonitorRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return Response object containing the results of the operation.
      * 
@@ -5633,6 +5904,96 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Creates a <a href="../../../../../concepts/data_sinks/"
+     * target="_top">data sink</a>, which contains the
+     * destination information for a data sink that is external to the
+     * database.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateDatasinkResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateDatasinkResponse createDatasink(CreateDatasinkRequest request) throws GPUdbException {
+        CreateDatasinkResponse actualResponse_ = new CreateDatasinkResponse();
+        submitRequest("/create/datasink", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Creates a <a href="../../../../../concepts/data_sinks/"
+     * target="_top">data sink</a>, which contains the
+     * destination information for a data sink that is external to the
+     * database.
+     * 
+     * @param name  Name of the data sink to be created.
+     * @param destination  Destination for the output data in format
+     *                     'destination_type://path[:port]'.
+     *                     Supported destination types are 'http', 'https' and
+     *                     'kafka'.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#CONNECTION_TIMEOUT
+     *                 CONNECTION_TIMEOUT}: Timeout in seconds for connecting
+     *                 to this data sink
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#WAIT_TIMEOUT
+     *                 WAIT_TIMEOUT}: Timeout in seconds for waiting for a
+     *                 response from this data sink
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#CREDENTIAL
+     *                 CREDENTIAL}: Name of the <a
+     *                 href="../../../../../concepts/credentials/"
+     *                 target="_top">credential</a> object to be used in this
+     *                 data sink
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#KAFKA_TOPIC_NAME
+     *                 KAFKA_TOPIC_NAME}: Name of the Kafka topic to publish to
+     *                 if {@code destination} is a Kafka broker
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#SKIP_VALIDATION
+     *                 SKIP_VALIDATION}: Bypass validation of connection to
+     *                 this data sink.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  CreateDatasinkResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public CreateDatasinkResponse createDatasink(String name, String destination, Map<String, String> options) throws GPUdbException {
+        CreateDatasinkRequest actualRequest_ = new CreateDatasinkRequest(name, destination, options);
+        CreateDatasinkResponse actualResponse_ = new CreateDatasinkResponse();
+        submitRequest("/create/datasink", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Creates a <a href="../../../../../concepts/data_sources/"
      * target="_top">data source</a>, which contains the
      * location and connection information for a data store that is external to
@@ -5778,6 +6139,37 @@ public class GPUdb extends GPUdbBase {
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#KAFKA_TOPIC_NAME
      *                 KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the
      *                 data source
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#ANONYMOUS
+     *                 ANONYMOUS}: Use anonymous connection to storage provider
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#USE_HTTPS
+     *                 USE_HTTPS}: Use https to connect to datasource if true,
+     *                 otherwise use http
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -5792,6 +6184,23 @@ public class GPUdb extends GPUdbBase {
         CreateDatasourceRequest actualRequest_ = new CreateDatasourceRequest(name, location, userName, password, options);
         CreateDatasourceResponse actualResponse_ = new CreateDatasourceResponse();
         submitRequest("/create/datasource", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public CreateDeltaTableResponse createDeltaTable(CreateDeltaTableRequest request) throws GPUdbException {
+        CreateDeltaTableResponse actualResponse_ = new CreateDeltaTableResponse();
+        submitRequest("/create/deltatable", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    public CreateDeltaTableResponse createDeltaTable(String deltaTableName, String tableName, Map<String, String> options) throws GPUdbException {
+        CreateDeltaTableRequest actualRequest_ = new CreateDeltaTableRequest(deltaTableName, tableName, options);
+        CreateDeltaTableResponse actualResponse_ = new CreateDeltaTableResponse();
+        submitRequest("/create/deltatable", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -6665,23 +7074,6 @@ public class GPUdb extends GPUdbBase {
         CreateMaterializedViewRequest actualRequest_ = new CreateMaterializedViewRequest(tableName, options);
         CreateMaterializedViewResponse actualResponse_ = new CreateMaterializedViewResponse();
         submitRequest("/create/materializedview", actualRequest_, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    public CreateMonitorTableResponse createMonitorTable(CreateMonitorTableRequest request) throws GPUdbException {
-        CreateMonitorTableResponse actualResponse_ = new CreateMonitorTableResponse();
-        submitRequest("/create/monitortable", request, actualResponse_, false);
-        return actualResponse_;
-    }
-
-
-
-    public CreateMonitorTableResponse createMonitorTable(String monitorTableName, String tableName, Map<String, String> options) throws GPUdbException {
-        CreateMonitorTableRequest actualRequest_ = new CreateMonitorTableRequest(monitorTableName, tableName, options);
-        CreateMonitorTableResponse actualResponse_ = new CreateMonitorTableResponse();
-        submitRequest("/create/monitortable", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -8456,6 +8848,62 @@ public class GPUdb extends GPUdbBase {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#INSERT
      *                 INSERT}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#MONITOR_ID
+     *                 MONITOR_ID}: ID to to use for this monitor instead of a
+     *                 randomly generated one
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#DATASINK_NAME
+     *                 DATASINK_NAME}: Name of an existing <a
+     *                 href="../../../../../concepts/data_sinks/"
+     *                 target="_top">data sink</a> to send change data
+     *                 notifications to
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#DESTINATION
+     *                 DESTINATION}: Destination for the output data in format
+     *                 'destination_type://path[:port]'. Supported destination
+     *                 types are 'http', 'https' and 'kafka'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#KAFKA_TOPIC_NAME
+     *                 KAFKA_TOPIC_NAME}: Name of the Kafka topic to publish to
+     *                 if {@code destination} in {@code options} is specified
+     *                 and is a Kafka broker
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#INCREASING_COLUMN
+     *                 INCREASING_COLUMN}: Column on subscribed table that will
+     *                 increase for new records (e.g., TIMESTAMP).
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#EXPRESSION
+     *                 EXPRESSION}: Filter expression to limit records for
+     *                 notification
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#REFRESH_METHOD
+     *                 REFRESH_METHOD}: Method controlling when the table
+     *                 monitor reports changes to the {@code tableName}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#ON_CHANGE
+     *                 ON_CHANGE}: Report changes as they occur.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#PERIODIC
+     *                 PERIODIC}: Report changes periodically at rate specified
+     *                 by {@code refresh_period}.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#ON_CHANGE
+     *                 ON_CHANGE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#REFRESH_PERIOD
+     *                 REFRESH_PERIOD}: When {@code refresh_method} is {@code
+     *                 periodic}, specifies the period in seconds at which
+     *                 changes are reported.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableMonitorRequest.Options#REFRESH_START_TIME
+     *                 REFRESH_START_TIME}: When {@code refresh_method} is
+     *                 {@code periodic}, specifies the first time at which
+     *                 changes are reported.  Value is a datetime string with
+     *                 format 'YYYY-MM-DD HH:MM:SS'.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -10148,6 +10596,85 @@ public class GPUdb extends GPUdbBase {
         DropCredentialRequest actualRequest_ = new DropCredentialRequest(credentialName, options);
         DropCredentialResponse actualResponse_ = new DropCredentialResponse();
         submitRequest("/drop/credential", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Drops an existing <a href="../../../../../concepts/data_sinks/"
+     * target="_top">data sink</a>.
+     * <p>
+     * By default, if any <a href="../../../../../concepts/table_monitors"
+     * target="_top">table monitors</a> use this
+     * sink as a destination, the request will be blocked unless option
+     * {@code clear_table_monitors} is
+     * {@code true}.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DropDatasinkResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public DropDatasinkResponse dropDatasink(DropDatasinkRequest request) throws GPUdbException {
+        DropDatasinkResponse actualResponse_ = new DropDatasinkResponse();
+        submitRequest("/drop/datasink", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Drops an existing <a href="../../../../../concepts/data_sinks/"
+     * target="_top">data sink</a>.
+     * <p>
+     * By default, if any <a href="../../../../../concepts/table_monitors"
+     * target="_top">table monitors</a> use this
+     * sink as a destination, the request will be blocked unless option
+     * {@code clear_table_monitors} is
+     * {@code true}.
+     * 
+     * @param name  Name of the data sink to be dropped. Must be an existing
+     *              data sink.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DropDatasinkRequest.Options#CLEAR_TABLE_MONITORS
+     *                 CLEAR_TABLE_MONITORS}: If {@code true}, any <a
+     *                 href="../../../../../concepts/table_monitors/"
+     *                 target="_top">table monitors</a> that use this data sink
+     *                 will be cleared.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DropDatasinkRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DropDatasinkRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.DropDatasinkRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  DropDatasinkResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public DropDatasinkResponse dropDatasink(String name, Map<String, String> options) throws GPUdbException {
+        DropDatasinkRequest actualRequest_ = new DropDatasinkRequest(name, options);
+        DropDatasinkResponse actualResponse_ = new DropDatasinkResponse();
+        submitRequest("/drop/datasink", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -13683,6 +14210,133 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Grant user or role the specified permission on the specified object.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  GrantPermissionResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public GrantPermissionResponse grantPermission(GrantPermissionRequest request) throws GPUdbException {
+        GrantPermissionResponse actualResponse_ = new GrantPermissionResponse();
+        submitRequest("/grant/permission", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Grant user or role the specified permission on the specified object.
+     * 
+     * @param principal  Name of the user or role for which the permission is
+     *                   being granted.  Must be an existing user or role.  The
+     *                   default value is ''.
+     * @param object  Name of object permission is being granted to.  It is
+     *                recommended to use a fully-qualified name when possible.
+     * @param objectType  The type of object being granted to
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#CREDENTIAL
+     *                    CREDENTIAL}: Credential
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#DATASINK
+     *                    DATASINK}: Data Sink
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#DATASOURCE
+     *                    DATASOURCE}: Data Source
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#DIRECTORY
+     *                    DIRECTORY}: KIFS File Directory
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#GRAPH
+     *                    GRAPH}: A Graph object
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#PROC
+     *                    PROC}: UDF Procedure
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#SCHEMA
+     *                    SCHEMA}: Schema
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#SQL_PROC
+     *                    SQL_PROC}: SQL Procedure
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#SYSTEM
+     *                    SYSTEM}: System-level access
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.ObjectType#TABLE
+     *                    TABLE}: Database Table
+     *                    </ul>
+     * @param permission  Permission being granted.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#ADMIN
+     *                    ADMIN}: Full read/write and administrative access on
+     *                    the object.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#CONNECT
+     *                    CONNECT}: Connect access on the given data source or
+     *                    data sink.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#DELETE
+     *                    DELETE}: Delete rows from tables.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#EXECUTE
+     *                    EXECUTE}: Ability to Execute the Procedure object.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#INSERT
+     *                    INSERT}: Insert access to tables.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#READ
+     *                    READ}: Ability to read, list and use the object.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#UPDATE
+     *                    UPDATE}: Update access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#USER_ADMIN
+     *                    USER_ADMIN}: Access to administer users and roles
+     *                    that do not have system_admin permission.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.GrantPermissionRequest.Permission#WRITE
+     *                    WRITE}: Access to write, change and delete objects.
+     *                    </ul>
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#COLUMNS
+     *                 COLUMNS}: Apply table security to these columns,
+     *                 comma-separated.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.GrantPermissionRequest.Options#FILTER_EXPRESSION
+     *                 FILTER_EXPRESSION}: Optional filter expression to apply
+     *                 to this grant.  Only rows that match the filter will be
+     *                 affected.  The default value is ''.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  GrantPermissionResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public GrantPermissionResponse grantPermission(String principal, String object, String objectType, String permission, Map<String, String> options) throws GPUdbException {
+        GrantPermissionRequest actualRequest_ = new GrantPermissionRequest(principal, object, objectType, permission, options);
+        GrantPermissionResponse actualResponse_ = new GrantPermissionResponse();
+        submitRequest("/grant/permission", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Grants a <a
      * href="../../../../../security/sec_concepts/#security-concepts-permissions-credential"
      * target="_top">credential-level permission</a> to a user or role.
@@ -14142,83 +14796,86 @@ public class GPUdb extends GPUdbBase {
      * Checks if the specified user has the specified permission on the
      * specified object.
      * 
-     * @param name  Name of the user for which the permission is being checked.
-     *              Must be an existing user. If blank, will use the current
-     *              user.  The default value is ''.
-     * @param target  Name of object to check for the requested permission.  It
+     * @param principal  Name of the user for which the permission is being
+     *                   checked. Must be an existing user. If blank, will use
+     *                   the current user.  The default value is ''.
+     * @param object  Name of object to check for the requested permission.  It
      *                is recommended to use a fully-qualified name when
      *                possible.
+     * @param objectType  The type of object being checked
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#CREDENTIAL
+     *                    CREDENTIAL}: Credential
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#DATASINK
+     *                    DATASINK}: Data Sink
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#DATASOURCE
+     *                    DATASOURCE}: Data Source
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#DIRECTORY
+     *                    DIRECTORY}: KiFS File Directory
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#GRAPH
+     *                    GRAPH}: A Graph object
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#PROC
+     *                    PROC}: UDF Procedure
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#SCHEMA
+     *                    SCHEMA}: Schema
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#SQL_PROC
+     *                    SQL_PROC}: SQL Procedure
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#SYSTEM
+     *                    SYSTEM}: System-level access
+     *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.ObjectType#TABLE
+     *                    TABLE}: Database Table
+     *                    </ul>
      * @param permission  Permission to check for.
      *                    Supported values:
      *                    <ul>
      *                            <li> {@link
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#ADMIN
+     *                    ADMIN}: Full read/write and administrative access on
+     *                    the object.
+     *                            <li> {@link
      *                    com.gpudb.protocol.HasPermissionRequest.Permission#CONNECT
-     *                    CONNECT}: Connect access on the given data source
+     *                    CONNECT}: Connect access on the given data source or
+     *                    data sink.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#CREDENTIAL_ADMIN
-     *                    CREDENTIAL_ADMIN}: Full read/write and administrative
-     *                    access on the credential.
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#DELETE
+     *                    DELETE}: Delete rows from tables.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#CREDENTIAL_READ
-     *                    CREDENTIAL_READ}: Ability to read and use the
-     *                    credential.
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#EXECUTE
+     *                    EXECUTE}: Ability to Execute the Procedure object.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#DIRECTORY_READ
-     *                    DIRECTORY_READ}: For files in the directory, access
-     *                    to list files, download files, or use files in server
-     *                    side functions
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#INSERT
+     *                    INSERT}: Insert access to tables.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#DIRECTORY_WRITE
-     *                    DIRECTORY_WRITE}: Access to upload files to, or
-     *                    delete files from, the directory. A user with write
-     *                    access automatically has read access
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#READ
+     *                    READ}: Ability to read, list and use the object.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#PROC_EXECUTE
-     *                    PROC_EXECUTE}: Execute access to the UDF.
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#UPDATE
+     *                    UPDATE}: Update access to the table.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#ROLE
-     *                    ROLE}: User is a member of this role (including
-     *                    indirectly).
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#USER_ADMIN
+     *                    USER_ADMIN}: Access to administer users and roles
+     *                    that do not have system_admin permission.
      *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#SQL_PROC_EXECUTE
-     *                    SQL_PROC_EXECUTE}: Execute access to the SQL proc.
-     *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#SYSTEM_ADMIN
-     *                    SYSTEM_ADMIN}: Full access to all data and system
-     *                    functions.
-     *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#SYSTEM_READ
-     *                    SYSTEM_READ}: Read-only access to all tables.
-     *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#SYSTEM_USER_ADMIN
-     *                    SYSTEM_USER_ADMIN}: Access to administer users and
-     *                    roles that do not have system_admin permission.
-     *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#SYSTEM_WRITE
-     *                    SYSTEM_WRITE}: Read and write access to all tables.
-     *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#TABLE_ADMIN
-     *                    TABLE_ADMIN}: Full read/write and administrative
-     *                    access to the table.
-     *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#TABLE_DELETE
-     *                    TABLE_DELETE}: Delete access to the table.
-     *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#TABLE_INSERT
-     *                    TABLE_INSERT}: Insert access to the table.
-     *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#TABLE_READ
-     *                    TABLE_READ}: Read access to the table.
-     *                            <li> {@link
-     *                    com.gpudb.protocol.HasPermissionRequest.Permission#TABLE_UPDATE
-     *                    TABLE_UPDATE}: Update access to the table.
+     *                    com.gpudb.protocol.HasPermissionRequest.Permission#WRITE
+     *                    WRITE}: Access to write, change and delete objects.
      *                    </ul>
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.HasPermissionRequest.Options#NO_ERROR_IF_NOT_EXISTS
      *                 NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an
-     *                 error if the provided {@code target} does not exist or
+     *                 error if the provided {@code object} does not exist or
      *                 is blank. If {@code true} then it will return {@code
      *                 false} for {@code hasPermission}.
      *                 Supported values:
@@ -14243,8 +14900,8 @@ public class GPUdb extends GPUdbBase {
      * @throws GPUdbException  if an error occurs during the operation.
      * 
      */
-    public HasPermissionResponse hasPermission(String name, String target, String permission, Map<String, String> options) throws GPUdbException {
-        HasPermissionRequest actualRequest_ = new HasPermissionRequest(name, target, permission, options);
+    public HasPermissionResponse hasPermission(String principal, String object, String objectType, String permission, Map<String, String> options) throws GPUdbException {
+        HasPermissionRequest actualRequest_ = new HasPermissionRequest(principal, object, objectType, permission, options);
         HasPermissionResponse actualResponse_ = new HasPermissionResponse();
         submitRequest("/has/permission", actualRequest_, actualResponse_, false);
         return actualResponse_;
@@ -14291,6 +14948,85 @@ public class GPUdb extends GPUdbBase {
         HasProcRequest actualRequest_ = new HasProcRequest(procName, options);
         HasProcResponse actualResponse_ = new HasProcResponse();
         submitRequest("/has/proc", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Checks if the specified user has the specified role.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  HasRoleResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public HasRoleResponse hasRole(HasRoleRequest request) throws GPUdbException {
+        HasRoleResponse actualResponse_ = new HasRoleResponse();
+        submitRequest("/has/role", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Checks if the specified user has the specified role.
+     * 
+     * @param principal  Name of the user for which role membersih is being
+     *                   checked. Must be an existing user. If blank, will use
+     *                   the current user.  The default value is ''.
+     * @param role  Name of role to check for membership.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.HasRoleRequest.Options#NO_ERROR_IF_NOT_EXISTS
+     *                 NO_ERROR_IF_NOT_EXISTS}: If {@code false} will return an
+     *                 error if the provided {@code role} does not exist or is
+     *                 blank. If {@code true} then it will return {@code false}
+     *                 for {@code hasRole}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.HasRoleRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.HasRoleRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.HasRoleRequest.Options#FALSE FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.HasRoleRequest.Options#ONLY_DIRECT
+     *                 ONLY_DIRECT}: If {@code false} will search recursively
+     *                 if the {@code principal} is a member of {@code role}.
+     *                 If {@code true} then {@code principal} must directly be
+     *                 a member of {@code role}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.HasRoleRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.HasRoleRequest.Options#FALSE FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.HasRoleRequest.Options#FALSE FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  HasRoleResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public HasRoleResponse hasRole(String principal, String role, Map<String, String> options) throws GPUdbException {
+        HasRoleRequest actualRequest_ = new HasRoleRequest(principal, role, options);
+        HasRoleResponse actualResponse_ = new HasRoleResponse();
+        submitRequest("/has/role", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -17920,6 +18656,128 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
+     * Revoke user or role the specified permission on the specified object.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  RevokePermissionResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public RevokePermissionResponse revokePermission(RevokePermissionRequest request) throws GPUdbException {
+        RevokePermissionResponse actualResponse_ = new RevokePermissionResponse();
+        submitRequest("/revoke/permission", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Revoke user or role the specified permission on the specified object.
+     * 
+     * @param principal  Name of the user or role for which the permission is
+     *                   being revoked.  Must be an existing user or role.  The
+     *                   default value is ''.
+     * @param object  Name of object permission is being revoked from.  It is
+     *                recommended to use a fully-qualified name when possible.
+     * @param objectType  The type of object being revoked
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#CREDENTIAL
+     *                    CREDENTIAL}: Credential
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#DATASINK
+     *                    DATASINK}: Data Sink
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#DATASOURCE
+     *                    DATASOURCE}: Data Source
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#DIRECTORY
+     *                    DIRECTORY}: KIFS File Directory
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#GRAPH
+     *                    GRAPH}: A Graph object
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#PROC
+     *                    PROC}: UDF Procedure
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#SCHEMA
+     *                    SCHEMA}: Schema
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#SQL_PROC
+     *                    SQL_PROC}: SQL Procedure
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#SYSTEM
+     *                    SYSTEM}: System-level access
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#TABLE
+     *                    TABLE}: Database Table
+     *                    </ul>
+     * @param permission  Permission being revoked.
+     *                    Supported values:
+     *                    <ul>
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.Permission#ADMIN
+     *                    ADMIN}: Full read/write and administrative access on
+     *                    the object.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.Permission#CONNECT
+     *                    CONNECT}: Connect access on the given data source or
+     *                    data sink.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.Permission#DELETE
+     *                    DELETE}: Delete rows from tables.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.Permission#EXECUTE
+     *                    EXECUTE}: Ability to Execute the Procedure object.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.Permission#INSERT
+     *                    INSERT}: Insert access to tables.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.Permission#READ
+     *                    READ}: Ability to read, list and use the object.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.Permission#UPDATE
+     *                    UPDATE}: Update access to the table.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.Permission#USER_ADMIN
+     *                    USER_ADMIN}: Access to administer users and roles
+     *                    that do not have system_admin permission.
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.Permission#WRITE
+     *                    WRITE}: Access to write, change and delete objects.
+     *                    </ul>
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.RevokePermissionRequest.Options#COLUMNS
+     *                 COLUMNS}: Revoke table security from these columns,
+     *                 comma-separated.  The default value is ''.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  RevokePermissionResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public RevokePermissionResponse revokePermission(String principal, String object, String objectType, String permission, Map<String, String> options) throws GPUdbException {
+        RevokePermissionRequest actualRequest_ = new RevokePermissionRequest(principal, object, objectType, permission, options);
+        RevokePermissionResponse actualResponse_ = new RevokePermissionResponse();
+        submitRequest("/revoke/permission", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
      * Revokes a <a
      * href="../../../../../security/sec_concepts/#security-concepts-permissions-credential"
      * target="_top">credential-level permission</a> from a user or role.
@@ -18411,6 +19269,57 @@ public class GPUdb extends GPUdbBase {
         ShowCredentialRequest actualRequest_ = new ShowCredentialRequest(credentialName, options);
         ShowCredentialResponse actualResponse_ = new ShowCredentialResponse();
         submitRequest("/show/credential", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Shows information about a specified <a
+     * href="../../../../../concepts/data_sinks/" target="_top">data sink</a>
+     * or all data sinks.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowDatasinkResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowDatasinkResponse showDatasink(ShowDatasinkRequest request) throws GPUdbException {
+        ShowDatasinkResponse actualResponse_ = new ShowDatasinkResponse();
+        submitRequest("/show/datasink", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Shows information about a specified <a
+     * href="../../../../../concepts/data_sinks/" target="_top">data sink</a>
+     * or all data sinks.
+     * 
+     * @param name  Name of the data sink for which to retrieve information.
+     *              The name must refer to a currently existing data sink. If
+     *              '*' is specified, information about all data sinks will be
+     *              returned.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowDatasinkResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowDatasinkResponse showDatasink(String name, Map<String, String> options) throws GPUdbException {
+        ShowDatasinkRequest actualRequest_ = new ShowDatasinkRequest(name, options);
+        ShowDatasinkResponse actualResponse_ = new ShowDatasinkResponse();
+        submitRequest("/show/datasink", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -19580,6 +20489,56 @@ public class GPUdb extends GPUdbBase {
         ShowTableMetadataRequest actualRequest_ = new ShowTableMetadataRequest(tableNames, options);
         ShowTableMetadataResponse actualResponse_ = new ShowTableMetadataResponse();
         submitRequest("/show/table/metadata", actualRequest_, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Show table monitors and their properties. Table monitors are created
+     * using {@link GPUdb#createTableMonitor(CreateTableMonitorRequest)}.
+     * Returns detailed information about existing table monitors.
+     * 
+     * @param request  Request object containing the parameters for the
+     *                 operation.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowTableMonitorsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowTableMonitorsResponse showTableMonitors(ShowTableMonitorsRequest request) throws GPUdbException {
+        ShowTableMonitorsResponse actualResponse_ = new ShowTableMonitorsResponse();
+        submitRequest("/show/tablemonitors", request, actualResponse_, false);
+        return actualResponse_;
+    }
+
+
+
+    /**
+     * Show table monitors and their properties. Table monitors are created
+     * using {@link GPUdb#createTableMonitor(String, Map)}.
+     * Returns detailed information about existing table monitors.
+     * 
+     * @param monitorIds  List of monitors to be shown. An empty list or a
+     *                    single entry with an empty string returns all table
+     *                    monitors.
+     * @param options  Optional parameters.  The default value is an empty
+     *                 {@link Map}.
+     * 
+     * @return Response object containing the results of the operation.
+     * 
+     * @see  ShowTableMonitorsResponse
+     * 
+     * @throws GPUdbException  if an error occurs during the operation.
+     * 
+     */
+    public ShowTableMonitorsResponse showTableMonitors(List<String> monitorIds, Map<String, String> options) throws GPUdbException {
+        ShowTableMonitorsRequest actualRequest_ = new ShowTableMonitorsRequest(monitorIds, options);
+        ShowTableMonitorsResponse actualResponse_ = new ShowTableMonitorsResponse();
+        submitRequest("/show/tablemonitors", actualRequest_, actualResponse_, false);
         return actualResponse_;
     }
 
@@ -21116,14 +22075,15 @@ public class GPUdb extends GPUdbBase {
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
-     *                 com.gpudb.protocol.UploadFilesRequest.Options#NONE NONE}
+     *                 com.gpudb.protocol.UploadFilesRequest.Options#NONE
+     *                 NONE}: Default, indicates this is not a multipart upload
      *                         <li> {@link
      *                 com.gpudb.protocol.UploadFilesRequest.Options#INIT
      *                 INIT}: Initialize a multipart file upload
      *                         <li> {@link
      *                 com.gpudb.protocol.UploadFilesRequest.Options#UPLOAD_PART
-     *                 UPLOAD_PART}: Upload one or more parts of the specified
-     *                 multipart file upload
+     *                 UPLOAD_PART}: Uploads a part of the specified multipart
+     *                 file upload
      *                         <li> {@link
      *                 com.gpudb.protocol.UploadFilesRequest.Options#COMPLETE
      *                 COMPLETE}: Complete the specified multipart file upload

@@ -22,8 +22,9 @@ public class HasPermissionResponse implements IndexedRecord {
             .record("HasPermissionResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("name").type().stringType().noDefault()
-                .name("target").type().stringType().noDefault()
+                .name("principal").type().stringType().noDefault()
+                .name("object").type().stringType().noDefault()
+                .name("objectType").type().stringType().noDefault()
                 .name("permission").type().stringType().noDefault()
                 .name("hasPermission").type().booleanType().noDefault()
                 .name("filters").type().map().values().stringType().noDefault()
@@ -72,8 +73,9 @@ public class HasPermissionResponse implements IndexedRecord {
         private HasPermission() {  }
     }
 
-    private String name;
-    private String target;
+    private String principal;
+    private String object;
+    private String objectType;
     private String permission;
     private boolean hasPermission;
     private Map<String, String> filters;
@@ -88,43 +90,64 @@ public class HasPermissionResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Value of {@code name}
+     * @return Value of {@code principal}
      * 
      */
-    public String getName() {
-        return name;
+    public String getPrincipal() {
+        return principal;
     }
 
     /**
      * 
-     * @param name  Value of {@code name}
+     * @param principal  Value of {@code principal}
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public HasPermissionResponse setName(String name) {
-        this.name = (name == null) ? "" : name;
+    public HasPermissionResponse setPrincipal(String principal) {
+        this.principal = (principal == null) ? "" : principal;
         return this;
     }
 
     /**
      * 
-     * @return Fully-qualified value of {@code target}
+     * @return Fully-qualified value of {@code object}
      * 
      */
-    public String getTarget() {
-        return target;
+    public String getObject() {
+        return object;
     }
 
     /**
      * 
-     * @param target  Fully-qualified value of {@code target}
+     * @param object  Fully-qualified value of {@code object}
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public HasPermissionResponse setTarget(String target) {
-        this.target = (target == null) ? "" : target;
+    public HasPermissionResponse setObject(String object) {
+        this.object = (object == null) ? "" : object;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Value of {@code objectType}
+     * 
+     */
+    public String getObjectType() {
+        return objectType;
+    }
+
+    /**
+     * 
+     * @param objectType  Value of {@code objectType}
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public HasPermissionResponse setObjectType(String objectType) {
+        this.objectType = (objectType == null) ? "" : objectType;
         return this;
     }
 
@@ -259,21 +282,24 @@ public class HasPermissionResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.name;
+                return this.principal;
 
             case 1:
-                return this.target;
+                return this.object;
 
             case 2:
-                return this.permission;
+                return this.objectType;
 
             case 3:
-                return this.hasPermission;
+                return this.permission;
 
             case 4:
-                return this.filters;
+                return this.hasPermission;
 
             case 5:
+                return this.filters;
+
+            case 6:
                 return this.info;
 
             default:
@@ -296,26 +322,30 @@ public class HasPermissionResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.name = (String)value;
+                this.principal = (String)value;
                 break;
 
             case 1:
-                this.target = (String)value;
+                this.object = (String)value;
                 break;
 
             case 2:
-                this.permission = (String)value;
+                this.objectType = (String)value;
                 break;
 
             case 3:
-                this.hasPermission = (Boolean)value;
+                this.permission = (String)value;
                 break;
 
             case 4:
-                this.filters = (Map<String, String>)value;
+                this.hasPermission = (Boolean)value;
                 break;
 
             case 5:
+                this.filters = (Map<String, String>)value;
+                break;
+
+            case 6:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -336,8 +366,9 @@ public class HasPermissionResponse implements IndexedRecord {
 
         HasPermissionResponse that = (HasPermissionResponse)obj;
 
-        return ( this.name.equals( that.name )
-                 && this.target.equals( that.target )
+        return ( this.principal.equals( that.principal )
+                 && this.object.equals( that.object )
+                 && this.objectType.equals( that.objectType )
                  && this.permission.equals( that.permission )
                  && ( this.hasPermission == that.hasPermission )
                  && this.filters.equals( that.filters )
@@ -349,13 +380,17 @@ public class HasPermissionResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "name" ) );
+        builder.append( gd.toString( "principal" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.name ) );
+        builder.append( gd.toString( this.principal ) );
         builder.append( ", " );
-        builder.append( gd.toString( "target" ) );
+        builder.append( gd.toString( "object" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.target ) );
+        builder.append( gd.toString( this.object ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "objectType" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.objectType ) );
         builder.append( ", " );
         builder.append( gd.toString( "permission" ) );
         builder.append( ": " );
@@ -380,8 +415,9 @@ public class HasPermissionResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.name.hashCode();
-        hashCode = (31 * hashCode) + this.target.hashCode();
+        hashCode = (31 * hashCode) + this.principal.hashCode();
+        hashCode = (31 * hashCode) + this.object.hashCode();
+        hashCode = (31 * hashCode) + this.objectType.hashCode();
         hashCode = (31 * hashCode) + this.permission.hashCode();
         hashCode = (31 * hashCode) + ((Boolean)this.hasPermission).hashCode();
         hashCode = (31 * hashCode) + this.filters.hashCode();
