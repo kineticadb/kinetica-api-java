@@ -1,23 +1,11 @@
 package com.gpudb;
 
-import com.gpudb.protocol.ShowSystemPropertiesRequest;
-import com.gpudb.protocol.ShowSystemPropertiesResponse;
-import com.gpudb.protocol.ShowSystemStatusRequest;
-import com.gpudb.protocol.ShowSystemStatusResponse;
-import com.gpudb.protocol.ShowTableRequest;
-import com.gpudb.protocol.ShowTableResponse;
-import com.gpudb.protocol.ShowTypesRequest;
-import com.gpudb.protocol.ShowTypesResponse;
-import com.gpudb.util.ssl.X509TrustManagerBypass;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.NumberFormatException;
 import java.net.HttpURLConnection;
-import javax.net.ssl.HostnameVerifier;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.net.ssl.SSLContext;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.KeyManagementException;
@@ -39,35 +27,46 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpEntity;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.conn.ssl.TrustAllStrategy;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.xerial.snappy.Snappy;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.xerial.snappy.Snappy;
+import com.gpudb.protocol.ShowSystemPropertiesRequest;
+import com.gpudb.protocol.ShowSystemPropertiesResponse;
+import com.gpudb.protocol.ShowSystemStatusRequest;
+import com.gpudb.protocol.ShowSystemStatusResponse;
+import com.gpudb.protocol.ShowTableRequest;
+import com.gpudb.protocol.ShowTableResponse;
+import com.gpudb.protocol.ShowTypesRequest;
+import com.gpudb.protocol.ShowTypesResponse;
+import com.gpudb.util.ssl.X509TrustManagerBypass;
 
 
 
@@ -1677,7 +1676,7 @@ public abstract class GPUdbBase {
     private static final String SHOW_SYSTEM_STATUS_RESPONSE_TRUE       = "true";
     private static final String SHOW_SYSTEM_STATUS_RESPONSE_CLUSTER_OPERATION_RUNNING = "cluster_operation_running";
     private static final String SHOW_SYSTEM_STATUS_RESPONSE_CLUSTER_OPERATION_STATUS  = "cluster_operation_status";
-    private static final String SHOW_SYSTEM_STATUS_RESPONSE_CLUSTER_IRRECOVERABLE     = "irrecoverable";
+    private static final String SHOW_SYSTEM_STATUS_RESPONSE_CLUSTER_IRRECOVERABLE     = "Irrecoverable";
 
     private static final String SYSTEM_PROPERTIES_RESPONSE_HM_PORT         = "conf.hm_http_port";
     private static final String SYSTEM_PROPERTIES_RESPONSE_HEAD_FAILOVER   = "conf.np1.enable_head_failover";
@@ -2259,7 +2258,7 @@ public abstract class GPUdbBase {
             try {
                 sslContext = SSLContextBuilder
                     .create()
-                    .loadTrustMaterial( new TrustSelfSignedStrategy() )
+                    .loadTrustMaterial( new TrustAllStrategy() )
                     .build();
             } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException ex) {
             }

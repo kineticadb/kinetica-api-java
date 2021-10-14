@@ -142,7 +142,7 @@ public class ShowFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @return Timestamp at creation time for each file
+     * @return Creation time for each file, in milliseconds since epoch
      * 
      */
     public List<Long> getCreationTimes() {
@@ -151,7 +151,8 @@ public class ShowFilesResponse implements IndexedRecord {
 
     /**
      * 
-     * @param creationTimes  Timestamp at creation time for each file
+     * @param creationTimes  Creation time for each file, in milliseconds since
+     *                       epoch
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

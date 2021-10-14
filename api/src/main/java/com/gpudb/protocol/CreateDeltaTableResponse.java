@@ -15,13 +15,13 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 
 
-public class CreateMonitorTableResponse implements IndexedRecord {
+public class CreateDeltaTableResponse implements IndexedRecord {
 
     private static final Schema schema$ = SchemaBuilder
-            .record("CreateMonitorTableResponse")
+            .record("CreateDeltaTableResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("monitorTableName").type().stringType().noDefault()
+                .name("deltaTableName").type().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -31,19 +31,19 @@ public class CreateMonitorTableResponse implements IndexedRecord {
     }
 
 
-    private String monitorTableName;
+    private String deltaTableName;
     private Map<String, String> info;
 
 
-    public CreateMonitorTableResponse() {
+    public CreateDeltaTableResponse() {
     }
 
-    public String getMonitorTableName() {
-        return monitorTableName;
+    public String getDeltaTableName() {
+        return deltaTableName;
     }
 
-    public CreateMonitorTableResponse setMonitorTableName(String monitorTableName) {
-        this.monitorTableName = (monitorTableName == null) ? "" : monitorTableName;
+    public CreateDeltaTableResponse setDeltaTableName(String deltaTableName) {
+        this.deltaTableName = (deltaTableName == null) ? "" : deltaTableName;
         return this;
     }
 
@@ -51,7 +51,7 @@ public class CreateMonitorTableResponse implements IndexedRecord {
         return info;
     }
 
-    public CreateMonitorTableResponse setInfo(Map<String, String> info) {
+    public CreateDeltaTableResponse setInfo(Map<String, String> info) {
         this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
@@ -65,7 +65,7 @@ public class CreateMonitorTableResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.monitorTableName;
+                return this.deltaTableName;
 
             case 1:
                 return this.info;
@@ -80,7 +80,7 @@ public class CreateMonitorTableResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.monitorTableName = (String)value;
+                this.deltaTableName = (String)value;
                 break;
 
             case 1:
@@ -103,9 +103,9 @@ public class CreateMonitorTableResponse implements IndexedRecord {
             return false;
         }
 
-        CreateMonitorTableResponse that = (CreateMonitorTableResponse)obj;
+        CreateDeltaTableResponse that = (CreateDeltaTableResponse)obj;
 
-        return ( this.monitorTableName.equals( that.monitorTableName )
+        return ( this.deltaTableName.equals( that.deltaTableName )
                  && this.info.equals( that.info ) );
     }
 
@@ -115,9 +115,9 @@ public class CreateMonitorTableResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "monitorTableName" ) );
+        builder.append( gd.toString( "deltaTableName" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.monitorTableName ) );
+        builder.append( gd.toString( this.deltaTableName ) );
         builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
@@ -131,7 +131,7 @@ public class CreateMonitorTableResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.monitorTableName.hashCode();
+        hashCode = (31 * hashCode) + this.deltaTableName.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

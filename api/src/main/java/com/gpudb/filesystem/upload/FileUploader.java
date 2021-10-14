@@ -97,15 +97,6 @@ public class FileUploader extends FileOperation {
      */
     private void uploadFullFiles() throws GPUdbException {
 
-        String dirRoot = StringUtils.substringBefore( dirName, File.separator );
-        if( dirRoot == null ) {
-            dirRoot = dirName;
-        }
-
-        Map<String, String> createDirOptions = new HashMap<>();
-        createDirOptions.put( CreateDirectoryRequest.Options.NO_ERROR_IF_EXISTS, "true" );
-        db.createDirectory( dirRoot, createDirOptions );
-
         FullFileDispatcher fullFileDispatcher = new FullFileDispatcher( fileHandlerOptions, callback);
 
         // While iterating over the list of maps keep track of the count
@@ -193,8 +184,7 @@ public class FileUploader extends FileOperation {
 
     /**
      * This method uploads files which are candidates for multi-part uploads as
-     * determined from their size. This method first checks whether the KIFS
-     * directory exists or not and creates it if it doesn't.
+     * determined from their size.
      * Then it creates a list of {@link UploadIoJob} instances one for each
      * file to be uploaded in parts.
      *
@@ -208,15 +198,6 @@ public class FileUploader extends FileOperation {
         } else {
             multiPartInfoMap.clear();
         }
-
-        String dirRoot = StringUtils.substringBefore( dirName, File.separator );
-        if( dirRoot == null ) {
-            dirRoot = dirName;
-        }
-
-        Map<String, String> createDirOptions = new HashMap<>();
-        createDirOptions.put( CreateDirectoryRequest.Options.NO_ERROR_IF_EXISTS, CreateDirectoryRequest.Options.TRUE );
-        db.createDirectory(dirRoot, createDirOptions);
 
         // For each file in the multi part list create an IoJob instance
         for (int i = 0, multiPartListSize = multiPartList.size(); i < multiPartListSize; i++) {

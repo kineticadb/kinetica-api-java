@@ -22,11 +22,11 @@ install the jar in the local repository:
 ```
 
 
-The documentation can be found at http://www.kinetica.com/docs/7.1/index.html.
+The documentation can be found at https://docs.kinetica.com/7.1/.
 The Java specific documentation can be found at:
 
-*   http://www.kinetica.com/docs/7.1/tutorials/java_guide.html
-*   http://www.kinetica.com/docs/7.1/api/java/index.html
+* https://docs.kinetica.com/7.1/guides/java_guide/
+* https://docs.kinetica.com/7.1/api/java/
 
 
 For changes to the client-side API, please see CHANGELOG.md.  For changes

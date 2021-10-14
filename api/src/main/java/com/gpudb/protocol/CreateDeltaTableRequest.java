@@ -15,13 +15,13 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 
 
-public class CreateMonitorTableRequest implements IndexedRecord {
+public class CreateDeltaTableRequest implements IndexedRecord {
 
     private static final Schema schema$ = SchemaBuilder
-            .record("CreateMonitorTableRequest")
+            .record("CreateDeltaTableRequest")
             .namespace("com.gpudb")
             .fields()
-                .name("monitorTableName").type().stringType().noDefault()
+                .name("deltaTableName").type().stringType().noDefault()
                 .name("tableName").type().stringType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
@@ -32,29 +32,29 @@ public class CreateMonitorTableRequest implements IndexedRecord {
     }
 
 
-    private String monitorTableName;
+    private String deltaTableName;
     private String tableName;
     private Map<String, String> options;
 
 
-    public CreateMonitorTableRequest() {
-        monitorTableName = "";
+    public CreateDeltaTableRequest() {
+        deltaTableName = "";
         tableName = "";
         options = new LinkedHashMap<>();
     }
 
-    public CreateMonitorTableRequest(String monitorTableName, String tableName, Map<String, String> options) {
-        this.monitorTableName = (monitorTableName == null) ? "" : monitorTableName;
+    public CreateDeltaTableRequest(String deltaTableName, String tableName, Map<String, String> options) {
+        this.deltaTableName = (deltaTableName == null) ? "" : deltaTableName;
         this.tableName = (tableName == null) ? "" : tableName;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
-    public String getMonitorTableName() {
-        return monitorTableName;
+    public String getDeltaTableName() {
+        return deltaTableName;
     }
 
-    public CreateMonitorTableRequest setMonitorTableName(String monitorTableName) {
-        this.monitorTableName = (monitorTableName == null) ? "" : monitorTableName;
+    public CreateDeltaTableRequest setDeltaTableName(String deltaTableName) {
+        this.deltaTableName = (deltaTableName == null) ? "" : deltaTableName;
         return this;
     }
 
@@ -62,7 +62,7 @@ public class CreateMonitorTableRequest implements IndexedRecord {
         return tableName;
     }
 
-    public CreateMonitorTableRequest setTableName(String tableName) {
+    public CreateDeltaTableRequest setTableName(String tableName) {
         this.tableName = (tableName == null) ? "" : tableName;
         return this;
     }
@@ -71,7 +71,7 @@ public class CreateMonitorTableRequest implements IndexedRecord {
         return options;
     }
 
-    public CreateMonitorTableRequest setOptions(Map<String, String> options) {
+    public CreateDeltaTableRequest setOptions(Map<String, String> options) {
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
         return this;
     }
@@ -85,7 +85,7 @@ public class CreateMonitorTableRequest implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.monitorTableName;
+                return this.deltaTableName;
 
             case 1:
                 return this.tableName;
@@ -103,7 +103,7 @@ public class CreateMonitorTableRequest implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.monitorTableName = (String)value;
+                this.deltaTableName = (String)value;
                 break;
 
             case 1:
@@ -130,9 +130,9 @@ public class CreateMonitorTableRequest implements IndexedRecord {
             return false;
         }
 
-        CreateMonitorTableRequest that = (CreateMonitorTableRequest)obj;
+        CreateDeltaTableRequest that = (CreateDeltaTableRequest)obj;
 
-        return ( this.monitorTableName.equals( that.monitorTableName )
+        return ( this.deltaTableName.equals( that.deltaTableName )
                  && this.tableName.equals( that.tableName )
                  && this.options.equals( that.options ) );
     }
@@ -143,9 +143,9 @@ public class CreateMonitorTableRequest implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "monitorTableName" ) );
+        builder.append( gd.toString( "deltaTableName" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.monitorTableName ) );
+        builder.append( gd.toString( this.deltaTableName ) );
         builder.append( ", " );
         builder.append( gd.toString( "tableName" ) );
         builder.append( ": " );
@@ -163,7 +163,7 @@ public class CreateMonitorTableRequest implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.monitorTableName.hashCode();
+        hashCode = (31 * hashCode) + this.deltaTableName.hashCode();
         hashCode = (31 * hashCode) + this.tableName.hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
