@@ -72,28 +72,3 @@ Then, to run the example, in the target directory, run the following command:
 Please make sure that Kinetica is running at the URL and port specified in
 line 4 of example/src/main/java/com/gpudb/example/Example.java (the default
 is "http://localhost:9191").
-
-
-## Notes
-
-Since the 7.0.20.3 version of the API, due to the org.apache.avro dependency
-having been increased to 1.10.1 for security purposes, applications using this
-API may get the following innocuous warning logged:
-
-   ```Failed to load class org.slf4j.impl.StaticLoggerBinder```
-
-This happens due to `http://www.slf4j.org/codes.html#StaticLoggerBinder`, and
-according to SLF4J's guidance, this API does not include any SLF4J binding so
-that we do not inadvertantly force any specific binding on the client application.
-The end-user application is free to choose their own binding; or if no logging is
-used, then simply use the no-operation logger implementation by including the
-following dependency in the application's POM:
-
-   ```<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-nop -->
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-nop</artifactId>
-        <version>1.7.30</version>
-        <scope>test</scope>
-    </dependency>
-   ```

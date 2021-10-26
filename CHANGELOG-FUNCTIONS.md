@@ -2,26 +2,11 @@
 
 ## Version 7.0
 
-### Version 7.0.20.0 - 2020-11-18
-
-#### Changed Endpoints
-
-##### Non-breaking Changes
-- Added ``execute_as`` additional_info map key to ``/show/sql/proc`` response.
-
-
-
 ### Version 7.0.19.0 - 2020-08-24
-
-#### Changed Endpoints
-
-##### Non-breaking Changes
--   Added 'output_edge_path' (default=false) and 'output_wkt_path' (default=true)
-    options for turning on and off ability to export out aggregated path lists
-    columns onto the solutioon table for the path solvers of /solve/graph
-    endpoint for more speed.
--   /create/table endpoint: added "SERIES" to the ``valid_choices`` for the
-    ``partition_type``
+- Added 'output_edge_path' (default=false) and 'output_wkt_path' (default=true)
+  options for turning on and off ability to export out aggregated path lists
+  columns onto the solutioon table for the path solvers of /solve/graph endpoint
+  for more speed. 
 
 
 ### Version 7.0.18.0 - 2020-07-30
@@ -35,7 +20,6 @@
   manipulation of transparency in class-break visualization.
 
 ##### Breaking Changes
-
 
 ### Version 7.0.17.0 - 2020-07-06
 

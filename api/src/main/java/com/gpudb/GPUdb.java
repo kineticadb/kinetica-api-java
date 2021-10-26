@@ -5098,10 +5098,11 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates an instance (proc) of the
-     * <a href="../../../../concepts/udf.html" target="_top">user-defined
-     * functions</a> (UDF) specified by the
-     * given command, options, and files, and makes it available for execution.
+     * Creates an instance (proc) of the user-defined function (UDF) specified
+     * by the given command, options, and files, and makes it available for
+     * execution.  For details on UDFs, see: <a
+     * href="../../../../concepts/udf.html" target="_top">User-Defined
+     * Functions</a>
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -5122,10 +5123,11 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Creates an instance (proc) of the
-     * <a href="../../../../concepts/udf.html" target="_top">user-defined
-     * functions</a> (UDF) specified by the
-     * given command, options, and files, and makes it available for execution.
+     * Creates an instance (proc) of the user-defined function (UDF) specified
+     * by the given command, options, and files, and makes it available for
+     * execution.  For details on UDFs, see: <a
+     * href="../../../../concepts/udf.html" target="_top">User-Defined
+     * Functions</a>
      * 
      * @param procName  Name of the proc to be created. Must not be the name of
      *                  a currently existing proc.
@@ -5135,53 +5137,39 @@ public class GPUdb extends GPUdbBase {
      *                               <li> {@link
      *                       com.gpudb.protocol.CreateProcRequest.ExecutionMode#DISTRIBUTED
      *                       DISTRIBUTED}: Input table data will be divided
-     *                       into data
-     *                       segments that are distributed across all nodes in
-     *                       the cluster, and the proc
-     *                       command will be invoked once per data segment in
-     *                       parallel. Output table data
-     *                       from each invocation will be saved to the same
-     *                       node as the corresponding input
-     *                       data.
+     *                       into data segments that are distributed across all
+     *                       nodes in the cluster, and the proc command will be
+     *                       invoked once per data segment in parallel. Output
+     *                       table data from each invocation will be saved to
+     *                       the same node as the corresponding input data.
      *                               <li> {@link
      *                       com.gpudb.protocol.CreateProcRequest.ExecutionMode#NONDISTRIBUTED
      *                       NONDISTRIBUTED}: The proc command will be invoked
-     *                       only once per
-     *                       execution, and will not have direct access to any
-     *                       tables named as input or
-     *                       output table parameters in the call to {@link
-     *                       GPUdb#executeProc(String, Map, Map, List, Map,
-     *                       List, Map)}.  It will,
-     *                       however, be able to access the database using
-     *                       native API calls.
+     *                       only once per execution, and will not have access
+     *                       to any input or output table data.
      *                       </ul>
      *                       The default value is {@link
      *                       com.gpudb.protocol.CreateProcRequest.ExecutionMode#DISTRIBUTED
      *                       DISTRIBUTED}.
      * @param files  A map of the files that make up the proc. The keys of the
      *               map are file names, and the values are the binary contents
-     *               of the files. The
-     *               file names may include subdirectory names (e.g.
-     *               'subdir/file') but must not
-     *               resolve to a directory above the root for the proc.  The
-     *               default value is an empty {@link Map}.
+     *               of the files. The file names may include subdirectory
+     *               names (e.g. 'subdir/file') but must not resolve to a
+     *               directory above the root for the proc.  The default value
+     *               is an empty {@link Map}.
      * @param command  The command (excluding arguments) that will be invoked
-     *                 when
-     *                 the proc is executed. It will be invoked from the
-     *                 directory containing the proc
-     *                 {@code files} and may be any command that can be
-     *                 resolved from that directory.
-     *                 It need not refer to a file actually in that directory;
-     *                 for example, it could be
-     *                 'java' if the proc is a Java application; however, any
-     *                 necessary external
-     *                 programs must be preinstalled on every database node. If
-     *                 the command refers to a
-     *                 file in that directory, it must be preceded with './' as
-     *                 per Linux convention.
-     *                 If not specified, and exactly one file is provided in
-     *                 {@code files}, that file
-     *                 will be invoked.  The default value is ''.
+     *                 when the proc is executed. It will be invoked from the
+     *                 directory containing the proc {@code files} and may be
+     *                 any command that can be resolved from that directory. It
+     *                 need not refer to a file actually in that directory; for
+     *                 example, it could be 'java' if the proc is a Java
+     *                 application; however, any necessary external programs
+     *                 must be preinstalled on every database node. If the
+     *                 command refers to a file in that directory, it must be
+     *                 preceded with './' as per Linux convention. If not
+     *                 specified, and exactly one file is provided in {@code
+     *                 files}, that file will be invoked.  The default value is
+     *                 ''.
      * @param args  An array of command-line arguments that will be passed to
      *              {@code command} when the proc is executed.  The default
      *              value is an empty {@link List}.
@@ -5836,11 +5824,6 @@ public class GPUdb extends GPUdbBase {
      *                 HASH}: Use <a
      *                 href="../../../../concepts/tables.html#partitioning-by-hash"
      *                 target="_top">hash partitioning</a>.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableRequest.Options#SERIES
-     *                 SERIES}: Use <a
-     *                 href="../../../../concepts/tables.html#partitioning-by-series"
-     *                 target="_top">series partitioning</a>.
      *                 </ul>
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateTableRequest.Options#PARTITION_KEYS
@@ -7261,19 +7244,8 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Executes a proc. This endpoint is asynchronous and does not wait for
-     * the proc to complete before returning.
-     * <p>
-     * If the proc being executed is distributed, {@code inputTableNames} &
-     * {@code inputColumnNames} may be passed to the proc to use for reading
-     * data,
-     * and {@code outputTableNames} may be passed to the proc to use for
-     * writing
-     * data.
-     * <p>
-     * If the proc being executed is non-distributed, these table parameters
-     * will be
-     * ignored.
+     * Executes a proc. This endpoint is asynchronous and does not wait for the
+     * proc to complete before returning.
      * 
      * @param request  Request object containing the parameters for the
      *                 operation.
@@ -7294,19 +7266,8 @@ public class GPUdb extends GPUdbBase {
 
 
     /**
-     * Executes a proc. This endpoint is asynchronous and does not wait for
-     * the proc to complete before returning.
-     * <p>
-     * If the proc being executed is distributed, {@code inputTableNames} &
-     * {@code inputColumnNames} may be passed to the proc to use for reading
-     * data,
-     * and {@code outputTableNames} may be passed to the proc to use for
-     * writing
-     * data.
-     * <p>
-     * If the proc being executed is non-distributed, these table parameters
-     * will be
-     * ignored.
+     * Executes a proc. This endpoint is asynchronous and does not wait for the
+     * proc to complete before returning.
      * 
      * @param procName  Name of the proc to execute. Must be the name of a
      *                  currently existing proc.
@@ -7318,42 +7279,32 @@ public class GPUdb extends GPUdbBase {
      *                   parameter and its value.  The default value is an
      *                   empty {@link Map}.
      * @param inputTableNames  Names of the tables containing data to be passed
-     *                         to the
-     *                         proc. Each name specified must be the name of a
-     *                         currently existing table.
-     *                         If no table names are specified, no data will be
-     *                         passed to the proc.  This
-     *                         parameter is ignored if the proc has a
-     *                         non-distributed execution mode.  The default
-     *                         value is an empty {@link List}.
+     *                         to the proc. Each name specified must be the
+     *                         name of a currently existing table. If no table
+     *                         names are specified, no data will be passed to
+     *                         the proc.  The default value is an empty {@link
+     *                         List}.
      * @param inputColumnNames  Map of table names from {@code inputTableNames}
-     *                          to lists
-     *                          of names of columns from those tables that will
-     *                          be passed to the proc. Each
-     *                          column name specified must be the name of an
-     *                          existing column in the
-     *                          corresponding table. If a table name from
-     *                          {@code inputTableNames} is not
+     *                          to lists of names of columns from those tables
+     *                          that will be passed to the proc. Each column
+     *                          name specified must be the name of an existing
+     *                          column in the corresponding table. If a table
+     *                          name from {@code inputTableNames} is not
      *                          included, all columns from that table will be
-     *                          passed to the proc.  This
-     *                          parameter is ignored if the proc has a
-     *                          non-distributed execution mode.  The default
-     *                          value is an empty {@link Map}.
+     *                          passed to the proc.  The default value is an
+     *                          empty {@link Map}.
      * @param outputTableNames  Names of the tables to which output data from
-     *                          the proc will
-     *                          be written.  If a specified table does not
-     *                          exist, it will automatically be
+     *                          the proc will be written. If a specified table
+     *                          does not exist, it will automatically be
      *                          created with the same schema as the
-     *                          corresponding table (by order) from
-     *                          {@code inputTableNames}, excluding any primary
-     *                          and shard keys. If a specified
-     *                          table is a non-persistent result table, it must
-     *                          not have primary or shard keys.
-     *                          If no table names are specified, no output data
-     *                          can be returned from the proc.
-     *                          This parameter is ignored if the proc has a
-     *                          non-distributed execution mode.  The default
-     *                          value is an empty {@link List}.
+     *                          corresponding table (by order) from {@code
+     *                          inputTableNames}, excluding any primary and
+     *                          shard keys. If a specified table is a
+     *                          non-persistent result table, it must not have
+     *                          primary or shard keys. If no table names are
+     *                          specified, no output data can be returned from
+     *                          the proc.  The default value is an empty {@link
+     *                          List}.
      * @param options  Optional parameters.
      *                 <ul>
      *                         <li> {@link
@@ -15716,8 +15667,8 @@ public class GPUdb extends GPUdbBase {
 
 
 
-    public VisualizeImageClassbreakResponse visualizeImageClassbreak(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String symbolColumnName, String geometryColumnName, List<List<String>> trackIds, String cbAttr, List<String> cbVals, String cbPointcolorAttr, List<String> cbPointcolorVals, String cbPointalphaAttr, List<String> cbPointalphaVals, String cbPointsizeAttr, List<String> cbPointsizeVals, String cbPointshapeAttr, List<String> cbPointshapeVals, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options, List<Integer> cbTransparencyVec) throws GPUdbException {
-        VisualizeImageClassbreakRequest actualRequest_ = new VisualizeImageClassbreakRequest(tableNames, worldTableNames, xColumnName, yColumnName, symbolColumnName, geometryColumnName, trackIds, cbAttr, cbVals, cbPointcolorAttr, cbPointcolorVals, cbPointalphaAttr, cbPointalphaVals, cbPointsizeAttr, cbPointsizeVals, cbPointshapeAttr, cbPointshapeVals, minX, maxX, minY, maxY, width, height, projection, bgColor, styleOptions, options, cbTransparencyVec);
+    public VisualizeImageClassbreakResponse visualizeImageClassbreak(List<String> tableNames, List<String> worldTableNames, String xColumnName, String yColumnName, String geometryColumnName, List<List<String>> trackIds, String cbAttr, List<String> cbVals, String cbPointcolorAttr, List<String> cbPointcolorVals, String cbPointalphaAttr, List<String> cbPointalphaVals, String cbPointsizeAttr, List<String> cbPointsizeVals, String cbPointshapeAttr, List<String> cbPointshapeVals, double minX, double maxX, double minY, double maxY, int width, int height, String projection, long bgColor, Map<String, List<String>> styleOptions, Map<String, String> options, List<Integer> cbTransparencyVec) throws GPUdbException {
+        VisualizeImageClassbreakRequest actualRequest_ = new VisualizeImageClassbreakRequest(tableNames, worldTableNames, xColumnName, yColumnName, geometryColumnName, trackIds, cbAttr, cbVals, cbPointcolorAttr, cbPointcolorVals, cbPointalphaAttr, cbPointalphaVals, cbPointsizeAttr, cbPointsizeVals, cbPointshapeAttr, cbPointshapeVals, minX, maxX, minY, maxY, width, height, projection, bgColor, styleOptions, options, cbTransparencyVec);
         VisualizeImageClassbreakResponse actualResponse_ = new VisualizeImageClassbreakResponse();
         submitRequest("/visualize/image/classbreak", actualRequest_, actualResponse_, false);
         return actualResponse_;

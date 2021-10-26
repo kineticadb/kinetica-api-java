@@ -107,7 +107,7 @@ public class VisualizeVideoRequest implements IndexedRecord {
 
         public static final String HOLLOWDIAMOND = "hollowdiamond";
 
-        public static final String SYMBOLCODE = "symbolcode";
+        public static final String SYMBOLCODE = "SYMBOLCODE";
 
         public static final String SHAPELINEWIDTHS = "shapelinewidths";
 

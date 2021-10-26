@@ -893,6 +893,8 @@ public abstract class GPUdbBase {
         // No override; defer to the HA process for synchronizing
         // endpoints (which has different logic for different endpoints)
         DEFAULT( "none" ),
+        // Don't replicate any endpoint calls
+        NONE( "no_repl" ),
         // Synchronize all endpoint calls
         SYNCHRONOUS( "sync" ),
         // Do NOT synchronize any endpoint call

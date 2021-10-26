@@ -9,11 +9,11 @@
     <repositories>
         <repository>
             <id>gisfed-releases</id>
-            <url>http://files.kinetica.com/nexus/content/repositories/releases/</url>
+            <url>https://nexus.kinetica.com/repository/releases/</url>
         </repository>
         <repository>
             <id>gisfed-snapshots</id>
-            <url>http://files.kinetica.com/nexus/content/repositories/snapshots</url>
+            <url>https://nexus.kinetica.com/repository/snapshots</url>
         </repository>
     </repositories>
 

@@ -20,10 +20,10 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericData;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
 
 /**
  * Immutable collection of metadata about a GPUdb type.
@@ -57,7 +57,7 @@ public final class Type implements Serializable {
             BYTES
         }
 
-
+        
         /**
          * An enumeration of all the Kinetica column types (including
          * sub-types that are determined by the properties used).
@@ -98,7 +98,7 @@ public final class Type implements Serializable {
             WKB
         }
 
-
+        
         private transient String name;
         private transient Class<?> type;
         private transient boolean isNullable;
@@ -264,7 +264,7 @@ public final class Type implements Serializable {
                     columnType = ColumnType.WKB;
                 }
             }
-
+            
         }   // end init
 
         /**
@@ -454,7 +454,7 @@ public final class Type implements Serializable {
 
 
     /**
-     * Creates a {@link Type} object with the specified dynamic schema metadata and
+     * Creates a {@link Type} object with the specified dynamic schema metadata and 
      * encoded dynamic table data.
      *
      * @param schemaString   a String object containing the dynamic schema
@@ -493,7 +493,7 @@ public final class Type implements Serializable {
         // The encoded response is structured column-based; so any element's
         // size (i.e. list size) gives the total number of records
         int recordCount = ((List<?>)data.get(0)).size();
-
+        
         // The number of columns given in the encoded data must match
         // the given schema string
         if (expressions.size() < fieldCount)
@@ -636,7 +636,7 @@ public final class Type implements Serializable {
         return new Type("", columns);
     }
 
-
+    
     private transient String label;
     private transient List<Column> columns;
     private transient Map<String, Integer> columnMap;
@@ -781,7 +781,7 @@ public final class Type implements Serializable {
 
         JsonNode rootType = root.get("type");
 
-        if (rootType == null || !"record".equals(rootType.textValue())) {
+        if (rootType == null || !"record".equals(rootType.getTextValue())) {
             throw new IllegalArgumentException("Schema must be of type record.");
         }
 
@@ -791,7 +791,7 @@ public final class Type implements Serializable {
             throw new IllegalArgumentException("Schema has no fields.");
         }
 
-        Iterator<JsonNode> fieldIterator = fields.elements();
+        Iterator<JsonNode> fieldIterator = fields.getElements();
 
         while (fieldIterator.hasNext()) {
             JsonNode field = fieldIterator.next();
@@ -806,7 +806,7 @@ public final class Type implements Serializable {
                 throw new IllegalArgumentException("Schema has unnamed field.");
             }
 
-            String columnName = fieldName.textValue();
+            String columnName = fieldName.getTextValue();
 
             if (columnMap.containsKey(columnName)) {
                  throw new IllegalArgumentException("Duplicate field name " + columnName + ".");
@@ -826,16 +826,16 @@ public final class Type implements Serializable {
             boolean isNullable = false;
 
             if (fieldType.isTextual()) {
-                fieldTypeString = fieldType.textValue();
+                fieldTypeString = fieldType.getTextValue();
             } else {
-                Iterator<JsonNode> fieldTypeIterator = fieldType.elements();
+                Iterator<JsonNode> fieldTypeIterator = fieldType.getElements();
 
                 while (fieldTypeIterator.hasNext()) {
                     JsonNode fieldTypeElement = fieldTypeIterator.next();
                     boolean valid = false;
 
                     if (fieldTypeElement.isTextual()) {
-                        String fieldTypeElementString = fieldTypeElement.textValue();
+                        String fieldTypeElementString = fieldTypeElement.getTextValue();
 
                         if (fieldTypeString != null && fieldTypeElementString.equals("null")) {
                             valid = true;

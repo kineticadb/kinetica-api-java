@@ -1,33 +1,21 @@
 package com.gpudb;
 
 import com.gpudb.GPUdbBase.GPUdbExitException;
-import com.gpudb.protocol.AdminShowShardsRequest;
-import com.gpudb.protocol.AdminShowShardsResponse;
-import com.gpudb.protocol.InsertRecordsRequest;
-import com.gpudb.protocol.InsertRecordsResponse;
-import com.gpudb.protocol.RawInsertRecordsRequest;
-import com.gpudb.protocol.ShowTableResponse;
+import com.gpudb.protocol.*;
+import org.apache.avro.generic.IndexedRecord;
+import org.apache.commons.lang3.mutable.MutableLong;
+import org.apache.log4j.Level;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDateTime;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
-import org.apache.avro.generic.IndexedRecord;
-import org.apache.commons.lang3.mutable.MutableLong;
 
 /**
  * Object that manages the insertion into GPUdb of large numbers of records in

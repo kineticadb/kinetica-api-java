@@ -65,11 +65,6 @@ public class ShowSqlProcResponse implements IndexedRecord {
          */
         public static final String EXECUTE_INTERVAL = "execute_interval";
 
-        /**
-         * The periodic execution impersonate user.  The default value is ''.
-         */
-        public static final String EXECUTE_AS = "execute_as";
-
         private AdditionalInfo() {  }
     }
 
