@@ -2,11 +2,16 @@
 
 ## Version 7.0
 
+### Version 7.0.19.5 - 2021-10-29
+
+#### Added
+-   Option for automatically flushing the BulkInserter at a given delay
+
+
 ### Version 7.0.19.4 - 2021-10-26
 
 #### Added
 -   Option for not synchronizing requests via HA
--   Option for automatically flushing the BulkInserter at a given delay
 
 
 ### Version 7.0.19.3 - 2021-02-01

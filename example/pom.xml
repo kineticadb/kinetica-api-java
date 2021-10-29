@@ -6,6 +6,11 @@
     <version>1.0</version>
     <packaging>jar</packaging>
 
+    <properties>
+        <gpudb-api.version>7.0.19.5</gpudb-api.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <repositories>
         <repository>
             <id>gisfed-releases</id>
@@ -16,6 +21,14 @@
             <url>https://nexus.kinetica.com/repository/snapshots</url>
         </repository>
     </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.gpudb</groupId>
+            <artifactId>gpudb-api</artifactId>
+            <version>${gpudb-api.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -47,17 +60,4 @@
         </plugins>
     </build>
 
-
-    <dependencies>
-        <dependency>
-            <groupId>com.gpudb</groupId>
-            <artifactId>gpudb-api</artifactId>
-            <version>[7.0.19.0,7.0.20.0)</version>
-        </dependency>
-    </dependencies>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-    </properties>
 </project>

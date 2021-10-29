@@ -111,12 +111,121 @@ public class BulkInserter<T> {
         }
     }
 
+    /**
+     * This class facilitates customizing the behavior of automatic flush in {@link BulkInserter}
+     * The default value of the 'flushInterval' is set to a negative value to indicate that
+     * the automatic flush feature is not needed. If the default values are passed in for the
+     * {@link FlushOptions} instance to the constructors it is mandatory to call the method
+     * {@link #flush()} so that the records are actually saved to the table.
+     *
+     * @see #flush()
+     */
+    public static final class FlushOptions {
+
+        public static final int NO_PERIODIC_FLUSH = -1;
+        public static final boolean FLUSH_WHEN_FULL = true;
+
+        private int flushInterval; // in seconds
+        private boolean flushWhenFull;
+
+        /**
+         * This method returns an instance of {@link FlushOptions} with default values.
+         * @return - a new instance of {@link FlushOptions} class
+         */
+        public static FlushOptions defaultOptions() {
+            return new FlushOptions();
+        }
+
+        /**
+         * Default constructor
+         */
+        public FlushOptions() {
+            this.flushInterval = NO_PERIODIC_FLUSH;
+            this.flushWhenFull = FLUSH_WHEN_FULL;
+        }
+
+        /**
+         * Constructor with all members
+         * @param flushWhenFull - boolean value indicating whether to flush only full queues
+         * @param flushInterval - the time interval in seconds to execute flush
+         */
+        public FlushOptions(boolean flushWhenFull, int flushInterval) {
+            this.flushWhenFull = flushWhenFull;
+            this.flushInterval = flushInterval < 0 ? NO_PERIODIC_FLUSH : flushInterval;
+        }
+
+        public boolean isFlushWhenFull() {
+            return flushWhenFull;
+        }
+
+        /**
+         * Sets the flag to set whether to flush when queues are full or not
+         * @param flushWhenFull - boolean value to indicate whether to flush only full queues
+         */
+        public void setFlushWhenFull(boolean flushWhenFull) {
+            this.flushWhenFull = flushWhenFull;
+        }
+
+        public int getFlushInterval() {
+            return flushInterval;
+        }
+
+        /**
+         * Sets the flush interval
+         * @param flushInterval - time in seconds
+         */
+        public void setFlushInterval(int flushInterval) {
+            this.flushInterval = flushInterval;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            FlushOptions that = (FlushOptions) o;
+            return getFlushInterval() == that.getFlushInterval() && isFlushWhenFull() == that.isFlushWhenFull();
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(getFlushInterval(), isFlushWhenFull());
+        }
+    }
+
+    /**
+     * This is a {@link Runnable} class that is executed by the internal scheduler to perform the automatic flushes
+     * periodically.
+     */
+    private final class TimedFlushTask implements Runnable {
+
+        private final BulkInserter<T> thisInserter;
+
+        public TimedFlushTask( BulkInserter<T> thisInserter ) {
+            this.thisInserter = thisInserter;
+        }
+
+        @Override
+        public void run() {
+            GPUdbLogger.debug_with_info("Fired TimedFlushTask at : " + LocalDateTime.now());
+            try {
+                if( thisInserter.getTimedFlushOptions().isFlushWhenFull())
+                    thisInserter.flushFullQueues( thisInserter.getRetryCount() );
+                else
+                    thisInserter.flush();
+
+                thisInserter.lastFlushTime = Instant.now();
+
+            } catch (InsertException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     /**
      * A callable class that stores a list of records to insert and can also insert
      * those records in its call() method.
      */
-    private static final class WorkerQueue<T> implements Callable {
+    private static final class WorkerQueue<T> implements Callable< WorkerQueueInsertionResult<T> > {
         private final GPUdb gpudb;
         private final URL url;
         private final String tableName;
@@ -202,17 +311,13 @@ public class BulkInserter<T> {
          * Returns if the queue is full (based on the capacity).
          */
         public boolean isQueueFull() {
-            if (queue.size() >= capacity) {
-                return true;
-            } else {
-                return false;
-            }
+            return queue.size() >= capacity;
         }
 
 
         /**
          * Inserts the records in the queue.  Returns a {@link
-         * com.gpudb.GPUdbBase.WorkerQueueInsertionResult} object
+         * WorkerQueueInsertionResult} object
          * containing the result of the insertion, or null if no
          * insertion was attempted.
          */
@@ -422,6 +527,9 @@ public class BulkInserter<T> {
     private final RecordKeyBuilder<T> primaryKeyBuilder;
     private final RecordKeyBuilder<T> shardKeyBuilder;
     private final ExecutorService workerExecutorService;
+    private ScheduledExecutorService timedFlushExecutorService;
+    private FlushOptions flushOptions;
+    private Instant lastFlushTime;
     private final boolean isReplicatedTable;
     private final boolean isMultiHeadEnabled;
     private final boolean useHeadNode;
@@ -455,8 +563,12 @@ public class BulkInserter<T> {
      *
      * @see com.gpudb.protocol.InsertRecordsRequest.Options
      */
-    public BulkInserter(GPUdb gpudb, String tableName, Type type, int batchSize, Map<String, String> options) throws GPUdbException {
-        this(gpudb, tableName, type, null, batchSize, options, null);
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        Type type,
+                        int batchSize,
+                        Map<String, String> options) throws GPUdbException {
+        this(gpudb, tableName, type, null, batchSize, options, null, FlushOptions.defaultOptions());
     }
 
     /**
@@ -479,8 +591,45 @@ public class BulkInserter<T> {
      *
      * @see com.gpudb.protocol.InsertRecordsRequest.Options
      */
-    public BulkInserter(GPUdb gpudb, String tableName, Type type, int batchSize, Map<String, String> options, com.gpudb.WorkerList workers) throws GPUdbException {
-        this(gpudb, tableName, type, null, batchSize, options, workers);
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        Type type,
+                        int batchSize,
+                        Map<String, String> options,
+                        com.gpudb.WorkerList workers) throws GPUdbException {
+        this(gpudb, tableName, type, null, batchSize, options, workers, FlushOptions.defaultOptions());
+    }
+
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     *
+     * @param gpudb      the GPUdb instance to insert records into
+     * @param tableName  name of the table to insert records into
+     * @param type       the type of records being inserted
+     * @param batchSize  the number of records to insert into GPUdb at a time
+     *                   (records will queue until this number is reached); for
+     *                   multi-head ingest, this value is per worker
+     * @param options    optional parameters to pass to GPUdb while inserting
+     *                   ({@code null} for no parameters)
+     * @param workers    worker list for multi-head ingest ({@code null} to
+     *                   disable multi-head ingest)
+     * @param flushOptions - instance of {@link FlushOptions} class
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     * @see FlushOptions
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        Type type,
+                        int batchSize,
+                        Map<String, String> options,
+                        com.gpudb.WorkerList workers,
+                        FlushOptions flushOptions) throws GPUdbException {
+        this(gpudb, tableName, type, null, batchSize, options, workers, flushOptions);
     }
 
     /**
@@ -502,8 +651,12 @@ public class BulkInserter<T> {
      *
      * @see com.gpudb.protocol.InsertRecordsRequest.Options
      */
-    public BulkInserter(GPUdb gpudb, String tableName, TypeObjectMap<T> typeObjectMap, int batchSize, Map<String, String> options) throws GPUdbException {
-        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, null);
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        TypeObjectMap<T> typeObjectMap,
+                        int batchSize,
+                        Map<String, String> options) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, null, FlushOptions.defaultOptions());
     }
 
     /**
@@ -528,12 +681,59 @@ public class BulkInserter<T> {
      *
      * @see com.gpudb.protocol.InsertRecordsRequest.Options
      */
-    public BulkInserter(GPUdb gpudb, String tableName, TypeObjectMap<T> typeObjectMap, int batchSize, Map<String, String> options, com.gpudb.WorkerList workers) throws GPUdbException {
-        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers);
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        TypeObjectMap<T> typeObjectMap,
+                        int batchSize,
+                        Map<String, String> options,
+                        com.gpudb.WorkerList workers) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers, FlushOptions.defaultOptions());
     }
 
+    /**
+     * Creates a {@link BulkInserter} with the specified parameters.
+     *
+     * @param gpudb          the GPUdb instance to insert records into
+     * @param tableName      name of the table to insert records into
+     * @param typeObjectMap  type object map for the type of records being
+     *                       inserted
+     * @param batchSize      the number of records to insert into GPUdb at a
+     *                       time (records will queue until this number is
+     *                       reached); for multi-head ingest, this value is per
+     *                       worker
+     * @param options        optional parameters to pass to GPUdb while
+     *                       inserting ({@code null} for no parameters)
+     * @param workers        worker list for multi-head ingest ({@code null} to
+     *                       disable multi-head ingest)
+     * @param flushOptions - instance of timed flush options {@link FlushOptions}
+     *
+     * @throws GPUdbException if a configuration error occurs
+     *
+     * @throws IllegalArgumentException if an invalid parameter is specified
+     *
+     * @see com.gpudb.protocol.InsertRecordsRequest.Options
+     * @see FlushOptions
+     */
+    public BulkInserter(GPUdb gpudb,
+                        String tableName,
+                        TypeObjectMap<T> typeObjectMap,
+                        int batchSize,
+                        Map<String, String> options,
+                        com.gpudb.WorkerList workers,
+                        FlushOptions flushOptions) throws GPUdbException {
+        this(gpudb, tableName, typeObjectMap.getType(), typeObjectMap, batchSize, options, workers, flushOptions);
+    }
 
-    private BulkInserter(GPUdb gpudb, String tableName, Type type, TypeObjectMap<T> typeObjectMap, int batchSize, Map<String, String> options, com.gpudb.WorkerList workers) throws GPUdbException {
+    private BulkInserter(GPUdb gpudb,
+                         String tableName,
+                         Type type,
+                         TypeObjectMap<T> typeObjectMap,
+                         int batchSize,
+                         Map<String, String> options,
+                         com.gpudb.WorkerList workers,
+                         FlushOptions flushOptions) throws GPUdbException {
+
+        GPUdbLogger.initializeLogger(Level.ERROR);
 
         haFailoverLock = new Object();
 
@@ -541,6 +741,7 @@ public class BulkInserter<T> {
         this.tableName = tableName;
         this.typeObjectMap = typeObjectMap;
         this.workerList    = workers;
+        this.flushOptions = ( flushOptions == null ) ? FlushOptions.defaultOptions() : flushOptions;
 
         // Initialize the thread pool for workers based on the resources
         // available on the system
@@ -626,7 +827,7 @@ public class BulkInserter<T> {
         // Save whether this table has a primary key
         this.hasPrimaryKey = (this.primaryKeyBuilder != null);
 
-        // And wheter we need to update records with existing primary keys
+        // And whether we need to update records with existing primary keys
         this.updateOnExistingPk = ( (options != null)
                                     && options.containsKey( InsertRecordsRequest
                                                             .Options
@@ -653,7 +854,7 @@ public class BulkInserter<T> {
                     } else {
                         URL insertURL = GPUdbBase.appendPathToURL( url,
                                                                    "/insert/records" );
-                        this.workerQueues.add(new WorkerQueue<T>( this.gpudb,
+                        this.workerQueues.add(new WorkerQueue<>( this.gpudb,
                                                                   insertURL,
                                                                   this.tableName,
                                                                   batchSize,
@@ -675,7 +876,7 @@ public class BulkInserter<T> {
                                                            "/insert/records" );
                 }
 
-                this.workerQueues.add( new WorkerQueue<T>( this.gpudb, insertURL,
+                this.workerQueues.add( new WorkerQueue<>( this.gpudb, insertURL,
                                                            this.tableName,
                                                            batchSize,
                                                            (primaryKeyBuilder != null),
@@ -688,8 +889,51 @@ public class BulkInserter<T> {
         } catch (MalformedURLException ex) {
             throw new GPUdbException(ex.getMessage(), ex);
         }
+
+        // Create the scheduler only if the flush interval has been set to a valid value by the user.
+        // The default value is -1 to indicate that automatic flush is not called for
+        if( this.flushOptions.getFlushInterval() > 0 ) {
+            timedFlushExecutorService = Executors.newSingleThreadScheduledExecutor();
+            timedFlushExecutorService.scheduleWithFixedDelay(new TimedFlushTask(this),
+                    this.flushOptions.getFlushInterval(),
+                    this.flushOptions.getFlushInterval(),
+                    TimeUnit.SECONDS);
+        }
     }
 
+    /**
+     * Returns the list of {@link BulkInserter.WorkerQueue} for the {@link BulkInserter}
+     * instance.
+     * @return - the list of {@link BulkInserter.WorkerQueue} objects
+     */
+    public List<WorkerQueue<T>> getWorkerQueues() {
+        return new ArrayList<>(this.workerQueues);
+    }
+
+    public FlushOptions getTimedFlushOptions() {
+        return flushOptions;
+    }
+
+    public void setTimedFlushOptions(FlushOptions flushOptions) {
+        this.flushOptions = flushOptions;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        System.out.println("In finalize --- about to terminate scheduler at : " + LocalDateTime.now());
+        if( timedFlushExecutorService != null ) {
+            timedFlushExecutorService.shutdown();
+            try {
+                if (!timedFlushExecutorService.awaitTermination(3000, TimeUnit.MILLISECONDS)) {
+                    timedFlushExecutorService.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                timedFlushExecutorService.shutdownNow();
+            }
+
+        }
+    }
 
     /**
      * Use the current head node URL in a thread-safe manner.
@@ -810,7 +1054,7 @@ public class BulkInserter<T> {
      * cluster configuration.   Optionally, also reconstructs the worker
      * queues based on the new sharding.
      *
-     * @param countclusterSwitches  Integer keeping track of how many times HA
+     * @param countClusterSwitches  Integer keeping track of how many times HA
      *                              has happened.
      * @param doReconstructWorkerQueues  Boolean flag indicating if the worker
      *                                   queues ought to be re-built.
@@ -1053,6 +1297,8 @@ public class BulkInserter<T> {
         // lets the called method know that the user is forcing this flush;
         // this is important for recursive calls.
         this.flush( this.retryCount );
+        lastFlushTime = Instant.now();
+
     }
 
 
@@ -1398,7 +1644,7 @@ public class BulkInserter<T> {
         } catch (GPUdbException ex) {
             List<T> queuedRecord = new ArrayList<>();
             queuedRecord.add( record );
-            throw new InsertException( (URL)null, queuedRecord,
+            throw new InsertException( null, queuedRecord,
                                        "Unable to calculate shard/primary key; please check data for unshardable values" );
         }
 
@@ -1416,7 +1662,7 @@ public class BulkInserter<T> {
         if (workerQueue == null) {
             List<T> queuedRecord = new ArrayList<>();
             queuedRecord.add( record );
-            throw new InsertException( (URL)null, queuedRecord,
+            throw new InsertException( null, queuedRecord,
                                        "Attempted to insert into worker rank that has been removed!  Maybe need to update the shard mapping.");
         }
 
@@ -1452,7 +1698,7 @@ public class BulkInserter<T> {
         // was single threaded; so each time records got inserted to this class
         // (whether via this insert(single record) or the insert( many records ) )
         // method, we always flushed any queue that became full.  Now that we
-        // are using background threads to flush the queues paralelly, if we
+        // are using background threads to flush the queues in parallel, if we
         // don't have this 'flushWhenFull' mechanism, the insert( single record )
         // method would _never_ flush any queue.  We can't change the method's
         // behavior that much; it would break existing client code potentially.
@@ -1534,7 +1780,7 @@ public class BulkInserter<T> {
      */
     @SuppressWarnings("unchecked")
     public void insert(List<T> records) throws InsertException {
-        // Try to insert all the records with the alotted retry count
+        // Try to insert all the records with the allotted retry count
         this.insert( records, this.retryCount );
     }
 }
