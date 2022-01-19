@@ -2,6 +2,12 @@
 
 ## Version 7.0
 
+### Version 7.0.19.6 - 2022-01-19
+
+#### Added
+-   Improved HA failover logging
+
+
 ### Version 7.0.19.5 - 2021-10-29
 
 #### Added

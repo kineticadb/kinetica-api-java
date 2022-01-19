@@ -823,6 +823,8 @@ public class RecordRetriever<T> {
         } catch (GPUdbException ex) {
             if ( (ex instanceof GPUdbExitException)
                  || ex.hadConnectionFailure() ) {
+            	GPUdbLogger.warn( "Caught EXIT exception or had other "
+            	                  + "connection failure: " + ex.getMessage() );
                 // We did encounter an HA failover trigger
                 // Switch to a different, healthy cluster in the HA ring, if any
                 try {
