@@ -2,6 +2,12 @@
 
 ## Version 7.0
 
+### Version 7.0.19.7 - 2022-01-21
+
+#### Added
+-   Improved cleanup of BulkInserter resources
+
+
 ### Version 7.0.19.6 - 2022-01-19
 
 #### Added

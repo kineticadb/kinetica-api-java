@@ -27,7 +27,11 @@ import java.util.regex.Pattern;
  *
  * @param <T>  the type of object being inserted
  */
-public class BulkInserter<T> {
+public class BulkInserter<T> implements AutoCloseable {
+
+    //Number of seconds to wait for the thread pools (scheduler and worker) to terminate
+    private static final int DEFAULT_THREADPOOL_TERMINATION_TIMEOUT = 30; //In seconds
+
     /**
      * An exception that occurred during the insertion of records into GPUdb.
      */
@@ -929,19 +933,66 @@ public class BulkInserter<T> {
         this.flushOptions = flushOptions;
     }
 
+    /**
+     * This method will be called automatically if the {@link BulkInserter} class is used in a
+     * try-with-resources block. If not used that way it is mandatory to call this method
+     * to initiate a smooth cleanup of the underlying resources. This method will terminate
+     * the internal scheduler threads and call flush so that all pending updates to the database
+     * are handled properly.
+     *
+     * <pre>
+     *     try( BulkInserter inserter = new BulkInserter(...) ) {
+     *         // Do something with the BulkInserter instance
+     *         // inserter.{some_method}
+     *     }
+     *     // Here the close method of the BulkInserter class will be called
+     *     // automatically
+     * </pre>
+     *
+     * or
+     *
+     * <pre>
+     *     BulkInserter inserter = new BulkInserter<>(...)
+     *     // Invoke some methods on the inserter
+     *     //Explicitly call close() method
+     *     inserter.close();
+     * </pre>
+     *
+     * @throws InsertException - While doing the final flush
+     */
     @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
+    public void close() throws InsertException {
+        GPUdbLogger.debug_with_info("Terminating BulkInserter and cleaning up ...");
+
+        //Terminate the scheduler thread
         if( timedFlushExecutorService != null ) {
             timedFlushExecutorService.shutdown();
             try {
-                if (!timedFlushExecutorService.awaitTermination(3000, TimeUnit.MILLISECONDS)) {
+                if (!timedFlushExecutorService.awaitTermination( DEFAULT_THREADPOOL_TERMINATION_TIMEOUT, TimeUnit.SECONDS)) {
                     timedFlushExecutorService.shutdownNow();
                 }
             } catch (InterruptedException e) {
                 timedFlushExecutorService.shutdownNow();
+                Thread.currentThread().interrupt();
             }
+            GPUdbLogger.debug_with_info("Terminated scheduler thread ...");
+        }
 
+        // Call the flush method one last time
+        this.flush();
+
+        // Terminate the worker thread pool
+        if( workerExecutorService != null ) {
+            workerExecutorService.shutdown();
+            try {
+                if (!workerExecutorService.awaitTermination( DEFAULT_THREADPOOL_TERMINATION_TIMEOUT, TimeUnit.SECONDS)) {
+                    workerExecutorService.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                workerExecutorService.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+            GPUdbLogger.debug_with_info("Terminated worker thread pool ...");
         }
     }
 
