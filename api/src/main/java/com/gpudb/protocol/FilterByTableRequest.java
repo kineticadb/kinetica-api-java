@@ -60,6 +60,22 @@ public class FilterByTableRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#CREATE_TEMP_TABLE
+     * CREATE_TEMP_TABLE}: If {@code true}, a unique temporary table name will
+     * be generated in the sys_temp schema and used in place of {@code
+     * viewName}. This is always allowed even if the caller does not have
+     * permission to create tables. The generated name is returned in {@code
+     * qualified_view_name}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.FilterByTableRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.FilterByTableRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.FilterByTableRequest.Options#COLLECTION_NAME
      * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
      * the view as part of {@code viewName} and use {@link
@@ -129,6 +145,26 @@ public class FilterByTableRequest implements IndexedRecord {
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
+
+        /**
+         * If {@code true}, a unique temporary table name will be generated in
+         * the sys_temp schema and used in place of {@code viewName}. This is
+         * always allowed even if the caller does not have permission to create
+         * tables. The generated name is returned in {@code
+         * qualified_view_name}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.FilterByTableRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.FilterByTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.FilterByTableRequest.Options#FALSE FALSE}.
+         */
+        public static final String CREATE_TEMP_TABLE = "create_temp_table";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         /**
          * [DEPRECATED--please specify the containing schema for the view as
@@ -283,6 +319,26 @@ public class FilterByTableRequest implements IndexedRecord {
      *                               type of the {@code columnName}.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code viewName}. This is always
+     *                 allowed even if the caller does not have permission to
+     *                 create tables. The generated name is returned in {@code
+     *                 qualified_view_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: [DEPRECATED--please specify the
@@ -532,6 +588,22 @@ public class FilterByTableRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#CREATE_TEMP_TABLE
+     *         CREATE_TEMP_TABLE}: If {@code true}, a unique temporary table
+     *         name will be generated in the sys_temp schema and used in place
+     *         of {@code viewName}. This is always allowed even if the caller
+     *         does not have permission to create tables. The generated name is
+     *         returned in {@code qualified_view_name}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.FilterByTableRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.FilterByTableRequest.Options#COLLECTION_NAME
      *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
      *         schema for the view as part of {@code viewName} and use {@link
@@ -615,6 +687,26 @@ public class FilterByTableRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code viewName}. This is always
+     *                 allowed even if the caller does not have permission to
+     *                 create tables. The generated name is returned in {@code
+     *                 qualified_view_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.FilterByTableRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.FilterByTableRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: [DEPRECATED--please specify the

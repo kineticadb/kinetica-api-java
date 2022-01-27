@@ -156,7 +156,7 @@ API may get the following innocuous warning logged:
 
    ```Failed to load class org.slf4j.impl.StaticLoggerBinder```
 
-This happens due to `http://www.slf4j.org/codes.html#StaticLoggerBinder`, and
+This happens due to `https://www.slf4j.org/codes.html#StaticLoggerBinder`, and
 according to SLF4J's guidance, this API does not include any SLF4J binding so
 that we do not inadvertantly force any specific binding on the client application.
 The end-user application is free to choose their own binding; or if no logging is

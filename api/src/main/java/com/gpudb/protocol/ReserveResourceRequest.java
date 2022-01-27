@@ -22,13 +22,35 @@ public class ReserveResourceRequest implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("component").type().stringType().noDefault()
+                .name("name").type().stringType().noDefault()
+                .name("action").type().stringType().noDefault()
                 .name("bytesRequested").type().longType().noDefault()
+                .name("ownerId").type().longType().noDefault()
                 .name("options").type().map().values().stringType().noDefault()
             .endRecord();
 
 
     public static Schema getClassSchema() {
         return schema$;
+    }
+
+
+    public static final class Action {
+
+        public static final String GET_SIZE = "get_size";
+
+        public static final String NOTIFY_UNTIERED = "notify_untiered";
+
+        public static final String TIER = "tier";
+
+        public static final String EVICT = "evict";
+
+        public static final String DELETE = "delete";
+
+        public static final String CHANGE_OWNER = "change_owner";
+
+
+        private Action() {  }
     }
 
 
@@ -40,18 +62,26 @@ public class ReserveResourceRequest implements IndexedRecord {
 
 
     private String component;
+    private String name;
+    private String action;
     private long bytesRequested;
+    private long ownerId;
     private Map<String, String> options;
 
 
     public ReserveResourceRequest() {
         component = "";
+        name = "";
+        action = "";
         options = new LinkedHashMap<>();
     }
 
-    public ReserveResourceRequest(String component, long bytesRequested, Map<String, String> options) {
+    public ReserveResourceRequest(String component, String name, String action, long bytesRequested, long ownerId, Map<String, String> options) {
         this.component = (component == null) ? "" : component;
+        this.name = (name == null) ? "" : name;
+        this.action = (action == null) ? "" : action;
         this.bytesRequested = bytesRequested;
+        this.ownerId = ownerId;
         this.options = (options == null) ? new LinkedHashMap<String, String>() : options;
     }
 
@@ -64,12 +94,39 @@ public class ReserveResourceRequest implements IndexedRecord {
         return this;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public ReserveResourceRequest setName(String name) {
+        this.name = (name == null) ? "" : name;
+        return this;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public ReserveResourceRequest setAction(String action) {
+        this.action = (action == null) ? "" : action;
+        return this;
+    }
+
     public long getBytesRequested() {
         return bytesRequested;
     }
 
     public ReserveResourceRequest setBytesRequested(long bytesRequested) {
         this.bytesRequested = bytesRequested;
+        return this;
+    }
+
+    public long getOwnerId() {
+        return ownerId;
+    }
+
+    public ReserveResourceRequest setOwnerId(long ownerId) {
+        this.ownerId = ownerId;
         return this;
     }
 
@@ -94,9 +151,18 @@ public class ReserveResourceRequest implements IndexedRecord {
                 return this.component;
 
             case 1:
-                return this.bytesRequested;
+                return this.name;
 
             case 2:
+                return this.action;
+
+            case 3:
+                return this.bytesRequested;
+
+            case 4:
+                return this.ownerId;
+
+            case 5:
                 return this.options;
 
             default:
@@ -113,10 +179,22 @@ public class ReserveResourceRequest implements IndexedRecord {
                 break;
 
             case 1:
-                this.bytesRequested = (Long)value;
+                this.name = (String)value;
                 break;
 
             case 2:
+                this.action = (String)value;
+                break;
+
+            case 3:
+                this.bytesRequested = (Long)value;
+                break;
+
+            case 4:
+                this.ownerId = (Long)value;
+                break;
+
+            case 5:
                 this.options = (Map<String, String>)value;
                 break;
 
@@ -139,7 +217,10 @@ public class ReserveResourceRequest implements IndexedRecord {
         ReserveResourceRequest that = (ReserveResourceRequest)obj;
 
         return ( this.component.equals( that.component )
+                 && this.name.equals( that.name )
+                 && this.action.equals( that.action )
                  && ( this.bytesRequested == that.bytesRequested )
+                 && ( this.ownerId == that.ownerId )
                  && this.options.equals( that.options ) );
     }
 
@@ -153,9 +234,21 @@ public class ReserveResourceRequest implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.component ) );
         builder.append( ", " );
+        builder.append( gd.toString( "name" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.name ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "action" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.action ) );
+        builder.append( ", " );
         builder.append( gd.toString( "bytesRequested" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.bytesRequested ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "ownerId" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.ownerId ) );
         builder.append( ", " );
         builder.append( gd.toString( "options" ) );
         builder.append( ": " );
@@ -170,7 +263,10 @@ public class ReserveResourceRequest implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.component.hashCode();
+        hashCode = (31 * hashCode) + this.name.hashCode();
+        hashCode = (31 * hashCode) + this.action.hashCode();
         hashCode = (31 * hashCode) + ((Long)this.bytesRequested).hashCode();
+        hashCode = (31 * hashCode) + ((Long)this.ownerId).hashCode();
         hashCode = (31 * hashCode) + this.options.hashCode();
         return hashCode;
     }

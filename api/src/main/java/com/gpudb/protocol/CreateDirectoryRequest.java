@@ -48,6 +48,11 @@ public class CreateDirectoryRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.CreateDirectoryRequest.Options#CREATE_HOME_DIRECTORY
+     * CREATE_HOME_DIRECTORY}: When set, a home directory is created for the
+     * user name provided in the value. The {@code directoryName} must be an
+     * empty string in this case. The user must exist.
+     *         <li> {@link
      * com.gpudb.protocol.CreateDirectoryRequest.Options#NO_ERROR_IF_EXISTS
      * NO_ERROR_IF_EXISTS}: If {@code true}, does not return an error if the
      * directory already exists
@@ -65,6 +70,13 @@ public class CreateDirectoryRequest implements IndexedRecord {
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
+
+        /**
+         * When set, a home directory is created for the user name provided in
+         * the value. The {@code directoryName} must be an empty string in this
+         * case. The user must exist.
+         */
+        public static final String CREATE_HOME_DIRECTORY = "create_home_directory";
 
         /**
          * If {@code true}, does not return an error if the directory already
@@ -105,6 +117,12 @@ public class CreateDirectoryRequest implements IndexedRecord {
      * @param directoryName  Name of the directory in KiFS to be created.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDirectoryRequest.Options#CREATE_HOME_DIRECTORY
+     *                 CREATE_HOME_DIRECTORY}: When set, a home directory is
+     *                 created for the user name provided in the value. The
+     *                 {@code directoryName} must be an empty string in this
+     *                 case. The user must exist.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDirectoryRequest.Options#NO_ERROR_IF_EXISTS
      *                 NO_ERROR_IF_EXISTS}: If {@code true}, does not return an
@@ -156,6 +174,12 @@ public class CreateDirectoryRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateDirectoryRequest.Options#CREATE_HOME_DIRECTORY
+     *         CREATE_HOME_DIRECTORY}: When set, a home directory is created
+     *         for the user name provided in the value. The {@code
+     *         directoryName} must be an empty string in this case. The user
+     *         must exist.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateDirectoryRequest.Options#NO_ERROR_IF_EXISTS
      *         NO_ERROR_IF_EXISTS}: If {@code true}, does not return an error
      *         if the directory already exists
@@ -180,6 +204,12 @@ public class CreateDirectoryRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDirectoryRequest.Options#CREATE_HOME_DIRECTORY
+     *                 CREATE_HOME_DIRECTORY}: When set, a home directory is
+     *                 created for the user name provided in the value. The
+     *                 {@code directoryName} must be an empty string in this
+     *                 case. The user must exist.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDirectoryRequest.Options#NO_ERROR_IF_EXISTS
      *                 NO_ERROR_IF_EXISTS}: If {@code true}, does not return an

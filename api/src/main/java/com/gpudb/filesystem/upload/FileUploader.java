@@ -184,7 +184,8 @@ public class FileUploader extends FileOperation {
 
     /**
      * This method uploads files which are candidates for multi-part uploads as
-     * determined from their size.
+     * determined from their size. This method first checks whether the KIFS
+     * directory exists or not and creates it if it doesn't.
      * Then it creates a list of {@link UploadIoJob} instances one for each
      * file to be uploaded in parts.
      *

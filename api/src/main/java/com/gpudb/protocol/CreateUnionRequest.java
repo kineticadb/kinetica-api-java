@@ -79,6 +79,23 @@ public class CreateUnionRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#CREATE_TEMP_TABLE
+     * CREATE_TEMP_TABLE}: If {@code true}, a unique temporary table name will
+     * be generated in the sys_temp schema and used in place of {@code
+     * tableName}. If {@code persist} is {@code false} (or unspecified), then
+     * this is always allowed even if the caller does not have permission to
+     * create tables. The generated name is returned in {@code
+     * qualified_table_name}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
      * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
      * the projection as part of {@code tableName} and use {@link
@@ -177,6 +194,27 @@ public class CreateUnionRequest implements IndexedRecord {
      * A set of string constants for the parameter {@code options}.
      */
     public static final class Options {
+
+        /**
+         * If {@code true}, a unique temporary table name will be generated in
+         * the sys_temp schema and used in place of {@code tableName}. If
+         * {@code persist} is {@code false} (or unspecified), then this is
+         * always allowed even if the caller does not have permission to create
+         * tables. The generated name is returned in {@code
+         * qualified_table_name}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
+         */
+        public static final String CREATE_TEMP_TABLE = "create_temp_table";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         /**
          * [DEPRECATED--please specify the containing schema for the projection
@@ -326,8 +364,6 @@ public class CreateUnionRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
          */
         public static final String PERSIST = "persist";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * ID of view of which this output table is a member.  The default
@@ -391,6 +427,26 @@ public class CreateUnionRequest implements IndexedRecord {
      *                           in the output table.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code tableName}. If {@code persist}
+     *                 is {@code false} (or unspecified), then this is always
+     *                 allowed even if the caller does not have permission to
+     *                 create tables. The generated name is returned in {@code
+     *                 qualified_table_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: [DEPRECATED--please specify the
@@ -629,6 +685,23 @@ public class CreateUnionRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#CREATE_TEMP_TABLE
+     *         CREATE_TEMP_TABLE}: If {@code true}, a unique temporary table
+     *         name will be generated in the sys_temp schema and used in place
+     *         of {@code tableName}. If {@code persist} is {@code false} (or
+     *         unspecified), then this is always allowed even if the caller
+     *         does not have permission to create tables. The generated name is
+     *         returned in {@code qualified_table_name}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateUnionRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
      *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
      *         schema for the projection as part of {@code tableName} and use
@@ -744,6 +817,26 @@ public class CreateUnionRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code tableName}. If {@code persist}
+     *                 is {@code false} (or unspecified), then this is always
+     *                 allowed even if the caller does not have permission to
+     *                 create tables. The generated name is returned in {@code
+     *                 qualified_table_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateUnionRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUnionRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: [DEPRECATED--please specify the

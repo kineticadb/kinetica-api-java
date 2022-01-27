@@ -29,10 +29,13 @@ public class ShowGraphResponse implements IndexedRecord {
                 .name("memory").type().array().items().longType().noDefault()
                 .name("graphNames").type().array().items().stringType().noDefault()
                 .name("graphServerIds").type().array().items().intType().noDefault()
+                .name("graphOwnerUserNames").type().array().items().stringType().noDefault()
+                .name("graphOwnerResourceGroups").type().array().items().stringType().noDefault()
                 .name("directed").type().array().items().booleanType().noDefault()
                 .name("numNodes").type().array().items().longType().noDefault()
                 .name("numEdges").type().array().items().longType().noDefault()
                 .name("numBytes").type().array().items().longType().noDefault()
+                .name("resourceCapacity").type().array().items().longType().noDefault()
                 .name("isPersisted").type().array().items().booleanType().noDefault()
                 .name("isPartitioned").type().array().items().booleanType().noDefault()
                 .name("isSyncDb").type().array().items().booleanType().noDefault()
@@ -58,10 +61,13 @@ public class ShowGraphResponse implements IndexedRecord {
     private List<Long> memory;
     private List<String> graphNames;
     private List<Integer> graphServerIds;
+    private List<String> graphOwnerUserNames;
+    private List<String> graphOwnerResourceGroups;
     private List<Boolean> directed;
     private List<Long> numNodes;
     private List<Long> numEdges;
     private List<Long> numBytes;
+    private List<Long> resourceCapacity;
     private List<Boolean> isPersisted;
     private List<Boolean> isPartitioned;
     private List<Boolean> isSyncDb;
@@ -187,6 +193,50 @@ public class ShowGraphResponse implements IndexedRecord {
 
     /**
      * 
+     * @return Owner the graph(s) and associated solution table(s).
+     * 
+     */
+    public List<String> getGraphOwnerUserNames() {
+        return graphOwnerUserNames;
+    }
+
+    /**
+     * 
+     * @param graphOwnerUserNames  Owner the graph(s) and associated solution
+     *                             table(s).
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowGraphResponse setGraphOwnerUserNames(List<String> graphOwnerUserNames) {
+        this.graphOwnerUserNames = (graphOwnerUserNames == null) ? new ArrayList<String>() : graphOwnerUserNames;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Owner resource groups(s) of the graph(s).
+     * 
+     */
+    public List<String> getGraphOwnerResourceGroups() {
+        return graphOwnerResourceGroups;
+    }
+
+    /**
+     * 
+     * @param graphOwnerResourceGroups  Owner resource groups(s) of the
+     *                                  graph(s).
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowGraphResponse setGraphOwnerResourceGroups(List<String> graphOwnerResourceGroups) {
+        this.graphOwnerResourceGroups = (graphOwnerResourceGroups == null) ? new ArrayList<String>() : graphOwnerResourceGroups;
+        return this;
+    }
+
+    /**
+     * 
      * @return Whether or not the edges of the graph have directions
      *         (bi-directional edges can still exist in directed graphs).
      *         Consult <a
@@ -274,6 +324,27 @@ public class ShowGraphResponse implements IndexedRecord {
      */
     public ShowGraphResponse setNumBytes(List<Long> numBytes) {
         this.numBytes = (numBytes == null) ? new ArrayList<Long>() : numBytes;
+        return this;
+    }
+
+    /**
+     * 
+     * @return Memory this graph uses in bytes.
+     * 
+     */
+    public List<Long> getResourceCapacity() {
+        return resourceCapacity;
+    }
+
+    /**
+     * 
+     * @param resourceCapacity  Memory this graph uses in bytes.
+     * 
+     * @return {@code this} to mimic the builder pattern.
+     * 
+     */
+    public ShowGraphResponse setResourceCapacity(List<Long> resourceCapacity) {
+        this.resourceCapacity = (resourceCapacity == null) ? new ArrayList<Long>() : resourceCapacity;
         return this;
     }
 
@@ -458,33 +529,42 @@ public class ShowGraphResponse implements IndexedRecord {
                 return this.graphServerIds;
 
             case 5:
-                return this.directed;
+                return this.graphOwnerUserNames;
 
             case 6:
-                return this.numNodes;
+                return this.graphOwnerResourceGroups;
 
             case 7:
-                return this.numEdges;
+                return this.directed;
 
             case 8:
-                return this.numBytes;
+                return this.numNodes;
 
             case 9:
-                return this.isPersisted;
+                return this.numEdges;
 
             case 10:
-                return this.isPartitioned;
+                return this.numBytes;
 
             case 11:
-                return this.isSyncDb;
+                return this.resourceCapacity;
 
             case 12:
-                return this.hasInsertTableMonitor;
+                return this.isPersisted;
 
             case 13:
-                return this.originalRequest;
+                return this.isPartitioned;
 
             case 14:
+                return this.isSyncDb;
+
+            case 15:
+                return this.hasInsertTableMonitor;
+
+            case 16:
+                return this.originalRequest;
+
+            case 17:
                 return this.info;
 
             default:
@@ -527,42 +607,54 @@ public class ShowGraphResponse implements IndexedRecord {
                 break;
 
             case 5:
-                this.directed = (List<Boolean>)value;
+                this.graphOwnerUserNames = (List<String>)value;
                 break;
 
             case 6:
-                this.numNodes = (List<Long>)value;
+                this.graphOwnerResourceGroups = (List<String>)value;
                 break;
 
             case 7:
-                this.numEdges = (List<Long>)value;
+                this.directed = (List<Boolean>)value;
                 break;
 
             case 8:
-                this.numBytes = (List<Long>)value;
+                this.numNodes = (List<Long>)value;
                 break;
 
             case 9:
-                this.isPersisted = (List<Boolean>)value;
+                this.numEdges = (List<Long>)value;
                 break;
 
             case 10:
-                this.isPartitioned = (List<Boolean>)value;
+                this.numBytes = (List<Long>)value;
                 break;
 
             case 11:
-                this.isSyncDb = (List<Boolean>)value;
+                this.resourceCapacity = (List<Long>)value;
                 break;
 
             case 12:
-                this.hasInsertTableMonitor = (List<Boolean>)value;
+                this.isPersisted = (List<Boolean>)value;
                 break;
 
             case 13:
-                this.originalRequest = (List<String>)value;
+                this.isPartitioned = (List<Boolean>)value;
                 break;
 
             case 14:
+                this.isSyncDb = (List<Boolean>)value;
+                break;
+
+            case 15:
+                this.hasInsertTableMonitor = (List<Boolean>)value;
+                break;
+
+            case 16:
+                this.originalRequest = (List<String>)value;
+                break;
+
+            case 17:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -588,10 +680,13 @@ public class ShowGraphResponse implements IndexedRecord {
                  && this.memory.equals( that.memory )
                  && this.graphNames.equals( that.graphNames )
                  && this.graphServerIds.equals( that.graphServerIds )
+                 && this.graphOwnerUserNames.equals( that.graphOwnerUserNames )
+                 && this.graphOwnerResourceGroups.equals( that.graphOwnerResourceGroups )
                  && this.directed.equals( that.directed )
                  && this.numNodes.equals( that.numNodes )
                  && this.numEdges.equals( that.numEdges )
                  && this.numBytes.equals( that.numBytes )
+                 && this.resourceCapacity.equals( that.resourceCapacity )
                  && this.isPersisted.equals( that.isPersisted )
                  && this.isPartitioned.equals( that.isPartitioned )
                  && this.isSyncDb.equals( that.isSyncDb )
@@ -625,6 +720,14 @@ public class ShowGraphResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.graphServerIds ) );
         builder.append( ", " );
+        builder.append( gd.toString( "graphOwnerUserNames" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.graphOwnerUserNames ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "graphOwnerResourceGroups" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.graphOwnerResourceGroups ) );
+        builder.append( ", " );
         builder.append( gd.toString( "directed" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.directed ) );
@@ -640,6 +743,10 @@ public class ShowGraphResponse implements IndexedRecord {
         builder.append( gd.toString( "numBytes" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.numBytes ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "resourceCapacity" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.resourceCapacity ) );
         builder.append( ", " );
         builder.append( gd.toString( "isPersisted" ) );
         builder.append( ": " );
@@ -677,10 +784,13 @@ public class ShowGraphResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.memory.hashCode();
         hashCode = (31 * hashCode) + this.graphNames.hashCode();
         hashCode = (31 * hashCode) + this.graphServerIds.hashCode();
+        hashCode = (31 * hashCode) + this.graphOwnerUserNames.hashCode();
+        hashCode = (31 * hashCode) + this.graphOwnerResourceGroups.hashCode();
         hashCode = (31 * hashCode) + this.directed.hashCode();
         hashCode = (31 * hashCode) + this.numNodes.hashCode();
         hashCode = (31 * hashCode) + this.numEdges.hashCode();
         hashCode = (31 * hashCode) + this.numBytes.hashCode();
+        hashCode = (31 * hashCode) + this.resourceCapacity.hashCode();
         hashCode = (31 * hashCode) + this.isPersisted.hashCode();
         hashCode = (31 * hashCode) + this.isPartitioned.hashCode();
         hashCode = (31 * hashCode) + this.isSyncDb.hashCode();

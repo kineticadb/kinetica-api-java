@@ -19,10 +19,16 @@ import org.apache.avro.generic.IndexedRecord;
  * A set of parameters for {@link
  * com.gpudb.GPUdb#insertRecordsFromFiles(InsertRecordsFromFilesRequest)}.
  * <p>
- * Reads from one or more files located on the server and inserts the data into
- * a new or
- * existing table.
+ * Reads from one or more files and inserts the data into a new or existing
+ * table.
+ * The source data can be located either in <a
+ * href="../../../../../../tools/kifs/" target="_top">KiFS</a>; on the cluster,
+ * accessible to the database; or
+ * remotely, accessible via a pre-defined external <a
+ * href="../../../../../../concepts/data_sources/" target="_top">data
+ * source</a>.
  * <p>
+
  * For delimited text files, there are two loading schemes: positional and
  * name-based. The name-based
  * loading scheme is enabled when the file has a header present and
@@ -37,6 +43,13 @@ import org.apache.avro.generic.IndexedRecord;
  * the file header's names may be provided to {@code columns_to_load} instead
  * of
  * numbers, but ranges are not supported.
+ * <p>
+ * Note: Due to data being loaded in parallel, there is no insertion order
+ * guaranteed.  For tables with
+ * primary keys, in the case of a primary key collision, this means it is
+ * indeterminate which record
+ * will be inserted first and remain, while the rest of the colliding key
+ * records are discarded.
  * <p>
  * Returns once all files are processed.
  */
@@ -483,7 +496,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * BAD_RECORD_TABLE_NAME}: Optional name of a table to which records that
      * were rejected are written.  The bad-record-table has the following
      * columns: line_number (long), line_rejected (string), error_message
-     * (string).
+     * (string). When error handling is Abort, bad records table is not
+     * populated.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BAD_RECORD_TABLE_LIMIT
      * BAD_RECORD_TABLE_LIMIT}: A positive integer indicating the maximum
@@ -604,8 +618,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * this mode.
      * </ul>
      * The default value is {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PERMISSIVE
-     * PERMISSIVE}.
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ABORT ABORT}.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FILE_TYPE
      * FILE_TYPE}: Specifies the type of the file(s) whose records will be
@@ -613,14 +626,17 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AVRO AVRO}:
+     * Avro file format
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
      * DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV, PSV, etc.
      *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
-     * PARQUET}: Apache Parquet file format
-     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON JSON}:
      * Json file format
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
+     * PARQUET}: Apache Parquet file format
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHAPEFILE
      * SHAPEFILE}: ShapeFile file format
@@ -651,9 +667,14 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FULL FULL}.
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_GROUP_ID
+     * KAFKA_GROUP_ID}: The group id to be used consuming data from a kakfa
+     * topic (valid only for kafka datasource subscriptions).
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
      * LOADING_MODE}: Scheme for distributing the extraction and loading of
-     * data from the source data file(s).
+     * data from the source data file(s). This option applies only when loading
+     * files that are local to the database
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -692,16 +713,25 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * structure and the request
      * will fail.
      * <p>
-     * This mode should not be used in conjuction with a data source, as data
-     * sources are seen by all
-     * worker processes as shared resources with no 'local' component.
-     * <p>
      * If the head node is configured to have no worker processes, no data
      * strictly accessible to the head
      * node will be loaded.
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#HEAD HEAD}.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOCAL_TIME_OFFSET
+     * LOCAL_TIME_OFFSET}: For Avro local timestamp columns
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
+     * NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file per
+     * rank. Default will be external_file_reader_num_tasks
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#POLL_INTERVAL
+     * POLL_INTERVAL}: If {@code true}, the number of seconds between attempts
+     * to load external files into the table.  If zero, polling will be
+     * continuous as long as data is found.  If no data is found, the interval
+     * will steadily increase to a maximum of 60 seconds.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PRIMARY_KEYS
      * PRIMARY_KEYS}: Optional: comma separated list of column names, to set as
@@ -710,6 +740,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHARD_KEYS
      * SHARD_KEYS}: Optional: comma separated list of column names, to set as
      * primary keys, when not specified in the type.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SKIP_LINES
+     * SKIP_LINES}: Skip number of lines from begining of file.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SUBSCRIBE
      * SUBSCRIBE}: Continuously poll the data source to check for new data and
@@ -724,11 +757,20 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE FALSE}.
      *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#POLL_INTERVAL
-     * POLL_INTERVAL}: If {@code true}, the number of seconds between attempts
-     * to load external files into the table.  If zero, polling will be
-     * continuous as long as data is found.  If no data is found, the interval
-     * will steadily increase to a maximum of 60 seconds.
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_INSERT_MODE
+     * TABLE_INSERT_MODE}: Optional: table_insert_mode. When inserting records
+     * from multiple files: if table_per_file then insert from each file into a
+     * new table. Currently supported only for shapefiles.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE SINGLE}
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
+     * TABLE_PER_FILE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE SINGLE}.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_COMMENT_STRING
      * TEXT_COMMENT_STRING}: Specifies the character string that should be
@@ -796,7 +838,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * value in the source data.
      * <p>
      * For {@code delimited_text} {@code file_type} only.  The default value is
-     * ''.
+     * '\\N'.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_QUOTE_CHARACTER
      * TEXT_QUOTE_CHARACTER}: Specifies the character that should be
@@ -813,6 +855,16 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * For {@code delimited_text} {@code file_type} only.  The default value is
      * '"'.
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_COLUMNS
+     * TEXT_SEARCH_COLUMNS}: Add 'text_search' property to internally
+     * inferenced string columns. Comma seperated list of column names or '*'
+     * for all columns. To add text_search property only to string columns of
+     * minimum size, set also the option 'text_search_min_column_length'
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     * TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used only when
+     * 'text_search_columns' has a value.
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUNCATE_TABLE
      * TRUNCATE_TABLE}: If set to {@code true}, truncates the table specified
      * by {@code tableName} prior to loading the file(s).
@@ -825,10 +877,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE FALSE}.
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
-     * NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file per
-     * rank. Default will be external_file_reader_num_tasks
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TYPE_INFERENCE_MODE
      * TYPE_INFERENCE_MODE}: optimize type inference for:
@@ -845,35 +893,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED SPEED}.
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_INSERT_MODE
-     * TABLE_INSERT_MODE}: Optional: table_insert_mode. When inserting records
-     * from multiple files: if table_per_file then insert from each file into a
-     * new table. Currently supported only for shapefiles.
-     * Supported values:
-     * <ul>
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE SINGLE}
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
-     * TABLE_PER_FILE}
-     * </ul>
-     * The default value is {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE SINGLE}.
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_GROUP_ID
-     * KAFKA_GROUP_ID}: The group id to be used consuming data from a kakfa
-     * topic (valid only for kafka datasource subscriptions).
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_COLUMNS
-     * TEXT_SEARCH_COLUMNS}: Add 'text_search' property to internally
-     * inferenced string columns. Comma seperated list of column names or '*'
-     * for all columns. To add text_search property only to string columns of
-     * minimum size, set also the option 'text_search_min_column_length'
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
-     * TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used only when
-     * 'text_search_columns' has a value.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -884,6 +903,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * Optional name of a table to which records that were rejected are
          * written.  The bad-record-table has the following columns:
          * line_number (long), line_rejected (string), error_message (string).
+         * When error handling is Abort, bad records table is not populated.
          */
         public static final String BAD_RECORD_TABLE_NAME = "bad_record_table_name";
 
@@ -1016,8 +1036,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * abortable errors in this mode.
          * </ul>
          * The default value is {@link
-         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PERMISSIVE
-         * PERMISSIVE}.
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ABORT
+         * ABORT}.
          */
         public static final String ERROR_HANDLING = "error_handling";
 
@@ -1044,15 +1064,18 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AVRO AVRO}:
+         * Avro file format
+         *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
          * DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV, PSV,
          * etc.
          *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
-         * PARQUET}: Apache Parquet file format
-         *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON JSON}:
          * Json file format
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
+         * PARQUET}: Apache Parquet file format
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHAPEFILE
          * SHAPEFILE}: ShapeFile file format
@@ -1064,19 +1087,24 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String FILE_TYPE = "file_type";
 
         /**
+         * Avro file format
+         */
+        public static final String AVRO = "avro";
+
+        /**
          * Delimited text file format; e.g., CSV, TSV, PSV, etc.
          */
         public static final String DELIMITED_TEXT = "delimited_text";
 
         /**
-         * Apache Parquet file format
-         */
-        public static final String PARQUET = "parquet";
-
-        /**
          * Json file format
          */
         public static final String JSON = "json";
+
+        /**
+         * Apache Parquet file format
+         */
+        public static final String PARQUET = "parquet";
 
         /**
          * ShapeFile file format
@@ -1126,8 +1154,15 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String TYPE_INFERENCE_ONLY = "type_inference_only";
 
         /**
+         * The group id to be used consuming data from a kakfa topic (valid
+         * only for kafka datasource subscriptions).
+         */
+        public static final String KAFKA_GROUP_ID = "kafka_group_id";
+
+        /**
          * Scheme for distributing the extraction and loading of data from the
-         * source data file(s).
+         * source data file(s). This option applies only when loading files
+         * that are local to the database
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -1169,10 +1204,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * head node has no files local to it, it will be unable to determine
          * the structure and the request
          * will fail.
-         * <p>
-         * This mode should not be used in conjuction with a data source, as
-         * data sources are seen by all
-         * worker processes as shared resources with no 'local' component.
          * <p>
          * If the head node is configured to have no worker processes, no data
          * strictly accessible to the head
@@ -1224,15 +1255,30 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * the structure and the request
          * will fail.
          * <p>
-         * This mode should not be used in conjuction with a data source, as
-         * data sources are seen by all
-         * worker processes as shared resources with no 'local' component.
-         * <p>
          * If the head node is configured to have no worker processes, no data
          * strictly accessible to the head
          * node will be loaded.
          */
         public static final String DISTRIBUTED_LOCAL = "distributed_local";
+
+        /**
+         * For Avro local timestamp columns
+         */
+        public static final String LOCAL_TIME_OFFSET = "local_time_offset";
+
+        /**
+         * Optional: number of tasks for reading file per rank. Default will be
+         * external_file_reader_num_tasks
+         */
+        public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
+
+        /**
+         * If {@code true}, the number of seconds between attempts to load
+         * external files into the table.  If zero, polling will be continuous
+         * as long as data is found.  If no data is found, the interval will
+         * steadily increase to a maximum of 60 seconds.
+         */
+        public static final String POLL_INTERVAL = "poll_interval";
 
         /**
          * Optional: comma separated list of column names, to set as primary
@@ -1245,6 +1291,11 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * keys, when not specified in the type.  The default value is ''.
          */
         public static final String SHARD_KEYS = "shard_keys";
+
+        /**
+         * Skip number of lines from begining of file.
+         */
+        public static final String SKIP_LINES = "skip_lines";
 
         /**
          * Continuously poll the data source to check for new data and load it
@@ -1266,12 +1317,25 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * If {@code true}, the number of seconds between attempts to load
-         * external files into the table.  If zero, polling will be continuous
-         * as long as data is found.  If no data is found, the interval will
-         * steadily increase to a maximum of 60 seconds.
+         * Optional: table_insert_mode. When inserting records from multiple
+         * files: if table_per_file then insert from each file into a new
+         * table. Currently supported only for shapefiles.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+         * SINGLE}
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
+         * TABLE_PER_FILE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+         * SINGLE}.
          */
-        public static final String POLL_INTERVAL = "poll_interval";
+        public static final String TABLE_INSERT_MODE = "table_insert_mode";
+        public static final String SINGLE = "single";
+        public static final String TABLE_PER_FILE = "table_per_file";
 
         /**
          * Specifies the character string that should be interpreted as a
@@ -1346,7 +1410,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * value in the source data.
          * <p>
          * For {@code delimited_text} {@code file_type} only.  The default
-         * value is ''.
+         * value is '\\N'.
          */
         public static final String TEXT_NULL_STRING = "text_null_string";
 
@@ -1367,6 +1431,20 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
         public static final String TEXT_QUOTE_CHARACTER = "text_quote_character";
 
         /**
+         * Add 'text_search' property to internally inferenced string columns.
+         * Comma seperated list of column names or '*' for all columns. To add
+         * text_search property only to string columns of minimum size, set
+         * also the option 'text_search_min_column_length'
+         */
+        public static final String TEXT_SEARCH_COLUMNS = "text_search_columns";
+
+        /**
+         * Set minimum column size. Used only when 'text_search_columns' has a
+         * value.
+         */
+        public static final String TEXT_SEARCH_MIN_COLUMN_LENGTH = "text_search_min_column_length";
+
+        /**
          * If set to {@code true}, truncates the table specified by {@code
          * tableName} prior to loading the file(s).
          * Supported values:
@@ -1382,12 +1460,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * FALSE}.
          */
         public static final String TRUNCATE_TABLE = "truncate_table";
-
-        /**
-         * Optional: number of tasks for reading file per rank. Default will be
-         * external_file_reader_num_tasks
-         */
-        public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
 
         /**
          * optimize type inference for:
@@ -1419,47 +1491,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
          * with minimum data scanned
          */
         public static final String SPEED = "speed";
-
-        /**
-         * Optional: table_insert_mode. When inserting records from multiple
-         * files: if table_per_file then insert from each file into a new
-         * table. Currently supported only for shapefiles.
-         * Supported values:
-         * <ul>
-         *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
-         * SINGLE}
-         *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
-         * TABLE_PER_FILE}
-         * </ul>
-         * The default value is {@link
-         * com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
-         * SINGLE}.
-         */
-        public static final String TABLE_INSERT_MODE = "table_insert_mode";
-        public static final String SINGLE = "single";
-        public static final String TABLE_PER_FILE = "table_per_file";
-
-        /**
-         * The group id to be used consuming data from a kakfa topic (valid
-         * only for kafka datasource subscriptions).
-         */
-        public static final String KAFKA_GROUP_ID = "kafka_group_id";
-
-        /**
-         * Add 'text_search' property to internally inferenced string columns.
-         * Comma seperated list of column names or '*' for all columns. To add
-         * text_search property only to string columns of minimum size, set
-         * also the option 'text_search_min_column_length'
-         */
-        public static final String TEXT_SEARCH_COLUMNS = "text_search_columns";
-
-        /**
-         * Set minimum column size. Used only when 'text_search_columns' has a
-         * value.
-         */
-        public static final String TEXT_SEARCH_MIN_COLUMN_LENGTH = "text_search_min_column_length";
 
         private Options() {  }
     }
@@ -1501,19 +1532,35 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                   <a
      *                   href="../../../../../../concepts/tables/#table-naming-criteria"
      *                   target="_top">table naming criteria</a>.
-     * @param filepaths  Absolute or relative filepath(s) from where files will
-     *                   be loaded. Relative filepaths are relative to the
-     *                   defined <a
-     *                   href="../../../../../../config/#external-files"
-     *                   target="_top">external_files_directory</a> parameter
-     *                   in the server configuration. The filepaths may include
-     *                   wildcards (*). If the first path ends in .tsv, the
-     *                   text delimiter will be defaulted to a tab character.
-     *                   If the first path ends in .psv, the text delimiter
-     *                   will be defaulted to a pipe character (|).
+     * @param filepaths  A list of file paths from which data will be sourced;
      *                   For paths in <a href="../../../../../../tools/kifs/"
      *                   target="_top">KiFS</a>, use the uri prefix of kifs://
-     *                   followed by the full path to a file or directory
+     *                   followed by the path to
+     *                   a file or directory. File matching by prefix is
+     *                   supported, e.g. kifs://dir/file would match dir/file_1
+     *                   and dir/file_2. When prefix matching is used, the path
+     *                   must start with a full, valid KiFS directory name.
+     *                   If an external data source is specified in {@code
+     *                   datasource_name}, these file
+     *                   paths must resolve to accessible files at that data
+     *                   source location. Prefix matching is is supported.
+     *                   If the data source is hdfs, prefixes must be aligned
+     *                   with directories, i.e. partial file names will not
+     *                   match.
+     *                   If no data source is specified, the files are assumed
+     *                   to be local to the database and must all be
+     *                   accessible to the gpudb user, residing on the path (or
+     *                   relative to the path) specified by the
+     *                   external files directory in the Kinetica
+     *                   <a href="../../../../../../config/#external-files"
+     *                   target="_top">configuration file</a>. Wildcards (*)
+     *                   can be used to specify a group of files.
+     *                   Prefix matching is supported, the prefixes must be
+     *                   aligned with directories.
+     *                   If the first path ends in .tsv, the text delimiter
+     *                   will be defaulted to a tab character.
+     *                   If the first path ends in .psv, the text delimiter
+     *                   will be defaulted to a pipe character (|).
      * @param modifyColumns  Not implemented yet.  The default value is an
      *                       empty {@link Map}.
      * @param createTableOptions  Options used when creating the target table.
@@ -1721,6 +1768,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 which records that were rejected are written.  The
      *                 bad-record-table has the following columns: line_number
      *                 (long), line_rejected (string), error_message (string).
+     *                 When error handling is Abort, bad records table is not
+     *                 populated.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BAD_RECORD_TABLE_LIMIT
      *                 BAD_RECORD_TABLE_LIMIT}: A positive integer indicating
@@ -1842,8 +1891,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 collisions are considered abortable errors in this mode.
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PERMISSIVE
-     *                 PERMISSIVE}.
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ABORT
+     *                 ABORT}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FILE_TYPE
      *                 FILE_TYPE}: Specifies the type of the file(s) whose
@@ -1851,15 +1900,18 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AVRO
+     *                 AVRO}: Avro file format
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
      *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
      *                 TSV, PSV, etc.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
-     *                 PARQUET}: Apache Parquet file format
-     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON
      *                 JSON}: Json file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
+     *                 PARQUET}: Apache Parquet file format
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHAPEFILE
      *                 SHAPEFILE}: ShapeFile file format
@@ -1893,9 +1945,16 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FULL
      *                 FULL}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_GROUP_ID
+     *                 KAFKA_GROUP_ID}: The group id to be used consuming data
+     *                 from a kakfa topic (valid only for kafka datasource
+     *                 subscriptions).
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
      *                 LOADING_MODE}: Scheme for distributing the extraction
-     *                 and loading of data from the source data file(s).
+     *                 and loading of data from the source data file(s). This
+     *                 option applies only when loading files that are local to
+     *                 the database
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1933,10 +1992,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 head node has no files local to it, it will be unable to
      *                 determine the structure and the request
      *                 will fail.
-     *                 This mode should not be used in conjuction with a data
-     *                 source, as data sources are seen by all
-     *                 worker processes as shared resources with no 'local'
-     *                 component.
      *                 If the head node is configured to have no worker
      *                 processes, no data strictly accessible to the head
      *                 node will be loaded.
@@ -1944,6 +1999,21 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#HEAD
      *                 HEAD}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOCAL_TIME_OFFSET
+     *                 LOCAL_TIME_OFFSET}: For Avro local timestamp columns
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
+     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
+     *                 reading file per rank. Default will be
+     *                 external_file_reader_num_tasks
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#POLL_INTERVAL
+     *                 POLL_INTERVAL}: If {@code true}, the number of seconds
+     *                 between attempts to load external files into the table.
+     *                 If zero, polling will be continuous as long as data is
+     *                 found.  If no data is found, the interval will steadily
+     *                 increase to a maximum of 60 seconds.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PRIMARY_KEYS
      *                 PRIMARY_KEYS}: Optional: comma separated list of column
@@ -1954,6 +2024,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 SHARD_KEYS}: Optional: comma separated list of column
      *                 names, to set as primary keys, when not specified in the
      *                 type.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SKIP_LINES
+     *                 SKIP_LINES}: Skip number of lines from begining of file.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SUBSCRIBE
      *                 SUBSCRIBE}: Continuously poll the data source to check
@@ -1971,12 +2044,23 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#POLL_INTERVAL
-     *                 POLL_INTERVAL}: If {@code true}, the number of seconds
-     *                 between attempts to load external files into the table.
-     *                 If zero, polling will be continuous as long as data is
-     *                 found.  If no data is found, the interval will steadily
-     *                 increase to a maximum of 60 seconds.
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_INSERT_MODE
+     *                 TABLE_INSERT_MODE}: Optional: table_insert_mode. When
+     *                 inserting records from multiple files: if table_per_file
+     *                 then insert from each file into a new table. Currently
+     *                 supported only for shapefiles.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+     *                 SINGLE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
+     *                 TABLE_PER_FILE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+     *                 SINGLE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_COMMENT_STRING
      *                 TEXT_COMMENT_STRING}: Specifies the character string
@@ -2044,7 +2128,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 should be interpreted as a null
      *                 value in the source data.
      *                 For {@code delimited_text} {@code file_type} only.  The
-     *                 default value is ''.
+     *                 default value is '\\N'.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_QUOTE_CHARACTER
      *                 TEXT_QUOTE_CHARACTER}: Specifies the character that
@@ -2059,6 +2143,18 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 character, specify an empty string.
      *                 For {@code delimited_text} {@code file_type} only.  The
      *                 default value is '"'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_COLUMNS
+     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
+     *                 internally inferenced string columns. Comma seperated
+     *                 list of column names or '*' for all columns. To add
+     *                 text_search property only to string columns of minimum
+     *                 size, set also the option
+     *                 'text_search_min_column_length'
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
+     *                 Used only when 'text_search_columns' has a value.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
@@ -2077,11 +2173,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
-     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
-     *                 reading file per rank. Default will be
-     *                 external_file_reader_num_tasks
-     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TYPE_INFERENCE_MODE
      *                 TYPE_INFERENCE_MODE}: optimize type inference for:
      *                 Supported values:
@@ -2098,41 +2189,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
      *                 SPEED}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_INSERT_MODE
-     *                 TABLE_INSERT_MODE}: Optional: table_insert_mode. When
-     *                 inserting records from multiple files: if table_per_file
-     *                 then insert from each file into a new table. Currently
-     *                 supported only for shapefiles.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
-     *                 SINGLE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
-     *                 TABLE_PER_FILE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
-     *                 SINGLE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_GROUP_ID
-     *                 KAFKA_GROUP_ID}: The group id to be used consuming data
-     *                 from a kakfa topic (valid only for kafka datasource
-     *                 subscriptions).
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_COLUMNS
-     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
-     *                 internally inferenced string columns. Comma seperated
-     *                 list of column names or '*' for all columns. To add
-     *                 text_search property only to string columns of minimum
-     *                 size, set also the option
-     *                 'text_search_min_column_length'
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
-     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
-     *                 Used only when 'text_search_columns' has a value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -2192,17 +2248,34 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Absolute or relative filepath(s) from where files will be
-     *         loaded. Relative filepaths are relative to the defined <a
-     *         href="../../../../../../config/#external-files"
-     *         target="_top">external_files_directory</a> parameter in the
-     *         server configuration. The filepaths may include wildcards (*).
-     *         If the first path ends in .tsv, the text delimiter will be
-     *         defaulted to a tab character. If the first path ends in .psv,
-     *         the text delimiter will be defaulted to a pipe character (|).
+     * @return A list of file paths from which data will be sourced;
      *         For paths in <a href="../../../../../../tools/kifs/"
      *         target="_top">KiFS</a>, use the uri prefix of kifs:// followed
-     *         by the full path to a file or directory
+     *         by the path to
+     *         a file or directory. File matching by prefix is supported, e.g.
+     *         kifs://dir/file would match dir/file_1
+     *         and dir/file_2. When prefix matching is used, the path must
+     *         start with a full, valid KiFS directory name.
+     *         If an external data source is specified in {@code
+     *         datasource_name}, these file
+     *         paths must resolve to accessible files at that data source
+     *         location. Prefix matching is is supported.
+     *         If the data source is hdfs, prefixes must be aligned with
+     *         directories, i.e. partial file names will not match.
+     *         If no data source is specified, the files are assumed to be
+     *         local to the database and must all be
+     *         accessible to the gpudb user, residing on the path (or relative
+     *         to the path) specified by the
+     *         external files directory in the Kinetica
+     *         <a href="../../../../../../config/#external-files"
+     *         target="_top">configuration file</a>. Wildcards (*) can be used
+     *         to specify a group of files.
+     *         Prefix matching is supported, the prefixes must be aligned with
+     *         directories.
+     *         If the first path ends in .tsv, the text delimiter will be
+     *         defaulted to a tab character.
+     *         If the first path ends in .psv, the text delimiter will be
+     *         defaulted to a pipe character (|).
      * 
      */
     public List<String> getFilepaths() {
@@ -2211,19 +2284,35 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
 
     /**
      * 
-     * @param filepaths  Absolute or relative filepath(s) from where files will
-     *                   be loaded. Relative filepaths are relative to the
-     *                   defined <a
-     *                   href="../../../../../../config/#external-files"
-     *                   target="_top">external_files_directory</a> parameter
-     *                   in the server configuration. The filepaths may include
-     *                   wildcards (*). If the first path ends in .tsv, the
-     *                   text delimiter will be defaulted to a tab character.
-     *                   If the first path ends in .psv, the text delimiter
-     *                   will be defaulted to a pipe character (|).
+     * @param filepaths  A list of file paths from which data will be sourced;
      *                   For paths in <a href="../../../../../../tools/kifs/"
      *                   target="_top">KiFS</a>, use the uri prefix of kifs://
-     *                   followed by the full path to a file or directory
+     *                   followed by the path to
+     *                   a file or directory. File matching by prefix is
+     *                   supported, e.g. kifs://dir/file would match dir/file_1
+     *                   and dir/file_2. When prefix matching is used, the path
+     *                   must start with a full, valid KiFS directory name.
+     *                   If an external data source is specified in {@code
+     *                   datasource_name}, these file
+     *                   paths must resolve to accessible files at that data
+     *                   source location. Prefix matching is is supported.
+     *                   If the data source is hdfs, prefixes must be aligned
+     *                   with directories, i.e. partial file names will not
+     *                   match.
+     *                   If no data source is specified, the files are assumed
+     *                   to be local to the database and must all be
+     *                   accessible to the gpudb user, residing on the path (or
+     *                   relative to the path) specified by the
+     *                   external files directory in the Kinetica
+     *                   <a href="../../../../../../config/#external-files"
+     *                   target="_top">configuration file</a>. Wildcards (*)
+     *                   can be used to specify a group of files.
+     *                   Prefix matching is supported, the prefixes must be
+     *                   aligned with directories.
+     *                   If the first path ends in .tsv, the text delimiter
+     *                   will be defaulted to a tab character.
+     *                   If the first path ends in .psv, the text delimiter
+     *                   will be defaulted to a pipe character (|).
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -2658,7 +2747,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         BAD_RECORD_TABLE_NAME}: Optional name of a table to which
      *         records that were rejected are written.  The bad-record-table
      *         has the following columns: line_number (long), line_rejected
-     *         (string), error_message (string).
+     *         (string), error_message (string). When error handling is Abort,
+     *         bad records table is not populated.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BAD_RECORD_TABLE_LIMIT
      *         BAD_RECORD_TABLE_LIMIT}: A positive integer indicating the
@@ -2775,8 +2865,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         abortable errors in this mode.
      *         </ul>
      *         The default value is {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PERMISSIVE
-     *         PERMISSIVE}.
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ABORT
+     *         ABORT}.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FILE_TYPE
      *         FILE_TYPE}: Specifies the type of the file(s) whose records will
@@ -2784,15 +2874,18 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AVRO
+     *         AVRO}: Avro file format
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
      *         DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV,
      *         PSV, etc.
      *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
-     *         PARQUET}: Apache Parquet file format
-     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON
      *         JSON}: Json file format
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
+     *         PARQUET}: Apache Parquet file format
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHAPEFILE
      *         SHAPEFILE}: ShapeFile file format
@@ -2825,9 +2918,14 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FULL
      *         FULL}.
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_GROUP_ID
+     *         KAFKA_GROUP_ID}: The group id to be used consuming data from a
+     *         kakfa topic (valid only for kafka datasource subscriptions).
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
      *         LOADING_MODE}: Scheme for distributing the extraction and
-     *         loading of data from the source data file(s).
+     *         loading of data from the source data file(s). This option
+     *         applies only when loading files that are local to the database
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -2865,9 +2963,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         head node has no files local to it, it will be unable to
      *         determine the structure and the request
      *         will fail.
-     *         This mode should not be used in conjuction with a data source,
-     *         as data sources are seen by all
-     *         worker processes as shared resources with no 'local' component.
      *         If the head node is configured to have no worker processes, no
      *         data strictly accessible to the head
      *         node will be loaded.
@@ -2875,6 +2970,20 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#HEAD
      *         HEAD}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOCAL_TIME_OFFSET
+     *         LOCAL_TIME_OFFSET}: For Avro local timestamp columns
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
+     *         NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file
+     *         per rank. Default will be external_file_reader_num_tasks
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#POLL_INTERVAL
+     *         POLL_INTERVAL}: If {@code true}, the number of seconds between
+     *         attempts to load external files into the table.  If zero,
+     *         polling will be continuous as long as data is found.  If no data
+     *         is found, the interval will steadily increase to a maximum of 60
+     *         seconds.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PRIMARY_KEYS
      *         PRIMARY_KEYS}: Optional: comma separated list of column names,
@@ -2885,6 +2994,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         SHARD_KEYS}: Optional: comma separated list of column names, to
      *         set as primary keys, when not specified in the type.  The
      *         default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SKIP_LINES
+     *         SKIP_LINES}: Skip number of lines from begining of file.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SUBSCRIBE
      *         SUBSCRIBE}: Continuously poll the data source to check for new
@@ -2902,12 +3014,23 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
      *         FALSE}.
      *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#POLL_INTERVAL
-     *         POLL_INTERVAL}: If {@code true}, the number of seconds between
-     *         attempts to load external files into the table.  If zero,
-     *         polling will be continuous as long as data is found.  If no data
-     *         is found, the interval will steadily increase to a maximum of 60
-     *         seconds.
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_INSERT_MODE
+     *         TABLE_INSERT_MODE}: Optional: table_insert_mode. When inserting
+     *         records from multiple files: if table_per_file then insert from
+     *         each file into a new table. Currently supported only for
+     *         shapefiles.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+     *         SINGLE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
+     *         TABLE_PER_FILE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+     *         SINGLE}.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_COMMENT_STRING
      *         TEXT_COMMENT_STRING}: Specifies the character string that should
@@ -2972,7 +3095,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         interpreted as a null
      *         value in the source data.
      *         For {@code delimited_text} {@code file_type} only.  The default
-     *         value is ''.
+     *         value is '\\N'.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_QUOTE_CHARACTER
      *         TEXT_QUOTE_CHARACTER}: Specifies the character that should be
@@ -2987,6 +3110,17 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         character, specify an empty string.
      *         For {@code delimited_text} {@code file_type} only.  The default
      *         value is '"'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_COLUMNS
+     *         TEXT_SEARCH_COLUMNS}: Add 'text_search' property to internally
+     *         inferenced string columns. Comma seperated list of column names
+     *         or '*' for all columns. To add text_search property only to
+     *         string columns of minimum size, set also the option
+     *         'text_search_min_column_length'
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used
+     *         only when 'text_search_columns' has a value.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUNCATE_TABLE
      *         TRUNCATE_TABLE}: If set to {@code true}, truncates the table
@@ -3004,10 +3138,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
      *         FALSE}.
      *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
-     *         NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file
-     *         per rank. Default will be external_file_reader_num_tasks
-     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TYPE_INFERENCE_MODE
      *         TYPE_INFERENCE_MODE}: optimize type inference for:
      *         Supported values:
@@ -3024,39 +3154,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
      *         SPEED}.
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_INSERT_MODE
-     *         TABLE_INSERT_MODE}: Optional: table_insert_mode. When inserting
-     *         records from multiple files: if table_per_file then insert from
-     *         each file into a new table. Currently supported only for
-     *         shapefiles.
-     *         Supported values:
-     *         <ul>
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
-     *         SINGLE}
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
-     *         TABLE_PER_FILE}
-     *         </ul>
-     *         The default value is {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
-     *         SINGLE}.
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_GROUP_ID
-     *         KAFKA_GROUP_ID}: The group id to be used consuming data from a
-     *         kakfa topic (valid only for kafka datasource subscriptions).
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_COLUMNS
-     *         TEXT_SEARCH_COLUMNS}: Add 'text_search' property to internally
-     *         inferenced string columns. Comma seperated list of column names
-     *         or '*' for all columns. To add text_search property only to
-     *         string columns of minimum size, set also the option
-     *         'text_search_min_column_length'
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
-     *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used
-     *         only when 'text_search_columns' has a value.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -3075,6 +3172,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 which records that were rejected are written.  The
      *                 bad-record-table has the following columns: line_number
      *                 (long), line_rejected (string), error_message (string).
+     *                 When error handling is Abort, bad records table is not
+     *                 populated.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#BAD_RECORD_TABLE_LIMIT
      *                 BAD_RECORD_TABLE_LIMIT}: A positive integer indicating
@@ -3196,8 +3295,8 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 collisions are considered abortable errors in this mode.
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PERMISSIVE
-     *                 PERMISSIVE}.
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#ABORT
+     *                 ABORT}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FILE_TYPE
      *                 FILE_TYPE}: Specifies the type of the file(s) whose
@@ -3205,15 +3304,18 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#AVRO
+     *                 AVRO}: Avro file format
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#DELIMITED_TEXT
      *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
      *                 TSV, PSV, etc.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
-     *                 PARQUET}: Apache Parquet file format
-     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#JSON
      *                 JSON}: Json file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PARQUET
+     *                 PARQUET}: Apache Parquet file format
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SHAPEFILE
      *                 SHAPEFILE}: ShapeFile file format
@@ -3247,9 +3349,16 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FULL
      *                 FULL}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_GROUP_ID
+     *                 KAFKA_GROUP_ID}: The group id to be used consuming data
+     *                 from a kakfa topic (valid only for kafka datasource
+     *                 subscriptions).
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOADING_MODE
      *                 LOADING_MODE}: Scheme for distributing the extraction
-     *                 and loading of data from the source data file(s).
+     *                 and loading of data from the source data file(s). This
+     *                 option applies only when loading files that are local to
+     *                 the database
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -3287,10 +3396,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 head node has no files local to it, it will be unable to
      *                 determine the structure and the request
      *                 will fail.
-     *                 This mode should not be used in conjuction with a data
-     *                 source, as data sources are seen by all
-     *                 worker processes as shared resources with no 'local'
-     *                 component.
      *                 If the head node is configured to have no worker
      *                 processes, no data strictly accessible to the head
      *                 node will be loaded.
@@ -3298,6 +3403,21 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#HEAD
      *                 HEAD}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#LOCAL_TIME_OFFSET
+     *                 LOCAL_TIME_OFFSET}: For Avro local timestamp columns
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
+     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
+     *                 reading file per rank. Default will be
+     *                 external_file_reader_num_tasks
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#POLL_INTERVAL
+     *                 POLL_INTERVAL}: If {@code true}, the number of seconds
+     *                 between attempts to load external files into the table.
+     *                 If zero, polling will be continuous as long as data is
+     *                 found.  If no data is found, the interval will steadily
+     *                 increase to a maximum of 60 seconds.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#PRIMARY_KEYS
      *                 PRIMARY_KEYS}: Optional: comma separated list of column
@@ -3308,6 +3428,9 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 SHARD_KEYS}: Optional: comma separated list of column
      *                 names, to set as primary keys, when not specified in the
      *                 type.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SKIP_LINES
+     *                 SKIP_LINES}: Skip number of lines from begining of file.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SUBSCRIBE
      *                 SUBSCRIBE}: Continuously poll the data source to check
@@ -3325,12 +3448,23 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#POLL_INTERVAL
-     *                 POLL_INTERVAL}: If {@code true}, the number of seconds
-     *                 between attempts to load external files into the table.
-     *                 If zero, polling will be continuous as long as data is
-     *                 found.  If no data is found, the interval will steadily
-     *                 increase to a maximum of 60 seconds.
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_INSERT_MODE
+     *                 TABLE_INSERT_MODE}: Optional: table_insert_mode. When
+     *                 inserting records from multiple files: if table_per_file
+     *                 then insert from each file into a new table. Currently
+     *                 supported only for shapefiles.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+     *                 SINGLE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
+     *                 TABLE_PER_FILE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
+     *                 SINGLE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_COMMENT_STRING
      *                 TEXT_COMMENT_STRING}: Specifies the character string
@@ -3398,7 +3532,7 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 should be interpreted as a null
      *                 value in the source data.
      *                 For {@code delimited_text} {@code file_type} only.  The
-     *                 default value is ''.
+     *                 default value is '\\N'.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_QUOTE_CHARACTER
      *                 TEXT_QUOTE_CHARACTER}: Specifies the character that
@@ -3413,6 +3547,18 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 character, specify an empty string.
      *                 For {@code delimited_text} {@code file_type} only.  The
      *                 default value is '"'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_COLUMNS
+     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
+     *                 internally inferenced string columns. Comma seperated
+     *                 list of column names or '*' for all columns. To add
+     *                 text_search property only to string columns of minimum
+     *                 size, set also the option
+     *                 'text_search_min_column_length'
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
+     *                 Used only when 'text_search_columns' has a value.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TRUNCATE_TABLE
      *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
@@ -3431,11 +3577,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#FALSE
      *                 FALSE}.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#NUM_TASKS_PER_RANK
-     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
-     *                 reading file per rank. Default will be
-     *                 external_file_reader_num_tasks
-     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TYPE_INFERENCE_MODE
      *                 TYPE_INFERENCE_MODE}: optimize type inference for:
      *                 Supported values:
@@ -3452,41 +3593,6 @@ public class InsertRecordsFromFilesRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SPEED
      *                 SPEED}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_INSERT_MODE
-     *                 TABLE_INSERT_MODE}: Optional: table_insert_mode. When
-     *                 inserting records from multiple files: if table_per_file
-     *                 then insert from each file into a new table. Currently
-     *                 supported only for shapefiles.
-     *                 Supported values:
-     *                 <ul>
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
-     *                 SINGLE}
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TABLE_PER_FILE
-     *                 TABLE_PER_FILE}
-     *                 </ul>
-     *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#SINGLE
-     *                 SINGLE}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#KAFKA_GROUP_ID
-     *                 KAFKA_GROUP_ID}: The group id to be used consuming data
-     *                 from a kakfa topic (valid only for kafka datasource
-     *                 subscriptions).
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_COLUMNS
-     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
-     *                 internally inferenced string columns. Comma seperated
-     *                 list of column names or '*' for all columns. To add
-     *                 text_search property only to string columns of minimum
-     *                 size, set also the option
-     *                 'text_search_min_column_length'
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromFilesRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
-     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
-     *                 Used only when 'text_search_columns' has a value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

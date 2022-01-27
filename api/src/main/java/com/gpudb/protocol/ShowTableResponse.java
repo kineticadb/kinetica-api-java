@@ -435,6 +435,11 @@ public class ShowTableResponse implements IndexedRecord {
         public static final String USER_CHUNK_SIZE = "user_chunk_size";
 
         /**
+         * Name of the owner resource group.  The default value is ''.
+         */
+        public static final String OWNER_RESOURCE_GROUP = "owner_resource_group";
+
+        /**
          * Semicolon-separated list of shard keys that were equated in joins
          * (applicable for join tables).  The default value is ''.
          */

@@ -40,6 +40,51 @@ public class DeleteResourceGroupRequest implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.DeleteResourceGroupRequest.Options#CASCADE_DELETE
+     * CASCADE_DELETE}: If {@code true}, delete any existing entities owned by
+     * this group. Otherwise this request will return an error of any such
+     * entities exist.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.DeleteResourceGroupRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.DeleteResourceGroupRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.DeleteResourceGroupRequest.Options#FALSE FALSE}.
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * If {@code true}, delete any existing entities owned by this group.
+         * Otherwise this request will return an error of any such entities
+         * exist.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.DeleteResourceGroupRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.DeleteResourceGroupRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.DeleteResourceGroupRequest.Options#FALSE FALSE}.
+         */
+        public static final String CASCADE_DELETE = "cascade_delete";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private Options() {  }
+    }
+
     private String name;
     private Map<String, String> options;
 
@@ -57,8 +102,27 @@ public class DeleteResourceGroupRequest implements IndexedRecord {
      * parameters.
      * 
      * @param name  Name of the resource group to be deleted.
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteResourceGroupRequest.Options#CASCADE_DELETE
+     *                 CASCADE_DELETE}: If {@code true}, delete any existing
+     *                 entities owned by this group. Otherwise this request
+     *                 will return an error of any such entities exist.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteResourceGroupRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteResourceGroupRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.DeleteResourceGroupRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public DeleteResourceGroupRequest(String name, Map<String, String> options) {
@@ -89,7 +153,26 @@ public class DeleteResourceGroupRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.  The default value is an empty {@link Map}.
+     * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.DeleteResourceGroupRequest.Options#CASCADE_DELETE
+     *         CASCADE_DELETE}: If {@code true}, delete any existing entities
+     *         owned by this group. Otherwise this request will return an error
+     *         of any such entities exist.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.DeleteResourceGroupRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.DeleteResourceGroupRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.DeleteResourceGroupRequest.Options#FALSE
+     *         FALSE}.
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -98,8 +181,27 @@ public class DeleteResourceGroupRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteResourceGroupRequest.Options#CASCADE_DELETE
+     *                 CASCADE_DELETE}: If {@code true}, delete any existing
+     *                 entities owned by this group. Otherwise this request
+     *                 will return an error of any such entities exist.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteResourceGroupRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.DeleteResourceGroupRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.DeleteResourceGroupRequest.Options#FALSE
+     *                 FALSE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

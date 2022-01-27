@@ -41,6 +41,48 @@ public class CreateUserExternalRequest implements IndexedRecord {
         return schema$;
     }
 
+
+    /**
+     * Optional parameters.
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUserExternalRequest.Options#CREATE_HOME_DIRECTORY
+     * CREATE_HOME_DIRECTORY}: when true, a home directory in KiFS is created
+     * for this user
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUserExternalRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUserExternalRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateUserExternalRequest.Options#TRUE TRUE}.
+     * </ul>
+     * The default value is an empty {@link Map}.
+     * A set of string constants for the parameter {@code options}.
+     */
+    public static final class Options {
+
+        /**
+         * when true, a home directory in KiFS is created for this user
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUserExternalRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUserExternalRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateUserExternalRequest.Options#TRUE TRUE}.
+         */
+        public static final String CREATE_HOME_DIRECTORY = "create_home_directory";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        private Options() {  }
+    }
+
     private String name;
     private Map<String, String> options;
 
@@ -60,8 +102,26 @@ public class CreateUserExternalRequest implements IndexedRecord {
      * @param name  Name of the user to be created. Must exactly match the
      *              user's name in the external LDAP, prefixed with a @. Must
      *              not be the same name as an existing user.
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserExternalRequest.Options#CREATE_HOME_DIRECTORY
+     *                 CREATE_HOME_DIRECTORY}: when true, a home directory in
+     *                 KiFS is created for this user
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserExternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserExternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateUserExternalRequest.Options#TRUE
+     *                 TRUE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      */
     public CreateUserExternalRequest(String name, Map<String, String> options) {
@@ -96,7 +156,24 @@ public class CreateUserExternalRequest implements IndexedRecord {
 
     /**
      * 
-     * @return Optional parameters.  The default value is an empty {@link Map}.
+     * @return Optional parameters.
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUserExternalRequest.Options#CREATE_HOME_DIRECTORY
+     *         CREATE_HOME_DIRECTORY}: when true, a home directory in KiFS is
+     *         created for this user
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUserExternalRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUserExternalRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateUserExternalRequest.Options#TRUE TRUE}.
+     *         </ul>
+     *         The default value is an empty {@link Map}.
      * 
      */
     public Map<String, String> getOptions() {
@@ -105,8 +182,26 @@ public class CreateUserExternalRequest implements IndexedRecord {
 
     /**
      * 
-     * @param options  Optional parameters.  The default value is an empty
-     *                 {@link Map}.
+     * @param options  Optional parameters.
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserExternalRequest.Options#CREATE_HOME_DIRECTORY
+     *                 CREATE_HOME_DIRECTORY}: when true, a home directory in
+     *                 KiFS is created for this user
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserExternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserExternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateUserExternalRequest.Options#TRUE
+     *                 TRUE}.
+     *                 </ul>
+     *                 The default value is an empty {@link Map}.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 

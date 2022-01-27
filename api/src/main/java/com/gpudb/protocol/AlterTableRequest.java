@@ -277,6 +277,9 @@ public class AlterTableRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterTableRequest.Action#RESUME_DATASOURCE_SUBSCRIPTION
      * RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a paused data source
      * subscription. The data source can be kafka / S3 / Azure.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterTableRequest.Action#CHANGE_OWNER CHANGE_OWNER}:
+     * Change the owner resource group of the table.
      * </ul>
      * A set of string constants for the parameter {@code action}.
      */
@@ -518,6 +521,11 @@ public class AlterTableRequest implements IndexedRecord {
          * can be kafka / S3 / Azure.
          */
         public static final String RESUME_DATASOURCE_SUBSCRIPTION = "resume_datasource_subscription";
+
+        /**
+         * Change the owner resource group of the table.
+         */
+        public static final String CHANGE_OWNER = "change_owner";
 
         private Action() {  }
     }
@@ -1031,6 +1039,10 @@ public class AlterTableRequest implements IndexedRecord {
      *                RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a paused
      *                data source subscription. The data source can be kafka /
      *                S3 / Azure.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#CHANGE_OWNER
+     *                CHANGE_OWNER}: Change the owner resource group of the
+     *                table.
      *                </ul>
      * @param value  The value of the modification, depending on {@code
      *               action}.  For example, if {@code action} is {@code
@@ -1414,6 +1426,9 @@ public class AlterTableRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterTableRequest.Action#RESUME_DATASOURCE_SUBSCRIPTION
      *         RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a paused data
      *         source subscription. The data source can be kafka / S3 / Azure.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterTableRequest.Action#CHANGE_OWNER
+     *         CHANGE_OWNER}: Change the owner resource group of the table.
      *         </ul>
      * 
      */
@@ -1632,6 +1647,10 @@ public class AlterTableRequest implements IndexedRecord {
      *                RESUME_DATASOURCE_SUBSCRIPTION}: Resubscribe to a paused
      *                data source subscription. The data source can be kafka /
      *                S3 / Azure.
+     *                        <li> {@link
+     *                com.gpudb.protocol.AlterTableRequest.Action#CHANGE_OWNER
+     *                CHANGE_OWNER}: Change the owner resource group of the
+     *                table.
      *                </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

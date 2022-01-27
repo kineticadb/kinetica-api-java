@@ -146,7 +146,26 @@ public class AlterDatasourceRequest implements IndexedRecord {
      * KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the data source
      *         <li> {@link
      * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#ANONYMOUS
-     * ANONYMOUS}: Create an anonymous connection to the storage provider
+     * ANONYMOUS}: Create an anonymous connection to the storage
+     * provider--DEPRECATED: this is now the default.  Specify
+     * use_managed_credentials for non-anonymous connection
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     * TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     * TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#USE_MANAGED_CREDENTIALS
+     * USE_MANAGED_CREDENTIALS}: When no credentials are supplied, we use
+     * anonymous access by default.  If this is set, we will use cloud provider
+     * user settings.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -315,7 +334,27 @@ public class AlterDatasourceRequest implements IndexedRecord {
         public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
 
         /**
-         * Create an anonymous connection to the storage provider
+         * Create an anonymous connection to the storage provider--DEPRECATED:
+         * this is now the default.  Specify use_managed_credentials for
+         * non-anonymous connection
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+         * FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+         * TRUE}.
+         */
+        public static final String ANONYMOUS = "anonymous";
+
+        /**
+         * When no credentials are supplied, we use anonymous access by
+         * default.  If this is set, we will use cloud provider user settings.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -329,7 +368,7 @@ public class AlterDatasourceRequest implements IndexedRecord {
          * com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
          * FALSE}.
          */
-        public static final String ANONYMOUS = "anonymous";
+        public static final String USE_MANAGED_CREDENTIALS = "use_managed_credentials";
 
         /**
          * Use https to connect to datasource if true, otherwise use http
@@ -490,7 +529,28 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#ANONYMOUS
      *                              ANONYMOUS}: Create an anonymous connection
-     *                              to the storage provider
+     *                              to the storage provider--DEPRECATED: this
+     *                              is now the default.  Specify
+     *                              use_managed_credentials for non-anonymous
+     *                              connection
+     *                              Supported values:
+     *                              <ul>
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                              TRUE}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *                              FALSE}
+     *                              </ul>
+     *                              The default value is {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                              TRUE}.
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#USE_MANAGED_CREDENTIALS
+     *                              USE_MANAGED_CREDENTIALS}: When no
+     *                              credentials are supplied, we use anonymous
+     *                              access by default.  If this is set, we will
+     *                              use cloud provider user settings.
      *                              Supported values:
      *                              <ul>
      *                                      <li> {@link
@@ -664,7 +724,25 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#ANONYMOUS
      *         ANONYMOUS}: Create an anonymous connection to the storage
-     *         provider
+     *         provider--DEPRECATED: this is now the default.  Specify
+     *         use_managed_credentials for non-anonymous connection
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *         TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#USE_MANAGED_CREDENTIALS
+     *         USE_MANAGED_CREDENTIALS}: When no credentials are supplied, we
+     *         use anonymous access by default.  If this is set, we will use
+     *         cloud provider user settings.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -821,7 +899,28 @@ public class AlterDatasourceRequest implements IndexedRecord {
      *                                      <li> {@link
      *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#ANONYMOUS
      *                              ANONYMOUS}: Create an anonymous connection
-     *                              to the storage provider
+     *                              to the storage provider--DEPRECATED: this
+     *                              is now the default.  Specify
+     *                              use_managed_credentials for non-anonymous
+     *                              connection
+     *                              Supported values:
+     *                              <ul>
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                              TRUE}
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#FALSE
+     *                              FALSE}
+     *                              </ul>
+     *                              The default value is {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#TRUE
+     *                              TRUE}.
+     *                                      <li> {@link
+     *                              com.gpudb.protocol.AlterDatasourceRequest.DatasourceUpdatesMap#USE_MANAGED_CREDENTIALS
+     *                              USE_MANAGED_CREDENTIALS}: When no
+     *                              credentials are supplied, we use anonymous
+     *                              access by default.  If this is set, we will
+     *                              use cloud provider user settings.
      *                              Supported values:
      *                              <ul>
      *                                      <li> {@link

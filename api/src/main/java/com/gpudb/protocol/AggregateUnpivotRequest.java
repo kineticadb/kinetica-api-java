@@ -38,8 +38,8 @@ import org.apache.avro.generic.IndexedRecord;
  * and values respectively.
  * <p>
  * The response is returned as a dynamic schema. For details see:
- * <a href="../../../../../../api/#dynamic-schemas" target="_top">dynamic
- * schemas documentation</a>.
+ * <a href="../../../../../../api/concepts/#dynamic-schemas"
+ * target="_top">dynamic schemas documentation</a>.
  */
 public class AggregateUnpivotRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
@@ -102,6 +102,23 @@ public class AggregateUnpivotRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_TEMP_TABLE
+     * CREATE_TEMP_TABLE}: If {@code true}, a unique temporary table name will
+     * be generated in the sys_temp schema and used in place of {@code
+     * result_table}. If {@code result_table_persist} is {@code false} (or
+     * unspecified), then this is always allowed even if the caller does not
+     * have permission to create tables. The generated name is returned in
+     * {@code qualified_result_table_name}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUnpivotRequest.Options#COLLECTION_NAME
      * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema as
@@ -188,6 +205,27 @@ public class AggregateUnpivotRequest implements IndexedRecord {
     public static final class Options {
 
         /**
+         * If {@code true}, a unique temporary table name will be generated in
+         * the sys_temp schema and used in place of {@code result_table}. If
+         * {@code result_table_persist} is {@code false} (or unspecified), then
+         * this is always allowed even if the caller does not have permission
+         * to create tables. The generated name is returned in {@code
+         * qualified_result_table_name}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
+         */
+        public static final String CREATE_TEMP_TABLE = "create_temp_table";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
          * [DEPRECATED--please specify the containing schema as part of {@code
          * result_table} and use {@link
          * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
@@ -225,8 +263,6 @@ public class AggregateUnpivotRequest implements IndexedRecord {
          * com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
          */
         public static final String RESULT_TABLE_PERSIST = "result_table_persist";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * Filter expression to apply to the table prior to unpivot processing.
@@ -335,6 +371,27 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                        source table must have the same data type.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code result_table}. If {@code
+     *                 result_table_persist} is {@code false} (or unspecified),
+     *                 then this is always allowed even if the caller does not
+     *                 have permission to create tables. The generated name is
+     *                 returned in {@code qualified_result_table_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: [DEPRECATED--please specify the
@@ -480,6 +537,27 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      *                  BINARY}.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code result_table}. If {@code
+     *                 result_table_persist} is {@code false} (or unspecified),
+     *                 then this is always allowed even if the caller does not
+     *                 have permission to create tables. The generated name is
+     *                 returned in {@code qualified_result_table_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: [DEPRECATED--please specify the
@@ -765,6 +843,24 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_TEMP_TABLE
+     *         CREATE_TEMP_TABLE}: If {@code true}, a unique temporary table
+     *         name will be generated in the sys_temp schema and used in place
+     *         of {@code result_table}. If {@code result_table_persist} is
+     *         {@code false} (or unspecified), then this is always allowed even
+     *         if the caller does not have permission to create tables. The
+     *         generated name is returned in {@code
+     *         qualified_result_table_name}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.AggregateUnpivotRequest.Options#COLLECTION_NAME
      *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
      *         schema as part of {@code result_table} and use {@link
@@ -858,6 +954,27 @@ public class AggregateUnpivotRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code result_table}. If {@code
+     *                 result_table_persist} is {@code false} (or unspecified),
+     *                 then this is always allowed even if the caller does not
+     *                 have permission to create tables. The generated name is
+     *                 returned in {@code qualified_result_table_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUnpivotRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: [DEPRECATED--please specify the

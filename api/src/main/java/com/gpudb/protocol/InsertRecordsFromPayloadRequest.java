@@ -576,7 +576,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PERMISSIVE
      * PERMISSIVE}: Records with missing columns are populated with nulls if
-     * possible; otherwise, malformed records are skipped.
+     * possible; otherwise, the malformed records are skipped.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#IGNORE_BAD_RECORDS
      * IGNORE_BAD_RECORDS}: Malformed records are skipped.
@@ -587,8 +587,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * this mode.
      * </ul>
      * The default value is {@link
-     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PERMISSIVE
-     * PERMISSIVE}.
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ABORT ABORT}.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FILE_TYPE
      * FILE_TYPE}: Specifies the type of the file(s) whose records will be
@@ -596,14 +595,17 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * Supported values:
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO AVRO}:
+     * Avro file format
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT
      * DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV, PSV, etc.
      *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PARQUET
-     * PARQUET}: Apache Parquet file format
-     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON JSON}:
      * Json file format
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PARQUET
+     * PARQUET}: Apache Parquet file format
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHAPEFILE
      * SHAPEFILE}: ShapeFile file format
@@ -634,6 +636,69 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FULL FULL}.
      *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOADING_MODE
+     * LOADING_MODE}: Scheme for distributing the extraction and loading of
+     * data from the source data file(s). This option applies only when loading
+     * files that are local to the database
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#HEAD HEAD}:
+     * The head node loads all data. All files must be available to the head
+     * node.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DISTRIBUTED_SHARED
+     * DISTRIBUTED_SHARED}: The head node coordinates loading data by worker
+     * processes across all nodes from shared files available to all workers.
+     * <p>
+     * NOTE:
+     * <p>
+     * Instead of existing on a shared source, the files can be duplicated on a
+     * source local to each host
+     * to improve performance, though the files must appear as the same data
+     * set from the perspective of
+     * all hosts performing the load.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DISTRIBUTED_LOCAL
+     * DISTRIBUTED_LOCAL}: A single worker process on each node loads all files
+     * that are available to it. This option works best when each worker loads
+     * files from its own file
+     * system, to maximize performance. In order to avoid data duplication,
+     * either each worker performing
+     * the load needs to have visibility to a set of files unique to it (no
+     * file is visible to more than
+     * one node) or the target table needs to have a primary key (which will
+     * allow the worker to
+     * automatically deduplicate data).
+     * <p>
+     * NOTE:
+     * <p>
+     * If the target table doesn't exist, the table structure will be
+     * determined by the head node. If the
+     * head node has no files local to it, it will be unable to determine the
+     * structure and the request
+     * will fail.
+     * <p>
+     * If the head node is configured to have no worker processes, no data
+     * strictly accessible to the head
+     * node will be loaded.
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#HEAD HEAD}.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOCAL_TIME_OFFSET
+     * LOCAL_TIME_OFFSET}: For Avro local timestamp columns
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NUM_TASKS_PER_RANK
+     * NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file per
+     * rank. Default will be external_file_reader_num_tasks
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#POLL_INTERVAL
+     * POLL_INTERVAL}: If {@code true}, the number of seconds between attempts
+     * to load external files into the table.  If zero, polling will be
+     * continuous as long as data is found.  If no data is found, the interval
+     * will steadily increase to a maximum of 60 seconds.
+     *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PRIMARY_KEYS
      * PRIMARY_KEYS}: Optional: comma separated list of column names, to set as
      * primary keys, when not specified in the type.  The default value is ''.
@@ -641,6 +706,39 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHARD_KEYS
      * SHARD_KEYS}: Optional: comma separated list of column names, to set as
      * primary keys, when not specified in the type.  The default value is ''.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SKIP_LINES
+     * SKIP_LINES}: Skip number of lines from begining of file.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SUBSCRIBE
+     * SUBSCRIBE}: Continuously poll the data source to check for new data and
+     * load it into the table.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE FALSE}.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TABLE_INSERT_MODE
+     * TABLE_INSERT_MODE}: Optional: table_insert_mode. When inserting records
+     * from multiple files: if table_per_file then insert from each file into a
+     * new table. Currently supported only for shapefiles.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SINGLE
+     * SINGLE}
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TABLE_PER_FILE
+     * TABLE_PER_FILE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SINGLE
+     * SINGLE}.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_COMMENT_STRING
      * TEXT_COMMENT_STRING}: Specifies the character string that should be
@@ -708,7 +806,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * value in the source data.
      * <p>
      * For {@code delimited_text} {@code file_type} only.  The default value is
-     * ''.
+     * '\\N'.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_QUOTE_CHARACTER
      * TEXT_QUOTE_CHARACTER}: Specifies the character that should be
@@ -725,9 +823,28 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * For {@code delimited_text} {@code file_type} only.  The default value is
      * '"'.
      *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NUM_TASKS_PER_RANK
-     * NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file per
-     * rank. Default will be external_file_reader_num_tasks
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_COLUMNS
+     * TEXT_SEARCH_COLUMNS}: Add 'text_search' property to internally
+     * inferenced string columns. Comma seperated list of column names or '*'
+     * for all columns. To add text_search property only to string columns of
+     * minimum size, set also the option 'text_search_min_column_length'
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     * TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used only when
+     * 'text_search_columns' has a value.
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUNCATE_TABLE
+     * TRUNCATE_TABLE}: If set to {@code true}, truncates the table specified
+     * by {@code tableName} prior to loading the file(s).
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TYPE_INFERENCE_MODE
      * TYPE_INFERENCE_MODE}: optimize type inference for:
@@ -744,16 +861,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SPEED SPEED}.
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_COLUMNS
-     * TEXT_SEARCH_COLUMNS}: Add 'text_search' property to internally
-     * inferenced string columns. Comma seperated list of column names or '*'
-     * for all columns. To add text_search property only to string columns of
-     * minimum size, set also the option 'text_search_min_column_length'
-     *         <li> {@link
-     * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
-     * TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used only when
-     * 'text_search_columns' has a value.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -879,7 +986,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PERMISSIVE
          * PERMISSIVE}: Records with missing columns are populated with nulls
-         * if possible; otherwise, malformed records are skipped.
+         * if possible; otherwise, the malformed records are skipped.
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#IGNORE_BAD_RECORDS
          * IGNORE_BAD_RECORDS}: Malformed records are skipped.
@@ -890,14 +997,14 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * abortable errors in this mode.
          * </ul>
          * The default value is {@link
-         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PERMISSIVE
-         * PERMISSIVE}.
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ABORT
+         * ABORT}.
          */
         public static final String ERROR_HANDLING = "error_handling";
 
         /**
          * Records with missing columns are populated with nulls if possible;
-         * otherwise, malformed records are skipped.
+         * otherwise, the malformed records are skipped.
          */
         public static final String PERMISSIVE = "permissive";
 
@@ -918,15 +1025,18 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * Supported values:
          * <ul>
          *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO
+         * AVRO}: Avro file format
+         *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT
          * DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV, PSV,
          * etc.
          *         <li> {@link
-         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PARQUET
-         * PARQUET}: Apache Parquet file format
-         *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON
          * JSON}: Json file format
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PARQUET
+         * PARQUET}: Apache Parquet file format
          *         <li> {@link
          * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHAPEFILE
          * SHAPEFILE}: ShapeFile file format
@@ -938,19 +1048,24 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String FILE_TYPE = "file_type";
 
         /**
+         * Avro file format
+         */
+        public static final String AVRO = "avro";
+
+        /**
          * Delimited text file format; e.g., CSV, TSV, PSV, etc.
          */
         public static final String DELIMITED_TEXT = "delimited_text";
 
         /**
-         * Apache Parquet file format
-         */
-        public static final String PARQUET = "parquet";
-
-        /**
          * Json file format
          */
         public static final String JSON = "json";
+
+        /**
+         * Apache Parquet file format
+         */
+        public static final String PARQUET = "parquet";
 
         /**
          * ShapeFile file format
@@ -1002,6 +1117,128 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String TYPE_INFERENCE_ONLY = "type_inference_only";
 
         /**
+         * Scheme for distributing the extraction and loading of data from the
+         * source data file(s). This option applies only when loading files
+         * that are local to the database
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#HEAD
+         * HEAD}: The head node loads all data. All files must be available to
+         * the head node.
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DISTRIBUTED_SHARED
+         * DISTRIBUTED_SHARED}: The head node coordinates loading data by
+         * worker
+         * processes across all nodes from shared files available to all
+         * workers.
+         * <p>
+         * NOTE:
+         * <p>
+         * Instead of existing on a shared source, the files can be duplicated
+         * on a source local to each host
+         * to improve performance, though the files must appear as the same
+         * data set from the perspective of
+         * all hosts performing the load.
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DISTRIBUTED_LOCAL
+         * DISTRIBUTED_LOCAL}: A single worker process on each node loads all
+         * files
+         * that are available to it. This option works best when each worker
+         * loads files from its own file
+         * system, to maximize performance. In order to avoid data duplication,
+         * either each worker performing
+         * the load needs to have visibility to a set of files unique to it (no
+         * file is visible to more than
+         * one node) or the target table needs to have a primary key (which
+         * will allow the worker to
+         * automatically deduplicate data).
+         * <p>
+         * NOTE:
+         * <p>
+         * If the target table doesn't exist, the table structure will be
+         * determined by the head node. If the
+         * head node has no files local to it, it will be unable to determine
+         * the structure and the request
+         * will fail.
+         * <p>
+         * If the head node is configured to have no worker processes, no data
+         * strictly accessible to the head
+         * node will be loaded.
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#HEAD
+         * HEAD}.
+         */
+        public static final String LOADING_MODE = "loading_mode";
+
+        /**
+         * The head node loads all data. All files must be available to the
+         * head node.
+         */
+        public static final String HEAD = "head";
+
+        /**
+         * The head node coordinates loading data by worker
+         * processes across all nodes from shared files available to all
+         * workers.
+         * <p>
+         * NOTE:
+         * <p>
+         * Instead of existing on a shared source, the files can be duplicated
+         * on a source local to each host
+         * to improve performance, though the files must appear as the same
+         * data set from the perspective of
+         * all hosts performing the load.
+         */
+        public static final String DISTRIBUTED_SHARED = "distributed_shared";
+
+        /**
+         * A single worker process on each node loads all files
+         * that are available to it. This option works best when each worker
+         * loads files from its own file
+         * system, to maximize performance. In order to avoid data duplication,
+         * either each worker performing
+         * the load needs to have visibility to a set of files unique to it (no
+         * file is visible to more than
+         * one node) or the target table needs to have a primary key (which
+         * will allow the worker to
+         * automatically deduplicate data).
+         * <p>
+         * NOTE:
+         * <p>
+         * If the target table doesn't exist, the table structure will be
+         * determined by the head node. If the
+         * head node has no files local to it, it will be unable to determine
+         * the structure and the request
+         * will fail.
+         * <p>
+         * If the head node is configured to have no worker processes, no data
+         * strictly accessible to the head
+         * node will be loaded.
+         */
+        public static final String DISTRIBUTED_LOCAL = "distributed_local";
+
+        /**
+         * For Avro local timestamp columns
+         */
+        public static final String LOCAL_TIME_OFFSET = "local_time_offset";
+
+        /**
+         * Optional: number of tasks for reading file per rank. Default will be
+         * external_file_reader_num_tasks
+         */
+        public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
+
+        /**
+         * If {@code true}, the number of seconds between attempts to load
+         * external files into the table.  If zero, polling will be continuous
+         * as long as data is found.  If no data is found, the interval will
+         * steadily increase to a maximum of 60 seconds.
+         */
+        public static final String POLL_INTERVAL = "poll_interval";
+
+        /**
          * Optional: comma separated list of column names, to set as primary
          * keys, when not specified in the type.  The default value is ''.
          */
@@ -1012,6 +1249,52 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * keys, when not specified in the type.  The default value is ''.
          */
         public static final String SHARD_KEYS = "shard_keys";
+
+        /**
+         * Skip number of lines from begining of file.
+         */
+        public static final String SKIP_LINES = "skip_lines";
+
+        /**
+         * Continuously poll the data source to check for new data and load it
+         * into the table.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+         * FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+         * FALSE}.
+         */
+        public static final String SUBSCRIBE = "subscribe";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
+         * Optional: table_insert_mode. When inserting records from multiple
+         * files: if table_per_file then insert from each file into a new
+         * table. Currently supported only for shapefiles.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SINGLE
+         * SINGLE}
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TABLE_PER_FILE
+         * TABLE_PER_FILE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SINGLE
+         * SINGLE}.
+         */
+        public static final String TABLE_INSERT_MODE = "table_insert_mode";
+        public static final String SINGLE = "single";
+        public static final String TABLE_PER_FILE = "table_per_file";
 
         /**
          * Specifies the character string that should be interpreted as a
@@ -1071,8 +1354,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * TRUE}.
          */
         public static final String TEXT_HAS_HEADER = "text_has_header";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * Specifies the delimiter for
@@ -1090,7 +1371,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * value in the source data.
          * <p>
          * For {@code delimited_text} {@code file_type} only.  The default
-         * value is ''.
+         * value is '\\N'.
          */
         public static final String TEXT_NULL_STRING = "text_null_string";
 
@@ -1111,10 +1392,36 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
         public static final String TEXT_QUOTE_CHARACTER = "text_quote_character";
 
         /**
-         * Optional: number of tasks for reading file per rank. Default will be
-         * external_file_reader_num_tasks
+         * Add 'text_search' property to internally inferenced string columns.
+         * Comma seperated list of column names or '*' for all columns. To add
+         * text_search property only to string columns of minimum size, set
+         * also the option 'text_search_min_column_length'
          */
-        public static final String NUM_TASKS_PER_RANK = "num_tasks_per_rank";
+        public static final String TEXT_SEARCH_COLUMNS = "text_search_columns";
+
+        /**
+         * Set minimum column size. Used only when 'text_search_columns' has a
+         * value.
+         */
+        public static final String TEXT_SEARCH_MIN_COLUMN_LENGTH = "text_search_min_column_length";
+
+        /**
+         * If set to {@code true}, truncates the table specified by {@code
+         * tableName} prior to loading the file(s).
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+         * TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+         * FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+         * FALSE}.
+         */
+        public static final String TRUNCATE_TABLE = "truncate_table";
 
         /**
          * optimize type inference for:
@@ -1146,20 +1453,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
          * with minimum data scanned
          */
         public static final String SPEED = "speed";
-
-        /**
-         * Add 'text_search' property to internally inferenced string columns.
-         * Comma seperated list of column names or '*' for all columns. To add
-         * text_search property only to string columns of minimum size, set
-         * also the option 'text_search_min_column_length'
-         */
-        public static final String TEXT_SEARCH_COLUMNS = "text_search_columns";
-
-        /**
-         * Set minimum column size. Used only when 'text_search_columns' has a
-         * value.
-         */
-        public static final String TEXT_SEARCH_MIN_COLUMN_LENGTH = "text_search_min_column_length";
 
         private Options() {  }
     }
@@ -1519,8 +1812,8 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PERMISSIVE
      *                 PERMISSIVE}: Records with missing columns are populated
-     *                 with nulls if possible; otherwise, malformed records are
-     *                 skipped.
+     *                 with nulls if possible; otherwise, the malformed records
+     *                 are skipped.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#IGNORE_BAD_RECORDS
      *                 IGNORE_BAD_RECORDS}: Malformed records are skipped.
@@ -1531,8 +1824,8 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 collisions are considered abortable errors in this mode.
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PERMISSIVE
-     *                 PERMISSIVE}.
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ABORT
+     *                 ABORT}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FILE_TYPE
      *                 FILE_TYPE}: Specifies the type of the file(s) whose
@@ -1540,15 +1833,18 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO
+     *                 AVRO}: Avro file format
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT
      *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
      *                 TSV, PSV, etc.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PARQUET
-     *                 PARQUET}: Apache Parquet file format
-     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON
      *                 JSON}: Json file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PARQUET
+     *                 PARQUET}: Apache Parquet file format
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHAPEFILE
      *                 SHAPEFILE}: ShapeFile file format
@@ -1582,6 +1878,71 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FULL
      *                 FULL}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOADING_MODE
+     *                 LOADING_MODE}: Scheme for distributing the extraction
+     *                 and loading of data from the source data file(s). This
+     *                 option applies only when loading files that are local to
+     *                 the database
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#HEAD
+     *                 HEAD}: The head node loads all data. All files must be
+     *                 available to the head node.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DISTRIBUTED_SHARED
+     *                 DISTRIBUTED_SHARED}: The head node coordinates loading
+     *                 data by worker
+     *                 processes across all nodes from shared files available
+     *                 to all workers.
+     *                 NOTE:
+     *                 Instead of existing on a shared source, the files can be
+     *                 duplicated on a source local to each host
+     *                 to improve performance, though the files must appear as
+     *                 the same data set from the perspective of
+     *                 all hosts performing the load.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DISTRIBUTED_LOCAL
+     *                 DISTRIBUTED_LOCAL}: A single worker process on each node
+     *                 loads all files
+     *                 that are available to it. This option works best when
+     *                 each worker loads files from its own file
+     *                 system, to maximize performance. In order to avoid data
+     *                 duplication, either each worker performing
+     *                 the load needs to have visibility to a set of files
+     *                 unique to it (no file is visible to more than
+     *                 one node) or the target table needs to have a primary
+     *                 key (which will allow the worker to
+     *                 automatically deduplicate data).
+     *                 NOTE:
+     *                 If the target table doesn't exist, the table structure
+     *                 will be determined by the head node. If the
+     *                 head node has no files local to it, it will be unable to
+     *                 determine the structure and the request
+     *                 will fail.
+     *                 If the head node is configured to have no worker
+     *                 processes, no data strictly accessible to the head
+     *                 node will be loaded.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#HEAD
+     *                 HEAD}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOCAL_TIME_OFFSET
+     *                 LOCAL_TIME_OFFSET}: For Avro local timestamp columns
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NUM_TASKS_PER_RANK
+     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
+     *                 reading file per rank. Default will be
+     *                 external_file_reader_num_tasks
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#POLL_INTERVAL
+     *                 POLL_INTERVAL}: If {@code true}, the number of seconds
+     *                 between attempts to load external files into the table.
+     *                 If zero, polling will be continuous as long as data is
+     *                 found.  If no data is found, the interval will steadily
+     *                 increase to a maximum of 60 seconds.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PRIMARY_KEYS
      *                 PRIMARY_KEYS}: Optional: comma separated list of column
      *                 names, to set as primary keys, when not specified in the
@@ -1591,6 +1952,43 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 SHARD_KEYS}: Optional: comma separated list of column
      *                 names, to set as primary keys, when not specified in the
      *                 type.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SKIP_LINES
+     *                 SKIP_LINES}: Skip number of lines from begining of file.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SUBSCRIBE
+     *                 SUBSCRIBE}: Continuously poll the data source to check
+     *                 for new data and load it into the table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TABLE_INSERT_MODE
+     *                 TABLE_INSERT_MODE}: Optional: table_insert_mode. When
+     *                 inserting records from multiple files: if table_per_file
+     *                 then insert from each file into a new table. Currently
+     *                 supported only for shapefiles.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SINGLE
+     *                 SINGLE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TABLE_PER_FILE
+     *                 TABLE_PER_FILE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SINGLE
+     *                 SINGLE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_COMMENT_STRING
      *                 TEXT_COMMENT_STRING}: Specifies the character string
@@ -1658,7 +2056,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 should be interpreted as a null
      *                 value in the source data.
      *                 For {@code delimited_text} {@code file_type} only.  The
-     *                 default value is ''.
+     *                 default value is '\\N'.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_QUOTE_CHARACTER
      *                 TEXT_QUOTE_CHARACTER}: Specifies the character that
@@ -1674,10 +2072,34 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 For {@code delimited_text} {@code file_type} only.  The
      *                 default value is '"'.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NUM_TASKS_PER_RANK
-     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
-     *                 reading file per rank. Default will be
-     *                 external_file_reader_num_tasks
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_COLUMNS
+     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
+     *                 internally inferenced string columns. Comma seperated
+     *                 list of column names or '*' for all columns. To add
+     *                 text_search property only to string columns of minimum
+     *                 size, set also the option
+     *                 'text_search_min_column_length'
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
+     *                 Used only when 'text_search_columns' has a value.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUNCATE_TABLE
+     *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
+     *                 table specified by {@code tableName} prior to loading
+     *                 the file(s).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TYPE_INFERENCE_MODE
      *                 TYPE_INFERENCE_MODE}: optimize type inference for:
@@ -1695,18 +2117,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SPEED
      *                 SPEED}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_COLUMNS
-     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
-     *                 internally inferenced string columns. Comma seperated
-     *                 list of column names or '*' for all columns. To add
-     *                 text_search property only to string columns of minimum
-     *                 size, set also the option
-     *                 'text_search_min_column_length'
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
-     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
-     *                 Used only when 'text_search_columns' has a value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -2339,7 +2749,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PERMISSIVE
      *         PERMISSIVE}: Records with missing columns are populated with
-     *         nulls if possible; otherwise, malformed records are skipped.
+     *         nulls if possible; otherwise, the malformed records are skipped.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#IGNORE_BAD_RECORDS
      *         IGNORE_BAD_RECORDS}: Malformed records are skipped.
@@ -2350,8 +2760,8 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         abortable errors in this mode.
      *         </ul>
      *         The default value is {@link
-     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PERMISSIVE
-     *         PERMISSIVE}.
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ABORT
+     *         ABORT}.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FILE_TYPE
      *         FILE_TYPE}: Specifies the type of the file(s) whose records will
@@ -2359,15 +2769,18 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         Supported values:
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO
+     *         AVRO}: Avro file format
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT
      *         DELIMITED_TEXT}: Delimited text file format; e.g., CSV, TSV,
      *         PSV, etc.
      *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PARQUET
-     *         PARQUET}: Apache Parquet file format
-     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON
      *         JSON}: Json file format
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PARQUET
+     *         PARQUET}: Apache Parquet file format
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHAPEFILE
      *         SHAPEFILE}: ShapeFile file format
@@ -2400,6 +2813,69 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FULL
      *         FULL}.
      *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOADING_MODE
+     *         LOADING_MODE}: Scheme for distributing the extraction and
+     *         loading of data from the source data file(s). This option
+     *         applies only when loading files that are local to the database
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#HEAD
+     *         HEAD}: The head node loads all data. All files must be available
+     *         to the head node.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DISTRIBUTED_SHARED
+     *         DISTRIBUTED_SHARED}: The head node coordinates loading data by
+     *         worker
+     *         processes across all nodes from shared files available to all
+     *         workers.
+     *         NOTE:
+     *         Instead of existing on a shared source, the files can be
+     *         duplicated on a source local to each host
+     *         to improve performance, though the files must appear as the same
+     *         data set from the perspective of
+     *         all hosts performing the load.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DISTRIBUTED_LOCAL
+     *         DISTRIBUTED_LOCAL}: A single worker process on each node loads
+     *         all files
+     *         that are available to it. This option works best when each
+     *         worker loads files from its own file
+     *         system, to maximize performance. In order to avoid data
+     *         duplication, either each worker performing
+     *         the load needs to have visibility to a set of files unique to it
+     *         (no file is visible to more than
+     *         one node) or the target table needs to have a primary key (which
+     *         will allow the worker to
+     *         automatically deduplicate data).
+     *         NOTE:
+     *         If the target table doesn't exist, the table structure will be
+     *         determined by the head node. If the
+     *         head node has no files local to it, it will be unable to
+     *         determine the structure and the request
+     *         will fail.
+     *         If the head node is configured to have no worker processes, no
+     *         data strictly accessible to the head
+     *         node will be loaded.
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#HEAD
+     *         HEAD}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOCAL_TIME_OFFSET
+     *         LOCAL_TIME_OFFSET}: For Avro local timestamp columns
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NUM_TASKS_PER_RANK
+     *         NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file
+     *         per rank. Default will be external_file_reader_num_tasks
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#POLL_INTERVAL
+     *         POLL_INTERVAL}: If {@code true}, the number of seconds between
+     *         attempts to load external files into the table.  If zero,
+     *         polling will be continuous as long as data is found.  If no data
+     *         is found, the interval will steadily increase to a maximum of 60
+     *         seconds.
+     *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PRIMARY_KEYS
      *         PRIMARY_KEYS}: Optional: comma separated list of column names,
      *         to set as primary keys, when not specified in the type.  The
@@ -2409,6 +2885,43 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         SHARD_KEYS}: Optional: comma separated list of column names, to
      *         set as primary keys, when not specified in the type.  The
      *         default value is ''.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SKIP_LINES
+     *         SKIP_LINES}: Skip number of lines from begining of file.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SUBSCRIBE
+     *         SUBSCRIBE}: Continuously poll the data source to check for new
+     *         data and load it into the table.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *         FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TABLE_INSERT_MODE
+     *         TABLE_INSERT_MODE}: Optional: table_insert_mode. When inserting
+     *         records from multiple files: if table_per_file then insert from
+     *         each file into a new table. Currently supported only for
+     *         shapefiles.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SINGLE
+     *         SINGLE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TABLE_PER_FILE
+     *         TABLE_PER_FILE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SINGLE
+     *         SINGLE}.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_COMMENT_STRING
      *         TEXT_COMMENT_STRING}: Specifies the character string that should
@@ -2473,7 +2986,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         interpreted as a null
      *         value in the source data.
      *         For {@code delimited_text} {@code file_type} only.  The default
-     *         value is ''.
+     *         value is '\\N'.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_QUOTE_CHARACTER
      *         TEXT_QUOTE_CHARACTER}: Specifies the character that should be
@@ -2489,9 +3002,32 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         For {@code delimited_text} {@code file_type} only.  The default
      *         value is '"'.
      *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NUM_TASKS_PER_RANK
-     *         NUM_TASKS_PER_RANK}: Optional: number of tasks for reading file
-     *         per rank. Default will be external_file_reader_num_tasks
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_COLUMNS
+     *         TEXT_SEARCH_COLUMNS}: Add 'text_search' property to internally
+     *         inferenced string columns. Comma seperated list of column names
+     *         or '*' for all columns. To add text_search property only to
+     *         string columns of minimum size, set also the option
+     *         'text_search_min_column_length'
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used
+     *         only when 'text_search_columns' has a value.
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUNCATE_TABLE
+     *         TRUNCATE_TABLE}: If set to {@code true}, truncates the table
+     *         specified by {@code tableName} prior to loading the file(s).
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *         TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *         FALSE}.
      *                 <li> {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TYPE_INFERENCE_MODE
      *         TYPE_INFERENCE_MODE}: optimize type inference for:
@@ -2509,17 +3045,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SPEED
      *         SPEED}.
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_COLUMNS
-     *         TEXT_SEARCH_COLUMNS}: Add 'text_search' property to internally
-     *         inferenced string columns. Comma seperated list of column names
-     *         or '*' for all columns. To add text_search property only to
-     *         string columns of minimum size, set also the option
-     *         'text_search_min_column_length'
-     *                 <li> {@link
-     *         com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
-     *         TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size. Used
-     *         only when 'text_search_columns' has a value.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -2642,8 +3167,8 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PERMISSIVE
      *                 PERMISSIVE}: Records with missing columns are populated
-     *                 with nulls if possible; otherwise, malformed records are
-     *                 skipped.
+     *                 with nulls if possible; otherwise, the malformed records
+     *                 are skipped.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#IGNORE_BAD_RECORDS
      *                 IGNORE_BAD_RECORDS}: Malformed records are skipped.
@@ -2654,8 +3179,8 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 collisions are considered abortable errors in this mode.
      *                 </ul>
      *                 The default value is {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PERMISSIVE
-     *                 PERMISSIVE}.
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#ABORT
+     *                 ABORT}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FILE_TYPE
      *                 FILE_TYPE}: Specifies the type of the file(s) whose
@@ -2663,15 +3188,18 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#AVRO
+     *                 AVRO}: Avro file format
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DELIMITED_TEXT
      *                 DELIMITED_TEXT}: Delimited text file format; e.g., CSV,
      *                 TSV, PSV, etc.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PARQUET
-     *                 PARQUET}: Apache Parquet file format
-     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#JSON
      *                 JSON}: Json file format
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PARQUET
+     *                 PARQUET}: Apache Parquet file format
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SHAPEFILE
      *                 SHAPEFILE}: ShapeFile file format
@@ -2705,6 +3233,71 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FULL
      *                 FULL}.
      *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOADING_MODE
+     *                 LOADING_MODE}: Scheme for distributing the extraction
+     *                 and loading of data from the source data file(s). This
+     *                 option applies only when loading files that are local to
+     *                 the database
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#HEAD
+     *                 HEAD}: The head node loads all data. All files must be
+     *                 available to the head node.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DISTRIBUTED_SHARED
+     *                 DISTRIBUTED_SHARED}: The head node coordinates loading
+     *                 data by worker
+     *                 processes across all nodes from shared files available
+     *                 to all workers.
+     *                 NOTE:
+     *                 Instead of existing on a shared source, the files can be
+     *                 duplicated on a source local to each host
+     *                 to improve performance, though the files must appear as
+     *                 the same data set from the perspective of
+     *                 all hosts performing the load.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#DISTRIBUTED_LOCAL
+     *                 DISTRIBUTED_LOCAL}: A single worker process on each node
+     *                 loads all files
+     *                 that are available to it. This option works best when
+     *                 each worker loads files from its own file
+     *                 system, to maximize performance. In order to avoid data
+     *                 duplication, either each worker performing
+     *                 the load needs to have visibility to a set of files
+     *                 unique to it (no file is visible to more than
+     *                 one node) or the target table needs to have a primary
+     *                 key (which will allow the worker to
+     *                 automatically deduplicate data).
+     *                 NOTE:
+     *                 If the target table doesn't exist, the table structure
+     *                 will be determined by the head node. If the
+     *                 head node has no files local to it, it will be unable to
+     *                 determine the structure and the request
+     *                 will fail.
+     *                 If the head node is configured to have no worker
+     *                 processes, no data strictly accessible to the head
+     *                 node will be loaded.
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#HEAD
+     *                 HEAD}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#LOCAL_TIME_OFFSET
+     *                 LOCAL_TIME_OFFSET}: For Avro local timestamp columns
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NUM_TASKS_PER_RANK
+     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
+     *                 reading file per rank. Default will be
+     *                 external_file_reader_num_tasks
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#POLL_INTERVAL
+     *                 POLL_INTERVAL}: If {@code true}, the number of seconds
+     *                 between attempts to load external files into the table.
+     *                 If zero, polling will be continuous as long as data is
+     *                 found.  If no data is found, the interval will steadily
+     *                 increase to a maximum of 60 seconds.
+     *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#PRIMARY_KEYS
      *                 PRIMARY_KEYS}: Optional: comma separated list of column
      *                 names, to set as primary keys, when not specified in the
@@ -2714,6 +3307,43 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 SHARD_KEYS}: Optional: comma separated list of column
      *                 names, to set as primary keys, when not specified in the
      *                 type.  The default value is ''.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SKIP_LINES
+     *                 SKIP_LINES}: Skip number of lines from begining of file.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SUBSCRIBE
+     *                 SUBSCRIBE}: Continuously poll the data source to check
+     *                 for new data and load it into the table.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TABLE_INSERT_MODE
+     *                 TABLE_INSERT_MODE}: Optional: table_insert_mode. When
+     *                 inserting records from multiple files: if table_per_file
+     *                 then insert from each file into a new table. Currently
+     *                 supported only for shapefiles.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SINGLE
+     *                 SINGLE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TABLE_PER_FILE
+     *                 TABLE_PER_FILE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SINGLE
+     *                 SINGLE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_COMMENT_STRING
      *                 TEXT_COMMENT_STRING}: Specifies the character string
@@ -2781,7 +3411,7 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 should be interpreted as a null
      *                 value in the source data.
      *                 For {@code delimited_text} {@code file_type} only.  The
-     *                 default value is ''.
+     *                 default value is '\\N'.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_QUOTE_CHARACTER
      *                 TEXT_QUOTE_CHARACTER}: Specifies the character that
@@ -2797,10 +3427,34 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 For {@code delimited_text} {@code file_type} only.  The
      *                 default value is '"'.
      *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#NUM_TASKS_PER_RANK
-     *                 NUM_TASKS_PER_RANK}: Optional: number of tasks for
-     *                 reading file per rank. Default will be
-     *                 external_file_reader_num_tasks
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_COLUMNS
+     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
+     *                 internally inferenced string columns. Comma seperated
+     *                 list of column names or '*' for all columns. To add
+     *                 text_search property only to string columns of minimum
+     *                 size, set also the option
+     *                 'text_search_min_column_length'
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
+     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
+     *                 Used only when 'text_search_columns' has a value.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUNCATE_TABLE
+     *                 TRUNCATE_TABLE}: If set to {@code true}, truncates the
+     *                 table specified by {@code tableName} prior to loading
+     *                 the file(s).
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TYPE_INFERENCE_MODE
      *                 TYPE_INFERENCE_MODE}: optimize type inference for:
@@ -2818,18 +3472,6 @@ public class InsertRecordsFromPayloadRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#SPEED
      *                 SPEED}.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_COLUMNS
-     *                 TEXT_SEARCH_COLUMNS}: Add 'text_search' property to
-     *                 internally inferenced string columns. Comma seperated
-     *                 list of column names or '*' for all columns. To add
-     *                 text_search property only to string columns of minimum
-     *                 size, set also the option
-     *                 'text_search_min_column_length'
-     *                         <li> {@link
-     *                 com.gpudb.protocol.InsertRecordsFromPayloadRequest.Options#TEXT_SEARCH_MIN_COLUMN_LENGTH
-     *                 TEXT_SEARCH_MIN_COLUMN_LENGTH}: Set minimum column size.
-     *                 Used only when 'text_search_columns' has a value.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

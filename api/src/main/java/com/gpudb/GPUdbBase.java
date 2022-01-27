@@ -315,8 +315,7 @@ public abstract class GPUdbBase {
          *
          * @return the inter-cluster failover order
          *
-         * @see #setHAFailoverOrder(HAFailoverOrder)
-         * @see GPUdbBase#HAFailoverOrder
+         * @see #setHAFailoverOrder(GPUdbBase.HAFailoverOrder)
          */
         public HAFailoverOrder getHAFailoverOrder() {
             return this.haFailoverOrder;
@@ -741,8 +740,7 @@ public abstract class GPUdbBase {
          * @param value  the value of the high availability failover priority
          * @return       the current {@link Options} instance
          *
-         * @see #getDisableAutoDiscovery()
-         * @see GPUdbBase#HAFailoverOrder
+         * @see #getHAFailoverOrder()
          */
         public Options setHAFailoverOrder(HAFailoverOrder value) {
             this.haFailoverOrder = value;
@@ -2179,7 +2177,7 @@ public abstract class GPUdbBase {
         this.executor             = options.getExecutor();
         this.timeout              = options.getTimeout();
         this.hostManagerPort      = options.getHostManagerPort();
-        this.haFailoverOrder   = options.getHAFailoverOrder();
+        this.haFailoverOrder      = options.getHAFailoverOrder();
         this.clusterReconnectCount             = options.getClusterReconnectCount();
         this.initialConnectionAttemptTimeoutNS = options.getInitialConnectionAttemptTimeout();
         this.intraClusterFailoverTimeoutNS     = options.getIntraClusterFailoverTimeout();
@@ -3484,7 +3482,7 @@ public abstract class GPUdbBase {
         }
 
         GPUdbLogger.debug_with_info( "Switching from URL: " + getURL().toString()
-                                     + "; old url: " + oldURL.toString() );
+                                     + "; old URL: " + oldURL.toString() );
 
         synchronized (urlLock) {
             // If there is only one URL, then we can't switch URLs
@@ -3496,7 +3494,7 @@ public abstract class GPUdbBase {
                     int currClusterIndex = getCurrentClusterIndex();
                     GPUdbLogger.debug_with_info( "currClusterIndex " + currClusterIndex + "; attempting intra cluster failover...");
                     if ( doIntraClusterFailover( currClusterIndex ) ) {
-                        GPUdbLogger.debug_with_info( "Intra cluster failover succeeded; switched to url: " + getURL().toString());
+                        GPUdbLogger.debug_with_info( "Intra cluster failover succeeded; switched to URL: " + getURL().toString());
                         // We have updated all the addresses; return the
                         // current/new head rank URL
                         return getURL();
@@ -3546,10 +3544,10 @@ public abstract class GPUdbBase {
             }
 
             // Check if another thread beat us to switching the URL
-            GPUdbLogger.debug_with_info( "Current url: " + getURL().toString() + " oldurl " + oldURL.toString() );
+            GPUdbLogger.debug_with_info( "Current URL: " + getURL().toString() + " old URL: " + oldURL.toString() );
             if ( !getURL().equals( oldURL )
                  && (countClusterSwitchesSinceInvocation > 0) ) {
-                GPUdbLogger.debug_with_info( "Switched to url: " + getURL().toString() );
+                GPUdbLogger.debug_with_info( "Switched to URL: " + getURL().toString() );
                 // Another thread must have already switched the URL; nothing
                 // to do
                 return getURL();
@@ -3561,7 +3559,7 @@ public abstract class GPUdbBase {
             // as the client wants us to
             for (int i = 0; i < this.clusterReconnectCount; ++i) {
                 if ( updateClusterAddresses( getCurrentClusterIndex() ) ) {
-                    GPUdbLogger.debug_with_info( "Updated cluster address; switched to url: " +  getURL().toString() );
+                    GPUdbLogger.debug_with_info( "Updated cluster address; switched to URL: " +  getURL().toString() );
                     // We actually did update/change the cluster addresses, so just
                     // return the fresh head-rank URL so that we can re-try
                     // endpoint submission
@@ -3576,8 +3574,8 @@ public abstract class GPUdbBase {
             // requests go to a different randomly selected cluster, but also
             // let the caller know that we've circled back
             if ( getURL().equals( oldURL ) ) {
-                GPUdbLogger.debug_with_info( "Curr url: " +  getURL()
-                                             + " is the same as the 'old url':"
+                GPUdbLogger.debug_with_info( "Current URL: " +  getURL()
+                                             + " is the same as the old URL: "
                                              + oldURL.toString()
                                              + "; randomizing URLs and throwing exception" );
                 // Re-shuffle and set the index counter to zero
@@ -3590,10 +3588,10 @@ public abstract class GPUdbBase {
             }
 
             // Haven't circled back to the old URL; so return the new one
-            GPUdbLogger.debug_with_info( "Switched to url: " +  getURL().toString()
-                                         + " (NOT the same as the 'old url':"
-                                         + oldURL.toString()
-                                         + ")" );
+            GPUdbLogger.warn( "Switched to URL: " +  getURL().toString()
+                              + " (NOT the same as the old URL: "
+                              + oldURL.toString()
+                              + ")" );
             return getURL();
         }
     }  // end switchURL
@@ -3626,7 +3624,7 @@ public abstract class GPUdbBase {
                     GPUdbLogger.debug_with_info( "currClusterIndex " + currClusterIndex + "; attempting intra cluster failover...");
                     if ( doIntraClusterFailover( currClusterIndex ) ) {
                         GPUdbLogger.debug_with_info( "Intra cluster failover succeeded; "
-                                                     + "switched to hm url: "
+                                                     + "switched to HM URL: "
                                                      + getHmURL().toString());
                         // We have updated all the addresses; return the
                         // current/new head rank URL
@@ -3672,11 +3670,11 @@ public abstract class GPUdbBase {
             }
 
             // Check if another thread beat us to switching the URL
-            GPUdbLogger.debug_with_info( "Current hm url: " + getHmURL().toString()
-                                         + " oldurl " + oldURL.toString() );
+            GPUdbLogger.debug_with_info( "Current HM URL: " + getHmURL().toString()
+                                         + "; old URL: " + oldURL.toString() );
             if ( !getHmURL().equals( oldURL )
                  && (countClusterSwitchesSinceInvocation > 0) ) {
-                GPUdbLogger.debug_with_info( "Switched to hm url: "
+                GPUdbLogger.debug_with_info( "Switched to HM URL: "
                                              + getHmURL().toString() );
                 // Another thread must have already switched the URL; nothing
                 // to do
@@ -3687,7 +3685,7 @@ public abstract class GPUdbBase {
             // event happened in the past (and therefore we have stale addresses).
             // In such a case, update the addresses.
             if ( updateClusterAddresses( getCurrentClusterIndex() ) ) {
-                GPUdbLogger.debug_with_info( "Updated cluster address; switched to hm url: "
+                GPUdbLogger.debug_with_info( "Updated cluster address; switched to HM URL: "
                                              +  getHmURL().toString() );
                 // We actually did update/change the cluster addresses, so just
                 // return the fresh head-rank URL so that we can re-try
@@ -3702,8 +3700,8 @@ public abstract class GPUdbBase {
             // requests go to a different randomly selected cluster, but also
             // let the caller know that we've circled back
             if ( getHmURL().equals( oldURL ) ) {
-                GPUdbLogger.debug_with_info( "Curr hm url: " +  getHmURL()
-                                             + " is the same as the 'old url':"
+                GPUdbLogger.debug_with_info( "Current HM URL: " +  getHmURL()
+                                             + " is the same as the old HM URL: "
                                              + oldURL.toString()
                                              + "; randomizing URLs and throwing exception" );
                 // Re-shuffle and set the index counter to zero
@@ -3716,10 +3714,10 @@ public abstract class GPUdbBase {
             }
 
             // Haven't circled back to the old URL; so return the new one
-            GPUdbLogger.debug_with_info( "Switched to hm url: " +  getHmURL().toString()
-                                         + " (NOT the same as the 'old url':"
-                                         + oldURL.toString()
-                                         + ")" );
+            GPUdbLogger.warn( "Switched to HM URL: " +  getHmURL().toString()
+                              + " (NOT the same as the old HM URL: "
+                              + oldURL.toString()
+                              + ")" );
             return getHmURL();
         }
     }   // end switchHmUrl
@@ -5488,9 +5486,9 @@ public abstract class GPUdbBase {
                 // There's an error in creating the URL
                 throw new GPUdbRuntimeException(ex.getMessage(), ex);
             } catch (GPUdbExitException ex) {
-                GPUdbLogger.debug_with_info( "Got EXIT exception when trying endpoint "
-                                             + endpoint + " at " + url.toString()
-                                             + ": " + ex.getMessage() + "; switch URL..." );
+                GPUdbLogger.warn( "Got EXIT exception when trying endpoint "
+                                  + endpoint + " at " + url.toString()
+                                  + ": " + ex.getMessage() + "; switch URL..." );
                 // Handle our special exit exception
                 try {
                     url = switchURL( originalURL, currentClusterSwitchCount );
@@ -5508,9 +5506,9 @@ public abstract class GPUdbBase {
                                               + ha_ex.getMessage(), true );
                 }
             } catch (SubmitException ex) {
-                GPUdbLogger.debug_with_info( "Got submit exception when trying endpoint "
-                                             + endpoint + " at " + url.toString()
-                                             + ": " + ex.getMessage() + "; switch URL..." );
+                GPUdbLogger.warn( "Got submit exception when trying endpoint "
+                                  + endpoint + " at " + url.toString()
+                                  + ": " + ex.getMessage() + "; switch URL..." );
                 // Some error occurred during the HTTP request
                 try {
                     url = switchURL( originalURL, currentClusterSwitchCount );
@@ -5537,9 +5535,9 @@ public abstract class GPUdbBase {
                                              + ex.getMessage() );
                 throw ex;
             } catch (Exception ex) {
-                GPUdbLogger.debug_with_info( "Got java exception when trying endpoint "
-                                             + endpoint + " at " + url.toString()
-                                             + ": " + ex.getMessage() + "; switch URL..." );
+                GPUdbLogger.warn( "Got Java exception when trying endpoint "
+                                  + endpoint + " at " + url.toString()
+                                  + ": " + ex.getMessage() + "; switch URL..." );
                 // And other random exceptions probably are also connection errors
                 try {
                     url = switchURL( originalURL, currentClusterSwitchCount );

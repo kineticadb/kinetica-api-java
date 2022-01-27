@@ -63,6 +63,29 @@ public class CreateDatasinkRequest implements IndexedRecord {
      * KAFKA_TOPIC_NAME}: Name of the Kafka topic to publish to if {@code
      * destination} is a Kafka broker
      *         <li> {@link
+     * com.gpudb.protocol.CreateDatasinkRequest.Options#MAX_BATCH_SIZE
+     * MAX_BATCH_SIZE}: Maximum number of records per notification message.
+     * The default value is '1'.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasinkRequest.Options#MAX_MESSAGE_SIZE
+     * MAX_MESSAGE_SIZE}: Maximum size in bytes of each notification message.
+     * The default value is '1000000'.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasinkRequest.Options#JSON_FORMAT
+     * JSON_FORMAT}: The desired format of JSON encoded notifications message.
+     * <p>
+     * If {@code nested}, records are returned as an array. Otherwise, only a
+     * single record per messages is returned.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT FLAT}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasinkRequest.Options#NESTED NESTED}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT FLAT}.
+     *         <li> {@link
      * com.gpudb.protocol.CreateDatasinkRequest.Options#SKIP_VALIDATION
      * SKIP_VALIDATION}: Bypass validation of connection to this data sink.
      * Supported values:
@@ -101,6 +124,37 @@ public class CreateDatasinkRequest implements IndexedRecord {
          * Kafka broker
          */
         public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
+
+        /**
+         * Maximum number of records per notification message.  The default
+         * value is '1'.
+         */
+        public static final String MAX_BATCH_SIZE = "max_batch_size";
+
+        /**
+         * Maximum size in bytes of each notification message.  The default
+         * value is '1000000'.
+         */
+        public static final String MAX_MESSAGE_SIZE = "max_message_size";
+
+        /**
+         * The desired format of JSON encoded notifications message.
+         * <p>
+         * If {@code nested}, records are returned as an array. Otherwise, only
+         * a single record per messages is returned.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT FLAT}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateDatasinkRequest.Options#NESTED NESTED}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT FLAT}.
+         */
+        public static final String JSON_FORMAT = "json_format";
+        public static final String FLAT = "flat";
+        public static final String NESTED = "nested";
 
         /**
          * Bypass validation of connection to this data sink.
@@ -163,6 +217,33 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#KAFKA_TOPIC_NAME
      *                 KAFKA_TOPIC_NAME}: Name of the Kafka topic to publish to
      *                 if {@code destination} is a Kafka broker
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#MAX_BATCH_SIZE
+     *                 MAX_BATCH_SIZE}: Maximum number of records per
+     *                 notification message.  The default value is '1'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#MAX_MESSAGE_SIZE
+     *                 MAX_MESSAGE_SIZE}: Maximum size in bytes of each
+     *                 notification message.  The default value is '1000000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#JSON_FORMAT
+     *                 JSON_FORMAT}: The desired format of JSON encoded
+     *                 notifications message.
+     *                 If {@code nested}, records are returned as an array.
+     *                 Otherwise, only a single record per messages is
+     *                 returned.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT
+     *                 FLAT}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#NESTED
+     *                 NESTED}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT
+     *                 FLAT}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#SKIP_VALIDATION
      *                 SKIP_VALIDATION}: Bypass validation of connection to
@@ -258,6 +339,29 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *         KAFKA_TOPIC_NAME}: Name of the Kafka topic to publish to if
      *         {@code destination} is a Kafka broker
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasinkRequest.Options#MAX_BATCH_SIZE
+     *         MAX_BATCH_SIZE}: Maximum number of records per notification
+     *         message.  The default value is '1'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasinkRequest.Options#MAX_MESSAGE_SIZE
+     *         MAX_MESSAGE_SIZE}: Maximum size in bytes of each notification
+     *         message.  The default value is '1000000'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasinkRequest.Options#JSON_FORMAT
+     *         JSON_FORMAT}: The desired format of JSON encoded notifications
+     *         message.
+     *         If {@code nested}, records are returned as an array. Otherwise,
+     *         only a single record per messages is returned.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT FLAT}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasinkRequest.Options#NESTED NESTED}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT FLAT}.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasinkRequest.Options#SKIP_VALIDATION
      *         SKIP_VALIDATION}: Bypass validation of connection to this data
      *         sink.
@@ -300,6 +404,33 @@ public class CreateDatasinkRequest implements IndexedRecord {
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#KAFKA_TOPIC_NAME
      *                 KAFKA_TOPIC_NAME}: Name of the Kafka topic to publish to
      *                 if {@code destination} is a Kafka broker
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#MAX_BATCH_SIZE
+     *                 MAX_BATCH_SIZE}: Maximum number of records per
+     *                 notification message.  The default value is '1'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#MAX_MESSAGE_SIZE
+     *                 MAX_MESSAGE_SIZE}: Maximum size in bytes of each
+     *                 notification message.  The default value is '1000000'.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#JSON_FORMAT
+     *                 JSON_FORMAT}: The desired format of JSON encoded
+     *                 notifications message.
+     *                 If {@code nested}, records are returned as an array.
+     *                 Otherwise, only a single record per messages is
+     *                 returned.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT
+     *                 FLAT}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#NESTED
+     *                 NESTED}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasinkRequest.Options#FLAT
+     *                 FLAT}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasinkRequest.Options#SKIP_VALIDATION
      *                 SKIP_VALIDATION}: Bypass validation of connection to

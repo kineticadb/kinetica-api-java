@@ -75,7 +75,7 @@ public class TableCreationOptions {
 
     /**
      * Gets the value of 'noErrorIfExists'
-     * @return
+     * @return true or false
      *
      * @see #setNoErrorIfExists(boolean)
      */
@@ -88,7 +88,7 @@ public class TableCreationOptions {
      * A truthy value indicates that no error will be thrown if there is an attempt
      * to re-create an already existent table and false otherwise.
      * @param noErrorIfExists - true or false
-     * @return- This {@link TableCreationOptions} object
+     * @return - This {@link TableCreationOptions} object
      */
     public TableCreationOptions setNoErrorIfExists(boolean noErrorIfExists) {
         this.noErrorIfExists = noErrorIfExists;
@@ -318,7 +318,7 @@ public class TableCreationOptions {
      * @param resultTable - true or false
      * @return - This {@link TableCreationOptions} object
      *
-     * @see @isResultTable()
+     * @see #isResultTable()
      */
     public TableCreationOptions setResultTable(boolean resultTable) {
         this.resultTable = resultTable;

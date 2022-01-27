@@ -118,6 +118,10 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      * MAX_CPU_CONCURRENCY}: Maximum number of simultaneous threads that will
      * be used to execute a request for this group.
      *         <li> {@link
+     * com.gpudb.protocol.AlterResourceGroupRequest.Options#MAX_DATA MAX_DATA}:
+     * Maximum amount of cumulative ram usage regardless of tier status for
+     * this group.
+     *         <li> {@link
      * com.gpudb.protocol.AlterResourceGroupRequest.Options#MAX_SCHEDULING_PRIORITY
      * MAX_SCHEDULING_PRIORITY}: Maximum priority of a scheduled task for this
      * group.
@@ -149,6 +153,12 @@ public class AlterResourceGroupRequest implements IndexedRecord {
          * a request for this group.
          */
         public static final String MAX_CPU_CONCURRENCY = "max_cpu_concurrency";
+
+        /**
+         * Maximum amount of cumulative ram usage regardless of tier status for
+         * this group.
+         */
+        public static final String MAX_DATA = "max_data";
 
         /**
          * Maximum priority of a scheduled task for this group.
@@ -260,6 +270,10 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      *                 MAX_CPU_CONCURRENCY}: Maximum number of simultaneous
      *                 threads that will be used to execute a request for this
      *                 group.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#MAX_DATA
+     *                 MAX_DATA}: Maximum amount of cumulative ram usage
+     *                 regardless of tier status for this group.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#MAX_SCHEDULING_PRIORITY
      *                 MAX_SCHEDULING_PRIORITY}: Maximum priority of a
@@ -478,6 +492,10 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      *         MAX_CPU_CONCURRENCY}: Maximum number of simultaneous threads
      *         that will be used to execute a request for this group.
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterResourceGroupRequest.Options#MAX_DATA
+     *         MAX_DATA}: Maximum amount of cumulative ram usage regardless of
+     *         tier status for this group.
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterResourceGroupRequest.Options#MAX_SCHEDULING_PRIORITY
      *         MAX_SCHEDULING_PRIORITY}: Maximum priority of a scheduled task
      *         for this group.
@@ -518,6 +536,10 @@ public class AlterResourceGroupRequest implements IndexedRecord {
      *                 MAX_CPU_CONCURRENCY}: Maximum number of simultaneous
      *                 threads that will be used to execute a request for this
      *                 group.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#MAX_DATA
+     *                 MAX_DATA}: Maximum amount of cumulative ram usage
+     *                 regardless of tier status for this group.
      *                         <li> {@link
      *                 com.gpudb.protocol.AlterResourceGroupRequest.Options#MAX_SCHEDULING_PRIORITY
      *                 MAX_SCHEDULING_PRIORITY}: Maximum priority of a

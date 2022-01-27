@@ -22,6 +22,7 @@ public class ReserveResourceResponse implements IndexedRecord {
             .namespace("com.gpudb")
             .fields()
                 .name("component").type().stringType().noDefault()
+                .name("name").type().stringType().noDefault()
                 .name("reservation").type().longType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
@@ -33,6 +34,7 @@ public class ReserveResourceResponse implements IndexedRecord {
 
 
     private String component;
+    private String name;
     private long reservation;
     private Map<String, String> info;
 
@@ -46,6 +48,15 @@ public class ReserveResourceResponse implements IndexedRecord {
 
     public ReserveResourceResponse setComponent(String component) {
         this.component = (component == null) ? "" : component;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public ReserveResourceResponse setName(String name) {
+        this.name = (name == null) ? "" : name;
         return this;
     }
 
@@ -79,9 +90,12 @@ public class ReserveResourceResponse implements IndexedRecord {
                 return this.component;
 
             case 1:
-                return this.reservation;
+                return this.name;
 
             case 2:
+                return this.reservation;
+
+            case 3:
                 return this.info;
 
             default:
@@ -98,10 +112,14 @@ public class ReserveResourceResponse implements IndexedRecord {
                 break;
 
             case 1:
-                this.reservation = (Long)value;
+                this.name = (String)value;
                 break;
 
             case 2:
+                this.reservation = (Long)value;
+                break;
+
+            case 3:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -124,6 +142,7 @@ public class ReserveResourceResponse implements IndexedRecord {
         ReserveResourceResponse that = (ReserveResourceResponse)obj;
 
         return ( this.component.equals( that.component )
+                 && this.name.equals( that.name )
                  && ( this.reservation == that.reservation )
                  && this.info.equals( that.info ) );
     }
@@ -137,6 +156,10 @@ public class ReserveResourceResponse implements IndexedRecord {
         builder.append( gd.toString( "component" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.component ) );
+        builder.append( ", " );
+        builder.append( gd.toString( "name" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.name ) );
         builder.append( ", " );
         builder.append( gd.toString( "reservation" ) );
         builder.append( ": " );
@@ -155,6 +178,7 @@ public class ReserveResourceResponse implements IndexedRecord {
     public int hashCode() {
         int hashCode = 1;
         hashCode = (31 * hashCode) + this.component.hashCode();
+        hashCode = (31 * hashCode) + this.name.hashCode();
         hashCode = (31 * hashCode) + ((Long)this.reservation).hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
