@@ -56,6 +56,22 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.CreateJoinTableRequest.Options#CREATE_TEMP_TABLE
+     * CREATE_TEMP_TABLE}: If {@code true}, a unique temporary table name will
+     * be generated in the sys_temp schema and used in place of {@code
+     * joinTableName}. This is always allowed even if the caller does not have
+     * permission to create tables. The generated name is returned in {@code
+     * qualified_join_table_name}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateJoinTableRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.CreateJoinTableRequest.Options#COLLECTION_NAME
      * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
      * the join as part of {@code joinTableName} and use {@link
@@ -101,6 +117,26 @@ public class CreateJoinTableRequest implements IndexedRecord {
     public static final class Options {
 
         /**
+         * If {@code true}, a unique temporary table name will be generated in
+         * the sys_temp schema and used in place of {@code joinTableName}. This
+         * is always allowed even if the caller does not have permission to
+         * create tables. The generated name is returned in {@code
+         * qualified_join_table_name}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateJoinTableRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE FALSE}.
+         */
+        public static final String CREATE_TEMP_TABLE = "create_temp_table";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
          * [DEPRECATED--please specify the containing schema for the join as
          * part of {@code joinTableName} and use {@link
          * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
@@ -128,8 +164,6 @@ public class CreateJoinTableRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE FALSE}.
          */
         public static final String OPTIMIZE_LOOKUPS = "optimize_lookups";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * Sets the <a href="../../../../../../concepts/ttl/"
@@ -212,6 +246,26 @@ public class CreateJoinTableRequest implements IndexedRecord {
      *                     an empty {@link List}.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code joinTableName}. This is always
+     *                 allowed even if the caller does not have permission to
+     *                 create tables. The generated name is returned in {@code
+     *                 qualified_join_table_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: [DEPRECATED--please specify the
@@ -407,6 +461,22 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateJoinTableRequest.Options#CREATE_TEMP_TABLE
+     *         CREATE_TEMP_TABLE}: If {@code true}, a unique temporary table
+     *         name will be generated in the sys_temp schema and used in place
+     *         of {@code joinTableName}. This is always allowed even if the
+     *         caller does not have permission to create tables. The generated
+     *         name is returned in {@code qualified_join_table_name}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateJoinTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateJoinTableRequest.Options#COLLECTION_NAME
      *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
      *         schema for the join as part of {@code joinTableName} and use
@@ -460,6 +530,26 @@ public class CreateJoinTableRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code joinTableName}. This is always
+     *                 allowed even if the caller does not have permission to
+     *                 create tables. The generated name is returned in {@code
+     *                 qualified_join_table_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateJoinTableRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateJoinTableRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: [DEPRECATED--please specify the

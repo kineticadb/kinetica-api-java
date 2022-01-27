@@ -30,6 +30,7 @@ public class ShowModelResponse implements IndexedRecord {
                 .name("registryList").type().array().items().stringType().noDefault()
                 .name("containerList").type().array().items().stringType().noDefault()
                 .name("runFunctionList").type().array().items().stringType().noDefault()
+                .name("deployments").type().array().items().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -55,6 +56,7 @@ public class ShowModelResponse implements IndexedRecord {
     private List<String> registryList;
     private List<String> containerList;
     private List<String> runFunctionList;
+    private List<String> deployments;
     private Map<String, String> info;
 
 
@@ -124,6 +126,15 @@ public class ShowModelResponse implements IndexedRecord {
         return this;
     }
 
+    public List<String> getDeployments() {
+        return deployments;
+    }
+
+    public ShowModelResponse setDeployments(List<String> deployments) {
+        this.deployments = (deployments == null) ? new ArrayList<String>() : deployments;
+        return this;
+    }
+
     public Map<String, String> getInfo() {
         return info;
     }
@@ -163,6 +174,9 @@ public class ShowModelResponse implements IndexedRecord {
                 return this.runFunctionList;
 
             case 7:
+                return this.deployments;
+
+            case 8:
                 return this.info;
 
             default:
@@ -203,6 +217,10 @@ public class ShowModelResponse implements IndexedRecord {
                 break;
 
             case 7:
+                this.deployments = (List<String>)value;
+                break;
+
+            case 8:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -231,6 +249,7 @@ public class ShowModelResponse implements IndexedRecord {
                  && this.registryList.equals( that.registryList )
                  && this.containerList.equals( that.containerList )
                  && this.runFunctionList.equals( that.runFunctionList )
+                 && this.deployments.equals( that.deployments )
                  && this.info.equals( that.info ) );
     }
 
@@ -268,6 +287,10 @@ public class ShowModelResponse implements IndexedRecord {
         builder.append( ": " );
         builder.append( gd.toString( this.runFunctionList ) );
         builder.append( ", " );
+        builder.append( gd.toString( "deployments" ) );
+        builder.append( ": " );
+        builder.append( gd.toString( this.deployments ) );
+        builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
         builder.append( gd.toString( this.info ) );
@@ -287,6 +310,7 @@ public class ShowModelResponse implements IndexedRecord {
         hashCode = (31 * hashCode) + this.registryList.hashCode();
         hashCode = (31 * hashCode) + this.containerList.hashCode();
         hashCode = (31 * hashCode) + this.runFunctionList.hashCode();
+        hashCode = (31 * hashCode) + this.deployments.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

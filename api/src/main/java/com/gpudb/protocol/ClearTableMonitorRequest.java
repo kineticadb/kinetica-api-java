@@ -64,7 +64,7 @@ public class ClearTableMonitorRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.ClearTableMonitorRequest.Options#CLEAR_ALL_REFERENCES
      * CLEAR_ALL_REFERENCES}: If {@code true}, all references that share the
-     * same {@input topic_id} will be cleared.
+     * same {@code topicId} will be cleared.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -102,8 +102,8 @@ public class ClearTableMonitorRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * If {@code true}, all references that share the same {@input
-         * topic_id} will be cleared.
+         * If {@code true}, all references that share the same {@code topicId}
+         * will be cleared.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -163,7 +163,7 @@ public class ClearTableMonitorRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.ClearTableMonitorRequest.Options#CLEAR_ALL_REFERENCES
      *                 CLEAR_ALL_REFERENCES}: If {@code true}, all references
-     *                 that share the same {@input topic_id} will be cleared.
+     *                 that share the same {@code topicId} will be cleared.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -233,7 +233,7 @@ public class ClearTableMonitorRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.ClearTableMonitorRequest.Options#CLEAR_ALL_REFERENCES
      *         CLEAR_ALL_REFERENCES}: If {@code true}, all references that
-     *         share the same {@input topic_id} will be cleared.
+     *         share the same {@code topicId} will be cleared.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -280,7 +280,7 @@ public class ClearTableMonitorRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.ClearTableMonitorRequest.Options#CLEAR_ALL_REFERENCES
      *                 CLEAR_ALL_REFERENCES}: If {@code true}, all references
-     *                 that share the same {@input topic_id} will be cleared.
+     *                 that share the same {@code topicId} will be cleared.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link

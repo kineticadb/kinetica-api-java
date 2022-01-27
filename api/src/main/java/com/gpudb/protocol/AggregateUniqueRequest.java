@@ -35,8 +35,8 @@ import org.apache.avro.generic.IndexedRecord;
  * {"limit":"10","sort_order":"descending"}.
  * <p>
  * The response is returned as a dynamic schema. For details see:
- * <a href="../../../../../../api/#dynamic-schemas" target="_top">dynamic
- * schemas documentation</a>.
+ * <a href="../../../../../../api/concepts/#dynamic-schemas"
+ * target="_top">dynamic schemas documentation</a>.
  * <p>
  * If a {@code result_table} name is specified in the
  * {@code options}, the results are stored in a new table with that name--no
@@ -116,6 +116,23 @@ public class AggregateUniqueRequest implements IndexedRecord {
     /**
      * Optional parameters.
      * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateUniqueRequest.Options#CREATE_TEMP_TABLE
+     * CREATE_TEMP_TABLE}: If {@code true}, a unique temporary table name will
+     * be generated in the sys_temp schema and used in place of {@code
+     * result_table}. If {@code result_table_persist} is {@code false} (or
+     * unspecified), then this is always allowed even if the caller does not
+     * have permission to create tables. The generated name is returned in
+     * {@code qualified_result_table_name}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateUniqueRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE FALSE}.
      *         <li> {@link
      * com.gpudb.protocol.AggregateUniqueRequest.Options#COLLECTION_NAME
      * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema as
@@ -213,6 +230,27 @@ public class AggregateUniqueRequest implements IndexedRecord {
     public static final class Options {
 
         /**
+         * If {@code true}, a unique temporary table name will be generated in
+         * the sys_temp schema and used in place of {@code result_table}. If
+         * {@code result_table_persist} is {@code false} (or unspecified), then
+         * this is always allowed even if the caller does not have permission
+         * to create tables. The generated name is returned in {@code
+         * qualified_result_table_name}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateUniqueRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE FALSE}.
+         */
+        public static final String CREATE_TEMP_TABLE = "create_temp_table";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
          * [DEPRECATED--please specify the containing schema as part of {@code
          * result_table} and use {@link
          * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
@@ -275,8 +313,6 @@ public class AggregateUniqueRequest implements IndexedRecord {
          * com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE FALSE}.
          */
         public static final String RESULT_TABLE_PERSIST = "result_table_persist";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * Force the result table to be replicated (ignores any sharding). Must
@@ -378,6 +414,27 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *               of results.  The default value is -9999.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUniqueRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code result_table}. If {@code
+     *                 result_table_persist} is {@code false} (or unspecified),
+     *                 then this is always allowed even if the caller does not
+     *                 have permission to create tables. The generated name is
+     *                 returned in {@code qualified_result_table_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUniqueRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: [DEPRECATED--please specify the
@@ -544,6 +601,27 @@ public class AggregateUniqueRequest implements IndexedRecord {
      *                  BINARY}.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUniqueRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code result_table}. If {@code
+     *                 result_table_persist} is {@code false} (or unspecified),
+     *                 then this is always allowed even if the caller does not
+     *                 have permission to create tables. The generated name is
+     *                 returned in {@code qualified_result_table_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUniqueRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: [DEPRECATED--please specify the
@@ -838,6 +916,24 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.AggregateUniqueRequest.Options#CREATE_TEMP_TABLE
+     *         CREATE_TEMP_TABLE}: If {@code true}, a unique temporary table
+     *         name will be generated in the sys_temp schema and used in place
+     *         of {@code result_table}. If {@code result_table_persist} is
+     *         {@code false} (or unspecified), then this is always allowed even
+     *         if the caller does not have permission to create tables. The
+     *         generated name is returned in {@code
+     *         qualified_result_table_name}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateUniqueRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.AggregateUniqueRequest.Options#COLLECTION_NAME
      *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
      *         schema as part of {@code result_table} and use {@link
@@ -944,6 +1040,27 @@ public class AggregateUniqueRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUniqueRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code result_table}. If {@code
+     *                 result_table_persist} is {@code false} (or unspecified),
+     *                 then this is always allowed even if the caller does not
+     *                 have permission to create tables. The generated name is
+     *                 returned in {@code qualified_result_table_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUniqueRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.AggregateUniqueRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.AggregateUniqueRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: [DEPRECATED--please specify the

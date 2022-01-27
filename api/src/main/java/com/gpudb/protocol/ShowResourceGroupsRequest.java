@@ -62,8 +62,9 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
      * com.gpudb.protocol.ShowResourceGroupsRequest.Options#TRUE TRUE}.
      *         <li> {@link
      * com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_DEFAULT_GROUP
-     * SHOW_DEFAULT_GROUP}: If {@code true} include the default resource group
-     * in the response.
+     * SHOW_DEFAULT_GROUP}: If {@code true} include the default and system
+     * resource groups in the response. This value defaults to false if an
+     * explicit list of group names is provided, and true otherwise.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -73,6 +74,19 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
      * </ul>
      * The default value is {@link
      * com.gpudb.protocol.ShowResourceGroupsRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_TIER_USAGE
+     * SHOW_TIER_USAGE}: If {@code true} include the resource group usage on
+     * the worker ranks in the response.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.ShowResourceGroupsRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.ShowResourceGroupsRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.ShowResourceGroupsRequest.Options#FALSE FALSE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -97,7 +111,9 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
         public static final String FALSE = "false";
 
         /**
-         * If {@code true} include the default resource group in the response.
+         * If {@code true} include the default and system resource groups in
+         * the response. This value defaults to false if an explicit list of
+         * group names is provided, and true otherwise.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -109,6 +125,21 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
          * com.gpudb.protocol.ShowResourceGroupsRequest.Options#TRUE TRUE}.
          */
         public static final String SHOW_DEFAULT_GROUP = "show_default_group";
+
+        /**
+         * If {@code true} include the resource group usage on the worker ranks
+         * in the response.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.ShowResourceGroupsRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.ShowResourceGroupsRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.ShowResourceGroupsRequest.Options#FALSE FALSE}.
+         */
+        public static final String SHOW_TIER_USAGE = "show_tier_usage";
 
         private Options() {  }
     }
@@ -152,7 +183,9 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_DEFAULT_GROUP
      *                 SHOW_DEFAULT_GROUP}: If {@code true} include the default
-     *                 resource group in the response.
+     *                 and system resource groups in the response. This value
+     *                 defaults to false if an explicit list of group names is
+     *                 provided, and true otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -165,6 +198,22 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_TIER_USAGE
+     *                 SHOW_TIER_USAGE}: If {@code true} include the resource
+     *                 group usage on the worker ranks in the response.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -217,8 +266,10 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
      *         com.gpudb.protocol.ShowResourceGroupsRequest.Options#TRUE TRUE}.
      *                 <li> {@link
      *         com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_DEFAULT_GROUP
-     *         SHOW_DEFAULT_GROUP}: If {@code true} include the default
-     *         resource group in the response.
+     *         SHOW_DEFAULT_GROUP}: If {@code true} include the default and
+     *         system resource groups in the response. This value defaults to
+     *         false if an explicit list of group names is provided, and true
+     *         otherwise.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -229,6 +280,21 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
      *         </ul>
      *         The default value is {@link
      *         com.gpudb.protocol.ShowResourceGroupsRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_TIER_USAGE
+     *         SHOW_TIER_USAGE}: If {@code true} include the resource group
+     *         usage on the worker ranks in the response.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowResourceGroupsRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.ShowResourceGroupsRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.ShowResourceGroupsRequest.Options#FALSE
+     *         FALSE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -260,7 +326,9 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_DEFAULT_GROUP
      *                 SHOW_DEFAULT_GROUP}: If {@code true} include the default
-     *                 resource group in the response.
+     *                 and system resource groups in the response. This value
+     *                 defaults to false if an explicit list of group names is
+     *                 provided, and true otherwise.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -273,6 +341,22 @@ public class ShowResourceGroupsRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#TRUE
      *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#SHOW_TIER_USAGE
+     *                 SHOW_TIER_USAGE}: If {@code true} include the resource
+     *                 group usage on the worker ranks in the response.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.ShowResourceGroupsRequest.Options#FALSE
+     *                 FALSE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

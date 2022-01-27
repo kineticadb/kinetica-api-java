@@ -82,6 +82,23 @@ public class CreateProjectionRequest implements IndexedRecord {
      * Optional parameters.
      * <ul>
      *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#CREATE_TEMP_TABLE
+     * CREATE_TEMP_TABLE}: If {@code true}, a unique temporary table name will
+     * be generated in the sys_temp schema and used in place of {@code
+     * projectionName}. If {@code persist} is {@code false} (or unspecified),
+     * then this is always allowed even if the caller does not have permission
+     * to create tables. The generated name is returned in {@code
+     * qualified_projection_name}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.CreateProjectionRequest.Options#COLLECTION_NAME
      * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema for
      * the projection as part of {@code projectionName} and use {@link
@@ -188,6 +205,27 @@ public class CreateProjectionRequest implements IndexedRecord {
     public static final class Options {
 
         /**
+         * If {@code true}, a unique temporary table name will be generated in
+         * the sys_temp schema and used in place of {@code projectionName}. If
+         * {@code persist} is {@code false} (or unspecified), then this is
+         * always allowed even if the caller does not have permission to create
+         * tables. The generated name is returned in {@code
+         * qualified_projection_name}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+         */
+        public static final String CREATE_TEMP_TABLE = "create_temp_table";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
+
+        /**
          * [DEPRECATED--please specify the containing schema for the projection
          * as part of {@code projectionName} and use {@link
          * com.gpudb.GPUdb#createSchema(CreateSchemaRequest)} to create the
@@ -218,8 +256,6 @@ public class CreateProjectionRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
          */
         public static final String IS_REPLICATED = "is_replicated";
-        public static final String TRUE = "true";
-        public static final String FALSE = "false";
 
         /**
          * The number of records to keep.  The default value is ''.
@@ -364,6 +400,27 @@ public class CreateProjectionRequest implements IndexedRecord {
      *                     'column_name as alias'.
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code projectionName}. If {@code
+     *                 persist} is {@code false} (or unspecified), then this is
+     *                 always allowed even if the caller does not have
+     *                 permission to create tables. The generated name is
+     *                 returned in {@code qualified_projection_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: [DEPRECATED--please specify the
@@ -597,6 +654,23 @@ public class CreateProjectionRequest implements IndexedRecord {
      * @return Optional parameters.
      *         <ul>
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#CREATE_TEMP_TABLE
+     *         CREATE_TEMP_TABLE}: If {@code true}, a unique temporary table
+     *         name will be generated in the sys_temp schema and used in place
+     *         of {@code projectionName}. If {@code persist} is {@code false}
+     *         (or unspecified), then this is always allowed even if the caller
+     *         does not have permission to create tables. The generated name is
+     *         returned in {@code qualified_projection_name}.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateProjectionRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateProjectionRequest.Options#COLLECTION_NAME
      *         COLLECTION_NAME}: [DEPRECATED--please specify the containing
      *         schema for the projection as part of {@code projectionName} and
@@ -715,6 +789,27 @@ public class CreateProjectionRequest implements IndexedRecord {
      * 
      * @param options  Optional parameters.
      *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code projectionName}. If {@code
+     *                 persist} is {@code false} (or unspecified), then this is
+     *                 always allowed even if the caller does not have
+     *                 permission to create tables. The generated name is
+     *                 returned in {@code qualified_projection_name}.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateProjectionRequest.Options#FALSE
+     *                 FALSE}.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateProjectionRequest.Options#COLLECTION_NAME
      *                 COLLECTION_NAME}: [DEPRECATED--please specify the

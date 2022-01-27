@@ -51,8 +51,8 @@ import org.apache.avro.generic.IndexedRecord;
  * target="_top">GEODIST(-77.11, 38.88, -71.06, 42.36)</a>).
  * <p>
  * The response is returned as a dynamic schema. For details see:
- * <a href="../../../../../../api/#dynamic-schemas" target="_top">dynamic
- * schemas documentation</a>.
+ * <a href="../../../../../../api/concepts/#dynamic-schemas"
+ * target="_top">dynamic schemas documentation</a>.
  */
 public class GetRecordsByColumnRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

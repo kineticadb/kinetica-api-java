@@ -293,6 +293,11 @@ public class CreateGraphRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
      *         <li> {@link
+     * com.gpudb.protocol.CreateGraphRequest.Options#LABEL_DELIMITER
+     * LABEL_DELIMITER}: If provided the label string will be split according
+     * to this delimiter and each sub-string will be applied as a separate
+     * label onto the specified edge.  The default value is ''.
+     *         <li> {@link
      * com.gpudb.protocol.CreateGraphRequest.Options#SQL_REQUEST_AVRO_JSON
      * SQL_REQUEST_AVRO_JSON}:   The default value is ''.
      * </ul>
@@ -553,6 +558,13 @@ public class CreateGraphRequest implements IndexedRecord {
          * com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
          */
         public static final String USE_RTREE = "use_rtree";
+
+        /**
+         * If provided the label string will be split according to this
+         * delimiter and each sub-string will be applied as a separate label
+         * onto the specified edge.  The default value is ''.
+         */
+        public static final String LABEL_DELIMITER = "label_delimiter";
 
         /**
          *   The default value is ''.
@@ -938,6 +950,12 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#LABEL_DELIMITER
+     *                 LABEL_DELIMITER}: If provided the label string will be
+     *                 split according to this delimiter and each sub-string
+     *                 will be applied as a separate label onto the specified
+     *                 edge.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#SQL_REQUEST_AVRO_JSON
      *                 SQL_REQUEST_AVRO_JSON}:   The default value is ''.
@@ -1479,6 +1497,12 @@ public class CreateGraphRequest implements IndexedRecord {
      *         The default value is {@link
      *         com.gpudb.protocol.CreateGraphRequest.Options#FALSE FALSE}.
      *                 <li> {@link
+     *         com.gpudb.protocol.CreateGraphRequest.Options#LABEL_DELIMITER
+     *         LABEL_DELIMITER}: If provided the label string will be split
+     *         according to this delimiter and each sub-string will be applied
+     *         as a separate label onto the specified edge.  The default value
+     *         is ''.
+     *                 <li> {@link
      *         com.gpudb.protocol.CreateGraphRequest.Options#SQL_REQUEST_AVRO_JSON
      *         SQL_REQUEST_AVRO_JSON}:   The default value is ''.
      *         </ul>
@@ -1745,6 +1769,12 @@ public class CreateGraphRequest implements IndexedRecord {
      *                 The default value is {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#FALSE
      *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateGraphRequest.Options#LABEL_DELIMITER
+     *                 LABEL_DELIMITER}: If provided the label string will be
+     *                 split according to this delimiter and each sub-string
+     *                 will be applied as a separate label onto the specified
+     *                 edge.  The default value is ''.
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateGraphRequest.Options#SQL_REQUEST_AVRO_JSON
      *                 SQL_REQUEST_AVRO_JSON}:   The default value is ''.

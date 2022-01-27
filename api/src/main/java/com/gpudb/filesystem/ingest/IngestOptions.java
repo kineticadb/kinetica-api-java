@@ -154,10 +154,10 @@ public class IngestOptions {
     /**
      * Sets the column formats
      * @param columnFormats - A Map of String to a Pair of Strings
-     * @return- an {@link IngestOptions} object
-     * @throws JsonProcessingException
+     * @return - an {@link IngestOptions} object
+     * @throws JsonProcessingException - when conversion to JSON fails
      *
-     * @see - {@link #getColumnFormats()}
+     * @see #getColumnFormats()
      *
      */
     public IngestOptions setColumnFormats(Map<String, Pair<String, String>> columnFormats) throws JsonProcessingException {
@@ -185,11 +185,12 @@ public class IngestOptions {
      * Sets the set of column names to load
      * @param columnsToLoad - a Set of column names
      * @return an {@link IngestOptions} object
-     * @throws GPUdbException
+     * @throws GPUdbException - when names of columns to skip and load overlap
+     * @throws JsonProcessingException - when JSON conversion fails
      *
      * @see #getColumnsToLoad()
      */
-    public IngestOptions setColumnsToLoad(Set<String> columnsToLoad) throws GPUdbException {
+    public IngestOptions setColumnsToLoad(Set<String> columnsToLoad) throws GPUdbException, JsonProcessingException {
         if( columnsToLoad != null && columnsToSkip != null ) {
             Set<String> result = GPUdbFileHandlerUtils.setIntersection( columnsToLoad, columnsToSkip );
             if( result.size() > 0 )
@@ -241,7 +242,7 @@ public class IngestOptions {
 
     /**
      * Gets a Map of default column formats
-     * @return
+     * @return - a Map of String to String
      */
     public Map<String, String> getDefaultColumnFormats() {
         return defaultColumnFormats;
@@ -267,8 +268,8 @@ public class IngestOptions {
     }
 
     /**
-     * 
-     * @return
+     * Getter for {@link ErrorHandlingMode}
+     * @return the {@link ErrorHandlingMode} value
      */
     public ErrorHandlingMode getErrorHandlingMode() {
         return errorHandlingMode;
@@ -389,9 +390,9 @@ public class IngestOptions {
     }
 
     /**
-     *
-     * @param textQuoteCharacter
-     * @return
+     * Setter method for text quote character
+     * @param textQuoteCharacter - a String value for the text quote character to be set
+     * @return - the current instance of {@link IngestOptions}
      */
     public IngestOptions setTextQuoteCharacter(String textQuoteCharacter) {
         this.textQuoteCharacter = textQuoteCharacter;
@@ -439,8 +440,8 @@ public class IngestOptions {
     }
 
     /**
-     * This method
-     * @return
+     * Getter method for all the options set
+     * @return - the Options as a Map of String to String
      */
     public Map<String, String> getOptions() {
         if( options == null ) {

@@ -41,6 +41,8 @@ public class AlterModelRequest implements IndexedRecord {
 
         public static final String REFRESH = "refresh";
 
+        public static final String STOP_DEPLOYMENT = "stop_deployment";
+
 
         private Action() {  }
     }

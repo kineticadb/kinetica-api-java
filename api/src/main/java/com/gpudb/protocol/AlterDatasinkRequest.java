@@ -54,15 +54,6 @@ public class AlterDatasinkRequest implements IndexedRecord {
      * <p>
      * Supported destination types are 'http', 'https' and 'kafka'.
      *         <li> {@link
-     * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#DESTINATION_TYPE
-     * DESTINATION_TYPE}: Destination type for the output data
-     *         <li> {@link
-     * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#USER_NAME
-     * USER_NAME}: Name of the remote system user; may be an empty string
-     *         <li> {@link
-     * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#PASSWORD
-     * PASSWORD}: Password for the remote system user; may be an empty string
-     *         <li> {@link
      * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#CONNECTION_TIMEOUT
      * CONNECTION_TIMEOUT}: Timeout in seconds for connecting to this sink
      *         <li> {@link
@@ -78,6 +69,30 @@ public class AlterDatasinkRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#KAFKA_TOPIC_NAME
      * KAFKA_TOPIC_NAME}: Name of the Kafka topic to use for this data sink, if
      * it references a Kafka broker
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#MAX_BATCH_SIZE
+     * MAX_BATCH_SIZE}: Maximum number of records per notification message.
+     * The default value is '1'.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#MAX_MESSAGE_SIZE
+     * MAX_MESSAGE_SIZE}: Maximum size in bytes of each notification message.
+     * The default value is '1000000'.
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#JSON_FORMAT
+     * JSON_FORMAT}: The desired format of JSON encoded notifications message.
+     * <p>
+     * If {@code nested}, records are returned as an array.
+     * Otherwise, only a single record per messages is returned.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FLAT FLAT}
+     *         <li> {@link
+     * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#NESTED
+     * NESTED}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FLAT FLAT}.
      *         <li> {@link
      * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#SKIP_VALIDATION
      * SKIP_VALIDATION}: Bypass validation of connection to this data sink.
@@ -104,21 +119,6 @@ public class AlterDatasinkRequest implements IndexedRecord {
         public static final String DESTINATION = "destination";
 
         /**
-         * Destination type for the output data
-         */
-        public static final String DESTINATION_TYPE = "destination_type";
-
-        /**
-         * Name of the remote system user; may be an empty string
-         */
-        public static final String USER_NAME = "user_name";
-
-        /**
-         * Password for the remote system user; may be an empty string
-         */
-        public static final String PASSWORD = "password";
-
-        /**
          * Timeout in seconds for connecting to this sink
          */
         public static final String CONNECTION_TIMEOUT = "connection_timeout";
@@ -139,6 +139,40 @@ public class AlterDatasinkRequest implements IndexedRecord {
          * a Kafka broker
          */
         public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
+
+        /**
+         * Maximum number of records per notification message.  The default
+         * value is '1'.
+         */
+        public static final String MAX_BATCH_SIZE = "max_batch_size";
+
+        /**
+         * Maximum size in bytes of each notification message.  The default
+         * value is '1000000'.
+         */
+        public static final String MAX_MESSAGE_SIZE = "max_message_size";
+
+        /**
+         * The desired format of JSON encoded notifications message.
+         * <p>
+         * If {@code nested}, records are returned as an array.
+         * Otherwise, only a single record per messages is returned.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FLAT
+         * FLAT}
+         *         <li> {@link
+         * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#NESTED
+         * NESTED}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FLAT
+         * FLAT}.
+         */
+        public static final String JSON_FORMAT = "json_format";
+        public static final String FLAT = "flat";
+        public static final String NESTED = "nested";
 
         /**
          * Bypass validation of connection to this data sink.
@@ -191,18 +225,6 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                            Supported destination types are 'http',
      *                            'https' and 'kafka'.
      *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#DESTINATION_TYPE
-     *                            DESTINATION_TYPE}: Destination type for the
-     *                            output data
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#USER_NAME
-     *                            USER_NAME}: Name of the remote system user;
-     *                            may be an empty string
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#PASSWORD
-     *                            PASSWORD}: Password for the remote system
-     *                            user; may be an empty string
-     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#CONNECTION_TIMEOUT
      *                            CONNECTION_TIMEOUT}: Timeout in seconds for
      *                            connecting to this sink
@@ -221,6 +243,36 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                            KAFKA_TOPIC_NAME}: Name of the Kafka topic to
      *                            use for this data sink, if it references a
      *                            Kafka broker
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#MAX_BATCH_SIZE
+     *                            MAX_BATCH_SIZE}: Maximum number of records
+     *                            per notification message.  The default value
+     *                            is '1'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#MAX_MESSAGE_SIZE
+     *                            MAX_MESSAGE_SIZE}: Maximum size in bytes of
+     *                            each notification message.  The default value
+     *                            is '1000000'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#JSON_FORMAT
+     *                            JSON_FORMAT}: The desired format of JSON
+     *                            encoded notifications message.
+     *                            If {@code nested}, records are returned as an
+     *                            array.
+     *                            Otherwise, only a single record per messages
+     *                            is returned.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FLAT
+     *                            FLAT}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#NESTED
+     *                            NESTED}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FLAT
+     *                            FLAT}.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#SKIP_VALIDATION
      *                            SKIP_VALIDATION}: Bypass validation of
@@ -281,17 +333,6 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         'destination_type://path[:port]'.
      *         Supported destination types are 'http', 'https' and 'kafka'.
      *                 <li> {@link
-     *         com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#DESTINATION_TYPE
-     *         DESTINATION_TYPE}: Destination type for the output data
-     *                 <li> {@link
-     *         com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#USER_NAME
-     *         USER_NAME}: Name of the remote system user; may be an empty
-     *         string
-     *                 <li> {@link
-     *         com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#PASSWORD
-     *         PASSWORD}: Password for the remote system user; may be an empty
-     *         string
-     *                 <li> {@link
      *         com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#CONNECTION_TIMEOUT
      *         CONNECTION_TIMEOUT}: Timeout in seconds for connecting to this
      *         sink
@@ -308,6 +349,32 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#KAFKA_TOPIC_NAME
      *         KAFKA_TOPIC_NAME}: Name of the Kafka topic to use for this data
      *         sink, if it references a Kafka broker
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#MAX_BATCH_SIZE
+     *         MAX_BATCH_SIZE}: Maximum number of records per notification
+     *         message.  The default value is '1'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#MAX_MESSAGE_SIZE
+     *         MAX_MESSAGE_SIZE}: Maximum size in bytes of each notification
+     *         message.  The default value is '1000000'.
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#JSON_FORMAT
+     *         JSON_FORMAT}: The desired format of JSON encoded notifications
+     *         message.
+     *         If {@code nested}, records are returned as an array.
+     *         Otherwise, only a single record per messages is returned.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FLAT
+     *         FLAT}
+     *                 <li> {@link
+     *         com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#NESTED
+     *         NESTED}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FLAT
+     *         FLAT}.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#SKIP_VALIDATION
      *         SKIP_VALIDATION}: Bypass validation of connection to this data
@@ -343,18 +410,6 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                            Supported destination types are 'http',
      *                            'https' and 'kafka'.
      *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#DESTINATION_TYPE
-     *                            DESTINATION_TYPE}: Destination type for the
-     *                            output data
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#USER_NAME
-     *                            USER_NAME}: Name of the remote system user;
-     *                            may be an empty string
-     *                                    <li> {@link
-     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#PASSWORD
-     *                            PASSWORD}: Password for the remote system
-     *                            user; may be an empty string
-     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#CONNECTION_TIMEOUT
      *                            CONNECTION_TIMEOUT}: Timeout in seconds for
      *                            connecting to this sink
@@ -373,6 +428,36 @@ public class AlterDatasinkRequest implements IndexedRecord {
      *                            KAFKA_TOPIC_NAME}: Name of the Kafka topic to
      *                            use for this data sink, if it references a
      *                            Kafka broker
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#MAX_BATCH_SIZE
+     *                            MAX_BATCH_SIZE}: Maximum number of records
+     *                            per notification message.  The default value
+     *                            is '1'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#MAX_MESSAGE_SIZE
+     *                            MAX_MESSAGE_SIZE}: Maximum size in bytes of
+     *                            each notification message.  The default value
+     *                            is '1000000'.
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#JSON_FORMAT
+     *                            JSON_FORMAT}: The desired format of JSON
+     *                            encoded notifications message.
+     *                            If {@code nested}, records are returned as an
+     *                            array.
+     *                            Otherwise, only a single record per messages
+     *                            is returned.
+     *                            Supported values:
+     *                            <ul>
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FLAT
+     *                            FLAT}
+     *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#NESTED
+     *                            NESTED}
+     *                            </ul>
+     *                            The default value is {@link
+     *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#FLAT
+     *                            FLAT}.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterDatasinkRequest.DatasinkUpdatesMap#SKIP_VALIDATION
      *                            SKIP_VALIDATION}: Bypass validation of

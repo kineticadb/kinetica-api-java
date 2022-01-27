@@ -2,10 +2,12 @@ package com.gpudb.filesystem.ingest;
 
 import com.gpudb.GPUdb;
 import com.gpudb.GPUdbException;
+import com.gpudb.GPUdbLogger;
 import com.gpudb.filesystem.GPUdbFileHandler;
 import com.gpudb.filesystem.common.FileOperation;
 import com.gpudb.filesystem.upload.FileUploader;
 import com.gpudb.filesystem.upload.UploadOptions;
+import com.gpudb.protocol.DeleteDirectoryRequest;
 import com.gpudb.protocol.InsertRecordsFromFilesResponse;
 
 import java.util.*;
@@ -21,7 +23,7 @@ import java.util.*;
 public class FileIngestor {
 
     private final String KIFS_PREFIX = "kifs://";
-    private final String SYS_TEMP_DIR = "sys_temp";
+    private final String REMOTE_USER_HOME_DIR = "~";
 
     private final GPUdb db;
 
@@ -81,60 +83,97 @@ public class FileIngestor {
      * and calls the method {@link GPUdb#insertRecordsFromFiles(String, List, Map, Map, Map)}
      * to ingest from the uploaded files.
      *
-     * The files are uploaded to the location identified by 'kifs://sys_temp'
-     * and ingested therefrom.
+     * The files are uploaded to the location identified by 'kifs://~/<some_uuid>' where '~' indicates the user's
+     * home directory on the server and ingested therefrom.
      *
      * @return - An {@link IngestResult} object
      */
-    public IngestResult ingestFromFiles() throws GPUdbException {
-        // Upload the files to 'sys_temp" on KIFS
-        fileUploader = new FileUploader( db,
-                fileNames,
-                SYS_TEMP_DIR,
-                UploadOptions.defaultOptions(),
-                null,
-                new GPUdbFileHandler.Options() );
+    public IngestResult ingestFromFiles() {
+        final String temp_dir = UUID.randomUUID().toString();
+        Set<String> filesUploaded = new HashSet<>();
 
-        fileUploader.upload();
+        try {
+            // Upload the files to '~/" on KIFS, this directory is automatically aliased to
+            // the users' home directory
+            final String remoteDirName = REMOTE_USER_HOME_DIR + FileOperation.getKifsPathSeparator() + temp_dir;
 
-        // Get the names of the files uploaded without any path component
-        Set<String> filesUploaded = fileUploader.getNamesOfFilesUploaded();
+            fileUploader = new FileUploader(db,
+                    fileNames,
+                    remoteDirName,
+                    UploadOptions.defaultOptions(),
+                    null,
+                    new GPUdbFileHandler.Options());
 
-        List<String> filePaths = new ArrayList<>();
+            // Get the names of the files uploaded without any path component
+            filesUploaded = fileUploader.getNamesOfFilesUploaded();
 
-        for( String fileName: filesUploaded ) {
-            filePaths.add( KIFS_PREFIX + SYS_TEMP_DIR + FileOperation.getKifsPathSeparator() + fileName );
+            fileUploader.upload();
+
+
+            List<String> filePaths = new ArrayList<>();
+
+            for (String fileName : filesUploaded) {
+                String fullyQualifiedFileName = String.format("%s%s%s%s%s%s",
+                        KIFS_PREFIX,
+                        REMOTE_USER_HOME_DIR,
+                        FileOperation.getKifsPathSeparator(),
+                        temp_dir,
+                        FileOperation.getKifsPathSeparator(),
+                        fileName);
+                filePaths.add( fullyQualifiedFileName );
+            }
+
+            InsertRecordsFromFilesResponse resp = db.insertRecordsFromFiles(
+                    tableName,
+                    filePaths,
+                    new LinkedHashMap<String, Map<String, String>>(),
+                    createTableOptions.getOptions(),
+                    ingestOptions.getOptions()
+            );
+
+            deleteIngestedFiles( temp_dir);
+            return convertToIngestResult(resp, null);
+        } catch (GPUdbException ex) {
+            GPUdbLogger.error( ex.getMessage() );
+            deleteIngestedFiles( temp_dir);
+            return convertToIngestResult( null, ex );
         }
+    }
 
-        InsertRecordsFromFilesResponse resp = db.insertRecordsFromFiles(
-                                                    tableName,
-                                                    filePaths,
-                                                    new LinkedHashMap< String, Map<String,String> >(),
-                                                    createTableOptions.getOptions(),
-                                                    ingestOptions.getOptions()
-                                            );
+    private void deleteIngestedFiles(final String remoteDirName) {
 
-        return convertToIngestResult( resp );
+        Map<String, String> options = new HashMap<>();
+        options.put( DeleteDirectoryRequest.Options.RECURSIVE, DeleteDirectoryRequest.Options.TRUE);
+        options.put( DeleteDirectoryRequest.Options.NO_ERROR_IF_NOT_EXISTS, DeleteDirectoryRequest.Options.TRUE);
+
+        try {
+            db.deleteDirectory(remoteDirName, options);
+        } catch (GPUdbException e) {
+            GPUdbLogger.error( e.getMessage() );
+        }
     }
 
     /**
      * This method converts an object of type {@link InsertRecordsFromFilesResponse}
      * to an object of type {@link IngestResult}.
      * @param resp - An object of type {@link InsertRecordsFromFilesResponse}
+     * @param ex - A GPUdbException object
      * @return - An object of type {@link IngestResult}
      */
-    private IngestResult convertToIngestResult(InsertRecordsFromFilesResponse resp) {
+    private IngestResult convertToIngestResult( InsertRecordsFromFilesResponse resp, GPUdbException ex ) {
         IngestResult ingestResult = new IngestResult();
+        ingestResult.setException( ex );
+        ingestResult.setErrorMessage( ex != null ? ex.getMessage() : null );
+        ingestResult.setSuccessful( ex == null );
+
         if( resp != null ) {
-            ingestResult.setSuccessful( true );
-            ingestResult.setException( null );
-            ingestResult.setErrorMessage( null );
             ingestResult.setFiles( resp.getFiles() );
             ingestResult.setTableName( resp.getTableName() );
             ingestResult.setCountInserted( resp.getCountInserted() );
             ingestResult.setCountSkipped( resp.getCountSkipped() );
             ingestResult.setCountUpdated( resp.getCountUpdated() );
         }
+
         return ingestResult;
     }
 

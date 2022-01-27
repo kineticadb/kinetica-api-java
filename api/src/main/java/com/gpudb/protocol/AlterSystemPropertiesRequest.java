@@ -166,13 +166,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_DATA
      * AUDIT_DATA}: Enable or disable auditing of request data.
      *         <li> {@link
+     * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_RESPONSE
+     * AUDIT_RESPONSE}: Enable or disable auditing of response information.
+     *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_AGG_SIZE
      * SHADOW_AGG_SIZE}: Size of the shadow aggregate chunk cache in bytes.
      * The default value is '10000000'.
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_FILTER_SIZE
-     * SHADOW_FILTER_SIZE}: Size of the shdow filter chunk cache in bytes.  The
-     * default value is '10000000'.
+     * SHADOW_FILTER_SIZE}: Size of the shadow filter chunk cache in bytes.
+     * The default value is '10000000'.
      *         <li> {@link
      * com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
      * SYNCHRONOUS_COMPRESSION}: compress vector on set_compression (instead of
@@ -352,14 +355,19 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
         public static final String AUDIT_DATA = "audit_data";
 
         /**
+         * Enable or disable auditing of response information.
+         */
+        public static final String AUDIT_RESPONSE = "audit_response";
+
+        /**
          * Size of the shadow aggregate chunk cache in bytes.  The default
          * value is '10000000'.
          */
         public static final String SHADOW_AGG_SIZE = "shadow_agg_size";
 
         /**
-         * Size of the shdow filter chunk cache in bytes.  The default value is
-         * '10000000'.
+         * Size of the shadow filter chunk cache in bytes.  The default value
+         * is '10000000'.
          */
         public static final String SHADOW_FILTER_SIZE = "shadow_filter_size";
 
@@ -564,15 +572,19 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            AUDIT_DATA}: Enable or disable auditing of
      *                            request data.
      *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_RESPONSE
+     *                            AUDIT_RESPONSE}: Enable or disable auditing
+     *                            of response information.
+     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_AGG_SIZE
      *                            SHADOW_AGG_SIZE}: Size of the shadow
      *                            aggregate chunk cache in bytes.  The default
      *                            value is '10000000'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_FILTER_SIZE
-     *                            SHADOW_FILTER_SIZE}: Size of the shdow filter
-     *                            chunk cache in bytes.  The default value is
-     *                            '10000000'.
+     *                            SHADOW_FILTER_SIZE}: Size of the shadow
+     *                            filter chunk cache in bytes.  The default
+     *                            value is '10000000'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
      *                            SYNCHRONOUS_COMPRESSION}: compress vector on
@@ -739,12 +751,16 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_DATA
      *         AUDIT_DATA}: Enable or disable auditing of request data.
      *                 <li> {@link
+     *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_RESPONSE
+     *         AUDIT_RESPONSE}: Enable or disable auditing of response
+     *         information.
+     *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_AGG_SIZE
      *         SHADOW_AGG_SIZE}: Size of the shadow aggregate chunk cache in
      *         bytes.  The default value is '10000000'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_FILTER_SIZE
-     *         SHADOW_FILTER_SIZE}: Size of the shdow filter chunk cache in
+     *         SHADOW_FILTER_SIZE}: Size of the shadow filter chunk cache in
      *         bytes.  The default value is '10000000'.
      *                 <li> {@link
      *         com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
@@ -928,15 +944,19 @@ public class AlterSystemPropertiesRequest implements IndexedRecord {
      *                            AUDIT_DATA}: Enable or disable auditing of
      *                            request data.
      *                                    <li> {@link
+     *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#AUDIT_RESPONSE
+     *                            AUDIT_RESPONSE}: Enable or disable auditing
+     *                            of response information.
+     *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_AGG_SIZE
      *                            SHADOW_AGG_SIZE}: Size of the shadow
      *                            aggregate chunk cache in bytes.  The default
      *                            value is '10000000'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SHADOW_FILTER_SIZE
-     *                            SHADOW_FILTER_SIZE}: Size of the shdow filter
-     *                            chunk cache in bytes.  The default value is
-     *                            '10000000'.
+     *                            SHADOW_FILTER_SIZE}: Size of the shadow
+     *                            filter chunk cache in bytes.  The default
+     *                            value is '10000000'.
      *                                    <li> {@link
      *                            com.gpudb.protocol.AlterSystemPropertiesRequest.PropertyUpdatesMap#SYNCHRONOUS_COMPRESSION
      *                            SYNCHRONOUS_COMPRESSION}: compress vector on

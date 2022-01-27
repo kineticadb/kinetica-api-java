@@ -5,9 +5,7 @@
  */
 package com.gpudb.protocol;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -17,15 +15,14 @@ import org.apache.avro.generic.IndexedRecord;
 
 /**
  * A set of results returned by {@link
- * com.gpudb.GPUdb#showResourceGroups(ShowResourceGroupsRequest)}.
+ * com.gpudb.GPUdb#showResourceObjects(ShowResourceObjectsRequest)}.
  */
-public class ShowResourceGroupsResponse implements IndexedRecord {
+public class ShowResourceObjectsResponse implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder
-            .record("ShowResourceGroupsResponse")
+            .record("ShowResourceObjectsResponse")
             .namespace("com.gpudb")
             .fields()
-                .name("groups").type().array().items().map().values().stringType().noDefault()
-                .name("rankUsage").type().map().values().stringType().noDefault()
+                .name("rankObjects").type().map().values().stringType().noDefault()
                 .name("info").type().map().values().stringType().noDefault()
             .endRecord();
 
@@ -41,36 +38,14 @@ public class ShowResourceGroupsResponse implements IndexedRecord {
         return schema$;
     }
 
-    private List<Map<String, String>> groups;
-    private Map<String, String> rankUsage;
+    private Map<String, String> rankObjects;
     private Map<String, String> info;
 
 
     /**
-     * Constructs a ShowResourceGroupsResponse object with default parameters.
+     * Constructs a ShowResourceObjectsResponse object with default parameters.
      */
-    public ShowResourceGroupsResponse() {
-    }
-
-    /**
-     * 
-     * @return Map of resource group information.
-     * 
-     */
-    public List<Map<String, String>> getGroups() {
-        return groups;
-    }
-
-    /**
-     * 
-     * @param groups  Map of resource group information.
-     * 
-     * @return {@code this} to mimic the builder pattern.
-     * 
-     */
-    public ShowResourceGroupsResponse setGroups(List<Map<String, String>> groups) {
-        this.groups = (groups == null) ? new ArrayList<Map<String, String>>() : groups;
-        return this;
+    public ShowResourceObjectsResponse() {
     }
 
     /**
@@ -80,21 +55,21 @@ public class ShowResourceGroupsResponse implements IndexedRecord {
      *         group_usage (as stringified json)
      * 
      */
-    public Map<String, String> getRankUsage() {
-        return rankUsage;
+    public Map<String, String> getRankObjects() {
+        return rankObjects;
     }
 
     /**
      * 
-     * @param rankUsage  Tier usage across ranks. Layout is:
-     *                   response.rank_usage[rank_number][resource_group_name]
-     *                   = group_usage (as stringified json)
+     * @param rankObjects  Tier usage across ranks. Layout is:
+     *                     response.rank_usage[rank_number][resource_group_name]
+     *                     = group_usage (as stringified json)
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowResourceGroupsResponse setRankUsage(Map<String, String> rankUsage) {
-        this.rankUsage = (rankUsage == null) ? new LinkedHashMap<String, String>() : rankUsage;
+    public ShowResourceObjectsResponse setRankObjects(Map<String, String> rankObjects) {
+        this.rankObjects = (rankObjects == null) ? new LinkedHashMap<String, String>() : rankObjects;
         return this;
     }
 
@@ -114,7 +89,7 @@ public class ShowResourceGroupsResponse implements IndexedRecord {
      * @return {@code this} to mimic the builder pattern.
      * 
      */
-    public ShowResourceGroupsResponse setInfo(Map<String, String> info) {
+    public ShowResourceObjectsResponse setInfo(Map<String, String> info) {
         this.info = (info == null) ? new LinkedHashMap<String, String>() : info;
         return this;
     }
@@ -146,12 +121,9 @@ public class ShowResourceGroupsResponse implements IndexedRecord {
     public Object get(int index) {
         switch (index) {
             case 0:
-                return this.groups;
+                return this.rankObjects;
 
             case 1:
-                return this.rankUsage;
-
-            case 2:
                 return this.info;
 
             default:
@@ -174,14 +146,10 @@ public class ShowResourceGroupsResponse implements IndexedRecord {
     public void put(int index, Object value) {
         switch (index) {
             case 0:
-                this.groups = (List<Map<String, String>>)value;
+                this.rankObjects = (Map<String, String>)value;
                 break;
 
             case 1:
-                this.rankUsage = (Map<String, String>)value;
-                break;
-
-            case 2:
                 this.info = (Map<String, String>)value;
                 break;
 
@@ -200,10 +168,9 @@ public class ShowResourceGroupsResponse implements IndexedRecord {
             return false;
         }
 
-        ShowResourceGroupsResponse that = (ShowResourceGroupsResponse)obj;
+        ShowResourceObjectsResponse that = (ShowResourceObjectsResponse)obj;
 
-        return ( this.groups.equals( that.groups )
-                 && this.rankUsage.equals( that.rankUsage )
+        return ( this.rankObjects.equals( that.rankObjects )
                  && this.info.equals( that.info ) );
     }
 
@@ -212,13 +179,9 @@ public class ShowResourceGroupsResponse implements IndexedRecord {
         GenericData gd = GenericData.get();
         StringBuilder builder = new StringBuilder();
         builder.append( "{" );
-        builder.append( gd.toString( "groups" ) );
+        builder.append( gd.toString( "rankObjects" ) );
         builder.append( ": " );
-        builder.append( gd.toString( this.groups ) );
-        builder.append( ", " );
-        builder.append( gd.toString( "rankUsage" ) );
-        builder.append( ": " );
-        builder.append( gd.toString( this.rankUsage ) );
+        builder.append( gd.toString( this.rankObjects ) );
         builder.append( ", " );
         builder.append( gd.toString( "info" ) );
         builder.append( ": " );
@@ -231,8 +194,7 @@ public class ShowResourceGroupsResponse implements IndexedRecord {
     @Override
     public int hashCode() {
         int hashCode = 1;
-        hashCode = (31 * hashCode) + this.groups.hashCode();
-        hashCode = (31 * hashCode) + this.rankUsage.hashCode();
+        hashCode = (31 * hashCode) + this.rankObjects.hashCode();
         hashCode = (31 * hashCode) + this.info.hashCode();
         return hashCode;
     }

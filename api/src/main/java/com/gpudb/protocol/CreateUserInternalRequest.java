@@ -53,6 +53,19 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.CreateUserInternalRequest.Options#DEFAULT_SCHEMA
      * DEFAULT_SCHEMA}: default schema associate with this user
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUserInternalRequest.Options#CREATE_HOME_DIRECTORY
+     * CREATE_HOME_DIRECTORY}: when true, a home directory in KiFS is created
+     * for this user
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUserInternalRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateUserInternalRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateUserInternalRequest.Options#TRUE TRUE}.
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -68,6 +81,22 @@ public class CreateUserInternalRequest implements IndexedRecord {
          * default schema associate with this user
          */
         public static final String DEFAULT_SCHEMA = "default_schema";
+
+        /**
+         * when true, a home directory in KiFS is created for this user
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUserInternalRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateUserInternalRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateUserInternalRequest.Options#TRUE TRUE}.
+         */
+        public static final String CREATE_HOME_DIRECTORY = "create_home_directory";
+        public static final String TRUE = "true";
+        public static final String FALSE = "false";
 
         private Options() {  }
     }
@@ -105,6 +134,22 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserInternalRequest.Options#DEFAULT_SCHEMA
      *                 DEFAULT_SCHEMA}: default schema associate with this user
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserInternalRequest.Options#CREATE_HOME_DIRECTORY
+     *                 CREATE_HOME_DIRECTORY}: when true, a home directory in
+     *                 KiFS is created for this user
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserInternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserInternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateUserInternalRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -175,6 +220,20 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.CreateUserInternalRequest.Options#DEFAULT_SCHEMA
      *         DEFAULT_SCHEMA}: default schema associate with this user
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUserInternalRequest.Options#CREATE_HOME_DIRECTORY
+     *         CREATE_HOME_DIRECTORY}: when true, a home directory in KiFS is
+     *         created for this user
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUserInternalRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateUserInternalRequest.Options#FALSE
+     *         FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateUserInternalRequest.Options#TRUE TRUE}.
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -194,6 +253,22 @@ public class CreateUserInternalRequest implements IndexedRecord {
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateUserInternalRequest.Options#DEFAULT_SCHEMA
      *                 DEFAULT_SCHEMA}: default schema associate with this user
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserInternalRequest.Options#CREATE_HOME_DIRECTORY
+     *                 CREATE_HOME_DIRECTORY}: when true, a home directory in
+     *                 KiFS is created for this user
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserInternalRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateUserInternalRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateUserInternalRequest.Options#TRUE
+     *                 TRUE}.
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

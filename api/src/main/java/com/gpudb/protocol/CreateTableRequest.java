@@ -73,6 +73,22 @@ public class CreateTableRequest implements IndexedRecord {
      * The default value is {@link
      * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
      *         <li> {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#CREATE_TEMP_TABLE
+     * CREATE_TEMP_TABLE}: If {@code true}, a unique temporary table name will
+     * be generated in the sys_temp schema and used in place of {@code
+     * tableName}. If {@code is_result_table} is {@code true}, then this is
+     * always allowed even if the caller does not have permission to create
+     * tables. The generated name is returned in {@code qualified_table_name}.
+     * Supported values:
+     * <ul>
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#TRUE
+     * TRUE}
+     *         <li> {@link com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     * FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
+     *         <li> {@link
      * com.gpudb.protocol.CreateTableRequest.Options#COLLECTION_NAME
      * COLLECTION_NAME}: [DEPRECATED--please specify the containing schema as
      * part of {@code tableName} and use {@link
@@ -237,9 +253,6 @@ public class CreateTableRequest implements IndexedRecord {
      * STRATEGY_DEFINITION}: The <a
      * href="../../../../../../rm/concepts/#tier-strategies" target="_top">tier
      * strategy</a> for the table and its columns.
-     *         <li> {@link
-     * com.gpudb.protocol.CreateTableRequest.Options#IS_VIRTUAL_UNION
-     * IS_VIRTUAL_UNION}: <DEVELOPER>
      * </ul>
      * The default value is an empty {@link Map}.
      * A set of string constants for the parameter {@code options}.
@@ -263,6 +276,24 @@ public class CreateTableRequest implements IndexedRecord {
         public static final String NO_ERROR_IF_EXISTS = "no_error_if_exists";
         public static final String TRUE = "true";
         public static final String FALSE = "false";
+
+        /**
+         * If {@code true}, a unique temporary table name will be generated in
+         * the sys_temp schema and used in place of {@code tableName}. If
+         * {@code is_result_table} is {@code true}, then this is always allowed
+         * even if the caller does not have permission to create tables. The
+         * generated name is returned in {@code qualified_table_name}.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
+         */
+        public static final String CREATE_TEMP_TABLE = "create_temp_table";
 
         /**
          * [DEPRECATED--please specify the containing schema as part of {@code
@@ -492,11 +523,6 @@ public class CreateTableRequest implements IndexedRecord {
          */
         public static final String STRATEGY_DEFINITION = "strategy_definition";
 
-        /**
-         * <DEVELOPER>
-         */
-        public static final String IS_VIRTUAL_UNION = "is_virtual_union";
-
         private Options() {  }
     }
 
@@ -536,6 +562,26 @@ public class CreateTableRequest implements IndexedRecord {
      *                 from occurring if the table already exists and is of the
      *                 given type.  If a table with the same ID but a different
      *                 type exists, it is still an error.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code tableName}. If {@code
+     *                 is_result_table} is {@code true}, then this is always
+     *                 allowed even if the caller does not have permission to
+     *                 create tables. The generated name is returned in {@code
+     *                 qualified_table_name}.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -743,9 +789,6 @@ public class CreateTableRequest implements IndexedRecord {
      *                 href="../../../../../../rm/concepts/#tier-strategies"
      *                 target="_top">tier strategy</a> for the table and its
      *                 columns.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableRequest.Options#IS_VIRTUAL_UNION
-     *                 IS_VIRTUAL_UNION}: <DEVELOPER>
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 
@@ -825,6 +868,23 @@ public class CreateTableRequest implements IndexedRecord {
      *         occurring if the table already exists and is of the given type.
      *         If a table with the same ID but a different type exists, it is
      *         still an error.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#FALSE FALSE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateTableRequest.Options#CREATE_TEMP_TABLE
+     *         CREATE_TEMP_TABLE}: If {@code true}, a unique temporary table
+     *         name will be generated in the sys_temp schema and used in place
+     *         of {@code tableName}. If {@code is_result_table} is {@code
+     *         true}, then this is always allowed even if the caller does not
+     *         have permission to create tables. The generated name is returned
+     *         in {@code qualified_table_name}.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -1009,9 +1069,6 @@ public class CreateTableRequest implements IndexedRecord {
      *         STRATEGY_DEFINITION}: The <a
      *         href="../../../../../../rm/concepts/#tier-strategies"
      *         target="_top">tier strategy</a> for the table and its columns.
-     *                 <li> {@link
-     *         com.gpudb.protocol.CreateTableRequest.Options#IS_VIRTUAL_UNION
-     *         IS_VIRTUAL_UNION}: <DEVELOPER>
      *         </ul>
      *         The default value is an empty {@link Map}.
      * 
@@ -1030,6 +1087,26 @@ public class CreateTableRequest implements IndexedRecord {
      *                 from occurring if the table already exists and is of the
      *                 given type.  If a table with the same ID but a different
      *                 type exists, it is still an error.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#TRUE TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#FALSE
+     *                 FALSE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateTableRequest.Options#CREATE_TEMP_TABLE
+     *                 CREATE_TEMP_TABLE}: If {@code true}, a unique temporary
+     *                 table name will be generated in the sys_temp schema and
+     *                 used in place of {@code tableName}. If {@code
+     *                 is_result_table} is {@code true}, then this is always
+     *                 allowed even if the caller does not have permission to
+     *                 create tables. The generated name is returned in {@code
+     *                 qualified_table_name}.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -1237,9 +1314,6 @@ public class CreateTableRequest implements IndexedRecord {
      *                 href="../../../../../../rm/concepts/#tier-strategies"
      *                 target="_top">tier strategy</a> for the table and its
      *                 columns.
-     *                         <li> {@link
-     *                 com.gpudb.protocol.CreateTableRequest.Options#IS_VIRTUAL_UNION
-     *                 IS_VIRTUAL_UNION}: <DEVELOPER>
      *                 </ul>
      *                 The default value is an empty {@link Map}.
      * 

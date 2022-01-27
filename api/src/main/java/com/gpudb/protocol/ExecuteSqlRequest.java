@@ -22,8 +22,8 @@ import org.apache.avro.generic.IndexedRecord;
  * <p>
  * Execute a SQL statement (query, DML, or DDL).
  * <p>
- * See <a href="../../../../../../concepts/sql/" target="_top">SQL Support</a>
- * for the complete set of supported SQL commands.
+ * See <a href="../../../../../../sql/" target="_top">SQL Support</a> for the
+ * complete set of supported SQL commands.
  */
 public class ExecuteSqlRequest implements IndexedRecord {
     private static final Schema schema$ = SchemaBuilder

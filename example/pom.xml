@@ -6,6 +6,21 @@
     <version>1.0</version>
     <packaging>jar</packaging>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <gpudb-api.version>7.1.6.0</gpudb-api.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>gpudb-api</artifactId>
+            <version>${gpudb-api.version}</version>
+        </dependency>
+    </dependencies>
+
     <repositories>
         <repository>
             <id>gisfed-releases</id>
@@ -47,17 +62,4 @@
         </plugins>
     </build>
 
-
-    <dependencies>
-        <dependency>
-            <groupId>com.gpudb</groupId>
-            <artifactId>gpudb-api</artifactId>
-            <version>[7.1.2.0,7.2.0.0-SNAPSHOT)</version>
-        </dependency>
-    </dependencies>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-    </properties>
 </project>

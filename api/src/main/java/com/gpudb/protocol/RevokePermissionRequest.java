@@ -78,6 +78,9 @@ public class RevokePermissionRequest implements IndexedRecord {
      *         <li> {@link
      * com.gpudb.protocol.RevokePermissionRequest.ObjectType#TABLE TABLE}:
      * Database Table
+     *         <li> {@link
+     * com.gpudb.protocol.RevokePermissionRequest.ObjectType#TABLE_MONITOR
+     * TABLE_MONITOR}: Table monitor
      * </ul>
      * A set of string constants for the parameter {@code objectType}.
      */
@@ -132,6 +135,11 @@ public class RevokePermissionRequest implements IndexedRecord {
          * Database Table
          */
         public static final String TABLE = "table";
+
+        /**
+         * Table monitor
+         */
+        public static final String TABLE_MONITOR = "table_monitor";
 
         private ObjectType() {  }
     }
@@ -306,6 +314,9 @@ public class RevokePermissionRequest implements IndexedRecord {
      *                            <li> {@link
      *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#TABLE
      *                    TABLE}: Database Table
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#TABLE_MONITOR
+     *                    TABLE_MONITOR}: Table monitor
      *                    </ul>
      * @param permission  Permission being revoked.
      *                    Supported values:
@@ -442,6 +453,9 @@ public class RevokePermissionRequest implements IndexedRecord {
      *                 <li> {@link
      *         com.gpudb.protocol.RevokePermissionRequest.ObjectType#TABLE
      *         TABLE}: Database Table
+     *                 <li> {@link
+     *         com.gpudb.protocol.RevokePermissionRequest.ObjectType#TABLE_MONITOR
+     *         TABLE_MONITOR}: Table monitor
      *         </ul>
      * 
      */
@@ -484,6 +498,9 @@ public class RevokePermissionRequest implements IndexedRecord {
      *                            <li> {@link
      *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#TABLE
      *                    TABLE}: Database Table
+     *                            <li> {@link
+     *                    com.gpudb.protocol.RevokePermissionRequest.ObjectType#TABLE_MONITOR
+     *                    TABLE_MONITOR}: Table monitor
      *                    </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

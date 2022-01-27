@@ -2,6 +2,15 @@
 
 ## Version 7.1
 
+### Version 7.1.6.0 - 2022-01-27
+
+#### Added
+-   Option for automatically flushing the BulkInserter at a given delay
+-   Added support for retrieving errant records from BulkInserter ingest
+-   Added support for automatically flushing the BulkInserter and cleaning up of
+    service objects upon BulkInserter shutdown
+-   Improved SSL cert bypass
+
 ### Version 7.1.5.0 - 2021-10-13
 
 #### Added

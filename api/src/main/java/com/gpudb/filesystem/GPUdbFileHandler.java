@@ -11,6 +11,7 @@ import com.gpudb.filesystem.download.FileDownloadListener;
 import com.gpudb.filesystem.download.FileDownloader;
 import com.gpudb.filesystem.ingest.FileIngestor;
 import com.gpudb.filesystem.ingest.IngestOptions;
+import com.gpudb.filesystem.ingest.IngestResult;
 import com.gpudb.filesystem.ingest.TableCreationOptions;
 import com.gpudb.filesystem.upload.FileUploadListener;
 import com.gpudb.filesystem.upload.FileUploader;
@@ -90,6 +91,27 @@ public class GPUdbFileHandler {
 
     /** This method facilitates the upload of a single file from a given
      * local directory to a given remote directory. The filename passed in
+     * is preserved between the client and the server. This method uses the 
+     * default Upload options and does not use a callback.
+     *
+     * @param fileName - Name of the file along with the full path
+     *                 e.g., "/home/user1/dir1/dir2/a.txt"
+     * @param remoteDirName - Name of the remote directory to which the
+     *                      file is to be saved.
+     * @throws GPUdbException - from the method {@link #upload(List, String, UploadOptions, FileUploadListener)}
+     *
+     * @see FileUploadListener
+     * @see UploadOptions
+     * @see UploadOptions#defaultOptions()
+     * @see #upload(String, String, UploadOptions, FileUploadListener) 
+     *
+     */
+    public void upload(final String fileName, final String remoteDirName) throws GPUdbException {
+        upload(fileName, remoteDirName, UploadOptions.defaultOptions(), null );
+    }
+
+    /** This method facilitates the upload of a single file from a given
+     * local directory to a given remote directory. The filename passed in
      * is preserved between the client and the server.
      *
      * @param fileName - Name of the file along with the full path
@@ -101,6 +123,10 @@ public class GPUdbFileHandler {
      *                default values would be used. The default values for
      *                the options can also be set explicitly using the method
      *                {@link UploadOptions#defaultOptions()}.
+     *
+     * @param callback - An instance of {@link FileUploadListener} class which
+     *                 is used to report status of an ongoing/completed upload
+     *                 to the caller of the method.
      *
      * @throws GPUdbException - from the method {@link #upload(List, String, UploadOptions, FileUploadListener)}
      *
@@ -119,6 +145,26 @@ public class GPUdbFileHandler {
 
     /** This method facilitates uploading of multiple files from the same
      * local directory to a given remote directory. The filenames are preserved
+     * between the client and the server. This method uses default Upload options
+     * and does not use a callback.
+     *
+     * @param fileNames - List<String> - Names of the files to be uploaded
+     *                  including the full local path.
+     * @param remoteDirName - Name of the remote directory to which the
+     *                      file is to be saved. This indicates a KIFS directory
+     * @throws GPUdbException - thrown from {@link #upload(List, String, UploadOptions, FileUploadListener)}
+     *
+     * @see FileUploadListener
+     * @see UploadOptions
+     * @see UploadOptions#defaultOptions()
+     * @see #upload(List, String, UploadOptions, FileUploadListener) 
+     */
+    public void upload(final List<String> fileNames, final String remoteDirName) throws GPUdbException {
+        upload(fileNames, remoteDirName, UploadOptions.defaultOptions(), null );
+    }
+
+    /** This method facilitates uploading of multiple files from the same
+     * local directory to a given remote directory. The filenames are preserved
      * between the client and the server.
      *
      * @param fileNames - List<String> - Names of the files to be uploaded
@@ -130,6 +176,10 @@ public class GPUdbFileHandler {
      *                default values would be used. The default values for
      *                the uploadOptions can also be set explicitly using the method
      *                {@link UploadOptions#defaultOptions()}.
+     * @param callback - An instance of {@link FileUploadListener} class which
+     *                   is used to report status of an ongoing/completed upload
+     *                   to the caller of the method.
+     *
      * @throws GPUdbException - Where parameters value checks fail
      *
      * @see FileUploadListener
@@ -183,6 +233,28 @@ public class GPUdbFileHandler {
      * This method downloads files from a KIFS
      * directory to a local directory. The local directory must exist or else
      * this method will throw an exception. The 'fileNames' argument contains
+     * a list of fully qualified file names on a KIFS directory. This method
+     * uses default download options and doesn't use a callback.
+     *
+     * @param fileNames - A list of fully qualified file names
+     *                  residing on the KIFS directory e.g., 'a/b/c/d.txt'
+     *                  where 'a/b/c' is a full path on the KIFS.
+     * @param localDirName - String - This is the name of a local directory where the
+     *                     files will be saved. This directory must exist on the
+     *                     local filesystem.
+     *
+     * @see DownloadOptions
+     * @see DownloadOptions#defaultOptions()
+     * @see FileDownloadListener
+     */
+    public void download(List<String> fileNames, String localDirName) throws GPUdbException {
+        download(fileNames, localDirName, DownloadOptions.defaultOptions(), null );
+    }
+
+    /**
+     * This method downloads files from a KIFS
+     * directory to a local directory. The local directory must exist or else
+     * this method will throw an exception. The 'fileNames' argument contains
      * a list of fully qualified file names on a KIFS directory.
      *
      * @param fileNames - A list of fully qualified file names
@@ -197,6 +269,9 @@ public class GPUdbFileHandler {
      *                        would be used. The default values for the options
      *                        can also be set explicitly using the method
      *                        {@link DownloadOptions#defaultOptions()}
+     * @param callback - An instance of {@link FileDownloadListener} class which
+     *                   is used to report status of an ongoing/completed download
+     *                   to the caller of the method.
      */
     public void download(List<String> fileNames,
                          String localDirName,
@@ -233,6 +308,23 @@ public class GPUdbFileHandler {
 
         downloader.download();
 
+    }
+
+    /**
+     * This method downloads a single file from a KIFS
+     * directory to a local directory. The local directory must exist or else
+     * this method will throw an exception. The 'fileNames' argument contains
+     * a list of fully qualified file names on a KIFS directory.
+     *  @param fileName - String - A fully qualified file name
+     *                   residing on the KIFS directory e.g., 'a/b/c/d.txt'
+     *                   where 'a/b/c' is a full path on the KIFS.
+     * @param localDirName - String - This is the name of a local directory where the
+     *                      files will be saved. This directory must exist on the
+     *                      local filesystem. 
+     *
+     */
+    public void download(String fileName, String localDirName) throws GPUdbException {
+        download(fileName, localDirName, DownloadOptions.defaultOptions(), null );
     }
 
     /**
@@ -314,7 +406,8 @@ public class GPUdbFileHandler {
      * @param ingestOptions - Options for ingestion
      * @param createTableOptions - Options for table creation
      *
-     * @throws - GPUdbException
+     * @throws - {@link GPUdbException} - if the ingestion or the underlying upload fails
+     *
      * @see IngestOptions
      * @see TableCreationOptions
      */
@@ -352,8 +445,22 @@ public class GPUdbFileHandler {
                 createTableOptions
         );
 
-        ingestor.ingestFromFiles();
+        IngestResult ingestResult = ingestor.ingestFromFiles();
 
+        if(ingestResult.getException() != null ) {
+            throw new GPUdbException( ingestResult.getErrorMessage() );
+        }
+
+    }
+
+    /**
+     * This method takes a list of fully qualified KIFS file paths and deletes
+     * the files in one go.
+     *  @param fileNames - a list of files on the KIFS
+     * 
+     */
+    public void deleteFiles(List<String> fileNames) throws GPUdbException {
+        deleteFiles(fileNames, true);
     }
 
     /**
@@ -376,9 +483,23 @@ public class GPUdbFileHandler {
     }
 
     /**
-     * This method deletes all files in a directory.
+     * This method deletes files in the KIFS directory whose name is passed in
+     * using {@code remoteDirName}. This method uses default options
      *
      * @param remoteDirName - Name of the KIFS directory
+     * @throws GPUdbException - from {@link #deleteFilesInDir(String, boolean)}
+     */
+    public void deleteFilesInDir(String remoteDirName) throws GPUdbException {
+        deleteFilesInDir(remoteDirName, true);
+    }
+
+    /**
+     * This method deletes files in the KIFS directory whose name is passes in
+     * using {@code remoteDirName}.
+     * @param remoteDirName - Name of the KIFS directory
+     * @param noErrorIfNotExists - Indicates whether to allow deletion of files
+     *                           in non-existent KIFS directory or not.
+     * @throws GPUdbException - from downstream API calls
      */
     public void deleteFilesInDir(String remoteDirName, boolean noErrorIfNotExists) throws GPUdbException {
 
@@ -433,6 +554,20 @@ public class GPUdbFileHandler {
      * This method retrieves the directory information for a given list of KIFS
      * directories and returns the information as a list of {@link KifsDirectoryInfo}
      * objects.
+     * 
+     * @param remoteDirNames - Set of KIFS directory names
+     * @return - list of {@link KifsDirectoryInfo} objects
+     * @throws GPUdbException - from {@link #showDirectories(Set, Map)}
+     * @see #showDirectories(Set, Map)
+     */
+    public List<KifsDirectoryInfo> showDirectories(Set<String> remoteDirNames) throws GPUdbException {
+        return showDirectories(remoteDirNames, new HashMap<String, String>());
+    }
+
+    /**
+     * This method retrieves the directory information for a given list of KIFS
+     * directories and returns the information as a list of {@link KifsDirectoryInfo}
+     * objects.
      * @param remoteDirNames - Set of names of the KIFS directories
      * @param options - Map of String to String; the endpoint expects an empty
      *                map.
@@ -464,6 +599,19 @@ public class GPUdbFileHandler {
             }
         }
         return showDirResp;
+    }
+
+    /**
+     * This method retrieves the directory information for a given KIFS
+     * directory and returns the information as a list of {@link KifsDirectoryInfo}
+     * objects. This method uses default options.
+     *
+     * @param remoteDirName - Name of the KIFS directory, cannot be null or empty
+     * @return - List of {@link KifsDirectoryInfo} objects.
+     * @see #showDirectory(String, Map)
+     */
+    public List<KifsDirectoryInfo> showDirectory(String remoteDirName) throws GPUdbException {
+        return showDirectory(remoteDirName, new HashMap<String, String>());
     }
 
     /**
@@ -507,9 +655,23 @@ public class GPUdbFileHandler {
      * This method retrieves the directory information all KIFS
      * directories and returns the information as a list of {@link KifsDirectoryInfo}
      * objects.
+     * 
+     * @return - a list of {@link KifsDirectoryInfo} objects
+     * @throws GPUdbException - from {@link #showAllDirectories(Map)}
+     * @see #showAllDirectories(Map) 
+     */
+    public List<KifsDirectoryInfo> showAllDirectories() throws GPUdbException {
+        return showAllDirectories(new HashMap<String, String>());
+    }
+    
+    /**
+     * This method retrieves the directory information all KIFS
+     * directories and returns the information as a list of {@link KifsDirectoryInfo}
+     * objects.
      * @param options - Map of String to String; the endpoint expects an empty
      *                map.
      * @return - List of {@link KifsDirectoryInfo} objects.
+     * @throws GPUdbException - from downstream API call
      */
     public List<KifsDirectoryInfo> showAllDirectories( Map<String, String> options) throws GPUdbException {
 
@@ -534,6 +696,16 @@ public class GPUdbFileHandler {
     }
 
     /**
+     * This method will create a KIFS directory with default options
+     * 
+     *  @param remoteDirName - String - Name of the KIFS directory to create
+     * @throws GPUdbException - from {@link #createDirectory(String, boolean)}
+     */
+    public void createDirectory(String remoteDirName) throws GPUdbException {
+        createDirectory(remoteDirName, true);
+    }
+
+    /**
      * This method will create a KIFS directory with options as explained
      * below.
      *
@@ -552,6 +724,17 @@ public class GPUdbFileHandler {
     }
 
     /**
+     * This method deletes a KIFS directory. This method uses default options
+     * 
+     * @param remoteDirName - Name of the KIFS directory
+     * @throws GPUdbException - from {@link #deleteDirectory(String, boolean, boolean)}
+     * @see #deleteDirectory(String, boolean, boolean)
+     */
+    public void deleteDirectory(String remoteDirName) throws GPUdbException {
+        deleteDirectory(remoteDirName, true, true);
+    }
+
+    /**
      * This method deletes a KIFS directory. It will do a recursive delete if
      * such an option is given.
      *
@@ -560,7 +743,7 @@ public class GPUdbFileHandler {
      * @param noErrorIfNotExists - If set to true will ignore if the directory
      *                           does not exist
      */
-        public void deleteDirectory(String remoteDirName,
+    public void deleteDirectory(String remoteDirName,
                                    boolean recursive,
                                    boolean noErrorIfNotExists) throws GPUdbException {
 

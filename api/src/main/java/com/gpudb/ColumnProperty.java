@@ -241,8 +241,8 @@ public final class ColumnProperty {
     public static final String INIT_WITH_NOW = "init_with_now";
 
     /**
-     * For 'uuid' type,  repalce empty strings and invalid uuid values with
-     * new_uuid()' upon insert.
+     * For 'uuid' type, replace empty strings and invalid UUID values with
+     * randomly-generated UUIDs upon insert.
      */
     public static final String INIT_WITH_UUID = "init_with_uuid";
 

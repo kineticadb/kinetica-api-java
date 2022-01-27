@@ -261,8 +261,8 @@ public class CreateTypeRequest implements IndexedRecord {
      * insert.
      *         <li> {@link
      * com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_UUID
-     * INIT_WITH_UUID}: For 'uuid' type,  repalce empty strings and invalid
-     * uuid values with new_uuid()' upon insert.
+     * INIT_WITH_UUID}: For 'uuid' type, replace empty strings and invalid UUID
+     * values with randomly-generated UUIDs upon insert.
      * </ul>
      * A set of string constants for the parameter {@code properties}.
      */
@@ -504,8 +504,8 @@ public class CreateTypeRequest implements IndexedRecord {
         public static final String INIT_WITH_NOW = "init_with_now";
 
         /**
-         * For 'uuid' type,  repalce empty strings and invalid uuid values with
-         * new_uuid()' upon insert.
+         * For 'uuid' type, replace empty strings and invalid UUID values with
+         * randomly-generated UUIDs upon insert.
          */
         public static final String INIT_WITH_UUID = "init_with_uuid";
 
@@ -759,9 +759,9 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    invalid timestamps with 'NOW()' upon insert.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_UUID
-     *                    INIT_WITH_UUID}: For 'uuid' type,  repalce empty
-     *                    strings and invalid uuid values with new_uuid()' upon
-     *                    insert.
+     *                    INIT_WITH_UUID}: For 'uuid' type, replace empty
+     *                    strings and invalid UUID values with
+     *                    randomly-generated UUIDs upon insert.
      *                    </ul>
      * @param options  Optional parameters.  The default value is an empty
      *                 {@link Map}.
@@ -1018,8 +1018,8 @@ public class CreateTypeRequest implements IndexedRecord {
      *         'NOW()' upon insert.
      *                 <li> {@link
      *         com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_UUID
-     *         INIT_WITH_UUID}: For 'uuid' type,  repalce empty strings and
-     *         invalid uuid values with new_uuid()' upon insert.
+     *         INIT_WITH_UUID}: For 'uuid' type, replace empty strings and
+     *         invalid UUID values with randomly-generated UUIDs upon insert.
      *         </ul>
      * 
      */
@@ -1252,9 +1252,9 @@ public class CreateTypeRequest implements IndexedRecord {
      *                    invalid timestamps with 'NOW()' upon insert.
      *                            <li> {@link
      *                    com.gpudb.protocol.CreateTypeRequest.Properties#INIT_WITH_UUID
-     *                    INIT_WITH_UUID}: For 'uuid' type,  repalce empty
-     *                    strings and invalid uuid values with new_uuid()' upon
-     *                    insert.
+     *                    INIT_WITH_UUID}: For 'uuid' type, replace empty
+     *                    strings and invalid UUID values with
+     *                    randomly-generated UUIDs upon insert.
      *                    </ul>
      * 
      * @return {@code this} to mimic the builder pattern.

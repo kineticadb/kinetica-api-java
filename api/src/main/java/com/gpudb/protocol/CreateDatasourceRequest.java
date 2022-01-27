@@ -137,7 +137,23 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * KAFKA_TOPIC_NAME}: Name of the Kafka topic to use as the data source
      *         <li> {@link
      * com.gpudb.protocol.CreateDatasourceRequest.Options#ANONYMOUS ANONYMOUS}:
-     * Use anonymous connection to storage provider
+     * Use anonymous connection to storage provider--DEPRECATED: this is now
+     * the default.  Specify use_managed_credentials for non-anonymous
+     * connection.
+     * Supported values:
+     * <ul>
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}
+     * </ul>
+     * The default value is {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}.
+     *         <li> {@link
+     * com.gpudb.protocol.CreateDatasourceRequest.Options#USE_MANAGED_CREDENTIALS
+     * USE_MANAGED_CREDENTIALS}: When no credentials are supplied, we use
+     * anonymous access by default.  If this is set, we will use cloud provider
+     * user settings.
      * Supported values:
      * <ul>
      *         <li> {@link
@@ -283,7 +299,24 @@ public class CreateDatasourceRequest implements IndexedRecord {
         public static final String KAFKA_TOPIC_NAME = "kafka_topic_name";
 
         /**
-         * Use anonymous connection to storage provider
+         * Use anonymous connection to storage provider--DEPRECATED: this is
+         * now the default.  Specify use_managed_credentials for non-anonymous
+         * connection.
+         * Supported values:
+         * <ul>
+         *         <li> {@link
+         * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}
+         *         <li> {@link
+         * com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}
+         * </ul>
+         * The default value is {@link
+         * com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}.
+         */
+        public static final String ANONYMOUS = "anonymous";
+
+        /**
+         * When no credentials are supplied, we use anonymous access by
+         * default.  If this is set, we will use cloud provider user settings.
          * Supported values:
          * <ul>
          *         <li> {@link
@@ -294,7 +327,7 @@ public class CreateDatasourceRequest implements IndexedRecord {
          * The default value is {@link
          * com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}.
          */
-        public static final String ANONYMOUS = "anonymous";
+        public static final String USE_MANAGED_CREDENTIALS = "use_managed_credentials";
 
         /**
          * Use https to connect to datasource if true, otherwise use http
@@ -339,7 +372,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * @param location  Location of the remote storage in
      *                  'storage_provider_type://[storage_path[:storage_port]]'
      *                  format.
-     *                  Supported storage provider types are 'hdfs' and 's3'.
+     *                  Supported storage provider types are
+     *                  'azure','hdfs','kafka' and 's3'.
      * @param userName  Name of the remote system user; may be an empty string
      * @param password  Password for the remote system user; may be an empty
      *                  string
@@ -453,7 +487,26 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 data source
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#ANONYMOUS
-     *                 ANONYMOUS}: Use anonymous connection to storage provider
+     *                 ANONYMOUS}: Use anonymous connection to storage
+     *                 provider--DEPRECATED: this is now the default.  Specify
+     *                 use_managed_credentials for non-anonymous connection.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#USE_MANAGED_CREDENTIALS
+     *                 USE_MANAGED_CREDENTIALS}: When no credentials are
+     *                 supplied, we use anonymous access by default.  If this
+     *                 is set, we will use cloud provider user settings.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
@@ -519,7 +572,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * 
      * @return Location of the remote storage in
      *         'storage_provider_type://[storage_path[:storage_port]]' format.
-     *         Supported storage provider types are 'hdfs' and 's3'.
+     *         Supported storage provider types are 'azure','hdfs','kafka' and
+     *         's3'.
      * 
      */
     public String getLocation() {
@@ -531,7 +585,8 @@ public class CreateDatasourceRequest implements IndexedRecord {
      * @param location  Location of the remote storage in
      *                  'storage_provider_type://[storage_path[:storage_port]]'
      *                  format.
-     *                  Supported storage provider types are 'hdfs' and 's3'.
+     *                  Supported storage provider types are
+     *                  'azure','hdfs','kafka' and 's3'.
      * 
      * @return {@code this} to mimic the builder pattern.
      * 
@@ -683,7 +738,23 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *         source
      *                 <li> {@link
      *         com.gpudb.protocol.CreateDatasourceRequest.Options#ANONYMOUS
-     *         ANONYMOUS}: Use anonymous connection to storage provider
+     *         ANONYMOUS}: Use anonymous connection to storage
+     *         provider--DEPRECATED: this is now the default.  Specify
+     *         use_managed_credentials for non-anonymous connection.
+     *         Supported values:
+     *         <ul>
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE FALSE}
+     *         </ul>
+     *         The default value is {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE TRUE}.
+     *                 <li> {@link
+     *         com.gpudb.protocol.CreateDatasourceRequest.Options#USE_MANAGED_CREDENTIALS
+     *         USE_MANAGED_CREDENTIALS}: When no credentials are supplied, we
+     *         use anonymous access by default.  If this is set, we will use
+     *         cloud provider user settings.
      *         Supported values:
      *         <ul>
      *                 <li> {@link
@@ -826,7 +897,26 @@ public class CreateDatasourceRequest implements IndexedRecord {
      *                 data source
      *                         <li> {@link
      *                 com.gpudb.protocol.CreateDatasourceRequest.Options#ANONYMOUS
-     *                 ANONYMOUS}: Use anonymous connection to storage provider
+     *                 ANONYMOUS}: Use anonymous connection to storage
+     *                 provider--DEPRECATED: this is now the default.  Specify
+     *                 use_managed_credentials for non-anonymous connection.
+     *                 Supported values:
+     *                 <ul>
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#FALSE
+     *                 FALSE}
+     *                 </ul>
+     *                 The default value is {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#TRUE
+     *                 TRUE}.
+     *                         <li> {@link
+     *                 com.gpudb.protocol.CreateDatasourceRequest.Options#USE_MANAGED_CREDENTIALS
+     *                 USE_MANAGED_CREDENTIALS}: When no credentials are
+     *                 supplied, we use anonymous access by default.  If this
+     *                 is set, we will use cloud provider user settings.
      *                 Supported values:
      *                 <ul>
      *                         <li> {@link
