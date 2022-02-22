@@ -54,35 +54,97 @@ The following methods are available -
 
 ### API Logging
 
-To enable logging, either use an appropriate log4j properties file, e.g.
-log4j.properties, in the classpath of the application with the following
-logger in it:
+The Java API uses the Simple Logging Facade for Java (SLF4J) with Logback as
+the backend for flexibility and convenience. Users of the API are encouraged to
+use the slf4j logging interface as well.
 
 ```
-log4j.appender.com.gpudb=INFO, stdout # or whatever appender you wish to use
+{
+    // Example of creating and using a SLF4J logger a java class file.
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
+    ...
+    private static Logger LOGGER = LoggerFactory.getLogger(Example.class);
+    ...
+    LOGGER.warn("..."); // trace(), debug(), info(), warn(), error()
+}
 ```
 
-Alternatively, the logging can be enabled and the log level set programmatically
-by using the appropriate GPUdb.Options method:
+The default logging level is INFO and output will be sent to a STDOUT appender.
+The 'com.gpudb' logging level can be set by a system property when running a jar
+with the arg '-Dlogging.level.com.gpudb=DEBUG' and a convenience function has
+been added to change the level from Java code.
 
 ```
-GPUdb.Options options = new GPUdb.Options();
-options.setLoggingLevel( logLevel ); // For example, "info" or "debug"
-GPUdb gpudb = new GPUdb( url, options );
+com.gpudb.GPUdbLogger.setLoggingLevel("DEBUG");
 ```
 
-For the official manual on Log4j, please visit:
+A complete logback logging configuration can be specified with a
+logback.xml resource file in the application pom or on the
+command-line when running the jar with a
+'-Dlogback.configurationFile=/path/to/logback.xml' arg.
+See the GPUdb API's logback.xml file for an example of a STDOUT logger.
+The full documentation, including examples, of a logback configuration
+file can be found here: https://logback.qos.ch/manual/configuration.html
 
 ```
-https://logging.apache.org/log4j/1.2/manual.html
+    <!-- Example resource for logback configuration file in an application pom.xml file. -->
+    <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+            <include>logback.xml</include>
+        </includes>
+    </resource>
 ```
 
-For a tutorial on log4j.properties file, including where to place it, please
-see:
+The SLF4J logger backend can be changed to any of the supported backends,
+including log4j, by requiring the appropriate wrapper package and excluding the
+'logback-classic' backend. See https://www.slf4j.org/legacy.html for
+more information. Note that if the SLF4J backend is changed from 'logback' the
+convenience function GPUdbLogger.setLoggingLevel() and the system parameter
+'logging.level.com.gpudb' will not work to change the log level. The level
+will have to be set using the new logger implementation.
 
 ```
-https://www.javatpoint.com/log4j-properties
+    <!-- Example of log4j2 as the slf4j backend for the application and GPUdb API in a pom.xml file. -->
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>2.7</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>2.7</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>2.7</version>
+    </dependency>
+    <dependency>
+        <groupId>com.gpudb</groupId>
+        <artifactId>gpudb-api</artifactId>
+        <version>${gpudb-api.version}</version>
+        <exclusions>
+            <exclusion>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+
+    ...
+
+    <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+            <include>log4j2.xml</include>
+        </includes>
+    </resource>
 ```
+
+
 
 ### SSL Configuration
 
@@ -129,9 +191,8 @@ use the following options:
 > java -DlogLevel=debug -Durl=http://172.42.0.80:9191 \
      -jar gpudb-api-example-1.0-jar-with-dependencies.jar
 
-Note that the default URL is "http://localhost:9191" and the default log level
-is OFF.  Also note that the two options, if given, must precede the `-jar`
-option.
+Note that the default URL is "http://localhost:9191".
+Also note that the two options, if given, must precede the `-jar` option.
 
 Please make sure that Kinetica is running at the URL and port specified in
 line 4 of example/src/main/java/com/gpudb/example/Example.java (the default
@@ -147,27 +208,3 @@ command -
 com.gpudb.example.GPUdbFileHandlerExample
 
 The URL VM argument needs to be changed suitably to match the exact environment.
-
-## Notes
-
-Since the 7.1.2.2 version of the API, due to the org.apache.avro dependency
-having been increased to 1.10.1 for security purposes, applications using this
-API may get the following innocuous warning logged:
-
-   ```Failed to load class org.slf4j.impl.StaticLoggerBinder```
-
-This happens due to `https://www.slf4j.org/codes.html#StaticLoggerBinder`, and
-according to SLF4J's guidance, this API does not include any SLF4J binding so
-that we do not inadvertantly force any specific binding on the client application.
-The end-user application is free to choose their own binding; or if no logging is
-used, then simply use the no-operation logger implementation by including the
-following dependency in the application's POM:
-
-   ```<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-nop -->
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-nop</artifactId>
-        <version>1.7.30</version>
-        <scope>test</scope>
-    </dependency>
-   ```

@@ -53,7 +53,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Level;
 import org.xerial.snappy.Snappy;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -160,7 +159,6 @@ public abstract class GPUdbBase {
         private long  intraClusterFailoverTimeout     = DEFAULT_INTRA_CLUSTER_FAILOVER_TIMEOUT_MS;
         private int   maxTotalConnections   = DEFAULT_MAX_TOTAL_CONNECTIONS;
         private int   maxConnectionsPerHost = DEFAULT_MAX_CONNECTIONS_PER_HOST;
-        private Level loggingLevel = GPUdbLogger.DEFAULT_LOGGING_LEVEL;
 
         /**
          * No-argument constructor needed for the copy constructor.
@@ -193,7 +191,6 @@ public abstract class GPUdbBase {
             this.intraClusterFailoverTimeout = other.intraClusterFailoverTimeout;
             this.maxTotalConnections         = other.maxTotalConnections;
             this.maxConnectionsPerHost       = other.maxConnectionsPerHost;
-            this.loggingLevel                = other.loggingLevel;
             this.initialConnectionAttemptTimeout = other.initialConnectionAttemptTimeout;
             this.connectionInactivityValidationTimeout = other.connectionInactivityValidationTimeout;
 
@@ -497,25 +494,6 @@ public abstract class GPUdbBase {
         public long getIntraClusterFailoverTimeout() {
             return this.intraClusterFailoverTimeout;
         }
-
-
-        /**
-         * Gets the logging level that will be used by the API.  By default,
-         * logging is turned off; but if logging properties are provided
-         * by the user, those properties will be respected.  If the user sets
-         * the logging level explicitly (and it is not the default log level),
-         * then the programmatically set level will be used instead of the
-         * one set in the properties file.
-         *
-         * @return  the logging level
-         *
-         * @see #setLoggingLevel(String)
-         * @see #setLoggingLevel(Level)
-         */
-        public Level getLoggingLevel() {
-            return this.loggingLevel;
-        }
-
 
 
         /**
@@ -1038,82 +1016,6 @@ public abstract class GPUdbBase {
             }
 
             this.intraClusterFailoverTimeout = value;
-            return this;
-        }
-
-
-        /**
-         * Sets the logging level that will be used by the API.
-         * Supported values:
-         * <ul>
-         *     <li> ALL
-         *     <li> DEBUG
-         *     <li> ERROR
-         *     <li> FATAL
-         *     <li> INFO
-         *     <li> OFF (the default)
-         *     <li> TRACE
-         *     <li> TRACE_INT
-         *     <li> WARN
-         * </ul>
-         *
-         * If `OFF` is given, and if logging properties are provided by the user
-         * (via log4j.properties or other files), those properties will be
-         * respected.  If the user set logging level is not the default log
-         * level, i.e. `OFF`), then the programmatically set level will be used
-         * instead of the one set in the properties file.
-         *
-         * @return  the current {@link Options} instance
-         *
-         * @see #getLoggingLevel()
-         */
-        public Options setLoggingLevel(String value) throws GPUdbException {
-
-            // Parse the level
-            Level level = Level.toLevel( value );
-
-            // Ensure a valid level was given
-            if ( (level == Level.DEBUG)
-                 && !value.equalsIgnoreCase( "DEBUG" ) ) {
-                // The user didn't give debug, but Level returned it
-                // (which it does when it can't parse the given value)
-                String errorMsg = ( "Must provide a valid logging level "
-                                    + "(please see documentation); given: '"
-                                    + value + "'" );
-                throw new GPUdbException( errorMsg );
-            }
-
-            this.loggingLevel = level;
-            return this;
-        }
-
-        /**
-         * Sets the logging level that will be used by the API.
-         * Supported values:
-         * <ul>
-         *     <li> Level.ALL
-         *     <li> Level.DEBUG
-         *     <li> Level.ERROR
-         *     <li> Level.FATAL
-         *     <li> Level.INFO
-         *     <li> Level.OFF (the default)
-         *     <li> Level.TRACE
-         *     <li> Level.TRACE_INT
-         *     <li> Level.WARN
-         * </ul>
-         *
-         * If `OFF` is given, and if logging properties are provided by the user
-         * (via log4j.properties or other files), those properties will be
-         * respected.  If the user set logging level is not the default log
-         * level, i.e. `OFF`), then the programmatically set level will be used
-         * instead of the one set in the properties file.
-         *
-         * @return  the current {@link Options} instance
-         *
-         * @see #getLoggingLevel()
-         */
-        public Options setLoggingLevel(Level value) {
-            this.loggingLevel = value;
             return this;
         }
 
@@ -2084,7 +1986,7 @@ public abstract class GPUdbBase {
 
         // Initialize the logger before anything else.  This MUST be donce
         // before any logging happens!
-        GPUdbLogger.initializeLogger( options.getLoggingLevel() );
+        GPUdbLogger.initializeLogger();
 
         if ( url == null ) {
             String errorMsg = ( "Must provide a non-null and non-empty "
@@ -2117,7 +2019,7 @@ public abstract class GPUdbBase {
 
         // Initialize the logger before anything else.  This MUST be donce
         // before any logging happens!
-        GPUdbLogger.initializeLogger( options.getLoggingLevel() );
+        GPUdbLogger.initializeLogger();
 
         if ( url == null ) {
             String errorMsg = "Must provide at least one URL; gave none!";
@@ -2135,7 +2037,7 @@ public abstract class GPUdbBase {
 
         // Initialize the logger before anything else.  This MUST be donce
         // before any logging happens!
-        GPUdbLogger.initializeLogger( options.getLoggingLevel() );
+        GPUdbLogger.initializeLogger();
 
         if ( urls.isEmpty() ) {
             String errorMsg = "Must provide at least one URL; gave none!";
