@@ -3,6 +3,7 @@ package com.gpudb.example;
 import com.gpudb.BulkInserter;
 import com.gpudb.GPUdb;
 import com.gpudb.GPUdbException;
+import com.gpudb.GPUdbLogger;
 import com.gpudb.RecordObject;
 import com.gpudb.Type;
 
@@ -22,10 +23,14 @@ import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Example
 {
+    private static Logger LOGGER = LoggerFactory.getLogger(Example.class);
+
     public static class MyType extends RecordObject
     {
         // Fields and their properties
@@ -48,16 +53,18 @@ public class Example
         String url = System.getProperty("url", "http://127.0.0.1:9191");
 
         // Get the log level from the command line, if any
-        GPUdb.Options options = new GPUdb.Options();
         String logLevel = System.getProperty("logLevel", "");
         if ( !logLevel.isEmpty() ) {
             System.out.println( "Log level given by the user: " + logLevel );
-            options.setLoggingLevel( logLevel );
+            GPUdbLogger.setLoggingLevel(logLevel);
         } else {
             System.out.println( "No log level given by the user." );
         }
 
+        LOGGER.info("Creating GPUdb object to: " + url);
+
         // Establish a connection with a locally running instance of GPUdb
+        GPUdb.Options options = new GPUdb.Options();
         GPUdb gpudb = new GPUdb( url, options );
 
         // Register the desired data type with GPUdb
@@ -296,6 +303,7 @@ public class Example
             System.out.println( "Dropping original table dropped all views as expected.\n" );
         }
 
+        System.exit(0);
     } // end main
 
 

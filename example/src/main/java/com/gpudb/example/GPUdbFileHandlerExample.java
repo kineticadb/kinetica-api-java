@@ -126,20 +126,20 @@ public class GPUdbFileHandlerExample {
         String url = System.getProperty("url", "http://127.0.0.1:9191");
 
         // Get the log level from the command line, if any
-        GPUdb.Options options = new GPUdb.Options();
         String logLevel = System.getProperty("logLevel", "");
         if ( !logLevel.isEmpty() ) {
             System.out.println( "Log level given by the user: " + logLevel );
-            options.setLoggingLevel( logLevel );
+            GPUdbLogger.setLoggingLevel(logLevel);
         } else {
             System.out.println( "No log level given by the user." );
         }
 
         // Establish a connection with a locally running instance of GPUdb
+        GPUdb.Options options = new GPUdb.Options();
         GPUdb gpudb = new GPUdb( url, options );
 
         exampleUploadAndDownload( gpudb );
-
+        System.exit(0);
     }
 
     /**

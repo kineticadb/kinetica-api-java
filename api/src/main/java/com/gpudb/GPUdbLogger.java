@@ -1,132 +1,61 @@
 package com.gpudb;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import java.util.Enumeration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.text.MessageFormat;
 
 
 public class GPUdbLogger {
 
-    // The default logging level--off
-    protected static final Level DEFAULT_LOGGING_LEVEL = Level.OFF;
-
     // The name of the logger for this API
-    protected static final String API_LOGGER_NAME = "Kinetica Java API";
+    protected static final String API_LOGGER_NAME = "com.gpudb";
 
-    // The loggers used for dependent libraries that might have obnxious
+    // The loggers used for dependent libraries that might have verbose
     // default log levels
     protected static final String DEP_LIB_APACHE_CLIENT_LOGGER = "org.apache.http";
 
-
     // Actual logger used for the API
-    private static Logger LOG = Logger.getLogger( API_LOGGER_NAME );
+    private static Logger LOGGER = LoggerFactory.getLogger(API_LOGGER_NAME);
 
 
     /**
-     * Initializes the logger with the given logging level.  It is
-     * **crucial** to call this method before using the logger.  This method
-     * serves the following purpose:
-     * * If no log4j.properties or any other properties file is found
-     *   in the class path of the application that uses this API, log4j
-     *   emits warnings about not finding any appender.  This method
-     *   prevents that from happening.
-     * * Older versions of the API did not have logging, so suddenly having
-     *   logging might throw off end user applications.  So, by default,
-     *   we turn off logging (controlled by the static final member above).
-     * * If no logging properties were provided by the end-user, then suppress
-     *   the obnoxious debug logging that is turned on by default by the Apache
-     *   HTTPClient library.
-     * * If the given log level is different from the default, set it explicitly.
+     * Initializes the default logback logger with the value of the
+     * 'logging.level.com.gpudb' system property.
+     * Log level can be set when executing a jar with a '-Dlogging.level.com.gpudb=DEBUG' arg.
      */
-    public static void initializeLogger( Level loggingLevel ) {
-        Logger rootLogger = Logger.getRootLogger();
+    public static void initializeLogger() {
 
-        // Check for appenders--if none found, then that means the
-        // end-user application has not supplied any logging properties
-        // (which indicates that they probably don't expect any logging).
-        Enumeration<Appender> appenders = rootLogger.getAllAppenders();
-        boolean isLoggerConfiguredByUser = appenders.hasMoreElements();
+        String logLevel = System.getProperty("logging.level.com.gpudb");
 
-        if ( !isLoggerConfiguredByUser ) {
-            // No appender is found; suppress log4j warnings by explicitly
-            // getting the logger for the API
-            LOG = Logger.getLogger( API_LOGGER_NAME );
-
-            // Configuring log4j helps towards suppressing the annoying log4j
-            // warnings
-            PatternLayout layout = new PatternLayout( "%d{yyyy-MM-dd HH:mm:ss} %-5p  %m%n" );
-            ConsoleAppender consoleAppender = new ConsoleAppender();
-            consoleAppender.setLayout( layout );
-            consoleAppender.activateOptions();
-            BasicConfigurator.configure( consoleAppender );
-
-            // Set the API's log level
-            LOG.setLevel( loggingLevel );
-
-            // Set the Apache HTTPClient log leve as well
-            Logger.getLogger( "org.apache.http" ).setLevel( loggingLevel );
-        } else {
-            // If the log level is different from the default, set it explicitly
-            if ( !loggingLevel.equals( DEFAULT_LOGGING_LEVEL ) ) {
-                LOG.setLevel( loggingLevel );
-                LOG.warn( "Log properties set, but the log level is also "
-                          + "programmatically set by the user ('"
-                          + loggingLevel.toString()
-                          + "'); using that one and ignoring the one in "
-                          + "the properties.");
-            }
-
-            // Some logging properties found; check if the libraries that this
-            // API uses have log levels defined in the properties.  If not, we
-            // will turn them off (at least the obnoxious ones).  For that, first
-            // look for such loggers in the user given properties.
-            boolean isApacheHttpClientLoggerFound = false;
-            Enumeration<Logger> loggers = rootLogger.getHierarchy().getCurrentLoggers();
-            while ( loggers.hasMoreElements() ) {
-                if ( loggers.nextElement()
-                     .getName()
-                     .equalsIgnoreCase( DEP_LIB_APACHE_CLIENT_LOGGER ) ) {
-                    isApacheHttpClientLoggerFound = true;
-                }
-            }
-
-            // Mute the obnoxious logs if not set by the user
-            if ( !isApacheHttpClientLoggerFound ) {
-                Logger.getLogger( DEP_LIB_APACHE_CLIENT_LOGGER ).setLevel( Level.OFF );
-            }
+        if ((logLevel != null) && !logLevel.isEmpty()) {
+            setLoggingLevel(logLevel);
         }
+
     }   // end initializeLogger
 
 
     public static void info(String message) {
-        LOG.info( message );
+        LOGGER.info( message );
     }
 
     public static void error(String message) {
-        LOG.error( message );
+        LOGGER.error( message );
     }
 
     public static void warn(String message) {
-        LOG.warn( message );
+        LOGGER.warn( message );
     }
-
-    public static void fatal(String message) {
-        LOG.fatal( message );
-    }
-
 
     public static void debug(String message) {
-        LOG.debug( message );
+        LOGGER.debug( message );
     }
 
 
     public static void trace(String message) {
-        LOG.trace( message );
+        LOGGER.trace( message );
     }
 
 
@@ -134,9 +63,7 @@ public class GPUdbLogger {
      * Print extra information with the debug message.
      */
     public static void debug_with_info(String message) {
-        if ( ( LOG.getEffectiveLevel() == Level.DEBUG )
-             || ( LOG.getEffectiveLevel() == Level.TRACE )
-             || ( LOG.getEffectiveLevel() == Level.ALL ) ) {
+        if ( LOGGER.isDebugEnabled() || LOGGER.isTraceEnabled() ) {
             // Getting the line number is expensive, so only do this
             // if the appropriate log level is chosen
             StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
@@ -152,10 +79,10 @@ public class GPUdbLogger {
             builder.append( message );
 
             // Finally, log the debug message
-            LOG.debug( builder.toString() );
+            LOGGER.debug( builder.toString() );
         } else {
             // Nothing fancy to calculate if the log level is not debug
-            LOG.debug( message );
+            LOGGER.debug( message );
         }
     }
 
@@ -164,8 +91,7 @@ public class GPUdbLogger {
      * Print extra information with the trace message.
      */
     public static void trace_with_info(String message) {
-        if ( ( LOG.getEffectiveLevel() == Level.TRACE )
-             || ( LOG.getEffectiveLevel() == Level.ALL ) ) {
+        if ( LOGGER.isTraceEnabled() ) {
             // Getting the line number is expensive, so only do this
             // if the appropriate log level is chosen
             StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
@@ -181,10 +107,63 @@ public class GPUdbLogger {
             builder.append( message );
 
             // Finally, log the debug message
-            LOG.trace( builder.toString() );
+            LOGGER.trace( builder.toString() );
         } else {
             // Nothing fancy to calculate if the log level is not debug
-            LOG.trace( message );
+            LOGGER.trace( message );
+        }
+    }
+
+    /**
+     * Dynamically set the default 'logback' logger 'com.gpudb' log level.
+     * Does nothing and logs warning if 'logback' is not the slf4f logger implementation, eg. log4j.
+     *
+     * @param logLevel   One of the supported log levels: TRACE, DEBUG, INFO,
+     *                   WARN, ERROR, FATAL, OFF. {@code null} value is considered as 'OFF'.
+     */
+    public static boolean setLoggingLevel(String logLevel)
+    {
+        // Dynamically call this function so we don't require any logback imports.
+        // ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger("com.gpudb");
+        // logger.setLevel(level);
+
+        String logLevelUpper = (logLevel == null) ? "OFF" : logLevel.toUpperCase();
+
+        try
+        {
+            Package logbackPackage = Package.getPackage("ch.qos.logback.classic");
+            if (logbackPackage == null)
+            {
+                LOGGER.warn("logback is not in the classpath, ignoring GPUdbLogger::setLoggingLevel("+logLevel+"). " +
+                            "The 'com.gpudb' log level must be set with the current slf4j logger implementation.");
+                return false;
+            }
+
+            Class<?> logLevelClass = Class.forName("ch.qos.logback.classic.Level");
+            Field    logLevelField = logLevelClass.getField(logLevelUpper);
+            Object   logLevelObj = logLevelField.get(null);
+
+            if (logLevelObj == null)
+            {
+                LOGGER.error("No such ch.qos.logback.classic log level: '{}', ignoring", logLevelUpper);
+                return false;
+            }
+
+            Class<?>[] paramTypes = { logLevelObj.getClass() };
+            Object[]   params = { logLevelObj };
+
+            Class<?> loggerClass = Class.forName("ch.qos.logback.classic.Logger");
+            Method   setLevelmethod = loggerClass.getMethod("setLevel", paramTypes);
+            Logger   logger = LoggerFactory.getLogger(API_LOGGER_NAME);
+            setLevelmethod.invoke(logger, params);
+
+            LOGGER.debug("Log level set to '{}' for the logger '{}'", logLevelUpper, API_LOGGER_NAME);
+            return true;
+        }
+        catch (Exception e)
+        {
+            LOGGER.warn("Couldn't set log level to '{}' for the logger '{}'", logLevelUpper, API_LOGGER_NAME, e);
+            return false;
         }
     }
 

@@ -2,6 +2,23 @@
 
 ## Version 7.1
 
+### Version 7.1.6.1 - 2022-02-22
+
+#### Breaking Changes
+-   Logging changed from using Log4j 1.x to SLF4J with a default Logback stdout
+    logger
+    - The breaking change was due to security issues with both Log4j 1.x and 2.x
+      and SLF4J was chosen since it is the successor to Log4j and more flexible
+    - See the README.md for directions on using a SLF4J logger and configuring
+      an alternative backend to Logback
+    - Note that it is possible to continue to use Log4j 1.x through SLF4J,
+      though not recommended
+-   Removed `GPUdb.Options.getLoggingLevel()` &
+    `GPUdb.Options.setLoggingLevel()`; instead, set the `com.gpudb` log level
+    with a user-supplied `logback.xml` resource or with the newly added static
+    `GPUdbLogger.setLoggingLevel()`, which can be called at any time
+
+
 ### Version 7.1.6.0 - 2022-01-27
 
 #### Added
@@ -10,6 +27,7 @@
 -   Added support for automatically flushing the BulkInserter and cleaning up of
     service objects upon BulkInserter shutdown
 -   Improved SSL cert bypass
+
 
 ### Version 7.1.5.0 - 2021-10-13
 
